@@ -1,0 +1,74 @@
+id: brew:chapel
+display-name: chapel
+homepage: https://chapel-lang.org/
+repo: https://github.com/chapel-lang/chapel
+docs: https://chapel-lang.org/
+package-manager:
+  brew: chapel
+  dnf: chapel
+  macports: chapel
+package-manager-url: https://formulae.brew.sh/formula/chapel
+version: 2.8.0
+license: Apache-2.0
+category: development
+tags:
+  - cli
+description: Programming language for productive parallel computing at scale
+source-archive: https://github.com/chapel-lang/chapel/releases/download/2.8.0/chapel-2.8.0.tar.gz
+dependencies:
+  - cmake
+  - gmp
+  - hwloc
+  - jemalloc
+  - llvm@21
+  - pkgconf
+  - python@3.14
+executables:
+  - exposure: global executable
+    kind: cli
+    name: chpl
+  - exposure: global executable
+    kind: cli
+    name: chpl-language-server
+  - exposure: global executable
+    kind: cli
+    name: chpl-shim
+  - exposure: global executable
+    kind: cli
+    name: chplcheck
+  - exposure: global executable
+    kind: cli
+    name: chpldoc
+  - exposure: global executable
+    kind: cli
+    name: chplrun-udp
+  - exposure: global executable
+    kind: cli
+    name: mason
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    By default, compiled Chapel programs will be single-locale only. To compile and run
+    multi-locale Chapel programs locally: Compile your program with: `chpl --comm=gasnet
+    --comm-substrate=udp` And then run it with: `chplrun-udp ./your_program_name` To
+    simulate GPU execution, you can compile your program with: `chpl --locale-model=gpu
+    --gpu=cpu`
+  post-install-defined: false
+install-lines:
+  av: sudo av install brew:chapel
+  brew: brew install chapel
+  dnf: sudo dnf install chapel
+  macports: sudo port install chapel
+provenance:
+  formula: chapel
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

@@ -1,0 +1,64 @@
+id: brew:docker-engine
+display-name: docker-engine
+homepage: https://www.docker.com/
+repo: https://github.com/moby/moby
+docs: https://www.docker.com/
+package-manager:
+  apk: docker-engine
+  brew: docker-engine
+  chocolatey: docker-engine
+package-manager-url: https://formulae.brew.sh/formula/docker-engine
+version: 29.5.2
+license: Apache-2.0
+category: development
+tags:
+  - cli
+  - docker
+description: Pack, ship and run any application as a lightweight container (Daemon)
+source-archive: https://github.com/moby/moby.git
+dependencies:
+  - containerd
+  - nftables
+  - runc
+  - tini
+build-dependencies:
+  - go
+  - go-md2man
+  - pkgconf
+executables:
+  - exposure: global executable
+    kind: cli
+    name: docker-proxy
+  - exposure: global executable
+    kind: cli
+    name: dockerd
+  - exposure: global executable
+    kind: cli
+    name: dockerd-rootless-setuptool.sh
+  - exposure: global executable
+    kind: cli
+    name: dockerd-rootless.sh
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    To run dockerd as the current user, execute the following commands: brew install
+    rootlesskit slirp4netns dockerd-rootless-setuptool.sh install NOTE: As the lifecycle
+    of containerd is managed by dockerd, do NOT run `containerd-rootless-setuptool.sh
+    install` before `dockerd-rootless-setuptool.sh install`. To run dockerd as the root
+    user, use `brew services` with `sudo --preserve-env=HOME`.
+  post-install-defined: false
+  service: declared
+install-lines:
+  apk: sudo apk add docker-engine
+  av: sudo av install brew:docker-engine
+  brew: brew install docker-engine
+  chocolatey: choco install docker-engine
+provenance:
+  formula: docker-engine
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

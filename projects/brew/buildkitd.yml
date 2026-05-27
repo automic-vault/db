@@ -1,0 +1,46 @@
+id: brew:buildkitd
+display-name: buildkitd
+homepage: https://github.com/moby/buildkit
+repo: https://github.com/moby/buildkit
+docs: https://github.com/moby/buildkit
+package-manager:
+  brew: buildkitd
+package-manager-url: https://formulae.brew.sh/formula/buildkitd
+version: 0.30.0
+license: Apache-2.0
+category: development
+tags:
+  - cli
+description: Concurrent, cache-efficient, and Dockerfile-agnostic builder toolkit (Daemon)
+source-archive: https://github.com/moby/buildkit/archive/refs/tags/v0.30.0.tar.gz
+dependencies:
+  - runc
+build-dependencies:
+  - go
+executables:
+  - exposure: global executable
+    kind: cli
+    name: buildkitd
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    To run buildkitd as the current user, see the following steps: OCI worker mode: brew
+    install rootlesskit rootlesskit buildkitd containerd worker mode: brew install
+    nerdctl containerd rootlesskit slirp4netns containerd-rootless-setuptool.sh install
+    CONTAINERD_NAMESPACE=default containerd-rootless-setuptool.sh
+    install-buildkit-containerd To run buildkitd as the root user, use `brew services`
+    with `sudo --preserve-env=HOME`.
+  post-install-defined: false
+  service: declared
+install-lines:
+  av: sudo av install brew:buildkitd
+  brew: brew install buildkitd
+provenance:
+  formula: buildkitd
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

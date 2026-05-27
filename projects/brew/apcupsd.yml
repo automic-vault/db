@@ -1,0 +1,96 @@
+id: brew:apcupsd
+display-name: apcupsd
+homepage: http://www.apcupsd.org
+repo: >
+  https://downloads.sourceforge.net/project/apcupsd/apcupsd%20-%20Stable/3.14.14/apcupsd-3.14.14.tar.gz
+docs: http://www.apcupsd.org
+package-manager:
+  apk: apcupsd
+  brew: apcupsd
+  debian: apcupsd
+  dnf: apcupsd
+  macports: apcupsd
+  nix: apcupsd
+  pacman: apcupsd
+  ubuntu: apcupsd
+  zypper: apcupsd
+package-manager-url: https://formulae.brew.sh/formula/apcupsd
+version: 3.14.14
+license: GPL-2.0-only
+category: network
+tags:
+  - cli
+description: Daemon for controlling APC UPSes
+source-archive: >
+  https://downloads.sourceforge.net/project/apcupsd/apcupsd%20-%20Stable/3.14.14/apcupsd-3.14.14.tar.gz
+dependencies:
+  - gd
+  - libusb-compat
+executables:
+  - exposure: global executable
+    kind: cli
+    name: apcaccess
+  - exposure: global executable
+    kind: cli
+    name: apctest
+  - exposure: global executable
+    kind: cli
+    name: apcupsd
+  - exposure: global executable
+    kind: cli
+    name: apcupsd-start
+  - exposure: global executable
+    kind: cli
+    name: smtp
+bottle:
+  available: true
+  platforms:
+    - arm64_big_sur
+    - arm64_linux
+    - arm64_monterey
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - arm64_ventura
+    - big_sur
+    - catalina
+    - monterey
+    - sonoma
+    - ventura
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    For apcupsd to be able to communicate with UPSes connected via USB, the kernel
+    extension must be installed by the root user: sudo cp -pR
+    $HOMEBREW_CELLAR/apcupsd/3.14.14/Library/Extensions/ApcupsdDummy.kext
+    /System/Library/Extensions/ sudo chown -R root:wheel
+    /System/Library/Extensions/ApcupsdDummy.kext sudo touch /System/Library/Extensions/
+    Note: The kernel extension currently does not work as expected. You will have to
+    unplug and plug the USB cable back in after each reboot in order for apcupsd to be
+    able to connect to the UPS. To load apcupsd at startup, activate the included Launch
+    Daemon: sudo cp
+    $HOMEBREW_CELLAR/apcupsd/3.14.14/lib/Library/LaunchDaemons/org.apcupsd.apcupsd.plist
+    /Library/LaunchDaemons sudo chmod 644
+    /Library/LaunchDaemons/org.apcupsd.apcupsd.plist sudo launchctl load -w
+    /Library/LaunchDaemons/org.apcupsd.apcupsd.plist If this is an upgrade and you
+    already have the Launch Daemon loaded, you have to unload the Launch Daemon before
+    reinstalling it: sudo launchctl unload -w
+    /Library/LaunchDaemons/org.apcupsd.apcupsd.plist sudo rm
+    /Library/LaunchDaemons/org.apcupsd.apcupsd.plist
+  post-install-defined: false
+install-lines:
+  apk: sudo apk add apcupsd
+  av: sudo av install brew:apcupsd
+  brew: brew install apcupsd
+  debian: sudo apt install apcupsd
+  dnf: sudo dnf install apcupsd
+  macports: sudo port install apcupsd
+  nix: nix profile install nixpkgs#apcupsd
+  pacman: sudo pacman -S apcupsd
+  ubuntu: sudo apt install apcupsd
+  zypper: sudo zypper install apcupsd
+provenance:
+  formula: apcupsd
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

@@ -1,0 +1,68 @@
+id: brew:pgbouncer
+display-name: pgbouncer
+homepage: https://www.pgbouncer.org/
+repo: https://www.pgbouncer.org/downloads/files/1.25.2/pgbouncer-1.25.2.tar.gz
+docs: https://www.pgbouncer.org/
+package-manager:
+  apk: pgbouncer
+  brew: pgbouncer
+  debian: pgbouncer
+  dnf: pgbouncer
+  macports: pgbouncer
+  nix: pgbouncer
+  pacman: pgbouncer
+  ubuntu: pgbouncer
+package-manager-url: https://formulae.brew.sh/formula/pgbouncer
+version: 1.25.2
+license: ISC
+category: database
+tags:
+  - cli
+description: Lightweight connection pooler for PostgreSQL
+source-archive: https://www.pgbouncer.org/downloads/files/1.25.2/pgbouncer-1.25.2.tar.gz
+dependencies:
+  - libevent
+  - openssl@3
+build-dependencies:
+  - pandoc
+  - pkgconf
+executables:
+  - exposure: global executable
+    kind: cli
+    name: mkauth.py
+  - exposure: global executable
+    kind: cli
+    name: pgbouncer
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    The config file: $HOMEBREW_PREFIX/etc/pgbouncer.ini is in the "ini" format and you
+    will need to edit it for your particular setup. See:
+    https://pgbouncer.github.io/config.html The auth_file option should point to the
+    $HOMEBREW_PREFIX/etc/userlist.txt file which can be populated by the
+    $HOMEBREW_CELLAR/pgbouncer/1.25.2/bin/mkauth.py script.
+  post-install-defined: false
+  service: declared
+install-lines:
+  apk: sudo apk add pgbouncer
+  av: sudo av install brew:pgbouncer
+  brew: brew install pgbouncer
+  debian: sudo apt install pgbouncer
+  dnf: sudo dnf install pgbouncer
+  macports: sudo port install pgbouncer
+  nix: nix profile install nixpkgs#pgbouncer
+  pacman: sudo pacman -S pgbouncer
+  ubuntu: sudo apt install pgbouncer
+provenance:
+  formula: pgbouncer
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

@@ -1,0 +1,72 @@
+id: brew:minidlna
+display-name: minidlna
+homepage: https://sourceforge.net/projects/minidlna/
+repo: https://downloads.sourceforge.net/project/minidlna/minidlna/1.3.3/minidlna-1.3.3.tar.gz
+docs: https://sourceforge.net/projects/minidlna/
+package-manager:
+  apk: minidlna
+  brew: minidlna
+  debian: minidlna
+  dnf: minidlna
+  nix: minidlna
+  pacman: minidlna
+  ubuntu: minidlna
+  zypper: minidlna
+package-manager-url: https://formulae.brew.sh/formula/minidlna
+version: 1.3.3
+license: GPL-2.0-only
+category: network
+tags:
+  - cli
+description: Media server software, compliant with DLNA/UPnP-AV clients
+source-archive: https://downloads.sourceforge.net/project/minidlna/minidlna/1.3.3/minidlna-1.3.3.tar.gz
+dependencies:
+  - ffmpeg
+  - flac
+  - gettext
+  - jpeg-turbo
+  - libexif
+  - libid3tag
+  - libogg
+  - libvorbis
+  - sqlite
+build-dependencies:
+  - gettext
+executables:
+  - exposure: global executable
+    kind: cli
+    name: minidlnad
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - arm64_ventura
+    - sonoma
+    - ventura
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    Simple single-user configuration: mkdir -p ~/.config/minidlna cp
+    $HOMEBREW_PREFIX/opt/minidlna/share/minidlna/minidlna.conf
+    ~/.config/minidlna/minidlna.conf ln -s YOUR_MEDIA_DIR ~/.config/minidlna/media
+    minidlnad -f ~/.config/minidlna/minidlna.conf -P ~/.config/minidlna/minidlna.pid
+  post-install-defined: true
+  service: declared
+install-lines:
+  apk: sudo apk add minidlna
+  av: sudo av install brew:minidlna
+  brew: brew install minidlna
+  debian: sudo apt install minidlna
+  dnf: sudo dnf install minidlna
+  nix: nix profile install nixpkgs#minidlna
+  pacman: sudo pacman -S minidlna
+  ubuntu: sudo apt install minidlna
+  zypper: sudo zypper install minidlna
+provenance:
+  formula: minidlna
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

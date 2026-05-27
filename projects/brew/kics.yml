@@ -1,0 +1,47 @@
+id: brew:kics
+display-name: kics
+homepage: https://kics.io/
+repo: https://github.com/Checkmarx/kics
+docs: https://kics.io/
+package-manager:
+  brew: kics
+  nix: kics
+package-manager-url: https://formulae.brew.sh/formula/kics
+version: 2.1.20
+license: Apache-2.0
+category: development
+tags:
+  - cli
+description: Detect vulnerabilities, compliance issues, and misconfigurations
+source-archive: https://github.com/Checkmarx/kics/archive/refs/tags/v2.1.20.tar.gz
+build-dependencies:
+  - go
+executables:
+  - exposure: global executable
+    kind: cli
+    name: kics
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    KICS queries are placed under $HOMEBREW_PREFIX/opt/kics/share/kics/assets/queries To
+    use KICS default queries add KICS_QUERIES_PATH env to your ~/.zshrc or ~/.zprofile:
+    "echo 'export KICS_QUERIES_PATH=$HOMEBREW_PREFIX/opt/kics/share/kics/assets/queries'
+    >> ~/.zshrc" usage of CLI flag --queries-path takes precedence.
+  post-install-defined: false
+install-lines:
+  av: sudo av install brew:kics
+  brew: brew install kics
+  nix: nix profile install nixpkgs#kics
+provenance:
+  formula: kics
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

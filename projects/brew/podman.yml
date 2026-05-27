@@ -1,0 +1,73 @@
+id: brew:podman
+display-name: podman
+homepage: https://podman.io/
+repo: https://github.com/containers/podman
+docs: https://podman.io/
+package-manager:
+  apk: podman
+  brew: podman
+  debian: podman
+  dnf: podman
+  macports: podman
+  nix: podman
+  pacman: podman
+  scoop: main/podman
+  ubuntu: podman
+  winget: RedHat.Podman
+  zypper: podman
+package-manager-url: https://formulae.brew.sh/formula/podman
+version: 5.8.2
+license: Apache-2.0 AND GPL-3.0-or-later
+category: development
+tags:
+  - cli
+description: Tool for managing OCI containers and pods
+source-archive: https://github.com/containers/podman/archive/refs/tags/v5.8.2.tar.gz
+build-dependencies:
+  - go
+  - go-md2man
+  - make
+executables:
+  - exposure: global executable
+    kind: cli
+    name: podman
+  - exposure: global executable
+    kind: cli
+    name: podman-remote
+  - exposure: global executable
+    kind: cli
+    name: podmansh
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    In order to run containers locally, podman depends on a Linux kernel. One can be
+    started manually using `podman machine` from this package. To start a podman VM
+    automatically at login, also install the cask "podman-desktop".
+  post-install-defined: false
+  service: declared
+install-lines:
+  apk: sudo apk add podman
+  av: sudo av install brew:podman
+  brew: brew install podman
+  debian: sudo apt install podman
+  dnf: sudo dnf install podman
+  macports: sudo port install podman
+  nix: nix profile install nixpkgs#podman
+  pacman: sudo pacman -S podman
+  scoop: scoop install main/podman
+  ubuntu: sudo apt install podman
+  winget: winget install --id RedHat.Podman -e
+  zypper: sudo zypper install podman
+provenance:
+  formula: podman
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

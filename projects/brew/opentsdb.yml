@@ -1,0 +1,53 @@
+id: brew:opentsdb
+display-name: opentsdb
+homepage: http://opentsdb.net/
+repo: https://github.com/OpenTSDB/opentsdb
+docs: http://opentsdb.net/
+package-manager:
+  brew: opentsdb
+  nix: opentsdb
+package-manager-url: https://formulae.brew.sh/formula/opentsdb
+version: 2.4.1
+license: LGPL-2.1-or-later
+category: database
+tags:
+  - cli
+  - database
+description: Scalable, distributed Time Series Database
+source-archive: https://github.com/OpenTSDB/opentsdb/archive/refs/tags/v2.4.1.tar.gz
+dependencies:
+  - gnuplot
+  - hbase
+  - lzo
+  - openjdk@11
+build-dependencies:
+  - autoconf
+  - automake
+  - openjdk@8
+  - python@3.13
+executables:
+  - exposure: global executable
+    kind: cli
+    name: start-tsdb.sh
+  - exposure: global executable
+    kind: cli
+    name: tsdb
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - sonoma
+    - ventura
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  post-install-defined: true
+  service: declared
+install-lines:
+  av: sudo av install brew:opentsdb
+  brew: brew install opentsdb
+  nix: nix profile install nixpkgs#opentsdb
+provenance:
+  formula: opentsdb
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

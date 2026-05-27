@@ -1,0 +1,67 @@
+id: brew:ddclient
+display-name: ddclient
+homepage: https://ddclient.net/
+repo: https://github.com/ddclient/ddclient
+docs: https://ddclient.net/
+package-manager:
+  apk: ddclient
+  brew: ddclient
+  debian: ddclient
+  dnf: ddclient
+  macports: ddclient
+  nix: ddclient
+  pacman: ddclient
+  ubuntu: ddclient
+  zypper: ddclient
+package-manager-url: https://formulae.brew.sh/formula/ddclient
+version: 4.0.0
+license: GPL-2.0-or-later
+category: development
+tags:
+  - cli
+description: Update dynamic DNS entries
+source-archive: https://github.com/ddclient/ddclient/archive/refs/tags/v4.0.0.tar.gz
+build-dependencies:
+  - autoconf
+  - automake
+uses-from-macos:
+  - perl
+executables:
+  - exposure: global executable
+    kind: cli
+    name: ddclient
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    For ddclient to work, you will need to customise the configuration file at
+    `$HOMEBREW_PREFIX/etc/ddclient/ddclient.conf`. Note: don't enable daemon mode in the
+    configuration file; see additional information below. The next reboot of the system
+    will automatically start ddclient. You can adjust the execution interval by changing
+    the value of StartInterval (in seconds) in
+    /Library/LaunchDaemons/homebrew.mxcl.ddclient.plist.
+  post-install-defined: false
+  service: declared
+install-lines:
+  apk: sudo apk add ddclient
+  av: sudo av install brew:ddclient
+  brew: brew install ddclient
+  debian: sudo apt install ddclient
+  dnf: sudo dnf install ddclient
+  macports: sudo port install ddclient
+  nix: nix profile install nixpkgs#ddclient
+  pacman: sudo pacman -S ddclient
+  ubuntu: sudo apt install ddclient
+  zypper: sudo zypper install ddclient
+provenance:
+  formula: ddclient
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

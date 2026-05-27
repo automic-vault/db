@@ -1,20 +1,61 @@
-display-name:
-  aws-cli
-homepage:
-  https://aws.amazon.com/cli/
-repo:
-  https://github.com/aws/aws-cli
-docs:
-  https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html
-category:
-  cloud
+id: brew:awscli
+display-name: awscli
+homepage: https://aws.amazon.com/cli/
+repo: https://github.com/aws/aws-cli
+docs: https://aws.amazon.com/cli/
+package-manager:
+  brew: awscli
+  chocolatey: awscli
+  debian: awscli
+  dnf: aws
+  nix: awscli
+  scoop: main/aws
+package-manager-url: https://formulae.brew.sh/formula/awscli
+version: 2.34.54
+license: Apache-2.0
+category: cloud
 tags:
-  - cli
   - aws
-description:
-  The AWS Command Line Interface (CLI) is a unified tool to manage your AWS
-  services. With just one tool to download and configure, you can control
-  multiple AWS services from the command line and automate them through scripts.
+  - cli
+description: Official Amazon AWS command-line interface
+source-archive: https://github.com/aws/aws-cli/archive/refs/tags/2.34.54.tar.gz
+dependencies:
+  - openssl@3
+  - python@3.14
+build-dependencies:
+  - cmake
+uses-from-macos:
+  - libffi
+  - mandoc
+executables:
+  - exposure: global executable
+    kind: cli
+    name: aws
+  - exposure: global executable
+    kind: cli
+    name: aws_completer
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: 'The "examples" directory has been installed to: $HOMEBREW_PREFIX/share/awscli/examples'
+  post-install-defined: false
 install-lines:
-  brew: brew install awscli
   av: sudo av install brew:awscli
+  brew: brew install awscli
+  chocolatey: choco install awscli
+  debian: sudo apt install awscli
+  dnf: sudo dnf install aws
+  nix: nix profile install nixpkgs#awscli
+  scoop: scoop install main/aws
+provenance:
+  formula: awscli
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

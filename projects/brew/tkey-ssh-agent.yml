@@ -1,0 +1,55 @@
+id: brew:tkey-ssh-agent
+display-name: tkey-ssh-agent
+homepage: https://tillitis.se/
+repo: https://github.com/tillitis/tkey-ssh-agent
+docs: https://tillitis.se/
+package-manager:
+  apk: tkey-ssh-agent
+  brew: tkey-ssh-agent
+  debian: tkey-ssh-agent
+  nix: tkey-ssh-agent
+  winget: Tillitis.TKeySSHAgent
+package-manager-url: https://formulae.brew.sh/formula/tkey-ssh-agent
+version: 1.1.1
+license: GPL-2.0-only
+category: security
+tags:
+  - cli
+  - security
+description: SSH agent for use with the TKey security stick
+source-archive: https://github.com/tillitis/tkey-ssh-agent/archive/refs/tags/v1.1.1.tar.gz
+dependencies:
+  - pinentry-mac
+build-dependencies:
+  - go
+executables:
+  - exposure: global executable
+    kind: cli
+    name: tkey-ssh-agent
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    To use this SSH agent, set this variable in your ~/.zshrc and/or ~/.bashrc: export
+    SSH_AUTH_SOCK="$HOMEBREW_PREFIX/var/run/tkey-ssh-agent.sock"
+  post-install-defined: false
+  service: declared
+install-lines:
+  apk: sudo apk add tkey-ssh-agent
+  av: sudo av install brew:tkey-ssh-agent
+  brew: brew install tkey-ssh-agent
+  debian: sudo apt install tkey-ssh-agent
+  nix: nix profile install nixpkgs#tkey-ssh-agent
+  winget: winget install --id Tillitis.TKeySSHAgent -e
+provenance:
+  formula: tkey-ssh-agent
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

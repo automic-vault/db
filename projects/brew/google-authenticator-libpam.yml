@@ -1,0 +1,61 @@
+id: brew:google-authenticator-libpam
+display-name: google-authenticator-libpam
+homepage: https://github.com/google/google-authenticator-libpam
+repo: https://github.com/google/google-authenticator-libpam
+docs: https://github.com/google/google-authenticator-libpam
+package-manager:
+  apk: google-authenticator
+  brew: google-authenticator-libpam
+  dnf: google-authenticator
+  nix: google-authenticator
+  zypper: google-authenticator-libpam
+package-manager-url: https://formulae.brew.sh/formula/google-authenticator-libpam
+version: 1.11
+license: Apache-2.0
+category: development
+tags:
+  - cli
+description: PAM module for two-factor authentication
+source-archive: https://github.com/google/google-authenticator-libpam/archive/refs/tags/1.11.tar.gz
+dependencies:
+  - qrencode
+build-dependencies:
+  - autoconf
+  - automake
+  - libtool
+executables:
+  - exposure: global executable
+    kind: cli
+    name: google-authenticator
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - arm64_ventura
+    - sonoma
+    - ventura
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    Add 2-factor authentication for ssh: echo "auth required
+    $HOMEBREW_PREFIX/opt/google-authenticator-libpam/lib/security/pam_google_authenticator.so"
+    \ | sudo tee -a /etc/pam.d/sshd Add 2-factor authentication for ssh allowing users
+    to log in without OTP: echo "auth required
+    $HOMEBREW_PREFIX/opt/google-authenticator-libpam/lib/security/pam_google_authenticator.so"
+    \ "nullok" | sudo tee -a /etc/pam.d/sshd (Or just manually edit /etc/pam.d/sshd)
+  post-install-defined: false
+install-lines:
+  apk: sudo apk add google-authenticator
+  av: sudo av install brew:google-authenticator-libpam
+  brew: brew install google-authenticator-libpam
+  dnf: sudo dnf install google-authenticator
+  nix: nix profile install nixpkgs#google-authenticator
+  zypper: sudo zypper install google-authenticator-libpam
+provenance:
+  formula: google-authenticator-libpam
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

@@ -1,0 +1,70 @@
+id: brew:siege
+display-name: siege
+homepage: https://www.joedog.org/siege
+repo: https://download.joedog.org/siege/siege-4.1.7.tar.gz
+docs: https://www.joedog.org/siege
+package-manager:
+  brew: siege
+  debian: siege
+  dnf: siege
+  macports: siege
+  nix: siege
+  pacman: siege
+  ubuntu: siege
+  zypper: siege
+package-manager-url: https://formulae.brew.sh/formula/siege
+version: 4.1.7
+license: GPL-3.0-or-later
+category: network
+tags:
+  - cli
+description: HTTP regression testing and benchmarking utility
+source-archive: https://download.joedog.org/siege/siege-4.1.7.tar.gz
+dependencies:
+  - openssl@4
+executables:
+  - exposure: global executable
+    kind: cli
+    name: bombardment
+  - exposure: global executable
+    kind: cli
+    name: siege
+  - exposure: global executable
+    kind: cli
+    name: siege.config
+  - exposure: global executable
+    kind: cli
+    name: siege2csv.pl
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    macOS has only 16K ports available that won't be released until socket TIME_WAIT is
+    passed. The default timeout for TIME_WAIT is 15 seconds. Consider reducing in case
+    of available port bottleneck. You can check whether this is a problem with netstat:
+    # sysctl net.inet.tcp.msl net.inet.tcp.msl: 15000 # sudo sysctl -w
+    net.inet.tcp.msl=1000 net.inet.tcp.msl: 15000 -> 1000 Run siege.config to create the
+    ~/.siegerc config file.
+  post-install-defined: false
+install-lines:
+  av: sudo av install brew:siege
+  brew: brew install siege
+  debian: sudo apt install siege
+  dnf: sudo dnf install siege
+  macports: sudo port install siege
+  nix: nix profile install nixpkgs#siege
+  pacman: sudo pacman -S siege
+  ubuntu: sudo apt install siege
+  zypper: sudo zypper install siege
+provenance:
+  formula: siege
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

@@ -1,0 +1,62 @@
+id: brew:snapcast
+display-name: snapcast
+homepage: https://github.com/snapcast/snapcast
+repo: https://github.com/snapcast/snapcast
+docs: https://github.com/snapcast/snapcast
+package-manager:
+  apk: snapcast
+  brew: snapcast
+  debian: snapclient
+  nix: snapcast
+  ubuntu: snapclient
+package-manager-url: https://formulae.brew.sh/formula/snapcast
+version: 0.35.0
+license: GPL-3.0-or-later
+category: development
+tags:
+  - cli
+description: Synchronous multiroom audio player
+source-archive: https://github.com/snapcast/snapcast/archive/refs/tags/v0.35.0.tar.gz
+dependencies:
+  - flac
+  - libogg
+  - libsoxr
+  - libvorbis
+  - openssl@4
+  - opus
+build-dependencies:
+  - boost
+  - cmake
+  - pkgconf
+uses-from-macos:
+  - expat
+executables:
+  - exposure: global executable
+    kind: cli
+    name: snapclient
+  - exposure: global executable
+    kind: cli
+    name: snapserver
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  post-install-defined: false
+install-lines:
+  apk: sudo apk add snapcast
+  av: sudo av install brew:snapcast
+  brew: brew install snapcast
+  debian: sudo apt install snapclient
+  nix: nix profile install nixpkgs#snapcast
+  ubuntu: sudo apt install snapclient
+provenance:
+  formula: snapcast
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

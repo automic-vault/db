@@ -1,0 +1,62 @@
+id: brew:dnsmasq
+display-name: dnsmasq
+homepage: https://thekelleys.org.uk/dnsmasq/doc.html
+repo: https://thekelleys.org.uk/dnsmasq/dnsmasq-2.92.tar.gz
+docs: https://thekelleys.org.uk/dnsmasq/doc.html
+package-manager:
+  apk: dnsmasq
+  brew: dnsmasq
+  debian: dnsmasq
+  dnf: dnsmasq
+  macports: dnsmasq
+  nix: dnsmasq
+  pacman: dnsmasq
+  ubuntu: dnsmasq
+  zypper: dnsmasq
+package-manager-url: https://formulae.brew.sh/formula/dnsmasq
+version: 2.92
+license: GPL-2.0-only OR GPL-3.0-only
+category: network
+tags:
+  - cli
+description: Lightweight DNS forwarder and DHCP server
+source-archive: https://thekelleys.org.uk/dnsmasq/dnsmasq-2.92.tar.gz
+build-dependencies:
+  - pkgconf
+executables:
+  - exposure: global executable
+    kind: cli
+    name: dnsmasq
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    On current macOS releases, `/etc/resolver/<domain>` resolver overrides do not work
+    if the nameserver is `127.0.0.1` and dnsmasq is running on a non-53 port. To use
+    scoped resolver zones reliably, bind dnsmasq to a non-localhost IP (e.g., a loopback
+    alias like 10.0.0.1) on port 53.
+  post-install-defined: false
+  service: declared
+install-lines:
+  apk: sudo apk add dnsmasq
+  av: sudo av install brew:dnsmasq
+  brew: brew install dnsmasq
+  debian: sudo apt install dnsmasq
+  dnf: sudo dnf install dnsmasq
+  macports: sudo port install dnsmasq
+  nix: nix profile install nixpkgs#dnsmasq
+  pacman: sudo pacman -S dnsmasq
+  ubuntu: sudo apt install dnsmasq
+  zypper: sudo zypper install dnsmasq
+provenance:
+  formula: dnsmasq
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

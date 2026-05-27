@@ -1,0 +1,57 @@
+id: brew:vcpkg
+display-name: vcpkg
+homepage: https://github.com/microsoft/vcpkg
+repo: https://github.com/microsoft/vcpkg-tool
+docs: https://github.com/microsoft/vcpkg
+package-manager:
+  brew: vcpkg
+  dnf: vcpkg
+  nix: vcpkg
+  pacman: vcpkg
+  scoop: main/vcpkg
+package-manager-url: https://formulae.brew.sh/formula/vcpkg
+version: 2026-04-08
+license: MIT
+category: development
+tags:
+  - cli
+description: C++ Library Manager
+source-archive: https://github.com/microsoft/vcpkg-tool/archive/refs/tags/2026-04-08.tar.gz
+dependencies:
+  - fmt
+  - ninja
+build-dependencies:
+  - cmake
+  - cmrc
+uses-from-macos:
+  - curl
+executables:
+  - exposure: global executable
+    kind: cli
+    name: vcpkg
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    This formula provides only the `vcpkg` executable. To use vcpkg: git clone
+    https://github.com/microsoft/vcpkg "$HOME/vcpkg" export VCPKG_ROOT="$HOME/vcpkg"
+  post-install-defined: false
+install-lines:
+  av: sudo av install brew:vcpkg
+  brew: brew install vcpkg
+  dnf: sudo dnf install vcpkg
+  nix: nix profile install nixpkgs#vcpkg
+  pacman: sudo pacman -S vcpkg
+  scoop: scoop install main/vcpkg
+provenance:
+  formula: vcpkg
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

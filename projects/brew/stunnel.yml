@@ -1,0 +1,69 @@
+id: brew:stunnel
+display-name: stunnel
+homepage: https://www.stunnel.org/
+repo: https://www.stunnel.org/downloads/stunnel-5.78.tar.gz
+docs: https://www.stunnel.org/
+package-manager:
+  apk: stunnel
+  brew: stunnel
+  chocolatey: stunnel
+  dnf: stunnel
+  macports: stunnel
+  nix: stunnel
+  pacman: stunnel
+  scoop: extras/stunnel
+  winget: MichalTrojnara.Stunnel
+  zypper: stunnel
+package-manager-url: https://formulae.brew.sh/formula/stunnel
+version: 5.78
+license: GPL-2.0-or-later
+category: security
+tags:
+  - cli
+description: SSL tunneling program
+source-archive: https://www.stunnel.org/downloads/stunnel-5.78.tar.gz
+dependencies:
+  - openssl@3
+executables:
+  - exposure: global executable
+    kind: cli
+    name: stunnel
+  - exposure: global executable
+    kind: cli
+    name: stunnel3
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    A bogus SSL server certificate has been installed to:
+    $HOMEBREW_PREFIX/etc/stunnel/stunnel.pem This certificate will be used by default
+    unless a config file says otherwise! Stunnel will refuse to load the sample
+    configuration file if left unedited. In your stunnel configuration, specify a SSL
+    certificate with the "cert =" option for each service. To use Stunnel with Homebrew
+    services, make sure to set "foreground = yes" in your Stunnel configuration.
+  post-install-defined: false
+  service: declared
+install-lines:
+  apk: sudo apk add stunnel
+  av: sudo av install brew:stunnel
+  brew: brew install stunnel
+  chocolatey: choco install stunnel
+  dnf: sudo dnf install stunnel
+  macports: sudo port install stunnel
+  nix: nix profile install nixpkgs#stunnel
+  pacman: sudo pacman -S stunnel
+  scoop: scoop install extras/stunnel
+  winget: winget install --id MichalTrojnara.Stunnel -e
+  zypper: sudo zypper install stunnel
+provenance:
+  formula: stunnel
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

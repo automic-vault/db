@@ -1,0 +1,55 @@
+id: brew:yubikey-agent
+display-name: yubikey-agent
+homepage: https://github.com/FiloSottile/yubikey-agent
+repo: https://github.com/FiloSottile/yubikey-agent
+docs: https://github.com/FiloSottile/yubikey-agent
+package-manager:
+  apk: yubikey-agent
+  brew: yubikey-agent
+  debian: yubikey-agent
+  nix: yubikey-agent
+  ubuntu: yubikey-agent
+package-manager-url: https://formulae.brew.sh/formula/yubikey-agent
+version: 0.1.6
+license: BSD-3-Clause
+category: development
+tags:
+  - cli
+description: Seamless ssh-agent for YubiKeys and other PIV tokens
+source-archive: https://github.com/FiloSottile/yubikey-agent/archive/refs/tags/v0.1.6.tar.gz
+build-dependencies:
+  - go
+  - pkgconf
+uses-from-macos:
+  - pcsc-lite
+executables:
+  - exposure: global executable
+    kind: cli
+    name: yubikey-agent
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    To use this SSH agent, set this variable in your ~/.zshrc and/or ~/.bashrc: export
+    SSH_AUTH_SOCK="$HOMEBREW_PREFIX/var/run/yubikey-agent.sock"
+  post-install-defined: false
+  service: declared
+install-lines:
+  apk: sudo apk add yubikey-agent
+  av: sudo av install brew:yubikey-agent
+  brew: brew install yubikey-agent
+  debian: sudo apt install yubikey-agent
+  nix: nix profile install nixpkgs#yubikey-agent
+  ubuntu: sudo apt install yubikey-agent
+provenance:
+  formula: yubikey-agent
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

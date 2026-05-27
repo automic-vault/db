@@ -1,0 +1,80 @@
+id: brew:snort
+display-name: snort
+homepage: https://www.snort.org
+repo: https://github.com/snort3/snort3
+docs: https://www.snort.org
+package-manager:
+  apk: snort
+  brew: snort
+  macports: snort
+  nix: snort
+  ubuntu: snort
+package-manager-url: https://formulae.brew.sh/formula/snort
+version: 3.12.2.0
+license: GPL-2.0-only
+category: development
+tags:
+  - cli
+description: Flexible Network Intrusion Detection System
+source-archive: https://github.com/snort3/snort3/archive/refs/tags/3.12.2.0.tar.gz
+dependencies:
+  - daq
+  - hwloc
+  - jemalloc
+  - libdnet
+  - libpcap
+  - luajit
+  - openssl@3
+  - pcre2
+  - vectorscan
+  - xz
+build-dependencies:
+  - cmake
+  - flex
+  - pkgconf
+executables:
+  - exposure: global executable
+    kind: cli
+    name: appid_detector_builder.sh
+  - exposure: global executable
+    kind: cli
+    name: show_flows
+  - exposure: global executable
+    kind: cli
+    name: snort
+  - exposure: global executable
+    kind: cli
+    name: snort2lua
+  - exposure: global executable
+    kind: cli
+    name: u2boat
+  - exposure: global executable
+    kind: cli
+    name: u2spewfoo
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    For snort to be functional, you need to update the permissions for /dev/bpf* so that
+    they can be read by non-root users. This can be done manually using: sudo chmod o+r
+    /dev/bpf* or you could create a startup item to do this for you.
+  post-install-defined: false
+install-lines:
+  apk: sudo apk add snort
+  av: sudo av install brew:snort
+  brew: brew install snort
+  macports: sudo port install snort
+  nix: nix profile install nixpkgs#snort
+  ubuntu: sudo apt install snort
+provenance:
+  formula: snort
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

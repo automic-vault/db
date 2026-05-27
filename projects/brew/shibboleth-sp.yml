@@ -1,0 +1,65 @@
+id: brew:shibboleth-sp
+display-name: shibboleth-sp
+homepage: https://wiki.shibboleth.net/confluence/display/SHIB2
+repo: https://shibboleth.net/downloads/service-provider/3.5.2/shibboleth-sp-3.5.2.tar.bz2
+docs: https://wiki.shibboleth.net/confluence/display/SHIB2
+package-manager:
+  brew: shibboleth-sp
+  nix: shibboleth-sp
+  zypper: shibboleth-sp
+package-manager-url: https://formulae.brew.sh/formula/shibboleth-sp
+version: 3.5.2
+license: Apache-2.0
+category: network
+tags:
+  - cli
+description: Shibboleth 2 Service Provider daemon
+source-archive: https://shibboleth.net/downloads/service-provider/3.5.2/shibboleth-sp-3.5.2.tar.bz2
+dependencies:
+  - apr
+  - apr-util
+  - boost
+  - httpd
+  - log4shib
+  - opensaml
+  - openssl@3
+  - unixodbc
+  - xerces-c
+  - xml-security-c
+  - xml-tooling-c
+build-dependencies:
+  - pkgconf
+uses-from-macos:
+  - krb5
+executables:
+  - exposure: global executable
+    kind: cli
+    name: mdquery
+  - exposure: global executable
+    kind: cli
+    name: resolvertest
+  - exposure: global executable
+    kind: cli
+    name: shibd
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  post-install-defined: false
+  service: declared
+install-lines:
+  av: sudo av install brew:shibboleth-sp
+  brew: brew install shibboleth-sp
+  nix: nix profile install nixpkgs#shibboleth-sp
+  zypper: sudo zypper install shibboleth-sp
+provenance:
+  formula: shibboleth-sp
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

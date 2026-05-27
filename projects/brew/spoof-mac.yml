@@ -1,0 +1,48 @@
+id: brew:spoof-mac
+display-name: spoof-mac
+homepage: https://github.com/feross/SpoofMAC
+repo: >
+  https://files.pythonhosted.org/packages/9c/59/cc52a4c5d97b01fac7ff048353f8dc96f217eadc79022f78455e85144028/SpoofMAC-2.1.1.tar.gz
+docs: https://github.com/feross/SpoofMAC
+package-manager:
+  brew: spoof-mac
+  nix: spoof-mac
+package-manager-url: https://formulae.brew.sh/formula/spoof-mac
+version: 2.1.1
+license: MIT
+category: development
+tags:
+  - cli
+description: Spoof your MAC address in macOS
+source-archive: >
+  https://files.pythonhosted.org/packages/9c/59/cc52a4c5d97b01fac7ff048353f8dc96f217eadc79022f78455e85144028/SpoofMAC-2.1.1.tar.gz
+dependencies:
+  - python@3.14
+executables:
+  - exposure: global executable
+    kind: cli
+    name: spoof-mac
+  - exposure: global executable
+    kind: cli
+    name: spoof-mac.py
+bottle:
+  available: true
+  platforms:
+    - all
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    Although spoof-mac can run without root, you must be root to change the MAC. The
+    launchdaemon is set to randomize en0. You can find the interfaces available by
+    running: "spoof-mac list" If you wish to change interface randomized at startup
+    change the plist line: <string>en0</string> to e.g.: <string>en1</string>
+  post-install-defined: false
+  service: declared
+install-lines:
+  av: sudo av install brew:spoof-mac
+  brew: brew install spoof-mac
+  nix: nix profile install nixpkgs#spoof-mac
+provenance:
+  formula: spoof-mac
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

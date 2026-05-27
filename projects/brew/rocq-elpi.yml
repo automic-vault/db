@@ -1,0 +1,59 @@
+id: brew:rocq-elpi
+display-name: rocq-elpi
+homepage: https://github.com/LPCIC/coq-elpi
+repo: https://github.com/LPCIC/coq-elpi
+docs: https://github.com/LPCIC/coq-elpi
+package-manager:
+  brew: rocq-elpi
+package-manager-url: https://formulae.brew.sh/formula/rocq-elpi
+version: 3.4.0
+license: LGPL-2.1-or-later
+category: development
+tags:
+  - cli
+description: Elpi extension language for Rocq
+source-archive: https://github.com/LPCIC/coq-elpi/releases/download/v3.4.0/rocq-elpi-3.4.0.tar.gz
+dependencies:
+  - ocaml-findlib
+  - rocq
+build-dependencies:
+  - dune
+  - ocaml
+  - opam
+executables:
+  - exposure: global executable
+    kind: cli
+    name: rocq_elpi_optcomp
+  - exposure: global executable
+    kind: cli
+    name: rocq_elpi_shafile
+  - exposure: global executable
+    kind: cli
+    name: rocq_elpi_version_parser
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    Rocq needs help finding ML files installed inside
+    `$HOMEBREW_PREFIX/opt/rocq-elpi/libexec/lib`. This can be done by passing `-I
+    $HOMEBREW_PREFIX/opt/rocq-elpi/libexec/lib` as an argument. Alternatively, you can
+    add the directory to OCAMLPATH, e.g. export
+    OCAMLPATH="$HOMEBREW_PREFIX/opt/rocq-elpi/libexec/lib:$OCAMLPATH" or use the
+    included findlib configuration file, e.g. export
+    OCAMLFIND_CONF="$HOMEBREW_PREFIX/opt/rocq-elpi/libexec/lib/findlib.conf"
+  post-install-defined: false
+install-lines:
+  av: sudo av install brew:rocq-elpi
+  brew: brew install rocq-elpi
+provenance:
+  formula: rocq-elpi
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

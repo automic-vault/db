@@ -1,0 +1,70 @@
+id: brew:synergy-core
+display-name: synergy-core
+homepage: https://symless.com/synergy
+repo: https://github.com/symless/synergy
+docs: https://symless.com/synergy
+package-manager:
+  brew: synergy-core
+  chocolatey: synergy
+  macports: synergy
+  nix: synergy
+  zypper: synergy
+package-manager-url: https://formulae.brew.sh/formula/synergy-core
+version: 1.20.2
+license: GPL-2.0-only WITH openvpn-openssl-exception
+category: development
+tags:
+  - cli
+description: Synergy, the keyboard and mouse sharing tool
+source-archive: https://github.com/symless/synergy/archive/refs/tags/v1.20.2.tar.gz
+dependencies:
+  - openssl@3
+  - qtbase
+build-dependencies:
+  - cmake
+executables:
+  - exposure: global executable
+    kind: cli
+    name: synergy
+  - exposure: global executable
+    kind: cli
+    name: synergy-client
+  - exposure: global executable
+    kind: cli
+    name: synergy-legacy
+  - exposure: global executable
+    kind: cli
+    name: synergy-server
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    Synergy requires the 'Accessibility' permission. You can grant this permission by
+    navigating to: System Preferences -> Security & Privacy -> Privacy -> Accessibility
+    If Synergy still doesn't work, try clearing the 'Accessibility' list: sudo tccutil
+    reset Accessibility You can then grant the 'Accessibility' permission again. You may
+    need to clear this list each time you upgrade synergy-core. On ARM macOS machines,
+    the 'Accessibility' permission must be granted to both of the following two items:
+    (1) $HOMEBREW_PREFIX/opt/synergy-core/bundle/Synergy.app (2)
+    $HOMEBREW_PREFIX/opt/synergy-core/bin/synergy
+  post-install-defined: false
+  service: declared
+install-lines:
+  av: sudo av install brew:synergy-core
+  brew: brew install synergy-core
+  chocolatey: choco install synergy
+  macports: sudo port install synergy
+  nix: nix profile install nixpkgs#synergy
+  zypper: sudo zypper install synergy
+provenance:
+  formula: synergy-core
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

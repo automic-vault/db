@@ -1,0 +1,70 @@
+id: brew:nginx
+display-name: nginx
+homepage: https://nginx.org/
+repo: https://nginx.org/download/nginx-1.31.1.tar.gz
+docs: https://nginx.org/
+package-manager:
+  apk: nginx
+  brew: nginx
+  chocolatey: nginx
+  debian: nginx
+  dnf: nginx
+  macports: nginx
+  nix: nginx
+  pacman: nginx
+  scoop: main/nginx
+  ubuntu: nginx
+  winget: freenginx.nginx
+  zypper: nginx
+package-manager-url: https://formulae.brew.sh/formula/nginx
+version: 1.31.1
+license: BSD-2-Clause
+category: network
+tags:
+  - cli
+description: HTTP(S) server and reverse proxy, and IMAP/POP3 proxy server
+source-archive: https://nginx.org/download/nginx-1.31.1.tar.gz
+dependencies:
+  - openssl@3
+  - pcre2
+uses-from-macos:
+  - libxcrypt
+executables:
+  - exposure: global executable
+    kind: cli
+    name: nginx
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  caveats: >
+    Docroot is: $HOMEBREW_PREFIX/var/www The default port has been set in
+    $HOMEBREW_PREFIX/etc/nginx/nginx.conf to 8080 so that nginx can run without sudo.
+    nginx will load all files in $HOMEBREW_PREFIX/etc/nginx/servers/.
+  post-install-defined: true
+  service: declared
+install-lines:
+  apk: sudo apk add nginx
+  av: sudo av install brew:nginx
+  brew: brew install nginx
+  chocolatey: choco install nginx
+  debian: sudo apt install nginx
+  dnf: sudo dnf install nginx
+  macports: sudo port install nginx
+  nix: nix profile install nixpkgs#nginx
+  pacman: sudo pacman -S nginx
+  scoop: scoop install main/nginx
+  ubuntu: sudo apt install nginx
+  winget: winget install --id freenginx.nginx -e
+  zypper: sudo zypper install nginx
+provenance:
+  formula: nginx
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json

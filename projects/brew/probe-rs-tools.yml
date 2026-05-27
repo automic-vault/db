@@ -1,0 +1,56 @@
+id: brew:probe-rs-tools
+display-name: probe-rs-tools
+homepage: https://probe.rs
+repo: https://github.com/probe-rs/probe-rs
+docs: https://probe.rs
+package-manager:
+  brew: probe-rs-tools
+  nix: probe-rs-tools
+  pacman: probe-rs
+  scoop: main/probe-rs
+package-manager-url: https://formulae.brew.sh/formula/probe-rs-tools
+version: 0.31.0
+license: Apache-2.0
+category: development
+tags:
+  - cli
+description: Collection of on chip debugging tools to communicate with microchips
+source-archive: https://github.com/probe-rs/probe-rs/archive/refs/tags/v0.31.0.tar.gz
+build-dependencies:
+  - cmake
+  - pkgconf
+  - rust
+uses-from-macos:
+  - bzip2
+executables:
+  - exposure: global executable
+    kind: cli
+    name: cargo-embed
+  - exposure: global executable
+    kind: cli
+    name: cargo-flash
+  - exposure: global executable
+    kind: cli
+    name: probe-rs
+bottle:
+  available: true
+  platforms:
+    - arm64_linux
+    - arm64_sequoia
+    - arm64_sonoma
+    - arm64_tahoe
+    - sonoma
+    - x86_64_linux
+  root-url: https://ghcr.io/v2/homebrew/core
+install-behavior:
+  post-install-defined: false
+install-lines:
+  av: sudo av install brew:probe-rs-tools
+  brew: brew install probe-rs-tools
+  nix: nix profile install nixpkgs#probe-rs-tools
+  pacman: sudo pacman -S probe-rs
+  scoop: scoop install main/probe-rs
+provenance:
+  formula: probe-rs-tools
+  provider: brew
+  source: https://formulae.brew.sh/api/formula.json
