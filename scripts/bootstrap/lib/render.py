@@ -86,6 +86,7 @@ def validate_stage() -> list[str]:
         if "install-lines:" in text:
             failures.append(f"{path}: contains deprecated install-lines")
         for deprecated in (
+            "tags:",
             "dependencies:",
             "build-dependencies:",
             "uses-from-macos:",

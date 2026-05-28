@@ -146,16 +146,6 @@ def repository_from_formula(formula: dict[str, Any]) -> str:
     return ""
 
 
-def tags_for_formula(formula: dict[str, Any]) -> list[str]:
-    tags = {"cli"}
-    name = str(formula.get("name") or "").lower()
-    desc = str(formula.get("desc") or "").lower()
-    for token in re.split(r"[^a-z0-9]+", f"{name} {desc}"):
-        if token in {"aws", "cloud", "git", "json", "yaml", "kubernetes", "docker", "database", "security"}:
-            tags.add(token)
-    return sorted(tags)
-
-
 def is_cli_formula(formula: dict[str, Any]) -> bool:
     if formula.get("disabled"):
         return False
@@ -179,7 +169,6 @@ def formula_record(formula: dict[str, Any]) -> dict[str, Any] | None:
         "package-manager-url": f"https://formulae.brew.sh/formula/{urllib.parse.quote(name, safe='@+/')}",
         "version": stable_version(formula),
         "license": normalize_license(formula.get("license")),
-        "tags": tags_for_formula(formula),
         "description": clean_summary(formula.get("desc")),
         "source-archive": source_archive(formula),
         "provenance": {
