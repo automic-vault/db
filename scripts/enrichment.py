@@ -475,10 +475,22 @@ def review_input(projects: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def prompt_text(input_path: Path) -> str:
+def prompt_text(input_path: Path, project_count: int | None = None) -> str:
+    count_line = f"The file contains {project_count} project records." if project_count is not None else "The file contains project records."
     return f"""Determine official repository URL, official documentation URLs, category, tags, and display name for the projects listed in this input JSON:
 
 {input_path}
+
+Input shape is fixed: a JSON object with top-level keys `schema` and `projects`; `projects` is the array to review. {count_line}
+
+If you inspect it, use exactly these commands:
+
+```sh
+jq '.projects | length' {input_path}
+jq '.projects[0:10] | map({{id, source_facts, current_curation}})' {input_path}
+```
+
+Do not probe the input as a top-level array; it is not one. Do not emit a placeholder `{{"results":[]}}` before reading the file.
 
 Return JSON that matches the provided output schema. Do not edit files. Use official sources only.
 

@@ -88,7 +88,7 @@ def main() -> int:
     run_dir.mkdir(parents=True, exist_ok=True)
     input_payload = review_input(selected)
     input_path = run_dir / "input.json"
-    prompt = prompt_text(input_path)
+    prompt = prompt_text(input_path, len(selected))
     write_run_artifacts(run_dir, input_payload, prompt)
 
     summary = {"reviewed": len(selected), "changed": 0, "rejected": 0, "skipped_low_confidence": 0, "no_op": 0}

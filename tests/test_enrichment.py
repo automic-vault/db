@@ -15,6 +15,7 @@ from scripts.enrichment import (
     normalize_repo,
     normalize_tags,
     parse_project_yaml,
+    prompt_text,
     select_projects,
     update_observed_state,
 )
@@ -255,6 +256,13 @@ class EnrichmentTests(unittest.TestCase):
             "  - git\n",
         )
         self.assertEqual(failures, [])
+
+    def test_prompt_names_input_shape_and_safe_jq(self):
+        prompt = prompt_text(Path("/tmp/input.json"), 10)
+        self.assertIn("top-level keys `schema` and `projects`", prompt)
+        self.assertIn("The file contains 10 project records.", prompt)
+        self.assertIn("jq '.projects | length' /tmp/input.json", prompt)
+        self.assertIn("Do not probe the input as a top-level array", prompt)
 
 
 if __name__ == "__main__":
