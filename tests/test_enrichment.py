@@ -3,7 +3,7 @@ import unittest
 from datetime import date, timedelta
 from pathlib import Path
 
-from scripts.bootstrap.lib.render import agent_record_from_json, merge_agent_layer, validate_curated_fields
+from scripts.bootstrap.lib.render import agent_record_from_json, merge_agent_layer, parse_simple_yaml, validate_curated_fields
 from scripts.enrichment import (
     agent_record_from_result,
     apply_results,
@@ -262,6 +262,20 @@ class EnrichmentTests(unittest.TestCase):
             "  - git\n",
         )
         self.assertEqual(failures, [])
+
+    def test_parse_simple_yaml_reads_folded_list_url(self):
+        record = parse_simple_yaml(
+            "docs:\n"
+            "  - >\n"
+            "    https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli.html\n"
+            "source-archive: >\n"
+            "  https://files.pythonhosted.org/packages/aws_sam_cli-1.161.0.tar.gz\n"
+        )
+        self.assertEqual(
+            record["docs"],
+            ["https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli.html"],
+        )
+        self.assertEqual(record["source-archive"], "https://files.pythonhosted.org/packages/aws_sam_cli-1.161.0.tar.gz")
 
     def test_prompt_names_input_shape_and_safe_jq(self):
         prompt = prompt_text(Path("/tmp/input.json"), 10)

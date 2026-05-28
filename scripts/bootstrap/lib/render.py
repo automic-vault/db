@@ -247,6 +247,9 @@ def parse_yaml_mapping(lines: list[tuple[int, str]], index: int, indent: int) ->
         key = key.strip()
         raw_value = raw_value.strip()
         index += 1
+        if raw_value in {">", "|"}:
+            record[key], index = parse_yaml_block_scalar(lines, index, line_indent)
+            continue
         if raw_value:
             record[key] = unquote_scalar(raw_value)
             continue
@@ -267,9 +270,25 @@ def parse_yaml_list(lines: list[tuple[int, str]], index: int, indent: int) -> tu
         line_indent, text = lines[index]
         if line_indent != indent or not text.startswith("- "):
             break
-        values.append(unquote_scalar(text[2:].strip()))
+        raw_value = text[2:].strip()
         index += 1
+        if raw_value in {">", "|"}:
+            value, index = parse_yaml_block_scalar(lines, index, line_indent)
+            values.append(value)
+        else:
+            values.append(unquote_scalar(raw_value))
     return values, index
+
+
+def parse_yaml_block_scalar(lines: list[tuple[int, str]], index: int, parent_indent: int) -> tuple[str, int]:
+    values: list[str] = []
+    while index < len(lines):
+        line_indent, text = lines[index]
+        if line_indent <= parent_indent:
+            break
+        values.append(text)
+        index += 1
+    return " ".join(values).strip(), index
 
 
 def unquote_scalar(value: str) -> Any:
