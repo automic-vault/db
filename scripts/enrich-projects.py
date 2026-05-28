@@ -21,7 +21,7 @@ from scripts.enrichment import (
     select_projects,
     today_iso,
     update_observed_state,
-    validate_codex_payload,
+    validate_codex_payload_partial,
     write_run_artifacts,
 )
 
@@ -44,7 +44,24 @@ def read_codex_output(path: Path) -> object:
     return json.loads(text) if text else {}
 
 
-def invoke_codex(prompt_path: Path, output_path: Path) -> None:
+def write_output_schema(output_schema_path: Path, expected_ids: set[str]) -> None:
+    schema = read_json(SCHEMA_PATH, default={})
+    if not isinstance(schema, dict):
+        raise SystemExit(f"{SCHEMA_PATH} must contain a JSON object")
+    results_schema = schema.get("properties", {}).get("results", {})
+    if not isinstance(results_schema, dict):
+        raise SystemExit(f"{SCHEMA_PATH} must define properties.results")
+    results_schema["minItems"] = len(expected_ids)
+    results_schema["maxItems"] = len(expected_ids)
+    item_schema = results_schema.get("items", {})
+    if isinstance(item_schema, dict):
+        id_schema = item_schema.get("properties", {}).get("id", {})
+        if isinstance(id_schema, dict):
+            id_schema["enum"] = sorted(expected_ids)
+    write_json(output_schema_path, schema)
+
+
+def invoke_codex(prompt_path: Path, output_path: Path, output_schema_path: Path) -> None:
     prompt = prompt_path.read_text(encoding="utf-8")
     subprocess.run(
         [
@@ -56,7 +73,7 @@ def invoke_codex(prompt_path: Path, output_path: Path) -> None:
             "--sandbox",
             "read-only",
             "--output-schema",
-            str(SCHEMA_PATH),
+            str(output_schema_path),
             "-C",
             str(ROOT),
             "-o",
@@ -94,11 +111,13 @@ def main() -> int:
     summary = {"reviewed": len(selected), "changed": 0, "rejected": 0, "skipped_low_confidence": 0, "no_op": 0}
     if selected and not args.dry_run:
         codex_output_path = run_dir / "codex-output.json"
-        invoke_codex(run_dir / "prompt.md", codex_output_path)
+        expected_ids = {str(item.get("id")) for item in selected}
+        output_schema_path = run_dir / "output-schema.json"
+        write_output_schema(output_schema_path, expected_ids)
+        invoke_codex(run_dir / "prompt.md", codex_output_path, output_schema_path)
         payload = read_codex_output(codex_output_path)
-        normalized, errors = validate_codex_payload(payload, {str(item.get("id")) for item in selected})
-        write_json(run_dir / "normalized-output.json", {"results": normalized, "errors": errors})
-        projects_by_id = {str(record.get("id")): record for record in projects}
+        normalized, errors, invalid = validate_codex_payload_partial(payload, expected_ids)
+        write_json(run_dir / "normalized-output.json", {"results": normalized, "errors": errors, "invalid": invalid})
         if errors:
             summary["rejected"] += len(errors)
             write_json(run_dir / "apply-summary.json", summary)
@@ -107,7 +126,9 @@ def main() -> int:
                 "Reviewed: {reviewed}\nChanged: {changed}\nRejected: {rejected}\n"
                 "Skipped low-confidence: {skipped_low_confidence}\nNo-op: {no_op}".format(**summary)
             )
-            raise SystemExit(f"Codex output failed validation; see {run_dir / 'normalized-output.json'}")
+            print(f"Codex output failed validation; see {run_dir / 'normalized-output.json'}", file=sys.stderr)
+            return 1
+        projects_by_id = {str(record.get("id")): record for record in projects}
         apply_summary = apply_results(
             projects_by_id,
             state,

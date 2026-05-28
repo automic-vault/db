@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from .brew import formula_record
-from .common import AGENTS_DIR, COMBINED_DIR, DETERMINISTIC_DIR, HUMAN_OVERRIDE_DIR, STAGE_DIR, read_json, reset_dir, sync_tree, write_text_if_changed
+from .common import AGENTS_DIR, AGENTS_JSON_DIR, COMBINED_DIR, DETERMINISTIC_DIR, HUMAN_OVERRIDE_DIR, STAGE_DIR, read_json, reset_dir, sync_tree, write_text_if_changed
 from .executables import read_executable_index
 from .managers import manager_matcher, package_manager_routes
 from .yaml_writer import yaml_text
@@ -73,8 +73,44 @@ def render_stage(formulae: list[dict[str, Any]], manager_indexes: dict[str, Any]
 
 def publish_stages() -> dict[str, Any]:
     sync_tree(STAGE_DIR / "deterministic", DETERMINISTIC_DIR)
+    render_agents_yaml_tree()
     combined_count = render_combined_tree()
     return {"deterministic": str(DETERMINISTIC_DIR), "combined": str(COMBINED_DIR), "combined_projects": combined_count}
+
+
+def render_agents_yaml_tree() -> int:
+    AGENTS_DIR.mkdir(parents=True, exist_ok=True)
+    count = 0
+    for path in sorted(AGENTS_JSON_DIR.glob("*.json")):
+        payload = read_json(path)
+        if not isinstance(payload, dict):
+            continue
+        write_text_if_changed(AGENTS_DIR / f"{path.stem}.yml", yaml_text(agent_record_from_json(payload)))
+        count += 1
+    return count
+
+
+def agent_record_from_json(result: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": result["id"],
+        "repo": result.get("repo") or None,
+        "repo-confidence": result.get("repo-confidence"),
+        "display-name": result.get("display-name"),
+        "display-name-confidence": result.get("display-name-confidence"),
+        "docs": result.get("docs") or [],
+        "docs-confidence": result.get("docs-confidence"),
+        "category-path": result.get("category_path") or [],
+        "category-confidence": result.get("category-confidence"),
+        "tags": result.get("tags") or [],
+        "tags-confidence": result.get("tags-confidence"),
+        "provenance": {
+            "repo-sources": result.get("repo_sources") or [],
+            "docs-sources": result.get("docs_sources") or [],
+            "category-sources": result.get("category_sources") or [],
+            "tags-sources": result.get("tags_sources") or [],
+            "display-name-sources": result.get("display_name_sources") or [],
+        },
+    }
 
 
 def render_combined_tree() -> int:

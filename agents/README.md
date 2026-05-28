@@ -1,7 +1,7 @@
-# Agent Stage
+# Agent YAML Stage
 
-Codex enrichment writes one YAML file per formula here.
+YAML files in this directory are derived from `agents-json/*.json`.
 
-These files may include confidence and provenance fields such as
-`repo-confidence`, `docs-confidence`, and source notes. The final `combined/`
-records consume the public values but do not copy confidence metadata.
+They may include confidence and provenance fields such as `repo-confidence`,
+`docs-confidence`, and source notes. The final `combined/` records consume the
+public values but do not copy confidence metadata.

@@ -22,9 +22,11 @@ Use `scripts/build.py --refresh` for daily source refreshes. The pipeline writes
 remote and intermediate data to `cache/`, then publishes committed YAML stages:
 
 - `deterministic/<formula>.yml`: source-backed generator output
-- `agents/<formula>.yml`: Codex enrichment, including confidence/provenance
+- `agents-json/<formula>.json`: schema-validated Codex enrichment
+- `agents/<formula>.yml`: YAML derived from agent JSON, including confidence/provenance
 - `human-override/<formula>.yml`: hand-authored corrections
 - `combined/<formula>.yml`: final public output
 
-Precedence is deterministic < agents < human override. Agent confidence and
-provenance fields stay in `agents/`; they are not copied into `combined/`.
+Precedence is deterministic < agents < human override. Agent JSON is the
+canonical AI boundary; agent YAML is derived from it. Confidence and provenance
+fields stay in the agent stages and are not copied into `combined/`.

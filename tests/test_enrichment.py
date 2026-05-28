@@ -3,7 +3,7 @@ import unittest
 from datetime import date, timedelta
 from pathlib import Path
 
-from scripts.bootstrap.lib.render import merge_agent_layer, validate_curated_fields
+from scripts.bootstrap.lib.render import agent_record_from_json, merge_agent_layer, validate_curated_fields
 from scripts.enrichment import (
     agent_record_from_result,
     apply_results,
@@ -19,6 +19,7 @@ from scripts.enrichment import (
     select_projects,
     update_observed_state,
     validate_codex_payload,
+    validate_codex_payload_partial,
 )
 
 
@@ -176,6 +177,10 @@ class EnrichmentTests(unittest.TestCase):
         self.assertEqual(record["category-path"], ["developer-tools"])
         self.assertEqual(record["provenance"]["repo-sources"], ["GitHub"])
 
+    def test_agent_yaml_is_derived_from_json_payload(self):
+        record = agent_record_from_json(sample_result(repo="https://github.com/sharkdp/bat", repo_sources=["GitHub"]))
+        self.assertEqual(record, agent_record_from_result(sample_result(repo="https://github.com/sharkdp/bat", repo_sources=["GitHub"])))
+
     def test_combined_agent_layer_excludes_confidence_fields(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "bat.yml"
@@ -274,8 +279,29 @@ class EnrichmentTests(unittest.TestCase):
             {"results": [sample_result(id="brew:bat")]},
             {"brew:bat", "brew:fd"},
         )
-        self.assertEqual(normalized, [])
+        self.assertEqual([item["id"] for item in normalized], ["brew:bat"])
         self.assertTrue(any("missing results for 1 project ids" in error for error in errors))
+
+    def test_validate_codex_payload_partial_keeps_valid_results(self):
+        valid = sample_result(id="brew:bat")
+        invalid = sample_result(id="brew:fd", **{"category_path": ["not-a-category"]})
+        normalized, errors, invalid_results = validate_codex_payload_partial(
+            {"results": [valid, invalid]},
+            {"brew:bat", "brew:fd"},
+        )
+        self.assertEqual([item["id"] for item in normalized], ["brew:bat"])
+        self.assertTrue(any("category_path must start" in error for error in errors))
+        self.assertEqual(invalid_results[0]["id"], "brew:fd")
+
+    def test_validate_codex_payload_rejects_placeholder_sources(self):
+        result = sample_result(docs_sources=["not completed"])
+        normalized, errors, invalid_results = validate_codex_payload_partial(
+            {"results": [result]},
+            {"brew:bat"},
+        )
+        self.assertEqual(normalized, [])
+        self.assertTrue(any("placeholder provenance" in error for error in errors))
+        self.assertEqual(invalid_results[0]["id"], "brew:bat")
 
 
 if __name__ == "__main__":

@@ -8,7 +8,8 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from scripts.bootstrap.lib.common import AGENTS_DIR, COMBINED_DIR, DETERMINISTIC_DIR, ROOT, stable_hash, write_json
+from scripts.bootstrap.lib.common import AGENTS_DIR, AGENTS_JSON_DIR, COMBINED_DIR, DETERMINISTIC_DIR, ROOT, stable_hash, write_json
+from scripts.bootstrap.lib.render import agent_record_from_json
 from scripts.bootstrap.lib.yaml_writer import yaml_text
 
 
@@ -360,6 +361,7 @@ def load_projects(provider: str = "brew", projects_dir: Path = DETERMINISTIC_DIR
         record["__source_record"] = source_record
         record["__path"] = path
         record["__agent_path"] = AGENTS_DIR / path.name
+        record["__agent_json_path"] = AGENTS_JSON_DIR / f"{path.stem}.json"
         projects.append(record)
     return projects
 
@@ -519,13 +521,19 @@ You may add later category_path items for future hierarchy, but keep them lowerc
 
 
 def validate_codex_payload(payload: Any, expected_ids: set[str]) -> tuple[list[dict[str, Any]], list[str]]:
+    normalized, errors, _invalid = validate_codex_payload_partial(payload, expected_ids)
+    return normalized, errors
+
+
+def validate_codex_payload_partial(payload: Any, expected_ids: set[str]) -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]]]:
     errors = []
     if not isinstance(payload, dict):
-        return [], ["codex output must be a JSON object"]
+        return [], ["codex output must be a JSON object"], []
     results = payload.get("results")
     if not isinstance(results, list):
-        return [], ["codex output must contain results list"]
+        return [], ["codex output must contain results list"], []
     normalized = []
+    invalid = []
     seen_ids = set()
     for index, item in enumerate(results):
         if not isinstance(item, dict):
@@ -542,13 +550,13 @@ def validate_codex_payload(payload: Any, expected_ids: set[str]) -> tuple[list[d
         normalized_item, item_errors = normalize_codex_result(item)
         if item_errors:
             errors.extend(f"{project_id}: {error}" for error in item_errors)
+            invalid.append({"id": project_id, "errors": item_errors, "raw": item})
             continue
         normalized.append(normalized_item)
     missing = sorted(expected_ids - seen_ids)
     if missing:
         errors.append(f"missing results for {len(missing)} project ids: {', '.join(missing[:20])}")
-        return [], errors
-    return normalized, errors
+    return normalized, errors, invalid
 
 
 def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
@@ -582,7 +590,14 @@ def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[s
         "tags_sources": normalize_sources(item.get("tags_sources")),
         "display_name_sources": normalize_sources(item.get("display_name_sources")),
     }
+    for field in ("docs_sources", "repo_sources", "category_sources", "tags_sources", "display_name_sources"):
+        if has_placeholder_source(result[field]):
+            errors.append(f"{field} must cite official sources, not placeholder provenance")
     return result, errors
+
+
+def has_placeholder_source(sources: list[str]) -> bool:
+    return any(re.search(r"\b(input id|not completed|placeholder|unknown)\b", source, re.IGNORECASE) for source in sources)
 
 
 def normalize_confidence(value: Any, errors: list[str], field: str) -> str:
@@ -643,6 +658,7 @@ def apply_results(
         if skipped:
             summary["skipped_low_confidence"] += skipped
         if not dry_run:
+            write_agent_json_record(record, result)
             write_agent_record(record, result)
         if curation_facts(original) == curation_facts(record):
             summary["no_op"] += 1
@@ -656,30 +672,18 @@ def write_agent_record(record: dict[str, Any], result: dict[str, Any]) -> None:
     if not isinstance(path, Path):
         path = AGENTS_DIR / f"{provider_name(record)[1]}.yml"
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(yaml_text(agent_record_from_result(result)), encoding="utf-8")
+    path.write_text(yaml_text(agent_record_from_json(result)), encoding="utf-8")
+
+
+def write_agent_json_record(record: dict[str, Any], result: dict[str, Any]) -> None:
+    path = record.get("__agent_json_path")
+    if not isinstance(path, Path):
+        path = AGENTS_JSON_DIR / f"{provider_name(record)[1]}.json"
+    write_json(path, result)
 
 
 def agent_record_from_result(result: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "id": result["id"],
-        "repo": result.get("repo") or None,
-        "repo-confidence": result.get("repo-confidence"),
-        "display-name": result.get("display-name"),
-        "display-name-confidence": result.get("display-name-confidence"),
-        "docs": result.get("docs") or [],
-        "docs-confidence": result.get("docs-confidence"),
-        "category-path": result.get("category_path") or [],
-        "category-confidence": result.get("category-confidence"),
-        "tags": result.get("tags") or [],
-        "tags-confidence": result.get("tags-confidence"),
-        "provenance": {
-            "repo-sources": result.get("repo_sources") or [],
-            "docs-sources": result.get("docs_sources") or [],
-            "category-sources": result.get("category_sources") or [],
-            "tags-sources": result.get("tags_sources") or [],
-            "display-name-sources": result.get("display_name_sources") or [],
-        },
-    }
+    return agent_record_from_json(result)
 
 
 def merge_result(record: dict[str, Any], entry: dict[str, Any], result: dict[str, Any], threshold: str) -> tuple[bool, int]:

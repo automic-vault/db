@@ -111,6 +111,7 @@ def steps(refresh: bool, fetch_manifests: bool, manifest_limit: int) -> list[Ste
                 Path("scripts/bootstrap/lib/render.py"),
                 Path("scripts/bootstrap/lib/common.py"),
                 Path("cache/stage/deterministic"),
+                Path("agents-json"),
                 Path("agents"),
                 Path("human-override"),
             ],
