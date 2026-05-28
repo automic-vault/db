@@ -16,6 +16,7 @@ KEY_ORDER = [
     "package-manager-url",
     "version",
     "license",
+    "tags",
     "description",
     "source-archive",
     "executables",

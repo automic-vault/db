@@ -375,22 +375,28 @@ def select_projects(
         entry = state.get(project_id) or {}
         if mode == "replace":
             selected.append(record)
-        elif mode == "new" and needs_new_curation(record):
+        elif mode == "new" and needs_new_curation(record, entry):
             selected.append(record)
         elif mode == "review-stale-updated" and needs_stale_updated_review(entry, cutoff):
             selected.append(record)
     return selected
 
 
-def needs_new_curation(record: dict[str, Any]) -> bool:
+def needs_new_curation(record: dict[str, Any], entry: dict[str, Any] | None = None) -> bool:
     _, name = provider_name(record)
     facts = curation_facts(record)
+    confidence = (entry or {}).get("field_confidence") or {}
+    verified_slug_name = (
+        facts["display-name"] == name
+        and bool((entry or {}).get("last_verified"))
+        and confidence.get("display-name") in {"high", "medium"}
+    )
     return (
         not facts["docs"]
         or not facts["category"]
         or facts["tags"] == ["cli"]
         or not facts["display-name"]
-        or facts["display-name"] == name
+        or (facts["display-name"] == name and not verified_slug_name)
     )
 
 
@@ -443,6 +449,11 @@ Documentation URL priority:
 Reject random tutorials, blog posts, package-manager pages, mirrors, scraped docs sites, SEO aggregators, and unrelated vendor pages.
 
 Use confidence values high, medium, or low for each field, and include concise provenance/source notes.
+
+The first item in category_path must be exactly one of these lowercase taxonomy roots:
+{", ".join(sorted(CATEGORIES))}
+
+You may add later category_path items for future hierarchy, but keep them lowercase slug strings.
 """
 
 

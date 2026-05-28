@@ -48,12 +48,12 @@ def invoke_codex(prompt_path: Path, output_path: Path) -> None:
     subprocess.run(
         [
             "codex",
-            "exec",
             "--search",
-            "--sandbox",
-            "read-only",
             "--ask-for-approval",
             "never",
+            "exec",
+            "--sandbox",
+            "read-only",
             "--output-schema",
             str(SCHEMA_PATH),
             "-C",

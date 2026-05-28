@@ -76,10 +76,12 @@ class EnrichmentTests(unittest.TestCase):
     def test_new_mode_treats_slug_display_name_as_missing(self):
         record = sample_record()
         self.assertTrue(needs_new_curation(record))
-        record["display-name"] = "Bat"
+        entry = {"last_verified": date.today().isoformat(), "field_confidence": {"display-name": "high"}}
         record["docs"] = ["https://github.com/sharkdp/bat#readme"]
         record["category"] = "developer-tools"
         record["tags"] = ["cli", "git"]
+        self.assertFalse(needs_new_curation(record, entry))
+        record["display-name"] = "Bat"
         self.assertFalse(needs_new_curation(record))
 
     def test_review_stale_updated_selection(self):

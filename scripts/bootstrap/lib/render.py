@@ -66,9 +66,21 @@ def render_stage(formulae: list[dict[str, Any]], manager_indexes: dict[str, Any]
         record = project_record(formula, executables.get(name, []), matcher)
         if record is None:
             continue
+        merge_existing_curation(record, PROJECTS_DIR / "brew" / f"{name}.yml")
         write_text_if_changed(STAGE_DIR / "projects" / "brew" / f"{name}.yml", yaml_text(record))
         count += 1
     return count
+
+
+def merge_existing_curation(record: dict[str, Any], path: Path) -> None:
+    if not path.exists():
+        return
+    current = parse_simple_yaml(path.read_text(encoding="utf-8"))
+    for key in ("display-name", "docs", "category", "tags"):
+        value = current.get(key)
+        if value in (None, "", [], {}):
+            continue
+        record[key] = value
 
 
 def validate_stage() -> list[str]:
@@ -86,7 +98,6 @@ def validate_stage() -> list[str]:
         if "install-lines:" in text:
             failures.append(f"{path}: contains deprecated install-lines")
         for deprecated in (
-            "tags:",
             "dependencies:",
             "build-dependencies:",
             "uses-from-macos:",
