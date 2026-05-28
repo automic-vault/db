@@ -3,13 +3,14 @@ from __future__ import annotations
 import json
 import re
 import urllib.parse
+from collections import Counter
 from copy import deepcopy
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
 from scripts.bootstrap.lib.common import AGENTS_DIR, AGENTS_JSON_DIR, COMBINED_DIR, DETERMINISTIC_DIR, ROOT, stable_hash, write_json
-from scripts.bootstrap.lib.render import agent_record_from_json
+from scripts.bootstrap.lib.render import agent_record_from_json, parse_simple_yaml
 from scripts.bootstrap.lib.yaml_writer import yaml_text
 
 
@@ -74,49 +75,7 @@ def run_id(now: datetime | None = None) -> str:
 
 
 def parse_project_yaml(path: Path) -> dict[str, Any]:
-    record: dict[str, Any] = {}
-    stack: list[tuple[int, Any]] = [(-1, record)]
-    pending_key: tuple[int, dict[str, Any], str] | None = None
-
-    for raw in path.read_text(encoding="utf-8").splitlines():
-        if not raw.strip() or raw.lstrip().startswith("#"):
-            continue
-        indent = len(raw) - len(raw.lstrip(" "))
-        text = raw.strip()
-
-        while stack and indent <= stack[-1][0]:
-            stack.pop()
-        parent = stack[-1][1]
-
-        if text.startswith("- "):
-            if not isinstance(parent, list):
-                continue
-            parent.append(unquote_scalar(text[2:].strip()))
-            continue
-
-        if ":" not in text or not isinstance(parent, dict):
-            continue
-        key, value = text.split(":", 1)
-        key = key.strip()
-        value = value.strip()
-        if value:
-            parent[key] = unquote_scalar(value)
-            pending_key = None
-            continue
-
-        child: Any
-        pending_key = (indent, parent, key)
-        child = {}
-        parent[key] = child
-        stack.append((indent, child))
-
-        # Convert empty mappings to lists when the first child is a sequence.
-        # The project YAML shape only uses this for scalar lists.
-        pending_key = (indent, parent, key)
-
-    # Second pass for top-level/nested scalar lists. This keeps the parser small
-    # and avoids taking a dependency on PyYAML in the build path.
-    return parse_project_yaml_lists(path.read_text(encoding="utf-8"), record)
+    return parse_simple_yaml(path.read_text(encoding="utf-8"))
 
 
 def parse_project_yaml_lists(text: str, base: dict[str, Any]) -> dict[str, Any]:
@@ -534,7 +493,9 @@ def validate_codex_payload_partial(payload: Any, expected_ids: set[str]) -> tupl
         return [], ["codex output must contain results list"], []
     normalized = []
     invalid = []
-    seen_ids = set()
+    accepted_ids = set()
+    invalid_ids = set()
+    observed_counts: Counter[str] = Counter()
     for index, item in enumerate(results):
         if not isinstance(item, dict):
             errors.append(f"results[{index}] must be an object")
@@ -543,20 +504,30 @@ def validate_codex_payload_partial(payload: Any, expected_ids: set[str]) -> tupl
         if project_id not in expected_ids:
             errors.append(f"{project_id or f'results[{index}]'}: unexpected id")
             continue
-        if project_id in seen_ids:
-            errors.append(f"{project_id}: duplicate result")
+        observed_counts[project_id] += 1
+        if project_id in accepted_ids:
             continue
-        seen_ids.add(project_id)
         normalized_item, item_errors = normalize_codex_result(item)
         if item_errors:
-            errors.extend(f"{project_id}: {error}" for error in item_errors)
-            invalid.append({"id": project_id, "errors": item_errors, "raw": item})
+            if project_id not in invalid_ids:
+                errors.extend(f"{project_id}: {error}" for error in item_errors)
+                invalid.append({"id": project_id, "errors": item_errors, "raw": item})
+                invalid_ids.add(project_id)
             continue
         normalized.append(normalized_item)
-    missing = sorted(expected_ids - seen_ids)
+        accepted_ids.add(project_id)
+    missing = sorted(expected_ids - set(observed_counts))
     if missing:
         errors.append(f"missing results for {len(missing)} project ids: {', '.join(missing[:20])}")
+    for project_id, count in sorted(observed_counts.items()):
+        if count > 1:
+            errors.append(f"{project_id}: duplicate result repeated {count - 1} times")
     return normalized, errors, invalid
+
+
+def validation_rejection_count(expected_ids: set[str], normalized: list[dict[str, Any]]) -> int:
+    accepted_ids = {str(item.get("id") or "") for item in normalized}
+    return len(expected_ids - accepted_ids)
 
 
 def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
@@ -593,6 +564,16 @@ def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[s
     for field in ("docs_sources", "repo_sources", "category_sources", "tags_sources", "display_name_sources"):
         if has_placeholder_source(result[field]):
             errors.append(f"{field} must cite official sources, not placeholder provenance")
+    required_sources = {
+        "category_sources": bool(category_path),
+        "tags_sources": bool(tags),
+        "display_name_sources": bool(display_name),
+        "docs_sources": bool(docs),
+        "repo_sources": bool(repo),
+    }
+    for field, required in required_sources.items():
+        if required and not result[field]:
+            errors.append(f"{field} must cite at least one source")
     return result, errors
 
 

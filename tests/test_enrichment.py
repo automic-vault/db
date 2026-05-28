@@ -18,6 +18,7 @@ from scripts.enrichment import (
     prompt_text,
     select_projects,
     update_observed_state,
+    validation_rejection_count,
     validate_codex_payload,
     validate_codex_payload_partial,
 )
@@ -277,6 +278,25 @@ class EnrichmentTests(unittest.TestCase):
         )
         self.assertEqual(record["source-archive"], "https://files.pythonhosted.org/packages/aws_sam_cli-1.161.0.tar.gz")
 
+    def test_parse_project_yaml_uses_folded_scalar_parser(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "aws-sam-cli.yml"
+            path.write_text(
+                "id: brew:aws-sam-cli\n"
+                "docs:\n"
+                "  - >\n"
+                "    https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli.html\n"
+                "package-manager:\n"
+                "  brew: aws-sam-cli\n",
+                encoding="utf-8",
+            )
+            record = parse_project_yaml(path)
+        self.assertEqual(
+            record["docs"],
+            ["https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-sam-cli.html"],
+        )
+        self.assertEqual(record["package-manager"], {"brew": "aws-sam-cli"})
+
     def test_prompt_names_input_shape_and_safe_jq(self):
         prompt = prompt_text(Path("/tmp/input.json"), 10)
         self.assertIn("top-level keys `schema` and `projects`", prompt)
@@ -316,6 +336,47 @@ class EnrichmentTests(unittest.TestCase):
         self.assertEqual(normalized, [])
         self.assertTrue(any("placeholder provenance" in error for error in errors))
         self.assertEqual(invalid_results[0]["id"], "brew:bat")
+
+    def test_validate_codex_payload_rejects_missing_sources_for_claimed_values(self):
+        result = sample_result(category_sources=[], tags_sources=[], display_name_sources=[])
+        normalized, errors, invalid_results = validate_codex_payload_partial(
+            {"results": [result]},
+            {"brew:bat"},
+        )
+        self.assertEqual(normalized, [])
+        self.assertTrue(any("category_sources must cite at least one source" in error for error in errors))
+        self.assertTrue(any("tags_sources must cite at least one source" in error for error in errors))
+        self.assertTrue(any("display_name_sources must cite at least one source" in error for error in errors))
+        self.assertEqual(invalid_results[0]["id"], "brew:bat")
+
+    def test_validation_aggregates_duplicate_errors_and_counts_rejected_ids(self):
+        normalized, errors, invalid_results = validate_codex_payload_partial(
+            {
+                "results": [
+                    sample_result(id="brew:bat"),
+                    sample_result(id="brew:fd"),
+                    sample_result(id="brew:fd"),
+                    sample_result(id="brew:fd"),
+                ]
+            },
+            {"brew:bat", "brew:fd", "brew:ripgrep"},
+        )
+        self.assertEqual([item["id"] for item in normalized], ["brew:bat", "brew:fd"])
+        self.assertEqual(invalid_results, [])
+        self.assertTrue(any("brew:fd: duplicate result repeated 2 times" == error for error in errors))
+        self.assertEqual(validation_rejection_count({"brew:bat", "brew:fd", "brew:ripgrep"}, normalized), 1)
+
+    def test_validation_accepts_later_valid_duplicate(self):
+        invalid = sample_result(id="brew:fd", **{"category_path": ["not-a-category"]})
+        valid = sample_result(id="brew:fd", **{"category_path": ["developer-tools"]})
+        normalized, errors, invalid_results = validate_codex_payload_partial(
+            {"results": [invalid, valid]},
+            {"brew:fd"},
+        )
+        self.assertEqual([item["id"] for item in normalized], ["brew:fd"])
+        self.assertEqual(invalid_results[0]["id"], "brew:fd")
+        self.assertTrue(any("brew:fd: duplicate result repeated 1 times" == error for error in errors))
+        self.assertEqual(validation_rejection_count({"brew:fd"}, normalized), 0)
 
 
 if __name__ == "__main__":

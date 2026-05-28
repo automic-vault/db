@@ -21,6 +21,7 @@ from scripts.enrichment import (
     select_projects,
     today_iso,
     update_observed_state,
+    validation_rejection_count,
     validate_codex_payload_partial,
     write_run_artifacts,
 )
@@ -118,8 +119,8 @@ def main() -> int:
         payload = read_codex_output(codex_output_path)
         normalized, errors, invalid = validate_codex_payload_partial(payload, expected_ids)
         write_json(run_dir / "normalized-output.json", {"results": normalized, "errors": errors, "invalid": invalid})
-        if errors:
-            summary["rejected"] += len(errors)
+        summary["rejected"] += validation_rejection_count(expected_ids, normalized)
+        if errors and not normalized:
             write_json(run_dir / "apply-summary.json", summary)
             write_json(state_path, state)
             print(
@@ -140,6 +141,12 @@ def main() -> int:
         for key in ("changed", "rejected", "skipped_low_confidence", "no_op"):
             summary[key] += apply_summary.get(key, 0)
         render_combined_tree()
+        if errors:
+            print(
+                f"Codex output partially failed validation; applied {len(normalized)} valid results; "
+                f"see {run_dir / 'normalized-output.json'}",
+                file=sys.stderr,
+            )
     else:
         write_json(run_dir / "normalized-output.json", {"results": [], "errors": []})
 
