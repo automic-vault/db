@@ -101,7 +101,7 @@ def steps(refresh: bool, fetch_manifests: bool, manifest_limit: int) -> list[Ste
                 Path("cache/brew/executables.json"),
                 Path("cache/pkg-manager-indexes.json.gz"),
             ],
-            [Path("cache/stage/projects")],
+            [Path("cache/stage/deterministic")],
         ),
         Step(
             "publish-projects",
@@ -110,9 +110,11 @@ def steps(refresh: bool, fetch_manifests: bool, manifest_limit: int) -> list[Ste
                 Path("scripts/bootstrap/04-publish-projects.py"),
                 Path("scripts/bootstrap/lib/render.py"),
                 Path("scripts/bootstrap/lib/common.py"),
-                Path("cache/stage/projects"),
+                Path("cache/stage/deterministic"),
+                Path("agents"),
+                Path("human-override"),
             ],
-            [Path("projects")],
+            [Path("deterministic"), Path("combined")],
         ),
     ]
 

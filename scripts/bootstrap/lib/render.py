@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from .brew import formula_record
-from .common import PROJECTS_DIR, STAGE_DIR, read_json, reset_dir, write_text_if_changed
+from .common import AGENTS_DIR, COMBINED_DIR, DETERMINISTIC_DIR, HUMAN_OVERRIDE_DIR, STAGE_DIR, read_json, reset_dir, sync_tree, write_text_if_changed
 from .executables import read_executable_index
 from .managers import manager_matcher, package_manager_routes
 from .yaml_writer import yaml_text
@@ -57,7 +57,7 @@ def project_record(formula: dict[str, Any], executables: list[str], matcher: dic
 
 
 def render_stage(formulae: list[dict[str, Any]], manager_indexes: dict[str, Any]) -> int:
-    reset_dir(STAGE_DIR / "projects")
+    reset_dir(STAGE_DIR / "deterministic")
     executables = read_executable_index()
     matcher = manager_matcher(manager_indexes)
     count = 0
@@ -66,31 +66,75 @@ def render_stage(formulae: list[dict[str, Any]], manager_indexes: dict[str, Any]
         record = project_record(formula, executables.get(name, []), matcher)
         if record is None:
             continue
-        merge_existing_curation(record, PROJECTS_DIR / "brew" / f"{name}.yml")
-        write_text_if_changed(STAGE_DIR / "projects" / "brew" / f"{name}.yml", yaml_text(record))
+        write_text_if_changed(STAGE_DIR / "deterministic" / f"{name}.yml", yaml_text(record))
         count += 1
     return count
 
 
-def merge_existing_curation(record: dict[str, Any], path: Path) -> None:
+def publish_stages() -> dict[str, Any]:
+    sync_tree(STAGE_DIR / "deterministic", DETERMINISTIC_DIR)
+    combined_count = render_combined_tree()
+    return {"deterministic": str(DETERMINISTIC_DIR), "combined": str(COMBINED_DIR), "combined_projects": combined_count}
+
+
+def render_combined_tree() -> int:
+    reset_dir(STAGE_DIR / "combined")
+    count = 0
+    for path in sorted(DETERMINISTIC_DIR.glob("*.yml")):
+        record = parse_simple_yaml(path.read_text(encoding="utf-8"))
+        merge_agent_layer(record, AGENTS_DIR / path.name)
+        merge_human_override_layer(record, HUMAN_OVERRIDE_DIR / path.name)
+        write_text_if_changed(STAGE_DIR / "combined" / path.name, yaml_text(record))
+        count += 1
+    failures = validate_tree(STAGE_DIR / "combined")
+    if failures:
+        raise ValueError("\n".join(failures[:20]))
+    sync_tree(STAGE_DIR / "combined", COMBINED_DIR)
+    return count
+
+
+def merge_agent_layer(record: dict[str, Any], path: Path) -> None:
     if not path.exists():
         return
-    current = parse_simple_yaml(path.read_text(encoding="utf-8"))
-    for key in ("display-name", "docs", "category", "tags"):
-        value = current.get(key)
+    agent = parse_simple_yaml(path.read_text(encoding="utf-8"))
+    if record.get("repo") in (None, "", "null") and agent.get("repo") not in (None, "", "null", []):
+        record["repo"] = agent["repo"]
+    for key in ("display-name", "docs", "tags"):
+        value = agent.get(key)
+        if value not in (None, "", [], {}):
+            record[key] = value
+    category_path = agent.get("category-path") or agent.get("category_path")
+    if isinstance(category_path, list) and category_path:
+        record["category"] = category_path[0]
+    elif agent.get("category") not in (None, "", [], {}):
+        record["category"] = agent["category"]
+
+
+def merge_human_override_layer(record: dict[str, Any], path: Path) -> None:
+    if not path.exists():
+        return
+    overrides = parse_simple_yaml(path.read_text(encoding="utf-8"))
+    for key, value in overrides.items():
+        if key in {"id"} and value != record.get("id"):
+            continue
+        if key.endswith("-confidence") or key.endswith("-sources") or key in {"category-path", "category_path"}:
+            continue
         if value in (None, "", [], {}):
             continue
         record[key] = value
 
 
 def validate_stage() -> list[str]:
+    return validate_tree(STAGE_DIR / "deterministic")
+
+
+def validate_tree(root: Path) -> list[str]:
     failures = []
-    staged = STAGE_DIR / "projects"
-    if not staged.exists():
-        return ["missing staged projects directory"]
-    files = sorted(staged.glob("brew/*.yml"))
+    if not root.exists():
+        return [f"missing staged directory {root}"]
+    files = sorted(root.glob("*.yml"))
     if not files:
-        return ["no Homebrew project YAML files were staged"]
+        return [f"no Homebrew project YAML files were staged in {root}"]
     for path in files:
         text = path.read_text(encoding="utf-8")
         if "package-manager:" not in text:
@@ -132,6 +176,9 @@ def validate_curated_fields(path: Path, text: str) -> list[str]:
     if docs is not None:
         if not isinstance(docs, list) or any(not str(url).startswith(("http://", "https://")) for url in docs):
             failures.append(f"{path}: docs URLs must be HTTP(S)")
+    repo = record.get("repo")
+    if repo not in (None, "null", "") and not str(repo).startswith(("http://", "https://")):
+        failures.append(f"{path}: repo must be null or HTTP(S)")
     return failures
 
 
@@ -140,26 +187,63 @@ def is_slug(value: str) -> bool:
 
 
 def parse_simple_yaml(text: str) -> dict[str, Any]:
+    lines = [
+        (len(raw) - len(raw.lstrip(" ")), raw.strip())
+        for raw in text.splitlines()
+        if raw.strip() and not raw.lstrip().startswith("#")
+    ]
+    value, _ = parse_yaml_mapping(lines, 0, 0)
+    return value
+
+
+def parse_yaml_mapping(lines: list[tuple[int, str]], index: int, indent: int) -> tuple[dict[str, Any], int]:
     record: dict[str, Any] = {}
-    current_list: str | None = None
-    for line in text.splitlines():
-        if not line.strip() or line.startswith(" " * 4):
+    while index < len(lines):
+        line_indent, text = lines[index]
+        if line_indent < indent:
+            break
+        if line_indent > indent:
+            index += 1
             continue
-        if line.startswith("  - ") and current_list:
-            record.setdefault(current_list, []).append(line[4:].strip().strip("'\""))
+        if text.startswith("- ") or ":" not in text:
+            break
+        key, raw_value = text.split(":", 1)
+        key = key.strip()
+        raw_value = raw_value.strip()
+        index += 1
+        if raw_value:
+            record[key] = unquote_scalar(raw_value)
             continue
-        current_list = None
-        if line.startswith(" ") or ":" not in line:
-            continue
-        key, value = line.split(":", 1)
-        value = value.strip()
-        if not value:
-            if key in {"docs", "tags"}:
-                record[key] = []
-                current_list = key
-            continue
-        record[key] = value.strip("'\"")
-    return record
+        if index < len(lines) and lines[index][0] > line_indent and lines[index][1].startswith("- "):
+            values, index = parse_yaml_list(lines, index, lines[index][0])
+            record[key] = values
+        elif index < len(lines) and lines[index][0] > line_indent:
+            values, index = parse_yaml_mapping(lines, index, lines[index][0])
+            record[key] = values
+        else:
+            record[key] = {}
+    return record, index
+
+
+def parse_yaml_list(lines: list[tuple[int, str]], index: int, indent: int) -> tuple[list[Any], int]:
+    values: list[Any] = []
+    while index < len(lines):
+        line_indent, text = lines[index]
+        if line_indent != indent or not text.startswith("- "):
+            break
+        values.append(unquote_scalar(text[2:].strip()))
+        index += 1
+    return values, index
+
+
+def unquote_scalar(value: str) -> Any:
+    if value == "null":
+        return None
+    if value in {"true", "false"}:
+        return value == "true"
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+        return value[1:-1]
+    return value
 
 
 def read_formula_cache() -> list[dict[str, Any]]:

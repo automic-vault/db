@@ -8,12 +8,12 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from scripts.bootstrap.lib.common import PROJECTS_DIR, ROOT, stable_hash, write_json
+from scripts.bootstrap.lib.common import AGENTS_DIR, COMBINED_DIR, DETERMINISTIC_DIR, ROOT, stable_hash, write_json
 from scripts.bootstrap.lib.yaml_writer import yaml_text
 
 
 CONFIDENCE = {"low": 1, "medium": 2, "high": 3}
-CURATED_FIELDS = ("display-name", "docs", "category", "tags")
+CURATED_FIELDS = ("repo", "display-name", "docs", "category", "tags")
 CATEGORIES = {
     "developer-tools",
     "cloud-infrastructure",
@@ -211,6 +211,26 @@ def normalize_docs(values: Any) -> list[str]:
     return sorted(set(result), key=docs_rank)
 
 
+def normalize_repo(value: Any) -> str:
+    url = normalize_url(value)
+    if not url:
+        return ""
+    if rejected_repo_url(url):
+        return ""
+    return url
+
+
+def rejected_repo_url(url: str) -> bool:
+    parsed = urllib.parse.urlsplit(url)
+    host = parsed.netloc.lower()
+    path = parsed.path.lower()
+    if "formulae.brew.sh" in host:
+        return True
+    if any(token in path for token in ("/blog/", "/posts/", "/tutorial", "/wiki")):
+        return True
+    return False
+
+
 def rejected_docs_url(url: str) -> bool:
     parsed = urllib.parse.urlsplit(url)
     host = parsed.netloc.lower()
@@ -275,6 +295,8 @@ def normalize_display_name(value: Any) -> str:
 
 
 def source_facts(record: dict[str, Any]) -> dict[str, Any]:
+    if isinstance(record.get("__source_record"), dict):
+        record = record["__source_record"]
     provider, name = provider_name(record)
     facts = {
         "id": record.get("id"),
@@ -303,6 +325,7 @@ def normalize_string_map(value: Any) -> dict[str, str]:
 def curation_facts(record: dict[str, Any]) -> dict[str, Any]:
     path = normalize_category_path(record.get("category"))
     return {
+        "repo": normalize_repo(record.get("repo")),
         "display-name": normalize_display_name(record.get("display-name")),
         "docs": normalize_docs(record.get("docs")),
         "category_path": path,
@@ -312,18 +335,31 @@ def curation_facts(record: dict[str, Any]) -> dict[str, Any]:
 
 
 def hash_source_facts(record: dict[str, Any]) -> str:
-    return stable_hash(source_facts(record))
+    # `repo` can be filled by Codex when deterministic generation has no value,
+    # so exclude it from the drift hash. It still appears in review input.
+    facts = source_facts(record)
+    facts.pop("repo", None)
+    return stable_hash(facts)
 
 
 def hash_curation_facts(record: dict[str, Any]) -> str:
     return stable_hash(curation_facts(record))
 
 
-def load_projects(provider: str = "brew", projects_dir: Path = PROJECTS_DIR) -> list[dict[str, Any]]:
+def load_projects(provider: str = "brew", projects_dir: Path = DETERMINISTIC_DIR) -> list[dict[str, Any]]:
     projects = []
-    for path in sorted((projects_dir / provider).glob("*.yml")):
-        record = parse_project_yaml(path)
+    for path in sorted(projects_dir.glob("*.yml")):
+        source_record = parse_project_yaml(path)
+        record = deepcopy(source_record)
+        combined_path = COMBINED_DIR / path.name
+        if combined_path.exists():
+            combined = parse_project_yaml(combined_path)
+            for key in ("repo", "display-name", "docs", "category", "tags"):
+                if combined.get(key) not in (None, "", [], {}):
+                    record[key] = combined[key]
+        record["__source_record"] = source_record
         record["__path"] = path
+        record["__agent_path"] = AGENTS_DIR / path.name
         projects.append(record)
     return projects
 
@@ -391,7 +427,14 @@ def needs_new_curation(record: dict[str, Any], entry: dict[str, Any] | None = No
         and bool((entry or {}).get("last_verified"))
         and confidence.get("display-name") in {"high", "medium"}
     )
+    verified_missing_repo = (
+        not facts["repo"]
+        and bool((entry or {}).get("last_verified"))
+        and confidence.get("repo") in {"high", "medium"}
+    )
     return (
+        (not facts["repo"] and not verified_missing_repo)
+        or
         not facts["docs"]
         or not facts["category"]
         or facts["tags"] == ["cli"]
@@ -433,11 +476,13 @@ def review_input(projects: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def prompt_text(input_path: Path) -> str:
-    return f"""Determine official documentation URLs, category, tags, and display name for the projects listed in this input JSON:
+    return f"""Determine official repository URL, official documentation URLs, category, tags, and display name for the projects listed in this input JSON:
 
 {input_path}
 
 Return JSON that matches the provided output schema. Do not edit files. Use official sources only.
+
+Only determine repo when source_facts.repo is empty, missing, or null. If source_facts.repo already has a value, return repo as null and do not second-guess it. Repositories must be official source-control project URLs, not package-manager pages, mirrors, tutorials, blogs, wikis, or documentation pages.
 
 Documentation URL priority:
 1. dedicated official docs domain
@@ -487,12 +532,17 @@ def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[s
     if not category_path:
         errors.append("category_path must start with a known top-level category")
     docs = normalize_docs(item.get("docs"))
+    repo = normalize_repo(item.get("repo"))
+    if item.get("repo") not in (None, "") and not repo:
+        errors.append("repo must be an official HTTP(S) source repository URL or null")
     tags = normalize_tags(item.get("tags"))
     display_name = normalize_display_name(item.get("display-name"))
     if not display_name:
         errors.append("display-name is required")
     result = {
         "id": str(item.get("id")),
+        "repo": repo,
+        "repo-confidence": normalize_confidence(item.get("repo-confidence"), errors, "repo-confidence"),
         "display-name": display_name,
         "display-name-confidence": normalize_confidence(item.get("display-name-confidence"), errors, "display-name-confidence"),
         "category_path": category_path,
@@ -502,6 +552,7 @@ def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[s
         "tags": tags,
         "tags-confidence": normalize_confidence(item.get("tags-confidence"), errors, "tags-confidence"),
         "docs_sources": normalize_sources(item.get("docs_sources")),
+        "repo_sources": normalize_sources(item.get("repo_sources")),
         "category_sources": normalize_sources(item.get("category_sources")),
         "tags_sources": normalize_sources(item.get("tags_sources")),
         "display_name_sources": normalize_sources(item.get("display_name_sources")),
@@ -550,12 +601,14 @@ def apply_results(
         changed, skipped = merge_result(record, entry, result, confidence_threshold)
         entry["last_verified"] = today
         entry["field_confidence"] = {
+            "repo": result["repo-confidence"],
             "display-name": result["display-name-confidence"],
             "category": result["category-confidence"],
             "docs": result["docs-confidence"],
             "tags": result["tags-confidence"],
         }
         entry["provenance"] = {
+            "repo_sources": result["repo_sources"],
             "docs_sources": result["docs_sources"],
             "category_sources": result["category_sources"],
             "tags_sources": result["tags_sources"],
@@ -564,16 +617,44 @@ def apply_results(
         entry["curation_hash"] = hash_curation_facts(record)
         if skipped:
             summary["skipped_low_confidence"] += skipped
+        if not dry_run:
+            write_agent_record(record, result)
         if curation_facts(original) == curation_facts(record):
             summary["no_op"] += 1
             continue
         summary["changed"] += 1
-        if not dry_run:
-            path = record.get("__path")
-            if isinstance(path, Path):
-                public = {key: value for key, value in record.items() if not key.startswith("__")}
-                path.write_text(yaml_text(public), encoding="utf-8")
     return summary
+
+
+def write_agent_record(record: dict[str, Any], result: dict[str, Any]) -> None:
+    path = record.get("__agent_path")
+    if not isinstance(path, Path):
+        path = AGENTS_DIR / f"{provider_name(record)[1]}.yml"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(yaml_text(agent_record_from_result(result)), encoding="utf-8")
+
+
+def agent_record_from_result(result: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "id": result["id"],
+        "repo": result.get("repo") or None,
+        "repo-confidence": result.get("repo-confidence"),
+        "display-name": result.get("display-name"),
+        "display-name-confidence": result.get("display-name-confidence"),
+        "docs": result.get("docs") or [],
+        "docs-confidence": result.get("docs-confidence"),
+        "category-path": result.get("category_path") or [],
+        "category-confidence": result.get("category-confidence"),
+        "tags": result.get("tags") or [],
+        "tags-confidence": result.get("tags-confidence"),
+        "provenance": {
+            "repo-sources": result.get("repo_sources") or [],
+            "docs-sources": result.get("docs_sources") or [],
+            "category-sources": result.get("category_sources") or [],
+            "tags-sources": result.get("tags_sources") or [],
+            "display-name-sources": result.get("display_name_sources") or [],
+        },
+    }
 
 
 def merge_result(record: dict[str, Any], entry: dict[str, Any], result: dict[str, Any], threshold: str) -> tuple[bool, int]:
@@ -582,12 +663,14 @@ def merge_result(record: dict[str, Any], entry: dict[str, Any], result: dict[str
     managed = entry.setdefault("managed_values", {})
 
     field_values = {
+        "repo": normalize_repo(result.get("repo")),
         "display-name": normalize_display_name(result["display-name"]),
         "category": normalize_category_path(result["category_path"])[0],
         "docs": normalize_docs(result["docs"]),
         "tags": normalize_tags(result["tags"]),
     }
     confidence_fields = {
+        "repo": result["repo-confidence"],
         "display-name": result["display-name-confidence"],
         "category": result["category-confidence"],
         "docs": result["docs-confidence"],
@@ -596,6 +679,12 @@ def merge_result(record: dict[str, Any], entry: dict[str, Any], result: dict[str
     changed = False
     for field, new_value in field_values.items():
         current_value = curation_facts(record).get("category" if field == "category" else field)
+        if field == "repo" and current_value:
+            continue
+        if field == "repo" and not new_value:
+            managed[field] = ""
+            ownership[field] = "managed" if ownership.get(field) != "manual" else ownership[field]
+            continue
         is_empty = current_value in ("", [], None) or (field == "tags" and current_value == ["cli"])
         if not confidence_allows(confidence_fields[field], threshold) and not is_empty:
             skipped += 1

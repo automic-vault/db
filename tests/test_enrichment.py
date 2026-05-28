@@ -3,14 +3,16 @@ import unittest
 from datetime import date, timedelta
 from pathlib import Path
 
-from scripts.bootstrap.lib.render import validate_curated_fields
+from scripts.bootstrap.lib.render import merge_agent_layer, validate_curated_fields
 from scripts.enrichment import (
+    agent_record_from_result,
     apply_results,
     curation_facts,
     hash_curation_facts,
     hash_source_facts,
     needs_new_curation,
     normalize_docs,
+    normalize_repo,
     normalize_tags,
     parse_project_yaml,
     select_projects,
@@ -39,6 +41,8 @@ def sample_record():
 def sample_result(**overrides):
     result = {
         "id": "brew:bat",
+        "repo": None,
+        "repo-confidence": "high",
         "display-name": "bat",
         "display-name-confidence": "high",
         "category_path": ["developer-tools"],
@@ -47,6 +51,7 @@ def sample_result(**overrides):
         "docs-confidence": "high",
         "tags": ["cli-tool", "git", "k8s"],
         "tags-confidence": "high",
+        "repo_sources": [],
         "docs_sources": ["README"],
         "category_sources": ["README"],
         "tags_sources": ["README"],
@@ -64,6 +69,7 @@ class EnrichmentTests(unittest.TestCase):
         after["category"] = "developer-tools"
         after["tags"] = ["cli", "git"]
         after["display-name"] = "bat"
+        after["repo"] = "https://example.com/curated/repo"
         self.assertEqual(hash_source_facts(before), hash_source_facts(after))
         self.assertNotEqual(hash_curation_facts(before), hash_curation_facts(after))
 
@@ -83,6 +89,16 @@ class EnrichmentTests(unittest.TestCase):
         self.assertFalse(needs_new_curation(record, entry))
         record["display-name"] = "Bat"
         self.assertFalse(needs_new_curation(record))
+
+    def test_new_mode_does_not_repeat_verified_missing_repo(self):
+        record = sample_record()
+        record["repo"] = None
+        record["display-name"] = "Bat"
+        record["docs"] = ["https://github.com/sharkdp/bat#readme"]
+        record["category"] = "developer-tools"
+        record["tags"] = ["cli", "git"]
+        entry = {"last_verified": date.today().isoformat(), "field_confidence": {"repo": "high"}}
+        self.assertFalse(needs_new_curation(record, entry))
 
     def test_review_stale_updated_selection(self):
         record = sample_record()
@@ -128,6 +144,59 @@ class EnrichmentTests(unittest.TestCase):
         )
         self.assertEqual(record["tags"], ["cli", "git", "kubernetes", "manual"])
 
+    def test_repo_is_applied_only_when_missing(self):
+        missing = sample_record()
+        missing["repo"] = None
+        existing = sample_record()
+        state = {"brew:bat": {"field_ownership": {}, "managed_values": {}}}
+        apply_results(
+            {"brew:bat": missing},
+            state,
+            [sample_result(repo="https://github.com/sharkdp/bat")],
+            confidence_threshold="medium",
+            today=date.today().isoformat(),
+            dry_run=True,
+        )
+        self.assertEqual(missing["repo"], "https://github.com/sharkdp/bat")
+        apply_results(
+            {"brew:bat": existing},
+            state,
+            [sample_result(repo="https://example.com/not-bat")],
+            confidence_threshold="medium",
+            today=date.today().isoformat(),
+            dry_run=True,
+        )
+        self.assertEqual(existing["repo"], "https://github.com/sharkdp/bat")
+
+    def test_agent_record_keeps_confidence_and_sources(self):
+        record = agent_record_from_result(sample_result(repo="https://github.com/sharkdp/bat", repo_sources=["GitHub"]))
+        self.assertEqual(record["repo-confidence"], "high")
+        self.assertEqual(record["category-path"], ["developer-tools"])
+        self.assertEqual(record["provenance"]["repo-sources"], ["GitHub"])
+
+    def test_combined_agent_layer_excludes_confidence_fields(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "bat.yml"
+            path.write_text(
+                "id: brew:bat\n"
+                "repo: https://github.com/sharkdp/bat\n"
+                "repo-confidence: high\n"
+                "display-name: Bat\n"
+                "display-name-confidence: high\n"
+                "category-path:\n"
+                "  - developer-tools\n"
+                "tags:\n"
+                "  - cli\n"
+                "  - git\n",
+                encoding="utf-8",
+            )
+            record = {"id": "brew:bat", "repo": None, "display-name": "bat", "tags": ["cli"]}
+            merge_agent_layer(record, path)
+        self.assertEqual(record["repo"], "https://github.com/sharkdp/bat")
+        self.assertEqual(record["display-name"], "Bat")
+        self.assertEqual(record["category"], "developer-tools")
+        self.assertNotIn("repo-confidence", record)
+
     def test_docs_ranking_rejects_package_manager_and_tracking(self):
         docs = normalize_docs(
             [
@@ -138,6 +207,10 @@ class EnrichmentTests(unittest.TestCase):
             ]
         )
         self.assertEqual(docs, ["https://docs.rs/bat", "https://github.com/sharkdp/bat/wiki"])
+
+    def test_repo_normalization_rejects_non_repo_surfaces(self):
+        self.assertEqual(normalize_repo("https://formulae.brew.sh/formula/bat"), "")
+        self.assertEqual(normalize_repo("https://github.com/sharkdp/bat.git"), "https://github.com/sharkdp/bat")
 
     def test_tag_canonicalization(self):
         self.assertEqual(normalize_tags(["cli-tool", "k8s", "awscli", "utility"]), ["aws", "cli", "kubernetes"])

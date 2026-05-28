@@ -11,6 +11,7 @@ ROOT_PATH = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_PATH))
 
 from scripts.bootstrap.lib.common import CACHE_DIR, ROOT, ensure_root, read_json, write_json
+from scripts.bootstrap.lib.render import render_combined_tree
 from scripts.enrichment import (
     apply_results,
     load_projects,
@@ -110,6 +111,7 @@ def main() -> int:
         )
         for key in ("changed", "rejected", "skipped_low_confidence", "no_op"):
             summary[key] += apply_summary.get(key, 0)
+        render_combined_tree()
     else:
         write_json(run_dir / "normalized-output.json", {"results": [], "errors": []})
 
