@@ -477,20 +477,24 @@ def review_input(projects: list[dict[str, Any]]) -> dict[str, Any]:
 
 def prompt_text(input_path: Path, project_count: int | None = None) -> str:
     count_line = f"The file contains {project_count} project records." if project_count is not None else "The file contains project records."
+    required_line = f"Your final JSON must contain exactly {project_count} results, one for every project id in `.projects`." if project_count is not None else "Your final JSON must contain one result for every project id in `.projects`."
     return f"""Determine official repository URL, official documentation URLs, category, tags, and display name for the projects listed in this input JSON:
 
 {input_path}
 
 Input shape is fixed: a JSON object with top-level keys `schema` and `projects`; `projects` is the array to review. {count_line}
 
-If you inspect it, use exactly these commands:
+{required_line}
+
+If you inspect it, use these commands:
 
 ```sh
 jq '.projects | length' {input_path}
-jq '.projects[0:10] | map({{id, source_facts, current_curation}})' {input_path}
+jq -r '.projects[].id' {input_path}
+jq -c '.projects[] | {{id, source_facts, current_curation}}' {input_path}
 ```
 
-Do not probe the input as a top-level array; it is not one. Do not emit a placeholder `{{"results":[]}}` before reading the file.
+Do not process only the first 10 projects; the commands above stream all projects. Do not probe the input as a top-level array; it is not one. Do not emit a placeholder `{{"results":[]}}` before reading the file.
 
 Return JSON that matches the provided output schema. Do not edit files. Use official sources only.
 
@@ -522,6 +526,7 @@ def validate_codex_payload(payload: Any, expected_ids: set[str]) -> tuple[list[d
     if not isinstance(results, list):
         return [], ["codex output must contain results list"]
     normalized = []
+    seen_ids = set()
     for index, item in enumerate(results):
         if not isinstance(item, dict):
             errors.append(f"results[{index}] must be an object")
@@ -530,11 +535,19 @@ def validate_codex_payload(payload: Any, expected_ids: set[str]) -> tuple[list[d
         if project_id not in expected_ids:
             errors.append(f"{project_id or f'results[{index}]'}: unexpected id")
             continue
+        if project_id in seen_ids:
+            errors.append(f"{project_id}: duplicate result")
+            continue
+        seen_ids.add(project_id)
         normalized_item, item_errors = normalize_codex_result(item)
         if item_errors:
             errors.extend(f"{project_id}: {error}" for error in item_errors)
             continue
         normalized.append(normalized_item)
+    missing = sorted(expected_ids - seen_ids)
+    if missing:
+        errors.append(f"missing results for {len(missing)} project ids: {', '.join(missing[:20])}")
+        return [], errors
     return normalized, errors
 
 

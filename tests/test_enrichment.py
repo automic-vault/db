@@ -18,6 +18,7 @@ from scripts.enrichment import (
     prompt_text,
     select_projects,
     update_observed_state,
+    validate_codex_payload,
 )
 
 
@@ -261,8 +262,20 @@ class EnrichmentTests(unittest.TestCase):
         prompt = prompt_text(Path("/tmp/input.json"), 10)
         self.assertIn("top-level keys `schema` and `projects`", prompt)
         self.assertIn("The file contains 10 project records.", prompt)
+        self.assertIn("exactly 10 results", prompt)
         self.assertIn("jq '.projects | length' /tmp/input.json", prompt)
+        self.assertIn("jq -r '.projects[].id' /tmp/input.json", prompt)
+        self.assertIn("jq -c '.projects[] | {id, source_facts, current_curation}' /tmp/input.json", prompt)
+        self.assertNotIn("[0:10]", prompt)
         self.assertIn("Do not probe the input as a top-level array", prompt)
+
+    def test_validate_codex_payload_rejects_missing_ids(self):
+        normalized, errors = validate_codex_payload(
+            {"results": [sample_result(id="brew:bat")]},
+            {"brew:bat", "brew:fd"},
+        )
+        self.assertEqual(normalized, [])
+        self.assertTrue(any("missing results for 1 project ids" in error for error in errors))
 
 
 if __name__ == "__main__":

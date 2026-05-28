@@ -101,6 +101,13 @@ def main() -> int:
         projects_by_id = {str(record.get("id")): record for record in projects}
         if errors:
             summary["rejected"] += len(errors)
+            write_json(run_dir / "apply-summary.json", summary)
+            write_json(state_path, state)
+            print(
+                "Reviewed: {reviewed}\nChanged: {changed}\nRejected: {rejected}\n"
+                "Skipped low-confidence: {skipped_low_confidence}\nNo-op: {no_op}".format(**summary)
+            )
+            raise SystemExit(f"Codex output failed validation; see {run_dir / 'normalized-output.json'}")
         apply_summary = apply_results(
             projects_by_id,
             state,
