@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 CACHE_DIR = ROOT / "cache"
 STAGE_DIR = CACHE_DIR / "stage"
 PROJECTS_DIR = ROOT / "projects"

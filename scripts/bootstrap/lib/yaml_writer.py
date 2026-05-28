@@ -10,22 +10,16 @@ KEY_ORDER = [
     "homepage",
     "repo",
     "docs",
+    "category",
     "package-manager",
     "package-manager-match",
     "package-manager-url",
     "version",
     "license",
-    "category",
     "tags",
     "description",
     "source-archive",
-    "dependencies",
-    "build-dependencies",
-    "uses-from-macos",
     "executables",
-    "bottle",
-    "install-behavior",
-    "install-lines",
     "provenance",
 ]
 
@@ -47,7 +41,11 @@ def emit_mapping(lines: list[str], value: dict[str, Any], indent: int, *, ordere
     prefix = " " * indent
     for key in keys:
         child = value[key]
-        if child is None or child == [] or child == {} or child == "":
+        if child is None:
+            if key == "repo":
+                lines.append(f"{prefix}{key}: null")
+            continue
+        if child == [] or child == {} or child == "":
             continue
         if isinstance(child, dict):
             lines.append(f"{prefix}{key}:")

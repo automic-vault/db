@@ -9,6 +9,15 @@ from .common import fetch_json
 
 
 FORMULA_URL = "https://formulae.brew.sh/api/formula.json"
+GITLAB_HOSTS = {
+    "0xacab.org",
+    "code.sits.lu",
+    "code.videolan.org",
+    "framagit.org",
+    "git.openldap.org",
+    "invent.kde.org",
+    "salsa.debian.org",
+}
 
 
 def fetch_formulae(*, refresh: bool = False) -> list[dict[str, Any]]:
@@ -105,88 +114,36 @@ def normalize_repository(value: Any) -> str:
     url = re.sub(r"^git://github\.com/", "https://github.com/", url)
     url = re.sub(r"^ssh://git@github\.com/", "https://github.com/", url)
     url = re.sub(r"^git@github\.com:", "https://github.com/", url)
+    url = re.sub(r"^git://gitlab\.com/", "https://gitlab.com/", url)
+    url = re.sub(r"^ssh://git@gitlab\.com/", "https://gitlab.com/", url)
+    url = re.sub(r"^git@gitlab\.com:", "https://gitlab.com/", url)
     return re.sub(r"\.git$", "", url)
 
 
-def github_repo_from_archive(value: str) -> str:
-    match = re.match(r"^(https://github\.com/[^/]+/[^/]+)/(?:archive|releases)/", value)
-    if match:
-        return match.group(1).removesuffix(".git")
+def repository_project_url(value: str) -> str:
+    github = re.match(r"^(https://github\.com/[^/]+/[^/]+)(?:/(?:archive|releases|refs|tags|tarball|zipball)(?:/.*)?)?$", value)
+    if github:
+        return github.group(1).removesuffix(".git")
+    gitlab = re.match(r"^(https://[^/]*gitlab[^/]+/[^/]+/[^/]+)(?:/(?:-|archive|releases)(?:/.*)?)?$", value)
+    if gitlab:
+        return gitlab.group(1).removesuffix(".git")
+    known_gitlab = re.match(r"^https://([^/]+)/([^/]+/[^/]+)(?:/(?:-|archive|releases)(?:/.*)?)?$", value)
+    if known_gitlab and known_gitlab.group(1) in GITLAB_HOSTS:
+        return f"https://{known_gitlab.group(1)}/{known_gitlab.group(2)}".removesuffix(".git")
     return ""
 
 
 def repository_from_formula(formula: dict[str, Any]) -> str:
     repo = normalize_repository(formula.get("repository"))
+    repo = repository_project_url(repo)
     if repo:
         return repo
     urls = formula.get("urls") or {}
     stable = urls.get("stable") if isinstance(urls, dict) else None
     if isinstance(stable, dict):
         archive = normalize_repository(stable.get("url"))
-        return github_repo_from_archive(archive) or archive
+        return repository_project_url(archive)
     return ""
-
-
-def docs_from_formula(formula: dict[str, Any], homepage: str, repo: str) -> str:
-    urls = formula.get("urls") or {}
-    stable = urls.get("stable") if isinstance(urls, dict) else None
-    if isinstance(stable, dict):
-        docs = stable.get("using")
-        if isinstance(docs, str) and docs.startswith("http"):
-            return docs
-    return homepage or repo
-
-
-def bottle_metadata(formula: dict[str, Any]) -> dict[str, Any]:
-    bottle = formula.get("bottle") or {}
-    stable = bottle.get("stable") if isinstance(bottle, dict) else None
-    if not isinstance(stable, dict):
-        return {"available": False}
-    files = stable.get("files") or {}
-    platforms = sorted(str(key) for key in files if key) if isinstance(files, dict) else []
-    result: dict[str, Any] = {"available": bool(platforms)}
-    root_url = stable.get("root_url")
-    if isinstance(root_url, str) and root_url:
-        result["root-url"] = root_url
-    if platforms:
-        result["platforms"] = platforms
-    return result
-
-
-def install_behavior(formula: dict[str, Any]) -> dict[str, Any]:
-    behavior: dict[str, Any] = {
-        "post-install-defined": bool(formula.get("post_install_defined")),
-    }
-    if formula.get("service"):
-        behavior["service"] = "declared"
-    caveats = formula.get("caveats")
-    if isinstance(caveats, str) and caveats.strip():
-        behavior["caveats"] = re.sub(r"\s+", " ", caveats).strip()
-    return behavior
-
-
-def category_for_formula(formula: dict[str, Any]) -> str:
-    text = " ".join(
-        str(value or "")
-        for value in [
-            formula.get("name"),
-            formula.get("desc"),
-            formula.get("homepage"),
-            source_archive(formula),
-        ]
-    ).lower()
-    buckets = [
-        ("cloud", ("aws", "azure", "gcloud", "google cloud", "cloud", "kubernetes", "terraform")),
-        ("database", ("sql", "postgres", "mysql", "redis", "mongodb", "sqlite", "database")),
-        ("security", ("security", "crypt", "tls", "ssl", "secret", "vault", "password")),
-        ("development", ("compiler", "language", "developer", "build", "git", "lint", "format")),
-        ("media", ("audio", "video", "image", "jpeg", "png", "ffmpeg")),
-        ("network", ("http", "dns", "network", "ssh", "ftp", "proxy")),
-    ]
-    for category, needles in buckets:
-        if any(needle in text for needle in needles):
-            return category
-    return "cli"
 
 
 def tags_for_formula(formula: dict[str, Any]) -> list[str]:
@@ -214,25 +171,17 @@ def formula_record(formula: dict[str, Any]) -> dict[str, Any] | None:
     name = str(formula["name"])
     homepage = formula.get("homepage") if isinstance(formula.get("homepage"), str) else ""
     repo = repository_from_formula(formula)
-    docs = docs_from_formula(formula, homepage, repo)
     return {
         "id": f"brew:{name}",
         "display-name": name,
         "homepage": homepage,
-        "repo": repo,
-        "docs": docs,
+        "repo": repo or None,
         "package-manager-url": f"https://formulae.brew.sh/formula/{urllib.parse.quote(name, safe='@+/')}",
         "version": stable_version(formula),
         "license": normalize_license(formula.get("license")),
-        "category": category_for_formula(formula),
         "tags": tags_for_formula(formula),
         "description": clean_summary(formula.get("desc")),
         "source-archive": source_archive(formula),
-        "dependencies": normalize_list(formula.get("dependencies")),
-        "build-dependencies": normalize_list(formula.get("build_dependencies")),
-        "uses-from-macos": normalize_list(formula.get("uses_from_macos")),
-        "bottle": bottle_metadata(formula),
-        "install-behavior": install_behavior(formula),
         "provenance": {
             "provider": "brew",
             "source": FORMULA_URL,
