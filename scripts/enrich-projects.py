@@ -6,6 +6,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any
 
 ROOT_PATH = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_PATH))
@@ -35,6 +36,9 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Review and apply curated project enrichment with Codex.")
     parser.add_argument("--mode", choices=["replace", "new", "review-stale-updated"], required=True)
     parser.add_argument("--limit", type=int, default=0, help="Limit projects sent for review.")
+    parser.add_argument("--batch-size", type=int, default=10, help="Projects to send to Codex per batch.")
+    parser.add_argument("--force", action="store_true", help="Re-run Codex even when a valid batch checkpoint exists.")
+    parser.add_argument("--run-id", help="Resume or write artifacts under a specific enrichment run id.")
     parser.add_argument("--dry-run", action="store_true", help="Build cache/input artifacts without invoking Codex or editing YAML.")
     parser.add_argument("--provider", default="brew", choices=["brew"], help="Project provider to enrich.")
     parser.add_argument("--confidence-threshold", choices=["high", "medium", "low"], default="medium")
@@ -87,6 +91,61 @@ def invoke_codex(prompt_path: Path, output_path: Path, output_schema_path: Path)
     )
 
 
+def batches(items: list[dict[str, Any]], size: int) -> list[list[dict[str, Any]]]:
+    if size < 1:
+        raise SystemExit("--batch-size must be at least 1")
+    return [items[index : index + size] for index in range(0, len(items), size)]
+
+
+def empty_summary(reviewed: int = 0) -> dict[str, int]:
+    return {"reviewed": reviewed, "changed": 0, "rejected": 0, "skipped_low_confidence": 0, "no_op": 0}
+
+
+def add_summary(target: dict[str, int], source: dict[str, int]) -> None:
+    for key in ("changed", "rejected", "skipped_low_confidence", "no_op"):
+        target[key] += source.get(key, 0)
+
+
+def load_valid_checkpoint(
+    normalized_path: Path,
+    expected_ids: set[str],
+) -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]]] | None:
+    if not normalized_path.exists():
+        return None
+    payload = read_json(normalized_path, default={})
+    if not isinstance(payload, dict):
+        return None
+    results = payload.get("results")
+    if not isinstance(results, list):
+        return None
+    normalized, errors, invalid = validate_codex_payload_partial({"results": results}, expected_ids)
+    if errors:
+        return None
+    return normalized, errors, invalid
+
+
+def validate_and_write_batch(
+    codex_output_path: Path,
+    normalized_path: Path,
+    expected_ids: set[str],
+) -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]], list[dict[str, Any]]]:
+    payload = read_codex_output(codex_output_path)
+    normalized, errors, invalid = validate_codex_payload_partial(payload, expected_ids)
+    error_summary = validation_error_summary(errors)
+    write_json(
+        normalized_path,
+        {"results": normalized, "errors": errors, "error_summary": error_summary, "invalid": invalid},
+    )
+    return normalized, errors, invalid, error_summary
+
+
+def print_summary(summary: dict[str, int]) -> None:
+    print(
+        "Reviewed: {reviewed}\nChanged: {changed}\nRejected: {rejected}\n"
+        "Skipped low-confidence: {skipped_low_confidence}\nNo-op: {no_op}".format(**summary)
+    )
+
+
 def main() -> int:
     args = parse_args()
     ensure_root()
@@ -102,7 +161,7 @@ def main() -> int:
     if args.limit:
         selected = selected[: args.limit]
 
-    current_run = run_id()
+    current_run = args.run_id or run_id()
     run_dir = CACHE_DIR / "enrichment" / "runs" / current_run
     run_dir.mkdir(parents=True, exist_ok=True)
     input_payload = review_input(selected)
@@ -110,34 +169,60 @@ def main() -> int:
     prompt = prompt_text(input_path, len(selected))
     write_run_artifacts(run_dir, input_payload, prompt)
 
-    summary = {"reviewed": len(selected), "changed": 0, "rejected": 0, "skipped_low_confidence": 0, "no_op": 0}
-    if selected and not args.dry_run:
-        codex_output_path = run_dir / "codex-output.json"
-        expected_ids = {str(item.get("id")) for item in selected}
-        output_schema_path = run_dir / "output-schema.json"
+    summary = empty_summary(len(selected))
+    all_normalized: list[dict[str, Any]] = []
+    all_errors: list[str] = []
+    all_invalid: list[dict[str, Any]] = []
+    failed_batches = 0
+    projects_by_id = {str(record.get("id")): record for record in projects}
+
+    batch_root = run_dir / "batches"
+    batch_root.mkdir(parents=True, exist_ok=True)
+    for batch_index, batch_projects in enumerate(batches(selected, args.batch_size), start=1):
+        batch_dir = batch_root / f"{batch_index:04d}"
+        batch_dir.mkdir(parents=True, exist_ok=True)
+        batch_input = review_input(batch_projects)
+        batch_input_path = batch_dir / "input.json"
+        batch_prompt = prompt_text(batch_input_path, len(batch_projects))
+        write_run_artifacts(batch_dir, batch_input, batch_prompt)
+
+        batch_summary = empty_summary(len(batch_projects))
+        expected_ids = {str(item.get("id")) for item in batch_projects}
+        output_schema_path = batch_dir / "output-schema.json"
+        normalized_path = batch_dir / "normalized-output.json"
+        codex_output_path = batch_dir / "codex-output.json"
         write_output_schema(output_schema_path, expected_ids)
-        invoke_codex(run_dir / "prompt.md", codex_output_path, output_schema_path)
-        payload = read_codex_output(codex_output_path)
-        normalized, errors, invalid = validate_codex_payload_partial(payload, expected_ids)
-        error_summary = validation_error_summary(errors)
-        write_json(
-            run_dir / "normalized-output.json",
-            {"results": normalized, "errors": errors, "error_summary": error_summary, "invalid": invalid},
-        )
-        summary["rejected"] += validation_rejection_count(expected_ids, normalized)
-        if errors and not normalized:
-            write_json(run_dir / "apply-summary.json", summary)
+
+        if args.dry_run:
+            write_json(normalized_path, {"results": [], "errors": [], "error_summary": [], "invalid": []})
+            write_json(batch_dir / "apply-summary.json", batch_summary)
+            continue
+
+        checkpoint = None if args.force else load_valid_checkpoint(normalized_path, expected_ids)
+        if checkpoint is not None:
+            normalized, errors, invalid = checkpoint
+            error_summary = []
+            print(f"SKIP batch {batch_index:04d}; valid checkpoint exists")
+        else:
+            invoke_codex(batch_dir / "prompt.md", codex_output_path, output_schema_path)
+            normalized, errors, invalid, error_summary = validate_and_write_batch(codex_output_path, normalized_path, expected_ids)
+
+        batch_summary["rejected"] += validation_rejection_count(expected_ids, normalized)
+        all_normalized.extend(normalized)
+        all_errors.extend(errors)
+        all_invalid.extend(invalid)
+
+        if not normalized:
+            failed_batches += 1
+            write_json(batch_dir / "apply-summary.json", batch_summary)
             write_json(state_path, state)
-            print(
-                "Reviewed: {reviewed}\nChanged: {changed}\nRejected: {rejected}\n"
-                "Skipped low-confidence: {skipped_low_confidence}\nNo-op: {no_op}".format(**summary)
-            )
-            print(f"Codex output failed validation; see {run_dir / 'normalized-output.json'}", file=sys.stderr)
+            print(f"Batch {batch_index:04d} failed validation; see {normalized_path}", file=sys.stderr)
             if error_summary:
                 top_error = error_summary[0]
                 print(f"Top validation error: {top_error['error']} ({top_error['count']})", file=sys.stderr)
-            return 1
-        projects_by_id = {str(record.get("id")): record for record in projects}
+            summary["rejected"] += batch_summary["rejected"]
+            continue
+
         apply_summary = apply_results(
             projects_by_id,
             state,
@@ -146,28 +231,35 @@ def main() -> int:
             today=today,
             dry_run=False,
         )
-        for key in ("changed", "rejected", "skipped_low_confidence", "no_op"):
-            summary[key] += apply_summary.get(key, 0)
+        add_summary(batch_summary, apply_summary)
+        add_summary(summary, batch_summary)
         render_combined_tree()
+        write_json(batch_dir / "apply-summary.json", batch_summary)
+        write_json(state_path, state)
+
         if errors:
             print(
-                f"Codex output partially failed validation; applied {len(normalized)} valid results; "
-                f"see {run_dir / 'normalized-output.json'}",
+                f"Batch {batch_index:04d} partially failed validation; applied {len(normalized)} valid results; "
+                f"see {normalized_path}",
                 file=sys.stderr,
             )
             if error_summary:
                 top_error = error_summary[0]
                 print(f"Top validation error: {top_error['error']} ({top_error['count']})", file=sys.stderr)
-    else:
-        write_json(run_dir / "normalized-output.json", {"results": [], "errors": []})
 
+    write_json(
+        run_dir / "normalized-output.json",
+        {
+            "results": all_normalized,
+            "errors": all_errors,
+            "error_summary": validation_error_summary(all_errors),
+            "invalid": all_invalid,
+        },
+    )
     write_json(run_dir / "apply-summary.json", summary)
     write_json(state_path, state)
-    print(
-        "Reviewed: {reviewed}\nChanged: {changed}\nRejected: {rejected}\n"
-        "Skipped low-confidence: {skipped_low_confidence}\nNo-op: {no_op}".format(**summary)
-    )
-    return 0
+    print_summary(summary)
+    return 1 if failed_batches else 0
 
 
 if __name__ == "__main__":
