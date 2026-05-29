@@ -1,5 +1,6 @@
 import tempfile
 import unittest
+import json
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -18,6 +19,7 @@ from scripts.enrichment import (
     prompt_text,
     select_projects,
     update_observed_state,
+    validation_error_summary,
     validation_rejection_count,
     validate_codex_payload,
     validate_codex_payload_partial,
@@ -299,6 +301,9 @@ class EnrichmentTests(unittest.TestCase):
 
     def test_prompt_names_input_shape_and_safe_jq(self):
         prompt = prompt_text(Path("/tmp/input.json"), 10)
+        self.assertIn("/goal Reliably enrich every project", prompt)
+        self.assertIn("break the input into smaller internal batches", prompt)
+        self.assertIn("Do not switch to fallback rows because the full input is large", prompt)
         self.assertIn("top-level keys `schema` and `projects`", prompt)
         self.assertIn("The file contains 10 project records.", prompt)
         self.assertIn("exactly 10 results", prompt)
@@ -307,6 +312,8 @@ class EnrichmentTests(unittest.TestCase):
         self.assertIn("jq -c '.projects[] | {id, source_facts, current_curation}' /tmp/input.json", prompt)
         self.assertNotIn("[0:10]", prompt)
         self.assertIn("Do not probe the input as a top-level array", prompt)
+        self.assertIn("Do not emit placeholder fallback rows", prompt)
+        self.assertIn("Empty source arrays are invalid", prompt)
 
     def test_validate_codex_payload_rejects_missing_ids(self):
         normalized, errors = validate_codex_payload(
@@ -348,6 +355,26 @@ class EnrichmentTests(unittest.TestCase):
         self.assertTrue(any("tags_sources must cite at least one source" in error for error in errors))
         self.assertTrue(any("display_name_sources must cite at least one source" in error for error in errors))
         self.assertEqual(invalid_results[0]["id"], "brew:bat")
+
+    def test_validation_error_summary_groups_by_message(self):
+        summary = validation_error_summary(
+            [
+                "brew:bat: category_sources must cite at least one source",
+                "brew:fd: category_sources must cite at least one source",
+                "missing results for 1 project ids: brew:ripgrep",
+            ]
+        )
+        self.assertEqual(summary[0], {"error": "category_sources must cite at least one source", "count": 2})
+        self.assertEqual(summary[1], {"error": "missing results for 1 project ids: brew:ripgrep", "count": 1})
+
+    def test_output_schema_rejects_empty_source_bailout_shape(self):
+        schema = json.loads(Path("schemas/codex-project-enrichment-output.schema.json").read_text(encoding="utf-8"))
+        item_schema = schema["properties"]["results"]["items"]["properties"]
+        self.assertEqual(item_schema["category_sources"]["minItems"], 1)
+        self.assertEqual(item_schema["display_name_sources"]["minItems"], 1)
+        self.assertEqual(item_schema["tags_sources"]["minItems"], 1)
+        self.assertEqual(item_schema["tags"]["minItems"], 1)
+        self.assertEqual(item_schema["display-name"]["minLength"], 1)
 
     def test_validation_aggregates_duplicate_errors_and_counts_rejected_ids(self):
         normalized, errors, invalid_results = validate_codex_payload_partial(

@@ -21,6 +21,7 @@ from scripts.enrichment import (
     select_projects,
     today_iso,
     update_observed_state,
+    validation_error_summary,
     validation_rejection_count,
     validate_codex_payload_partial,
     write_run_artifacts,
@@ -118,7 +119,11 @@ def main() -> int:
         invoke_codex(run_dir / "prompt.md", codex_output_path, output_schema_path)
         payload = read_codex_output(codex_output_path)
         normalized, errors, invalid = validate_codex_payload_partial(payload, expected_ids)
-        write_json(run_dir / "normalized-output.json", {"results": normalized, "errors": errors, "invalid": invalid})
+        error_summary = validation_error_summary(errors)
+        write_json(
+            run_dir / "normalized-output.json",
+            {"results": normalized, "errors": errors, "error_summary": error_summary, "invalid": invalid},
+        )
         summary["rejected"] += validation_rejection_count(expected_ids, normalized)
         if errors and not normalized:
             write_json(run_dir / "apply-summary.json", summary)
@@ -128,6 +133,9 @@ def main() -> int:
                 "Skipped low-confidence: {skipped_low_confidence}\nNo-op: {no_op}".format(**summary)
             )
             print(f"Codex output failed validation; see {run_dir / 'normalized-output.json'}", file=sys.stderr)
+            if error_summary:
+                top_error = error_summary[0]
+                print(f"Top validation error: {top_error['error']} ({top_error['count']})", file=sys.stderr)
             return 1
         projects_by_id = {str(record.get("id")): record for record in projects}
         apply_summary = apply_results(
@@ -147,6 +155,9 @@ def main() -> int:
                 f"see {run_dir / 'normalized-output.json'}",
                 file=sys.stderr,
             )
+            if error_summary:
+                top_error = error_summary[0]
+                print(f"Top validation error: {top_error['error']} ({top_error['count']})", file=sys.stderr)
     else:
         write_json(run_dir / "normalized-output.json", {"results": [], "errors": []})
 

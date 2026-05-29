@@ -439,7 +439,11 @@ def review_input(projects: list[dict[str, Any]]) -> dict[str, Any]:
 def prompt_text(input_path: Path, project_count: int | None = None) -> str:
     count_line = f"The file contains {project_count} project records." if project_count is not None else "The file contains project records."
     required_line = f"Your final JSON must contain exactly {project_count} results, one for every project id in `.projects`." if project_count is not None else "Your final JSON must contain one result for every project id in `.projects`."
-    return f"""Determine official repository URL, official documentation URLs, category, tags, and display name for the projects listed in this input JSON:
+    return f"""/goal Reliably enrich every project in the input JSON with official repository URL, official documentation URLs, category, tags, display name, confidence, and source notes.
+
+Treat this as a goal-sized batch task. Before producing the final JSON, break the input into smaller internal batches, review each batch completely, and track which project ids have been completed. Do not switch to fallback rows because the full input is large; use batching instead.
+
+Determine official repository URL, official documentation URLs, category, tags, and display name for the projects listed in this input JSON:
 
 {input_path}
 
@@ -458,6 +462,12 @@ jq -c '.projects[] | {{id, source_facts, current_curation}}' {input_path}
 Do not process only the first 10 projects; the commands above stream all projects. Do not probe the input as a top-level array; it is not one. Do not emit a placeholder `{{"results":[]}}` before reading the file.
 
 Return JSON that matches the provided output schema. Do not edit files. Use official sources only.
+
+Do not emit placeholder fallback rows. For every result:
+- `category_path`, `display-name`, and `tags` must be non-empty.
+- `category_sources`, `display_name_sources`, and `tags_sources` must each contain at least one concise source note.
+- If you rely on supplied input rather than web research, cite the specific input field, such as `source_facts.description`, `source_facts.homepage`, or `current_curation.category`.
+- Empty source arrays are invalid for claimed category, display name, or tags.
 
 Only determine repo when source_facts.repo is empty, missing, or null. If source_facts.repo already has a value, return repo as null and do not second-guess it. Repositories must be official source-control project URLs, not package-manager pages, mirrors, tutorials, blogs, wikis, or documentation pages.
 
@@ -528,6 +538,17 @@ def validate_codex_payload_partial(payload: Any, expected_ids: set[str]) -> tupl
 def validation_rejection_count(expected_ids: set[str], normalized: list[dict[str, Any]]) -> int:
     accepted_ids = {str(item.get("id") or "") for item in normalized}
     return len(expected_ids - accepted_ids)
+
+
+def validation_error_summary(errors: list[str]) -> list[dict[str, Any]]:
+    counts: Counter[str] = Counter()
+    for error in errors:
+        if ": " in error and not error.startswith("missing results for "):
+            _project_id, message = error.split(": ", 1)
+        else:
+            message = error
+        counts[message] += 1
+    return [{"error": message, "count": count} for message, count in counts.most_common()]
 
 
 def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
