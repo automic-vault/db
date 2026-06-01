@@ -62,6 +62,18 @@ def formula_metadata_from_project_yaml(root: Path = COMBINED_DIR, formulae: list
     return result
 
 
+def stable_cask_metadata(casks: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    volatile_keys = {"version", "sourceArchive", "url", "sha256"}
+    return {
+        token: {
+            key: value
+            for key, value in metadata.items()
+            if key not in volatile_keys
+        }
+        for token, metadata in casks.items()
+    }
+
+
 def build_automic_vault_db(root: Path = COMBINED_DIR, formulae: list[dict[str, Any]] | None = None, generated_at: str | None = None) -> dict[str, Any]:
     executable_index = executable_index_from_project_yaml(root)
     cask_entries, casks = read_cask_authority()
@@ -73,7 +85,7 @@ def build_automic_vault_db(root: Path = COMBINED_DIR, formulae: list[dict[str, A
         "generated_at": timestamp,
         "entries": dict(sorted(entries.items())),
         "formulas": formula_metadata_from_project_yaml(root, formulae),
-        "casks": casks,
+        "casks": stable_cask_metadata(casks),
         "npms": {},
     }
 

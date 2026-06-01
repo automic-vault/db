@@ -5,7 +5,7 @@ from unittest import mock
 
 from scripts.bootstrap.lib import executables
 from scripts.bootstrap.lib import authority
-from scripts.bootstrap.lib.authority import build_automic_vault_db, formula_metadata_from_project_yaml
+from scripts.bootstrap.lib.authority import build_automic_vault_db, formula_metadata_from_project_yaml, stable_cask_metadata
 
 
 class ExecutableSeedTests(unittest.TestCase):
@@ -144,6 +144,28 @@ class ExecutableSeedTests(unittest.TestCase):
         self.assertEqual(db["entries"]["op"], "cask:1password-cli")
         self.assertIn("1password-cli", db["casks"])
         self.assertEqual(db["npms"], {})
+
+    def test_automic_vault_db_export_strips_volatile_cask_metadata(self):
+        self.assertEqual(
+            stable_cask_metadata(
+                {
+                    "1password-cli": {
+                        "summary": "1Password CLI",
+                        "version": "2.0.0",
+                        "sourceArchive": "https://example.com/op.zip",
+                        "url": "https://example.com/op.zip",
+                        "sha256": "abc123",
+                        "binaries": [{"source": "op", "target": "op"}],
+                    }
+                }
+            ),
+            {
+                "1password-cli": {
+                    "summary": "1Password CLI",
+                    "binaries": [{"source": "op", "target": "op"}],
+                }
+            },
+        )
 
     def test_formula_metadata_export_reads_aliases_from_formula_cache(self):
         with tempfile.TemporaryDirectory() as tmp:
