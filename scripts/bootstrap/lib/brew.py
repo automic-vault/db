@@ -167,10 +167,8 @@ def formula_record(formula: dict[str, Any]) -> dict[str, Any] | None:
         "homepage": homepage,
         "repo": repo or None,
         "package-manager-url": f"https://formulae.brew.sh/formula/{urllib.parse.quote(name, safe='@+/')}",
-        "version": stable_version(formula),
         "license": normalize_license(formula.get("license")),
         "description": clean_summary(formula.get("desc")),
-        "source-archive": source_archive(formula),
         "provenance": {
             "provider": "brew",
             "source": FORMULA_URL,
