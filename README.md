@@ -26,6 +26,14 @@ remote and intermediate data to `cache/`, then publishes committed YAML stages:
 - `human-override/<formula>.yml`: hand-authored corrections
 - `combined/<formula>.yml`: final public output
 
+It also derives Homebrew executable indexes from this repository’s own published
+YAML:
+
+- `cache/brew/executables.json`: `formula -> [executables]`
+- `cache/brew/executable-entries.json`: `executable -> formula`
+- `cache/brew/cask-entries.json`: supported binary casks and `cask:<token>` executable entries
+- `cache/automic-vault/db.json`: Automic Vault-compatible Homebrew authority DB
+
 Precedence is deterministic < agents < human override. Raw Codex JSON is kept
 under `cache/` for resumability/debugging; YAML in `agents/` is the committed
 agent-curated layer. Confidence and provenance fields stay in the agent stages

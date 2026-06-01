@@ -72,9 +72,16 @@ def steps(refresh: bool, fetch_manifests: bool, manifest_limit: int) -> list[Ste
                 Path("scripts/bootstrap/01-brew-fetch.py"),
                 Path("scripts/bootstrap/lib/brew.py"),
                 Path("scripts/bootstrap/lib/common.py"),
+                Path("scripts/bootstrap/lib/casks.py"),
                 Path("scripts/bootstrap/lib/executables.py"),
             ],
-            [Path("cache/brew/formulae.json"), Path("cache/brew/executables.json")],
+            [
+                Path("cache/brew/formulae.json"),
+                Path("cache/brew/casks.json"),
+                Path("cache/brew/cask-entries.json"),
+                Path("cache/brew/executables.json"),
+                Path("cache/brew/executable-entries.json"),
+            ],
             refresh_sensitive=True,
         ),
         Step(
@@ -115,6 +122,22 @@ def steps(refresh: bool, fetch_manifests: bool, manifest_limit: int) -> list[Ste
                 Path("human-override"),
             ],
             [Path("deterministic"), Path("combined")],
+        ),
+        Step(
+            "export-automic-vault-db",
+            [py, "scripts/bootstrap/05-export-automic-vault-db.py"],
+            [
+                Path("scripts/bootstrap/05-export-automic-vault-db.py"),
+                Path("scripts/bootstrap/lib/authority.py"),
+                Path("scripts/bootstrap/lib/common.py"),
+                Path("scripts/bootstrap/lib/casks.py"),
+                Path("scripts/bootstrap/lib/executables.py"),
+                Path("scripts/bootstrap/lib/render.py"),
+                Path("combined"),
+                Path("cache/brew/formulae.json"),
+                Path("cache/brew/cask-entries.json"),
+            ],
+            [Path("cache/automic-vault/db.json")],
         ),
     ]
 

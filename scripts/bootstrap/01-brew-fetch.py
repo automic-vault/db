@@ -3,21 +3,11 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 
 from lib.brew import fetch_formulae
 from lib.common import CACHE_DIR, ensure_root, read_json, stable_hash, write_json
+from lib.casks import fetch_cask_index, fetch_supported_casks, write_cask_cache
 from lib.executables import build_executable_index, write_executable_index
-
-
-SOURCE_FORMULA_CACHE = (
-    Path.home()
-    / "src"
-    / "automic-vault"
-    / "cache"
-    / "brew.sh"
-    / "58a55472b0cdf8aa7ae83de7d71d45802697a0a2f41a5c6364973f415eac9995.json"
-)
 
 
 def seeded_formulae(refresh: bool) -> list[dict]:
@@ -27,12 +17,6 @@ def seeded_formulae(refresh: bool) -> list[dict]:
         formulae = payload.get("formulae") if isinstance(payload, dict) else None
         if isinstance(formulae, list):
             return [item for item in formulae if isinstance(item, dict)]
-    if not refresh and not output.exists() and SOURCE_FORMULA_CACHE.exists():
-        payload = read_json(SOURCE_FORMULA_CACHE)
-        if isinstance(payload, dict) and "__pkgdb_payload__" in payload:
-            formulae = payload["__pkgdb_payload__"]
-            if isinstance(formulae, list):
-                return [item for item in formulae if isinstance(item, dict)]
     return fetch_formulae(refresh=refresh)
 
 
@@ -48,15 +32,18 @@ def main() -> int:
     args = parse_args()
     ensure_root()
     formulae = seeded_formulae(args.refresh)
+    cask_index = fetch_cask_index(refresh=args.refresh)
+    casks = fetch_supported_casks(cask_index, refresh=args.refresh)
     write_json(CACHE_DIR / "brew" / "formulae.json", {
         "schema": 1,
         "source": "https://formulae.brew.sh/api/formula.json",
         "source_hash": stable_hash(formulae),
         "formulae": formulae,
     })
+    write_cask_cache(casks)
     executables = build_executable_index(formulae, refresh=args.refresh, fetch_manifests=args.fetch_manifests, limit=args.manifest_limit)
     write_executable_index(executables)
-    print(json.dumps({"ok": True, "formulae": len(formulae), "executable_packages": len(executables)}, sort_keys=True))
+    print(json.dumps({"ok": True, "formulae": len(formulae), "casks": len(casks), "executable_packages": len(executables)}, sort_keys=True))
     return 0
 
 

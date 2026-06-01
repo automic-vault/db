@@ -6,16 +6,14 @@ import os
 import time
 import urllib.parse
 import urllib.request
-from pathlib import Path
 from typing import Any
 
 from .brew import stable_version
-from .common import CACHE_DIR, DEFAULT_TIMEOUT, USER_AGENT, fetch_json, read_json, write_json
+from .common import CACHE_DIR, COMBINED_DIR, DEFAULT_TIMEOUT, DETERMINISTIC_DIR, USER_AGENT, read_json, write_json
 
 
 TOKEN_SERVICE = "https://ghcr.io/token"
 MANIFEST_ACCEPT = "application/vnd.oci.image.index.v1+json"
-SOURCE_DB = Path.home() / "src" / "automic-vault" / "data" / "db.json"
 _TOKENS: dict[tuple[str, bool], dict[str, Any]] = {}
 
 
@@ -40,13 +38,73 @@ def executable_index_from_db(db: dict[str, Any]) -> dict[str, list[str]]:
     return {name: sorted(executables) for name, executables in result.items()}
 
 
+def executable_entries_from_index(index: dict[str, list[str]]) -> dict[str, str]:
+    entries: dict[str, str] = {}
+    for formula in sorted(index):
+        for executable in sorted(set(index[formula])):
+            entries.setdefault(executable, formula)
+    return dict(sorted(entries.items()))
+
+
+def _yaml_scalar(value: str) -> str:
+    return value.strip().strip("'\"")
+
+
+def _simple_yaml_list(text: str, key: str) -> list[str]:
+    result: list[str] = []
+    lines = text.splitlines()
+    in_list = False
+    list_indent = 0
+    for raw in lines:
+        stripped = raw.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        indent = len(raw) - len(raw.lstrip(" "))
+        if not in_list:
+            if stripped == f"{key}:":
+                in_list = True
+                list_indent = indent + 2
+            continue
+        if indent < list_indent:
+            break
+        if indent == list_indent and stripped.startswith("- "):
+            item = _yaml_scalar(stripped[2:])
+            if item:
+                result.append(item)
+    return sorted(set(result))
+
+
+def _simple_yaml_scalar(text: str, key: str) -> str:
+    prefix = f"{key}:"
+    for raw in text.splitlines():
+        stripped = raw.strip()
+        if not stripped or stripped.startswith("#") or not stripped.startswith(prefix):
+            continue
+        return _yaml_scalar(stripped[len(prefix):])
+    return ""
+
+
+def executable_index_from_project_yaml(root=COMBINED_DIR) -> dict[str, list[str]]:
+    result: dict[str, list[str]] = {}
+    if not root.exists():
+        return result
+    for path in sorted(root.glob("*.yml")):
+        text = path.read_text(encoding="utf-8")
+        identifier = _simple_yaml_scalar(text, "id")
+        if not identifier.startswith("brew:"):
+            continue
+        formula = identifier.split(":", 1)[1]
+        executables = _simple_yaml_list(text, "executables")
+        if formula and executables:
+            result[formula] = executables
+    return result
+
+
 def seed_executables_from_source() -> dict[str, list[str]]:
-    if not SOURCE_DB.exists():
-        return {}
-    payload = read_json(SOURCE_DB)
-    if not isinstance(payload, dict):
-        return {}
-    return executable_index_from_db(payload)
+    seeded = executable_index_from_project_yaml(COMBINED_DIR)
+    if seeded:
+        return seeded
+    return executable_index_from_project_yaml(DETERMINISTIC_DIR)
 
 
 def parse_exec_paths(paths: list[str]) -> list[str]:
@@ -192,6 +250,11 @@ def build_executable_index(formulae: list[dict[str, Any]], *, refresh: bool = Fa
 
 def write_executable_index(index: dict[str, list[str]]) -> None:
     write_json(CACHE_DIR / "brew" / "executables.json", {"schema": 1, "packages": index})
+    write_json(CACHE_DIR / "brew" / "executable-entries.json", {
+        "schema": 1,
+        "provider": "brew",
+        "entries": executable_entries_from_index(index),
+    })
 
 
 def read_executable_index() -> dict[str, list[str]]:
