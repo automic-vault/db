@@ -73,7 +73,6 @@ def render_stage(formulae: list[dict[str, Any]], manager_indexes: dict[str, Any]
 
 def publish_stages() -> dict[str, Any]:
     sync_tree(STAGE_DIR / "deterministic", DETERMINISTIC_DIR)
-    render_agents_yaml_tree()
     combined_count = render_combined_tree()
     return {"deterministic": str(DETERMINISTIC_DIR), "combined": str(COMBINED_DIR), "combined_projects": combined_count}
 
