@@ -132,7 +132,6 @@ class ExecutableSeedTests(unittest.TestCase):
             {
                 "summary": "Official Amazon AWS command-line interface",
                 "homepage": "https://aws.amazon.com/cli/",
-                "repo": "https://github.com/aws/aws-cli",
                 "repository": "https://github.com/aws/aws-cli",
                 "docs": ["https://docs.aws.amazon.com/cli/latest/userguide"],
                 "upstreamDocs": "https://docs.aws.amazon.com/cli/latest/userguide",
@@ -141,6 +140,7 @@ class ExecutableSeedTests(unittest.TestCase):
                 "oldnames": ["awscli-old"],
             },
         )
+        self.assertNotIn("repo", db["formulas"]["awscli"])
         self.assertEqual(db["entries"]["op"], "cask:1password-cli")
         self.assertIn("1password-cli", db["casks"])
         self.assertEqual(db["npms"], {})

@@ -6,6 +6,7 @@ import json
 import lzma
 import re
 import sqlite3
+import subprocess
 import tarfile
 import tempfile
 import urllib.parse
@@ -160,6 +161,21 @@ def maybe_decompress(data: bytes, url: str = "") -> bytes:
         data = gzip.decompress(data)
     if url.endswith(".xz") or data.startswith(b"\xfd7zXZ\x00"):
         return lzma.decompress(data)
+    if url.endswith(".zst") or data.startswith(b"\x28\xb5\x2f\xfd"):
+        try:
+            import zstandard
+
+            return zstandard.ZstdDecompressor().decompress(data)
+        except ImportError:
+            try:
+                return subprocess.run(
+                    ["zstd", "-dcq"],
+                    input=data,
+                    check=True,
+                    capture_output=True,
+                ).stdout
+            except FileNotFoundError as err:
+                raise RuntimeError("zstd-compressed package metadata requires the zstandard Python module or zstd executable") from err
     return data
 
 

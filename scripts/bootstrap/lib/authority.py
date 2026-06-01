@@ -36,7 +36,6 @@ def formula_metadata_from_record(record: dict[str, Any], formula: dict[str, Any]
     metadata = {
         "summary": str(record.get("description") or ""),
         "homepage": str(record.get("homepage") or ""),
-        "repo": repo,
         "repository": repo,
         "docs": docs,
         "upstreamDocs": docs[0] if docs else "",

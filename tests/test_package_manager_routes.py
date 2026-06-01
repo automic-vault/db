@@ -1,6 +1,7 @@
 import unittest
+import subprocess
 
-from scripts.bootstrap.lib.managers import MANAGER_DEFINITIONS, manager_matcher, package_manager_routes
+from scripts.bootstrap.lib.managers import MANAGER_DEFINITIONS, manager_matcher, package_manager_routes, parse_rpm_primary
 
 
 def route_map(name):
@@ -76,6 +77,26 @@ class PackageManagerRouteTests(unittest.TestCase):
         self.assertEqual(commands["brew"], "brew install awscli")
         self.assertEqual(commands["debian"], "sudo apt install awscli")
         self.assertEqual(commands["nix"], "nix profile install nixpkgs#awscli")
+
+    def test_rpm_primary_parser_accepts_zstd_metadata(self):
+        xml = b"""<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://linux.duke.edu/metadata/common">
+  <package type="rpm"><name>awscli2</name></package>
+</metadata>
+"""
+        try:
+            compressed = subprocess.run(
+                ["zstd", "-q", "-c"],
+                input=xml,
+                check=True,
+                capture_output=True,
+            ).stdout
+        except FileNotFoundError:
+            self.skipTest("zstd executable is not available")
+
+        records = parse_rpm_primary(compressed, "https://example.test/repodata/primary.xml.zst")
+
+        self.assertEqual(records[0]["id"], "awscli2")
 
 
 if __name__ == "__main__":
