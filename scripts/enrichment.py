@@ -28,6 +28,7 @@ CATEGORIES = {
     "science",
     "productivity",
     "games",
+    "toys",
     "other",
 }
 TAG_REPLACEMENTS = {

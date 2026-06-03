@@ -23,6 +23,7 @@ CATEGORIES = {
     "science",
     "productivity",
     "games",
+    "toys",
     "other",
 }
 
