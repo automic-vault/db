@@ -38,3 +38,21 @@ Precedence is deterministic < agents < human override. Raw Codex JSON is kept
 under `cache/` for resumability/debugging; YAML in `agents/` is the committed
 agent-curated layer. Confidence and provenance fields stay in the agent stages
 and are not copied into `combined/`.
+
+## Nightly Maintenance
+
+Run the long-lived keeper when you want the refresh and enrichment cadence to
+look after itself:
+
+```sh
+scripts/nightly-maintenance.py
+```
+
+Defaults:
+
+- daily source refresh at 02:15 local time
+- weekly new-project enrichment on Sunday at 03:15, limited to 50 projects
+- weekly stale/updated review on Sunday at 04:15, limited to 50 projects
+
+Use `scripts/nightly-maintenance.py --help` for schedule knobs and
+`scripts/nightly-maintenance.py --once --dry-run` to preview the next action.
