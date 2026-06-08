@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import gzip
 import hashlib
+import http.client
 import json
 import os
 import shutil
@@ -29,6 +30,7 @@ PAYLOAD_KEY = "__pkgdb_payload__"
 DEFAULT_TIMEOUT = 90
 CHECK_INTERVAL_SECONDS = 24 * 60 * 60
 USER_AGENT = "av.db/1.0"
+FETCH_ATTEMPTS = 3
 
 
 def ensure_root() -> Path:
@@ -178,13 +180,32 @@ def fetch_json(url: str, *, namespace: str, refresh: bool = False) -> Any:
 
 def fetch_bytes(url: str, *, namespace: str, refresh: bool = False) -> bytes:
     path = cache_path_for_url(url, namespace, ".data")
-    if path.exists() and not refresh:
-        return path.read_bytes()
-    request = urllib.request.Request(url, headers={"Accept": "*/*", "User-Agent": USER_AGENT})
-    with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
-        data = response.read()
+    cached_data = path.read_bytes() if path.exists() else None
+    if cached_data is not None and not refresh:
+        return cached_data
+
+    last_error: BaseException | None = None
+    for attempt in range(FETCH_ATTEMPTS):
+        request = urllib.request.Request(url, headers={"Accept": "*/*", "User-Agent": USER_AGENT})
+        try:
+            with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
+                data = response.read()
+            break
+        except urllib.error.HTTPError:
+            raise
+        except (http.client.IncompleteRead, urllib.error.URLError, TimeoutError, OSError) as err:
+            last_error = err
+            if attempt + 1 < FETCH_ATTEMPTS:
+                time.sleep(2**attempt)
+    else:
+        if cached_data is not None:
+            return cached_data
+        if last_error is not None:
+            raise last_error
+        raise RuntimeError(f"failed to fetch {url}")
+
     path.parent.mkdir(parents=True, exist_ok=True)
-    if not path.exists() or path.read_bytes() != data:
+    if cached_data != data:
         path.write_bytes(data)
     return data
 

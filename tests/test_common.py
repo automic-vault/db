@@ -1,6 +1,8 @@
+import http.client
 import subprocess
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 from scripts.bootstrap.lib import common
@@ -68,6 +70,69 @@ class CommonGitTests(unittest.TestCase):
                 common.ROOT = original_root
 
             self.assertIsNone(commit)
+
+
+class FetchBytesTests(unittest.TestCase):
+    def test_fetch_bytes_retries_incomplete_read(self):
+        original_cache_dir = common.CACHE_DIR
+        calls = []
+
+        class Response:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def read(self):
+                calls.append(None)
+                if len(calls) == 1:
+                    raise http.client.IncompleteRead(b"partial", 5)
+                return b"complete"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            try:
+                common.CACHE_DIR = Path(tmp)
+                with (
+                    mock.patch.object(common.urllib.request, "urlopen", return_value=Response()),
+                    mock.patch.object(common.time, "sleep"),
+                ):
+                    data = common.fetch_bytes(
+                        "https://example.com/index.data",
+                        namespace="test",
+                        refresh=True,
+                    )
+            finally:
+                common.CACHE_DIR = original_cache_dir
+
+        self.assertEqual(data, b"complete")
+        self.assertEqual(len(calls), 2)
+
+    def test_fetch_bytes_uses_cached_data_after_retryable_refresh_failure(self):
+        original_cache_dir = common.CACHE_DIR
+
+        with tempfile.TemporaryDirectory() as tmp:
+            try:
+                common.CACHE_DIR = Path(tmp)
+                url = "https://example.com/index.data"
+                path = common.cache_path_for_url(url, "test", ".data")
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b"cached")
+
+                with (
+                    mock.patch.object(
+                        common.urllib.request,
+                        "urlopen",
+                        side_effect=common.urllib.error.URLError("timeout"),
+                    ) as urlopen,
+                    mock.patch.object(common.time, "sleep"),
+                ):
+                    data = common.fetch_bytes(url, namespace="test", refresh=True)
+            finally:
+                common.CACHE_DIR = original_cache_dir
+
+        self.assertEqual(data, b"cached")
+        self.assertEqual(urlopen.call_count, common.FETCH_ATTEMPTS)
 
 
 if __name__ == "__main__":
