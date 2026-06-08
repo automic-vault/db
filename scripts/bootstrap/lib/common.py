@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import shutil
+import subprocess
 import tempfile
 import time
 import urllib.error
@@ -33,6 +34,34 @@ USER_AGENT = "av.db/1.0"
 def ensure_root() -> Path:
     os.chdir(ROOT)
     return ROOT
+
+
+def git_commit_if_changed(message: str, paths: list[str | Path]) -> str | None:
+    if not paths:
+        return None
+    path_args = [Path(path).as_posix() for path in paths]
+    subprocess.run(["git", "add", "-A", "--", *path_args], cwd=ROOT, check=True)
+    diff = subprocess.run(["git", "diff", "--cached", "--quiet", "--", *path_args], cwd=ROOT)
+    if diff.returncode == 0:
+        return None
+    if diff.returncode != 1:
+        diff.check_returncode()
+    subprocess.run(
+        ["git", "commit", "-m", message, "--", *path_args],
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+    )
+    result = subprocess.run(
+        ["git", "rev-parse", "--short", "HEAD"],
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    return result.stdout.strip()
 
 
 def stable_json(value: Any) -> str:

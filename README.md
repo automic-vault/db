@@ -54,5 +54,9 @@ Defaults:
 - weekly new-project enrichment on Sunday at 03:15, limited to 50 projects
 - weekly stale/updated review on Sunday at 04:15, limited to 50 projects
 
+Successful daily refreshes commit tracked `deterministic/` and `combined/`
+changes. Weekly enrichment commits tracked `agents/` and `combined/` changes
+after each applied Codex batch, so long runs checkpoint progress as they go.
+
 Use `scripts/nightly-maintenance.py --help` for schedule knobs and
 `scripts/nightly-maintenance.py --once --dry-run` to preview the next action.

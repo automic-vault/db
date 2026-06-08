@@ -11,7 +11,7 @@ from typing import Any
 ROOT_PATH = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_PATH))
 
-from scripts.bootstrap.lib.common import CACHE_DIR, ROOT, ensure_root, read_json, write_json
+from scripts.bootstrap.lib.common import CACHE_DIR, ROOT, ensure_root, git_commit_if_changed, read_json, write_json
 from scripts.bootstrap.lib.render import render_combined_tree
 from scripts.enrichment import (
     apply_results,
@@ -40,6 +40,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--force", action="store_true", help="Re-run Codex even when a valid batch checkpoint exists.")
     parser.add_argument("--run-id", help="Resume or write artifacts under a specific enrichment run id.")
     parser.add_argument("--dry-run", action="store_true", help="Build cache/input artifacts without invoking Codex or editing YAML.")
+    parser.add_argument("--commit-after-batch", action="store_true", help="Commit tracked YAML changes after each applied batch.")
     parser.add_argument("--provider", default="brew", choices=["brew"], help="Project provider to enrich.")
     parser.add_argument("--confidence-threshold", choices=["high", "medium", "low"], default="medium")
     return parser.parse_args()
@@ -236,6 +237,12 @@ def main() -> int:
         render_combined_tree()
         write_json(batch_dir / "apply-summary.json", batch_summary)
         write_json(state_path, state)
+        if args.commit_after_batch:
+            commit = git_commit_if_changed(
+                f"nightly: enrich {args.mode} batch {batch_index:04d}",
+                ["agents", "combined"],
+            )
+            print(f"COMMIT batch {batch_index:04d} {commit}" if commit else f"SKIP commit batch {batch_index:04d}; no tracked changes")
 
         if errors:
             print(

@@ -16,6 +16,10 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from scripts.bootstrap.lib.common import git_commit_if_changed
+
 CACHE_DIR = ROOT / "cache" / "nightly-maintenance"
 STATE_PATH = CACHE_DIR / "state.json"
 LOG_DIR = CACHE_DIR / "logs"
@@ -45,6 +49,8 @@ class Job:
     at: clock_time
     command: list[str]
     weekday: int | None = None
+    commit_paths: list[str] | None = None
+    commit_message: str | None = None
 
 
 class Palette:
@@ -242,6 +248,21 @@ def run_job(job: Job, state: dict[str, Any], scheduled: datetime, palette: Palet
     elapsed = human_duration((datetime.now() - started).total_seconds())
     job_state["last_exit_code"] = code
     job_state["last_finished_at"] = datetime.now().isoformat(timespec="seconds")
+    if code == 0 and job.commit_paths:
+        try:
+            commit = git_commit_if_changed(job.commit_message or f"nightly: {job.key}", job.commit_paths)
+        except subprocess.CalledProcessError as err:
+            code = err.returncode or 1
+            job_state["last_commit_error_at"] = datetime.now().isoformat(timespec="seconds")
+            status(palette, "fail", palette.bad, f"{job.title} commit failed", f"exit {code}")
+        else:
+            if commit:
+                job_state["last_commit"] = commit
+                job_state["last_commit_at"] = datetime.now().isoformat(timespec="seconds")
+                status(palette, "ok", palette.good, f"{job.title} committed", commit)
+            else:
+                status(palette, "wait", palette.accent, f"{job.title} had no tracked changes to commit")
+
     if code == 0:
         job_state["last_successful_occurrence"] = occurrence_key(scheduled)
         job_state["last_success_at"] = datetime.now().isoformat(timespec="seconds")
@@ -262,6 +283,8 @@ def build_jobs(args: argparse.Namespace) -> list[Job]:
             cadence="daily",
             at=args.build_time,
             command=[py, "scripts/build.py", "--refresh"],
+            commit_paths=["deterministic", "combined"],
+            commit_message="nightly: refresh package data",
         ),
         Job(
             key="enrich-new",
@@ -278,6 +301,7 @@ def build_jobs(args: argparse.Namespace) -> list[Job]:
                 str(args.enrich_limit),
                 "--batch-size",
                 str(args.batch_size),
+                "--commit-after-batch",
             ],
         ),
         Job(
@@ -295,6 +319,7 @@ def build_jobs(args: argparse.Namespace) -> list[Job]:
                 str(args.enrich_limit),
                 "--batch-size",
                 str(args.batch_size),
+                "--commit-after-batch",
             ],
         ),
     ]
