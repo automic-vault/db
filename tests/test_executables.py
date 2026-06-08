@@ -83,6 +83,32 @@ class ExecutableSeedTests(unittest.TestCase):
             },
         )
 
+    def test_formula_executables_seed_allows_formula_cli_name_mismatch(self):
+        formulae = [
+            {
+                "name": "sem-cli",
+                "executables": ["sem"],
+            }
+        ]
+
+        with mock.patch.object(executables, "seed_executables_from_source", return_value={}):
+            self.assertEqual(
+                executables.build_executable_index(formulae, fetch_manifests=False),
+                {"sem-cli": ["sem"]},
+            )
+
+    def test_formula_executables_keep_colliding_formulae_in_package_index(self):
+        formulae = [
+            {"name": "parallel", "executables": ["parallel", "sem"]},
+            {"name": "sem-cli", "executables": ["sem"]},
+        ]
+
+        with mock.patch.object(executables, "seed_executables_from_source", return_value={}):
+            index = executables.build_executable_index(formulae, fetch_manifests=False)
+
+        self.assertEqual(index["parallel"], ["parallel", "sem"])
+        self.assertEqual(index["sem-cli"], ["sem"])
+
     def test_automic_vault_db_export_uses_project_yaml_as_authority(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

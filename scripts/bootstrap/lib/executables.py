@@ -118,6 +118,22 @@ def parse_exec_paths(paths: list[str]) -> list[str]:
     return sorted(result)
 
 
+def executables_from_formula(formula: dict[str, Any]) -> list[str]:
+    return parse_exec_paths([item for item in formula.get("executables") or [] if isinstance(item, str)])
+
+
+def executable_index_from_formulae(formulae: list[dict[str, Any]]) -> dict[str, list[str]]:
+    result: dict[str, list[str]] = {}
+    for formula in formulae:
+        name = formula.get("name")
+        if not isinstance(name, str) or not name:
+            continue
+        executables = executables_from_formula(formula)
+        if executables:
+            result[name] = executables
+    return result
+
+
 def manifest_url(formula: dict[str, Any]) -> str:
     name = formula.get("name")
     version = stable_version(formula)
@@ -176,7 +192,10 @@ def fetch_manifest(url: str, *, refresh: bool = False) -> dict[str, Any] | None:
     parsed = urllib.parse.urlparse(url)
     repo = ghcr_repo_from_url(parsed.path)
     headers = {"Accept": MANIFEST_ACCEPT, "User-Agent": USER_AGENT}
-    token = ghcr_bearer_token(repo) if repo else ""
+    try:
+        token = ghcr_bearer_token(repo) if repo else ""
+    except Exception:
+        return None
     if token:
         headers["Authorization"] = f"Bearer {token}"
     return fetch_json_with_headers(url, headers=headers, namespace="brew-manifests", refresh=refresh)
@@ -223,7 +242,8 @@ def executables_from_manifest(payload: dict[str, Any]) -> list[str]:
 
 
 def build_executable_index(formulae: list[dict[str, Any]], *, refresh: bool = False, fetch_manifests: bool = False, limit: int = 0) -> dict[str, list[str]]:
-    seeded = seed_executables_from_source()
+    seeded = executable_index_from_formulae(formulae)
+    seeded.update(seed_executables_from_source())
     if not fetch_manifests:
         return seeded
     result = {key: list(value) for key, value in seeded.items()}
@@ -232,7 +252,7 @@ def build_executable_index(formulae: list[dict[str, Any]], *, refresh: bool = Fa
         name = formula.get("name")
         if not isinstance(name, str) or not name:
             continue
-        if name in result and not refresh:
+        if name in result:
             continue
         url = manifest_url(formula)
         if not url:

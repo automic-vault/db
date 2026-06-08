@@ -8,7 +8,7 @@ import shlex
 import signal
 import subprocess
 import sys
-import time
+import threading
 from dataclasses import dataclass
 from datetime import date, datetime, time as clock_time, timedelta
 from pathlib import Path
@@ -316,6 +316,10 @@ def due_jobs(jobs: list[Job], state: dict[str, Any], now: datetime, catch_up: ti
     return result
 
 
+def wait_or_stop(stop_requested: threading.Event, seconds: float) -> bool:
+    return stop_requested.wait(max(0.0, seconds))
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Keep av.db fresh with nightly source refreshes and weekly Codex enrichment.")
     parser.add_argument("--build-time", type=parse_time, default=parse_time("02:15"), help="Daily build refresh time, local HH:MM.")
@@ -346,12 +350,12 @@ def main() -> int:
     jobs = build_jobs(args)
     state = load_state()
     env = os.environ.copy()
-    stop = False
+    stop_requested = threading.Event()
 
     def request_stop(signum: int, _frame: object) -> None:
-        nonlocal stop
-        stop = True
-        status(palette, "wait", palette.warn, f"Received signal {signum}; stopping after current work")
+        if not stop_requested.is_set():
+            status(palette, "wait", palette.warn, f"Received signal {signum}; stopping after current work")
+        stop_requested.set()
 
     signal.signal(signal.SIGTERM, request_stop)
     signal.signal(signal.SIGINT, request_stop)
@@ -359,7 +363,7 @@ def main() -> int:
     banner(palette, "av.db nightly keeper", f"cwd {ROOT}")
     print_schedule(jobs, datetime.now(), palette)
 
-    while not stop:
+    while not stop_requested.is_set():
         now = datetime.now()
         catch_up = timedelta(hours=args.catch_up_hours)
         if args.run_now:
@@ -370,20 +374,20 @@ def main() -> int:
 
         if ready:
             for index, (job, scheduled) in enumerate(ready):
-                if stop:
+                if stop_requested.is_set():
                     break
                 if args.dry_run:
                     command_text = " ".join(shlex.quote(part) for part in job.command)
                     status(palette, "run", palette.accent, f"Would run {job.title}", command_text)
                 else:
                     run_job(job, state, scheduled, palette, env)
-                if index != len(ready) - 1 and not stop:
+                if index != len(ready) - 1 and not stop_requested.is_set():
                     pause = max(0.0, args.between_jobs_minutes * 60)
                     if args.dry_run:
                         status(palette, "wait", palette.accent, "Would cool down before next job", human_duration(pause))
                     else:
                         status(palette, "wait", palette.accent, "Cooling down before next job", human_duration(pause))
-                        time.sleep(pause)
+                        wait_or_stop(stop_requested, pause)
             if args.once or args.dry_run:
                 break
             continue
@@ -393,7 +397,7 @@ def main() -> int:
         status(palette, "wait", palette.accent, "Sleeping", f"next check in {human_duration(sleep_seconds)}; next job {next_run.strftime('%a %H:%M')}")
         if args.once:
             break
-        time.sleep(sleep_seconds)
+        wait_or_stop(stop_requested, sleep_seconds)
 
     status(palette, "ok", palette.good, "Stopped")
     return 0

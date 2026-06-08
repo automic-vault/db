@@ -152,6 +152,8 @@ def should_run(step: Step, state: dict[str, str], *, refresh: bool, force: bool)
     fp = fingerprint(step, refresh=refresh)
     if force:
         return True, fp
+    if refresh and step.refresh_sensitive:
+        return True, fp
     if state.get(step.name) != fp:
         return True, fp
     if not all(output_exists(path) for path in step.outputs):
