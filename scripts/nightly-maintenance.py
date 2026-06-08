@@ -332,6 +332,16 @@ def print_schedule(jobs: list[Job], now: datetime, palette: Palette) -> None:
         line(palette, f"  {job.key:22} {upcoming.strftime('%a %Y-%m-%d %H:%M')}")
 
 
+def print_sleeping_status(palette: Palette, sleep_seconds: float, next_run: datetime) -> None:
+    status(
+        palette,
+        "wait",
+        palette.accent,
+        "Sleeping",
+        f"next check in {human_duration(sleep_seconds)}; next job {next_run.strftime('%a %H:%M')}",
+    )
+
+
 def due_jobs(jobs: list[Job], state: dict[str, Any], now: datetime, catch_up: timedelta) -> list[tuple[Job, datetime]]:
     result = []
     for job in jobs:
@@ -385,9 +395,6 @@ def main() -> int:
     signal.signal(signal.SIGTERM, request_stop)
     signal.signal(signal.SIGINT, request_stop)
 
-    banner(palette, "av.db nightly keeper", f"cwd {ROOT}")
-    print_schedule(jobs, datetime.now(), palette)
-
     while not stop_requested.is_set():
         now = datetime.now()
         catch_up = timedelta(hours=args.catch_up_hours)
@@ -419,12 +426,11 @@ def main() -> int:
 
         next_run = min(next_occurrence(job, now) for job in jobs)
         sleep_seconds = min(max(1.0, args.poll_minutes * 60), max(1.0, (next_run - now).total_seconds()))
-        status(palette, "wait", palette.accent, "Sleeping", f"next check in {human_duration(sleep_seconds)}; next job {next_run.strftime('%a %H:%M')}")
+        print_sleeping_status(palette, sleep_seconds, next_run)
         if args.once:
             break
         wait_or_stop(stop_requested, sleep_seconds)
 
-    status(palette, "ok", palette.good, "Stopped")
     return 0
 
 

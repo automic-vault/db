@@ -1,8 +1,11 @@
 import importlib.util
 import argparse
+import contextlib
+import io
 import sys
 import threading
 import unittest
+from datetime import datetime
 from pathlib import Path
 
 
@@ -46,6 +49,16 @@ class NightlyMaintenanceTests(unittest.TestCase):
         self.assertEqual(jobs["build-refresh"].commit_paths, ["deterministic", "combined"])
         self.assertIn("--commit-after-batch", jobs["enrich-new"].command)
         self.assertIn("--commit-after-batch", jobs["enrich-stale-updated"].command)
+
+    def test_sleeping_status_is_single_cycle_message(self):
+        maintenance = load_nightly_maintenance()
+        palette = maintenance.Palette(enabled=False, ascii_only=False)
+        output = io.StringIO()
+
+        with contextlib.redirect_stdout(output):
+            maintenance.print_sleeping_status(palette, 15 * 60, datetime(2026, 6, 9, 2, 15))
+
+        self.assertEqual(output.getvalue(), "◇ Sleeping next check in 15m; next job Tue 02:15\n")
 
 
 if __name__ == "__main__":
