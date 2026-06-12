@@ -46,6 +46,7 @@ script is intentionally one-shot: Codex owns the schedule, and each invocation
 runs exactly one task.
 
 ```sh
+scripts/automation-runner.sh db
 scripts/nightly-maintenance.py refresh
 scripts/nightly-maintenance.py enrich-new
 scripts/nightly-maintenance.py review-stale-updated
@@ -53,6 +54,12 @@ scripts/nightly-maintenance.py review-stale-updated
 
 Defaults:
 
+- `db`: runs the hourly package database refresh through
+  `scripts/hourly-maintenance.py`, including isotope fork scans. By default it
+  builds and publishes only missing latest upstream isotope releases, then
+  regenerates `cache/automic-vault/isotopes.json`. Use
+  `scripts/hourly-maintenance.py --skip-isotope-builds` for a summary-only
+  isotope refresh.
 - `refresh`: runs `scripts/build.py --refresh` and commits tracked
   `deterministic/` and `combined/` changes.
 - `enrich-new`: runs Codex enrichment for newly observed projects, limited to

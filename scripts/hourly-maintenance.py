@@ -48,7 +48,12 @@ def commit_if_changed(message: str) -> str | None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run one av.db hourly package database update.")
     parser.add_argument("--no-commit", action="store_true", help="Do not commit stable source changes.")
-    parser.add_argument("--skip-isotopes", action="store_true", help="Skip isotope summary refresh.")
+    parser.add_argument("--skip-isotopes", action="store_true", help="Skip isotope build and summary refresh.")
+    parser.add_argument(
+        "--skip-isotope-builds",
+        action="store_true",
+        help="Refresh isotope summary without building or publishing isotope releases.",
+    )
     parser.add_argument("--skip-sqlite", action="store_true", help="Skip package SQLite generation.")
     return parser.parse_args()
 
@@ -60,7 +65,10 @@ def main() -> int:
 
     run([py, "scripts/build.py", "--refresh"])
     if not args.skip_isotopes:
-        run(["bash", "scripts/build-isotopes.sh", "--skip-builds"])
+        isotope_command = ["bash", "scripts/build-isotopes.sh"]
+        if args.skip_isotope_builds:
+            isotope_command.append("--skip-builds")
+        run(isotope_command)
     run([py, "scripts/export-automic-vault-db.py"])
     run([py, "scripts/generate-pkg-page-enrichment.py", "--refresh"])
     run([py, "scripts/generate-pkg-version-freshness.py"])
