@@ -7,8 +7,9 @@ from pathlib import Path
 from typing import Any
 
 
-PKG_HUBS_PATH = Path("data/pkg-hubs.json")
-PKG_TAXONOMY_PATH = Path("data/pkg-taxonomy.json")
+REPO_ROOT = Path(__file__).resolve().parent.parent
+PKG_HUBS_PATH = REPO_ROOT / "data/pkg-hubs.json"
+PKG_TAXONOMY_PATH = REPO_ROOT / "data/pkg-taxonomy.json"
 
 
 def read_json(path: Path, default: Any = None) -> Any:
