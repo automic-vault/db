@@ -1,0 +1,143 @@
+import importlib.util
+import json
+import sys
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parent.parent
+
+
+def load_renderer():
+    spec = importlib.util.spec_from_file_location("pkg_pages_for_tests", ROOT / "scripts" / "generate-pkg-pages.py")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+pkg_pages = load_renderer()
+
+
+def sshfs_page():
+    page = pkg_pages.PackagePage(
+        provider="brew",
+        name="sshfs",
+        summary="File system client based on SSH File Transfer Protocol",
+        version="3.7.6",
+        package_manager="Homebrew",
+        package_manager_url="https://formulae.brew.sh/formula/sshfs",
+        executables=[
+            {"name": "mount.fuse.sshfs", "kind": "cli"},
+            {"name": "mount.sshfs", "kind": "cli"},
+            {"name": "sshfs", "kind": "cli"},
+        ],
+        geiger={
+            "level": "blue",
+            "confidence": "medium",
+            "category": "filesystem",
+            "reasons": ["Can mount remote filesystems over SSH."],
+            "signals": ["remote filesystem access"],
+        },
+        install_commands=[
+            {
+                "platform": "portable",
+                "manager": "Automic Vault",
+                "command": "sudo av install brew:sshfs",
+                "kind": "automic_vault",
+                "confidence": 1.0,
+                "evidence": "deterministic local package key",
+            },
+            {
+                "platform": "macos",
+                "manager": "Homebrew",
+                "command": "brew install sshfs",
+                "kind": "package_manager",
+                "confidence": 1.0,
+                "evidence": "local Homebrew formula metadata",
+            },
+            {
+                "platform": "linux",
+                "manager": "Debian apt",
+                "command": "sudo apt install sshfs",
+                "kind": "package_manager",
+                "confidence": 0.92,
+                "evidence": "Debian stable package indexes",
+                "source": {"manager": "debian"},
+            },
+            {
+                "platform": "linux",
+                "manager": "Fedora dnf",
+                "command": "sudo dnf install fuse-sshfs",
+                "kind": "package_manager",
+                "confidence": 0.92,
+                "evidence": "Fedora package metadata",
+                "source": {"manager": "dnf"},
+            },
+            {
+                "platform": "linux",
+                "manager": "Nix",
+                "command": "nix profile install nixpkgs#sshfs",
+                "kind": "package_manager",
+                "confidence": 0.92,
+                "evidence": "nixpkgs package indexes",
+                "source": {"manager": "nix"},
+            },
+        ],
+    )
+    page.extra["pkgTaxonomy"] = {"category": "filesystem-tools", "tags": ["ssh", "sftp", "fuse", "filesystem"]}
+    return page
+
+
+class PackagePageRenderingTests(unittest.TestCase):
+    def test_title_and_description_use_install_intent_and_managers(self):
+        page = sshfs_page()
+
+        self.assertEqual(
+            pkg_pages.package_install_title(page),
+            "How to Install sshfs | Homebrew, apt, dnf, Nix",
+        )
+        description = pkg_pages.meta_description(page)
+
+        self.assertIn("Install sshfs with Homebrew, apt, dnf, Nix.", description)
+        self.assertIn("Includes executables", description)
+
+    def test_summary_and_support_coverage_are_metadata_backed(self):
+        page = sshfs_page()
+
+        self.assertEqual(
+            pkg_pages.plain_package_summary(page),
+            "sshfs mounts remote machines over SSH/SFTP and exposes them as local filesystems.",
+        )
+        self.assertEqual(
+            pkg_pages.package_manager_coverage(page),
+            [
+                ("macOS", ["Homebrew"]),
+                ("Debian/Ubuntu", ["apt"]),
+                ("Fedora", ["dnf"]),
+                ("NixOS", ["Nix"]),
+            ],
+        )
+
+    def test_faq_schema_is_emitted_from_page_metadata(self):
+        page = sshfs_page()
+        schema = pkg_pages.schema_for_package(page, pkg_pages.meta_description(page), "2026-06-12")
+        faq = next(item for item in schema["@graph"] if item["@type"] == "FAQPage")
+
+        self.assertGreaterEqual(len(faq["mainEntity"]), 4)
+        questions = [item["name"] for item in faq["mainEntity"]]
+        self.assertIn("What is sshfs?", questions)
+        self.assertIn("Is sshfs safe for AI agents to use?", questions)
+
+    def test_rendered_html_contains_top_summary_support_and_agent_risk(self):
+        html = pkg_pages.render_package_page(sshfs_page(), {"generated_at": "2026-06-12T00:00:00Z"})
+
+        self.assertIn('class="summary-card"', html)
+        self.assertIn('id="support-title"', html)
+        self.assertIn("Agent Risk Assessment", html)
+        self.assertIn('"@type": "FAQPage"', html)
+
+
+if __name__ == "__main__":
+    unittest.main()

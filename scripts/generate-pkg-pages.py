@@ -98,9 +98,13 @@ _I18N_PKG_TEMPLATES_CACHE: dict[str, dict[str, str]] | None = None
 
 REQUIRED_I18N_PKG_KEYS = {
     "additionalInstallCommands",
+    "agentRiskAssessment",
+    "agentRiskQuestion",
+    "agentRiskWhy",
     "alsoAvailableVia",
     "approvalGatesKicker",
     "approvalRules",
+    "atAGlance",
     "automicVaultInstallHeading",
     "binaries",
     "bottle",
@@ -129,6 +133,7 @@ REQUIRED_I18N_PKG_KEYS = {
     "downloadAV",
     "executableDataMissing",
     "executables",
+    "executablesCount",
     "executablesTitle",
     "exposure",
     "freshness",
@@ -168,6 +173,8 @@ REQUIRED_I18N_PKG_KEYS = {
     "installSourcePrefix",
     "installTitleConcept",
     "installTitleConceptCopy",
+    "installSupportTitle",
+    "installSupportCopy",
     "issueTracker",
     "kind",
     "keywords",
@@ -197,6 +204,8 @@ REQUIRED_I18N_PKG_KEYS = {
     "packageGraph",
     "packageGraphCopy",
     "packageHubs",
+    "packageManagers",
+    "packageManagersCount",
     "packageKey",
     "packageManager",
     "packageManagerPage",
@@ -218,6 +227,7 @@ REQUIRED_I18N_PKG_KEYS = {
     "radioisotopeMissingSummary",
     "recommendedReview",
     "recommendedReviewCopy",
+    "recommendedHumanReviewItems",
     "related",
     "relatedLinks",
     "relatedPackages",
@@ -230,6 +240,7 @@ REQUIRED_I18N_PKG_KEYS = {
     "schemaHowToName",
     "schemaHowToStep",
     "schemaTechArticleHeadline",
+    "schemaFaqName",
     "securityNotes",
     "securityPosture",
     "service",
@@ -246,6 +257,8 @@ REQUIRED_I18N_PKG_KEYS = {
     "sourcesCopy",
     "status",
     "summaryFallback",
+    "summaryPlainFallback",
+    "supportedOn",
     "taxonomyEvidence",
     "topicalHubs",
     "upstream",
@@ -2412,33 +2425,21 @@ def render_package_page(
     manifest: dict[str, Any],
     locale: dict[str, Any] | None = None,
 ) -> str:
-    title = tx(
-        locale,
-        "installTitle",
-        "Install {name} | Automic Vault",
-        name=page.display_name,
-        manager=package_manager_label(page),
-    )
-    description = meta_description(page) if locale_code(locale) == "en" else tx(
-        locale,
-        "metaDescription",
-        "Install {name} with {manager}. View executables, metadata, and security notes.",
-        name=page.display_name,
-        manager=package_manager_label(page),
-    )
+    title = package_install_title(page, locale)
+    description = meta_description(page, locale)
     updated = fmt_date(page.last_verified) or fmt_date(page.last_updated_at) or fmt_date(manifest.get("generated_at", ""))
-    facts = package_facts(page, locale)
     install_section = render_concept_install(page, locale) if page.key == "brew:ripgrep" else render_install(page, locale)
     sections = [
-        render_agent_safety_answer(page, locale),
+        render_install_support(page, locale),
         install_section,
+        render_agent_risk_assessment(page, locale),
         render_overview(page, locale),
-        render_security(page, locale),
         render_executables(page, locale),
         render_freshness(page, manifest, locale),
         render_install_metadata(page, locale),
         render_registry_insights(page, locale),
         render_external_package_manager_matches(page, locale),
+        render_faq(page, locale),
         render_related(page, locale),
         render_sources(page, locale),
     ]
@@ -2466,14 +2467,17 @@ def render_package_page(
     <div class="hero-copy">
       <p class="eyebrow">{html_escape(tx(locale, 'packageIntelligence', '{provider} package intelligence', provider=page.provider))}</p>
       <h1 id="pkg-title">{html_escape(tx(locale, 'installHeading', 'Install {name}', name=page.display_name))}</h1>
-      <p class="lede">{html_escape(localized_hero_sentence(page, locale))}</p>
+      <div class="summary-card">
+        <p class="section-kicker">{html_escape(tx(locale, 'packageSummary', 'Package summary'))}</p>
+        <p>{html_escape(plain_package_summary(page, locale))}</p>
+      </div>
       <div class="hero-actions">
         <a class="button primary" href="#install">{html_escape(tx(locale, 'installAction', 'Install command'))}</a>
-        <a class="button secondary" href="#security">{html_escape(tx(locale, 'securityAction', 'Security notes'))}</a>
+        <a class="button secondary" href="#security">{html_escape(tx(locale, 'agentRiskAssessment', 'Agent Risk Assessment'))}</a>
       </div>
     </div>
     <aside class="hero-panel" aria-label="{attr(tx(locale, 'packageFacts', 'Package facts'))}">
-      {facts}
+      {render_at_a_glance(page, locale)}
     </aside>
   </section>
   {''.join(sections)}
@@ -2514,6 +2518,152 @@ def render_agent_safety_answer(page: PackagePage, locale: dict[str, Any] | None 
     {articles}
   </div>
 </section>
+"""
+
+
+def render_at_a_glance(page: PackagePage, locale: dict[str, Any] | None = None) -> str:
+    rows = [
+        (tx(locale, "packageKey", "Package"), page.display_name),
+        (tx(locale, "kind", "Category"), human_category_label(page, locale)),
+        (tx(locale, "version", "Latest Version"), page.version or tx(locale, "unknown", "unknown")),
+        (tx(locale, "executablesCount", "Executables"), fmt_int(package_executable_count(page))),
+        (tx(locale, "packageManagersCount", "Package Managers"), fmt_int(package_manager_count(page))),
+        (tx(locale, "risk", "Risk Level"), agent_risk_level(page, locale)),
+    ]
+    metrics = "".join(metric(label, value) for label, value in rows)
+    return f"""
+<div class="at-a-glance">
+  <p class="section-kicker">{html_escape(tx(locale, 'atAGlance', 'At a glance'))}</p>
+  {metrics}
+</div>
+"""
+
+
+def render_install_support(page: PackagePage, locale: dict[str, Any] | None = None) -> str:
+    coverage = package_manager_coverage(page)
+    if not coverage:
+        return ""
+    items = "".join(
+        f"<li><strong>{html_escape(platform)}</strong><span>{html_escape(', '.join(managers))}</span></li>"
+        for platform, managers in coverage
+    )
+    return f"""
+<section class="pkg-section support-section" aria-labelledby="support-title">
+  <div>
+    <p class="section-kicker">{html_escape(tx(locale, 'supportedOn', 'supported on'))}</p>
+    <h2 id="support-title">{html_escape(tx(locale, 'installSupportTitle', 'Install {name} on', name=page.display_name))}</h2>
+    <p>{html_escape(tx(locale, 'installSupportCopy', 'This page collects package-manager commands for the major ecosystems found in local package metadata.'))}</p>
+  </div>
+  <ul class="support-list">{items}</ul>
+</section>
+"""
+
+
+def agent_risk_level(page: PackagePage, locale: dict[str, Any] | None = None) -> str:
+    if page.geiger:
+        return geiger_level_label(page.geiger)
+    if page.agent_safety_answer:
+        return tx(locale, "reviewed", "reviewed")
+    return tx(locale, "unknown", "unknown")
+
+
+def agent_risk_confidence(page: PackagePage, locale: dict[str, Any] | None = None) -> str:
+    if page.geiger:
+        return geiger_confidence_label(page.geiger)
+    if page.agent_safety_answer:
+        return tx(locale, "reviewed", "reviewed")
+    return tx(locale, "unknownConfidence", "unknown confidence")
+
+
+def agent_risk_why(page: PackagePage, locale: dict[str, Any] | None = None) -> str:
+    answer = page.agent_safety_answer
+    if answer:
+        return answer["summary"]
+    if page.geiger:
+        return security_summary(page, locale)
+    summary = plain_package_summary(page, locale)
+    return tx(
+        locale,
+        "agentRiskWhy",
+        "{summary} No dedicated protected-tool manifest is present yet, so review command behavior before unattended agent use.",
+        summary=summary,
+    )
+
+
+def agent_review_items(page: PackagePage, locale: dict[str, Any] | None = None) -> list[str]:
+    items: list[str] = []
+    answer = page.agent_safety_answer
+    if answer:
+        for field in ("credentialAccess", "remoteMutation", "publishOrArtifactRisk", "recommendedControl", "agentUseGuidance"):
+            items.append(answer[field])
+    if page.isotope:
+        caveats = [public_copy(item) for item in page.isotope.get("caveats") or [] if str(item or "").strip()]
+        items.extend(caveats[:4])
+    if page.approval_gate:
+        items.extend(str(rule) for rule in (page.approval_gate.get("rules") or [])[:4] if str(rule or "").strip())
+    if page.geiger:
+        items.extend(str(reason) for reason in (page.geiger.get("reasons") or [])[:3] if str(reason or "").strip())
+    behavior = page.install_behavior or {}
+    if behavior.get("service"):
+        items.append(tx(locale, "signalService", "Formula metadata declares a service or daemon block."))
+    if behavior.get("postInstallDefined") is True:
+        items.append(tx(locale, "signalHomebrewPostinstall", "Package metadata declares a post-install hook."))
+    if not items:
+        items.append(tx(locale, "recommendedReviewCopy", "Before unattended agent use, check whether the tool reads plaintext credentials, writes remote state, publishes artifacts, or shells out to plugins."))
+    result: list[str] = []
+    seen: set[str] = set()
+    for item in items:
+        text = paragraph_text(item, 220)
+        if not text or text.lower() in seen:
+            continue
+        seen.add(text.lower())
+        result.append(text)
+        if len(result) >= 6:
+            break
+    return result
+
+
+def render_agent_risk_assessment(page: PackagePage, locale: dict[str, Any] | None = None) -> str:
+    review_items = "".join(f"<li>{html_escape(item)}</li>" for item in agent_review_items(page, locale))
+    geiger = render_geiger(page, locale)
+    install_signals = render_install_behavior_signals(page, locale)
+    protected = ""
+    if page.isotope:
+        justification = page.isotope.get("justification") or {}
+        title = public_copy(justification.get("title") or tx(locale, "radioisotopeCoverage", "Protected-tool coverage"))
+        detail = public_copy(paragraph_text(justification.get("detail") or page.isotope_readme or tx(locale, "radioisotopeManifestFallback", "Automic Vault has a local secret-handling manifest for this package.")))
+        caveats = page.isotope.get("caveats") or []
+        caveat_items = "".join(f"<li>{html_escape(public_copy(item))}</li>" for item in caveats[:8])
+        protected = f"""
+    <article>
+      <h3>{html_escape(title)}</h3>
+      <p>{html_escape(detail)}</p>
+      <ul>{caveat_items or f'<li>{html_escape(tx(locale, "noCaveats", "No caveats were listed in the local manifest."))}</li>'}</ul>
+    </article>
+"""
+    return f"""
+<section id="security" class="pkg-section security-section agent-risk-section">
+  <div>
+    <p class="section-kicker">{html_escape(tx(locale, 'agentRiskQuestion', 'Should an AI agent run this tool unattended?'))}</p>
+    <h2>{html_escape(tx(locale, 'agentRiskAssessment', 'Agent Risk Assessment'))}</h2>
+    <p>{html_escape(agent_risk_why(page, locale))}</p>
+    {geiger}
+    {install_signals}
+    {render_readme_excerpt(page, locale)}
+  </div>
+  <div class="detail-stack">
+    <article>
+      <h3>{html_escape(tx(locale, 'riskLevel', 'Risk level: {level}', level=agent_risk_level(page, locale)))}</h3>
+      <p>{html_escape(tx(locale, 'classifierConfidence', 'Classifier confidence'))}: {html_escape(agent_risk_confidence(page, locale))}</p>
+    </article>
+    <article>
+      <h3>{html_escape(tx(locale, 'recommendedHumanReviewItems', 'Recommended human review items'))}</h3>
+      <ul>{review_items}</ul>
+    </article>
+    {protected}
+  </div>
+</section>
+{render_gate(page, locale)}
 """
 
 
@@ -2618,7 +2768,7 @@ def render_package_markdown(
     lines = [
         f"# {md_text(tx(locale, 'installHeading', 'Install {name}', name=page.display_name))}",
         "",
-        md_text(localized_hero_sentence(page, locale)),
+        md_text(plain_package_summary(page, locale)),
         "",
         f"## {md_text(tx(locale, 'install', 'Install'))}",
         "",
@@ -2627,7 +2777,8 @@ def render_package_markdown(
         "```",
         "",
     ]
-    lines.extend(md_agent_safety_section(page, locale))
+    lines.extend(md_install_support_section(page, locale))
+    lines.extend(md_agent_risk_section(page, locale))
     lines.extend(md_install_command_groups(page, locale))
     lines.extend([f"## {md_text(tx(locale, 'packageFacts', 'Package Facts'))}", ""])
     fact_rows = [
@@ -2656,10 +2807,53 @@ def render_package_markdown(
     lines.extend(md_registry_insights_section(page, locale))
     lines.extend(md_external_manager_matches_section(page, locale))
     lines.extend(md_freshness_section(page, manifest, locale))
-    lines.extend(md_security_section(page, locale))
+    lines.extend(md_faq_section(page, locale))
     lines.extend(md_related_section(page, locale))
     lines.extend(md_section_list(tx(locale, "sources", "Sources"), page.source_notes))
     return "\n".join(lines).rstrip() + "\n"
+
+
+def md_install_support_section(page: PackagePage, locale: dict[str, Any] | None = None) -> list[str]:
+    coverage = package_manager_coverage(page)
+    if not coverage:
+        return []
+    lines = [f"## {md_text(tx(locale, 'installSupportTitle', 'Install {name} on', name=page.display_name))}", ""]
+    for platform, managers in coverage:
+        lines.append(f"- **{md_text(platform)}:** {md_text(', '.join(managers))}")
+    lines.append("")
+    return lines
+
+
+def md_agent_risk_section(page: PackagePage, locale: dict[str, Any] | None = None) -> list[str]:
+    lines = [
+        f"## {md_text(tx(locale, 'agentRiskAssessment', 'Agent Risk Assessment'))}",
+        "",
+        md_text(agent_risk_why(page, locale)),
+        "",
+        f"- **{md_text(tx(locale, 'risk', 'Risk'))}:** {md_text(agent_risk_level(page, locale))}",
+        f"- **{md_text(tx(locale, 'classifierConfidence', 'Classifier confidence'))}:** {md_text(agent_risk_confidence(page, locale))}",
+        "",
+        f"### {md_text(tx(locale, 'recommendedHumanReviewItems', 'Recommended human review items'))}",
+        "",
+    ]
+    lines.extend(f"- {md_text(item)}" for item in agent_review_items(page, locale))
+    lines.append("")
+    if page.geiger:
+        lines.append(f"- **{md_text(tx(locale, 'geigerRisk', 'Geiger risk'))}:** {md_text(geiger_level_label(page.geiger))} / {md_text(geiger_confidence_label(page.geiger))}")
+        for reason in (page.geiger.get("reasons") or [])[:5]:
+            lines.append(f"- {md_value(reason)}")
+        lines.append("")
+    return lines
+
+
+def md_faq_section(page: PackagePage, locale: dict[str, Any] | None = None) -> list[str]:
+    entries = faq_entries(page, locale)
+    if not entries:
+        return []
+    lines = [f"## {md_text(tx(locale, 'schemaFaqName', 'Package FAQ'))}", ""]
+    for item in entries:
+        lines.extend([f"### {md_text(item['question'])}", "", md_text(item["answer"]), ""])
+    return lines
 
 
 def md_agent_safety_section(page: PackagePage, locale: dict[str, Any] | None = None) -> list[str]:
@@ -2966,22 +3160,31 @@ def sentence_text(value: str) -> str:
     return text
 
 
-def meta_description(page: PackagePage) -> str:
-    alternate = alternate_install_command(page)
-    if alternate:
-        parts = [
-            (
-                f"Install {page.display_name} with {package_manager_label(page)} "
-                f"or {alternate.get('manager')}: {alternate.get('command')}."
-            )
-        ]
-    else:
-        parts = [f"Install {page.display_name} with {package_manager_label(page)}."]
-    summary = clean_summary(page.summary)
+def meta_description(page: PackagePage, locale: dict[str, Any] | None = None) -> str:
+    managers = package_manager_title_list(page)
+    coverage = package_manager_coverage(page)
+    platforms = ", ".join(platform for platform, _managers in coverage[:6])
+    if locale_code(locale) != "en":
+        return short_text(
+            tx(
+                locale,
+                "metaDescription",
+                "Install {name} with {managers}. View package-manager commands, executables, version freshness, and agent risk.",
+                name=page.display_name,
+                manager=package_manager_label(page),
+                managers=managers,
+                platforms=platforms,
+            ),
+            155,
+        )
+    parts = [f"Install {page.display_name} with {managers}."]
+    if platforms:
+        parts.append(f"Covers {platforms}.")
+    if page.executables or page.aliases:
+        parts.append("Includes executables, version freshness, and agent risk.")
+    summary = plain_package_summary(page, locale)
     if summary:
         parts.append(summary)
-    if page.executables or page.aliases:
-        parts.append("View executables, metadata, and security notes.")
     if page.isotope:
         title = (page.isotope.get("justification") or {}).get("title")
         if title:
@@ -3132,6 +3335,228 @@ def source_backed_schema_commands(page: PackagePage) -> list[dict[str, Any]]:
             continue
         result.append(item)
     return result
+
+
+MANAGER_TITLE_PRIORITY = (
+    "homebrew",
+    "apt",
+    "pacman",
+    "dnf",
+    "nix",
+    "npm",
+    "pip",
+    "macports",
+    "apk",
+    "zypper",
+    "chocolatey",
+    "winget",
+    "scoop",
+)
+
+MANAGER_TITLE_LABELS = {
+    "homebrew": "Homebrew",
+    "homebrew cask": "Homebrew",
+    "apt": "apt",
+    "debian": "apt",
+    "debian apt": "apt",
+    "ubuntu": "apt",
+    "ubuntu apt": "apt",
+    "pacman": "pacman",
+    "arch linux pacman": "pacman",
+    "dnf": "dnf",
+    "fedora dnf": "dnf",
+    "nix": "Nix",
+    "nixpkgs": "Nix",
+    "macports": "MacPorts",
+    "apk": "apk",
+    "alpine linux apk": "apk",
+    "zypper": "zypper",
+    "opensuse zypper": "zypper",
+    "chocolatey": "Chocolatey",
+    "winget": "winget",
+    "windows package manager": "winget",
+    "scoop": "Scoop",
+    "npm": "npm",
+    "pip": "pip",
+    "python pip": "pip",
+}
+
+PLATFORM_GROUPS = (
+    ("macos", "macOS"),
+    ("debian-ubuntu", "Debian/Ubuntu"),
+    ("fedora", "Fedora"),
+    ("arch", "Arch Linux"),
+    ("alpine", "Alpine Linux"),
+    ("opensuse", "openSUSE"),
+    ("nixos", "NixOS"),
+    ("windows", "Windows"),
+    ("portable", "Portable"),
+)
+
+
+def manager_key_for_item(item: dict[str, Any]) -> str:
+    source = item.get("source")
+    source_manager = ""
+    if isinstance(source, dict):
+        source_manager = str(source.get("manager") or "").strip()
+    manager = str(item.get("manager") or "").strip()
+    label = install_command_manager_label(item)
+    text = (source_manager or manager or label).lower()
+    text = text.replace("linux ", "").replace(" package manager", "")
+    if text in {"debian", "ubuntu"}:
+        return "apt"
+    if text in {"fedora"}:
+        return "dnf"
+    if text in {"arch"}:
+        return "pacman"
+    if text in {"opensuse", "open suse"}:
+        return "zypper"
+    return text
+
+
+def title_manager_label(item: dict[str, Any]) -> str:
+    key = manager_key_for_item(item)
+    manager = str(item.get("manager") or "").strip()
+    label = install_command_manager_label(item)
+    return MANAGER_TITLE_LABELS.get(key) or MANAGER_TITLE_LABELS.get(manager.lower()) or MANAGER_TITLE_LABELS.get(label.lower()) or manager or label
+
+
+def package_manager_title_list(page: PackagePage, limit: int = 5) -> str:
+    labels: dict[str, str] = {}
+    for item in source_backed_schema_commands(page):
+        if item.get("kind") == "automic_vault":
+            continue
+        label = title_manager_label(item)
+        if not label:
+            continue
+        normalized = label.lower()
+        labels.setdefault(normalized, label)
+    if not labels:
+        labels[package_manager_label(page).lower()] = package_manager_label(page)
+    ordered = sorted(
+        labels.values(),
+        key=lambda label: (
+            MANAGER_TITLE_PRIORITY.index(label.lower()) if label.lower() in MANAGER_TITLE_PRIORITY else 999,
+            label.lower(),
+        ),
+    )
+    return ", ".join(ordered[:limit])
+
+
+def package_install_title(page: PackagePage, locale: dict[str, Any] | None = None) -> str:
+    managers = package_manager_title_list(page)
+    return tx(
+        locale,
+        "installTitle",
+        "How to Install {name} | {managers}",
+        name=page.display_name,
+        manager=package_manager_label(page),
+        managers=managers,
+    )
+
+
+def plain_package_summary(page: PackagePage, locale: dict[str, Any] | None = None) -> str:
+    source = clean_summary(page.summary)
+    if locale_code(locale) != "en":
+        return tx(
+            locale,
+            "summaryPlainFallback",
+            "{name} package page with install commands, executables, freshness, and agent risk metadata.",
+            name=page.display_name,
+        )
+    taxonomy = page.extra.get("pkgTaxonomy") if isinstance(page.extra.get("pkgTaxonomy"), dict) else {}
+    tags = {str(item).lower() for item in taxonomy.get("tags") or []}
+    tags.update(str(item).lower() for item in page.keywords)
+    haystack = " ".join([page.name, source, " ".join(tags)]).lower()
+    name = page.display_name
+    if {"ssh", "sftp", "fuse", "filesystem"} & tags or ("ssh file transfer protocol" in haystack and "file system" in haystack):
+        return f"{name} mounts remote machines over SSH/SFTP and exposes them as local filesystems."
+    if "version-control" in tags or "source-control" in tags or "git" in tags:
+        return f"{name} helps inspect or manage source-code repositories from the command line."
+    if "cloud" in tags or "infrastructure-as-code" in tags or "kubernetes" in tags:
+        return f"{name} manages cloud or infrastructure workflows from a local command line."
+    if "linter" in tags or "static-analysis" in tags:
+        return f"{name} analyzes source code and reports issues before changes ship."
+    if "formatter" in tags or "text-processing" in tags:
+        return f"{name} formats, searches, or transforms text and structured files."
+    if "compression" in tags or "archive" in tags:
+        return f"{name} creates, extracts, or inspects compressed archive files."
+    if "database" in tags or "sql" in tags:
+        return f"{name} works with databases or data files from the command line."
+    if "server" in tags:
+        return f"{name} runs or supports a local service or network server."
+    if source:
+        lowered = source[:1].lower() + source[1:]
+        if name.lower() in lowered.lower()[: max(len(name) + 8, 20)]:
+            return sentence_text(source)
+        return sentence_text(f"{name} is {lowered}")
+    return tx(
+        locale,
+        "summaryPlainFallback",
+        "{name} package page with install commands, executables, freshness, and agent risk metadata.",
+        name=page.display_name,
+    )
+
+
+def platform_group_for_manager(item: dict[str, Any]) -> str:
+    key = manager_key_for_item(item)
+    platform = str(item.get("platform") or "").lower()
+    if key in {"homebrew", "homebrew cask", "macports"}:
+        return "macos"
+    if key in {"apt", "debian apt", "ubuntu apt"}:
+        return "debian-ubuntu"
+    if key in {"dnf", "fedora dnf"}:
+        return "fedora"
+    if key in {"pacman", "arch linux pacman"}:
+        return "arch"
+    if key in {"apk", "alpine linux apk"}:
+        return "alpine"
+    if key in {"zypper", "opensuse zypper"}:
+        return "opensuse"
+    if key in {"nix", "nixpkgs"}:
+        return "nixos"
+    if key in {"chocolatey", "winget", "scoop"} or platform == "windows":
+        return "windows"
+    return "portable"
+
+
+def package_manager_coverage(page: PackagePage) -> list[tuple[str, list[str]]]:
+    grouped: dict[str, list[str]] = {key: [] for key, _label in PLATFORM_GROUPS}
+    seen: set[tuple[str, str]] = set()
+    for item in source_backed_schema_commands(page):
+        if item.get("kind") == "automic_vault":
+            continue
+        group = platform_group_for_manager(item)
+        manager = title_manager_label(item)
+        if not manager:
+            continue
+        key = (group, manager.lower())
+        if key in seen:
+            continue
+        seen.add(key)
+        grouped.setdefault(group, []).append(manager)
+    result = []
+    for key, label in PLATFORM_GROUPS:
+        managers = grouped.get(key) or []
+        if managers:
+            result.append((label, managers))
+    return result
+
+
+def package_manager_count(page: PackagePage) -> int:
+    return sum(len(managers) for _platform, managers in package_manager_coverage(page))
+
+
+def package_executable_count(page: PackagePage) -> int:
+    return len({item for item in executable_markdown_items(page) if item})
+
+
+def human_category_label(page: PackagePage, locale: dict[str, Any] | None = None) -> str:
+    taxonomy = page.extra.get("pkgTaxonomy") if isinstance(page.extra.get("pkgTaxonomy"), dict) else {}
+    category = str(taxonomy.get("category") or page.category or "").strip()
+    if not category:
+        return tx(locale, "uncategorized", "uncategorized")
+    return category.replace("-", " ").replace("_", " ").title()
 
 
 def geiger_level_label(geiger: dict[str, Any]) -> str:
@@ -4020,11 +4445,32 @@ def related_link(item: dict[str, Any], locale: dict[str, Any] | None = None) -> 
 
 def hub_link(item: dict[str, Any], locale: dict[str, Any] | None = None) -> str:
     slug = str(item.get("slug") or "").strip()
-    label = str(item.get("label") or slug).strip()
+    label = human_hub_link_label(str(item.get("label") or slug).strip(), slug, locale)
     reason = str(item.get("reason") or "").strip()
     if not slug:
         return ""
     return f'<li><a href="../../{attr(slug)}/">{html_escape(label)}</a>{f"<span>{html_escape(reason)}</span>" if reason else ""}</li>'
+
+
+def human_hub_link_label(label: str, slug: str, locale: dict[str, Any] | None = None) -> str:
+    slug = slug.strip().lower()
+    overrides = {
+        "networking-protocol-tools": tx(locale, "moreNetworkingTools", "More networking tools"),
+        "source-control-tools": tx(locale, "moreSourceControlTools", "More source control tools"),
+        "package-publishers": tx(locale, "morePackagePublishingTools", "More package publishing tools"),
+        "cloud-clis": tx(locale, "moreCloudCliTools", "More cloud CLI tools"),
+        "security-crypto-tools": tx(locale, "moreSecurityTools", "More security tools"),
+        "developer-build-tools": tx(locale, "moreBuildTools", "More build tools"),
+        "terminal-utilities": tx(locale, "moreTerminalTools", "More terminal tools"),
+    }
+    if slug in overrides:
+        return overrides[slug]
+    text = normalize_space(label)
+    text = re.sub(r"\bpackages\b", "tools", text, flags=re.IGNORECASE)
+    text = re.sub(r"\bpackage\b", "tool", text, flags=re.IGNORECASE)
+    if text.lower().startswith("more "):
+        return text
+    return tx(locale, "moreToolsLikeThis", "More {label}", label=text[:1].lower() + text[1:] if text else "tools like this")
 
 
 def link_value(value: str) -> str:
@@ -4049,6 +4495,101 @@ def render_sources(page: PackagePage, locale: dict[str, Any] | None = None) -> s
       <ul>{note_html}</ul>
     </article>
   </div>
+</section>
+"""
+
+
+def command_for_manager(page: PackagePage, manager_keys: set[str]) -> dict[str, Any] | None:
+    for item in source_backed_schema_commands(page):
+        if item.get("kind") == "automic_vault":
+            continue
+        key = manager_key_for_item(item)
+        label = title_manager_label(item).lower()
+        if key in manager_keys or label in manager_keys:
+            return item
+    return None
+
+
+def faq_entries(page: PackagePage, locale: dict[str, Any] | None = None) -> list[dict[str, str]]:
+    entries: list[dict[str, str]] = []
+
+    def add(question: str, answer: str) -> None:
+        question_text = normalize_space(question)
+        answer_text = paragraph_text(answer, 360)
+        if not question_text or not answer_text:
+            return
+        if any(item["question"].lower() == question_text.lower() for item in entries):
+            return
+        entries.append({"question": question_text, "answer": answer_text})
+
+    add(
+        tx(locale, "faqWhatIs", "What is {name}?", name=page.display_name),
+        plain_package_summary(page, locale),
+    )
+    primary = next((item for item in source_backed_schema_commands(page) if item.get("kind") != "automic_vault"), None)
+    if primary:
+        add(
+            tx(locale, "faqInstallWithManager", "How do I install {name} with {manager}?", name=page.display_name, manager=title_manager_label(primary)),
+            tx(
+                locale,
+                "faqInstallAnswer",
+                "Run {command}. This command comes from {manager} package metadata on this page.",
+                command=str(primary.get("command") or ""),
+                manager=title_manager_label(primary),
+            ),
+        )
+    homebrew = command_for_manager(page, {"homebrew", "homebrew cask"})
+    if homebrew and homebrew is not primary:
+        add(
+            tx(locale, "faqInstallHomebrew", "How do I install {name} with Homebrew?", name=page.display_name),
+            tx(locale, "faqInstallAnswer", "Run {command}. This command comes from {manager} package metadata on this page.", command=str(homebrew.get("command") or ""), manager=title_manager_label(homebrew)),
+        )
+    apt = command_for_manager(page, {"apt", "debian apt", "ubuntu apt"})
+    if apt:
+        add(
+            tx(locale, "faqInstallUbuntu", "How do I install {name} on Ubuntu?", name=page.display_name),
+            tx(locale, "faqInstallAnswer", "Run {command}. This command comes from {manager} package metadata on this page.", command=str(apt.get("command") or ""), manager=title_manager_label(apt)),
+        )
+    executables: list[str] = []
+    seen_executables: set[str] = set()
+    for item in executable_markdown_items(page, locale):
+        name = item.split(" (", 1)[0]
+        if not name or name.lower() in seen_executables:
+            continue
+        seen_executables.add(name.lower())
+        executables.append(name)
+    if executables:
+        shown = ", ".join(executables[:6])
+        add(
+            tx(locale, "faqExecutables", "Which executable does {name} install?", name=page.display_name),
+            tx(locale, "faqExecutablesAnswer", "{name} installs these executables in the local package metadata: {executables}.", name=page.display_name, executables=shown),
+        )
+    add(
+        tx(locale, "faqAgentSafety", "Is {name} safe for AI agents to use?", name=page.display_name),
+        tx(
+            locale,
+            "faqAgentSafetyAnswer",
+            "The current agent risk level is {level} with {confidence} confidence. Review the listed human review items before unattended execution.",
+            level=agent_risk_level(page, locale),
+            confidence=agent_risk_confidence(page, locale),
+        ),
+    )
+    return entries[:6]
+
+
+def render_faq(page: PackagePage, locale: dict[str, Any] | None = None) -> str:
+    entries = faq_entries(page, locale)
+    if not entries:
+        return ""
+    items = "".join(
+        f"<article><h3>{html_escape(item['question'])}</h3><p>{html_escape(item['answer'])}</p></article>"
+        for item in entries
+    )
+    return f"""
+<section class="pkg-section faq-section" aria-labelledby="faq-title">
+  <p class="section-kicker">{html_escape(tx(locale, 'schemaFaqName', 'Package FAQ'))}</p>
+  <h2 id="faq-title">{html_escape(tx(locale, 'schemaFaqName', 'Package FAQ'))}</h2>
+  <div class="faq-grid">{items}</div>
 </section>
 """
 
@@ -4114,6 +4655,22 @@ def schema_for_package(page: PackagePage, description: str, updated: str, locale
             if str(item.get("command") or "").strip()
         ],
     }
+    faq = {
+        "@type": "FAQPage",
+        "@id": f"{url}#faq",
+        "name": tx(locale, "schemaFaqName", "Package FAQ"),
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": item["question"],
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": item["answer"],
+                },
+            }
+            for item in faq_entries(page, locale)
+        ],
+    }
     return {
         "@context": "https://schema.org",
         "@graph": [
@@ -4124,6 +4681,7 @@ def schema_for_package(page: PackagePage, description: str, updated: str, locale
             article,
             breadcrumb,
             how_to,
+            faq,
         ],
     }
 
@@ -4491,6 +5049,21 @@ h1 {
   font-weight: 600;
   line-height: 1.12;
 }
+.summary-card {
+  width: min(100%, 820px);
+  margin-top: clamp(20px, 3vw, 34px);
+  padding: 18px 20px;
+  border: 1px solid rgba(242, 109, 61, 0.28);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.045);
+}
+.summary-card p:last-child {
+  margin-top: 8px;
+  color: var(--ink);
+  font-size: clamp(1.18rem, 1.9vw, 1.72rem);
+  font-weight: 650;
+  line-height: 1.22;
+}
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: clamp(28px, 4vw, 48px); }
 .button {
   display: inline-flex;
@@ -4572,6 +5145,14 @@ h1 {
     inset 0 1px 0 rgba(255, 255, 255, 0.075),
     0 18px 42px rgba(0, 0, 0, 0.22);
 }
+.at-a-glance {
+  display: grid;
+  align-content: center;
+}
+.at-a-glance .section-kicker {
+  padding: 14px 0 6px;
+  border-bottom: 1px solid var(--line);
+}
 .metric {
   display: grid;
   grid-template-columns: minmax(0, 0.45fr) minmax(0, 1fr);
@@ -4613,6 +5194,69 @@ h1 {
   grid-template-columns: minmax(0, 1fr) minmax(300px, 0.42fr);
   gap: clamp(30px, 5vw, 70px);
   background: linear-gradient(90deg, rgba(242, 109, 61, 0.055), transparent 34%);
+}
+.support-section {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.44fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 54px);
+  align-items: start;
+  background:
+    linear-gradient(90deg, rgba(45, 139, 216, 0.07), transparent 42%),
+    rgba(255, 255, 255, 0.012);
+}
+.support-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+  list-style: none;
+}
+.support-list li {
+  min-height: 76px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.032);
+}
+.support-list strong,
+.support-list span {
+  display: block;
+}
+.support-list strong {
+  color: var(--ink);
+  font-size: 0.96rem;
+}
+.support-list span {
+  margin-top: 6px;
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.agent-risk-section .detail-stack article:first-child {
+  border-color: rgba(242, 109, 61, 0.34);
+}
+.faq-section {
+  background: rgba(255, 255, 255, 0.012);
+}
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+.faq-grid article {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.028);
+}
+.faq-grid h3 {
+  margin-top: 0;
+  font-size: 1rem;
+}
+.faq-grid p {
+  margin-top: 10px;
+  color: var(--dim);
 }
 .gate-section { background: rgba(45, 139, 216, 0.035); }
 .sources-section { background: rgba(255, 255, 255, 0.018); }
@@ -5546,7 +6190,7 @@ td { color: var(--ink); overflow-wrap: anywhere; }
   .site-shell { width: min(calc(100% - 24px), var(--max)); margin: 12px auto; }
   .masthead, .site-footer { align-items: flex-start; flex-direction: column; }
   .nav { width: 100%; flex-wrap: wrap; gap: 12px 18px; }
-  .pkg-hero, .split-section, .security-section, .pkg-search-section, .install-section, .signal-grid, .related-columns, .platform-install-grid, .install-command-row, .freshness-metrics { grid-template-columns: 1fr; }
+  .pkg-hero, .split-section, .security-section, .support-section, .pkg-search-section, .install-section, .signal-grid, .related-columns, .platform-install-grid, .install-command-row, .freshness-metrics { grid-template-columns: 1fr; }
   .pkg-concept-section-head,
   .pkg-concept-platform-grid,
   .pkg-concept-command-row {
