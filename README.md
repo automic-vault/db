@@ -39,24 +39,28 @@ under `cache/` for resumability/debugging; YAML in `agents/` is the committed
 agent-curated layer. Confidence and provenance fields stay in the agent stages
 and are not copied into `combined/`.
 
-## Nightly Maintenance
+## Codex Automations
 
-Run the long-lived keeper when you want the refresh and enrichment cadence to
-look after itself:
+Maintenance is designed to be run by Codex cron automations. The repository
+script is intentionally one-shot: Codex owns the schedule, and each invocation
+runs exactly one task.
 
 ```sh
-scripts/nightly-maintenance.py
+scripts/nightly-maintenance.py refresh
+scripts/nightly-maintenance.py enrich-new
+scripts/nightly-maintenance.py review-stale-updated
 ```
 
 Defaults:
 
-- daily source refresh at 02:15 local time
-- weekly new-project enrichment on Sunday at 03:15, limited to 50 projects
-- weekly stale/updated review on Sunday at 04:15, limited to 50 projects
+- `refresh`: runs `scripts/build.py --refresh` and commits tracked
+  `deterministic/` and `combined/` changes.
+- `enrich-new`: runs Codex enrichment for newly observed projects, limited to
+  50 projects by default, and commits after each applied batch.
+- `review-stale-updated`: reviews stale or upstream-updated projects, limited to
+  50 projects by default, and commits after each applied batch.
 
-Successful daily refreshes commit tracked `deterministic/` and `combined/`
-changes. Weekly enrichment commits tracked `agents/` and `combined/` changes
-after each applied Codex batch, so long runs checkpoint progress as they go.
-
-Use `scripts/nightly-maintenance.py --help` for schedule knobs and
-`scripts/nightly-maintenance.py --once --dry-run` to preview the next action.
+Each run writes a status file and appended log under
+`cache/automation/nightly-maintenance/`. Use
+`scripts/nightly-maintenance.py --list` to print the commands, or
+`scripts/nightly-maintenance.py <task> --dry-run` to preview one task.

@@ -1,11 +1,10 @@
 import importlib.util
-import argparse
 import contextlib
 import io
 import sys
-import threading
 import unittest
-from datetime import datetime
+import argparse
+from unittest import mock
 from pathlib import Path
 
 
@@ -21,44 +20,31 @@ def load_nightly_maintenance():
 
 
 class NightlyMaintenanceTests(unittest.TestCase):
-    def test_wait_or_stop_returns_when_stop_already_requested(self):
-        maintenance = load_nightly_maintenance()
-        stop_requested = threading.Event()
-        stop_requested.set()
-
-        self.assertTrue(maintenance.wait_or_stop(stop_requested, 60))
-
-    def test_wait_or_stop_reports_timeout_without_stop(self):
-        maintenance = load_nightly_maintenance()
-
-        self.assertFalse(maintenance.wait_or_stop(threading.Event(), 0))
-
-    def test_build_jobs_commits_refresh_and_batches_enrichment(self):
+    def test_build_tasks_commits_refresh_and_batches_enrichment(self):
         maintenance = load_nightly_maintenance()
         args = argparse.Namespace(
-            build_time=maintenance.parse_time("02:15"),
-            weekly_day=maintenance.parse_weekday("sunday"),
-            enrich_new_time=maintenance.parse_time("03:15"),
-            enrich_stale_time=maintenance.parse_time("04:15"),
             enrich_limit=50,
             batch_size=10,
+            no_commit=False,
         )
 
-        jobs = {job.key: job for job in maintenance.build_jobs(args)}
+        tasks = maintenance.build_tasks(args)
 
-        self.assertEqual(jobs["build-refresh"].commit_paths, ["deterministic", "combined"])
-        self.assertIn("--commit-after-batch", jobs["enrich-new"].command)
-        self.assertIn("--commit-after-batch", jobs["enrich-stale-updated"].command)
+        self.assertEqual(tasks["refresh"].commit_paths, ["deterministic", "combined"])
+        self.assertIn("--commit-after-batch", tasks["enrich-new"].command)
+        self.assertIn("--commit-after-batch", tasks["review-stale-updated"].command)
 
-    def test_sleeping_status_is_single_cycle_message(self):
+    def test_list_prints_automation_commands(self):
         maintenance = load_nightly_maintenance()
-        palette = maintenance.Palette(enabled=False, ascii_only=False)
         output = io.StringIO()
 
         with contextlib.redirect_stdout(output):
-            maintenance.print_sleeping_status(palette, 15 * 60, datetime(2026, 6, 9, 2, 15))
+            with mock.patch.object(sys, "argv", ["nightly-maintenance.py", "--list"]):
+                self.assertEqual(maintenance.main(), 0)
 
-        self.assertEqual(output.getvalue(), "◇ Sleeping next check in 15m; next job Tue 02:15\n")
+        self.assertIn("refresh\tRefresh deterministic package data", output.getvalue())
+        self.assertIn("enrich-new\tEnrich newly observed projects", output.getvalue())
+        self.assertIn("review-stale-updated\tReview stale or upstream-updated projects", output.getvalue())
 
 
 if __name__ == "__main__":
