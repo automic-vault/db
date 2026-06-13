@@ -27,6 +27,8 @@ load_environment() {
       set +a
     fi
   done
+
+  export CODESIGN_IDENTITY="${CODESIGN_IDENTITY:-Developer ID Application: Max Howell (ZU76A67LGU)}"
 }
 
 write_status() {

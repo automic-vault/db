@@ -21,6 +21,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from avdb_paths import COMBINED_JSON_PATH, DB_JSON_PATH, ISOTOPES_JSON_PATH
+from geiger_agent_data import load_agent_geiger_data
 from pkg_hub_data import graph_hub_definitions, load_pkg_taxonomy_index, taxonomy_brief, taxonomy_for_package, taxonomy_terms
 
 
@@ -656,8 +657,7 @@ def load_sources() -> dict[str, Any]:
         combined = read_json(combined_path)
         sources = combined.get("sources") or {}
         if isinstance(sources, dict):
-            if Path("data/geiger-counter.json").exists():
-                sources["geiger"] = read_json(Path("data/geiger-counter.json"), {})
+            sources["geiger"] = load_agent_geiger_data()
             if PKG_PAGE_ENRICHMENT_PATH.exists():
                 sources["pkg_page_enrichment"] = read_json(PKG_PAGE_ENRICHMENT_PATH, {})
             if PKG_VERSION_FRESHNESS_PATH.exists():
@@ -672,7 +672,7 @@ def load_sources() -> dict[str, Any]:
 
     return {
         "db": read_json(DB_JSON_PATH, {}),
-        "geiger": read_json(Path("data/geiger-counter.json"), {}),
+        "geiger": load_agent_geiger_data(),
         "isotopes": read_json(ISOTOPES_JSON_PATH, {}),
         "npm": read_json(Path("data/npm.json"), {}),
         "pkg_graph": read_json(PKG_GRAPH_PATH, {}),

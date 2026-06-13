@@ -125,13 +125,14 @@ def source_files() -> list[Path]:
         Path("data/pkg-hubs.json"),
         Path("data/pkg-taxonomy.json"),
         DB_JSON_PATH,
-        Path("data/geiger-counter.json"),
         ISOTOPES_JSON_PATH,
         Path("data/npm.json"),
         Path("data/pip.json"),
         Path("scripts/pkg_hub_data.py"),
         Path("scripts/generate-pkg-graph-curation.py"),
     ]
+    if Path("agents").exists():
+        files.extend(path for path in Path("agents").glob("*.yml") if path.is_file())
     for root in (Path("data/approval-gates"), Path("data/pkg-pages")):
         if root.exists():
             files.extend(path for path in root.rglob("*") if path.is_file() and path.name != ".DS_Store")

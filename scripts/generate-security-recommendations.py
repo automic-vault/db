@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 from avdb_paths import ISOTOPES_JSON_PATH
+from geiger_agent_data import load_agent_geiger_data
 
 
 OUTPUT_PATH = Path("data/security-recommendations.json")
@@ -216,7 +217,7 @@ def _add_geiger_packages(packages, geiger):
 
 def _expected():
     packages = {}
-    geiger = _read_json("data/geiger-counter.json")
+    geiger = load_agent_geiger_data()
     _add_isotope_packages(
         packages,
         _read_json(ISOTOPES_JSON_PATH),

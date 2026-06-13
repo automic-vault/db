@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from .brew import formula_record
-from .common import AGENTS_DIR, AGENTS_JSON_DIR, COMBINED_DIR, DETERMINISTIC_DIR, HUMAN_OVERRIDE_DIR, ROOT, STAGE_DIR, read_json, reset_dir, sync_tree, write_text_if_changed
+from .common import AGENTS_DIR, AGENTS_JSON_DIR, COMBINED_DIR, DETERMINISTIC_DIR, HUMAN_OVERRIDE_DIR, STAGE_DIR, read_json, reset_dir, sync_tree, write_text_if_changed
 from .executables import read_executable_index
 from .managers import manager_matcher, package_manager_routes
 from .yaml_writer import yaml_text
@@ -28,7 +28,6 @@ CATEGORIES = {
     "other",
 }
 
-GEIGER_COUNTER_PATH = ROOT / "data" / "geiger-counter.json"
 _GEIGER_SUMMARIES: dict[str, dict[str, Any]] | None = None
 
 
@@ -94,41 +93,17 @@ def render_agents_yaml_tree() -> int:
     return count
 
 
-def clean_string_list(value: Any) -> list[str]:
-    if not isinstance(value, list):
-        return []
-    return [text for text in (str(item).strip() for item in value) if text]
-
-
 def geiger_summaries() -> dict[str, dict[str, Any]]:
     global _GEIGER_SUMMARIES
     if _GEIGER_SUMMARIES is not None:
         return _GEIGER_SUMMARIES
-    if not GEIGER_COUNTER_PATH.exists():
-        _GEIGER_SUMMARIES = {}
-        return _GEIGER_SUMMARIES
-    data = read_json(GEIGER_COUNTER_PATH, {})
-    packages = data.get("packages") if isinstance(data, dict) else {}
     summaries: dict[str, dict[str, Any]] = {}
-    if isinstance(packages, dict):
-        for name, record in packages.items():
-            if not isinstance(record, dict):
-                continue
-            color = str(record.get("level") or "").strip()
-            reasons = clean_string_list(record.get("reasons"))
-            if not color or not reasons:
-                continue
-            summary: dict[str, Any] = {"color": color}
-            if category := str(record.get("category") or "").strip():
-                summary["category"] = category
-            if confidence := str(record.get("confidence") or "").strip():
-                summary["confidence"] = confidence
-            summary["reason"] = reasons[0]
-            summary["reasons"] = reasons
-            signals = clean_string_list(record.get("signals"))
-            if signals:
-                summary["signals"] = signals
-            summaries[f"brew:{name}"] = summary
+    for path in sorted(AGENTS_DIR.glob("*.yml")):
+        record = parse_simple_yaml(path.read_text(encoding="utf-8"))
+        package_id = str(record.get("id") or f"brew:{path.stem}").strip()
+        geiger = record.get("geiger")
+        if package_id and isinstance(geiger, dict):
+            summaries[package_id] = dict(geiger)
     _GEIGER_SUMMARIES = summaries
     return _GEIGER_SUMMARIES
 

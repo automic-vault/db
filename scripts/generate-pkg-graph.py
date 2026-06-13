@@ -16,6 +16,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from avdb_paths import DB_JSON_PATH, ISOTOPES_JSON_PATH
+from geiger_agent_data import load_agent_geiger_data
 from pkg_hub_data import graph_hub_definitions, load_pkg_taxonomy_index, taxonomy_for_package, taxonomy_terms
 
 
@@ -149,7 +150,6 @@ def input_files() -> list[Path]:
         Path("data/pkg-hubs.json"),
         Path("data/pkg-taxonomy.json"),
         DB_JSON_PATH,
-        Path("data/geiger-counter.json"),
         ISOTOPES_JSON_PATH,
         Path("data/npm.json"),
         Path("data/pip.json"),
@@ -159,6 +159,8 @@ def input_files() -> list[Path]:
     ]
     if CURATION_PATH.exists():
         files.append(CURATION_PATH)
+    if Path("agents").exists():
+        files.extend(path for path in Path("agents").glob("*.yml") if path.is_file())
     for root in (Path("data/approval-gates"), Path("data/pkg-pages")):
         if root.exists():
             files.extend(path for path in root.rglob("*") if path.is_file() and path.name != ".DS_Store")
@@ -600,7 +602,7 @@ def count_hub_memberships(graph_packages: dict[str, Any]) -> dict[str, int]:
 def build_graph() -> dict[str, Any]:
     enrichment = read_json(PKG_PAGE_ENRICHMENT_PATH)
     db = read_json(DB_JSON_PATH)
-    geiger_data = read_json(Path("data/geiger-counter.json"), {})
+    geiger_data = load_agent_geiger_data()
     isotopes = read_json(ISOTOPES_JSON_PATH, {})
     npm = read_json(Path("data/npm.json"), {})
     pip = read_json(Path("data/pip.json"), {})

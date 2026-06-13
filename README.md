@@ -39,10 +39,9 @@ under `cache/` for resumability/debugging; YAML in `agents/` is the committed
 agent-curated layer. Confidence and provenance fields stay in the agent stages
 and are not copied into `combined/`.
 
-Agent YAML may also include a `geiger` block copied from
-`data/geiger-counter.json` with the package risk color, classifier confidence,
-category, reasons, and signals. This is agent-stage context and is not copied
-into `combined/`.
+Agent YAML may also include a `geiger` block with the package risk color,
+classifier confidence, category, reasons, and signals. This is agent-stage
+context and is not copied into `combined/`.
 
 ## Codex Automations
 
