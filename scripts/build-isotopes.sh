@@ -5,9 +5,9 @@ set -euo pipefail
 org="automic-vault"
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/.." && pwd)"
-clone_root="${AUTOMIC_VAULT_REPO_CACHE:-${repo_root}/data/isotopes}"
+clone_root="${AUTOMIC_VAULT_REPO_CACHE:-${repo_root}/../isotopes}"
 radioisotopes_repo="${org}/radioisotopes"
-radioisotopes_dir="${AUTOMIC_VAULT_RADIOISOTOPES_REPO:-${repo_root}/data/radioisotopes}"
+radioisotopes_dir="${AUTOMIC_VAULT_RADIOISOTOPES_REPO:-${repo_root}/../radioisotopes}"
 dry_run=false
 skip_builds=false
 isotope_versions_path="${AV_ISOTOPES_JSON_PATH:-${repo_root}/cache/automic-vault/isotopes.json}"
@@ -33,7 +33,7 @@ to a new release on the automic-vault fork.
 
 Options:
   --clone-root PATH  Directory used for local fork clones.
-                     Defaults to data/isotopes.
+                     Defaults to ../isotopes.
   --dry-run          Print actions without pulling, building, or releasing.
   --repo NAME        Only process one automic-vault repository.
   --skip-builds      Skip build and release work. Still refresh isotopes.json.
@@ -88,7 +88,7 @@ for tool in curl gh git jq ruby; do
   }
 done
 
-mkdir -p "${clone_root}"
+mkdir -p "${clone_root}" "$(dirname "${radioisotopes_dir}")"
 
 ensure_radioisotopes_clone() {
   if [[ -d "${radioisotopes_dir}/.git" ]]; then

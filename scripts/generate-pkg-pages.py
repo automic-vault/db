@@ -20,7 +20,13 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from avdb_paths import COMBINED_JSON_PATH, DB_JSON_PATH, ISOTOPES_JSON_PATH
+from avdb_paths import (
+    COMBINED_JSON_PATH,
+    DB_JSON_PATH,
+    ISOTOPE_REPO_CACHE_DIR,
+    ISOTOPES_JSON_PATH,
+    RADIOISOTOPES_REPO_DIR,
+)
 from geiger_agent_data import load_agent_geiger_data
 from pkg_hub_data import graph_hub_definitions, load_pkg_taxonomy_index, taxonomy_brief, taxonomy_for_package, taxonomy_terms
 
@@ -1303,7 +1309,7 @@ def isotope_metadata_by_package(isotopes: dict[str, Any]) -> dict[str, dict[str,
 
 def radioisotope_readmes() -> dict[str, ReadmeExcerpt]:
     readmes: dict[str, ReadmeExcerpt] = {}
-    base = Path("data/radioisotopes")
+    base = RADIOISOTOPES_REPO_DIR
     if not base.exists():
         return readmes
     for path in base.iterdir():
@@ -1322,7 +1328,7 @@ def radioisotope_readmes() -> dict[str, ReadmeExcerpt]:
 
 def isotope_fork_readmes() -> dict[str, ReadmeExcerpt]:
     readmes: dict[str, ReadmeExcerpt] = {}
-    base = Path("data/isotopes")
+    base = ISOTOPE_REPO_CACHE_DIR
     if not base.exists():
         return readmes
     for readme in sorted(base.glob("*/README.md")):
@@ -1557,11 +1563,11 @@ def manifest_count(root: Path) -> int:
 
 
 def local_radioisotope_manifest_count() -> int:
-    return manifest_count(Path("data/radioisotopes"))
+    return manifest_count(RADIOISOTOPES_REPO_DIR)
 
 
 def local_full_isotope_manifest_count() -> int:
-    return manifest_count(Path("data/isotopes"))
+    return manifest_count(ISOTOPE_REPO_CACHE_DIR)
 
 
 def source_files() -> list[Path]:
@@ -1582,7 +1588,7 @@ def source_files() -> list[Path]:
     for path in data.iterdir() if data.exists() else []:
         if path.is_file() and path.suffix in {".json", ".jsonc", ".md"}:
             files.append(path)
-    for root in (Path("data/radioisotopes"), Path("data/approval-gates")):
+    for root in (RADIOISOTOPES_REPO_DIR, Path("data/approval-gates")):
         if not root.exists():
             continue
         for path in root.rglob("*"):
@@ -1598,7 +1604,7 @@ def source_files() -> list[Path]:
     i18n_root = Path("data/pkg-i18n")
     if i18n_root.exists():
         files.extend(path for path in i18n_root.rglob("*.json") if path.is_file())
-    isotope_root = Path("data/isotopes")
+    isotope_root = ISOTOPE_REPO_CACHE_DIR
     if isotope_root.exists():
         files.extend(path for path in isotope_root.glob("*/README.md") if path.is_file())
         files.extend(path for path in isotope_root.glob("*/automic-vault.yml") if path.is_file())

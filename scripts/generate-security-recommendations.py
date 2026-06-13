@@ -6,7 +6,7 @@ import os
 import sys
 from pathlib import Path
 
-from avdb_paths import ISOTOPES_JSON_PATH
+from avdb_paths import ISOTOPES_JSON_PATH, RADIOISOTOPES_REPO_DIR
 from geiger_agent_data import load_agent_geiger_data
 
 
@@ -222,7 +222,7 @@ def _expected():
         packages,
         _read_json(ISOTOPES_JSON_PATH),
         geiger,
-        _versioned_radioisotope_bases(Path("data/radioisotopes")),
+        _versioned_radioisotope_bases(RADIOISOTOPES_REPO_DIR),
     )
     _add_approval_gate_packages(packages, Path("data/approval-gates/brew"))
     _add_geiger_packages(packages, geiger)

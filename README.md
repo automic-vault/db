@@ -63,7 +63,8 @@ Defaults:
   builds and publishes only missing latest upstream isotope releases, then
   regenerates `cache/automic-vault/isotopes.json`. Use
   `scripts/hourly-maintenance.py --skip-isotope-builds` for a summary-only
-  isotope refresh.
+  isotope refresh. Isotope checkouts default to sibling directories
+  `../isotopes` and `../radioisotopes`.
 - `refresh`: runs `scripts/build.py --refresh` and commits tracked
   `deterministic/` and `combined/` changes.
 - `enrich-new`: runs Codex enrichment for newly observed projects, limited to
