@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import ast
 import re
 from pathlib import Path
 from typing import Any
 
 from .brew import formula_record
-from .common import AGENTS_DIR, AGENTS_JSON_DIR, COMBINED_DIR, DETERMINISTIC_DIR, HUMAN_OVERRIDE_DIR, STAGE_DIR, read_json, reset_dir, sync_tree, write_text_if_changed
+from .common import AGENTS_DIR, AGENTS_JSON_DIR, COMBINED_DIR, DETERMINISTIC_DIR, HUMAN_OVERRIDE_DIR, ROOT, STAGE_DIR, read_json, reset_dir, sync_tree, write_text_if_changed
 from .executables import read_executable_index
 from .managers import manager_matcher, package_manager_routes
 from .yaml_writer import yaml_text
@@ -26,6 +27,9 @@ CATEGORIES = {
     "toys",
     "other",
 }
+
+GEIGER_COUNTER_PATH = ROOT / "data" / "geiger-counter.json"
+_GEIGER_SUMMARIES: dict[str, dict[str, Any]] | None = None
 
 
 def install_line_key(manager: str) -> str:
@@ -90,8 +94,52 @@ def render_agents_yaml_tree() -> int:
     return count
 
 
+def clean_string_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [text for text in (str(item).strip() for item in value) if text]
+
+
+def geiger_summaries() -> dict[str, dict[str, Any]]:
+    global _GEIGER_SUMMARIES
+    if _GEIGER_SUMMARIES is not None:
+        return _GEIGER_SUMMARIES
+    if not GEIGER_COUNTER_PATH.exists():
+        _GEIGER_SUMMARIES = {}
+        return _GEIGER_SUMMARIES
+    data = read_json(GEIGER_COUNTER_PATH, {})
+    packages = data.get("packages") if isinstance(data, dict) else {}
+    summaries: dict[str, dict[str, Any]] = {}
+    if isinstance(packages, dict):
+        for name, record in packages.items():
+            if not isinstance(record, dict):
+                continue
+            color = str(record.get("level") or "").strip()
+            reasons = clean_string_list(record.get("reasons"))
+            if not color or not reasons:
+                continue
+            summary: dict[str, Any] = {"color": color}
+            if category := str(record.get("category") or "").strip():
+                summary["category"] = category
+            if confidence := str(record.get("confidence") or "").strip():
+                summary["confidence"] = confidence
+            summary["reason"] = reasons[0]
+            summary["reasons"] = reasons
+            signals = clean_string_list(record.get("signals"))
+            if signals:
+                summary["signals"] = signals
+            summaries[f"brew:{name}"] = summary
+    _GEIGER_SUMMARIES = summaries
+    return _GEIGER_SUMMARIES
+
+
+def geiger_summary_for_package_id(package_id: Any) -> dict[str, Any] | None:
+    summary = geiger_summaries().get(str(package_id or ""))
+    return dict(summary) if summary else None
+
+
 def agent_record_from_json(result: dict[str, Any]) -> dict[str, Any]:
-    return {
+    record = {
         "id": result["id"],
         "repo": result.get("repo") or None,
         "repo-confidence": result.get("repo-confidence"),
@@ -111,6 +159,10 @@ def agent_record_from_json(result: dict[str, Any]) -> dict[str, Any]:
             "display-name-sources": result.get("display_name_sources") or [],
         },
     }
+    geiger = geiger_summary_for_package_id(record["id"])
+    if geiger:
+        record["geiger"] = geiger
+    return record
 
 
 def render_combined_tree() -> int:
@@ -297,7 +349,11 @@ def unquote_scalar(value: str) -> Any:
     if value in {"true", "false"}:
         return value == "true"
     if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
-        return value[1:-1]
+        try:
+            parsed = ast.literal_eval(value)
+        except (SyntaxError, ValueError):
+            return value[1:-1]
+        return parsed if isinstance(parsed, str) else value[1:-1]
     return value
 
 
