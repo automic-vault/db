@@ -169,8 +169,9 @@ run_job_unlocked() {
   esac
   set -e
 
-  finalize_status "${exit_code}"
+  # Prevent the normal success path from re-entering finalize_status via EXIT.
   trap - EXIT INT TERM
+  finalize_status "${exit_code}"
 
   return "${exit_code}"
 }
