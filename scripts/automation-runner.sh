@@ -110,11 +110,11 @@ run_job_unlocked() {
   local job="$1"
   local log_path="${automation_dir}/${job}.log"
   local started_at ended_at exit_code timeout_seconds
-  local status_recorded=0
+  AUTOMATION_STATUS_RECORDED=0
 
   finalize_status() {
     local final_exit_code="${1:-0}"
-    local current_status_recorded="${status_recorded:-0}"
+    local current_status_recorded="${AUTOMATION_STATUS_RECORDED:-0}"
 
     if [[ "${current_status_recorded}" -eq 1 ]]; then
       return
@@ -131,7 +131,7 @@ run_job_unlocked() {
       printf '[%s] Failed %s automation with exit code %s\n' "${ended_at}" "${job}" "${final_exit_code}"
       write_status "${job}" "failed" "${final_exit_code}" "${started_at}" "${ended_at}" "${log_path}"
     fi
-    status_recorded=1
+    AUTOMATION_STATUS_RECORDED=1
   }
 
   mkdir -p "${automation_dir}"
