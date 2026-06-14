@@ -107,6 +107,17 @@ curl_fetch() {
     "$@"
 }
 
+curl_fetch_no_retry() {
+  curl \
+    --fail \
+    --silent \
+    --show-error \
+    --location \
+    --connect-timeout "${curl_connect_timeout}" \
+    --max-time "${curl_max_time}" \
+    "$@"
+}
+
 ensure_radioisotopes_clone() {
   if [[ -d "${radioisotopes_dir}/.git" ]]; then
     return 0
@@ -437,7 +448,7 @@ homebrew_formula_release_json() {
     return
   fi
 
-  if ! formula_json="$(curl_fetch "https://formulae.brew.sh/api/formula/${formula}.json")"; then
+  if ! formula_json="$(curl_fetch_no_retry "https://formulae.brew.sh/api/formula/${formula}.json")"; then
     echo "Failed to fetch Homebrew formula metadata for ${formula}" >&2
     return 1
   fi
@@ -486,7 +497,7 @@ homebrew_tap_formula_release_json() {
 
   repo="${owner}/homebrew-${tap}"
   for formula_path in "Formula/${name}.rb" "${name}.rb"; do
-    if formula_rb="$(curl_fetch "https://raw.githubusercontent.com/${repo}/HEAD/${formula_path}" 2>/dev/null)"; then
+    if formula_rb="$(curl_fetch_no_retry "https://raw.githubusercontent.com/${repo}/HEAD/${formula_path}" 2>/dev/null)"; then
       break
     fi
   done
