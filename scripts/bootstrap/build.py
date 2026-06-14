@@ -59,7 +59,6 @@ def steps(refresh: bool, fetch_manifests: bool, manifest_limit: int) -> list[Ste
     manager_cmd = [py, "scripts/bootstrap/02-manager-indexes.py"]
     if refresh:
         brew_cmd.append("--refresh")
-        manager_cmd.append("--refresh")
     if fetch_manifests:
         brew_cmd.append("--fetch-manifests")
     if manifest_limit:
@@ -93,7 +92,6 @@ def steps(refresh: bool, fetch_manifests: bool, manifest_limit: int) -> list[Ste
                 Path("scripts/bootstrap/lib/common.py"),
             ],
             [Path("cache/pkg-manager-indexes.json.gz")],
-            refresh_sensitive=True,
         ),
         Step(
             "render-projects",
@@ -178,9 +176,9 @@ def main() -> int:
     for step in steps(args.refresh, args.fetch_manifests, args.manifest_limit):
         run, fp = should_run(step, state, refresh=args.refresh, force=args.force)
         if not run:
-            print(f"SKIP {step.name}")
+            print(f"SKIP {step.name}", flush=True)
             continue
-        print(f"RUN  {step.name}")
+        print(f"RUN  {step.name}", flush=True)
         subprocess.run(step.command, cwd=ROOT, check=True)
         next_state[step.name] = fp
         write_json(STATE_PATH, next_state)
