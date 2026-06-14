@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -30,6 +31,7 @@ from scripts.enrichment import (
 
 
 SCHEMA_PATH = ROOT / "schemas" / "codex-project-enrichment-output.schema.json"
+DEFAULT_CODEX_TIMEOUT_SECONDS = 15 * 60
 
 
 def parse_args() -> argparse.Namespace:
@@ -51,6 +53,19 @@ def read_codex_output(path: Path) -> object:
     return json.loads(text) if text else {}
 
 
+def codex_timeout_seconds() -> float | None:
+    raw = os.environ.get("AVDB_CODEX_TIMEOUT_SECONDS")
+    if raw is None or raw.strip() == "":
+        return DEFAULT_CODEX_TIMEOUT_SECONDS
+    try:
+        timeout = float(raw)
+    except ValueError as err:
+        raise SystemExit("AVDB_CODEX_TIMEOUT_SECONDS must be a number") from err
+    if timeout < 0:
+        raise SystemExit("AVDB_CODEX_TIMEOUT_SECONDS must be non-negative")
+    return timeout or None
+
+
 def write_output_schema(output_schema_path: Path, expected_ids: set[str]) -> None:
     schema = read_json(SCHEMA_PATH, default={})
     if not isinstance(schema, dict):
@@ -70,26 +85,28 @@ def write_output_schema(output_schema_path: Path, expected_ids: set[str]) -> Non
 
 def invoke_codex(prompt_path: Path, output_path: Path, output_schema_path: Path) -> None:
     prompt = prompt_path.read_text(encoding="utf-8")
-    subprocess.run(
-        [
-            "codex",
-            "--search",
-            "--ask-for-approval",
-            "never",
-            "exec",
-            "--sandbox",
-            "read-only",
-            "--output-schema",
-            str(output_schema_path),
-            "-C",
-            str(ROOT),
-            "-o",
-            str(output_path),
-            prompt,
-        ],
-        cwd=ROOT,
-        check=True,
-    )
+    command = [
+        "codex",
+        "--search",
+        "--ask-for-approval",
+        "never",
+        "exec",
+        "--sandbox",
+        "read-only",
+        "--output-schema",
+        str(output_schema_path),
+        "-C",
+        str(ROOT),
+        "-o",
+        str(output_path),
+        prompt,
+    ]
+    timeout = codex_timeout_seconds()
+    try:
+        subprocess.run(command, cwd=ROOT, check=True, timeout=timeout)
+    except subprocess.TimeoutExpired as err:
+        seconds = int(timeout) if timeout is not None else 0
+        raise SystemExit(f"Codex enrichment timed out after {seconds}s for {prompt_path}") from err
 
 
 def batches(items: list[dict[str, Any]], size: int) -> list[list[dict[str, Any]]]:

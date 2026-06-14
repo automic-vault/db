@@ -19,6 +19,17 @@ def load_nightly_maintenance():
     return module
 
 
+def load_enrich_projects():
+    path = Path(__file__).resolve().parents[1] / "scripts" / "enrich-projects.py"
+    spec = importlib.util.spec_from_file_location("enrich_projects", path)
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
 class NightlyMaintenanceTests(unittest.TestCase):
     def test_build_tasks_commits_refresh_and_batches_enrichment(self):
         maintenance = load_nightly_maintenance()
@@ -45,6 +56,30 @@ class NightlyMaintenanceTests(unittest.TestCase):
         self.assertIn("refresh\tRefresh deterministic package data", output.getvalue())
         self.assertIn("enrich-new\tEnrich newly observed projects", output.getvalue())
         self.assertIn("review-stale-updated\tReview stale or upstream-updated projects", output.getvalue())
+
+    def test_codex_timeout_defaults_to_bounded_run(self):
+        enrich_projects = load_enrich_projects()
+
+        with mock.patch.dict("os.environ", {}, clear=True):
+            self.assertEqual(enrich_projects.codex_timeout_seconds(), 900)
+
+    def test_codex_timeout_can_be_customized_or_disabled(self):
+        enrich_projects = load_enrich_projects()
+
+        with mock.patch.dict("os.environ", {"AVDB_CODEX_TIMEOUT_SECONDS": "42"}, clear=True):
+            self.assertEqual(enrich_projects.codex_timeout_seconds(), 42)
+        with mock.patch.dict("os.environ", {"AVDB_CODEX_TIMEOUT_SECONDS": "0"}, clear=True):
+            self.assertIsNone(enrich_projects.codex_timeout_seconds())
+
+    def test_codex_timeout_rejects_invalid_values(self):
+        enrich_projects = load_enrich_projects()
+
+        with mock.patch.dict("os.environ", {"AVDB_CODEX_TIMEOUT_SECONDS": "-1"}, clear=True):
+            with self.assertRaises(SystemExit):
+                enrich_projects.codex_timeout_seconds()
+        with mock.patch.dict("os.environ", {"AVDB_CODEX_TIMEOUT_SECONDS": "nope"}, clear=True):
+            with self.assertRaises(SystemExit):
+                enrich_projects.codex_timeout_seconds()
 
 
 if __name__ == "__main__":
