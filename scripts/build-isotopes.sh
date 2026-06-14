@@ -14,6 +14,8 @@ isotope_versions_path="${AV_ISOTOPES_JSON_PATH:-${repo_root}/cache/automic-vault
 curl_connect_timeout="${AV_ISOTOPES_CURL_CONNECT_TIMEOUT_SECONDS:-15}"
 curl_max_time="${AV_ISOTOPES_CURL_MAX_TIME_SECONDS:-120}"
 curl_retry_count="${AV_ISOTOPES_CURL_RETRY_COUNT:-3}"
+homebrew_formula_index_cache=""
+homebrew_formula_index_entry_result=""
 if [[ -n "${AUTOMIC_VAULT_CODEX_PROJECT_ROOT:-}" ]]; then
   codex_project_root="${AUTOMIC_VAULT_CODEX_PROJECT_ROOT}"
 elif [[ -n "${HOME:-}" ]]; then
@@ -116,6 +118,28 @@ curl_fetch_no_retry() {
     --connect-timeout "${curl_connect_timeout}" \
     --max-time "${curl_max_time}" \
     "$@"
+}
+
+ensure_homebrew_formula_index() {
+  if [[ -n "${homebrew_formula_index_cache}" && -f "${homebrew_formula_index_cache}" ]]; then
+    return 0
+  fi
+
+  homebrew_formula_index_cache="$(mktemp "${TMPDIR:-/tmp}/av-homebrew-formula-index.XXXXXX")"
+  curl_fetch "https://formulae.brew.sh/api/formula.json" >"${homebrew_formula_index_cache}"
+}
+
+homebrew_formula_index_entry() {
+  local formula="$1"
+
+  ensure_homebrew_formula_index
+  homebrew_formula_index_entry_result="$(
+    jq -c --arg formula "${formula}" '
+    .[]
+    | select(.name == $formula or ((.aliases // []) | index($formula)))
+  ' "${homebrew_formula_index_cache}" |
+    head -n 1
+  )"
 }
 
 ensure_radioisotopes_clone() {
@@ -441,27 +465,33 @@ latest_fork_release_json() {
 
 homebrew_formula_release_json() {
   local formula="$1"
-  local formula_json version
+  local formula_json canonical_formula version
 
   if [[ "${formula}" == */*/* ]]; then
     homebrew_tap_formula_release_json "${formula}"
     return
   fi
 
-  if ! formula_json="$(curl_fetch_no_retry "https://formulae.brew.sh/api/formula/${formula}.json")"; then
-    echo "Failed to fetch Homebrew formula metadata for ${formula}" >&2
+  if ! homebrew_formula_index_entry "${formula}"; then
+    echo "Failed to load Homebrew formula index while resolving ${formula}" >&2
     return 1
   fi
+  formula_json="${homebrew_formula_index_entry_result}"
+  if [[ -z "${formula_json}" ]]; then
+    echo "Homebrew formula ${formula} was not found in the current formulae.brew.sh index" >&2
+    return 1
+  fi
+  canonical_formula="$(printf '%s\n' "${formula_json}" | jq -r '.name')"
   version="$(printf '%s\n' "${formula_json}" | jq -r '.versions.stable')"
 
   if [[ -z "${version}" || "${version}" == "null" ]]; then
-    echo "Homebrew formula ${formula} did not include a stable version" >&2
+    echo "Homebrew formula ${canonical_formula} did not include a stable version" >&2
     return 1
   fi
 
   jq -n \
     --arg tag "v${version}" \
-    --arg htmlUrl "https://formulae.brew.sh/formula/${formula}" \
+    --arg htmlUrl "https://formulae.brew.sh/formula/${canonical_formula}" \
     --arg publishedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
     '{
       tag_name: $tag,
@@ -474,14 +504,14 @@ homebrew_formula_release_json() {
 homebrew_versioned_formulae() {
   local formula="$1"
 
-  curl_fetch "https://formulae.brew.sh/api/formula.json" |
-    jq -r --arg base "${formula}" '
-      .[]
-      | .name?
-      | select(type == "string")
-      | select(startswith($base + "@"))
-      | select(.[(($base | length) + 1):] | test("^[0-9]+$"))
-    ' |
+  ensure_homebrew_formula_index
+  jq -r --arg base "${formula}" '
+    .[]
+    | .name?
+    | select(type == "string")
+    | select(startswith($base + "@"))
+    | select(.[(($base | length) + 1):] | test("^[0-9]+$"))
+  ' "${homebrew_formula_index_cache}" |
     sort -u
 }
 
