@@ -113,7 +113,7 @@ run_job_unlocked() {
       exit_code=$?
       ;;
     npm-full-scan)
-      timeout_seconds="${AVDB_AUTOMATION_NPM_FULL_SCAN_TIMEOUT_SECONDS:-21600}"
+      timeout_seconds="${AVDB_AUTOMATION_NPM_FULL_SCAN_TIMEOUT_SECONDS:-43200}"
       run_with_timeout "${timeout_seconds}" \
         bash -euo pipefail -c \
         '"${0}/build-db.py" --refresh --npm-full-scan && "${0}/build-combined-json.py"' \
