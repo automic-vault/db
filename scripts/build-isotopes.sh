@@ -16,6 +16,7 @@ curl_max_time="${AV_ISOTOPES_CURL_MAX_TIME_SECONDS:-120}"
 curl_retry_count="${AV_ISOTOPES_CURL_RETRY_COUNT:-3}"
 homebrew_formula_index_cache=""
 homebrew_formula_index_entry_result=""
+homebrew_formula_index_cache_path="${AV_HOMEBREW_FORMULA_INDEX_CACHE_PATH:-${repo_root}/cache/automic-vault/homebrew-formula-index.json}"
 if [[ -n "${AUTOMIC_VAULT_CODEX_PROJECT_ROOT:-}" ]]; then
   codex_project_root="${AUTOMIC_VAULT_CODEX_PROJECT_ROOT}"
 elif [[ -n "${HOME:-}" ]]; then
@@ -121,12 +122,24 @@ curl_fetch_no_retry() {
 }
 
 ensure_homebrew_formula_index() {
-  if [[ -n "${homebrew_formula_index_cache}" && -f "${homebrew_formula_index_cache}" ]]; then
+  if [[ -z "${homebrew_formula_index_cache}" ]]; then
+    homebrew_formula_index_cache="${homebrew_formula_index_cache_path}"
+  fi
+
+  if [[ -s "${homebrew_formula_index_cache}" ]]; then
     return 0
   fi
 
-  homebrew_formula_index_cache="$(mktemp "${TMPDIR:-/tmp}/av-homebrew-formula-index.XXXXXX")"
-  curl_fetch "https://formulae.brew.sh/api/formula.json" >"${homebrew_formula_index_cache}"
+  mkdir -p "$(dirname "${homebrew_formula_index_cache}")"
+
+  local tmp_cache
+  tmp_cache="$(mktemp "${homebrew_formula_index_cache}.tmp.XXXXXX")"
+  if ! curl_fetch "https://formulae.brew.sh/api/formula.json" >"${tmp_cache}"; then
+    rm -f "${tmp_cache}"
+    return 1
+  fi
+
+  mv -f "${tmp_cache}" "${homebrew_formula_index_cache}"
 }
 
 homebrew_formula_index_entry() {
