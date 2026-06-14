@@ -73,6 +73,21 @@ command = sys.argv[2:]
 process = subprocess.Popen(command, start_new_session=True)
 try:
     raise SystemExit(process.wait(timeout=timeout))
+except KeyboardInterrupt:
+    try:
+        os.killpg(process.pid, signal.SIGTERM)
+    except ProcessLookupError:
+        raise SystemExit(process.wait())
+    try:
+        process.wait(timeout=30)
+        raise SystemExit(130)
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        process.wait()
+        raise SystemExit(130)
 except subprocess.TimeoutExpired:
     try:
         os.killpg(process.pid, signal.SIGTERM)
@@ -95,6 +110,29 @@ run_job_unlocked() {
   local job="$1"
   local log_path="${automation_dir}/${job}.log"
   local started_at ended_at exit_code timeout_seconds
+  local status_recorded=0
+
+  finalize_status() {
+    local final_exit_code="${1:-0}"
+    local current_status_recorded="${status_recorded:-0}"
+
+    if [[ "${current_status_recorded}" -eq 1 ]]; then
+      return
+    fi
+
+    ended_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+    if [[ "${final_exit_code}" -eq 0 ]]; then
+      printf '[%s] Finished %s automation\n' "${ended_at}" "${job}"
+      write_status "${job}" "ok" "${final_exit_code}" "${started_at}" "${ended_at}" "${log_path}"
+    elif [[ "${final_exit_code}" -eq 124 ]]; then
+      printf '[%s] Timed out %s automation\n' "${ended_at}" "${job}"
+      write_status "${job}" "timeout" "${final_exit_code}" "${started_at}" "${ended_at}" "${log_path}"
+    else
+      printf '[%s] Failed %s automation with exit code %s\n' "${ended_at}" "${job}" "${final_exit_code}"
+      write_status "${job}" "failed" "${final_exit_code}" "${started_at}" "${ended_at}" "${log_path}"
+    fi
+    status_recorded=1
+  }
 
   mkdir -p "${automation_dir}"
   started_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
@@ -104,6 +142,10 @@ run_job_unlocked() {
   printf '\n[%s] Starting %s automation\n' "${started_at}" "${job}"
   cd "${repo_root}"
   load_environment
+
+  trap 'finalize_status "$?"' EXIT
+  trap 'exit 130' INT
+  trap 'exit 143' TERM
 
   set +e
   case "${job}" in
@@ -127,17 +169,8 @@ run_job_unlocked() {
   esac
   set -e
 
-  ended_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-  if [[ "${exit_code}" -eq 0 ]]; then
-    printf '[%s] Finished %s automation\n' "${ended_at}" "${job}"
-    write_status "${job}" "ok" "${exit_code}" "${started_at}" "${ended_at}" "${log_path}"
-  elif [[ "${exit_code}" -eq 124 ]]; then
-    printf '[%s] Timed out %s automation\n' "${ended_at}" "${job}"
-    write_status "${job}" "timeout" "${exit_code}" "${started_at}" "${ended_at}" "${log_path}"
-  else
-    printf '[%s] Failed %s automation with exit code %s\n' "${ended_at}" "${job}" "${exit_code}"
-    write_status "${job}" "failed" "${exit_code}" "${started_at}" "${ended_at}" "${log_path}"
-  fi
+  finalize_status "${exit_code}"
+  trap - EXIT INT TERM
 
   return "${exit_code}"
 }
