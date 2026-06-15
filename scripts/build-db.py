@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import random
+import socket
 import subprocess
 import sys
 import threading
@@ -357,7 +358,7 @@ def _npm_fetch_json(url, accept="application/json", use_cache=True):
             _NPM_STATS["retries"] += 1
             time.sleep(delay)
             continue
-        except urllib.error.URLError as err:
+        except (urllib.error.URLError, TimeoutError, socket.timeout) as err:
             last_error = err
             delay = _npm_backoff_seconds(attempt, err)
             if (
