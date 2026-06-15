@@ -124,6 +124,9 @@ run_job_unlocked() {
     if [[ "${final_exit_code}" -eq 0 ]]; then
       printf '[%s] Finished %s automation\n' "${ended_at}" "${job}"
       write_status "${job}" "ok" "${final_exit_code}" "${started_at}" "${ended_at}" "${log_path}"
+    elif [[ "${final_exit_code}" -eq 130 ]]; then
+      printf '[%s] Interrupted %s automation\n' "${ended_at}" "${job}"
+      write_status "${job}" "interrupted" "${final_exit_code}" "${started_at}" "${ended_at}" "${log_path}"
     elif [[ "${final_exit_code}" -eq 124 ]]; then
       printf '[%s] Timed out %s automation\n' "${ended_at}" "${job}"
       write_status "${job}" "timeout" "${final_exit_code}" "${started_at}" "${ended_at}" "${log_path}"
