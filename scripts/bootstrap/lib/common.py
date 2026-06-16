@@ -159,23 +159,30 @@ def fetch_json(url: str, *, namespace: str, refresh: bool = False) -> Any:
     etag = meta.get("etag")
     if etag:
         headers["If-None-Match"] = str(etag)
-    request = urllib.request.Request(url, headers=headers)
-    try:
-        with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
-            payload = json.loads(response.read())
-            write_json(path, {META_KEY: {"etag": response.headers.get("etag"), "checked_at": now}, PAYLOAD_KEY: payload})
-            return payload
-    except urllib.error.HTTPError as err:
-        if err.code == 304 and payload is not None:
-            write_json(path, {META_KEY: {"etag": etag, "checked_at": now}, PAYLOAD_KEY: payload})
-            return payload
-        if payload is not None:
-            return payload
-        raise
-    except urllib.error.URLError:
-        if payload is not None:
-            return payload
-        raise
+    last_error: BaseException | None = None
+    for attempt in range(FETCH_ATTEMPTS):
+        request = urllib.request.Request(url, headers=headers)
+        try:
+            with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
+                payload = json.loads(response.read())
+                write_json(path, {META_KEY: {"etag": response.headers.get("etag"), "checked_at": now}, PAYLOAD_KEY: payload})
+                return payload
+        except urllib.error.HTTPError as err:
+            if err.code == 304 and payload is not None:
+                write_json(path, {META_KEY: {"etag": etag, "checked_at": now}, PAYLOAD_KEY: payload})
+                return payload
+            if payload is not None:
+                return payload
+            raise
+        except (http.client.IncompleteRead, json.JSONDecodeError, urllib.error.URLError, TimeoutError, OSError) as err:
+            last_error = err
+            if attempt + 1 < FETCH_ATTEMPTS:
+                time.sleep(2**attempt)
+    if payload is not None:
+        return payload
+    if last_error is not None:
+        raise last_error
+    raise RuntimeError(f"failed to fetch {url}")
 
 
 def fetch_bytes(url: str, *, namespace: str, refresh: bool = False) -> bytes:

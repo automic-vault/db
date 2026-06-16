@@ -3,6 +3,7 @@ import argparse
 import datetime as dt
 import html
 import hashlib
+import http.client
 import json
 import os
 import re
@@ -30,6 +31,7 @@ PAYLOAD_KEY = "__pkgdb_payload__"
 CHECK_INTERVAL_SECONDS = 24 * 60 * 60
 DEFAULT_TIMEOUT = 60
 USER_AGENT = "nucleus/0.1"
+FETCH_ATTEMPTS = 3
 OUTPUT_PATH = GENERATED_DATA_DIR / "pkg-page-enrichment.json"
 
 
@@ -144,25 +146,32 @@ def fetch_json(
     etag = meta.get("etag")
     if etag:
         headers["If-None-Match"] = etag
-    request = urllib.request.Request(url, headers=headers)
-    try:
-        with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
-            payload = json.loads(response.read())
-            write_cache(path, payload, response.headers.get("etag"), now)
-            return payload
-    except urllib.error.HTTPError as err:
-        if err.code == 304 and payload is not None:
-            write_cache(path, payload, etag, now)
-            return payload
-        if payload is not None:
-            print(f"Using cached data for {url}: {err}", file=sys.stderr)
-            return payload
-        raise
-    except urllib.error.URLError as err:
-        if payload is not None:
-            print(f"Using cached data for {url}: {err}", file=sys.stderr)
-            return payload
-        raise
+    last_error: BaseException | None = None
+    for attempt in range(FETCH_ATTEMPTS):
+        request = urllib.request.Request(url, headers=headers)
+        try:
+            with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
+                payload = json.loads(response.read())
+                write_cache(path, payload, response.headers.get("etag"), now)
+                return payload
+        except urllib.error.HTTPError as err:
+            if err.code == 304 and payload is not None:
+                write_cache(path, payload, etag, now)
+                return payload
+            if payload is not None:
+                print(f"Using cached data for {url}: {err}", file=sys.stderr)
+                return payload
+            raise
+        except (http.client.IncompleteRead, json.JSONDecodeError, urllib.error.URLError, TimeoutError, OSError) as err:
+            last_error = err
+            if attempt + 1 < FETCH_ATTEMPTS:
+                time.sleep(2**attempt)
+    if payload is not None:
+        print(f"Using cached data for {url}: {last_error}", file=sys.stderr)
+        return payload
+    if last_error is not None:
+        raise last_error
+    raise RuntimeError(f"failed to fetch {url}")
 
 
 def normalize_list(value: Any) -> list[str]:

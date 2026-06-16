@@ -135,5 +135,76 @@ class FetchBytesTests(unittest.TestCase):
         self.assertEqual(urlopen.call_count, common.FETCH_ATTEMPTS)
 
 
+class FetchJsonTests(unittest.TestCase):
+    def test_fetch_json_retries_incomplete_read(self):
+        original_cache_dir = common.CACHE_DIR
+        calls = []
+
+        class Response:
+            headers = {"etag": "abc"}
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def read(self):
+                calls.append(None)
+                if len(calls) == 1:
+                    raise http.client.IncompleteRead(b'{"partial"', 10)
+                return b'{"ok": true}'
+
+        with tempfile.TemporaryDirectory() as tmp:
+            try:
+                common.CACHE_DIR = Path(tmp)
+                with (
+                    mock.patch.object(common.urllib.request, "urlopen", return_value=Response()),
+                    mock.patch.object(common.time, "sleep"),
+                ):
+                    data = common.fetch_json(
+                        "https://example.com/index.json",
+                        namespace="test",
+                        refresh=True,
+                    )
+            finally:
+                common.CACHE_DIR = original_cache_dir
+
+        self.assertEqual(data, {"ok": True})
+        self.assertEqual(len(calls), 2)
+
+    def test_fetch_json_uses_cached_payload_after_retryable_refresh_failure(self):
+        original_cache_dir = common.CACHE_DIR
+
+        with tempfile.TemporaryDirectory() as tmp:
+            try:
+                common.CACHE_DIR = Path(tmp)
+                url = "https://example.com/index.json"
+                path = common.cache_path_for_url(url, "test", ".json")
+                path.parent.mkdir(parents=True, exist_ok=True)
+                common.write_json(
+                    path,
+                    {
+                        common.META_KEY: {"checked_at": 0, "etag": "abc"},
+                        common.PAYLOAD_KEY: {"cached": True},
+                    },
+                )
+
+                with (
+                    mock.patch.object(
+                        common.urllib.request,
+                        "urlopen",
+                        side_effect=common.urllib.error.URLError("timeout"),
+                    ) as urlopen,
+                    mock.patch.object(common.time, "sleep"),
+                ):
+                    data = common.fetch_json(url, namespace="test", refresh=True)
+            finally:
+                common.CACHE_DIR = original_cache_dir
+
+        self.assertEqual(data, {"cached": True})
+        self.assertEqual(urlopen.call_count, common.FETCH_ATTEMPTS)
+
+
 if __name__ == "__main__":
     unittest.main()
