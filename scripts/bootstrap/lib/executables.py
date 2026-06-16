@@ -9,7 +9,7 @@ import urllib.request
 from typing import Any
 
 from .brew import stable_version
-from .common import CACHE_DIR, COMBINED_DIR, DEFAULT_TIMEOUT, DETERMINISTIC_DIR, USER_AGENT, read_json, write_json
+from .common import CACHE_DIR, COMBINED_DIR, DEFAULT_TIMEOUT, DETERMINISTIC_DIR, USER_AGENT, fetch_url, read_json, write_json
 
 
 TOKEN_SERVICE = "https://ghcr.io/token"
@@ -180,8 +180,10 @@ def ghcr_bearer_token(repo: str) -> str:
         basic = base64.b64encode(f"{github_username()}:{github_token()}".encode("utf-8")).decode("utf-8")
         headers["Authorization"] = f"Basic {basic}"
     request = urllib.request.Request(f"{TOKEN_SERVICE}?{query}", headers=headers)
-    with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
-        data = json.loads(response.read())
+    status, _, body = fetch_url(f"{TOKEN_SERVICE}?{query}", headers=headers, timeout=DEFAULT_TIMEOUT)
+    if status >= 400:
+        raise urllib.error.HTTPError(f"{TOKEN_SERVICE}?{query}", status, f"HTTP {status}", hdrs=None, fp=None)
+    data = json.loads(body)
     token = str(data.get("token") or "")
     if token:
         _TOKENS[cache_key] = {"token": token, "expires_at": now + int(data.get("expires_in", 300)) - 10}
@@ -215,11 +217,14 @@ def fetch_json_with_headers(url: str, *, headers: dict[str, str], namespace: str
     etag = meta.get("etag")
     if etag:
         headers = {**headers, "If-None-Match": str(etag)}
-    request = urllib.request.Request(url, headers=headers)
     try:
-        with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
-            payload = json.loads(response.read())
-            write_json(path, {META_KEY: {"etag": response.headers.get("etag"), "checked_at": int(time.time())}, PAYLOAD_KEY: payload})
+        status, response_headers, body = fetch_url(url, headers=headers, timeout=DEFAULT_TIMEOUT)
+        if status == 304:
+            return payload if isinstance(payload, dict) else None
+        if status >= 400:
+            raise urllib.error.HTTPError(url, status, f"HTTP {status}", hdrs=None, fp=None)
+        payload = json.loads(body)
+        write_json(path, {META_KEY: {"etag": response_headers.get("etag"), "checked_at": int(time.time())}, PAYLOAD_KEY: payload})
     except Exception:
         if payload is None:
             return None

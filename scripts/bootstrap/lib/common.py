@@ -5,6 +5,8 @@ import hashlib
 import http.client
 import json
 import os
+import signal
+import re
 import shutil
 import subprocess
 import tempfile
@@ -12,6 +14,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
@@ -31,6 +34,29 @@ DEFAULT_TIMEOUT = 90
 CHECK_INTERVAL_SECONDS = 24 * 60 * 60
 USER_AGENT = "av.db/1.0"
 FETCH_ATTEMPTS = 3
+
+
+@contextmanager
+def hard_timeout(seconds: int):
+    if seconds <= 0:
+        yield
+        return
+    if signal.getsignal(signal.SIGALRM) is not signal.SIG_DFL:
+        yield
+        return
+
+    def handle_alarm(_signum, _frame):
+        raise TimeoutError(f"timed out after {seconds}s")
+
+    previous_handler = signal.signal(signal.SIGALRM, handle_alarm)
+    previous_timer = signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        yield
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, previous_handler)
+        if previous_timer[0] > 0:
+            signal.setitimer(signal.ITIMER_REAL, *previous_timer)
 
 
 def ensure_root() -> Path:
@@ -138,6 +164,58 @@ def cache_path_for_url(url: str, namespace: str, suffix: str = ".json") -> Path:
     return CACHE_DIR / namespace / f"{host}-{digest[:24]}{ext}"
 
 
+def _parse_http_headers(raw_headers: str) -> tuple[int, dict[str, str]]:
+    blocks = [block for block in re.split(r"\r?\n\r?\n", raw_headers) if block.strip()]
+    for block in reversed(blocks):
+        lines = [line for line in block.splitlines() if line.strip()]
+        if not lines or not lines[0].startswith("HTTP/"):
+            continue
+        status_match = re.match(r"HTTP/\S+\s+(\d+)", lines[0])
+        status = int(status_match.group(1)) if status_match else 0
+        headers: dict[str, str] = {}
+        for line in lines[1:]:
+            if ":" not in line:
+                continue
+            key, value = line.split(":", 1)
+            headers[key.strip().lower()] = value.strip()
+        return status, headers
+    return 0, {}
+
+
+def fetch_url(url: str, *, headers: dict[str, str], timeout: int = DEFAULT_TIMEOUT) -> tuple[int, dict[str, str], bytes]:
+    body_fd, body_name = tempfile.mkstemp(prefix="avdb-fetch-body-")
+    header_fd, header_name = tempfile.mkstemp(prefix="avdb-fetch-headers-")
+    os.close(body_fd)
+    os.close(header_fd)
+    try:
+        command = [
+            "curl",
+            "--silent",
+            "--show-error",
+            "--location",
+            "--connect-timeout",
+            str(timeout),
+            "--max-time",
+            str(timeout),
+            "--dump-header",
+            header_name,
+            "--output",
+            body_name,
+        ]
+        for key, value in headers.items():
+            command.extend(["--header", f"{key}: {value}"])
+        command.append(url)
+        result = subprocess.run(command, check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if result.returncode != 0:
+            message = result.stderr.strip() or f"curl exited with {result.returncode}"
+            raise TimeoutError(message) if result.returncode == 28 else OSError(message)
+        status, response_headers = _parse_http_headers(Path(header_name).read_text(encoding="iso-8859-1"))
+        return status, response_headers, Path(body_name).read_bytes()
+    finally:
+        Path(body_name).unlink(missing_ok=True)
+        Path(header_name).unlink(missing_ok=True)
+
+
 def read_cached_payload(path: Path) -> tuple[Any, dict[str, Any]]:
     data = read_json(path)
     if isinstance(data, dict) and META_KEY in data and PAYLOAD_KEY in data:
@@ -161,20 +239,19 @@ def fetch_json(url: str, *, namespace: str, refresh: bool = False) -> Any:
         headers["If-None-Match"] = str(etag)
     last_error: BaseException | None = None
     for attempt in range(FETCH_ATTEMPTS):
-        request = urllib.request.Request(url, headers=headers)
         try:
-            with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
-                payload = json.loads(response.read())
-                write_json(path, {META_KEY: {"etag": response.headers.get("etag"), "checked_at": now}, PAYLOAD_KEY: payload})
-                return payload
-        except urllib.error.HTTPError as err:
-            if err.code == 304 and payload is not None:
+            status, response_headers, body = fetch_url(url, headers=headers)
+            if status == 304 and payload is not None:
                 write_json(path, {META_KEY: {"etag": etag, "checked_at": now}, PAYLOAD_KEY: payload})
                 return payload
+            if status >= 400:
+                raise urllib.error.HTTPError(url, status, f"HTTP {status}", hdrs=None, fp=None)
+            payload = json.loads(body)
+            write_json(path, {META_KEY: {"etag": response_headers.get("etag"), "checked_at": now}, PAYLOAD_KEY: payload})
+            return payload
+        except (http.client.IncompleteRead, json.JSONDecodeError, urllib.error.URLError, TimeoutError, OSError) as err:
             if payload is not None:
                 return payload
-            raise
-        except (http.client.IncompleteRead, json.JSONDecodeError, urllib.error.URLError, TimeoutError, OSError) as err:
             last_error = err
             if attempt + 1 < FETCH_ATTEMPTS:
                 time.sleep(2**attempt)
@@ -193,14 +270,16 @@ def fetch_bytes(url: str, *, namespace: str, refresh: bool = False) -> bytes:
 
     last_error: BaseException | None = None
     for attempt in range(FETCH_ATTEMPTS):
-        request = urllib.request.Request(url, headers={"Accept": "*/*", "User-Agent": USER_AGENT})
         try:
-            with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
-                data = response.read()
+            status, _, data = fetch_url(url, headers={"Accept": "*/*", "User-Agent": USER_AGENT})
+            if status >= 400:
+                raise urllib.error.HTTPError(url, status, f"HTTP {status}", hdrs=None, fp=None)
             break
         except urllib.error.HTTPError:
             raise
         except (http.client.IncompleteRead, urllib.error.URLError, TimeoutError, OSError) as err:
+            if cached_data is not None:
+                return cached_data
             last_error = err
             if attempt + 1 < FETCH_ATTEMPTS:
                 time.sleep(2**attempt)

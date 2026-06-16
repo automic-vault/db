@@ -7,7 +7,9 @@ import http.client
 import json
 import os
 import re
+import subprocess
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -115,6 +117,58 @@ def write_cache(path: Path, payload: Any, etag: str | None, checked_at: int) -> 
     )
 
 
+def parse_http_headers(raw_headers: str) -> tuple[int, dict[str, str]]:
+    blocks = [block for block in re.split(r"\r?\n\r?\n", raw_headers) if block.strip()]
+    for block in reversed(blocks):
+        lines = [line for line in block.splitlines() if line.strip()]
+        if not lines or not lines[0].startswith("HTTP/"):
+            continue
+        match = re.match(r"HTTP/\S+\s+(\d+)", lines[0])
+        status = int(match.group(1)) if match else 0
+        headers: dict[str, str] = {}
+        for line in lines[1:]:
+            if ":" not in line:
+                continue
+            key, value = line.split(":", 1)
+            headers[key.strip().lower()] = value.strip()
+        return status, headers
+    return 0, {}
+
+
+def fetch_url(url: str, headers: dict[str, str], timeout: int = DEFAULT_TIMEOUT) -> tuple[int, dict[str, str], bytes]:
+    body_fd, body_name = tempfile.mkstemp(prefix="avdb-enrichment-body-")
+    header_fd, header_name = tempfile.mkstemp(prefix="avdb-enrichment-headers-")
+    os.close(body_fd)
+    os.close(header_fd)
+    try:
+        command = [
+            "curl",
+            "--silent",
+            "--show-error",
+            "--location",
+            "--connect-timeout",
+            str(timeout),
+            "--max-time",
+            str(timeout),
+            "--dump-header",
+            header_name,
+            "--output",
+            body_name,
+        ]
+        for key, value in headers.items():
+            command.extend(["--header", f"{key}: {value}"])
+        command.append(url)
+        result = subprocess.run(command, check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if result.returncode != 0:
+            message = result.stderr.strip() or f"curl exited with {result.returncode}"
+            raise TimeoutError(message) if result.returncode == 28 else OSError(message)
+        status, response_headers = parse_http_headers(Path(header_name).read_text(encoding="iso-8859-1"))
+        return status, response_headers, Path(body_name).read_bytes()
+    finally:
+        Path(body_name).unlink(missing_ok=True)
+        Path(header_name).unlink(missing_ok=True)
+
+
 def fetch_json(
     url: str,
     ecosystem: str = ECOSYSTEM,
@@ -148,21 +202,25 @@ def fetch_json(
         headers["If-None-Match"] = etag
     last_error: BaseException | None = None
     for attempt in range(FETCH_ATTEMPTS):
-        request = urllib.request.Request(url, headers=headers)
         try:
-            with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
-                payload = json.loads(response.read())
-                write_cache(path, payload, response.headers.get("etag"), now)
-                return payload
-        except urllib.error.HTTPError as err:
-            if err.code == 304 and payload is not None:
+            status, response_headers, body = fetch_url(url, headers=headers)
+            if status == 304 and payload is not None:
                 write_cache(path, payload, etag, now)
                 return payload
+            if status >= 400:
+                raise urllib.error.HTTPError(url, status, f"HTTP {status}", hdrs=None, fp=None)
+            payload = json.loads(body)
+            write_cache(path, payload, response_headers.get("etag"), now)
+            return payload
+        except urllib.error.HTTPError as err:
             if payload is not None:
                 print(f"Using cached data for {url}: {err}", file=sys.stderr)
                 return payload
             raise
         except (http.client.IncompleteRead, json.JSONDecodeError, urllib.error.URLError, TimeoutError, OSError) as err:
+            if payload is not None:
+                print(f"Using cached data for {url}: {err}", file=sys.stderr)
+                return payload
             last_error = err
             if attempt + 1 < FETCH_ATTEMPTS:
                 time.sleep(2**attempt)
@@ -934,10 +992,18 @@ def expected_enrichment(
     registry_cache_only: bool = False,
     previous_packages: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    formulae = fetch_json(FORMULA_URL, force_refresh=force_refresh)
+    formulae = fetch_json(
+        FORMULA_URL,
+        force_refresh=force_refresh and not registry_cache_only,
+        prefer_cache=registry_cache_only,
+    )
     if not isinstance(formulae, list):
         raise ValueError("Homebrew formula API payload must be a list")
-    casks = fetch_json(CASK_URL, force_refresh=force_refresh)
+    casks = fetch_json(
+        CASK_URL,
+        force_refresh=force_refresh and not registry_cache_only,
+        prefer_cache=registry_cache_only,
+    )
     if not isinstance(casks, list):
         raise ValueError("Homebrew cask API payload must be a list")
     db = read_json(DB_JSON_PATH)
