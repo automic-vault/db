@@ -113,12 +113,23 @@ def write_cache(path: Path, payload: Any, etag: str | None, checked_at: int) -> 
     )
 
 
-def fetch_json(url: str, ecosystem: str = ECOSYSTEM, force_refresh: bool = False) -> Any:
+def fetch_json(
+    url: str,
+    ecosystem: str = ECOSYSTEM,
+    force_refresh: bool = False,
+    prefer_cache: bool = False,
+    cache_only: bool = False,
+) -> Any:
     path = cache_path_for(url, ecosystem)
     payload = None
     meta: dict[str, Any] = {}
     if path.exists():
         payload, meta = read_cached_json(url, ecosystem)
+
+    if prefer_cache and payload is not None and not force_refresh:
+        return payload
+    if cache_only:
+        return payload
 
     checked_at = meta.get("checked_at")
     now = int(time.time())
@@ -909,7 +920,11 @@ def build_enrichment(
     }
 
 
-def expected_enrichment(force_refresh: bool = False) -> dict[str, Any]:
+def expected_enrichment(
+    force_refresh: bool = False,
+    registry_cache_only: bool = False,
+    previous_packages: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     formulae = fetch_json(FORMULA_URL, force_refresh=force_refresh)
     if not isinstance(formulae, list):
         raise ValueError("Homebrew formula API payload must be a list")
@@ -925,15 +940,47 @@ def expected_enrichment(force_refresh: bool = False) -> dict[str, Any]:
         for name in sorted(npms):
             if not isinstance(name, str) or not name:
                 continue
-            npm_payloads[name] = fetch_json(npm_package_url(name), ecosystem="registry.npmjs.org", force_refresh=force_refresh)
+            # `--refresh` is intended to invalidate the top-level Homebrew API cache
+            # used to detect changed packages. Registry payloads stay on their own TTL.
+            npm_payloads[name] = fetch_json(
+                npm_package_url(name),
+                ecosystem="registry.npmjs.org",
+                prefer_cache=True,
+                cache_only=registry_cache_only,
+            )
     pip_overlays = read_json(Path("data/pip.json"))
     pypi_payloads: dict[str, Any] = {}
     if isinstance(pip_overlays, dict):
         for name in sorted(pip_overlays):
             if not isinstance(name, str) or not name:
                 continue
-            pypi_payloads[name] = fetch_json(pypi_package_url(name), ecosystem="pypi.org", force_refresh=force_refresh)
-    return build_enrichment(formulae, casks, db, npm_payloads=npm_payloads, pip_overlays=pip_overlays, pypi_payloads=pypi_payloads)
+            pypi_payloads[name] = fetch_json(
+                pypi_package_url(name),
+                ecosystem="pypi.org",
+                prefer_cache=True,
+                cache_only=registry_cache_only,
+            )
+    enrichment = build_enrichment(
+        formulae,
+        casks,
+        db,
+        npm_payloads=npm_payloads,
+        pip_overlays=pip_overlays,
+        pypi_payloads=pypi_payloads,
+    )
+    if registry_cache_only and previous_packages:
+        packages = enrichment.get("packages")
+        if isinstance(packages, dict):
+            merged_packages = dict(packages)
+            for key, value in previous_packages.items():
+                if (
+                    isinstance(key, str)
+                    and key not in merged_packages
+                    and key.startswith(("npm:", "pip:"))
+                ):
+                    merged_packages[key] = value
+            enrichment["packages"] = dict(sorted(merged_packages.items()))
+    return enrichment
 
 
 def check_current(path: Path, terminal: Terminal) -> int:
@@ -967,6 +1014,11 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate Homebrew package-page enrichment data.")
     parser.add_argument("--check", action="store_true", help="Validate that the output already matches current inputs.")
     parser.add_argument("--refresh", action="store_true", help="Refresh cached Homebrew formula API data.")
+    parser.add_argument(
+        "--registry-cache-only",
+        action="store_true",
+        help="Reuse cached npm/PyPI registry payloads and preserve existing registry entries when caches are missing.",
+    )
     parser.add_argument("--output", default=str(OUTPUT_PATH), help=f"Path to write or validate. Defaults to {OUTPUT_PATH}.")
     parser.add_argument("--json", action="store_true", help="Print machine-readable status and disable terminal styling.")
     return parser.parse_args()
@@ -981,7 +1033,17 @@ def main() -> int:
         return check_current(output_path, terminal)
     try:
         terminal.step_log("Building Homebrew package-page enrichment")
-        enrichment = expected_enrichment(force_refresh=args.refresh)
+        previous_packages = None
+        if args.registry_cache_only and output_path.exists():
+            current = read_json(output_path)
+            existing_packages = current.get("packages") if isinstance(current, dict) else None
+            if isinstance(existing_packages, dict):
+                previous_packages = existing_packages
+        enrichment = expected_enrichment(
+            force_refresh=args.refresh,
+            registry_cache_only=args.registry_cache_only,
+            previous_packages=previous_packages,
+        )
     except (OSError, ValueError, urllib.error.URLError, json.JSONDecodeError) as err:
         terminal.error_log(f"Failed to build enrichment: {err}")
         return 1

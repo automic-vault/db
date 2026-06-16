@@ -70,7 +70,7 @@ def main() -> int:
             isotope_command.append("--skip-builds")
         run(isotope_command)
     run([py, "scripts/export-automic-vault-db.py"])
-    run([py, "scripts/generate-pkg-page-enrichment.py", "--refresh"])
+    run([py, "scripts/generate-pkg-page-enrichment.py", "--refresh", "--registry-cache-only"])
     run([py, "scripts/generate-pkg-version-freshness.py"])
     run([py, "scripts/generate-pkg-manager-indexes.py"])
     run([py, "scripts/generate-pkg-cross-ecosystem.py"])
