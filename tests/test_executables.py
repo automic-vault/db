@@ -251,6 +251,74 @@ class ExecutableSeedTests(unittest.TestCase):
         self.assertEqual(db["formulas"]["awscli"]["pulse_kind"], "new")
         self.assertEqual(pulse_events.call_args_list[0].args[1], {"Formula/a/awscli.rb": "awscli"})
 
+    def test_automic_vault_db_export_adds_formula_and_cask_pulse_metadata(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "awscli.yml").write_text(
+                "\n".join(
+                    [
+                        "id: brew:awscli",
+                        "description: Official Amazon AWS command-line interface",
+                        "executables:",
+                        "  - aws",
+                        "",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            formulae = [
+                {
+                    "name": "awscli",
+                    "ruby_source_path": "Formula/a/awscli.rb",
+                }
+            ]
+
+            with mock.patch.object(
+                authority,
+                "read_cask_authority",
+                return_value=(
+                    {"op": "cask:1password-cli"},
+                    {"1password-cli": {"summary": "1Password CLI", "binaries": [{"source": "op", "target": "op"}]}},
+                ),
+            ), mock.patch.object(
+                authority,
+                "read_cask_cache",
+                return_value=[{"token": "1password-cli", "ruby_source_path": "Casks/1/1password-cli.rb"}],
+            ), mock.patch.object(
+                authority,
+                "read_npm_metadata",
+                return_value={},
+            ), mock.patch.object(
+                authority,
+                "git_pulse_events",
+                side_effect=[
+                    {
+                        "awscli": {
+                            "last_updated_at": "2026-06-15T12:00:00Z",
+                            "pulse_kind": "updated",
+                        }
+                    },
+                    {
+                        "1password-cli": {
+                            "last_updated_at": "2026-06-14T12:00:00Z",
+                            "pulse_kind": "new",
+                        }
+                    },
+                ],
+            ) as pulse_events:
+                db = build_automic_vault_db(
+                    root,
+                    formulae,
+                    generated_at="2026-06-16T00:00:00+00:00",
+                )
+
+        self.assertEqual(db["formulas"]["awscli"]["last_updated_at"], "2026-06-15T12:00:00Z")
+        self.assertEqual(db["formulas"]["awscli"]["pulse_kind"], "updated")
+        self.assertEqual(db["casks"]["1password-cli"]["last_updated_at"], "2026-06-14T12:00:00Z")
+        self.assertEqual(db["casks"]["1password-cli"]["pulse_kind"], "new")
+        self.assertEqual(pulse_events.call_args_list[0].args[1], {"Formula/a/awscli.rb": "awscli"})
+        self.assertEqual(pulse_events.call_args_list[1].args[1], {"Casks/1/1password-cli.rb": "1password-cli"})
+
     def test_automic_vault_db_export_reads_npm_cache_metadata(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -298,6 +366,58 @@ class ExecutableSeedTests(unittest.TestCase):
                 "pulse_kind": "updated",
             },
         )
+
+    def test_missing_homebrew_pulse_events_keep_npm_last_updated_at_metadata(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "awscli.yml").write_text(
+                "id: brew:awscli\ndescription: Official Amazon AWS command-line interface\nexecutables:\n  - aws\n",
+                encoding="utf-8",
+            )
+            index_path = root / "npm-index.json"
+            index_path.write_text(
+                json.dumps(
+                    {
+                        "packages": {
+                            "ts-node": {
+                                "summary": "TypeScript execution",
+                                "version": "10.9.2",
+                                "executable": "ts-node",
+                                "last_updated_at": "2026-06-15T12:00:00Z",
+                                "pulse_kind": "updated",
+                            }
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            with mock.patch.object(
+                authority,
+                "read_cask_authority",
+                return_value=(
+                    {"op": "cask:1password-cli"},
+                    {"1password-cli": {"summary": "1Password CLI", "binaries": [{"source": "op", "target": "op"}]}},
+                ),
+            ), mock.patch.object(
+                authority,
+                "read_cask_cache",
+                return_value=[{"token": "1password-cli", "ruby_source_path": "Casks/1/1password-cli.rb"}],
+            ), mock.patch.object(
+                authority,
+                "git_pulse_events",
+                return_value={},
+            ), mock.patch.object(authority, "NPM_INDEX_STATE_PATH", index_path):
+                db = build_automic_vault_db(
+                    root,
+                    [{"name": "awscli", "ruby_source_path": "Formula/a/awscli.rb"}],
+                    generated_at="2026-06-16T00:00:00+00:00",
+                )
+
+        self.assertNotIn("last_updated_at", db["formulas"]["awscli"])
+        self.assertNotIn("last_updated_at", db["casks"]["1password-cli"])
+        self.assertEqual(db["npms"]["ts-node"]["last_updated_at"], "2026-06-15T12:00:00Z")
+        self.assertEqual(db["npms"]["ts-node"]["pulse_kind"], "updated")
 
     def test_formula_metadata_export_reads_aliases_from_formula_cache(self):
         with tempfile.TemporaryDirectory() as tmp:

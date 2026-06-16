@@ -133,9 +133,12 @@ def steps(refresh: bool, fetch_manifests: bool, manifest_limit: int) -> list[Ste
                 Path("scripts/bootstrap/lib/render.py"),
                 Path("combined"),
                 Path("cache/brew/formulae.json"),
+                Path("cache/brew/casks.json"),
                 Path("cache/brew/cask-entries.json"),
+                Path("cache/npmjs/index.json"),
             ],
             [Path("cache/automic-vault/db.json")],
+            refresh_sensitive=True,
         ),
     ]
 

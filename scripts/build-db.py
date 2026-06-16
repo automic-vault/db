@@ -813,21 +813,28 @@ def _git_repo_cache_path(repo):
 def _ensure_git_repo(repo):
     path = _git_repo_cache_path(repo)
     url = f"https://github.com/{repo}.git"
-    if not os.path.exists(path):
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        subprocess.run(
-            ["git", "clone", "--filter=blob:none", "--no-checkout", url, path],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
-    else:
-        subprocess.run(
-            ["git", "-C", path, "fetch", "--quiet", "--filter=blob:none", "origin"],
-            check=True,
-            capture_output=True,
-            text=True,
-        )
+    try:
+        if not os.path.exists(path):
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            subprocess.run(
+                ["git", "clone", "--filter=blob:none", "--no-checkout", url, path],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+        else:
+            subprocess.run(
+                ["git", "-C", path, "fetch", "--quiet", "--filter=blob:none", "origin"],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+    except (OSError, subprocess.CalledProcessError) as err:
+        if os.path.exists(path):
+            print(f"Using stale Homebrew git cache for {repo}: {err}", file=sys.stderr)
+            return path
+        print(f"Skipping Homebrew pulse metadata for {repo}: {err}", file=sys.stderr)
+        return None
     return path
 
 
@@ -845,7 +852,11 @@ def _git_default_revision(repo_path):
         )
         if result.returncode == 0:
             return candidate
-    raise RuntimeError(f"Unable to resolve a fetched revision for {repo_path}")
+    print(
+        f"Skipping Homebrew pulse metadata for {repo_path}: no fetched revision",
+        file=sys.stderr,
+    )
+    return None
 
 
 def _git_pulse_events(repo, keyed_paths, scope):
@@ -853,7 +864,11 @@ def _git_pulse_events(repo, keyed_paths, scope):
         return {}
 
     repo_path = _ensure_git_repo(repo)
+    if repo_path is None:
+        return {}
     revision = _git_default_revision(repo_path)
+    if revision is None:
+        return {}
     now = datetime.datetime.now(datetime.timezone.utc)
     new_cutoff = now - datetime.timedelta(days=PULSE_NEW_WINDOW_DAYS)
     history_cutoff = now - datetime.timedelta(days=PULSE_HISTORY_WINDOW_DAYS)
@@ -875,12 +890,16 @@ def _git_pulse_events(repo, keyed_paths, scope):
         "--",
         scope,
     ]
-    process = subprocess.Popen(
-        command,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
+    try:
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+    except OSError as err:
+        print(f"Skipping Homebrew pulse metadata for {repo}: {err}", file=sys.stderr)
+        return {}
     try:
         for raw_line in process.stdout:
             line = raw_line.rstrip("\n")
@@ -934,7 +953,8 @@ def _git_pulse_events(repo, keyed_paths, scope):
         stdout, stderr = process.communicate()
         if process.returncode not in (0, -15):
             message = stderr.strip() or stdout.strip() or f"git log failed for {repo}"
-            raise RuntimeError(message)
+            print(f"Skipping Homebrew pulse metadata for {repo}: {message}", file=sys.stderr)
+            return {}
 
     for key in recent_additions:
         if key in events:

@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "bootstrap"))
 
-from scripts.bootstrap.build import Step, should_run
+from scripts.bootstrap.build import Step, should_run, steps
 
 
 class BuildPipelineTests(unittest.TestCase):
@@ -30,6 +30,18 @@ class BuildPipelineTests(unittest.TestCase):
             self.assertTrue(run)
             self.assertTrue(should_run(step, state, refresh=True, force=False)[0])
             self.assertFalse(should_run(step, {"brew-fetch": non_refresh_fp}, refresh=False, force=False)[0])
+
+    def test_export_automic_vault_db_refresh_recomputes_pulse_metadata(self):
+        export_step = next(
+            step
+            for step in steps(refresh=True, fetch_manifests=False, manifest_limit=0)
+            if step.name == "export-automic-vault-db"
+        )
+        input_paths = {path.as_posix() for path in export_step.inputs}
+
+        self.assertTrue(export_step.refresh_sensitive)
+        self.assertIn("cache/brew/casks.json", input_paths)
+        self.assertIn("cache/npmjs/index.json", input_paths)
 
 
 if __name__ == "__main__":
