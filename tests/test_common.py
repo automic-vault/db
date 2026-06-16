@@ -77,24 +77,17 @@ class FetchBytesTests(unittest.TestCase):
         original_cache_dir = common.CACHE_DIR
         calls = []
 
-        class Response:
-            def __enter__(self):
-                return self
-
-            def __exit__(self, exc_type, exc, tb):
-                return False
-
-            def read(self):
-                calls.append(None)
-                if len(calls) == 1:
-                    raise http.client.IncompleteRead(b"partial", 5)
-                return b"complete"
+        def fetch_url(_url, *, headers):
+            calls.append(headers)
+            if len(calls) == 1:
+                raise http.client.IncompleteRead(b"partial", 5)
+            return 200, {}, b"complete"
 
         with tempfile.TemporaryDirectory() as tmp:
             try:
                 common.CACHE_DIR = Path(tmp)
                 with (
-                    mock.patch.object(common.urllib.request, "urlopen", return_value=Response()),
+                    mock.patch.object(common, "fetch_url", side_effect=fetch_url),
                     mock.patch.object(common.time, "sleep"),
                 ):
                     data = common.fetch_bytes(
@@ -121,10 +114,10 @@ class FetchBytesTests(unittest.TestCase):
 
                 with (
                     mock.patch.object(
-                        common.urllib.request,
-                        "urlopen",
+                        common,
+                        "fetch_url",
                         side_effect=common.urllib.error.URLError("timeout"),
-                    ) as urlopen,
+                    ) as fetch_url,
                     mock.patch.object(common.time, "sleep"),
                 ):
                     data = common.fetch_bytes(url, namespace="test", refresh=True)
@@ -132,7 +125,7 @@ class FetchBytesTests(unittest.TestCase):
                 common.CACHE_DIR = original_cache_dir
 
         self.assertEqual(data, b"cached")
-        self.assertEqual(urlopen.call_count, common.FETCH_ATTEMPTS)
+        self.assertEqual(fetch_url.call_count, 1)
 
 
 class FetchJsonTests(unittest.TestCase):
@@ -140,26 +133,17 @@ class FetchJsonTests(unittest.TestCase):
         original_cache_dir = common.CACHE_DIR
         calls = []
 
-        class Response:
-            headers = {"etag": "abc"}
-
-            def __enter__(self):
-                return self
-
-            def __exit__(self, exc_type, exc, tb):
-                return False
-
-            def read(self):
-                calls.append(None)
-                if len(calls) == 1:
-                    raise http.client.IncompleteRead(b'{"partial"', 10)
-                return b'{"ok": true}'
+        def fetch_url(_url, *, headers):
+            calls.append(headers)
+            if len(calls) == 1:
+                raise http.client.IncompleteRead(b'{"partial"', 10)
+            return 200, {"etag": "abc"}, b'{"ok": true}'
 
         with tempfile.TemporaryDirectory() as tmp:
             try:
                 common.CACHE_DIR = Path(tmp)
                 with (
-                    mock.patch.object(common.urllib.request, "urlopen", return_value=Response()),
+                    mock.patch.object(common, "fetch_url", side_effect=fetch_url),
                     mock.patch.object(common.time, "sleep"),
                 ):
                     data = common.fetch_json(
@@ -192,10 +176,10 @@ class FetchJsonTests(unittest.TestCase):
 
                 with (
                     mock.patch.object(
-                        common.urllib.request,
-                        "urlopen",
+                        common,
+                        "fetch_url",
                         side_effect=common.urllib.error.URLError("timeout"),
-                    ) as urlopen,
+                    ) as fetch_url,
                     mock.patch.object(common.time, "sleep"),
                 ):
                     data = common.fetch_json(url, namespace="test", refresh=True)
@@ -203,7 +187,7 @@ class FetchJsonTests(unittest.TestCase):
                 common.CACHE_DIR = original_cache_dir
 
         self.assertEqual(data, {"cached": True})
-        self.assertEqual(urlopen.call_count, common.FETCH_ATTEMPTS)
+        self.assertEqual(fetch_url.call_count, 1)
 
 
 if __name__ == "__main__":

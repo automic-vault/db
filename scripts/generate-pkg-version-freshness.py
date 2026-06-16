@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import sys
 import time
 import urllib.error
@@ -152,6 +153,64 @@ def github_token() -> str:
     return os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or ""
 
 
+def github_api_endpoint(url: str) -> str | None:
+    parsed = urllib.parse.urlparse(url)
+    if parsed.hostname != "api.github.com":
+        return None
+    endpoint = parsed.path or "/"
+    if parsed.query:
+        endpoint = f"{endpoint}?{parsed.query}"
+    return endpoint
+
+
+def gh_api_error_status(stderr: str) -> int | None:
+    marker = "HTTP "
+    index = stderr.rfind(marker)
+    if index == -1:
+        return None
+    status = stderr[index + len(marker) : index + len(marker) + 3]
+    return int(status) if status.isdigit() else None
+
+
+def fetch_github_json_with_gh(url: str) -> Any:
+    endpoint = github_api_endpoint(url)
+    if endpoint is None:
+        raise ValueError(f"not a GitHub API URL: {url}")
+    command = [
+        "gh",
+        "api",
+        "-H",
+        "Accept: application/vnd.github+json",
+        "-H",
+        "X-GitHub-Api-Version: 2022-11-28",
+        endpoint,
+    ]
+    try:
+        result = subprocess.run(
+            command,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=DEFAULT_TIMEOUT,
+        )
+    except (OSError, subprocess.TimeoutExpired) as err:
+        raise urllib.error.URLError(err) from err
+    if result.returncode != 0:
+        stderr = result.stderr.strip()
+        status = gh_api_error_status(stderr)
+        if status is not None:
+            raise urllib.error.HTTPError(
+                url,
+                status,
+                stderr or f"HTTP {status}",
+                hdrs=None,
+                fp=None,
+            )
+        raise urllib.error.URLError(stderr or f"gh api exited with {result.returncode}")
+    return json.loads(result.stdout)
+
+
 def fetch_github_json(url: str, *, force_refresh: bool = False, cache_only: bool = True) -> Any:
     path = cache_path_for(url)
     payload = None
@@ -169,6 +228,25 @@ def fetch_github_json(url: str, *, force_refresh: bool = False, cache_only: bool
         and now - checked_at < CHECK_INTERVAL_SECONDS
     ):
         return payload
+
+    try:
+        payload = fetch_github_json_with_gh(url)
+        write_cache(path, payload, None, now)
+        return payload
+    except urllib.error.HTTPError as err:
+        if err.code == 404:
+            if payload is not None:
+                return payload
+            return None
+        if err.code == 403 and payload is not None:
+            return payload
+        if payload is not None:
+            print(f"Using cached GitHub data for {url}: {err}", file=sys.stderr)
+            return payload
+    except (urllib.error.URLError, json.JSONDecodeError) as err:
+        if payload is not None:
+            print(f"Using cached GitHub data for {url}: {err}", file=sys.stderr)
+            return payload
 
     headers = {
         "Accept": "application/vnd.github+json",

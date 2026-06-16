@@ -343,10 +343,75 @@ def cache_path_for_url(url: str) -> Path:
     return CACHE_DIR / f"{host}-{digest}{suffix}"
 
 
+def github_api_endpoint(url: str) -> str | None:
+    parsed = urllib.parse.urlparse(url)
+    if parsed.hostname != "api.github.com":
+        return None
+    endpoint = parsed.path or "/"
+    if parsed.query:
+        endpoint = f"{endpoint}?{parsed.query}"
+    return endpoint
+
+
+def gh_api_error_status(stderr: str) -> int | None:
+    marker = "HTTP "
+    index = stderr.rfind(marker)
+    if index == -1:
+        return None
+    status = stderr[index + len(marker) : index + len(marker) + 3]
+    return int(status) if status.isdigit() else None
+
+
+def fetch_github_api_bytes(url: str) -> bytes:
+    endpoint = github_api_endpoint(url)
+    if endpoint is None:
+        raise ValueError(f"not a GitHub API URL: {url}")
+    command = [
+        "gh",
+        "api",
+        "-H",
+        "Accept: application/vnd.github+json",
+        "-H",
+        "X-GitHub-Api-Version: 2022-11-28",
+        endpoint,
+    ]
+    try:
+        result = subprocess.run(
+            command,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=DEFAULT_TIMEOUT,
+        )
+    except (OSError, subprocess.TimeoutExpired) as err:
+        raise urllib.error.URLError(err) from err
+    if result.returncode != 0:
+        stderr = result.stderr.decode("utf-8", errors="replace").strip()
+        status = gh_api_error_status(stderr)
+        if status is not None:
+            raise urllib.error.HTTPError(
+                url,
+                status,
+                stderr or f"HTTP {status}",
+                hdrs=None,
+                fp=None,
+            )
+        raise urllib.error.URLError(stderr or f"gh api exited with {result.returncode}")
+    return result.stdout
+
+
 def fetch_bytes(url: str, *, force_refresh: bool = False) -> bytes:
     path = cache_path_for_url(url)
     if path.exists() and not force_refresh:
         return path.read_bytes()
+    if urllib.parse.urlparse(url).hostname == "api.github.com":
+        try:
+            data = fetch_github_api_bytes(url)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+            return data
+        except (urllib.error.HTTPError, urllib.error.URLError):
+            pass
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "*/*"})
     with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
         data = response.read()

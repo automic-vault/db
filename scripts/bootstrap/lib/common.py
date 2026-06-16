@@ -216,6 +216,63 @@ def fetch_url(url: str, *, headers: dict[str, str], timeout: int = DEFAULT_TIMEO
         Path(header_name).unlink(missing_ok=True)
 
 
+def github_api_endpoint(url: str) -> str | None:
+    parsed = urllib.parse.urlparse(url)
+    if parsed.hostname != "api.github.com":
+        return None
+    endpoint = parsed.path or "/"
+    if parsed.query:
+        endpoint = f"{endpoint}?{parsed.query}"
+    return endpoint
+
+
+def gh_api_error_status(stderr: str) -> int | None:
+    marker = "HTTP "
+    index = stderr.rfind(marker)
+    if index == -1:
+        return None
+    status = stderr[index + len(marker) : index + len(marker) + 3]
+    return int(status) if status.isdigit() else None
+
+
+def fetch_github_api_bytes(url: str) -> bytes:
+    endpoint = github_api_endpoint(url)
+    if endpoint is None:
+        raise ValueError(f"not a GitHub API URL: {url}")
+    command = [
+        "gh",
+        "api",
+        "-H",
+        "Accept: application/vnd.github+json",
+        "-H",
+        "X-GitHub-Api-Version: 2022-11-28",
+        endpoint,
+    ]
+    try:
+        result = subprocess.run(
+            command,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=DEFAULT_TIMEOUT,
+        )
+    except (OSError, subprocess.TimeoutExpired) as err:
+        raise urllib.error.URLError(err) from err
+    if result.returncode != 0:
+        stderr = result.stderr.decode("utf-8", errors="replace").strip()
+        status = gh_api_error_status(stderr)
+        if status is not None:
+            raise urllib.error.HTTPError(
+                url,
+                status,
+                stderr or f"HTTP {status}",
+                hdrs=None,
+                fp=None,
+            )
+        raise urllib.error.URLError(stderr or f"gh api exited with {result.returncode}")
+    return result.stdout
+
+
 def read_cached_payload(path: Path) -> tuple[Any, dict[str, Any]]:
     data = read_json(path)
     if isinstance(data, dict) and META_KEY in data and PAYLOAD_KEY in data:
@@ -237,6 +294,14 @@ def fetch_json(url: str, *, namespace: str, refresh: bool = False) -> Any:
     etag = meta.get("etag")
     if etag:
         headers["If-None-Match"] = str(etag)
+    if urllib.parse.urlparse(url).hostname == "api.github.com":
+        try:
+            body = fetch_github_api_bytes(url)
+            payload = json.loads(body)
+            write_json(path, {META_KEY: {"etag": None, "checked_at": now}, PAYLOAD_KEY: payload})
+            return payload
+        except (json.JSONDecodeError, urllib.error.HTTPError, urllib.error.URLError):
+            pass
     last_error: BaseException | None = None
     for attempt in range(FETCH_ATTEMPTS):
         try:
@@ -267,6 +332,16 @@ def fetch_bytes(url: str, *, namespace: str, refresh: bool = False) -> bytes:
     cached_data = path.read_bytes() if path.exists() else None
     if cached_data is not None and not refresh:
         return cached_data
+
+    if urllib.parse.urlparse(url).hostname == "api.github.com":
+        try:
+            data = fetch_github_api_bytes(url)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            if cached_data != data:
+                path.write_bytes(data)
+            return data
+        except (urllib.error.HTTPError, urllib.error.URLError):
+            pass
 
     last_error: BaseException | None = None
     for attempt in range(FETCH_ATTEMPTS):

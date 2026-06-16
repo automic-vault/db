@@ -20,26 +20,17 @@ class FetchJsonTests(unittest.TestCase):
         original_cache_dir = pkg_page_enrichment.CACHE_DIR
         calls = []
 
-        class Response:
-            headers = {"etag": "abc"}
-
-            def __enter__(self):
-                return self
-
-            def __exit__(self, exc_type, exc, tb):
-                return False
-
-            def read(self):
-                calls.append(None)
-                if len(calls) == 1:
-                    raise http.client.IncompleteRead(b'{"partial"', 10)
-                return b'{"ok": true}'
+        def fetch_url(_url, *, headers):
+            calls.append(headers)
+            if len(calls) == 1:
+                raise http.client.IncompleteRead(b'{"partial"', 10)
+            return 200, {"etag": "abc"}, b'{"ok": true}'
 
         with tempfile.TemporaryDirectory() as tmp:
             try:
                 pkg_page_enrichment.CACHE_DIR = Path(tmp)
                 with (
-                    mock.patch.object(pkg_page_enrichment.urllib.request, "urlopen", return_value=Response()),
+                    mock.patch.object(pkg_page_enrichment, "fetch_url", side_effect=fetch_url),
                     mock.patch.object(pkg_page_enrichment.time, "sleep"),
                 ):
                     data = pkg_page_enrichment.fetch_json(
@@ -65,10 +56,10 @@ class FetchJsonTests(unittest.TestCase):
 
                 with (
                     mock.patch.object(
-                        pkg_page_enrichment.urllib.request,
-                        "urlopen",
+                        pkg_page_enrichment,
+                        "fetch_url",
                         side_effect=pkg_page_enrichment.urllib.error.URLError("timeout"),
-                    ) as urlopen,
+                    ) as fetch_url,
                     mock.patch.object(pkg_page_enrichment.time, "sleep"),
                 ):
                     data = pkg_page_enrichment.fetch_json(
@@ -80,7 +71,7 @@ class FetchJsonTests(unittest.TestCase):
                 pkg_page_enrichment.CACHE_DIR = original_cache_dir
 
         self.assertEqual(data, {"cached": True})
-        self.assertEqual(urlopen.call_count, pkg_page_enrichment.FETCH_ATTEMPTS)
+        self.assertEqual(fetch_url.call_count, 1)
 
 
 if __name__ == "__main__":
