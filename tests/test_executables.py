@@ -1,3 +1,4 @@
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -142,6 +143,10 @@ class ExecutableSeedTests(unittest.TestCase):
                 authority,
                 "read_cask_authority",
                 return_value=({"op": "cask:1password-cli"}, {"1password-cli": {"binaries": [{"source": "op", "target": "op"}]}}),
+            ), mock.patch.object(authority, "git_pulse_events", return_value={}), mock.patch.object(
+                authority,
+                "read_npm_metadata",
+                return_value={},
             ):
                 db = build_automic_vault_db(
                     root,
@@ -181,6 +186,8 @@ class ExecutableSeedTests(unittest.TestCase):
                         "sourceArchive": "https://example.com/op.zip",
                         "url": "https://example.com/op.zip",
                         "sha256": "abc123",
+                        "last_updated_at": "2026-06-15T12:00:00Z",
+                        "pulse_kind": "updated",
                         "binaries": [{"source": "op", "target": "op"}],
                     }
                 }
@@ -188,8 +195,107 @@ class ExecutableSeedTests(unittest.TestCase):
             {
                 "1password-cli": {
                     "summary": "1Password CLI",
+                    "last_updated_at": "2026-06-15T12:00:00Z",
+                    "pulse_kind": "updated",
                     "binaries": [{"source": "op", "target": "op"}],
                 }
+            },
+        )
+
+    def test_automic_vault_db_export_adds_formula_pulse_metadata(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "awscli.yml").write_text(
+                "\n".join(
+                    [
+                        "id: brew:awscli",
+                        "description: Official Amazon AWS command-line interface",
+                        "executables:",
+                        "  - aws",
+                        "",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            formulae = [
+                {
+                    "name": "awscli",
+                    "ruby_source_path": "Formula/a/awscli.rb",
+                }
+            ]
+
+            with mock.patch.object(authority, "read_cask_authority", return_value=({}, {})), mock.patch.object(
+                authority,
+                "read_npm_metadata",
+                return_value={},
+            ), mock.patch.object(
+                authority,
+                "git_pulse_events",
+                side_effect=[
+                    {
+                        "awscli": {
+                            "last_updated_at": "2026-06-15T12:00:00Z",
+                            "pulse_kind": "new",
+                        }
+                    },
+                    {},
+                ],
+            ) as pulse_events:
+                db = build_automic_vault_db(
+                    root,
+                    formulae,
+                    generated_at="2026-06-16T00:00:00+00:00",
+                )
+
+        self.assertEqual(db["formulas"]["awscli"]["last_updated_at"], "2026-06-15T12:00:00Z")
+        self.assertEqual(db["formulas"]["awscli"]["pulse_kind"], "new")
+        self.assertEqual(pulse_events.call_args_list[0].args[1], {"Formula/a/awscli.rb": "awscli"})
+
+    def test_automic_vault_db_export_reads_npm_cache_metadata(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            index_path = root / "npm-index.json"
+            index_path.write_text(
+                json.dumps(
+                    {
+                        "packages": {
+                            "ts-node": {
+                                "summary": "TypeScript execution",
+                                "homepage": "https://typestrong.org/ts-node",
+                                "version": "10.9.2",
+                                "executable": "ts-node",
+                                "popularity": {"downloads_per_30_days": 1000000, "rank": 1},
+                                "last_updated_at": "2026-06-15T12:00:00Z",
+                                "pulse_kind": "updated",
+                            }
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            with mock.patch.object(authority, "read_cask_authority", return_value=({}, {})), mock.patch.object(
+                authority,
+                "git_pulse_events",
+                return_value={},
+            ), mock.patch.object(authority, "NPM_INDEX_STATE_PATH", index_path):
+                db = build_automic_vault_db(
+                    root,
+                    [],
+                    generated_at="2026-06-16T00:00:00+00:00",
+                )
+
+        self.assertEqual(db["entries"]["ts-node"], "npm:ts-node")
+        self.assertEqual(
+            db["npms"]["ts-node"],
+            {
+                "summary": "TypeScript execution",
+                "homepage": "https://typestrong.org/ts-node",
+                "version": "10.9.2",
+                "executable": "ts-node",
+                "popularity": {"downloads_per_30_days": 1000000, "rank": 1},
+                "last_updated_at": "2026-06-15T12:00:00Z",
+                "pulse_kind": "updated",
             },
         )
 

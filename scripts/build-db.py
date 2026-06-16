@@ -1172,6 +1172,27 @@ def _npm_last_updated_at(packument, latest):
     return value if isinstance(value, str) and value else None
 
 
+def _npm_created_at(packument):
+    times = packument.get("time") if isinstance(packument, dict) else None
+    if not isinstance(times, dict):
+        return None
+    value = times.get("created")
+    return value if isinstance(value, str) and value else None
+
+
+def _npm_pulse_kind(packument, last_updated_at):
+    now = datetime.datetime.now(datetime.timezone.utc)
+    new_cutoff = now - datetime.timedelta(days=PULSE_NEW_WINDOW_DAYS)
+    history_cutoff = now - datetime.timedelta(days=PULSE_HISTORY_WINDOW_DAYS)
+    created_at = _parse_git_timestamp(_npm_created_at(packument) or "")
+    updated_at = _parse_git_timestamp(last_updated_at or "")
+    if _is_recent_datetime(created_at, new_cutoff):
+        return "new"
+    if _is_recent_datetime(updated_at, history_cutoff):
+        return "updated"
+    return None
+
+
 def _npm_metadata_from_packument(package, packument, monthly_downloads, stale_metadata=None):
     if monthly_downloads is None and isinstance(stale_metadata, dict):
         popularity = stale_metadata.get("popularity") or {}
@@ -1189,7 +1210,8 @@ def _npm_metadata_from_packument(package, packument, monthly_downloads, stale_me
 
     summary = version_doc.get("description") or packument.get("description") or ""
     homepage = version_doc.get("homepage") or packument.get("homepage") or ""
-    return {
+    last_updated_at = _npm_last_updated_at(packument, latest)
+    metadata = {
         "summary": summary if isinstance(summary, str) else "",
         "homepage": homepage if isinstance(homepage, str) else "",
         "version": latest,
@@ -1198,8 +1220,13 @@ def _npm_metadata_from_packument(package, packument, monthly_downloads, stale_me
             "downloads_per_30_days": monthly_downloads,
             "rank": 0,
         },
-        "last_updated_at": _npm_last_updated_at(packument, latest),
     }
+    if last_updated_at:
+        metadata["last_updated_at"] = last_updated_at
+    pulse_kind = _npm_pulse_kind(packument, last_updated_at)
+    if pulse_kind:
+        metadata["pulse_kind"] = pulse_kind
+    return metadata
 
 
 def _fetch_npm_packument(package):
