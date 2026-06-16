@@ -61,7 +61,9 @@ Defaults:
 - `db`: runs the hourly package database refresh through
   `scripts/hourly-maintenance.py`, including isotope fork scans. By default it
   builds and publishes only missing latest upstream isotope releases, then
-  regenerates `cache/automic-vault/isotopes.json`. Use
+  regenerates `cache/automic-vault/isotopes.json`. It also checks exported
+  `cache/automic-vault/db.json` pulse metadata so empty New / Updated coverage
+  is reported as automation health failure after the DB has been written. Use
   `scripts/hourly-maintenance.py --skip-isotope-builds` for a summary-only
   isotope refresh. Isotope checkouts default to sibling directories
   `../isotopes` and `../radioisotopes`.

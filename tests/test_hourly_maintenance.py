@@ -45,6 +45,14 @@ class HourlyMaintenanceTests(unittest.TestCase):
         ]
         self.assertEqual(isotope_commands, [])
 
+    def test_runs_automic_vault_db_health_check_after_export(self):
+        commands = self.run_hourly("--skip-isotopes")
+
+        export_index = commands.index([sys.executable, "scripts/export-automic-vault-db.py"])
+        health_index = commands.index([sys.executable, "scripts/check-automic-vault-db-health.py"])
+
+        self.assertEqual(health_index, export_index + 1)
+
 
 if __name__ == "__main__":
     unittest.main()
