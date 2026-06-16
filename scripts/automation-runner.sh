@@ -199,4 +199,21 @@ fi
 }
 
 mkdir -p "${automation_dir}"
-exec lockf -t 0 "${automation_dir}/$1.lock" "$0" --run-unlocked "$1"
+lock_stderr="$(mktemp)"
+set +e
+lockf -t 0 "${automation_dir}/$1.lock" "$0" --run-unlocked "$1" 2>"${lock_stderr}"
+exit_code=$?
+set -e
+
+if [[ "${exit_code}" -eq 75 ]]; then
+  rm -f "${lock_stderr}"
+  printf '[%s] Skipping %s automation: already running\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$1"
+  exit 0
+fi
+
+if [[ -s "${lock_stderr}" ]]; then
+  cat "${lock_stderr}" >&2
+fi
+rm -f "${lock_stderr}"
+
+exit "${exit_code}"

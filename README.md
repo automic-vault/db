@@ -76,3 +76,6 @@ Each run writes a status file and appended log under
 `cache/automation/nightly-maintenance/`. Use
 `scripts/nightly-maintenance.py --list` to print the commands, or
 `scripts/nightly-maintenance.py <task> --dry-run` to preview one task.
+Concurrent `scripts/automation-runner.sh` invocations are lock-protected; if a
+job is already running, a second invocation reports that condition and exits
+cleanly instead of failing the caller.
