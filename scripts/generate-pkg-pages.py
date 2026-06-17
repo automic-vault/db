@@ -42,10 +42,12 @@ PKG_VERSION_FRESHNESS_PATH = GENERATED_DATA_DIR / "pkg-version-freshness.json"
 PKG_GRAPH_PATH = GENERATED_DATA_DIR / "pkg-graph.json"
 PKG_GRAPH_CURATION_PATH = GENERATED_DATA_DIR / "pkg-graph-curation.json"
 PKG_CROSS_ECOSYSTEM_PATH = GENERATED_DATA_DIR / "pkg-cross-ecosystem.json"
+CRATES_IO_INDEX_PATH = GENERATED_DATA_DIR / "cratesio" / "index.json"
 PKG_AGENT_SAFETY_ANSWERS_PATH = Path("data/pkg-agent-safety-answers.json")
 I18N_LOCALES_PATH = Path("data/pkg-i18n/locales.json")
 I18N_PKG_TEMPLATES_PATH = Path("data/pkg-i18n/templates.json")
 INDEXABLE_MIN_SIGNAL_COUNT = 2
+PACKAGE_PROVIDERS = ("brew", "cask", "npm", "pip", "cargo")
 GOOGLE_TAG = """  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y78QKG1T9Y"></script>
   <script>
@@ -674,6 +676,8 @@ def load_sources() -> dict[str, Any]:
                 sources["pkg_cross_ecosystem"] = read_json(PKG_CROSS_ECOSYSTEM_PATH, {})
             if PKG_AGENT_SAFETY_ANSWERS_PATH.exists():
                 sources["pkg_agent_safety_answers"] = read_json(PKG_AGENT_SAFETY_ANSWERS_PATH, {})
+            if CRATES_IO_INDEX_PATH.exists():
+                sources["crates"] = read_json(CRATES_IO_INDEX_PATH, {})
             return sources
 
     return {
@@ -687,6 +691,7 @@ def load_sources() -> dict[str, Any]:
         "pkg_version_freshness": read_json(PKG_VERSION_FRESHNESS_PATH, {}),
         "pkg_agent_safety_answers": read_json(PKG_AGENT_SAFETY_ANSWERS_PATH, {}),
         "pip": read_json(Path("data/pip.json"), {}),
+        "crates": read_json(CRATES_IO_INDEX_PATH, {}),
     }
 
 
@@ -741,6 +746,30 @@ def package_pages_from_sources(sources: dict[str, Any]) -> dict[str, PackagePage
             page.extra.update(info)
             page.source_notes.append("Python package overlay metadata")
 
+    crates_index = sources.get("crates") or {}
+    crates = crates_index.get("crates") if isinstance(crates_index, dict) else None
+    if isinstance(crates, dict):
+        for name, info in sorted(crates.items()):
+            if not isinstance(name, str) or not name or not isinstance(info, dict):
+                continue
+            page = get_page("cargo", name)
+            page.summary = clean_summary(info.get("summary") or page.summary)
+            page.homepage = info.get("homepage") or page.homepage
+            page.repository = info.get("repository") or page.repository
+            page.upstream_docs = info.get("upstreamDocs") or page.upstream_docs
+            page.version = info.get("version") or page.version
+            page.last_updated_at = info.get("last_updated_at") or page.last_updated_at
+            page.license = info.get("license") or page.license
+            page.source_archive = info.get("sourceArchive") or page.source_archive
+            page.sha256 = info.get("sha256") or page.sha256
+            page.published_at = info.get("publishedAt") or page.published_at
+            page.executables = info.get("executables") or page.executables
+            page.popularity = info.get("popularity") or page.popularity
+            page.package_manager = info.get("packageManager") or "Cargo"
+            page.package_manager_url = info.get("packageManagerUrl") or f"https://crates.io/crates/{urllib.parse.quote(name, safe='')}"
+            page.extra["registryInsights"] = info.get("registryInsights") or page.extra.get("registryInsights")
+            page.source_notes.append("crates.io package index")
+
     entries = db.get("entries") or {}
     if isinstance(entries, dict):
         for executable, provider_key in entries.items():
@@ -752,7 +781,7 @@ def package_pages_from_sources(sources: dict[str, Any]) -> dict[str, PackagePage
                     provider = "brew"
             else:
                 provider, name = "brew", provider_key
-            if provider in {"brew", "cask", "npm", "pip"}:
+            if provider in PACKAGE_PROVIDERS:
                 get_page(provider, name).aliases.add(executable)
 
     stub_exclusions = sources.get("stub_exclusions") or {}
@@ -761,7 +790,7 @@ def package_pages_from_sources(sources: dict[str, Any]) -> dict[str, PackagePage
             if not isinstance(package_key, str) or ":" not in package_key:
                 continue
             provider, name = package_key.split(":", 1)
-            if provider in {"brew", "cask", "npm", "pip"} and isinstance(excluded, list):
+            if provider in PACKAGE_PROVIDERS and isinstance(excluded, list):
                 page = get_page(provider, name)
                 page.extra["stub_exclusions"] = sorted(str(item) for item in excluded)
 
@@ -894,7 +923,7 @@ def apply_package_page_enrichment(pages: dict[str, PackagePage], enrichment: dic
         if not isinstance(package_key, str) or ":" not in package_key or not isinstance(info, dict):
             continue
         provider, name = package_key.split(":", 1)
-        if provider not in {"brew", "cask", "npm", "pip"} or not name:
+        if provider not in PACKAGE_PROVIDERS or not name:
             continue
         page = pages.setdefault(package_key, PackagePage(provider=provider, name=name))
         package = info.get("package") or {}
@@ -973,7 +1002,7 @@ def apply_package_version_freshness(pages: dict[str, PackagePage], freshness: di
         if not isinstance(package_key, str) or ":" not in package_key or not isinstance(info, dict):
             continue
         provider, name = package_key.split(":", 1)
-        if provider not in {"brew", "cask", "npm", "pip"} or not name:
+        if provider not in PACKAGE_PROVIDERS or not name:
             continue
         page = pages.setdefault(package_key, PackagePage(provider=provider, name=name))
         page.version_freshness = info
@@ -989,7 +1018,7 @@ def apply_package_page_supplements(pages: dict[str, PackagePage]) -> None:
         package = supplement.get("package") or {}
         provider = package.get("provider") or path.parent.name
         name = package.get("name") or path.stem
-        if provider not in {"brew", "cask", "npm", "pip"} or not name:
+        if provider not in PACKAGE_PROVIDERS or not name:
             continue
         page = pages.setdefault(f"{provider}:{name}", PackagePage(provider=provider, name=name))
         raw_summary = supplement.get("summary") or page.summary
@@ -1030,7 +1059,7 @@ def apply_package_graph(pages: dict[str, PackagePage], graph: dict[str, Any]) ->
         if not isinstance(package_key, str) or ":" not in package_key or not isinstance(graph_entry, dict):
             continue
         provider, name = package_key.split(":", 1)
-        if provider not in {"brew", "cask", "npm", "pip"} or not name:
+        if provider not in PACKAGE_PROVIDERS or not name:
             continue
         page = pages.get(package_key)
         if page is None:
@@ -1188,6 +1217,7 @@ def native_command_package_key(command_text: str) -> tuple[str, str] | None:
         (r"^brew\s+install\s+(?!--cask\b)([A-Za-z0-9@._/+~-]+)$", "brew"),
         (r"^(?:npm\s+(?:install|i)\s+-g|npm\s+-g\s+(?:install|i))\s+(@?[A-Za-z0-9._/+~-]+)$", "npm"),
         (r"^pip\s+install\s+([A-Za-z0-9._/+~-]+)$", "pip"),
+        (r"^cargo\s+install\s+([A-Za-z0-9._+~-]+)$", "cargo"),
     )
     for pattern, provider in patterns:
         match = re.match(pattern, text)
@@ -1202,6 +1232,7 @@ def verified_install_evidence(provider: str) -> str:
         "cask": "local Homebrew cask metadata",
         "npm": "local npm package metadata",
         "pip": "local PyPI package metadata",
+        "cargo": "local crates.io package metadata",
     }.get(provider, "local package metadata")
 
 
@@ -1285,6 +1316,8 @@ def install_commands_from_summary(page: PackagePage, value: Any) -> list[dict[st
         add("portable", "npm", f"npm install -g {match.group(1)}", "npm")
     for match in re.finditer(r"(?<!\S)pip\s+install\s+([A-Za-z0-9._/+~-]+)", text):
         add("portable", "pip", f"pip install {match.group(1)}", "pip")
+    for match in re.finditer(r"(?<!\S)cargo\s+install\s+([A-Za-z0-9._+~-]+)", text):
+        add("portable", "Cargo", f"cargo install {match.group(1)}", "cargo")
     return merge_install_command_entries(commands)
 
 
@@ -1299,7 +1332,7 @@ def isotope_metadata_by_package(isotopes: dict[str, Any]) -> dict[str, dict[str,
         provider, name = modifies.split(":", 1)
         if provider == "formula":
             provider = "brew"
-        if provider not in {"brew", "cask", "npm", "pip"}:
+        if provider not in PACKAGE_PROVIDERS:
             continue
         enriched = dict(isotope)
         enriched.setdefault("directory", isotope_name)
@@ -1578,6 +1611,7 @@ def source_files() -> list[Path]:
         PKG_GRAPH_PATH,
         PKG_GRAPH_CURATION_PATH,
         PKG_CROSS_ECOSYSTEM_PATH,
+        CRATES_IO_INDEX_PATH,
         Path("scripts/generate-pkg-pages.py"),
         Path("scripts/pkg_hub_data.py"),
         DB_JSON_PATH,
@@ -1930,7 +1964,7 @@ def render_all(pages: dict[str, PackagePage], manifest: dict[str, Any], output_d
     indexable_pages = [page for page in ordered if is_indexable_package_page(page)]
     sitemap_names = ["sitemap-hubs.xml"] + [
         f"sitemap-{provider}.xml"
-        for provider in ("brew", "cask", "npm", "pip")
+        for provider in PACKAGE_PROVIDERS
         if any(page.provider == provider for page in indexable_pages)
     ]
     manifest["hub_count"] = len(hubs)
@@ -1941,7 +1975,7 @@ def render_all(pages: dict[str, PackagePage], manifest: dict[str, Any], output_d
     manifest["sitemap_count"] = len(sitemap_names)
     manifest["sitemap_page_counts"] = {
         provider: sum(1 for page in indexable_pages if page.provider == provider)
-        for provider in ("brew", "cask", "npm", "pip")
+        for provider in PACKAGE_PROVIDERS
         if any(page.provider == provider for page in indexable_pages)
     }
     for locale in locales:
@@ -1961,7 +1995,7 @@ def render_all(pages: dict[str, PackagePage], manifest: dict[str, Any], output_d
         if locale_code(locale) == "en":
             write_generated_text(localized_dir / "sitemap.xml", render_sitemap_index(sitemap_names, manifest), expected_files, stats)
             write_generated_text(localized_dir / "sitemap-hubs.xml", render_hub_sitemap(hubs, manifest), expected_files, stats)
-            for provider in ("brew", "cask", "npm", "pip"):
+            for provider in PACKAGE_PROVIDERS:
                 provider_pages = [page for page in indexable_pages if page.provider == provider]
                 if provider_pages:
                     write_generated_text(
@@ -3248,9 +3282,19 @@ def package_facts(page: PackagePage, locale: dict[str, Any] | None = None) -> st
     rank = page.popularity.get("rank")
     if rank:
         facts.append(metric(tx(locale, "rank", "rank"), fmt_int(rank)))
-    installs = page.popularity.get("installs_per_365_days") or page.popularity.get("downloads_per_30_days")
+    installs = (
+        page.popularity.get("installs_per_365_days")
+        or page.popularity.get("downloads_per_30_days")
+        or page.popularity.get("recent_downloads")
+    )
     if installs:
-        label = tx(locale, "installs365d", "365d installs") if page.popularity.get("installs_per_365_days") else tx(locale, "downloads30d", "30d downloads")
+        if page.popularity.get("installs_per_365_days"):
+            label = tx(locale, "installs365d", "365d installs")
+        elif page.popularity.get("downloads_per_30_days"):
+            label = tx(locale, "downloads30d", "30d downloads")
+        else:
+            window = page.popularity.get("recent_download_window_days") or 90
+            label = tx(locale, "recentDownloads", "{days}d downloads", days=window)
         facts.append(metric(label, fmt_int(installs)))
     if page.isotope:
         facts.append(metric(tx(locale, "radioisotopeKicker", "protected-tool coverage"), tx(locale, "covered", "covered")))
@@ -3276,6 +3320,7 @@ def package_manager_label(page: PackagePage) -> str:
         "cask": "Homebrew Cask",
         "npm": "npm",
         "pip": "PyPI",
+        "cargo": "Cargo",
     }.get(page.provider, page.provider)
 
 
@@ -3295,6 +3340,8 @@ def native_install_command(page: PackagePage) -> str:
         return f"npm install -g {page.name}"
     if page.provider == "pip":
         return f"pip install {page.name}"
+    if page.provider == "cargo":
+        return f"cargo install {page.name}"
     return ""
 
 
@@ -3357,6 +3404,7 @@ MANAGER_TITLE_PRIORITY = (
     "chocolatey",
     "winget",
     "scoop",
+    "cargo",
 )
 
 MANAGER_TITLE_LABELS = {
@@ -3385,6 +3433,7 @@ MANAGER_TITLE_LABELS = {
     "npm": "npm",
     "pip": "pip",
     "python pip": "pip",
+    "cargo": "Cargo",
 }
 
 PLATFORM_GROUPS = (
@@ -3707,6 +3756,7 @@ def install_command_manager_label(item: dict[str, Any]) -> str:
         "zypper": "openSUSE zypper",
         "npm": "npm",
         "pip": "Python pip",
+        "cargo": "Cargo",
     }
     return labels.get(manager_key, manager or "shell")
 
@@ -6349,7 +6399,7 @@ def check_current(output_dir: Path, terminal: Terminal) -> int:
     sitemap_path = output_dir / "sitemap.xml"
     expected_sitemap_names = ["sitemap-hubs.xml"] + [
         f"sitemap-{provider}.xml"
-        for provider in ("brew", "cask", "npm", "pip")
+        for provider in PACKAGE_PROVIDERS
         if any(page.provider == provider for page in indexable_pages)
     ]
     if int(manifest.get("sitemap_count") or 0) != len(expected_sitemap_names):
@@ -6358,7 +6408,7 @@ def check_current(output_dir: Path, terminal: Terminal) -> int:
     if not isinstance(sitemap_page_counts, dict):
         failures.append("manifest sitemap page counts are missing or invalid")
         sitemap_page_counts = {}
-    for provider in ("brew", "cask", "npm", "pip"):
+    for provider in PACKAGE_PROVIDERS:
         expected_provider_count = sum(1 for page in indexable_pages if page.provider == provider)
         if expected_provider_count and int(sitemap_page_counts.get(provider) or 0) != expected_provider_count:
             failures.append(

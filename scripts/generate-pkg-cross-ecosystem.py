@@ -94,6 +94,7 @@ def stable_hash(value: Any) -> str:
 def source_files() -> list[Path]:
     files = [
         GENERATED_DATA_DIR / "pkg-page-enrichment.json",
+        GENERATED_DATA_DIR / "cratesio" / "index.json",
         DB_JSON_PATH,
         Path("data/npm.json"),
         Path("data/pip.json"),
@@ -228,7 +229,7 @@ def local_candidates(pages: dict[str, Any]) -> dict[str, list[dict[str, str]]]:
         for other in sorted(normalized.get(normalize_name(page.name), []), key=lambda item: (item.provider, item.name)):
             if other.key == page.key:
                 continue
-            if page.provider in {"npm", "pip"} and other.provider != "brew":
+            if page.provider in {"npm", "pip", "cargo"} and other.provider != "brew":
                 continue
             candidates.append({
                 "key": other.key,
@@ -276,6 +277,8 @@ def native_commands(facts: dict[str, Any]) -> list[dict[str, Any]]:
         return [command("portable", "npm", f"npm install -g {name}", 1.0, "local npm package metadata")]
     if provider == "pip":
         return [command("portable", "pip", f"pip install {name}", 1.0, "local PyPI package metadata")]
+    if provider == "cargo":
+        return [command("portable", "Cargo", f"cargo install {name}", 1.0, "local crates.io package metadata")]
     return []
 
 

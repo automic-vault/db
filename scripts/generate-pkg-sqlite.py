@@ -590,7 +590,7 @@ def populate_manifest_counts(page_module: Any, manifest: dict[str, Any], pages: 
     indexable_pages = [page for page in pages if page_module.is_indexable_package_page(page)]
     sitemap_names = ["sitemap-hubs.xml"] + [
         f"sitemap-{provider}.xml"
-        for provider in ("brew", "cask", "npm", "pip")
+        for provider in page_module.PACKAGE_PROVIDERS
         if any(page.provider == provider for page in indexable_pages)
     ]
     manifest["hub_count"] = len(hubs)
@@ -603,7 +603,7 @@ def populate_manifest_counts(page_module: Any, manifest: dict[str, Any], pages: 
     manifest["sitemap_count"] = len(sitemap_names)
     manifest["sitemap_page_counts"] = {
         provider: sum(1 for page in indexable_pages if page.provider == provider)
-        for provider in ("brew", "cask", "npm", "pip")
+        for provider in page_module.PACKAGE_PROVIDERS
         if any(page.provider == provider for page in indexable_pages)
     }
 

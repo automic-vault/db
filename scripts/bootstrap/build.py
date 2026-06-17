@@ -57,8 +57,10 @@ def steps(refresh: bool, fetch_manifests: bool, manifest_limit: int) -> list[Ste
     py = sys.executable
     brew_cmd = [py, "scripts/bootstrap/01-brew-fetch.py"]
     manager_cmd = [py, "scripts/bootstrap/02-manager-indexes.py"]
+    crates_cmd = [py, "scripts/bootstrap/02-crates-index.py"]
     if refresh:
         brew_cmd.append("--refresh")
+        crates_cmd.append("--refresh")
     if fetch_manifests:
         brew_cmd.append("--fetch-manifests")
     if manifest_limit:
@@ -92,6 +94,17 @@ def steps(refresh: bool, fetch_manifests: bool, manifest_limit: int) -> list[Ste
                 Path("scripts/bootstrap/lib/common.py"),
             ],
             [Path("cache/pkg-manager-indexes.json.gz")],
+        ),
+        Step(
+            "crates-index",
+            crates_cmd,
+            [
+                Path("scripts/bootstrap/02-crates-index.py"),
+                Path("scripts/bootstrap/lib/crates.py"),
+                Path("scripts/bootstrap/lib/common.py"),
+            ],
+            [Path("cache/cratesio/index.json")],
+            refresh_sensitive=True,
         ),
         Step(
             "render-projects",
