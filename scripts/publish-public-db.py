@@ -138,6 +138,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Verify only the S3 object body, not the public CloudFront URL.",
     )
+    parser.add_argument(
+        "--check-only",
+        action="store_true",
+        help="Do not upload; only verify S3 and public copies match the local source.",
+    )
     return parser.parse_args()
 
 
@@ -146,15 +151,16 @@ def main() -> int:
     try:
         source_payload = read_json(args.source)
         expected_generated_at = generated_at(source_payload, str(args.source))
-        run(
-            upload_command(
-                args.source,
-                args.bucket,
-                args.key,
-                cache_control=args.cache_control,
-                content_type=args.content_type,
+        if not args.check_only:
+            run(
+                upload_command(
+                    args.source,
+                    args.bucket,
+                    args.key,
+                    cache_control=args.cache_control,
+                    content_type=args.content_type,
+                )
             )
-        )
         verify_generated_at(expected_generated_at, fetch_s3_json(args.bucket, args.key), aws_uri(args.bucket, args.key))
         if not args.skip_public_check:
             verify_generated_at(expected_generated_at, fetch_public_json(args.public_url), args.public_url)
@@ -169,6 +175,7 @@ def main() -> int:
                 "bucket": args.bucket,
                 "key": args.key,
                 "generated_at": expected_generated_at,
+                "mode": "check" if args.check_only else "publish",
                 "public_url": None if args.skip_public_check else args.public_url,
             },
             sort_keys=True,

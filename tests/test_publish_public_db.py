@@ -1,8 +1,11 @@
+import contextlib
 import importlib.util
+import io
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 def load_publish_public_db():
@@ -62,6 +65,29 @@ class PublishPublicDbTests(unittest.TestCase):
 
         with self.assertRaisesRegex(publish.PublishFailed, "missing generated_at"):
             publish.generated_at(payload, str(path))
+
+    def test_check_only_does_not_upload(self):
+        publish = load_publish_public_db()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp) / "combined.json"
+            source.write_text('{"generated_at": "2026-06-17T13:01:56Z", "schema": 1}\n', encoding="utf-8")
+            with mock.patch.object(sys, "argv", ["publish-public-db.py", "--source", str(source), "--check-only"]):
+                with mock.patch.object(publish, "run") as run:
+                    with mock.patch.object(
+                        publish,
+                        "fetch_s3_json",
+                        return_value={"generated_at": "2026-06-17T13:01:56Z"},
+                    ):
+                        with mock.patch.object(
+                            publish,
+                            "fetch_public_json",
+                            return_value={"generated_at": "2026-06-17T13:01:56Z"},
+                        ):
+                            with contextlib.redirect_stdout(io.StringIO()):
+                                self.assertEqual(publish.main(), 0)
+
+        self.assertEqual(run.call_args_list, [])
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd "${script_dir}/.." && pwd)"
 automation_dir="${repo_root}/cache/automation"
+overall_status=0
 
 printf 'workspace: %s\n' "${repo_root}"
 
@@ -23,7 +24,17 @@ for job in db npm-full-scan; do
   fi
 done
 
+printf '\n== public db freshness ==\n'
+if "${script_dir}/publish-public-db.py" --check-only; then
+  printf 'public db freshness: ok\n'
+else
+  overall_status=1
+  printf 'public db freshness: failed\n'
+fi
+
 printf '\n== active maintenance processes ==\n'
 ps -axo pid,ppid,etime,pcpu,pmem,stat,command \
   | rg 'automation-runner|hourly-maintenance|build-db.py --refresh|generate-pkg|build-combined-json' \
   | rg -v 'rg automation-runner|rg -v|codex-automation-status|sed -n' || true
+
+exit "${overall_status}"
