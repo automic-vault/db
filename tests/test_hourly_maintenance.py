@@ -53,6 +53,14 @@ class HourlyMaintenanceTests(unittest.TestCase):
 
         self.assertEqual(health_index, export_index + 1)
 
+    def test_publishes_public_db_after_health_check(self):
+        commands = self.run_hourly("--skip-isotopes")
+
+        health_index = commands.index([sys.executable, "scripts/check-automic-vault-db-health.py"])
+        publish_index = commands.index([sys.executable, "scripts/publish-public-db.py"])
+
+        self.assertEqual(publish_index, health_index + 1)
+
 
 if __name__ == "__main__":
     unittest.main()
