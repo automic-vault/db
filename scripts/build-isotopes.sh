@@ -17,6 +17,7 @@ curl_retry_count="${AV_ISOTOPES_CURL_RETRY_COUNT:-3}"
 homebrew_formula_index_cache=""
 homebrew_formula_index_entry_result=""
 homebrew_formula_index_cache_path="${AV_HOMEBREW_FORMULA_INDEX_CACHE_PATH:-${repo_root}/cache/automic-vault/homebrew-formula-index.json}"
+RUN_PUBLISH_COMMAND_AUTH_UNAVAILABLE=0
 if [[ -n "${AUTOMIC_VAULT_CODEX_PROJECT_ROOT:-}" ]]; then
   codex_project_root="${AUTOMIC_VAULT_CODEX_PROJECT_ROOT}"
 elif [[ -n "${HOME:-}" ]]; then
@@ -753,6 +754,63 @@ publish_release() {
     --notes "Built from ${upstream_repo} ${tag}: ${upstream_release_url}"
 }
 
+publish_auth_failure() {
+  local output="$1"
+
+  case "${output}" in
+    *"Denied by operator"*|*"Authentication failed"*|*"could not read Username for 'https://github.com'"*|*"could not read Password for 'https://github.com'"*|*"unable to get password from user"*)
+      return 0
+      ;;
+  esac
+
+  return 1
+}
+
+run_publish_command() {
+  local output status
+  local -a command
+
+  RUN_PUBLISH_COMMAND_AUTH_UNAVAILABLE=0
+
+  if [[ "${1:-}" == "git" ]]; then
+    command=(
+      git
+      -c credential.helper=
+      -c credential.interactive=never
+      -c core.askPass=
+      "${@:2}"
+    )
+  else
+    command=("$@")
+  fi
+
+  set +e
+  output="$(
+    GIT_TERMINAL_PROMPT=0 \
+    GCM_INTERACTIVE=never \
+    GIT_ASKPASS=/usr/bin/false \
+    SSH_ASKPASS=/usr/bin/false \
+    "${command[@]}" 2>&1
+  )"
+  status=$?
+  set -e
+
+  if [[ -n "${output}" ]]; then
+    printf '%s\n' "${output}"
+  fi
+
+  if [[ "${status}" -eq 0 ]]; then
+    return 0
+  fi
+
+  if publish_auth_failure "${output}"; then
+    RUN_PUBLISH_COMMAND_AUTH_UNAVAILABLE=1
+    return 0
+  fi
+
+  return "${status}"
+}
+
 append_isotope_version_entry() {
   local entries_path="$1"
   local repo_name="$2"
@@ -1005,7 +1063,7 @@ process_repo() {
   local repo_dir="${clone_root}/${repo_name}"
   local repo_json source_json source_kind upstream_repo upstream_default release_json tag
   local upstream_name version isotope_output archive_name archive_path release_url
-  local current_branch
+  local current_branch publish_status
 
   ensure_clone "${repo_name}" "${repo_dir}"
 
@@ -1100,17 +1158,45 @@ process_repo() {
 
   current_branch="$(git -C "${repo_dir}" branch --show-current)"
   if [[ -n "${current_branch}" ]]; then
-    git -C "${repo_dir}" push origin "HEAD:${current_branch}" --force-with-lease
+    set +e
+    run_publish_command git -C "${repo_dir}" push origin "HEAD:${current_branch}" --force-with-lease
+    publish_status=$?
+    set -e
+    if [[ "${RUN_PUBLISH_COMMAND_AUTH_UNAVAILABLE}" -eq 1 ]]; then
+      echo "Skipping remote isotope publication for ${fork_repo}: GitHub authentication was unavailable after building ${archive_name}" >&2
+      return 0
+    elif [[ "${publish_status}" -ne 0 ]]; then
+      return "${publish_status}"
+    fi
   fi
 
-  git -C "${repo_dir}" push origin "+refs/tags/${tag}:refs/tags/${tag}"
+  set +e
+  run_publish_command git -C "${repo_dir}" push origin "+refs/tags/${tag}:refs/tags/${tag}"
+  publish_status=$?
+  set -e
+  if [[ "${RUN_PUBLISH_COMMAND_AUTH_UNAVAILABLE}" -eq 1 ]]; then
+    echo "Skipping GitHub release publish for ${fork_repo}: tag push could not authenticate after building ${archive_name}" >&2
+    return 0
+  elif [[ "${publish_status}" -ne 0 ]]; then
+    return "${publish_status}"
+  fi
 
-  publish_release \
+  set +e
+  run_publish_command \
+    publish_release \
     "${fork_repo}" \
     "${tag}" \
     "${upstream_repo}" \
     "${release_url}" \
     "${archive_path}"
+  publish_status=$?
+  set -e
+  if [[ "${RUN_PUBLISH_COMMAND_AUTH_UNAVAILABLE}" -eq 1 ]]; then
+    echo "Skipping GitHub release publish for ${fork_repo}: release creation could not authenticate after building ${archive_name}" >&2
+    return 0
+  elif [[ "${publish_status}" -ne 0 ]]; then
+    return "${publish_status}"
+  fi
 }
 
 update_radioisotopes_clone
