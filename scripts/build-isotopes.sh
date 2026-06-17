@@ -14,6 +14,8 @@ isotope_versions_path="${AV_ISOTOPES_JSON_PATH:-${repo_root}/cache/automic-vault
 curl_connect_timeout="${AV_ISOTOPES_CURL_CONNECT_TIMEOUT_SECONDS:-15}"
 curl_max_time="${AV_ISOTOPES_CURL_MAX_TIME_SECONDS:-120}"
 curl_retry_count="${AV_ISOTOPES_CURL_RETRY_COUNT:-3}"
+gh_timeout_seconds="${AV_ISOTOPES_GH_TIMEOUT_SECONDS:-180}"
+gh_release_create_timeout_seconds="${AV_ISOTOPES_GH_RELEASE_CREATE_TIMEOUT_SECONDS:-600}"
 homebrew_formula_index_cache=""
 homebrew_formula_index_entry_result=""
 homebrew_formula_index_cache_path="${AV_HOMEBREW_FORMULA_INDEX_CACHE_PATH:-${repo_root}/cache/automic-vault/homebrew-formula-index.json}"
@@ -121,6 +123,76 @@ curl_fetch_no_retry() {
     "$@"
 }
 
+run_with_timeout() {
+  local timeout_seconds="$1"
+  shift
+
+  ruby - "$timeout_seconds" "$@" <<'RUBY'
+timeout = Integer(ARGV.shift)
+command = ARGV
+
+pid = spawn(*command, pgroup: true)
+
+["INT", "TERM"].each do |signal|
+  trap(signal) do
+    begin
+      Process.kill("TERM", -pid)
+    rescue Errno::ESRCH
+    end
+  end
+end
+
+deadline = Time.now + timeout
+status = nil
+
+loop do
+  waited_pid, waited_status = Process.waitpid2(pid, Process::WNOHANG)
+  if waited_pid
+    status = waited_status
+    break
+  end
+
+  if Time.now >= deadline
+    begin
+      Process.kill("TERM", -pid)
+    rescue Errno::ESRCH
+    end
+
+    term_deadline = Time.now + 30
+    loop do
+      waited_pid, waited_status = Process.waitpid2(pid, Process::WNOHANG)
+      if waited_pid
+        status = waited_status
+        break
+      end
+      break if Time.now >= term_deadline
+      sleep 0.1
+    end
+
+    unless status
+      begin
+        Process.kill("KILL", -pid)
+      rescue Errno::ESRCH
+      end
+      _, status = Process.waitpid2(pid)
+    end
+
+    warn "Timed out after #{timeout}s: #{command.join(' ')}"
+    exit 124
+  end
+
+  sleep 0.1
+end
+
+exit(status.exitstatus || 1)
+RUBY
+}
+
+run_gh() {
+  local timeout_seconds="${GH_TIMEOUT_SECONDS_OVERRIDE:-${gh_timeout_seconds}}"
+  run_with_timeout "${timeout_seconds}" gh "$@"
+}
+
 ensure_homebrew_formula_index() {
   if [[ -z "${homebrew_formula_index_cache}" ]]; then
     homebrew_formula_index_cache="${homebrew_formula_index_cache_path}"
@@ -171,7 +243,7 @@ ensure_radioisotopes_clone() {
   fi
 
   echo "Cloning ${radioisotopes_repo}"
-  gh repo clone "${radioisotopes_repo}" "${radioisotopes_dir}"
+  run_gh repo clone "${radioisotopes_repo}" "${radioisotopes_dir}"
 }
 
 update_radioisotopes_clone() {
@@ -180,7 +252,7 @@ update_radioisotopes_clone() {
   ensure_radioisotopes_clone
 
   default_branch="$(
-    gh repo view "${radioisotopes_repo}" \
+    run_gh repo view "${radioisotopes_repo}" \
       --json defaultBranchRef \
       --jq '.defaultBranchRef.name'
   )"
@@ -219,7 +291,7 @@ ensure_clone() {
   fi
 
   echo "Cloning ${org}/${repo_name}"
-  gh repo clone "${org}/${repo_name}" "${repo_dir}"
+  run_gh repo clone "${org}/${repo_name}" "${repo_dir}"
 }
 
 set_upstream_remote() {
@@ -466,13 +538,13 @@ release_exists_on_fork() {
   local fork_repo="$1"
   local tag="$2"
 
-  gh release view "${tag}" --repo "${fork_repo}" >/dev/null 2>&1
+  run_gh release view "${tag}" --repo "${fork_repo}" >/dev/null 2>&1
 }
 
 latest_release_json() {
   local upstream_repo="$1"
 
-  gh api \
+  run_gh api \
     -H "Accept: application/vnd.github+json" \
     "/repos/${upstream_repo}/releases/latest" 2>/dev/null || true
 }
@@ -480,7 +552,7 @@ latest_release_json() {
 latest_fork_release_json() {
   local fork_repo="$1"
 
-  gh api \
+  run_gh api \
     -H "Accept: application/vnd.github+json" \
     "/repos/${fork_repo}/releases/latest" 2>/dev/null || true
 }
@@ -755,11 +827,12 @@ publish_release() {
     return 0
   fi
 
-  gh release create "${tag}" "${archive_path}" \
-    --repo "${fork_repo}" \
-    --title "${tag}" \
-    --verify-tag \
-    --notes "Built from ${upstream_repo} ${tag}: ${upstream_release_url}"
+  GH_TIMEOUT_SECONDS_OVERRIDE="${gh_release_create_timeout_seconds}" \
+    run_gh release create "${tag}" "${archive_path}" \
+      --repo "${fork_repo}" \
+      --title "${tag}" \
+      --verify-tag \
+      --notes "Built from ${upstream_repo} ${tag}: ${upstream_release_url}"
 }
 
 push_with_origin_ssh() {
@@ -842,7 +915,7 @@ generate_isotope_versions_json() {
     [[ -n "${repo_name}" ]] || continue
 
     fork_repo="${org}/${repo_name}"
-    repo_json="$(gh api "/repos/${fork_repo}")"
+    repo_json="$(run_gh api "/repos/${fork_repo}")"
 
     repo_dir="${clone_root}/${repo_name}"
     ensure_clone "${repo_name}" "${repo_dir}"
@@ -1026,7 +1099,7 @@ process_repo() {
 
   ensure_clone "${repo_name}" "${repo_dir}"
 
-  repo_json="$(gh api "/repos/${fork_repo}")"
+  repo_json="$(run_gh api "/repos/${fork_repo}")"
   source_json="$(repo_source_json "${repo_name}" "${repo_json}" "${repo_dir}")"
   source_kind="$(printf '%s\n' "${source_json}" | jq -r '.kind')"
 
@@ -1134,7 +1207,7 @@ process_repo() {
 update_radioisotopes_clone
 
 all_repo_names="$(
-  gh repo list "${org}" \
+  run_gh repo list "${org}" \
     --limit 1000 \
     --json isFork,name \
     --jq '.[] | select(.isFork) | .name'
