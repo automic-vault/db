@@ -34,6 +34,10 @@ YAML:
 - `cache/brew/cask-entries.json`: supported binary casks and `cask:<token>` executable entries
 - `cache/automic-vault/db.json`: Automic Vault-compatible Homebrew authority DB
 
+The pipeline also builds `cache/cratesio/index.json` from the crates.io daily
+database dump. That index is used for Cargo/crates.io package pages only; Cargo
+crates are not exported into the Automic Vault authority DB.
+
 Precedence is deterministic < agents < human override. Raw Codex JSON is kept
 under `cache/` for resumability/debugging; YAML in `agents/` is the committed
 agent-curated layer. Confidence and provenance fields stay in the agent stages
