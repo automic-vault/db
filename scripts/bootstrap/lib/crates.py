@@ -5,6 +5,7 @@ import datetime as dt
 import json
 import os
 import re
+import sys
 import tarfile
 import tempfile
 import time
@@ -200,6 +201,13 @@ def extract_selected_csvs(dump_path: Path, target_dir: Path) -> dict[str, Path]:
 
 
 def csv_rows(path: Path):
+    limit = sys.maxsize
+    while True:
+        try:
+            csv.field_size_limit(limit)
+            break
+        except OverflowError:
+            limit //= 10
     with path.open("r", encoding="utf-8", newline="") as handle:
         yield from csv.DictReader(handle)
 

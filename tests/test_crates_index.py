@@ -139,6 +139,17 @@ def write_fixture_dump(path: Path) -> None:
 
 
 class CratesIndexTests(unittest.TestCase):
+    def test_csv_rows_accepts_large_fields(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            csv_path = Path(tmp) / "crates.csv"
+            csv_path.write_text(f"id,name,description\n1,ripgrep,{('x' * 200000)}\n", encoding="utf-8")
+
+            rows = list(crates_index.csv_rows(csv_path))
+
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["name"], "ripgrep")
+        self.assertEqual(len(rows[0]["description"]), 200000)
+
     def test_parse_pg_text_array_handles_quoted_values(self):
         self.assertEqual(
             crates_index.parse_pg_text_array('{"cargo-audit","cargo auditable","rg"}'),
