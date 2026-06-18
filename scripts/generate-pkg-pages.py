@@ -1847,6 +1847,14 @@ def package_matches_hub(page: PackagePage, hub: PackageHub) -> bool:
             return True
         level = str((page.geiger or {}).get("level") or "").lower()
         return level not in {"", "green", "low", "unknown"}
+    if (
+        hub.providers
+        and not hub.package_names
+        and not hub.query_terms
+        and not hub.categories
+        and not hub.category_paths
+    ):
+        return True
     names = {page.name.lower(), page.slug.lower(), page.display_name.lower()}
     names.update(alias.lower() for alias in page.aliases)
     names.update(str(item.get("name") or "").lower() for item in page.executables if isinstance(item, dict))
