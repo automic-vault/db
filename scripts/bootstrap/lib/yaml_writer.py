@@ -48,6 +48,9 @@ def emit_mapping(lines: list[str], value: dict[str, Any], indent: int, *, ordere
             if should_emit_null(key, parent_key):
                 lines.append(f"{prefix}{key}: null")
             continue
+        if child == {} and should_emit_empty_mapping(key):
+            lines.append(f"{prefix}{key}: {{}}")
+            continue
         if child == [] or child == {} or child == "":
             continue
         if isinstance(child, dict):
@@ -141,6 +144,10 @@ def needs_multiline(value: str) -> bool:
 
 def should_emit_null(key: str, parent_key: str | None = None) -> bool:
     return key == "repo" or parent_key == "credentials-file-location"
+
+
+def should_emit_empty_mapping(key: str) -> bool:
+    return key == "config-file-location"
 
 
 def quote_scalar(value: str) -> str:

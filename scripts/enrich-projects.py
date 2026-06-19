@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
 import os
 import subprocess
@@ -32,6 +33,26 @@ from scripts.enrichment import (
 
 SCHEMA_PATH = ROOT / "schemas" / "codex-project-enrichment-output.schema.json"
 DEFAULT_CODEX_TIMEOUT_SECONDS = 15 * 60
+PATH_LOCATION_PLATFORMS = ("unix", "linux", "macos", "windows")
+
+
+def strict_platform_map_schema(*, allow_null: bool) -> dict[str, Any]:
+    variants = []
+    value_type: str | list[str] = ["string", "null"] if allow_null else "string"
+    for size in range(len(PATH_LOCATION_PLATFORMS) + 1):
+        for platforms in itertools.combinations(PATH_LOCATION_PLATFORMS, size):
+            variants.append(
+                {
+                    "additionalProperties": False,
+                    "properties": {
+                        platform: {"minLength": 1, "type": value_type}
+                        for platform in platforms
+                    },
+                    "required": list(platforms),
+                    "type": "object",
+                }
+            )
+    return {"anyOf": variants}
 
 
 def parse_args() -> argparse.Namespace:
@@ -77,9 +98,13 @@ def write_output_schema(output_schema_path: Path, expected_ids: set[str]) -> Non
     results_schema["maxItems"] = len(expected_ids)
     item_schema = results_schema.get("items", {})
     if isinstance(item_schema, dict):
-        id_schema = item_schema.get("properties", {}).get("id", {})
+        properties = item_schema.get("properties", {})
+        id_schema = properties.get("id", {}) if isinstance(properties, dict) else {}
         if isinstance(id_schema, dict):
             id_schema["enum"] = sorted(expected_ids)
+        if isinstance(properties, dict):
+            properties["config-file-location"] = strict_platform_map_schema(allow_null=False)
+            properties["credentials-file-location"] = strict_platform_map_schema(allow_null=True)
     write_json(output_schema_path, schema)
 
 

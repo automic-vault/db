@@ -1,6 +1,7 @@
 import tempfile
 import unittest
 import json
+import importlib.util
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -25,6 +26,15 @@ from scripts.enrichment import (
     validate_codex_payload,
     validate_codex_payload_partial,
 )
+
+
+def load_enrich_projects_module():
+    path = Path("scripts/enrich-projects.py")
+    spec = importlib.util.spec_from_file_location("enrich_projects", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def sample_record():
@@ -210,6 +220,11 @@ class EnrichmentTests(unittest.TestCase):
         text = yaml_text(agent_record_from_result(sample_result()))
         self.assertIn("credentials-file-location:\n  unix: null\n  windows: null\n", text)
 
+    def test_agent_yaml_emits_explicit_empty_config_location(self):
+        text = yaml_text(agent_record_from_result(sample_result(**{"config-file-location": {}})))
+        self.assertIn("config-file-location: {}\n", text)
+        self.assertEqual(parse_simple_yaml(text)["config-file-location"], {})
+
     def test_agent_yaml_is_derived_from_json_payload(self):
         record = agent_record_from_json(sample_result(repo="https://github.com/sharkdp/bat", repo_sources=["GitHub"]))
         self.assertEqual(record, agent_record_from_result(sample_result(repo="https://github.com/sharkdp/bat", repo_sources=["GitHub"])))
@@ -243,6 +258,21 @@ class EnrichmentTests(unittest.TestCase):
         self.assertEqual(record["credentials-file-location"], {"unix": None, "windows": None})
         self.assertEqual(record["category"], "developer-tools")
         self.assertNotIn("repo-confidence", record)
+
+    def test_combined_agent_layer_publishes_empty_config_location(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "bat.yml"
+            path.write_text(
+                "id: brew:bat\n"
+                "config-file-location: {}\n"
+                "credentials-file-location:\n"
+                "  unix: null\n",
+                encoding="utf-8",
+            )
+            record = {"id": "brew:bat"}
+            merge_agent_layer(record, path)
+        self.assertEqual(record["config-file-location"], {})
+        self.assertEqual(record["credentials-file-location"], {"unix": None})
 
     def test_docs_ranking_rejects_package_manager_and_tracking(self):
         docs = normalize_docs(
@@ -443,6 +473,26 @@ class EnrichmentTests(unittest.TestCase):
         self.assertIn("credentials-file-location", schema["properties"]["results"]["items"]["required"])
         self.assertFalse(item_schema["config-file-location"]["additionalProperties"])
         self.assertEqual(item_schema["credentials-file-location"]["properties"]["windows"]["type"], ["string", "null"])
+
+    def test_batch_output_schema_uses_strict_platform_map_variants(self):
+        module = load_enrich_projects_module()
+        config_schema = module.strict_platform_map_schema(allow_null=False)
+        credentials_schema = module.strict_platform_map_schema(allow_null=True)
+        self.assertEqual(len(config_schema["anyOf"]), 16)
+        empty_variant = config_schema["anyOf"][0]
+        self.assertEqual(empty_variant["properties"], {})
+        self.assertEqual(empty_variant["required"], [])
+        unix_variant = next(
+            variant for variant in config_schema["anyOf"]
+            if set(variant["properties"]) == {"unix"}
+        )
+        self.assertEqual(unix_variant["required"], ["unix"])
+        self.assertEqual(unix_variant["properties"]["unix"]["type"], "string")
+        credentials_unix_variant = next(
+            variant for variant in credentials_schema["anyOf"]
+            if set(variant["properties"]) == {"unix"}
+        )
+        self.assertEqual(credentials_unix_variant["properties"]["unix"]["type"], ["string", "null"])
 
     def test_validation_aggregates_duplicate_errors_and_counts_rejected_ids(self):
         normalized, errors, invalid_results = validate_codex_payload_partial(

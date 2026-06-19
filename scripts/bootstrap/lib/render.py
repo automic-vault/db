@@ -166,6 +166,9 @@ def merge_agent_layer(record: dict[str, Any], path: Path) -> None:
         record["repo"] = agent["repo"]
     for key in ("display-name", "docs", "tags", "config-file-location", "credentials-file-location"):
         value = agent.get(key)
+        if key == "config-file-location" and key in agent:
+            record[key] = value if isinstance(value, dict) else {}
+            continue
         if value not in (None, "", [], {}):
             record[key] = value
     category_path = agent.get("category-path") or agent.get("category_path")
@@ -323,6 +326,8 @@ def parse_yaml_block_scalar(lines: list[tuple[int, str]], index: int, parent_ind
 def unquote_scalar(value: str) -> Any:
     if value == "null":
         return None
+    if value == "{}":
+        return {}
     if value in {"true", "false"}:
         return value == "true"
     if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
