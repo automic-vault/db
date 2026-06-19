@@ -5,6 +5,7 @@ from datetime import date, timedelta
 from pathlib import Path
 
 from scripts.bootstrap.lib.render import agent_record_from_json, merge_agent_layer, parse_simple_yaml, validate_curated_fields
+from scripts.bootstrap.lib.yaml_writer import yaml_text
 from scripts.enrichment import (
     agent_record_from_result,
     apply_results,
@@ -55,6 +56,14 @@ def sample_result(**overrides):
         "category-confidence": "high",
         "docs": ["https://github.com/sharkdp/bat?utm_source=x#readme"],
         "docs-confidence": "high",
+        "config-file-location": {
+            "unix": "~/.config/bat/config",
+            "windows": "%APPDATA%\\bat\\config",
+        },
+        "credentials-file-location": {
+            "unix": None,
+            "windows": None,
+        },
         "tags": ["cli-tool", "git", "k8s"],
         "tags-confidence": "high",
         "repo_sources": [],
@@ -76,6 +85,8 @@ class EnrichmentTests(unittest.TestCase):
         after["tags"] = ["cli", "git"]
         after["display-name"] = "bat"
         after["repo"] = "https://example.com/curated/repo"
+        after["config-file-location"] = {"unix": "~/.config/bat/config"}
+        after["credentials-file-location"] = {"unix": None}
         self.assertEqual(hash_source_facts(before), hash_source_facts(after))
         self.assertNotEqual(hash_curation_facts(before), hash_curation_facts(after))
 
@@ -92,6 +103,8 @@ class EnrichmentTests(unittest.TestCase):
         record["docs"] = ["https://github.com/sharkdp/bat#readme"]
         record["category"] = "developer-tools"
         record["tags"] = ["cli", "git"]
+        record["config-file-location"] = {"unix": "~/.config/bat/config"}
+        record["credentials-file-location"] = {"unix": None}
         self.assertFalse(needs_new_curation(record, entry))
         record["display-name"] = "Bat"
         self.assertFalse(needs_new_curation(record))
@@ -99,6 +112,17 @@ class EnrichmentTests(unittest.TestCase):
     def test_new_mode_does_not_repeat_verified_missing_repo(self):
         record = sample_record()
         record["repo"] = None
+        record["display-name"] = "Bat"
+        record["docs"] = ["https://github.com/sharkdp/bat#readme"]
+        record["category"] = "developer-tools"
+        record["tags"] = ["cli", "git"]
+        record["config-file-location"] = {"unix": "~/.config/bat/config"}
+        record["credentials-file-location"] = {"unix": None}
+        entry = {"last_verified": date.today().isoformat(), "field_confidence": {"repo": "high"}}
+        self.assertFalse(needs_new_curation(record, entry))
+
+    def test_new_mode_does_not_repeat_verified_missing_path_locations(self):
+        record = sample_record()
         record["display-name"] = "Bat"
         record["docs"] = ["https://github.com/sharkdp/bat#readme"]
         record["category"] = "developer-tools"
@@ -178,7 +202,13 @@ class EnrichmentTests(unittest.TestCase):
         record = agent_record_from_result(sample_result(repo="https://github.com/sharkdp/bat", repo_sources=["GitHub"]))
         self.assertEqual(record["repo-confidence"], "high")
         self.assertEqual(record["category-path"], ["developer-tools"])
+        self.assertEqual(record["config-file-location"]["unix"], "~/.config/bat/config")
+        self.assertIsNone(record["credentials-file-location"]["windows"])
         self.assertEqual(record["provenance"]["repo-sources"], ["GitHub"])
+
+    def test_agent_yaml_emits_explicit_credential_nulls(self):
+        text = yaml_text(agent_record_from_result(sample_result()))
+        self.assertIn("credentials-file-location:\n  unix: null\n  windows: null\n", text)
 
     def test_agent_yaml_is_derived_from_json_payload(self):
         record = agent_record_from_json(sample_result(repo="https://github.com/sharkdp/bat", repo_sources=["GitHub"]))
@@ -193,6 +223,11 @@ class EnrichmentTests(unittest.TestCase):
                 "repo-confidence: high\n"
                 "display-name: Bat\n"
                 "display-name-confidence: high\n"
+                "config-file-location:\n"
+                "  unix: ~/.config/bat/config\n"
+                "credentials-file-location:\n"
+                "  unix: null\n"
+                "  windows: null\n"
                 "category-path:\n"
                 "  - developer-tools\n"
                 "tags:\n"
@@ -204,6 +239,8 @@ class EnrichmentTests(unittest.TestCase):
             merge_agent_layer(record, path)
         self.assertEqual(record["repo"], "https://github.com/sharkdp/bat")
         self.assertEqual(record["display-name"], "Bat")
+        self.assertEqual(record["config-file-location"], {"unix": "~/.config/bat/config"})
+        self.assertEqual(record["credentials-file-location"], {"unix": None, "windows": None})
         self.assertEqual(record["category"], "developer-tools")
         self.assertNotIn("repo-confidence", record)
 
@@ -233,6 +270,11 @@ class EnrichmentTests(unittest.TestCase):
                 "display-name: Bat\n"
                 "docs:\n"
                 "  - https://github.com/sharkdp/bat#readme\n"
+                "config-file-location:\n"
+                "  unix: ~/.config/bat/config\n"
+                "credentials-file-location:\n"
+                "  unix: null\n"
+                "  windows: null\n"
                 "category: developer-tools\n"
                 "tags:\n"
                 "  - cli\n"
@@ -243,6 +285,8 @@ class EnrichmentTests(unittest.TestCase):
             )
             record = parse_project_yaml(path)
         self.assertEqual(record["docs"], ["https://github.com/sharkdp/bat#readme"])
+        self.assertEqual(record["config-file-location"], {"unix": "~/.config/bat/config"})
+        self.assertEqual(record["credentials-file-location"], {"unix": None, "windows": None})
         self.assertEqual(record["package-manager"], {"brew": "bat"})
         self.assertEqual(curation_facts(record)["category"], "developer-tools")
 
@@ -314,6 +358,9 @@ class EnrichmentTests(unittest.TestCase):
         self.assertIn("Do not probe the input as a top-level array", prompt)
         self.assertIn("Do not emit placeholder fallback rows", prompt)
         self.assertIn("Empty source arrays are invalid", prompt)
+        self.assertIn("`config-file-location` and `credentials-file-location` must be platform maps", prompt)
+        self.assertIn("Prefer `unix` when official docs describe one shared Unix-like path", prompt)
+        self.assertIn("explicit `null` values in `credentials-file-location`", prompt)
 
     def test_validate_codex_payload_rejects_missing_ids(self):
         normalized, errors = validate_codex_payload(
@@ -356,6 +403,23 @@ class EnrichmentTests(unittest.TestCase):
         self.assertTrue(any("display_name_sources must cite at least one source" in error for error in errors))
         self.assertEqual(invalid_results[0]["id"], "brew:bat")
 
+    def test_validate_codex_payload_rejects_invalid_path_locations(self):
+        result = sample_result(
+            **{
+                "config-file-location": {"plan9": "/lib/bat/config", "unix": ""},
+                "credentials-file-location": {"unix": "~/.config/bat/credentials", "windows": ""},
+            }
+        )
+        normalized, errors, invalid_results = validate_codex_payload_partial(
+            {"results": [result]},
+            {"brew:bat"},
+        )
+        self.assertEqual(normalized, [])
+        self.assertTrue(any("config-file-location contains unsupported platform" in error for error in errors))
+        self.assertTrue(any("config-file-location.unix must be a non-empty string" in error for error in errors))
+        self.assertTrue(any("credentials-file-location.windows must be a non-empty string" in error for error in errors))
+        self.assertEqual(invalid_results[0]["id"], "brew:bat")
+
     def test_validation_error_summary_groups_by_message(self):
         summary = validation_error_summary(
             [
@@ -375,6 +439,10 @@ class EnrichmentTests(unittest.TestCase):
         self.assertEqual(item_schema["tags_sources"]["minItems"], 1)
         self.assertEqual(item_schema["tags"]["minItems"], 1)
         self.assertEqual(item_schema["display-name"]["minLength"], 1)
+        self.assertIn("config-file-location", schema["properties"]["results"]["items"]["required"])
+        self.assertIn("credentials-file-location", schema["properties"]["results"]["items"]["required"])
+        self.assertFalse(item_schema["config-file-location"]["additionalProperties"])
+        self.assertEqual(item_schema["credentials-file-location"]["properties"]["windows"]["type"], ["string", "null"])
 
     def test_validation_aggregates_duplicate_errors_and_counts_rejected_ids(self):
         normalized, errors, invalid_results = validate_codex_payload_partial(

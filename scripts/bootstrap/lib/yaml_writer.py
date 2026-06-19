@@ -10,6 +10,8 @@ KEY_ORDER = [
     "homepage",
     "repo",
     "docs",
+    "config-file-location",
+    "credentials-file-location",
     "category",
     "package-manager",
     "package-manager-match",
@@ -37,20 +39,20 @@ def yaml_text(value: dict[str, Any]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def emit_mapping(lines: list[str], value: dict[str, Any], indent: int, *, ordered: bool = False) -> None:
+def emit_mapping(lines: list[str], value: dict[str, Any], indent: int, *, ordered: bool = False, parent_key: str | None = None) -> None:
     keys = ordered_keys(value) if ordered else sorted(value)
     prefix = " " * indent
     for key in keys:
         child = value[key]
         if child is None:
-            if key == "repo":
+            if should_emit_null(key, parent_key):
                 lines.append(f"{prefix}{key}: null")
             continue
         if child == [] or child == {} or child == "":
             continue
         if isinstance(child, dict):
             lines.append(f"{prefix}{key}:")
-            emit_mapping(lines, child, indent + 2)
+            emit_mapping(lines, child, indent + 2, parent_key=key)
         elif isinstance(child, list):
             lines.append(f"{prefix}{key}:")
             emit_list(lines, child, indent + 2)
@@ -88,7 +90,7 @@ def emit_list_mapping(lines: list[str], value: dict[str, Any], indent: int) -> N
     child = value[first]
     if isinstance(child, dict):
         lines.append(f"{prefix}- {first}:")
-        emit_mapping(lines, child, indent + 4)
+        emit_mapping(lines, child, indent + 4, parent_key=first)
     elif isinstance(child, list):
         lines.append(f"{prefix}- {first}:")
         emit_list(lines, child, indent + 4)
@@ -105,7 +107,7 @@ def emit_list_mapping(lines: list[str], value: dict[str, Any], indent: int) -> N
         child = value[key]
         if isinstance(child, dict):
             lines.append(f"{' ' * (indent + 2)}{key}:")
-            emit_mapping(lines, child, indent + 4)
+            emit_mapping(lines, child, indent + 4, parent_key=key)
         elif isinstance(child, list):
             lines.append(f"{' ' * (indent + 2)}{key}:")
             emit_list(lines, child, indent + 4)
@@ -135,6 +137,10 @@ def emit_wrapped(lines: list[str], value: str, indent: int) -> None:
 
 def needs_multiline(value: str) -> bool:
     return "\n" in value or len(value) > 88
+
+
+def should_emit_null(key: str, parent_key: str | None = None) -> bool:
+    return key == "repo" or parent_key == "credentials-file-location"
 
 
 def quote_scalar(value: str) -> str:

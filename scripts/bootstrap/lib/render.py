@@ -122,6 +122,8 @@ def agent_record_from_json(result: dict[str, Any]) -> dict[str, Any]:
         "display-name-confidence": result.get("display-name-confidence"),
         "docs": result.get("docs") or [],
         "docs-confidence": result.get("docs-confidence"),
+        "config-file-location": result.get("config-file-location") or {},
+        "credentials-file-location": result.get("credentials-file-location") or {},
         "category-path": result.get("category_path") or [],
         "category-confidence": result.get("category-confidence"),
         "tags": result.get("tags") or [],
@@ -162,7 +164,7 @@ def merge_agent_layer(record: dict[str, Any], path: Path) -> None:
     agent = parse_simple_yaml(path.read_text(encoding="utf-8"))
     if record.get("repo") in (None, "", "null") and agent.get("repo") not in (None, "", "null", []):
         record["repo"] = agent["repo"]
-    for key in ("display-name", "docs", "tags"):
+    for key in ("display-name", "docs", "tags", "config-file-location", "credentials-file-location"):
         value = agent.get(key)
         if value not in (None, "", [], {}):
             record[key] = value
