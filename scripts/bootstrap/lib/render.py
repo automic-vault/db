@@ -330,7 +330,9 @@ def unquote_scalar(value: str) -> Any:
         return {}
     if value in {"true", "false"}:
         return value == "true"
-    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+    if len(value) >= 2 and value[0] == value[-1] and value[0] == "'":
+        return value[1:-1].replace("''", "'")
+    if len(value) >= 2 and value[0] == value[-1] and value[0] == '"':
         try:
             parsed = ast.literal_eval(value)
         except (SyntaxError, ValueError):

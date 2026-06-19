@@ -232,6 +232,12 @@ class EnrichmentTests(unittest.TestCase):
         self.assertIsNone(parsed["config-file-location"])
         self.assertIsNone(parsed["credentials-file-location"])
 
+    def test_agent_yaml_preserves_windows_backslashes_readably(self):
+        text = yaml_text(agent_record_from_result(sample_result()))
+        self.assertIn("windows: '%APPDATA%\\bat\\config'\n", text)
+        parsed = parse_simple_yaml(text)
+        self.assertEqual(parsed["config-file-location"]["windows"], "%APPDATA%\\bat\\config")
+
     def test_agent_yaml_is_derived_from_json_payload(self):
         record = agent_record_from_json(sample_result(repo="https://github.com/sharkdp/bat", repo_sources=["GitHub"]))
         self.assertEqual(record, agent_record_from_result(sample_result(repo="https://github.com/sharkdp/bat", repo_sources=["GitHub"])))

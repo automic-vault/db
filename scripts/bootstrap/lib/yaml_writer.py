@@ -148,7 +148,13 @@ def quote_scalar(value: str) -> str:
         return "''"
     lowered = value.lower()
     if lowered in {"true", "false", "null", "yes", "no", "on", "off"}:
-        return repr(value)
+        return quote_single(value)
     if value[0] in "-?:!@#&*{}[],|>'\"%" or value.strip() != value or ": " in value:
-        return repr(value)
+        return quote_single(value)
     return value
+
+
+def quote_single(value: str) -> str:
+    if "'" in value and '"' not in value and "\\" not in value:
+        return '"' + value + '"'
+    return "'" + value.replace("'", "''") + "'"
