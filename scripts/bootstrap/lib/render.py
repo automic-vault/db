@@ -122,8 +122,8 @@ def agent_record_from_json(result: dict[str, Any]) -> dict[str, Any]:
         "display-name-confidence": result.get("display-name-confidence"),
         "docs": result.get("docs") or [],
         "docs-confidence": result.get("docs-confidence"),
-        "config-file-location": result.get("config-file-location") or {},
-        "credentials-file-location": result.get("credentials-file-location") or {},
+        "config-file-location": result.get("config-file-location") if "config-file-location" in result else None,
+        "credentials-file-location": result.get("credentials-file-location") if "credentials-file-location" in result else None,
         "category-path": result.get("category_path") or [],
         "category-confidence": result.get("category-confidence"),
         "tags": result.get("tags") or [],
@@ -166,8 +166,8 @@ def merge_agent_layer(record: dict[str, Any], path: Path) -> None:
         record["repo"] = agent["repo"]
     for key in ("display-name", "docs", "tags", "config-file-location", "credentials-file-location"):
         value = agent.get(key)
-        if key == "config-file-location" and key in agent:
-            record[key] = value if isinstance(value, dict) else {}
+        if key in {"config-file-location", "credentials-file-location"} and key in agent:
+            record[key] = value if isinstance(value, dict) else None
             continue
         if value not in (None, "", [], {}):
             record[key] = value

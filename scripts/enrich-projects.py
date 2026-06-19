@@ -36,9 +36,9 @@ DEFAULT_CODEX_TIMEOUT_SECONDS = 15 * 60
 PATH_LOCATION_PLATFORMS = ("unix", "linux", "macos", "windows")
 
 
-def strict_platform_map_schema(*, allow_null: bool) -> dict[str, Any]:
-    variants = []
-    value_type: str | list[str] = ["string", "null"] if allow_null else "string"
+def strict_platform_map_schema() -> dict[str, Any]:
+    variants: list[dict[str, Any]] = [{"type": "null"}]
+    value_type = "string"
     for size in range(len(PATH_LOCATION_PLATFORMS) + 1):
         for platforms in itertools.combinations(PATH_LOCATION_PLATFORMS, size):
             variants.append(
@@ -103,8 +103,8 @@ def write_output_schema(output_schema_path: Path, expected_ids: set[str]) -> Non
         if isinstance(id_schema, dict):
             id_schema["enum"] = sorted(expected_ids)
         if isinstance(properties, dict):
-            properties["config-file-location"] = strict_platform_map_schema(allow_null=False)
-            properties["credentials-file-location"] = strict_platform_map_schema(allow_null=True)
+            properties["config-file-location"] = strict_platform_map_schema()
+            properties["credentials-file-location"] = strict_platform_map_schema()
     write_json(output_schema_path, schema)
 
 

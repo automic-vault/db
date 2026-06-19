@@ -268,17 +268,20 @@ def normalize_display_name(value: Any) -> str:
 def normalize_path_locations(
     value: Any,
     *,
-    allow_null: bool,
     errors: list[str] | None = None,
     field: str = "path location",
-) -> dict[str, str | None]:
-    if value in (None, "", [], {}):
-        return {}
+) -> dict[str, str] | None:
+    if value is None or value == {}:
+        return None
+    if value in ("", []):
+        if errors is not None:
+            errors.append(f"{field} must be null or an object keyed by unix, linux, macos, or windows")
+        return None
     if not isinstance(value, dict):
         if errors is not None:
-            errors.append(f"{field} must be an object keyed by unix, linux, macos, or windows")
-        return {}
-    result: dict[str, str | None] = {}
+            errors.append(f"{field} must be null or an object keyed by unix, linux, macos, or windows")
+        return None
+    result: dict[str, str] = {}
     for raw_key, raw_value in value.items():
         platform = str(raw_key or "").strip().lower()
         if platform not in PATH_LOCATION_PLATFORMS:
@@ -286,9 +289,7 @@ def normalize_path_locations(
                 errors.append(f"{field} contains unsupported platform {raw_key!r}")
             continue
         if raw_value is None:
-            if allow_null:
-                result[platform] = None
-            elif errors is not None:
+            if errors is not None:
                 errors.append(f"{field}.{platform} must be a non-empty string")
             continue
         location = re.sub(r"\s+", " ", str(raw_value)).strip()
@@ -297,7 +298,7 @@ def normalize_path_locations(
                 errors.append(f"{field}.{platform} must be a non-empty string")
             continue
         result[platform] = location
-    return {platform: result[platform] for platform in PATH_LOCATION_PLATFORMS if platform in result}
+    return {platform: result[platform] for platform in PATH_LOCATION_PLATFORMS if platform in result} or None
 
 
 def source_facts(record: dict[str, Any]) -> dict[str, Any]:
@@ -334,8 +335,12 @@ def curation_facts(record: dict[str, Any]) -> dict[str, Any]:
         "repo": normalize_repo(record.get("repo")),
         "display-name": normalize_display_name(record.get("display-name")),
         "docs": normalize_docs(record.get("docs")),
-        "config-file-location": normalize_path_locations(record.get("config-file-location"), allow_null=False),
-        "credentials-file-location": normalize_path_locations(record.get("credentials-file-location"), allow_null=True),
+        "config-file-location": normalize_path_locations(
+            record["config-file-location"] if "config-file-location" in record else {}
+        ),
+        "credentials-file-location": normalize_path_locations(
+            record["credentials-file-location"] if "credentials-file-location" in record else {}
+        ),
         "category_path": path,
         "category": path[0] if path else "",
         "tags": normalize_tags(record.get("tags")),
@@ -363,6 +368,9 @@ def load_projects(provider: str = "brew", projects_dir: Path = DETERMINISTIC_DIR
         if combined_path.exists():
             combined = parse_project_yaml(combined_path)
             for key in ("repo", "display-name", "docs", "category", "tags", *PATH_LOCATION_FIELDS):
+                if key in PATH_LOCATION_FIELDS and key in combined:
+                    record[key] = combined[key]
+                    continue
                 if combined.get(key) not in (None, "", [], {}):
                     record[key] = combined[key]
         record["__source_record"] = source_record
@@ -441,14 +449,8 @@ def needs_new_curation(record: dict[str, Any], entry: dict[str, Any] | None = No
         and bool((entry or {}).get("last_verified"))
         and confidence.get("repo") in {"high", "medium"}
     )
-    verified_missing_config_location = (
-        not facts["config-file-location"]
-        and bool((entry or {}).get("last_verified"))
-    )
-    verified_missing_credentials_location = (
-        not facts["credentials-file-location"]
-        and bool((entry or {}).get("last_verified"))
-    )
+    has_reviewed_config_location = "config-file-location" in record or bool((entry or {}).get("last_verified"))
+    has_reviewed_credentials_location = "credentials-file-location" in record or bool((entry or {}).get("last_verified"))
     return (
         (not facts["repo"] and not verified_missing_repo)
         or
@@ -457,8 +459,8 @@ def needs_new_curation(record: dict[str, Any], entry: dict[str, Any] | None = No
         or facts["tags"] == ["cli"]
         or not facts["display-name"]
         or (facts["display-name"] == name and not verified_slug_name)
-        or (not facts["config-file-location"] and not verified_missing_config_location)
-        or (not facts["credentials-file-location"] and not verified_missing_credentials_location)
+        or ("config-file-location" not in record and not has_reviewed_config_location)
+        or ("credentials-file-location" not in record and not has_reviewed_credentials_location)
     )
 
 
@@ -523,10 +525,10 @@ Return JSON that matches the provided output schema. Do not edit files. Use offi
 
 Do not emit placeholder fallback rows. For every result:
 - `category_path`, `display-name`, and `tags` must be non-empty.
-- `config-file-location` and `credentials-file-location` must be platform maps keyed only by `unix`, `linux`, `macos`, or `windows`.
+- `config-file-location` and `credentials-file-location` must be either `null` or platform maps keyed only by `unix`, `linux`, `macos`, or `windows`.
 - Prefer `unix` when official docs describe one shared Unix-like path; split into `linux` and `macos` only when the paths differ.
-- Use `{{}}` for `config-file-location` only when no official config file location is documented.
-- Use explicit `null` values in `credentials-file-location` for reviewed platforms where credentials are absent, unknown, or not applicable.
+- Use top-level `null` for `config-file-location` when no official config file location is documented.
+- Use top-level `null` for `credentials-file-location` when credentials are absent, unknown, or not applicable.
 - `category_sources`, `display_name_sources`, and `tags_sources` must each contain at least one concise source note.
 - If you rely on supplied input rather than web research, cite the specific input field, such as `source_facts.description`, `source_facts.homepage`, or `current_curation.category`.
 - Empty source arrays are invalid for claimed category, display name, or tags.
@@ -632,13 +634,11 @@ def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[s
         errors.append("credentials-file-location is required")
     config_file_location = normalize_path_locations(
         item.get("config-file-location"),
-        allow_null=False,
         errors=errors,
         field="config-file-location",
     )
     credentials_file_location = normalize_path_locations(
         item.get("credentials-file-location"),
-        allow_null=True,
         errors=errors,
         field="credentials-file-location",
     )
@@ -778,8 +778,8 @@ def merge_result(record: dict[str, Any], entry: dict[str, Any], result: dict[str
         "display-name": normalize_display_name(result["display-name"]),
         "category": normalize_category_path(result["category_path"])[0],
         "docs": normalize_docs(result["docs"]),
-        "config-file-location": normalize_path_locations(result.get("config-file-location"), allow_null=False),
-        "credentials-file-location": normalize_path_locations(result.get("credentials-file-location"), allow_null=True),
+        "config-file-location": normalize_path_locations(result.get("config-file-location")),
+        "credentials-file-location": normalize_path_locations(result.get("credentials-file-location")),
         "tags": normalize_tags(result["tags"]),
     }
     confidence_fields = {
