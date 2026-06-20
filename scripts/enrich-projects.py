@@ -137,7 +137,7 @@ def invoke_codex(prompt_path: Path, output_path: Path, output_schema_path: Path)
     ]
     timeout = codex_timeout_seconds()
     try:
-        subprocess.run(command, cwd=ROOT, check=True, timeout=timeout)
+        subprocess.run(command, cwd=ROOT, check=True, timeout=timeout, stdin=subprocess.DEVNULL)
     except subprocess.TimeoutExpired as err:
         seconds = int(timeout) if timeout is not None else 0
         raise SystemExit(f"Codex enrichment timed out after {seconds}s for {prompt_path}") from err
