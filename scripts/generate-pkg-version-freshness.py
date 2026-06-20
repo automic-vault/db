@@ -116,7 +116,7 @@ def write_json(path: Path, payload: Any) -> None:
             json.dump(payload, handle, indent=2, sort_keys=True)
             handle.write("\n")
         Path(tmp_name).replace(path)
-    except Exception:
+    except BaseException:
         Path(tmp_name).unlink(missing_ok=True)
         raise
 

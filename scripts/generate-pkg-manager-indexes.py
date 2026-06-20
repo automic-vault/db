@@ -208,14 +208,14 @@ def write_json(path: Path, value: Any) -> None:
                 json.dump(value, handle, indent=2, sort_keys=True)
                 handle.write("\n")
             Path(tmp_name).replace(path)
-        except Exception:
+        except BaseException:
             Path(tmp_name).unlink(missing_ok=True)
             raise
         return
     try:
         Path(tmp_name).write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         Path(tmp_name).replace(path)
-    except Exception:
+    except BaseException:
         Path(tmp_name).unlink(missing_ok=True)
         raise
 
@@ -227,7 +227,7 @@ def write_bytes(path: Path, data: bytes) -> None:
         with os.fdopen(fd, "wb") as handle:
             handle.write(data)
         Path(tmp_name).replace(path)
-    except Exception:
+    except BaseException:
         Path(tmp_name).unlink(missing_ok=True)
         raise
 

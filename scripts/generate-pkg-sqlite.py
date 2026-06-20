@@ -388,7 +388,7 @@ def write_sqlite(
         finally:
             connection.close()
         os.replace(temp_path, output_path)
-    except Exception:
+    except BaseException:
         temp_path.unlink(missing_ok=True)
         raise
 

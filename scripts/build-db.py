@@ -203,7 +203,7 @@ def _write_json_atomic(path, payload, *, indent=None):
             if indent is not None:
                 handle.write("\n")
         os.replace(tmp_name, path)
-    except Exception:
+    except BaseException:
         try:
             os.unlink(tmp_name)
         except FileNotFoundError:

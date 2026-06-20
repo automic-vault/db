@@ -126,7 +126,7 @@ def write_json(path: Path, value: Any, *, gzip_output: bool = False) -> bool:
                 with gzip.GzipFile(filename="", mode="wb", fileobj=raw, compresslevel=9, mtime=0) as handle:
                     handle.write(data)
             return replace_if_changed(Path(tmp_name), path)
-        except Exception:
+        except BaseException:
             Path(tmp_name).unlink(missing_ok=True)
             raise
     data = json.dumps(value, indent=2, sort_keys=True) + "\n"
@@ -143,7 +143,7 @@ def write_text_if_changed(path: Path, text: str) -> bool:
         with os.fdopen(fd, "wb") as handle:
             handle.write(data)
         Path(tmp_name).replace(path)
-    except Exception:
+    except BaseException:
         Path(tmp_name).unlink(missing_ok=True)
         raise
     return True
@@ -407,7 +407,7 @@ def write_bytes_if_changed(dst: Path, data: bytes) -> bool:
         with os.fdopen(fd, "wb") as handle:
             handle.write(data)
         Path(tmp_name).replace(dst)
-    except Exception:
+    except BaseException:
         Path(tmp_name).unlink(missing_ok=True)
         raise
     return True
