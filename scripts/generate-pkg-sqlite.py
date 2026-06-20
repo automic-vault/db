@@ -778,6 +778,8 @@ def full_package_data(page_module: Any, page: Any, route: PackageRoute | None = 
         "popularity": getattr(page, "popularity", {}),
         "aliases": sorted(str(item) for item in getattr(page, "aliases", [])),
         "sourceNotes": getattr(page, "source_notes", []),
+        "combinedYamlPath": getattr(page, "combined_yaml_path", ""),
+        "combinedYamlUrl": getattr(page, "combined_yaml_url", ""),
         "packageManager": getattr(page, "package_manager", ""),
         "packageManagerUrl": getattr(page, "package_manager_url", ""),
         "repository": getattr(page, "repository", ""),
