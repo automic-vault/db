@@ -4,10 +4,10 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shlex
 import subprocess
 import sys
-import tempfile
 import urllib.request
 from pathlib import Path
 from typing import Any
@@ -23,6 +23,8 @@ DEFAULT_KEY = "db.json"
 DEFAULT_PUBLIC_URL = "https://automicvault.com/db.json"
 DEFAULT_CACHE_CONTROL = "public, no-cache"
 DEFAULT_CONTENT_TYPE = "application/json; charset=utf-8"
+PUBLIC_VERIFY_READ_LIMIT = 64 * 1024
+GENERATED_AT_PATTERN = re.compile(r'"generated_at"\s*:\s*"([^"]+)"')
 
 
 class PublishFailed(Exception):
@@ -78,26 +80,78 @@ def run(command: list[str]) -> None:
     subprocess.run(command, check=True)
 
 
-def fetch_s3_json(bucket: str, key: str) -> dict[str, Any]:
-    with tempfile.TemporaryDirectory() as tmp:
-        output_path = Path(tmp) / "db.json"
-        run(["aws", "s3api", "get-object", "--bucket", bucket, "--key", key.lstrip("/"), str(output_path)])
-        return read_json(output_path)
+def fetch_s3_head(bucket: str, key: str) -> dict[str, Any]:
+    command = ["aws", "s3api", "head-object", "--bucket", bucket, "--key", key.lstrip("/")]
+    print("+", shlex.join(command), flush=True)
+    try:
+        result = subprocess.run(
+            command,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=60,
+        )
+    except subprocess.TimeoutExpired as err:
+        raise PublishFailed(f"{aws_uri(bucket, key)} head-object timed out after 60s") from err
+    except subprocess.CalledProcessError as err:
+        raise PublishFailed(err.stderr.strip() or str(err)) from err
+    try:
+        payload = json.loads(result.stdout)
+    except json.JSONDecodeError as err:
+        raise PublishFailed(f"{aws_uri(bucket, key)} head-object returned invalid JSON: {err}") from err
+    if not isinstance(payload, dict):
+        raise PublishFailed(f"{aws_uri(bucket, key)} head-object did not return a JSON object")
+    return payload
 
 
-def fetch_public_json(url: str) -> dict[str, Any]:
-    request = urllib.request.Request(url, headers={"Cache-Control": "no-cache"})
+def fetch_public_generated_at(url: str) -> str:
+    request = urllib.request.Request(
+        url,
+        headers={
+            "Cache-Control": "no-cache",
+            "Accept-Encoding": "identity",
+            "Range": f"bytes=0-{PUBLIC_VERIFY_READ_LIMIT - 1}",
+        },
+    )
     try:
         with urllib.request.urlopen(request, timeout=60) as response:
-            return json.loads(response.read().decode("utf-8"))
-    except (OSError, json.JSONDecodeError) as err:
+            prefix = response.read(PUBLIC_VERIFY_READ_LIMIT).decode("utf-8", errors="replace")
+    except OSError as err:
         raise PublishFailed(f"failed to read public {url}: {err}") from err
+    match = GENERATED_AT_PATTERN.search(prefix)
+    if match is None:
+        raise PublishFailed(f"public {url} response did not include generated_at near the top of the document")
+    return match.group(1)
 
 
 def verify_generated_at(expected: str, payload: dict[str, Any], source: str) -> None:
     actual = generated_at(payload, source)
     if actual != expected:
         raise PublishFailed(f"{source} generated_at is {actual}; expected {expected}")
+
+
+def verify_public_generated_at(expected: str, url: str) -> None:
+    actual = fetch_public_generated_at(url)
+    if actual != expected:
+        raise PublishFailed(f"{url} generated_at is {actual}; expected {expected}")
+
+
+def verify_s3_head(source: Path, bucket: str, key: str, *, cache_control: str, content_type: str) -> None:
+    payload = fetch_s3_head(bucket, key)
+    content_length = payload.get("ContentLength")
+    if content_length != source.stat().st_size:
+        raise PublishFailed(
+            f"{aws_uri(bucket, key)} content length is {content_length}; expected {source.stat().st_size}"
+        )
+    if payload.get("CacheControl") != cache_control:
+        raise PublishFailed(
+            f"{aws_uri(bucket, key)} cache-control is {payload.get('CacheControl')!r}; expected {cache_control!r}"
+        )
+    if payload.get("ContentType") != content_type:
+        raise PublishFailed(
+            f"{aws_uri(bucket, key)} content-type is {payload.get('ContentType')!r}; expected {content_type!r}"
+        )
 
 
 def parse_args() -> argparse.Namespace:
@@ -161,9 +215,15 @@ def main() -> int:
                     content_type=args.content_type,
                 )
             )
-        verify_generated_at(expected_generated_at, fetch_s3_json(args.bucket, args.key), aws_uri(args.bucket, args.key))
+        verify_s3_head(
+            args.source,
+            args.bucket,
+            args.key,
+            cache_control=args.cache_control,
+            content_type=args.content_type,
+        )
         if not args.skip_public_check:
-            verify_generated_at(expected_generated_at, fetch_public_json(args.public_url), args.public_url)
+            verify_public_generated_at(expected_generated_at, args.public_url)
     except (PublishFailed, subprocess.CalledProcessError) as err:
         print(json.dumps({"ok": False, "error": str(err)}, sort_keys=True), file=sys.stderr)
         return 1

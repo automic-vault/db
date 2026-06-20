@@ -1095,11 +1095,17 @@ process_repo() {
   local repo_dir="${clone_root}/${repo_name}"
   local repo_json source_json source_kind upstream_repo upstream_default release_json tag
   local upstream_name version isotope_output archive_name archive_path release_url
-  local current_branch
+  local current_branch gh_error_file
 
   ensure_clone "${repo_name}" "${repo_dir}"
 
-  repo_json="$(run_gh api "/repos/${fork_repo}")"
+  gh_error_file="$(mktemp)"
+  if ! repo_json="$(run_gh api "/repos/${fork_repo}" 2>"${gh_error_file}")"; then
+    echo "Skipping ${fork_repo}: failed to load repository metadata: $(tr '\n' ' ' <"${gh_error_file}" | sed 's/[[:space:]]\+/ /g' | sed 's/[[:space:]]$//')" >&2
+    rm -f "${gh_error_file}"
+    return 0
+  fi
+  rm -f "${gh_error_file}"
   source_json="$(repo_source_json "${repo_name}" "${repo_json}" "${repo_dir}")"
   source_kind="$(printf '%s\n' "${source_json}" | jq -r '.kind')"
 
