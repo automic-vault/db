@@ -67,11 +67,11 @@ def sample_result(**overrides):
         "docs": ["https://github.com/sharkdp/bat?utm_source=x#readme"],
         "docs-confidence": "high",
         "config-file-location": {
-            "unix": "~/.config/bat/config",
-            "windows": "%APPDATA%\\bat\\config",
+            "unix": ["~/.config/bat/config"],
+            "windows": ["%APPDATA%\\bat\\config"],
         },
         "credentials-file-location": {
-            "unix": "~/.config/bat/credentials",
+            "unix": ["~/.config/bat/credentials"],
         },
         "tags": ["cli-tool", "git", "k8s"],
         "tags-confidence": "high",
@@ -94,7 +94,7 @@ class EnrichmentTests(unittest.TestCase):
         after["tags"] = ["cli", "git"]
         after["display-name"] = "bat"
         after["repo"] = "https://example.com/curated/repo"
-        after["config-file-location"] = {"unix": "~/.config/bat/config"}
+        after["config-file-location"] = {"unix": ["~/.config/bat/config"]}
         after["credentials-file-location"] = None
         self.assertEqual(hash_source_facts(before), hash_source_facts(after))
         self.assertNotEqual(hash_curation_facts(before), hash_curation_facts(after))
@@ -112,7 +112,7 @@ class EnrichmentTests(unittest.TestCase):
         record["docs"] = ["https://github.com/sharkdp/bat#readme"]
         record["category"] = "developer-tools"
         record["tags"] = ["cli", "git"]
-        record["config-file-location"] = {"unix": "~/.config/bat/config"}
+        record["config-file-location"] = {"unix": ["~/.config/bat/config"]}
         record["credentials-file-location"] = None
         self.assertFalse(needs_new_curation(record, entry))
         record["display-name"] = "Bat"
@@ -125,7 +125,7 @@ class EnrichmentTests(unittest.TestCase):
         record["docs"] = ["https://github.com/sharkdp/bat#readme"]
         record["category"] = "developer-tools"
         record["tags"] = ["cli", "git"]
-        record["config-file-location"] = {"unix": "~/.config/bat/config"}
+        record["config-file-location"] = {"unix": ["~/.config/bat/config"]}
         record["credentials-file-location"] = None
         entry = {"last_verified": date.today().isoformat(), "field_confidence": {"repo": "high"}}
         self.assertFalse(needs_new_curation(record, entry))
@@ -211,8 +211,8 @@ class EnrichmentTests(unittest.TestCase):
         record = agent_record_from_result(sample_result(repo="https://github.com/sharkdp/bat", repo_sources=["GitHub"]))
         self.assertEqual(record["repo-confidence"], "high")
         self.assertEqual(record["category-path"], ["developer-tools"])
-        self.assertEqual(record["config-file-location"]["unix"], "~/.config/bat/config")
-        self.assertEqual(record["credentials-file-location"]["unix"], "~/.config/bat/credentials")
+        self.assertEqual(record["config-file-location"]["unix"], ["~/.config/bat/config"])
+        self.assertEqual(record["credentials-file-location"]["unix"], ["~/.config/bat/credentials"])
         self.assertEqual(record["provenance"]["repo-sources"], ["GitHub"])
 
     def test_agent_yaml_emits_top_level_location_nulls(self):
@@ -234,9 +234,9 @@ class EnrichmentTests(unittest.TestCase):
 
     def test_agent_yaml_preserves_windows_backslashes_readably(self):
         text = yaml_text(agent_record_from_result(sample_result()))
-        self.assertIn("windows: '%APPDATA%\\bat\\config'\n", text)
+        self.assertIn("  windows:\n    - '%APPDATA%\\bat\\config'\n", text)
         parsed = parse_simple_yaml(text)
-        self.assertEqual(parsed["config-file-location"]["windows"], "%APPDATA%\\bat\\config")
+        self.assertEqual(parsed["config-file-location"]["windows"], ["%APPDATA%\\bat\\config"])
 
     def test_agent_yaml_is_derived_from_json_payload(self):
         record = agent_record_from_json(sample_result(repo="https://github.com/sharkdp/bat", repo_sources=["GitHub"]))
@@ -252,8 +252,12 @@ class EnrichmentTests(unittest.TestCase):
                 "display-name: Bat\n"
                 "display-name-confidence: high\n"
                 "config-file-location:\n"
-                "  unix: ~/.config/bat/config\n"
-                "credentials-file-location: null\n"
+                "  unix:\n"
+                "    - $HOME/.config/bat/config\n"
+                "credentials-file-location:\n"
+                "  unix:\n"
+                "    - $HOME/.config/bat/credentials\n"
+                "    - $XDG_CONFIG_HOME/bat/credentials\n"
                 "category-path:\n"
                 "  - developer-tools\n"
                 "tags:\n"
@@ -266,7 +270,10 @@ class EnrichmentTests(unittest.TestCase):
         self.assertEqual(record["repo"], "https://github.com/sharkdp/bat")
         self.assertEqual(record["display-name"], "Bat")
         self.assertEqual(record["config-file-location"], {"unix": "~/.config/bat/config"})
-        self.assertIsNone(record["credentials-file-location"])
+        self.assertEqual(
+            record["credentials-file-location"],
+            {"unix": ["~/.config/bat/credentials", "$XDG_CONFIG_HOME/bat/credentials"]},
+        )
         self.assertEqual(record["category"], "developer-tools")
         self.assertNotIn("repo-confidence", record)
 
@@ -324,6 +331,7 @@ class EnrichmentTests(unittest.TestCase):
             record = parse_project_yaml(path)
         self.assertEqual(record["docs"], ["https://github.com/sharkdp/bat#readme"])
         self.assertEqual(record["config-file-location"], {"unix": "~/.config/bat/config"})
+        self.assertEqual(curation_facts(record)["config-file-location"], {"unix": ["~/.config/bat/config"]})
         self.assertIsNone(record["credentials-file-location"])
         self.assertEqual(record["package-manager"], {"brew": "bat"})
         self.assertEqual(curation_facts(record)["category"], "developer-tools")
@@ -397,6 +405,8 @@ class EnrichmentTests(unittest.TestCase):
         self.assertIn("Do not emit placeholder fallback rows", prompt)
         self.assertIn("Empty source arrays are invalid", prompt)
         self.assertIn("`config-file-location` and `credentials-file-location` must be either `null` or platform maps", prompt)
+        self.assertIn("non-empty array of file locations", prompt)
+        self.assertIn("Do not combine alternatives into one string", prompt)
         self.assertIn("Prefer `unix` when official docs describe one shared Unix-like path", prompt)
         self.assertIn("top-level `null` for `credentials-file-location`", prompt)
 
@@ -445,7 +455,7 @@ class EnrichmentTests(unittest.TestCase):
         result = sample_result(
             **{
                 "config-file-location": {"plan9": "/lib/bat/config", "unix": ""},
-                "credentials-file-location": {"unix": "~/.config/bat/credentials", "windows": ""},
+                "credentials-file-location": {"unix": "~/.config/bat/credentials", "windows": []},
             }
         )
         normalized, errors, invalid_results = validate_codex_payload_partial(
@@ -454,8 +464,9 @@ class EnrichmentTests(unittest.TestCase):
         )
         self.assertEqual(normalized, [])
         self.assertTrue(any("config-file-location contains unsupported platform" in error for error in errors))
-        self.assertTrue(any("config-file-location.unix must be a non-empty string" in error for error in errors))
-        self.assertTrue(any("credentials-file-location.windows must be a non-empty string" in error for error in errors))
+        self.assertTrue(any("config-file-location.unix must be a non-empty array of strings" in error for error in errors))
+        self.assertTrue(any("credentials-file-location.unix must be a non-empty array of strings" in error for error in errors))
+        self.assertTrue(any("credentials-file-location.windows must be a non-empty array of strings" in error for error in errors))
         self.assertEqual(invalid_results[0]["id"], "brew:bat")
 
     def test_validation_error_summary_groups_by_message(self):
@@ -482,7 +493,8 @@ class EnrichmentTests(unittest.TestCase):
         self.assertEqual(item_schema["config-file-location"]["anyOf"][0]["type"], "null")
         credentials_object = item_schema["credentials-file-location"]["anyOf"][1]
         self.assertFalse(credentials_object["additionalProperties"])
-        self.assertEqual(credentials_object["properties"]["windows"]["type"], "string")
+        self.assertEqual(credentials_object["properties"]["windows"]["type"], "array")
+        self.assertEqual(credentials_object["properties"]["windows"]["items"]["type"], "string")
 
     def test_batch_output_schema_uses_strict_platform_map_variants(self):
         module = load_enrich_projects_module()
@@ -498,12 +510,14 @@ class EnrichmentTests(unittest.TestCase):
             if set(variant.get("properties", {})) == {"unix"}
         )
         self.assertEqual(unix_variant["required"], ["unix"])
-        self.assertEqual(unix_variant["properties"]["unix"]["type"], "string")
+        self.assertEqual(unix_variant["properties"]["unix"]["type"], "array")
+        self.assertEqual(unix_variant["properties"]["unix"]["items"]["type"], "string")
         credentials_unix_variant = next(
             variant for variant in credentials_schema["anyOf"]
             if set(variant.get("properties", {})) == {"unix"}
         )
-        self.assertEqual(credentials_unix_variant["properties"]["unix"]["type"], "string")
+        self.assertEqual(credentials_unix_variant["properties"]["unix"]["type"], "array")
+        self.assertEqual(credentials_unix_variant["properties"]["unix"]["items"]["type"], "string")
 
     def test_validation_aggregates_duplicate_errors_and_counts_rejected_ids(self):
         normalized, errors, invalid_results = validate_codex_payload_partial(

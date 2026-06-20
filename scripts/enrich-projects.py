@@ -38,14 +38,18 @@ PATH_LOCATION_PLATFORMS = ("unix", "linux", "macos", "windows")
 
 def strict_platform_map_schema() -> dict[str, Any]:
     variants: list[dict[str, Any]] = [{"type": "null"}]
-    value_type = "string"
+    value_schema = {
+        "items": {"minLength": 1, "type": "string"},
+        "minItems": 1,
+        "type": "array",
+    }
     for size in range(len(PATH_LOCATION_PLATFORMS) + 1):
         for platforms in itertools.combinations(PATH_LOCATION_PLATFORMS, size):
             variants.append(
                 {
                     "additionalProperties": False,
                     "properties": {
-                        platform: {"minLength": 1, "type": value_type}
+                        platform: dict(value_schema)
                         for platform in platforms
                     },
                     "required": list(platforms),

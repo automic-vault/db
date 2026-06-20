@@ -27,6 +27,8 @@ CATEGORIES = {
     "toys",
     "other",
 }
+PATH_LOCATION_FIELDS = {"config-file-location", "credentials-file-location"}
+PATH_LOCATION_PLATFORMS = ("unix", "linux", "macos", "windows")
 
 _GEIGER_SUMMARIES: dict[str, dict[str, Any]] | None = None
 
@@ -166,8 +168,8 @@ def merge_agent_layer(record: dict[str, Any], path: Path) -> None:
         record["repo"] = agent["repo"]
     for key in ("display-name", "docs", "tags", "config-file-location", "credentials-file-location"):
         value = agent.get(key)
-        if key in {"config-file-location", "credentials-file-location"} and key in agent:
-            record[key] = value if isinstance(value, dict) else None
+        if key in PATH_LOCATION_FIELDS and key in agent:
+            record[key] = combined_path_locations(value)
             continue
         if value not in (None, "", [], {}):
             record[key] = value
@@ -176,6 +178,40 @@ def merge_agent_layer(record: dict[str, Any], path: Path) -> None:
         record["category"] = category_path[0]
     elif agent.get("category") not in (None, "", [], {}):
         record["category"] = agent["category"]
+
+
+def combined_path_locations(value: Any) -> dict[str, Any] | None:
+    if not isinstance(value, dict):
+        return None
+    result: dict[str, Any] = {}
+    for platform in PATH_LOCATION_PLATFORMS:
+        raw_locations = value.get(platform)
+        if isinstance(raw_locations, list):
+            locations = [normalize_home_path(str(item).strip()) for item in raw_locations if str(item).strip()]
+        elif isinstance(raw_locations, str) and raw_locations.strip():
+            locations = [normalize_home_path(raw_locations.strip())]
+        else:
+            continue
+        locations = unique_ordered(locations)
+        if len(locations) == 1:
+            result[platform] = locations[0]
+        elif locations:
+            result[platform] = locations
+    return result or None
+
+
+def normalize_home_path(value: str) -> str:
+    if value.startswith("$HOME/"):
+        return "~/" + value[len("$HOME/") :]
+    return value
+
+
+def unique_ordered(values: list[str]) -> list[str]:
+    result = []
+    for value in values:
+        if value not in result:
+            result.append(value)
+    return result
 
 
 def merge_human_override_layer(record: dict[str, Any], path: Path) -> None:

@@ -270,7 +270,8 @@ def normalize_path_locations(
     *,
     errors: list[str] | None = None,
     field: str = "path location",
-) -> dict[str, str] | None:
+    require_arrays: bool = False,
+) -> dict[str, list[str]] | None:
     if value is None or value == {}:
         return None
     if value in ("", []):
@@ -281,24 +282,68 @@ def normalize_path_locations(
         if errors is not None:
             errors.append(f"{field} must be null or an object keyed by unix, linux, macos, or windows")
         return None
-    result: dict[str, str] = {}
+    result: dict[str, list[str]] = {}
     for raw_key, raw_value in value.items():
         platform = str(raw_key or "").strip().lower()
         if platform not in PATH_LOCATION_PLATFORMS:
             if errors is not None:
                 errors.append(f"{field} contains unsupported platform {raw_key!r}")
             continue
-        if raw_value is None:
+        locations = normalize_path_location_list(
+            raw_value,
+            errors=errors,
+            field=field,
+            platform=platform,
+            require_array=require_arrays,
+        )
+        if locations:
+            result[platform] = locations
+    return {platform: result[platform] for platform in PATH_LOCATION_PLATFORMS if platform in result} or None
+
+
+def normalize_path_location_list(
+    value: Any,
+    *,
+    errors: list[str] | None = None,
+    field: str,
+    platform: str,
+    require_array: bool = False,
+) -> list[str]:
+    if isinstance(value, str):
+        if require_array:
             if errors is not None:
-                errors.append(f"{field}.{platform} must be a non-empty string")
+                errors.append(f"{field}.{platform} must be a non-empty array of strings")
+            return []
+        raw_locations = [value]
+    elif isinstance(value, list):
+        raw_locations = value
+    else:
+        if errors is not None:
+            errors.append(f"{field}.{platform} must be a non-empty array of strings")
+        return []
+
+    locations: list[str] = []
+    for raw_location in raw_locations:
+        if not isinstance(raw_location, str):
+            if errors is not None:
+                errors.append(f"{field}.{platform} must contain only non-empty strings")
             continue
-        location = re.sub(r"\s+", " ", str(raw_value)).strip()
+        location = normalize_home_location(re.sub(r"\s+", " ", raw_location).strip())
         if not location:
             if errors is not None:
-                errors.append(f"{field}.{platform} must be a non-empty string")
+                errors.append(f"{field}.{platform} must contain only non-empty strings")
             continue
-        result[platform] = location
-    return {platform: result[platform] for platform in PATH_LOCATION_PLATFORMS if platform in result} or None
+        if location not in locations:
+            locations.append(location)
+    if not locations and errors is not None:
+        errors.append(f"{field}.{platform} must be a non-empty array of strings")
+    return locations
+
+
+def normalize_home_location(value: str) -> str:
+    if value.startswith("$HOME/"):
+        return "~/" + value[len("$HOME/") :]
+    return value
 
 
 def source_facts(record: dict[str, Any]) -> dict[str, Any]:
@@ -526,6 +571,8 @@ Return JSON that matches the provided output schema. Do not edit files. Use offi
 Do not emit placeholder fallback rows. For every result:
 - `category_path`, `display-name`, and `tags` must be non-empty.
 - `config-file-location` and `credentials-file-location` must be either `null` or platform maps keyed only by `unix`, `linux`, `macos`, or `windows`.
+- Each platform map value must be a non-empty array of file locations, sorted in the exact order the tool checks them.
+- Do not combine alternatives into one string with words like "or"; emit each alternative as a separate array item.
 - Prefer `unix` when official docs describe one shared Unix-like path; split into `linux` and `macos` only when the paths differ.
 - Use top-level `null` for `config-file-location` when no official config file location is documented.
 - Use top-level `null` for `credentials-file-location` when credentials are absent, unknown, or not applicable.
@@ -636,11 +683,13 @@ def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[s
         item.get("config-file-location"),
         errors=errors,
         field="config-file-location",
+        require_arrays=True,
     )
     credentials_file_location = normalize_path_locations(
         item.get("credentials-file-location"),
         errors=errors,
         field="credentials-file-location",
+        require_arrays=True,
     )
     result = {
         "id": str(item.get("id")),
