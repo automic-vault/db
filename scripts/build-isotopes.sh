@@ -16,6 +16,8 @@ curl_max_time="${AV_ISOTOPES_CURL_MAX_TIME_SECONDS:-120}"
 curl_retry_count="${AV_ISOTOPES_CURL_RETRY_COUNT:-3}"
 gh_timeout_seconds="${AV_ISOTOPES_GH_TIMEOUT_SECONDS:-180}"
 gh_release_create_timeout_seconds="${AV_ISOTOPES_GH_RELEASE_CREATE_TIMEOUT_SECONDS:-600}"
+gh_retry_count="${AV_ISOTOPES_GH_RETRY_COUNT:-3}"
+gh_retry_delay_seconds="${AV_ISOTOPES_GH_RETRY_DELAY_SECONDS:-5}"
 homebrew_formula_index_cache=""
 homebrew_formula_index_entry_result=""
 homebrew_formula_index_cache_path="${AV_HOMEBREW_FORMULA_INDEX_CACHE_PATH:-${repo_root}/cache/automic-vault/homebrew-formula-index.json}"
@@ -190,7 +192,57 @@ RUBY
 
 run_gh() {
   local timeout_seconds="${GH_TIMEOUT_SECONDS_OVERRIDE:-${gh_timeout_seconds}}"
-  run_with_timeout "${timeout_seconds}" gh "$@"
+  local attempts="${gh_retry_count}"
+  local delay_seconds="${gh_retry_delay_seconds}"
+  local attempt exit_code
+  local stdout_file stderr_file stderr_text
+
+  stdout_file="$(mktemp)"
+  stderr_file="$(mktemp)"
+
+  cleanup() {
+    rm -f "${stdout_file}" "${stderr_file}"
+  }
+
+  is_transient_gh_failure() {
+    local error_text="$1"
+
+    [[ "${error_text}" == *"TLS handshake timeout"* ]] ||
+      [[ "${error_text}" == *"Client.Timeout exceeded while awaiting headers"* ]] ||
+      [[ "${error_text}" == *"connection reset by peer"* ]] ||
+      [[ "${error_text}" == *"EOF"* ]] ||
+      [[ "${error_text}" == *"i/o timeout"* ]] ||
+      [[ "${error_text}" == *"net/http: timeout awaiting response headers"* ]] ||
+      [[ "${error_text}" == *"no such host"* ]] ||
+      [[ "${error_text}" == *"temporary failure in name resolution"* ]] ||
+      [[ "${error_text}" == *"502 Bad Gateway"* ]] ||
+      [[ "${error_text}" == *"503 Service Unavailable"* ]] ||
+      [[ "${error_text}" == *"504 Gateway Timeout"* ]]
+  }
+
+  for ((attempt = 1; attempt <= attempts; attempt += 1)); do
+    if run_with_timeout "${timeout_seconds}" gh "$@" >"${stdout_file}" 2>"${stderr_file}"; then
+      cat "${stdout_file}"
+      cleanup
+      return 0
+    fi
+
+    exit_code=$?
+    stderr_text="$(<"${stderr_file}")"
+    if (( attempt < attempts )) && is_transient_gh_failure "${stderr_text}"; then
+      printf 'Transient gh failure (attempt %d/%d): %s\n' "${attempt}" "${attempts}" "$(tr '\n' ' ' <<<"${stderr_text}" | sed 's/[[:space:]]\+/ /g' | sed 's/[[:space:]]$//')" >&2
+      sleep "${delay_seconds}"
+      continue
+    fi
+
+    [[ -s "${stdout_file}" ]] && cat "${stdout_file}"
+    [[ -s "${stderr_file}" ]] && cat "${stderr_file}" >&2
+    cleanup
+    return "${exit_code}"
+  done
+
+  cleanup
+  return 1
 }
 
 ensure_homebrew_formula_index() {
