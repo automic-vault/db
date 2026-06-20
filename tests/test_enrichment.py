@@ -140,6 +140,40 @@ class EnrichmentTests(unittest.TestCase):
         entry = {"last_verified": date.today().isoformat(), "field_confidence": {"repo": "high"}}
         self.assertFalse(needs_new_curation(record, entry))
 
+    def test_missing_curated_fields_flag_selects_previously_verified_records(self):
+        record = sample_record()
+        record["display-name"] = "Bat"
+        record["docs"] = ["https://github.com/sharkdp/bat#readme"]
+        record["category"] = "developer-tools"
+        record["tags"] = ["cli", "git"]
+        state = {"brew:bat": {"last_verified": date.today().isoformat(), "field_confidence": {"repo": "high"}}}
+        selected = select_projects(
+            [record],
+            state,
+            mode="new",
+            today=date.today().isoformat(),
+            include_missing_curated_fields=True,
+        )
+        self.assertEqual([item["id"] for item in selected], ["brew:bat"])
+
+    def test_missing_curated_fields_flag_treats_explicit_null_as_reviewed(self):
+        record = sample_record()
+        record["display-name"] = "Bat"
+        record["docs"] = ["https://github.com/sharkdp/bat#readme"]
+        record["category"] = "developer-tools"
+        record["tags"] = ["cli", "git"]
+        record["config-file-location"] = None
+        record["credentials-file-location"] = None
+        state = {"brew:bat": {"last_verified": date.today().isoformat(), "field_confidence": {"repo": "high"}}}
+        selected = select_projects(
+            [record],
+            state,
+            mode="new",
+            today=date.today().isoformat(),
+            include_missing_curated_fields=True,
+        )
+        self.assertEqual(selected, [])
+
     def test_review_stale_updated_selection(self):
         record = sample_record()
         today = date.today()

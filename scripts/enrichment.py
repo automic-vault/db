@@ -471,19 +471,31 @@ def select_projects(
     *,
     mode: str,
     today: str,
+    include_missing_curated_fields: bool = False,
 ) -> list[dict[str, Any]]:
     selected = []
     cutoff = date.fromisoformat(today) - timedelta(days=90)
     for record in projects:
         project_id = str(record.get("id") or "")
         entry = state.get(project_id) or {}
+        missing_curated = include_missing_curated_fields and has_missing_curated_fields(record)
         if mode == "replace":
             selected.append(record)
-        elif mode == "new" and needs_new_curation(record, entry):
+        elif mode == "new" and (needs_new_curation(record, entry) or missing_curated):
             selected.append(record)
-        elif mode == "review-stale-updated" and needs_stale_updated_review(entry, cutoff):
+        elif mode == "review-stale-updated" and (needs_stale_updated_review(entry, cutoff) or missing_curated):
             selected.append(record)
     return selected
+
+
+def has_missing_curated_fields(record: dict[str, Any]) -> bool:
+    return any(not has_curated_field(record, field) for field in CURATED_FIELDS)
+
+
+def has_curated_field(record: dict[str, Any], field: str) -> bool:
+    if field == "category":
+        return "category" in record or "category_path" in record or "category-path" in record
+    return field in record
 
 
 def needs_new_curation(record: dict[str, Any], entry: dict[str, Any] | None = None) -> bool:

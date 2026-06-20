@@ -20,6 +20,8 @@ COMMIT_PATHS = [
     "data/pkg-pages",
     "data/pkg-taxonomy.json",
 ]
+DEFAULT_HOURLY_ENRICH_LIMIT = int(os.environ.get("AVDB_HOURLY_ENRICH_LIMIT", "10"))
+DEFAULT_HOURLY_ENRICH_BATCH_SIZE = int(os.environ.get("AVDB_HOURLY_ENRICH_BATCH_SIZE", "10"))
 
 
 def run(command: list[str]) -> None:
@@ -55,6 +57,19 @@ def parse_args() -> argparse.Namespace:
         help="Refresh isotope summary without building or publishing isotope releases.",
     )
     parser.add_argument("--skip-sqlite", action="store_true", help="Skip package SQLite generation.")
+    parser.add_argument("--skip-enrichment", action="store_true", help="Skip hourly curated-field enrichment.")
+    parser.add_argument(
+        "--enrich-limit",
+        type=int,
+        default=DEFAULT_HOURLY_ENRICH_LIMIT,
+        help="Maximum projects to enrich for missing curated fields.",
+    )
+    parser.add_argument(
+        "--enrich-batch-size",
+        type=int,
+        default=DEFAULT_HOURLY_ENRICH_BATCH_SIZE,
+        help="Projects to send to Codex per hourly enrichment batch.",
+    )
     return parser.parse_args()
 
 
@@ -64,6 +79,20 @@ def main() -> int:
     os.chdir(ROOT)
 
     run([py, "scripts/build.py", "--refresh"])
+    if not args.skip_enrichment and args.enrich_limit > 0:
+        run(
+            [
+                py,
+                "scripts/enrich-projects.py",
+                "--mode",
+                "new",
+                "--include-missing-curated-fields",
+                "--limit",
+                str(args.enrich_limit),
+                "--batch-size",
+                str(args.enrich_batch_size),
+            ]
+        )
     if not args.skip_isotopes:
         isotope_command = ["bash", "scripts/build-isotopes.sh"]
         if args.skip_isotope_builds:

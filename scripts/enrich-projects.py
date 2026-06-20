@@ -65,6 +65,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--limit", type=int, default=0, help="Limit projects sent for review.")
     parser.add_argument("--batch-size", type=int, default=10, help="Projects to send to Codex per batch.")
     parser.add_argument("--force", action="store_true", help="Re-run Codex even when a valid batch checkpoint exists.")
+    parser.add_argument(
+        "--include-missing-curated-fields",
+        action="store_true",
+        help="Also select projects missing any field tracked in CURATED_FIELDS, including newly added curated fields.",
+    )
     parser.add_argument("--run-id", help="Resume or write artifacts under a specific enrichment run id.")
     parser.add_argument("--dry-run", action="store_true", help="Build cache/input artifacts without invoking Codex or editing YAML.")
     parser.add_argument("--commit-after-batch", action="store_true", help="Commit tracked YAML changes after each applied batch.")
@@ -204,7 +209,13 @@ def main() -> int:
 
     projects = load_projects(args.provider)
     update_observed_state(state, projects, today)
-    selected = select_projects(projects, state, mode=args.mode, today=today)
+    selected = select_projects(
+        projects,
+        state,
+        mode=args.mode,
+        today=today,
+        include_missing_curated_fields=args.include_missing_curated_fields,
+    )
     if args.limit:
         selected = selected[: args.limit]
 
