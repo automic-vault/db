@@ -22,11 +22,24 @@ COMMIT_PATHS = [
 ]
 DEFAULT_HOURLY_ENRICH_LIMIT = int(os.environ.get("AVDB_HOURLY_ENRICH_LIMIT", "10"))
 DEFAULT_HOURLY_ENRICH_BATCH_SIZE = int(os.environ.get("AVDB_HOURLY_ENRICH_BATCH_SIZE", "10"))
+DEFAULT_HOURLY_ENRICH_TIMEOUT_SECONDS = int(os.environ.get("AVDB_HOURLY_ENRICH_TIMEOUT_SECONDS", "1200"))
 
 
-def run(command: list[str]) -> None:
+def run(command: list[str], *, timeout: int | None = None, allow_failure: bool = False) -> bool:
     print("+", " ".join(command), flush=True)
-    subprocess.run(command, cwd=ROOT, check=True)
+    try:
+        subprocess.run(command, cwd=ROOT, check=True, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        if not allow_failure:
+            raise
+        print(f"WARN: command timed out after {timeout}s", file=sys.stderr, flush=True)
+        return False
+    except subprocess.CalledProcessError as err:
+        if not allow_failure:
+            raise
+        print(f"WARN: command failed with exit code {err.returncode}", file=sys.stderr, flush=True)
+        return False
+    return True
 
 
 def commit_if_changed(message: str) -> str | None:
@@ -91,7 +104,9 @@ def main() -> int:
                 str(args.enrich_limit),
                 "--batch-size",
                 str(args.enrich_batch_size),
-            ]
+            ],
+            timeout=DEFAULT_HOURLY_ENRICH_TIMEOUT_SECONDS,
+            allow_failure=True,
         )
     if not args.skip_isotopes:
         isotope_command = ["bash", "scripts/build-isotopes.sh"]
