@@ -199,6 +199,16 @@ fi
 }
 
 mkdir -p "${automation_dir}"
+lock_stderr=""
+
+cleanup_lock_stderr() {
+  if [[ -n "${lock_stderr}" ]]; then
+    rm -f "${lock_stderr}"
+  fi
+}
+
+trap cleanup_lock_stderr EXIT
+
 lock_stderr="$(mktemp)"
 set +e
 lockf -t 0 "${automation_dir}/$1.lock" "$0" --run-unlocked "$1" 2>"${lock_stderr}"

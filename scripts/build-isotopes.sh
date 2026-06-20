@@ -21,6 +21,20 @@ gh_retry_delay_seconds="${AV_ISOTOPES_GH_RETRY_DELAY_SECONDS:-5}"
 homebrew_formula_index_cache=""
 homebrew_formula_index_entry_result=""
 homebrew_formula_index_cache_path="${AV_HOMEBREW_FORMULA_INDEX_CACHE_PATH:-${repo_root}/cache/automic-vault/homebrew-formula-index.json}"
+tmp_paths=()
+
+register_tmp_path() {
+  tmp_paths+=("$1")
+}
+
+cleanup_tmp_paths() {
+  if [[ "${#tmp_paths[@]}" -gt 0 ]]; then
+    rm -f "${tmp_paths[@]}"
+  fi
+}
+
+trap cleanup_tmp_paths EXIT
+
 if [[ -n "${AUTOMIC_VAULT_CODEX_PROJECT_ROOT:-}" ]]; then
   codex_project_root="${AUTOMIC_VAULT_CODEX_PROJECT_ROOT}"
 elif [[ -n "${HOME:-}" ]]; then
@@ -199,6 +213,8 @@ run_gh() {
 
   stdout_file="$(mktemp)"
   stderr_file="$(mktemp)"
+  register_tmp_path "${stdout_file}"
+  register_tmp_path "${stderr_file}"
 
   cleanup() {
     rm -f "${stdout_file}" "${stderr_file}"
@@ -258,6 +274,7 @@ ensure_homebrew_formula_index() {
 
   local tmp_cache
   tmp_cache="$(mktemp "${homebrew_formula_index_cache}.tmp.XXXXXX")"
+  register_tmp_path "${tmp_cache}"
   if ! curl_fetch "https://formulae.brew.sh/api/formula.json" >"${tmp_cache}"; then
     rm -f "${tmp_cache}"
     return 1
@@ -962,6 +979,8 @@ generate_isotope_versions_json() {
   mkdir -p "$(dirname "${isotope_versions_path}")"
   entries_path="$(mktemp)"
   tmp_path="$(mktemp "${isotope_versions_path}.tmp.XXXXXX")"
+  register_tmp_path "${entries_path}"
+  register_tmp_path "${tmp_path}"
 
   while IFS= read -r repo_name; do
     [[ -n "${repo_name}" ]] || continue
@@ -1152,6 +1171,7 @@ process_repo() {
   ensure_clone "${repo_name}" "${repo_dir}"
 
   gh_error_file="$(mktemp)"
+  register_tmp_path "${gh_error_file}"
   if ! repo_json="$(run_gh api "/repos/${fork_repo}" 2>"${gh_error_file}")"; then
     echo "Skipping ${fork_repo}: failed to load repository metadata: $(tr '\n' ' ' <"${gh_error_file}" | sed 's/[[:space:]]\+/ /g' | sed 's/[[:space:]]$//')" >&2
     rm -f "${gh_error_file}"

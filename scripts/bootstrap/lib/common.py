@@ -139,9 +139,13 @@ def write_text_if_changed(path: Path, text: str) -> bool:
     if path.exists() and path.read_bytes() == data:
         return False
     fd, tmp_name = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
-    with os.fdopen(fd, "wb") as handle:
-        handle.write(data)
-    Path(tmp_name).replace(path)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(data)
+        Path(tmp_name).replace(path)
+    except Exception:
+        Path(tmp_name).unlink(missing_ok=True)
+        raise
     return True
 
 
@@ -338,7 +342,7 @@ def fetch_bytes(url: str, *, namespace: str, refresh: bool = False) -> bytes:
             data = fetch_github_api_bytes(url)
             path.parent.mkdir(parents=True, exist_ok=True)
             if cached_data != data:
-                path.write_bytes(data)
+                write_bytes_if_changed(path, data)
             return data
         except (urllib.error.HTTPError, urllib.error.URLError):
             pass
@@ -367,7 +371,7 @@ def fetch_bytes(url: str, *, namespace: str, refresh: bool = False) -> bytes:
 
     path.parent.mkdir(parents=True, exist_ok=True)
     if cached_data != data:
-        path.write_bytes(data)
+        write_bytes_if_changed(path, data)
     return data
 
 
@@ -391,12 +395,21 @@ def sync_tree(staged_root: Path, published_root: Path) -> None:
 def copy_if_changed(src: Path, dst: Path) -> bool:
     dst.parent.mkdir(parents=True, exist_ok=True)
     data = src.read_bytes()
+    return write_bytes_if_changed(dst, data)
+
+
+def write_bytes_if_changed(dst: Path, data: bytes) -> bool:
+    dst.parent.mkdir(parents=True, exist_ok=True)
     if dst.exists() and dst.read_bytes() == data:
         return False
     fd, tmp_name = tempfile.mkstemp(dir=dst.parent, prefix=f".{dst.name}.", suffix=".tmp")
-    with os.fdopen(fd, "wb") as handle:
-        handle.write(data)
-    Path(tmp_name).replace(dst)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(data)
+        Path(tmp_name).replace(dst)
+    except Exception:
+        Path(tmp_name).unlink(missing_ok=True)
+        raise
     return True
 
 

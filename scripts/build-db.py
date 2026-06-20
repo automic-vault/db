@@ -9,6 +9,7 @@ import random
 import socket
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 import urllib.error
@@ -185,8 +186,29 @@ def _write_cache(path, payload, etag, checked_at):
         META_KEY: {"etag": etag, "checked_at": checked_at},
         PAYLOAD_KEY: payload,
     }
-    with open(path, "w", encoding="utf-8") as handle:
-        json.dump(wrapper, handle)
+    _write_json_atomic(path, wrapper)
+
+
+def _write_json_atomic(path, payload, *, indent=None):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(
+        dir=os.path.dirname(path),
+        prefix=f".{os.path.basename(path)}.",
+        suffix=".tmp",
+        text=True,
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, indent=indent, sort_keys=indent is not None)
+            if indent is not None:
+                handle.write("\n")
+        os.replace(tmp_name, path)
+    except Exception:
+        try:
+            os.unlink(tmp_name)
+        except FileNotFoundError:
+            pass
+        raise
 
 
 def _github_api_endpoint(url):
@@ -1401,10 +1423,7 @@ def _read_npm_index_state():
 
 
 def _write_npm_index_state(state):
-    os.makedirs(os.path.dirname(NPM_INDEX_STATE_PATH), exist_ok=True)
-    with open(NPM_INDEX_STATE_PATH, "w", encoding="utf-8") as handle:
-        json.dump(state, handle, indent=2, sort_keys=True)
-        handle.write("\n")
+    _write_json_atomic(NPM_INDEX_STATE_PATH, state, indent=2)
 
 
 def _current_npm_changes_sequence():
@@ -2114,10 +2133,7 @@ def main():
         "npms": npm_metadata,
     }
 
-    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-    with open(DB_PATH, "w", encoding="utf-8") as handle:
-        json.dump(db, handle, indent=2, sort_keys=True)
-        handle.write("\n")
+    _write_json_atomic(DB_PATH, db, indent=2)
 
     print(
         f"Wrote {DB_PATH} with {len(ordered_entries)} executables "

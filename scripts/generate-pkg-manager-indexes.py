@@ -199,12 +199,37 @@ def read_json(path: Path) -> Any:
 
 
 def write_json(path: Path, value: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    os.close(fd)
     if path.suffix == ".gz":
-        with gzip.open(path, "wt", encoding="utf-8", compresslevel=9) as handle:
-            json.dump(value, handle, indent=2, sort_keys=True)
-            handle.write("\n")
+        try:
+            with gzip.open(tmp_name, "wt", encoding="utf-8", compresslevel=9) as handle:
+                json.dump(value, handle, indent=2, sort_keys=True)
+                handle.write("\n")
+            Path(tmp_name).replace(path)
+        except Exception:
+            Path(tmp_name).unlink(missing_ok=True)
+            raise
         return
-    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    try:
+        Path(tmp_name).write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        Path(tmp_name).replace(path)
+    except Exception:
+        Path(tmp_name).unlink(missing_ok=True)
+        raise
+
+
+def write_bytes(path: Path, data: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(data)
+        Path(tmp_name).replace(path)
+    except Exception:
+        Path(tmp_name).unlink(missing_ok=True)
+        raise
 
 
 def stable_hash_bytes(value: bytes) -> str:
@@ -407,16 +432,14 @@ def fetch_bytes(url: str, *, force_refresh: bool = False) -> bytes:
     if urllib.parse.urlparse(url).hostname == "api.github.com":
         try:
             data = fetch_github_api_bytes(url)
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_bytes(data)
+            write_bytes(path, data)
             return data
         except (urllib.error.HTTPError, urllib.error.URLError):
             pass
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "*/*"})
     with urllib.request.urlopen(request, timeout=DEFAULT_TIMEOUT) as response:
         data = response.read()
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(data)
+    write_bytes(path, data)
     return data
 
 
