@@ -21,9 +21,19 @@ def csv_bytes(fieldnames, rows):
 
 
 def add_tar_member(archive, name, data):
+    if isinstance(data, str):
+        data = data.encode("utf-8")
     info = tarfile.TarInfo(name)
     info.size = len(data)
     archive.addfile(info, io.BytesIO(data))
+
+
+def crate_archive_bytes(files):
+    handle = io.BytesIO()
+    with tarfile.open(fileobj=handle, mode="w:gz") as archive:
+        for name, data in files.items():
+            add_tar_member(archive, name, data)
+    return handle.getvalue()
 
 
 def write_fixture_dump(path: Path) -> None:
@@ -138,6 +148,114 @@ def write_fixture_dump(path: Path) -> None:
             add_tar_member(archive, name, data)
 
 
+def write_internal_binary_fixture_dump(path: Path) -> None:
+    today = dt.date.today().isoformat()
+    files = {
+        "data/crates.csv": csv_bytes(
+            [
+                "id",
+                "name",
+                "updated_at",
+                "created_at",
+                "description",
+                "homepage",
+                "documentation",
+                "readme",
+                "repository",
+                "max_upload_size",
+                "max_features",
+                "trustpub_only",
+            ],
+            [
+                {"id": "1", "name": "unsafe-libyaml", "description": "libyaml transpiled to rust by c2rust"},
+                {"id": "2", "name": "bat", "description": "A cat(1) clone with wings."},
+                {"id": "3", "name": "sourcefail", "description": "library with a helper executable"},
+            ],
+        ),
+        "data/crate_downloads.csv": csv_bytes(
+            ["crate_id", "downloads"],
+            [
+                {"crate_id": "1", "downloads": "1000"},
+                {"crate_id": "2", "downloads": "900"},
+                {"crate_id": "3", "downloads": "800"},
+            ],
+        ),
+        "data/default_versions.csv": csv_bytes(
+            ["crate_id", "version_id", "num_versions"],
+            [
+                {"crate_id": "1", "version_id": "10", "num_versions": "17"},
+                {"crate_id": "2", "version_id": "20", "num_versions": "58"},
+                {"crate_id": "3", "version_id": "30", "num_versions": "1"},
+            ],
+        ),
+        "data/versions.csv": csv_bytes(
+            [
+                "id",
+                "crate_id",
+                "num",
+                "updated_at",
+                "created_at",
+                "downloads",
+                "features",
+                "yanked",
+                "license",
+                "crate_size",
+                "published_by",
+                "checksum",
+                "links",
+                "rust_version",
+                "has_lib",
+                "bin_names",
+                "edition",
+                "description",
+                "homepage",
+                "documentation",
+                "repository",
+            ],
+            [
+                {
+                    "id": "10",
+                    "crate_id": "1",
+                    "num": "0.2.11",
+                    "yanked": "f",
+                    "has_lib": "t",
+                    "bin_names": "{run-emitter-test-suite,run-parser-test-suite}",
+                    "description": "libyaml transpiled to rust by c2rust",
+                },
+                {
+                    "id": "20",
+                    "crate_id": "2",
+                    "num": "0.26.1",
+                    "yanked": "f",
+                    "has_lib": "t",
+                    "bin_names": "{bat}",
+                    "description": "A cat(1) clone with wings.",
+                },
+                {
+                    "id": "30",
+                    "crate_id": "3",
+                    "num": "1.0.0",
+                    "yanked": "f",
+                    "has_lib": "t",
+                    "bin_names": "{sourcefail-helper}",
+                    "description": "library with a helper executable",
+                },
+            ],
+        ),
+        "data/version_downloads.csv": csv_bytes(
+            ["version_id", "downloads", "date"],
+            [
+                {"version_id": "10", "downloads": "1000", "date": today},
+                {"version_id": "20", "downloads": "900", "date": today},
+                {"version_id": "30", "downloads": "800", "date": today},
+            ],
+        ),
+    }
+    with tarfile.open(path, "w:gz") as archive:
+        for name, data in files.items():
+            add_tar_member(archive, name, data)
+
+
 class CratesIndexTests(unittest.TestCase):
     def test_csv_rows_accepts_large_fields(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -176,6 +294,128 @@ class CratesIndexTests(unittest.TestCase):
         self.assertEqual(ripgrep["executables"][0]["name"], "rg")
         self.assertEqual(ripgrep["popularity"]["recent_downloads"], 75)
         self.assertEqual(ripgrep["packageManagerUrl"], "https://crates.io/crates/ripgrep")
+
+    def test_cargo_executable_intent_filters_internal_library_bins(self):
+        unsafe_archive = crate_archive_bytes({
+            "unsafe-libyaml-0.2.11/Cargo.toml.orig": """
+[package]
+name = "unsafe-libyaml"
+description = "libyaml transpiled to rust by c2rust"
+
+[lib]
+""",
+            "unsafe-libyaml-0.2.11/README.md": "Rust bindings for libyaml.",
+            "unsafe-libyaml-0.2.11/src/bin/run-emitter-test-suite.rs": "fn main() {}",
+            "unsafe-libyaml-0.2.11/src/bin/run-parser-test-suite.rs": "fn main() {}",
+            "unsafe-libyaml-0.2.11/tests/test_parser.rs": "#[test] fn parser() {}",
+        })
+
+        intent = crates_index.cargo_executable_intent(
+            "unsafe-libyaml",
+            {"description": "libyaml transpiled to rust by c2rust"},
+            {"num": "0.2.11", "has_lib": "t", "description": "libyaml transpiled to rust by c2rust"},
+            ["run-emitter-test-suite", "run-parser-test-suite"],
+            source_archive_fetcher=lambda _name, _version: unsafe_archive,
+        )
+
+        self.assertEqual(intent["intent"], "internal_only")
+
+    def test_cargo_executable_intent_keeps_public_binary_shapes(self):
+        qrcode_archive = crate_archive_bytes({
+            "qrcode-0.14.1/Cargo.toml.orig": """
+[package]
+name = "qrcode"
+description = "QR code encoder in Rust"
+
+[lib]
+
+[[bin]]
+name = "qrencode"
+""",
+            "qrcode-0.14.1/src/bin/qrencode.rs": "fn main() {}",
+        })
+
+        explicit_bin = crates_index.cargo_executable_intent(
+            "qrcode",
+            {"description": "QR code encoder in Rust"},
+            {"num": "0.14.1", "has_lib": "t", "description": "QR code encoder in Rust"},
+            ["qrencode"],
+            source_archive_fetcher=lambda _name, _version: qrcode_archive,
+        )
+
+        bat_archive = crate_archive_bytes({
+            "bat-0.26.1/Cargo.toml.orig": """
+[package]
+name = "bat"
+description = "A cat(1) clone with wings."
+
+[lib]
+""",
+            "bat-0.26.1/README.md": "Usage: bat [OPTIONS] [FILE]",
+            "bat-0.26.1/src/bin/bat/main.rs": "fn main() {}",
+        })
+
+        matching_name = crates_index.cargo_executable_intent(
+            "bat",
+            {"description": "A cat(1) clone with wings."},
+            {"num": "0.26.1", "has_lib": "t", "description": "A cat(1) clone with wings."},
+            ["bat"],
+            source_archive_fetcher=lambda _name, _version: bat_archive,
+        )
+
+        self.assertEqual(explicit_bin["intent"], "public_cli")
+        self.assertEqual(matching_name["intent"], "public_cli")
+
+    def test_build_index_from_dump_excludes_internal_only_binary_crates(self):
+        archives = {
+            ("unsafe-libyaml", "0.2.11"): crate_archive_bytes({
+                "unsafe-libyaml-0.2.11/Cargo.toml.orig": """
+[package]
+name = "unsafe-libyaml"
+description = "libyaml transpiled to rust by c2rust"
+
+[lib]
+""",
+                "unsafe-libyaml-0.2.11/README.md": "Rust bindings for libyaml.",
+                "unsafe-libyaml-0.2.11/src/bin/run-emitter-test-suite.rs": "fn main() {}",
+                "unsafe-libyaml-0.2.11/src/bin/run-parser-test-suite.rs": "fn main() {}",
+                "unsafe-libyaml-0.2.11/tests/test_parser.rs": "#[test] fn parser() {}",
+            }),
+            ("bat", "0.26.1"): crate_archive_bytes({
+                "bat-0.26.1/Cargo.toml.orig": """
+[package]
+name = "bat"
+description = "A cat(1) clone with wings."
+
+[lib]
+""",
+                "bat-0.26.1/README.md": "Usage: bat [OPTIONS] [FILE]",
+                "bat-0.26.1/src/bin/bat/main.rs": "fn main() {}",
+            }),
+        }
+
+        def fetcher(name: str, version: str) -> bytes:
+            if name == "sourcefail":
+                raise OSError("fixture fetch failure")
+            return archives[(name, version)]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            dump_path = Path(tmp) / "db-dump.tar.gz"
+            write_internal_binary_fixture_dump(dump_path)
+
+            index = crates_index.build_index_from_dump(
+                dump_path,
+                min_recent_downloads=50,
+                recent_window_days=90,
+                dump_meta={"source_url": "fixture"},
+                source_archive_fetcher=fetcher,
+            )
+
+        self.assertNotIn("unsafe-libyaml", index["crates"])
+        self.assertIn("bat", index["crates"])
+        self.assertIn("sourcefail", index["crates"])
+        self.assertEqual(index["source"]["source_inspection"]["excludedInternalBinaryCrates"], 1)
+        self.assertEqual(index["source"]["source_inspection"]["sourceInspectionFailures"], 1)
 
     def test_crates_index_creates_cargo_package_pages_without_db_entries(self):
         sources = {
