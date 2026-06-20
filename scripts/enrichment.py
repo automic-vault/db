@@ -182,8 +182,24 @@ def normalize_docs(values: Any) -> list[str]:
     return sorted(set(result), key=docs_rank)
 
 
+def normalize_repo_candidate(value: Any) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    text = re.sub(r"^git://github\.com/", "https://github.com/", raw)
+    text = re.sub(r"^ssh://git@github\.com/", "https://github.com/", text)
+    text = re.sub(r"^git@github\.com:", "https://github.com/", text)
+    text = re.sub(r"^git://gitlab\.com/", "https://gitlab.com/", text)
+    text = re.sub(r"^ssh://git@gitlab\.com/", "https://gitlab.com/", text)
+    text = re.sub(r"^git@gitlab\.com:", "https://gitlab.com/", text)
+    text = re.sub(r"^git://", "https://", text)
+    text = re.sub(r"^ssh://git@", "https://", text)
+    text = re.sub(r"^git@([^:]+):", r"https://\1/", text)
+    return text
+
+
 def normalize_repo(value: Any) -> str:
-    url = normalize_url(value)
+    url = normalize_url(normalize_repo_candidate(value))
     if not url:
         return ""
     if rejected_repo_url(url):
@@ -593,7 +609,7 @@ Do not emit placeholder fallback rows. For every result:
 - Cite concise official source notes.
 - If you rely on supplied input rather than web research, cite the specific input field, such as `source_facts.description`, `source_facts.homepage`, or `current_curation.category`.
 
-Only determine repo when source_facts.repo is empty, missing, or null. If source_facts.repo already has a value, return repo as null and do not second-guess it. Repositories must be official source-control project URLs, not package-manager pages, mirrors, tutorials, blogs, wikis, or documentation pages.
+Only determine repo when source_facts.repo is empty, missing, or null. If source_facts.repo already has a value, return repo as null and do not second-guess it. Repositories must be official HTTP(S) source-control project URLs, not package-manager pages, mirrors, tutorials, blogs, wikis, or documentation pages. Never return `git://`, `ssh://`, or `git@host:` clone URLs; convert them to the corresponding official HTTP(S) repository URL or return null if no official HTTP(S) repo page exists.
 
 Documentation URL priority:
 1. dedicated official docs domain

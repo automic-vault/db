@@ -340,6 +340,9 @@ class EnrichmentTests(unittest.TestCase):
     def test_repo_normalization_rejects_non_repo_surfaces(self):
         self.assertEqual(normalize_repo("https://formulae.brew.sh/formula/bat"), "")
         self.assertEqual(normalize_repo("https://github.com/sharkdp/bat.git"), "https://github.com/sharkdp/bat")
+        self.assertEqual(normalize_repo("git://github.com/sharkdp/bat.git"), "https://github.com/sharkdp/bat")
+        self.assertEqual(normalize_repo("ssh://git@gitlab.com/example/tool.git"), "https://gitlab.com/example/tool")
+        self.assertEqual(normalize_repo("git://aften.git.sourceforge.net/gitroot/aften/aften"), "https://aften.git.sourceforge.net/gitroot/aften/aften")
 
     def test_tag_canonicalization(self):
         self.assertEqual(normalize_tags(["cli-tool", "k8s", "awscli", "utility"]), ["aws", "cli", "kubernetes"])
@@ -443,6 +446,7 @@ class EnrichmentTests(unittest.TestCase):
         self.assertNotIn("Do not combine alternatives into one string", prompt)
         self.assertIn("Prefer `unix` when official docs describe one shared Unix-like path", prompt)
         self.assertIn("top-level `null` for `credentials-file-location`", prompt)
+        self.assertIn("Never return `git://`, `ssh://`, or `git@host:` clone URLs", prompt)
 
     def test_path_location_normalization_splits_or_alternatives(self):
         self.assertEqual(
