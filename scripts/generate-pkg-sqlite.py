@@ -622,6 +622,17 @@ def page_search_text(page_module: Any, page: Any, locale: dict[str, Any] | None)
         page.repository,
         page.homepage,
     ]
+    for locations in (
+        getattr(page, "config_file_locations", {}),
+        getattr(page, "credentials_file_locations", {}),
+    ):
+        if isinstance(locations, dict):
+            for platform, values in locations.items():
+                pieces.append(str(platform))
+                if isinstance(values, list):
+                    pieces.extend(str(value) for value in values)
+                else:
+                    pieces.append(str(values))
     pieces.extend(sorted(page.aliases))
     pieces.extend(str(item.get("name") or item.get("target") or item.get("source") or "") for item in page.executables if isinstance(item, dict))
     pieces.extend(str(item.get("target") or item.get("source") or "") for item in page.binaries if isinstance(item, dict))
@@ -771,6 +782,8 @@ def full_package_data(page_module: Any, page: Any, route: PackageRoute | None = 
         "packageManagerUrl": getattr(page, "package_manager_url", ""),
         "repository": getattr(page, "repository", ""),
         "upstreamDocs": getattr(page, "upstream_docs", ""),
+        "configFileLocations": getattr(page, "config_file_locations", {}),
+        "credentialsFileLocations": getattr(page, "credentials_file_locations", {}),
         "category": getattr(page, "category", ""),
         "license": getattr(page, "license", ""),
         "sourceArchive": getattr(page, "source_archive", ""),

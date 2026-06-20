@@ -27,6 +27,7 @@ from avdb_paths import (
     ISOTOPES_JSON_PATH,
     RADIOISOTOPES_REPO_DIR,
 )
+from bootstrap.lib.render import parse_simple_yaml
 from geiger_agent_data import load_agent_geiger_data
 from pkg_hub_data import graph_hub_definitions, load_pkg_taxonomy_index, taxonomy_brief, taxonomy_for_package, taxonomy_terms
 
@@ -46,6 +47,7 @@ CRATES_IO_INDEX_PATH = GENERATED_DATA_DIR / "cratesio" / "index.json"
 PKG_AGENT_SAFETY_ANSWERS_PATH = Path("data/pkg-agent-safety-answers.json")
 I18N_LOCALES_PATH = Path("data/pkg-i18n/locales.json")
 I18N_PKG_TEMPLATES_PATH = Path("data/pkg-i18n/templates.json")
+COMBINED_YAML_DIR = Path("combined")
 INDEXABLE_MIN_SIGNAL_COUNT = 2
 PACKAGE_PROVIDERS = ("brew", "cask", "npm", "pip", "cargo")
 GOOGLE_TAG = """  <!-- Google tag (gtag.js) -->
@@ -399,6 +401,8 @@ class PackagePage:
     package_manager_url: str = ""
     repository: str = ""
     upstream_docs: str = ""
+    config_file_locations: dict[str, Any] = field(default_factory=dict)
+    credentials_file_locations: dict[str, Any] = field(default_factory=dict)
     category: str = ""
     license: str = ""
     source_archive: str = ""
@@ -695,6 +699,58 @@ def load_sources() -> dict[str, Any]:
     }
 
 
+def normalize_path_locations(value: Any) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        return {}
+    normalized: dict[str, Any] = {}
+    for platform, raw_locations in sorted(value.items(), key=lambda item: str(item[0])):
+        platform_text = normalize_space(platform)
+        if not platform_text:
+            continue
+        locations: list[str] = []
+        if isinstance(raw_locations, list):
+            locations = [normalize_space(item) for item in raw_locations]
+        elif isinstance(raw_locations, str):
+            locations = [normalize_space(raw_locations)]
+        locations = [item for item in dict.fromkeys(locations) if item]
+        if len(locations) == 1:
+            normalized[platform_text] = locations[0]
+        elif locations:
+            normalized[platform_text] = locations
+    return normalized
+
+
+def load_combined_yaml_records(root: Path = COMBINED_YAML_DIR) -> dict[str, dict[str, Any]]:
+    records: dict[str, dict[str, Any]] = {}
+    if not root.exists():
+        return records
+    for path in sorted(root.glob("*.yml")):
+        try:
+            record = parse_simple_yaml(path.read_text(encoding="utf-8"))
+        except Exception as err:
+            raise ValueError(f"could not read {path}: {err}") from err
+        package_id = normalize_space(record.get("id"))
+        if package_id:
+            records[package_id] = record
+    return records
+
+
+def apply_combined_yaml_locations(pages: dict[str, PackagePage]) -> None:
+    records = load_combined_yaml_records()
+    for package_key, page in pages.items():
+        record = records.get(package_key)
+        if not record:
+            continue
+        config_locations = normalize_path_locations(record.get("config-file-location"))
+        if config_locations:
+            page.config_file_locations = config_locations
+        credentials_locations = normalize_path_locations(record.get("credentials-file-location"))
+        if credentials_locations:
+            page.credentials_file_locations = credentials_locations
+        if config_locations or credentials_locations:
+            page.source_notes.append("curated configuration and credential file locations")
+
+
 def package_pages_from_sources(sources: dict[str, Any]) -> dict[str, PackagePage]:
     pages: dict[str, PackagePage] = {}
     db = sources.get("db") or {}
@@ -722,6 +778,14 @@ def package_pages_from_sources(sources: dict[str, Any]) -> dict[str, PackagePage
             if not page.upstream_docs and isinstance(docs, list) and docs:
                 page.upstream_docs = str(docs[0])
             page.upstream_docs = info.get("upstreamDocs") or page.upstream_docs
+            page.config_file_locations = (
+                normalize_path_locations(info.get("config-file-location"))
+                or page.config_file_locations
+            )
+            page.credentials_file_locations = (
+                normalize_path_locations(info.get("credentials-file-location"))
+                or page.credentials_file_locations
+            )
             page.category = info.get("category") or page.category
             page.version = info.get("version") or page.version
             page.last_updated_at = info.get("last_updated_at") or page.last_updated_at
@@ -832,6 +896,7 @@ def package_pages_from_sources(sources: dict[str, Any]) -> dict[str, PackagePage
         page.source_notes.append("approval-gate seed metadata")
 
     apply_package_page_enrichment(pages, sources.get("pkg_page_enrichment") or {})
+    apply_combined_yaml_locations(pages)
     apply_package_version_freshness(pages, sources.get("pkg_version_freshness") or {})
     apply_package_page_supplements(pages)
     apply_package_taxonomy(pages)
@@ -939,6 +1004,16 @@ def apply_package_page_enrichment(pages: dict[str, PackagePage], enrichment: dic
         page.homepage = info.get("homepage") or page.homepage
         page.repository = info.get("repository") or page.repository
         page.upstream_docs = info.get("upstreamDocs") or page.upstream_docs
+        page.config_file_locations = (
+            normalize_path_locations(info.get("config-file-location"))
+            or normalize_path_locations(info.get("configFileLocations"))
+            or page.config_file_locations
+        )
+        page.credentials_file_locations = (
+            normalize_path_locations(info.get("credentials-file-location"))
+            or normalize_path_locations(info.get("credentialsFileLocations"))
+            or page.credentials_file_locations
+        )
         page.version = info.get("version") or page.version
         page.license = info.get("license") or page.license
         page.source_archive = info.get("sourceArchive") or page.source_archive
@@ -1622,6 +1697,8 @@ def source_files() -> list[Path]:
     for path in data.iterdir() if data.exists() else []:
         if path.is_file() and path.suffix in {".json", ".jsonc", ".md"}:
             files.append(path)
+    if COMBINED_YAML_DIR.exists():
+        files.extend(path for path in COMBINED_YAML_DIR.glob("*.yml") if path.is_file())
     for root in (RADIOISOTOPES_REPO_DIR, Path("data/approval-gates")):
         if not root.exists():
             continue
@@ -1752,6 +1829,8 @@ def package_index_signals(page: PackagePage) -> list[str]:
         signals.append("commands")
     if any(value for value in page.install_behavior.values()):
         signals.append("install_behavior")
+    if page.config_file_locations or page.credentials_file_locations:
+        signals.append("local_file_locations")
     if page.bottle and (page.bottle.get("available") or page.bottle.get("platforms")):
         signals.append("bottle")
     if page.isotope:
@@ -5690,6 +5769,75 @@ h1 {
   text-decoration-color: var(--hot);
   text-underline-offset: 0.22em;
 }
+.file-surface-section {
+  grid-template-columns: minmax(260px, 0.38fr) minmax(0, 1fr);
+  background:
+    linear-gradient(90deg, rgba(208, 162, 72, 0.056), transparent 42%),
+    rgba(255, 255, 255, 0.012);
+}
+.file-location-board {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line-strong);
+  background: var(--line-strong);
+}
+.file-location-card {
+  min-width: 0;
+  padding: clamp(16px, 2vw, 22px);
+  background:
+    linear-gradient(180deg, rgba(208, 162, 72, 0.056), transparent),
+    var(--surface-2);
+}
+.file-location-card h3 {
+  color: var(--ink);
+  font-size: clamp(1.05rem, 1.5vw, 1.38rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+.file-location-card p {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+.file-location-list {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0 0;
+}
+.file-location-list div {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.file-location-list dt {
+  color: var(--gold);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.file-location-list dd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  min-width: 0;
+  margin: 0;
+}
+.file-location-list code {
+  max-width: 100%;
+  padding: 5px 7px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.2);
+  color: var(--ink);
+  font-size: 0.78rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
 .executable-table td:first-child {
   color: var(--ink);
   font-family: var(--font-mono);
@@ -6254,7 +6402,7 @@ td { color: var(--ink); overflow-wrap: anywhere; }
   .site-shell { width: min(calc(100% - 24px), var(--max)); margin: 12px auto; }
   .masthead, .site-footer { align-items: flex-start; flex-direction: column; }
   .nav { width: 100%; flex-wrap: wrap; gap: 12px 18px; }
-  .pkg-hero, .split-section, .security-section, .support-section, .pkg-search-section, .install-section, .signal-grid, .related-columns, .platform-install-grid, .install-command-row, .freshness-metrics { grid-template-columns: 1fr; }
+  .pkg-hero, .split-section, .security-section, .support-section, .pkg-search-section, .install-section, .signal-grid, .related-columns, .platform-install-grid, .install-command-row, .freshness-metrics, .file-location-board { grid-template-columns: 1fr; }
   .pkg-concept-section-head,
   .pkg-concept-platform-grid,
   .pkg-concept-command-row {
