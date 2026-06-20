@@ -5443,6 +5443,7 @@ h1 {
   font-size: clamp(2rem, 3.4vw, 4rem);
   line-height: 0.95;
   text-transform: uppercase;
+  overflow-wrap: anywhere;
 }
 .pkg-section p {
   max-width: 820px;
@@ -5791,10 +5792,14 @@ h1 {
     linear-gradient(90deg, rgba(208, 162, 72, 0.056), transparent 42%),
     rgba(255, 255, 255, 0.012);
 }
+.file-surface-section > div {
+  min-width: 0;
+}
 .file-location-board {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1px;
+  min-width: 0;
   border: 1px solid var(--line-strong);
   background: var(--line-strong);
 }
@@ -5844,6 +5849,7 @@ h1 {
   margin: 0;
 }
 .file-location-list code {
+  display: block;
   max-width: 100%;
   padding: 5px 7px;
   border: 1px solid var(--line);
@@ -5852,6 +5858,7 @@ h1 {
   color: var(--ink);
   font-size: 0.78rem;
   line-height: 1.35;
+  white-space: normal;
   overflow-wrap: anywhere;
 }
 .executable-table td:first-child {
