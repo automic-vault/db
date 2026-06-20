@@ -328,13 +328,15 @@ def normalize_path_location_list(
             if errors is not None:
                 errors.append(f"{field}.{platform} must contain only non-empty strings")
             continue
-        location = normalize_home_location(re.sub(r"\s+", " ", raw_location).strip())
+        location = re.sub(r"\s+", " ", raw_location).strip()
         if not location:
             if errors is not None:
                 errors.append(f"{field}.{platform} must contain only non-empty strings")
             continue
-        if location not in locations:
-            locations.append(location)
+        for location_part in split_location_alternatives(location):
+            normalized = normalize_home_location(location_part)
+            if normalized not in locations:
+                locations.append(normalized)
     if not locations and errors is not None:
         errors.append(f"{field}.{platform} must be a non-empty array of strings")
     return locations
@@ -344,6 +346,10 @@ def normalize_home_location(value: str) -> str:
     if value.startswith("$HOME/"):
         return "~/" + value[len("$HOME/") :]
     return value
+
+
+def split_location_alternatives(value: str) -> list[str]:
+    return [part.strip() for part in re.split(r"\s+or\s+", value) if part.strip()]
 
 
 def source_facts(record: dict[str, Any]) -> dict[str, Any]:
@@ -569,16 +575,11 @@ Do not process only the first 10 projects; the commands above stream all project
 Return JSON that matches the provided output schema. Do not edit files. Use official sources only.
 
 Do not emit placeholder fallback rows. For every result:
-- `category_path`, `display-name`, and `tags` must be non-empty.
-- `config-file-location` and `credentials-file-location` must be either `null` or platform maps keyed only by `unix`, `linux`, `macos`, or `windows`.
-- Each platform map value must be a non-empty array of file locations, sorted in the exact order the tool checks them.
-- Do not combine alternatives into one string with words like "or"; emit each alternative as a separate array item.
 - Prefer `unix` when official docs describe one shared Unix-like path; split into `linux` and `macos` only when the paths differ.
 - Use top-level `null` for `config-file-location` when no official config file location is documented.
 - Use top-level `null` for `credentials-file-location` when credentials are absent, unknown, or not applicable.
-- `category_sources`, `display_name_sources`, and `tags_sources` must each contain at least one concise source note.
+- Cite concise official source notes.
 - If you rely on supplied input rather than web research, cite the specific input field, such as `source_facts.description`, `source_facts.homepage`, or `current_curation.category`.
-- Empty source arrays are invalid for claimed category, display name, or tags.
 
 Only determine repo when source_facts.repo is empty, missing, or null. If source_facts.repo already has a value, return repo as null and do not second-guess it. Repositories must be official source-control project URLs, not package-manager pages, mirrors, tutorials, blogs, wikis, or documentation pages.
 

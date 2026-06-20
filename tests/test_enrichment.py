@@ -15,6 +15,7 @@ from scripts.enrichment import (
     hash_source_facts,
     needs_new_curation,
     normalize_docs,
+    normalize_path_locations,
     normalize_repo,
     normalize_tags,
     parse_project_yaml,
@@ -403,12 +404,17 @@ class EnrichmentTests(unittest.TestCase):
         self.assertNotIn("[0:10]", prompt)
         self.assertIn("Do not probe the input as a top-level array", prompt)
         self.assertIn("Do not emit placeholder fallback rows", prompt)
-        self.assertIn("Empty source arrays are invalid", prompt)
-        self.assertIn("`config-file-location` and `credentials-file-location` must be either `null` or platform maps", prompt)
-        self.assertIn("non-empty array of file locations", prompt)
-        self.assertIn("Do not combine alternatives into one string", prompt)
+        self.assertNotIn("Empty source arrays are invalid", prompt)
+        self.assertNotIn("non-empty array of file locations", prompt)
+        self.assertNotIn("Do not combine alternatives into one string", prompt)
         self.assertIn("Prefer `unix` when official docs describe one shared Unix-like path", prompt)
         self.assertIn("top-level `null` for `credentials-file-location`", prompt)
+
+    def test_path_location_normalization_splits_or_alternatives(self):
+        self.assertEqual(
+            normalize_path_locations({"unix": ["$XDG_CONFIG_HOME/gh/config.yml or $HOME/.config/gh/config.yml"]}),
+            {"unix": ["$XDG_CONFIG_HOME/gh/config.yml", "~/.config/gh/config.yml"]},
+        )
 
     def test_validate_codex_payload_rejects_missing_ids(self):
         normalized, errors = validate_codex_payload(
