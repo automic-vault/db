@@ -21,8 +21,8 @@ COMMIT_PATHS = [
     "data/pkg-taxonomy.json",
 ]
 DEFAULT_HOURLY_ENRICH_LIMIT = int(os.environ.get("AVDB_HOURLY_ENRICH_LIMIT", "10"))
-DEFAULT_HOURLY_ENRICH_BATCH_SIZE = int(os.environ.get("AVDB_HOURLY_ENRICH_BATCH_SIZE", "5"))
-DEFAULT_HOURLY_ENRICH_TIMEOUT_SECONDS = int(os.environ.get("AVDB_HOURLY_ENRICH_TIMEOUT_SECONDS", "1200"))
+DEFAULT_HOURLY_ENRICH_BATCH_SIZE = int(os.environ.get("AVDB_HOURLY_ENRICH_BATCH_SIZE", "3"))
+DEFAULT_HOURLY_ENRICH_TIMEOUT_SECONDS = int(os.environ.get("AVDB_HOURLY_ENRICH_TIMEOUT_SECONDS", "1800"))
 
 
 def run(command: list[str], *, timeout: int | None = None, allow_failure: bool = False) -> bool:

@@ -578,9 +578,15 @@ def review_input(projects: list[dict[str, Any]]) -> dict[str, Any]:
 def prompt_text(input_path: Path, project_count: int | None = None) -> str:
     count_line = f"The file contains {project_count} project records." if project_count is not None else "The file contains project records."
     required_line = f"Your final JSON must contain exactly {project_count} results, one for every project id in `.projects`." if project_count is not None else "Your final JSON must contain one result for every project id in `.projects`."
+    batching_line = (
+        "Treat this as a goal-sized batch task. Before producing the final JSON, break the input into smaller internal batches, "
+        "review each batch completely, and track which project ids have been completed. Do not switch to fallback rows because the full input is large; use batching instead."
+        if project_count is None or project_count > 10
+        else "Review the full input in one pass and return one result for every project id."
+    )
     return f"""/goal Reliably enrich every project in the input JSON with official repository URL, official documentation URLs, category, tags, display name, config file location, credentials file location, confidence, and source notes.
 
-Treat this as a goal-sized batch task. Before producing the final JSON, break the input into smaller internal batches, review each batch completely, and track which project ids have been completed. Do not switch to fallback rows because the full input is large; use batching instead.
+{batching_line}
 
 Determine official repository URL, official documentation URLs, category, tags, display name, config file location, and credentials file location for the projects listed in this input JSON:
 
