@@ -57,13 +57,13 @@ class NightlyMaintenanceTests(unittest.TestCase):
         self.assertIn("enrich-new\tEnrich newly observed projects", output.getvalue())
         self.assertIn("review-stale-updated\tReview stale or upstream-updated projects", output.getvalue())
 
-    def test_codex_timeout_defaults_to_bounded_run(self):
+    def test_codex_cli_timeout_defaults_to_bounded_run(self):
         enrich_projects = load_enrich_projects()
 
         with mock.patch.dict("os.environ", {}, clear=True):
             self.assertEqual(enrich_projects.codex_timeout_seconds(), 900)
 
-    def test_codex_timeout_can_be_customized_or_disabled(self):
+    def test_codex_cli_timeout_can_be_customized_or_disabled(self):
         enrich_projects = load_enrich_projects()
 
         with mock.patch.dict("os.environ", {"AVDB_CODEX_TIMEOUT_SECONDS": "42"}, clear=True):
@@ -71,7 +71,7 @@ class NightlyMaintenanceTests(unittest.TestCase):
         with mock.patch.dict("os.environ", {"AVDB_CODEX_TIMEOUT_SECONDS": "0"}, clear=True):
             self.assertIsNone(enrich_projects.codex_timeout_seconds())
 
-    def test_codex_timeout_rejects_invalid_values(self):
+    def test_codex_cli_timeout_rejects_invalid_values(self):
         enrich_projects = load_enrich_projects()
 
         with mock.patch.dict("os.environ", {"AVDB_CODEX_TIMEOUT_SECONDS": "-1"}, clear=True):

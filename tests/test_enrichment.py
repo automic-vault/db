@@ -2,8 +2,10 @@ import tempfile
 import unittest
 import json
 import importlib.util
+import argparse
 from datetime import date, timedelta
 from pathlib import Path
+from unittest import mock
 
 from scripts.bootstrap.lib.render import agent_record_from_json, merge_agent_layer, parse_simple_yaml, validate_curated_fields
 from scripts.bootstrap.lib.yaml_writer import yaml_text
@@ -84,6 +86,25 @@ def sample_result(**overrides):
     }
     result.update(overrides)
     return result
+
+
+def sample_enrich_project_args(**overrides):
+    values = {
+        "backend": "external",
+        "batch_size": 1,
+        "commit_after_batch": False,
+        "confidence_threshold": "medium",
+        "dry_run": False,
+        "force": False,
+        "include_missing_curated_fields": False,
+        "limit": 0,
+        "mode": "new",
+        "phase": "prepare",
+        "provider": "brew",
+        "run_id": "unit-run",
+    }
+    values.update(overrides)
+    return argparse.Namespace(**values)
 
 
 class EnrichmentTests(unittest.TestCase):
@@ -429,9 +450,11 @@ class EnrichmentTests(unittest.TestCase):
 
     def test_prompt_names_input_shape_and_safe_jq(self):
         prompt = prompt_text(Path("/tmp/input.json"), 10)
+        large_prompt = prompt_text(Path("/tmp/input.json"), 11)
         self.assertIn("/goal Reliably enrich every project", prompt)
-        self.assertIn("break the input into smaller internal batches", prompt)
-        self.assertIn("Do not switch to fallback rows because the full input is large", prompt)
+        self.assertIn("Review the full input in one pass", prompt)
+        self.assertIn("break the input into smaller internal batches", large_prompt)
+        self.assertIn("Do not switch to fallback rows because the full input is large", large_prompt)
         self.assertIn("top-level keys `schema` and `projects`", prompt)
         self.assertIn("The file contains 10 project records.", prompt)
         self.assertIn("exactly 10 results", prompt)
@@ -562,6 +585,88 @@ class EnrichmentTests(unittest.TestCase):
         )
         self.assertEqual(credentials_unix_variant["properties"]["unix"]["type"], "array")
         self.assertEqual(credentials_unix_variant["properties"]["unix"]["items"]["type"], "string")
+
+    def test_prepare_phase_writes_batch_artifacts_without_invoking_codex(self):
+        module = load_enrich_projects_module()
+        args = sample_enrich_project_args()
+        record = sample_record()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            run_dir = tmp_root / "cache" / "enrichment" / "runs" / "unit-run"
+            with mock.patch.object(module, "ROOT", tmp_root):
+                with mock.patch.object(module, "invoke_codex") as invoke_codex:
+                    manifest = module.prepare_run(args, [record], run_dir)
+
+            self.assertEqual(manifest["selected_count"], 1)
+            self.assertEqual(manifest["batches"][0]["status"], "pending")
+            self.assertTrue((run_dir / "input.json").is_file())
+            self.assertTrue((run_dir / "batches" / "0001" / "input.json").is_file())
+            self.assertTrue((run_dir / "batches" / "0001" / "prompt.md").is_file())
+            self.assertTrue((run_dir / "batches" / "0001" / "output-schema.json").is_file())
+            self.assertTrue((run_dir / "controller-manifest.json").is_file())
+            invoke_codex.assert_not_called()
+
+    def test_apply_phase_consumes_codex_output_and_commits_after_valid_batch(self):
+        module = load_enrich_projects_module()
+        args = sample_enrich_project_args(commit_after_batch=True, phase="apply")
+        record = sample_record()
+        result = sample_result()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            run_dir = tmp_root / "cache" / "enrichment" / "runs" / "unit-run"
+            state_path = tmp_root / "cache" / "enrichment" / "state.json"
+            state_path.parent.mkdir(parents=True)
+            state: dict[str, object] = {}
+            with mock.patch.object(module, "ROOT", tmp_root):
+                manifest = module.prepare_run(args, [record], run_dir)
+                codex_output_path = tmp_root / manifest["batches"][0]["codex_output_path"]
+                codex_output_path.write_text(json.dumps({"results": [result]}) + "\n", encoding="utf-8")
+                with (
+                    mock.patch.object(module, "apply_results", return_value={"reviewed": 1, "changed": 1, "rejected": 0, "skipped_low_confidence": 0, "no_op": 0}) as apply_results_mock,
+                    mock.patch.object(module, "render_combined_tree") as render_mock,
+                    mock.patch.object(module, "git_commit_if_changed", return_value="abc123") as commit_mock,
+                ):
+                    exit_code = module.apply_prepared_batches(
+                        args,
+                        manifest,
+                        [record],
+                        state,
+                        state_path,
+                        run_dir,
+                        date.today().isoformat(),
+                    )
+
+            self.assertEqual(exit_code, 0)
+            self.assertTrue((run_dir / "batches" / "0001" / "normalized-output.json").is_file())
+            self.assertTrue((run_dir / "batches" / "0001" / "apply-summary.json").is_file())
+            apply_results_mock.assert_called_once()
+            render_mock.assert_called_once()
+            commit_mock.assert_called_once()
+
+    def test_valid_checkpoint_skips_backend_and_reuses_normalized_output(self):
+        module = load_enrich_projects_module()
+        args = sample_enrich_project_args()
+        record = sample_record()
+        normalized = sample_result()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            run_dir = tmp_root / "cache" / "enrichment" / "runs" / "unit-run"
+            batch_dir = run_dir / "batches" / "0001"
+            batch_dir.mkdir(parents=True)
+            (batch_dir / "normalized-output.json").write_text(
+                json.dumps({"results": [normalized], "errors": [], "error_summary": [], "invalid": []}) + "\n",
+                encoding="utf-8",
+            )
+            with mock.patch.object(module, "ROOT", tmp_root):
+                with mock.patch.object(module, "invoke_codex") as invoke_codex:
+                    manifest = module.prepare_run(args, [record], run_dir)
+                    module.invoke_codex_cli_for_pending_batches(args, manifest)
+
+            self.assertEqual(manifest["batches"][0]["status"], "checkpointed")
+            invoke_codex.assert_not_called()
 
     def test_validation_aggregates_duplicate_errors_and_counts_rejected_ids(self):
         normalized, errors, invalid_results = validate_codex_payload_partial(
