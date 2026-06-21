@@ -1,12 +1,23 @@
 id: brew:atlantis
-display-name: atlantis
+display-name: Atlantis
 repo: null
 docs:
   - https://www.runatlantis.io/docs
+config-file-location:
+  unix:
+    - atlantis.yaml at repository root
+    - repos.yaml
+    - another path passed with --repo-config
+    - /path/to/config.yaml passed with --config
+credentials-file-location:
+  unix:
+    - ~/.aws/credentials
 tags:
   - automation
   - cli
+  - devops
   - gitops
+  - pull-requests
   - terraform
 geiger:
   category: appliance
@@ -19,18 +30,32 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - source_facts.description
+    - >
+      source_facts.description: "Terraform Pull Request Automation tool"; official docs
+      describe Atlantis as configuring and running Terraform plan/apply workflows for
+      pull requests.
   display-name-sources:
-    - source_facts.name
+    - >
+      source_facts.homepage: https://www.runatlantis.io/; official documentation and
+      GitHub repository use the name Atlantis.
   docs-sources:
-    - source_facts.homepage
+    - >
+      source_facts.homepage is official Atlantis site; official docs page is
+      https://www.runatlantis.io/docs and links to installing, configuration, usage, and
+      internals.
   repo-sources:
-    - source_facts.repo present; returned null per instruction
+    - >
+      source_facts.repo already has value https://github.com/runatlantis/atlantis, so
+      repo is returned as null per instruction.
   tags-sources:
-    - source_facts.description
+    - >
+      Official repository description: "Terraform Pull Request Automation"; official
+      docs cover repo-level atlantis.yaml, server configuration, and Terraform provider
+      credentials.
 category-confidence: high
 category-path:
   - cloud-infrastructure
+  - terraform-automation
 display-name-confidence: high
 docs-confidence: high
 repo-confidence: high
