@@ -2,11 +2,26 @@ id: brew:apt
 display-name: APT
 repo: null
 docs:
-  - https://wiki.debian.org/Apt
+  - https://www.debian.org/doc/manuals/apt-guide/index.en.html
+  - https://manpages.debian.org/unstable/apt/apt.conf.5.en.html
+  - https://manpages.debian.org/unstable/apt/apt_auth.conf.5.en.html
+  - https://manpages.debian.org/unstable/apt/sources.list.5.en.html
+config-file-location:
+  unix:
+    - /etc/apt/apt.conf
+    - /etc/apt/apt.conf.d/
+    - /etc/apt/sources.list
+    - /etc/apt/sources.list.d/
+credentials-file-location:
+  unix:
+    - /etc/apt/auth.conf
+    - /etc/apt/auth.conf.d/*.conf
 tags:
+  - apt
   - cli
   - debian
   - package-manager
+  - repositories
 geiger:
   category: tool
   color: blue
@@ -18,18 +33,28 @@ geiger:
     - text:ftp,archive
 provenance:
   category-sources:
-    - source_facts.description
+    - Debian manpages describe APT source lists and package acquisition configuration.
+    - 'source_facts.description: Advanced Package Tool'
   display-name-sources:
-    - source_facts.name
+    - Debian documentation/manpages use APT as the suite name.
+    - current_curation.display-name
   docs-sources:
-    - source_facts.homepage
+    - Official Debian APT User's Guide.
+    - >
+      Official Debian apt.conf(5), sources.list(5), and apt_auth.conf(5) manpages
+      document configuration and login files.
   repo-sources:
-    - source_facts.repo present; returned null per instruction
+    - >
+      source_facts.repo already has https://salsa.debian.org/apt-team/apt; per
+      instruction repo enrichment is null when source_facts.repo is present.
   tags-sources:
+    - Official Debian sources.list(5) documents configured APT data sources.
     - source_facts.description
+    - source_facts.executables
 category-confidence: high
 category-path:
   - system
+  - package-management
 display-name-confidence: high
 docs-confidence: high
 repo-confidence: high
