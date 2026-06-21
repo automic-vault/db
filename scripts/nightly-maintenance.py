@@ -66,7 +66,7 @@ def build_tasks(args: argparse.Namespace) -> dict[str, Task]:
         ),
         "enrich-new": Task(
             name="enrich-new",
-            title="Enrich newly observed projects",
+            title="Prepare newly observed project enrichment batches",
             command=[
                 py,
                 "scripts/enrich-projects.py",
@@ -76,12 +76,15 @@ def build_tasks(args: argparse.Namespace) -> dict[str, Task]:
                 str(args.enrich_limit),
                 "--batch-size",
                 str(args.batch_size),
-                "--commit-after-batch",
+                "--backend",
+                "external",
+                "--phase",
+                "prepare",
             ],
         ),
         "review-stale-updated": Task(
             name="review-stale-updated",
-            title="Review stale or upstream-updated projects",
+            title="Prepare stale or upstream-updated project review batches",
             command=[
                 py,
                 "scripts/enrich-projects.py",
@@ -91,7 +94,10 @@ def build_tasks(args: argparse.Namespace) -> dict[str, Task]:
                 str(args.enrich_limit),
                 "--batch-size",
                 str(args.batch_size),
-                "--commit-after-batch",
+                "--backend",
+                "external",
+                "--phase",
+                "prepare",
             ],
         ),
     }

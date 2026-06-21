@@ -22,7 +22,7 @@ COMMIT_PATHS = [
 ]
 DEFAULT_HOURLY_ENRICH_LIMIT = int(os.environ.get("AVDB_HOURLY_ENRICH_LIMIT", "10"))
 DEFAULT_HOURLY_ENRICH_BATCH_SIZE = int(os.environ.get("AVDB_HOURLY_ENRICH_BATCH_SIZE", "3"))
-DEFAULT_HOURLY_ENRICH_TIMEOUT_SECONDS = int(os.environ.get("AVDB_HOURLY_ENRICH_TIMEOUT_SECONDS", "1800"))
+DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS = int(os.environ.get("AVDB_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS", "300"))
 
 
 def run(command: list[str], *, timeout: int | None = None, allow_failure: bool = False) -> bool:
@@ -104,8 +104,12 @@ def main() -> int:
                 str(args.enrich_limit),
                 "--batch-size",
                 str(args.enrich_batch_size),
+                "--backend",
+                "external",
+                "--phase",
+                "prepare",
             ],
-            timeout=DEFAULT_HOURLY_ENRICH_TIMEOUT_SECONDS,
+            timeout=DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS,
             allow_failure=True,
         )
     if not args.skip_isotopes:

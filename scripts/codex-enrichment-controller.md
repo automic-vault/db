@@ -2,13 +2,25 @@
 
 Use this workflow from a Codex-hosted automation when curated enrichment needs AI research. Do not call `codex exec` from inside the maintenance scripts for this path.
 
-1. Prepare the run:
+1. Prepare the run.
+
+For nightly newly observed projects:
 
 ```sh
 python3 scripts/enrich-projects.py --mode new --limit 50 --batch-size 5 --backend external --phase prepare --run-id "$(date -u +%Y%m%dT%H%M%SZ)"
 ```
 
-Use `--mode review-stale-updated` for the stale review job. Add `--include-missing-curated-fields` for hourly missing-field refreshes.
+For nightly stale or upstream-updated projects:
+
+```sh
+python3 scripts/enrich-projects.py --mode review-stale-updated --limit 50 --batch-size 5 --backend external --phase prepare --run-id "$(date -u +%Y%m%dT%H%M%SZ)"
+```
+
+For hourly missing curated fields:
+
+```sh
+python3 scripts/enrich-projects.py --mode new --include-missing-curated-fields --limit 10 --batch-size 3 --backend external --phase prepare --run-id "$(date -u +%Y%m%dT%H%M%SZ)"
+```
 
 2. Read `cache/enrichment/runs/<run-id>/controller-manifest.json`.
 
@@ -21,11 +33,15 @@ Use `--mode review-stale-updated` for the stale review job. Add `--include-missi
 
 The sub-agent must read the prompt and input, research official sources only, and write JSON matching `output_schema_path` to `codex_output_path`. It must not edit repo files.
 
-4. Apply completed outputs:
+4. Apply completed outputs.
+
+Use the same mode, limits, and batch size as the prepare command. For nightly newly observed projects:
 
 ```sh
 python3 scripts/enrich-projects.py --mode new --limit 50 --batch-size 5 --backend external --phase apply --run-id "<run-id>" --commit-after-batch
 ```
+
+For stale review, use `--mode review-stale-updated`. For hourly missing curated fields, include `--include-missing-curated-fields --limit 10 --batch-size 3`; omit `--commit-after-batch` when the surrounding hourly refresh will commit all stable source changes at the end.
 
 5. If apply reports missing outputs or validation failures, leave completed batch commits in place and rerun only the failed batches with the same `--run-id` after their `codex-output.json` files are fixed.
 

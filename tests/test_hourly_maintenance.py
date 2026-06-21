@@ -53,6 +53,23 @@ class HourlyMaintenanceTests(unittest.TestCase):
 
         self.assertEqual(health_index, export_index + 1)
 
+    def test_hourly_enrichment_prepares_external_controller_batches(self):
+        commands = self.run_hourly("--skip-isotopes")
+        enrich_commands = [
+            command
+            for command in commands
+            if command[:2] == [sys.executable, "scripts/enrich-projects.py"]
+        ]
+
+        self.assertEqual(len(enrich_commands), 1)
+        command = enrich_commands[0]
+        self.assertIn("--include-missing-curated-fields", command)
+        self.assertIn("--backend", command)
+        self.assertIn("external", command)
+        self.assertIn("--phase", command)
+        self.assertIn("prepare", command)
+        self.assertNotIn("--commit-after-batch", command)
+
     def test_publishes_public_db_after_health_check(self):
         commands = self.run_hourly("--skip-isotopes")
 

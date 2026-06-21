@@ -73,10 +73,14 @@ Defaults:
   `../isotopes` and `../radioisotopes`.
 - `refresh`: runs `scripts/build.py --refresh` and commits tracked
   `deterministic/` and `combined/` changes.
-- `enrich-new`: runs Codex enrichment for newly observed projects, limited to
-  50 projects by default, and commits after each applied batch.
-- `review-stale-updated`: reviews stale or upstream-updated projects, limited to
-  50 projects by default, and commits after each applied batch.
+- `enrich-new`: prepares external-controller enrichment batches for newly
+  observed projects, limited to 50 projects by default. A Codex-hosted
+  controller then spawns sub-agents and runs the apply step with
+  `--commit-after-batch`.
+- `review-stale-updated`: prepares external-controller review batches for
+  stale or upstream-updated projects, limited to 50 projects by default. A
+  Codex-hosted controller then spawns sub-agents and runs the apply step with
+  `--commit-after-batch`.
 
 Each run writes a status file and appended log under
 `cache/automation/nightly-maintenance/`. Use
@@ -85,3 +89,8 @@ Each run writes a status file and appended log under
 Concurrent `scripts/automation-runner.sh` invocations are lock-protected; if a
 job is already running, a second invocation reports that condition and exits
 cleanly instead of failing the caller.
+
+AI enrichment automations must use the controller flow in
+`scripts/codex-enrichment-controller.md`. The scheduled Python scripts only
+prepare `codex-output.json` targets; they no longer shell out to nested
+`codex exec` by default.

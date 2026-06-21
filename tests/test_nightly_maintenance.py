@@ -31,7 +31,7 @@ def load_enrich_projects():
 
 
 class NightlyMaintenanceTests(unittest.TestCase):
-    def test_build_tasks_commits_refresh_and_batches_enrichment(self):
+    def test_build_tasks_commits_refresh_and_prepares_controller_enrichment(self):
         maintenance = load_nightly_maintenance()
         args = argparse.Namespace(
             enrich_limit=50,
@@ -42,8 +42,16 @@ class NightlyMaintenanceTests(unittest.TestCase):
         tasks = maintenance.build_tasks(args)
 
         self.assertEqual(tasks["refresh"].commit_paths, ["deterministic", "combined"])
-        self.assertIn("--commit-after-batch", tasks["enrich-new"].command)
-        self.assertIn("--commit-after-batch", tasks["review-stale-updated"].command)
+        self.assertIn("--backend", tasks["enrich-new"].command)
+        self.assertIn("external", tasks["enrich-new"].command)
+        self.assertIn("--phase", tasks["enrich-new"].command)
+        self.assertIn("prepare", tasks["enrich-new"].command)
+        self.assertNotIn("--commit-after-batch", tasks["enrich-new"].command)
+        self.assertIn("--backend", tasks["review-stale-updated"].command)
+        self.assertIn("external", tasks["review-stale-updated"].command)
+        self.assertIn("--phase", tasks["review-stale-updated"].command)
+        self.assertIn("prepare", tasks["review-stale-updated"].command)
+        self.assertNotIn("--commit-after-batch", tasks["review-stale-updated"].command)
 
     def test_list_prints_automation_commands(self):
         maintenance = load_nightly_maintenance()
@@ -54,8 +62,8 @@ class NightlyMaintenanceTests(unittest.TestCase):
                 self.assertEqual(maintenance.main(), 0)
 
         self.assertIn("refresh\tRefresh deterministic package data", output.getvalue())
-        self.assertIn("enrich-new\tEnrich newly observed projects", output.getvalue())
-        self.assertIn("review-stale-updated\tReview stale or upstream-updated projects", output.getvalue())
+        self.assertIn("enrich-new\tPrepare newly observed project enrichment batches", output.getvalue())
+        self.assertIn("review-stale-updated\tPrepare stale or upstream-updated project review batches", output.getvalue())
 
     def test_codex_cli_timeout_defaults_to_bounded_run(self):
         enrich_projects = load_enrich_projects()
