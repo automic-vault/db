@@ -21,7 +21,7 @@ from scripts.bootstrap.lib.common import git_commit_if_changed
 
 STATUS_DIR = ROOT / "cache" / "automation" / "nightly-maintenance"
 DEFAULT_ENRICH_LIMIT = int(os.environ.get("AVDB_ENRICH_LIMIT", "50"))
-DEFAULT_BATCH_SIZE = int(os.environ.get("AVDB_ENRICH_BATCH_SIZE", "10"))
+DEFAULT_BATCH_SIZE = int(os.environ.get("AVDB_ENRICH_BATCH_SIZE", "5"))
 
 
 @dataclass(frozen=True)
