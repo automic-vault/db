@@ -5152,7 +5152,9 @@ code { font-family: var(--font-mono); }
   display: flex;
   flex-wrap: wrap;
   gap: 9px;
-  padding: 22px clamp(20px, 3vw, 44px) 0;
+  padding: 22px clamp(20px, 3vw, 44px);
+  border-bottom: 1px solid var(--line);
+  background: rgba(18, 17, 16, 0.965);
   color: var(--dim);
   font-family: var(--font-mono);
   font-size: 0.76rem;
