@@ -1,13 +1,25 @@
 id: brew:auditbeat
-display-name: auditbeat
+display-name: Auditbeat
 repo: null
 docs:
-  - https://www.elastic.co/beats/auditbeat
+  - https://www.elastic.co/docs/reference/beats/auditbeat
+  - https://www.elastic.co/docs/reference/beats/auditbeat/configuring-howto-auditbeat
+  - https://www.elastic.co/docs/reference/beats/auditbeat/directory-layout
+config-file-location:
+  linux:
+    - /etc/auditbeat/auditbeat.yml
+  unix:
+    - '{extract.path}/auditbeat.yml'
+credentials-file-location:
+  unix:
+    - ${path.config}/beats.keystore
 tags:
   - audit
   - cli
   - elastic
+  - linux
   - monitoring
+  - security
 geiger:
   category: infrastructure
   color: orange
@@ -19,18 +31,38 @@ geiger:
     - metadata:service
 provenance:
   category-sources:
-    - source_facts.description
+    - >
+      Elastic Auditbeat reference says Auditbeat collects and centralizes audit events
+      from Linux Audit Framework and detects changes to critical files.
   display-name-sources:
-    - source_facts.name
+    - Elastic official docs use the product name Auditbeat.
   docs-sources:
-    - source_facts.homepage
+    - >
+      Elastic Auditbeat reference at
+      https://www.elastic.co/docs/reference/beats/auditbeat describes Auditbeat as a
+      lightweight shipper for server audit activity.
+    - >
+      Elastic Configure Auditbeat page documents the default configuration file name
+      auditbeat.yml and links to directory layout.
+    - >
+      Elastic Directory layout page documents /etc/auditbeat for deb/rpm config and
+      {extract.path} for archive config.
+    - >
+      Elastic auditbeat.reference.yml documents keystore.path as
+      ${path.config}/beats.keystore for sensitive values.
   repo-sources:
-    - source_facts.repo present; returned null per instruction
+    - >
+      source_facts.repo is already set to https://github.com/elastic/beats; prompt
+      requires repo=null when source_facts.repo is present.
   tags-sources:
-    - source_facts.description
+    - >
+      Elastic Auditbeat reference identifies Auditbeat as an Elastic Beat for audit
+      events, Linux Audit Framework data, and file integrity/security policy monitoring.
 category-confidence: high
 category-path:
-  - system
+  - security
+  - audit
+  - monitoring
 display-name-confidence: high
 docs-confidence: high
 repo-confidence: high
