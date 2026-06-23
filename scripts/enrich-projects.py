@@ -255,6 +255,7 @@ def prepare_run(
         "backend": args.backend,
         "batch_size": args.batch_size,
         "batches": [],
+        "include_missing_curated_fields": bool(args.include_missing_curated_fields),
         "mode": args.mode,
         "phase": "prepare",
         "provider": args.provider,

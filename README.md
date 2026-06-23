@@ -94,3 +94,13 @@ AI enrichment automations must use the controller flow in
 `scripts/codex-enrichment-controller.md`. The scheduled Python scripts only
 prepare `codex-output.json` targets; they no longer shell out to nested
 `codex exec` by default.
+
+To inspect unresolved prepared controller runs, use:
+
+```sh
+python3 scripts/enrichment-controller.py pending --json
+python3 scripts/enrichment-controller.py next-run --json
+```
+
+The helper prints the oldest unresolved run and the exact
+`scripts/enrich-projects.py --phase apply ...` command needed to consume it.

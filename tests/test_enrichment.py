@@ -600,12 +600,26 @@ class EnrichmentTests(unittest.TestCase):
 
             self.assertEqual(manifest["selected_count"], 1)
             self.assertEqual(manifest["batches"][0]["status"], "pending")
+            self.assertFalse(manifest["include_missing_curated_fields"])
             self.assertTrue((run_dir / "input.json").is_file())
             self.assertTrue((run_dir / "batches" / "0001" / "input.json").is_file())
             self.assertTrue((run_dir / "batches" / "0001" / "prompt.md").is_file())
             self.assertTrue((run_dir / "batches" / "0001" / "output-schema.json").is_file())
             self.assertTrue((run_dir / "controller-manifest.json").is_file())
             invoke_codex.assert_not_called()
+
+    def test_prepare_phase_records_include_missing_curated_fields(self):
+        module = load_enrich_projects_module()
+        args = sample_enrich_project_args(include_missing_curated_fields=True)
+        record = sample_record()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            run_dir = tmp_root / "cache" / "enrichment" / "runs" / "unit-run"
+            with mock.patch.object(module, "ROOT", tmp_root):
+                manifest = module.prepare_run(args, [record], run_dir)
+
+        self.assertTrue(manifest["include_missing_curated_fields"])
 
     def test_apply_phase_consumes_codex_output_and_commits_after_valid_batch(self):
         module = load_enrich_projects_module()

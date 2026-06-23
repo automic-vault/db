@@ -2,6 +2,14 @@
 
 Use this workflow from a Codex-hosted automation when curated enrichment needs AI research. Do not call `codex exec` from inside the maintenance scripts for this path.
 
+To inspect the next unresolved prepared run, use:
+
+```sh
+python3 scripts/enrichment-controller.py next-run --json
+```
+
+It emits the oldest unresolved run plus the exact `apply_command` for that run.
+
 1. Prepare the run.
 
 For nightly newly observed projects:
@@ -34,6 +42,8 @@ python3 scripts/enrich-projects.py --mode new --include-missing-curated-fields -
 The sub-agent must read the prompt and input, research official sources only, and write JSON matching `output_schema_path` to `codex_output_path`. It must not edit repo files.
 
 4. Apply completed outputs.
+
+You can use the helper's emitted `apply_command`, or run the equivalent command manually.
 
 Use the same mode, limits, and batch size as the prepare command. For nightly newly observed projects:
 
