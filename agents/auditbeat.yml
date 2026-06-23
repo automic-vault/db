@@ -2,25 +2,35 @@ id: brew:auditbeat
 display-name: Auditbeat
 repo: null
 docs:
-  - https://www.elastic.co/guide/en/beats/auditbeat/8.19/configuring-howto-auditbeat.html
-  - https://www.elastic.co/guide/en/beats/auditbeat/8.19/directory-layout.html
-  - https://www.elastic.co/guide/en/beats/auditbeat/8.19/index.html
+  - https://www.elastic.co/docs/reference/beats/auditbeat
+  - >
+    https://www.elastic.co/docs/reference/beats/auditbeat/auditbeat-installation-configuration
+  - https://www.elastic.co/docs/reference/beats/auditbeat/configuring-howto-auditbeat
 config-file-location:
   linux:
     - /etc/auditbeat/auditbeat.yml
-    - /usr/share/auditbeat/auditbeat.yml
     - '{extract.path}/auditbeat.yml'
+    - /usr/share/auditbeat/auditbeat.yml
   macos:
     - '{extract.path}/auditbeat.yml'
   windows:
     - C:\Program Files\Auditbeat\auditbeat.yml
-credentials-file-location: null
+credentials-file-location:
+  linux:
+    - /var/lib/auditbeat
+    - '{extract.path}/data'
+    - /usr/share/auditbeat/data
+  macos:
+    - '{extract.path}/data'
+  windows:
+    - C:\Program Files\Auditbeat-Data
 tags:
   - audit
   - cli
   - elastic
   - monitoring
   - security
+  - system
 geiger:
   category: infrastructure
   color: orange
@@ -33,43 +43,47 @@ geiger:
 provenance:
   category-sources:
     - >
-      Elastic Auditbeat overview describes Auditbeat as auditing user/process activity,
-      collecting Linux Audit Framework events, detecting critical-file changes, and
-      identifying potential security policy violations:
-      https://www.elastic.co/guide/en/beats/auditbeat/8.19/auditbeat-overview.html
+      Elastic Auditbeat reference says Auditbeat audits activities of users and
+      processes and detects critical file changes on systems:
+      https://www.elastic.co/docs/reference/beats/auditbeat
   display-name-sources:
     - >
-      Elastic official documentation uses the product name Auditbeat:
-      https://www.elastic.co/guide/en/beats/auditbeat/8.19/index.html
+      Elastic official documentation and product page use the name Auditbeat:
+      https://www.elastic.co/docs/reference/beats/auditbeat
   docs-sources:
     - >
-      Elastic Auditbeat Reference index lists the official Auditbeat documentation
-      sections, including configure, directory layout, modules, and security topics:
-      https://www.elastic.co/guide/en/beats/auditbeat/8.19/index.html
+      Elastic Auditbeat reference describes Auditbeat as an Elastic Beat for auditing
+      user and process activity and critical file changes:
+      https://www.elastic.co/docs/reference/beats/auditbeat
     - >
-      Elastic Configure Auditbeat says the default configuration file is auditbeat.yml
-      and that its location varies by platform:
-      https://www.elastic.co/guide/en/beats/auditbeat/8.19/configuring-howto-auditbeat.html
+      Elastic Configure Auditbeat states the default config file is auditbeat.yml and
+      links to directory layout for platform locations:
+      https://www.elastic.co/docs/reference/beats/auditbeat/configuring-howto-auditbeat
     - >
-      Elastic Directory layout gives default config directories for deb/rpm, docker, and
-      archive installs:
+      Elastic Directory layout documents config path defaults including /etc/auditbeat
+      for deb/rpm, archive extract path, Docker /usr/share/auditbeat, and path.data
+      defaults used by the keystore:
       https://www.elastic.co/guide/en/beats/auditbeat/8.19/directory-layout.html
     - >
-      Elastic Secrets keystore docs say the keystore is created under path.data but do
-      not document a stable credentials-file path:
+      Elastic Secrets keystore docs state Auditbeat stores sensitive settings in a
+      keystore created in the path.data directory:
       https://www.elastic.co/guide/en/beats/auditbeat/8.19/keystore.html
+    - >
+      Elastic latest quick start documents Windows installation under C:\Program
+      Files\Auditbeat and the Auditbeat-Data base folder:
+      https://www.elastic.co/docs/reference/beats/auditbeat/auditbeat-installation-configuration
   repo-sources:
     - >
-      source_facts.repo is already https://github.com/elastic/beats; prompt requires
-      returning repo as null when source_facts.repo is present.
+      source_facts.repo already provides https://github.com/elastic/beats; prompt
+      requires repo null when source_facts.repo is populated.
   tags-sources:
     - >
-      Elastic Auditbeat overview supports audit, security, monitoring, and Elastic tags:
-      https://www.elastic.co/guide/en/beats/auditbeat/8.19/auditbeat-overview.html
-    - source_facts.executables lists auditbeat, supporting the cli tag.
+      Elastic Auditbeat reference identifies Auditbeat as a lightweight Elastic Beat for
+      audit data, file integrity monitoring, and centralized security/system events:
+      https://www.elastic.co/docs/reference/beats/auditbeat
 category-confidence: high
 category-path:
-  - security
+  - system
   - audit-monitoring
 display-name-confidence: high
 docs-confidence: high
