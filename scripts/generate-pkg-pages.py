@@ -603,6 +603,34 @@ def normalize_space(value: Any) -> str:
     return re.sub(r"\s+", " ", str(value or "")).strip()
 
 
+def positive_int(value: Any) -> int | None:
+    try:
+        parsed = int(str(value).replace(",", "").strip())
+    except (TypeError, ValueError):
+        return None
+    return parsed if parsed > 0 else None
+
+
+def npm_ranks_by_downloads(items: dict[str, Any]) -> dict[str, int]:
+    candidates: list[tuple[int, str]] = []
+    for name, info in items.items():
+        if not isinstance(name, str) or not isinstance(info, dict):
+            continue
+        popularity = info.get("popularity") or {}
+        if not isinstance(popularity, dict):
+            continue
+        downloads = positive_int(popularity.get("downloads_per_30_days"))
+        if downloads is not None:
+            candidates.append((downloads, name))
+    return {
+        name: rank
+        for rank, (_downloads, name) in enumerate(
+            sorted(candidates, key=lambda item: (-item[0], item[1])),
+            start=1,
+        )
+    }
+
+
 def short_text(value: Any, limit: int = 220) -> str:
     text = normalize_space(value)
     if len(text) <= limit:
@@ -774,6 +802,7 @@ def package_pages_from_sources(sources: dict[str, Any]) -> dict[str, PackagePage
         items = db.get(section) or {}
         if not isinstance(items, dict):
             continue
+        npm_ranks = npm_ranks_by_downloads(items) if provider == "npm" else {}
         for name, info in items.items():
             if not isinstance(info, dict):
                 continue
@@ -802,7 +831,13 @@ def package_pages_from_sources(sources: dict[str, Any]) -> dict[str, PackagePage
             page.binaries = info.get("binaries") or page.binaries
             if info.get("dependencies"):
                 page.dependencies = info.get("dependencies") or page.dependencies
-            page.popularity = info.get("popularity") or page.popularity
+            popularity = info.get("popularity") or page.popularity
+            if provider == "npm" and isinstance(popularity, dict):
+                popularity = dict(popularity)
+                rank = npm_ranks.get(name)
+                if rank is not None:
+                    popularity["rank"] = rank
+            page.popularity = popularity
             page.source_notes.append("Nucleus package database")
 
     for name, info in (sources.get("npm") or {}).items():

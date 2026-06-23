@@ -138,6 +138,40 @@ class PackagePageRenderingTests(unittest.TestCase):
         self.assertIn("Agent Risk Assessment", html)
         self.assertIn('"@type": "FAQPage"', html)
 
+    def test_npm_zero_ranks_are_rebuilt_from_download_counts(self):
+        pages = pkg_pages.package_pages_from_sources(
+            {
+                "db": {
+                    "entries": {
+                        "acorn": "npm:acorn",
+                        "0x": "npm:0x",
+                    },
+                    "npms": {
+                        "acorn": {
+                            "summary": "ECMAScript parser",
+                            "executable": "acorn",
+                            "popularity": {
+                                "downloads_per_30_days": 900,
+                                "rank": 0,
+                            },
+                        },
+                        "0x": {
+                            "summary": "Flamegraph profiler",
+                            "executable": "0x",
+                            "popularity": {
+                                "downloads_per_30_days": 100,
+                                "rank": 0,
+                            },
+                        },
+                    }
+                }
+            }
+        )
+
+        self.assertEqual(pages["npm:acorn"].popularity["rank"], 1)
+        self.assertEqual(pages["npm:0x"].popularity["rank"], 2)
+        self.assertIn("rank 1", pkg_pages.label_for(pages["npm:acorn"]))
+
 
 if __name__ == "__main__":
     unittest.main()
