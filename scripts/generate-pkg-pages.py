@@ -6100,11 +6100,17 @@ h1 {
 .chip-list {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
   gap: 8px;
   padding: 0;
   list-style: none;
 }
+.detail-stack .chip-list {
+  padding-left: 0;
+}
 .chip-list li {
+  display: inline-flex;
+  align-items: center;
   padding: 5px 8px;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
@@ -6112,6 +6118,10 @@ h1 {
   font-family: var(--font-mono);
   font-size: 0.76rem;
   font-weight: 700;
+  line-height: 1.2;
+}
+.detail-stack .chip-list li + li {
+  margin-top: 0;
 }
 .table-wrap { margin-top: 22px; overflow-x: auto; border-top: 1px solid var(--line-strong); }
 table { width: 100%; border-collapse: collapse; }
