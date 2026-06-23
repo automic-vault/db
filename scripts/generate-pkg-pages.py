@@ -220,7 +220,6 @@ REQUIRED_I18N_PKG_KEYS = {
     "packageKey",
     "packageManager",
     "packageManagerPage",
-    "packageManagerSource",
     "packageMetadata",
     "packageMetadataKicker",
     "packageSummary",
@@ -3761,12 +3760,6 @@ def render_install(page: PackagePage, locale: dict[str, Any] | None = None) -> s
         "evidence": "deterministic local package key",
     }
     command = str(primary.get("command") or "")
-    manager = page.package_manager_url
-    manager_link = (
-        f'<a href="{attr(manager)}">{html_escape(manager)}</a>'
-        if manager
-        else html_escape(tx(locale, "installSourceMissing", "{manager} metadata was not linked in local data.", manager=package_manager_label(page)))
-    )
     platform_html = render_platform_install_commands(commands[1:], locale)
     return f"""
 <section id="install" class="pkg-section install-section" aria-labelledby="install-title">
@@ -3786,12 +3779,6 @@ def render_install(page: PackagePage, locale: dict[str, Any] | None = None) -> s
       <pre><code>{html_escape(command)}</code></pre>
     </div>
     {platform_html}
-  </div>
-  <div class="install-notes-grid">
-    <article>
-      <h3>{html_escape(tx(locale, 'packageManagerSource', 'Package manager source'))}</h3>
-      <p>{manager_link}</p>
-    </article>
   </div>
 </section>
 """
@@ -5481,8 +5468,8 @@ h1 {
 }
 .install-section {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.72fr);
-  gap: clamp(24px, 4.5vw, 64px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
   align-items: start;
   background: rgba(255, 255, 255, 0.014);
 }
@@ -5536,7 +5523,7 @@ h1 {
 }
 .platform-install-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
 }
 .platform-install-grid article {
@@ -5618,14 +5605,12 @@ h1 {
 }
 .install-command-source a { color: var(--muted); }
 .install-command-source a:hover { color: var(--ink); }
-.install-notes-grid,
 .signal-grid,
 .related-columns {
   display: grid;
   align-items: start;
   gap: 12px;
 }
-.install-notes-grid article,
 .signal-grid article,
 .related-columns article {
   min-width: 0;
@@ -5636,15 +5621,12 @@ h1 {
     linear-gradient(180deg, rgba(255, 255, 255, 0.028), transparent),
     rgba(255, 255, 255, 0.018);
 }
-.install-notes-grid h3,
 .signal-grid h3,
 .related-columns h3 {
   color: var(--ink);
   font-size: 1.02rem;
   line-height: 1.2;
 }
-.install-notes-grid p,
-.install-notes-grid ul,
 .signal-grid p,
 .signal-grid ul,
 .related-columns p,
@@ -5653,12 +5635,10 @@ h1 {
   color: var(--muted);
   line-height: 1.5;
 }
-.install-notes-grid ul,
 .signal-grid ul,
 .related-columns ul {
   padding-left: 1.1rem;
 }
-.install-notes-grid li + li,
 .signal-grid li + li,
 .related-columns li + li {
   margin-top: 8px;
@@ -6447,6 +6427,12 @@ td { color: var(--ink); overflow-wrap: anywhere; }
 .site-footer p { max-width: 620px; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 16px; font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700; text-transform: uppercase; }
 .footer-links a:hover { color: var(--ink); }
+
+@media (max-width: 960px) {
+  .platform-install-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 
 @media (max-width: 860px) {
   .site-shell { width: min(calc(100% - 24px), var(--max)); margin: 12px auto; }
