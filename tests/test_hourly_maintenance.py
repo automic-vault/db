@@ -1,4 +1,5 @@
 import importlib.util
+import io
 import sys
 import tempfile
 import unittest
@@ -24,6 +25,7 @@ class HourlyMaintenanceTests(unittest.TestCase):
             with (
                 mock.patch.object(maintenance, "run") as run,
                 mock.patch.object(maintenance, "run_prepare_enrichment", return_value=None) as run_prepare_enrichment,
+                mock.patch.object(maintenance, "unresolved_enrichment_run_ids", return_value=[]),
             ):
                 self.assertEqual(maintenance.main(), 0)
         return [call.args[0] for call in run.call_args_list], run_prepare_enrichment.call_args_list
@@ -135,6 +137,33 @@ class HourlyMaintenanceTests(unittest.TestCase):
             with mock.patch.object(maintenance, "ROOT", tmp_root):
                 with mock.patch.object(maintenance, "ENRICHMENT_RUNS_DIR", runs_dir):
                     maintenance.assert_hourly_enrichment_progress(current_dir)
+
+    def test_hourly_skips_prepare_when_older_runs_remain_unapplied(self):
+        maintenance = load_hourly_maintenance()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            runs_dir = tmp_root / "cache" / "enrichment" / "runs"
+            older_dir = runs_dir / "older-run"
+            older_dir.mkdir(parents=True)
+            (older_dir / "controller-manifest.json").write_text('{"selected_count": 5}\n', encoding="utf-8")
+
+            stderr = io.StringIO()
+            with mock.patch.object(maintenance, "ROOT", tmp_root):
+                with mock.patch.object(maintenance, "ENRICHMENT_RUNS_DIR", runs_dir):
+                    with mock.patch.object(sys, "argv", ["hourly-maintenance.py", "--no-commit", "--skip-sqlite"]):
+                        with (
+                            mock.patch.object(maintenance, "run") as run,
+                            mock.patch.object(maintenance, "run_prepare_enrichment") as run_prepare_enrichment,
+                            mock.patch("sys.stderr", stderr),
+                        ):
+                            self.assertEqual(maintenance.main(), 0)
+
+            run_prepare_enrichment.assert_not_called()
+            self.assertIn("skipping hourly enrichment prepare", stderr.getvalue())
+            commands = [call.args[0] for call in run.call_args_list]
+            self.assertIn([sys.executable, "scripts/build.py", "--refresh"], commands)
+            self.assertIn([sys.executable, "scripts/publish-public-db.py"], commands)
 
 
 if __name__ == "__main__":

@@ -83,6 +83,16 @@ def unresolved_enrichment_run_ids(*, exclude_run_id: str | None = None) -> list[
     return unresolved
 
 
+def warn_unresolved_hourly_enrichment_backlog(run_ids: list[str]) -> None:
+    sample = ", ".join(run_ids[-3:])
+    print(
+        "WARN: skipping hourly enrichment prepare because "
+        f"{len(run_ids)} older prepared run(s) are still unapplied ({sample})",
+        file=sys.stderr,
+        flush=True,
+    )
+
+
 def assert_hourly_enrichment_progress(run_dir: Path) -> None:
     manifest_path = run_dir / "controller-manifest.json"
     if not manifest_path.is_file():
@@ -186,26 +196,30 @@ def main() -> int:
 
     run([py, "scripts/build.py", "--refresh"])
     if not args.skip_enrichment and args.enrich_limit > 0:
-        run_dir = run_prepare_enrichment(
-            [
-                py,
-                "scripts/enrich-projects.py",
-                "--mode",
-                "new",
-                "--include-missing-curated-fields",
-                "--limit",
-                str(args.enrich_limit),
-                "--batch-size",
-                str(args.enrich_batch_size),
-                "--backend",
-                "external",
-                "--phase",
-                "prepare",
-            ],
-            timeout=DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS,
-        )
-        if run_dir is not None:
-            assert_hourly_enrichment_progress(run_dir)
+        unresolved = unresolved_enrichment_run_ids()
+        if unresolved:
+            warn_unresolved_hourly_enrichment_backlog(unresolved)
+        else:
+            run_dir = run_prepare_enrichment(
+                [
+                    py,
+                    "scripts/enrich-projects.py",
+                    "--mode",
+                    "new",
+                    "--include-missing-curated-fields",
+                    "--limit",
+                    str(args.enrich_limit),
+                    "--batch-size",
+                    str(args.enrich_batch_size),
+                    "--backend",
+                    "external",
+                    "--phase",
+                    "prepare",
+                ],
+                timeout=DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS,
+            )
+            if run_dir is not None:
+                assert_hourly_enrichment_progress(run_dir)
     if not args.skip_isotopes:
         isotope_command = ["bash", "scripts/build-isotopes.sh"]
         if args.skip_isotope_builds:
