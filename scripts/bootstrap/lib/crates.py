@@ -146,12 +146,56 @@ def write_db_dump_meta(meta: dict[str, Any]) -> None:
     CRATES_IO_DUMP_META_PATH.write_text(json.dumps(meta, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def head_db_dump(url: str, *, now: int) -> dict[str, Any]:
+    request = urllib.request.Request(url, method="HEAD", headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(request, timeout=CRATES_IO_DOWNLOAD_TIMEOUT) as response:
+        return {
+            "checked_at": now,
+            "content_length": response.headers.get("content-length"),
+            "etag": response.headers.get("etag"),
+            "last_modified": response.headers.get("last-modified"),
+            "source_url": url,
+            "resolved_url": response.url,
+        }
+
+
+def db_dump_metadata_matches(local_meta: dict[str, Any], remote_meta: dict[str, Any]) -> bool:
+    local_etag = str(local_meta.get("etag") or "").strip()
+    remote_etag = str(remote_meta.get("etag") or "").strip()
+    if local_etag and remote_etag:
+        return local_etag == remote_etag
+
+    local_last_modified = str(local_meta.get("last_modified") or "").strip()
+    remote_last_modified = str(remote_meta.get("last_modified") or "").strip()
+    local_content_length = str(local_meta.get("content_length") or "").strip()
+    remote_content_length = str(remote_meta.get("content_length") or "").strip()
+    return (
+        bool(local_last_modified)
+        and local_last_modified == remote_last_modified
+        and bool(local_content_length)
+        and local_content_length == remote_content_length
+    )
+
+
 def download_db_dump(*, refresh: bool = False, url: str = CRATES_IO_DUMP_URL, output_path: Path = CRATES_IO_DUMP_PATH) -> tuple[Path, dict[str, Any]]:
     meta = read_json_file(CRATES_IO_DUMP_META_PATH, {}) or {}
     checked_at = parse_int(meta.get("checked_at"))
     now = int(time.time())
     if output_path.exists() and not refresh and checked_at and now - checked_at < CHECK_INTERVAL_SECONDS:
         return output_path, meta
+
+    if output_path.exists():
+        try:
+            remote_meta = head_db_dump(url, now=now)
+        except urllib.error.HTTPError:
+            remote_meta = {}
+        except OSError:
+            remote_meta = {}
+        if remote_meta and db_dump_metadata_matches(meta, remote_meta):
+            next_meta = dict(meta)
+            next_meta.update(remote_meta)
+            write_db_dump_meta(next_meta)
+            return output_path, next_meta
 
     headers = {
         "Accept": "application/gzip, application/octet-stream;q=0.9, */*;q=0.1",
