@@ -207,7 +207,6 @@ REQUIRED_I18N_PKG_KEYS = {
     "noCrossEcosystem",
     "noFreshnessWarnings",
     "noHubMembership",
-    "noPlatformNotes",
     "noRelated",
     "note",
     "overview",
@@ -228,7 +227,6 @@ REQUIRED_I18N_PKG_KEYS = {
     "packageTaxonomy",
     "pageGenerated",
     "platformInstallCommands",
-    "platformNotes",
     "popularPackages",
     "published",
     "pythonFormula",
@@ -3763,8 +3761,6 @@ def render_install(page: PackagePage, locale: dict[str, Any] | None = None) -> s
         "evidence": "deterministic local package key",
     }
     command = str(primary.get("command") or "")
-    notes = page.install.get("notes") or []
-    note_items = "".join(f"<li>{html_escape(note)}</li>" for note in notes[:6])
     manager = page.package_manager_url
     manager_link = (
         f'<a href="{attr(manager)}">{html_escape(manager)}</a>'
@@ -3795,10 +3791,6 @@ def render_install(page: PackagePage, locale: dict[str, Any] | None = None) -> s
     <article>
       <h3>{html_escape(tx(locale, 'packageManagerSource', 'Package manager source'))}</h3>
       <p>{manager_link}</p>
-    </article>
-    <article>
-      <h3>{html_escape(tx(locale, 'platformNotes', 'Platform notes'))}</h3>
-      <ul>{note_items or f'<li>{html_escape(tx(locale, "noPlatformNotes", "No package-specific platform notes were present."))}</li>'}</ul>
     </article>
   </div>
 </section>
