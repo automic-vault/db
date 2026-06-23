@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -23,6 +25,14 @@ COMMIT_PATHS = [
 DEFAULT_HOURLY_ENRICH_LIMIT = int(os.environ.get("AVDB_HOURLY_ENRICH_LIMIT", "10"))
 DEFAULT_HOURLY_ENRICH_BATCH_SIZE = int(os.environ.get("AVDB_HOURLY_ENRICH_BATCH_SIZE", "3"))
 DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS = int(os.environ.get("AVDB_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS", "300"))
+ENRICHMENT_RUNS_DIR = ROOT / "cache" / "enrichment" / "runs"
+PREPARE_OUTPUT_PATTERN = re.compile(
+    r"Prepared \d+ projects in \d+ batches under (?P<run_dir>cache/enrichment/runs/[^\s]+)"
+)
+
+
+class EnrichmentHealthError(RuntimeError):
+    pass
 
 
 def run(command: list[str], *, timeout: int | None = None, allow_failure: bool = False) -> bool:
@@ -40,6 +50,89 @@ def run(command: list[str], *, timeout: int | None = None, allow_failure: bool =
         print(f"WARN: command failed with exit code {err.returncode}", file=sys.stderr, flush=True)
         return False
     return True
+
+
+def read_json(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def parse_prepared_run_dir(stdout: str) -> Path | None:
+    match = PREPARE_OUTPUT_PATTERN.search(stdout)
+    if not match:
+        return None
+    return ROOT / match.group("run_dir")
+
+
+def unresolved_enrichment_run_ids(*, exclude_run_id: str | None = None) -> list[str]:
+    if not ENRICHMENT_RUNS_DIR.is_dir():
+        return []
+
+    unresolved: list[str] = []
+    for manifest_path in sorted(ENRICHMENT_RUNS_DIR.glob("*/controller-manifest.json")):
+        run_dir = manifest_path.parent
+        run_id = run_dir.name
+        if exclude_run_id and run_id == exclude_run_id:
+            continue
+        manifest = read_json(manifest_path)
+        selected_count = int(manifest.get("selected_count") or 0)
+        if selected_count < 1:
+            continue
+        if (run_dir / "apply-summary.json").exists():
+            continue
+        unresolved.append(run_id)
+    return unresolved
+
+
+def assert_hourly_enrichment_progress(run_dir: Path) -> None:
+    manifest_path = run_dir / "controller-manifest.json"
+    if not manifest_path.is_file():
+        raise EnrichmentHealthError(f"hourly enrichment prepared a run without {manifest_path}")
+
+    manifest = read_json(manifest_path)
+    selected_count = int(manifest.get("selected_count") or 0)
+    if selected_count < 1:
+        return
+
+    unresolved_older = unresolved_enrichment_run_ids(exclude_run_id=run_dir.name)
+    if not unresolved_older:
+        return
+
+    sample = ", ".join(unresolved_older[-3:])
+    raise EnrichmentHealthError(
+        "hourly enrichment prepared "
+        f"{selected_count} project(s) in {run_dir.name}, but {len(unresolved_older)} older prepared run(s) "
+        f"are still unapplied ({sample})"
+    )
+
+
+def run_prepare_enrichment(command: list[str], *, timeout: int) -> Path | None:
+    print("+", " ".join(command), flush=True)
+    try:
+        result = subprocess.run(
+            command,
+            cwd=ROOT,
+            check=True,
+            timeout=timeout,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+    except subprocess.TimeoutExpired:
+        print(f"WARN: command timed out after {timeout}s", file=sys.stderr, flush=True)
+        return None
+    except subprocess.CalledProcessError as err:
+        if err.stdout:
+            print(err.stdout, end="", flush=True)
+        if err.stderr:
+            print(err.stderr, end="", file=sys.stderr, flush=True)
+        print(f"WARN: command failed with exit code {err.returncode}", file=sys.stderr, flush=True)
+        return None
+
+    if result.stdout:
+        print(result.stdout, end="", flush=True)
+    if result.stderr:
+        print(result.stderr, end="", file=sys.stderr, flush=True)
+    return parse_prepared_run_dir(result.stdout)
 
 
 def commit_if_changed(message: str) -> str | None:
@@ -93,7 +186,7 @@ def main() -> int:
 
     run([py, "scripts/build.py", "--refresh"])
     if not args.skip_enrichment and args.enrich_limit > 0:
-        run(
+        run_dir = run_prepare_enrichment(
             [
                 py,
                 "scripts/enrich-projects.py",
@@ -110,8 +203,9 @@ def main() -> int:
                 "prepare",
             ],
             timeout=DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS,
-            allow_failure=True,
         )
+        if run_dir is not None:
+            assert_hourly_enrichment_progress(run_dir)
     if not args.skip_isotopes:
         isotope_command = ["bash", "scripts/build-isotopes.sh"]
         if args.skip_isotope_builds:
