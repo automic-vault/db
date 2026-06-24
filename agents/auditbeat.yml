@@ -5,11 +5,11 @@ docs:
   - https://www.elastic.co/docs/reference/beats/auditbeat
   - https://www.elastic.co/docs/reference/beats/auditbeat/configuring-howto-auditbeat
 config-file-location:
+  linux:
+    - /etc/auditbeat/auditbeat.yml
   unix:
-    - '{path.config}/auditbeat.yml'
-credentials-file-location:
-  unix:
-    - '{path.data}'
+    - '{extract.path}/auditbeat.yml'
+credentials-file-location: null
 tags:
   - audit
   - beats
@@ -29,42 +29,31 @@ geiger:
 provenance:
   category-sources:
     - >
-      Elastic describes Auditbeat as auditing user and process activity, centralizing
-      Linux audit events, and detecting critical file changes/security policy
-      violations: https://www.elastic.co/docs/reference/beats/auditbeat
+      Elastic Auditbeat docs describe audit and file integrity modules for shipping
+      audit data.
+    - source_facts.description says Lightweight Shipper for Audit Data.
   display-name-sources:
-    - >
-      Official Elastic documentation title uses Auditbeat:
-      https://www.elastic.co/docs/reference/beats/auditbeat
+    - Elastic official docs and source_facts.name use Auditbeat/auditbeat.
   docs-sources:
     - >
-      Elastic Auditbeat reference identifies Auditbeat as a lightweight shipper for
-      audit events and security policy monitoring:
-      https://www.elastic.co/docs/reference/beats/auditbeat
+      Elastic Auditbeat docs identify Auditbeat under Beats reference documentation and
+      explain configuration in auditbeat.yml.
     - >
-      Elastic configuration docs name auditbeat.yml as the default configuration file
-      and point to Directory layout; command docs define default auditbeat.yml relative
-      to path.config:
-      https://www.elastic.co/docs/reference/beats/auditbeat/configuring-howto-auditbeat
-      and https://www.elastic.co/docs/reference/beats/auditbeat/command-line-options
-    - >
-      Elastic keystore docs say Auditbeat stores sensitive settings in its keystore and
-      creates it in the directory defined by path.data:
-      https://www.elastic.co/docs/reference/beats/auditbeat/keystore
+      Elastic Directory layout documents packaged Linux config path /etc/auditbeat and
+      archive config path {extract.path}.
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/elastic/beats; prompt
-      requires repo null when source_facts.repo is populated.
+      requires repo null when supplied.
   tags-sources:
     - >
-      Elastic Auditbeat reference covers audit events, monitoring/security use cases,
-      and the Elastic Beat/libbeat basis:
-      https://www.elastic.co/docs/reference/beats/auditbeat
-    - source_facts.executables lists auditbeat as a command-line executable.
+      source_facts.description and Elastic Auditbeat docs identify audit data shipping,
+      Beats, Elastic, monitoring, and security use.
 category-confidence: high
 category-path:
   - security
-  - audit-monitoring
+  - audit
+  - monitoring
 display-name-confidence: high
 docs-confidence: high
 repo-confidence: high
