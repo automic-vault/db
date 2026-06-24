@@ -49,58 +49,45 @@ context and is not copied into `combined/`.
 
 ## Codex Automations
 
-Maintenance is designed to be run by Codex cron automations. The repository
-script is intentionally one-shot: Codex owns the schedule, and each invocation
-runs exactly one task.
+Maintenance is designed to be run by Codex cron automations. Codex owns the
+schedule; repo scripts are one-shot entrypoints and each invocation runs exactly
+one task.
 
 ```sh
 scripts/automation-runner.sh db
-scripts/nightly-maintenance.py refresh
-scripts/nightly-maintenance.py enrich-new
-scripts/nightly-maintenance.py review-stale-updated
+scripts/automation-runner.sh npm-full-scan
 ```
 
-Defaults:
+Runner jobs:
 
 - `db`: runs the hourly package database refresh through
-  `scripts/hourly-maintenance.py`, including isotope fork scans. By default it
-  builds and publishes only missing latest upstream isotope releases, then
-  regenerates `cache/automic-vault/isotopes.json`. It also checks exported
-  `cache/automic-vault/db.json` pulse metadata so empty New / Updated coverage
-  is reported as automation health failure after the DB has been written. Use
-  `scripts/hourly-maintenance.py --skip-isotope-builds` for a summary-only
-  isotope refresh. Isotope checkouts default to sibling directories
-  `../isotopes` and `../radioisotopes`.
-- `refresh`: runs `scripts/build.py --refresh` and commits tracked
-  `deterministic/` and `combined/` changes.
-- `enrich-new`: prepares external-controller enrichment batches for newly
-  observed projects, limited to 50 projects by default. A Codex-hosted
-  controller then spawns sub-agents and runs the apply step with
-  `--commit-after-batch`.
-- `review-stale-updated`: prepares external-controller review batches for
-  stale or upstream-updated projects, limited to 50 projects by default. A
-  Codex-hosted controller then spawns sub-agents and runs the apply step with
-  `--commit-after-batch`.
+  `scripts/hourly-maintenance.py`. This refreshes source data, prepares hourly
+  missing-curated-field enrichment if no older prepared run is waiting, builds
+  isotope summaries/releases, exports and health-checks
+  `cache/automic-vault/db.json`, publishes the public DB, rebuilds package-page
+  derived data, and commits tracked stable outputs as `hourly: refresh package
+  database`.
+- `npm-full-scan`: runs `scripts/build-db.py --refresh --npm-full-scan` followed
+  by `scripts/build-combined-json.py`.
 
-Each run writes a status file and appended log under
-`cache/automation/nightly-maintenance/`. Use
-`scripts/nightly-maintenance.py --list` to print the commands, or
-`scripts/nightly-maintenance.py <task> --dry-run` to preview one task.
-Concurrent `scripts/automation-runner.sh` invocations are lock-protected; if a
-job is already running, a second invocation reports that condition and exits
-cleanly instead of failing the caller.
+Each runner job writes `cache/automation/<job>.status.json` and appends
+`cache/automation/<job>.log`. Use `scripts/codex-automation-status.sh` to inspect
+both jobs, recent logs, active maintenance processes, and public DB freshness.
+Runner invocations are lock-protected; if a job is already running, another
+invocation reports that condition and exits cleanly.
 
 AI enrichment automations must use the controller flow in
-`scripts/codex-enrichment-controller.md`. The scheduled Python scripts only
-prepare `codex-output.json` targets; they no longer shell out to nested
-`codex exec` by default.
-
-To inspect unresolved prepared controller runs, use:
+`scripts/codex-enrichment-controller.md`. Scheduled Python scripts only prepare
+`codex-output.json` targets; they do not shell out to nested `codex exec` by
+default. Apply completed controller runs with the command emitted by:
 
 ```sh
-python3 scripts/enrichment-controller.py pending --json
 python3 scripts/enrichment-controller.py next-run --json
 ```
 
-The helper prints the oldest unresolved run and the exact
-`scripts/enrich-projects.py --phase apply ...` command needed to consume it.
+Manual nightly helpers still exist for one-off Codex cron tasks:
+
+```sh
+scripts/nightly-maintenance.py --list
+scripts/nightly-maintenance.py <task> --dry-run
+```
