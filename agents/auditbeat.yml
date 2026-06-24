@@ -3,19 +3,24 @@ display-name: Auditbeat
 repo: null
 docs:
   - https://www.elastic.co/docs/reference/beats/auditbeat
+  - https://www.elastic.co/docs/reference/beats/auditbeat/configuring-howto-auditbeat
   - https://www.elastic.co/docs/reference/beats/auditbeat/directory-layout
-  - https://www.elastic.co/docs/reference/beats/auditbeat/keystore
 config-file-location:
+  linux:
+    - /etc/auditbeat/auditbeat.yml
   unix:
-    - '{path.config}/auditbeat.yml'
-credentials-file-location: null
+    - ${path.config}/auditbeat.yml
+credentials-file-location:
+  linux:
+    - /var/lib/auditbeat/beats.keystore
+  unix:
+    - ${path.data}/beats.keystore
 tags:
   - audit
   - cli
-  - elastic
+  - elastic-stack
   - monitoring
   - security
-  - shipper
 geiger:
   category: infrastructure
   color: orange
@@ -28,36 +33,31 @@ geiger:
 provenance:
   category-sources:
     - >
-      https://www.elastic.co/docs/reference/beats/auditbeat describes Auditbeat as
-      collecting audit events and detecting critical file changes for security policy
-      violations.
+      Official Elastic docs describe Auditbeat modules for auditd, file integrity, and
+      system data collection.
+    - 'source_facts.description: Lightweight Shipper for Audit Data'
   display-name-sources:
-    - https://www.elastic.co/docs/reference/beats/auditbeat uses the heading Auditbeat.
+    - Official Elastic documentation and homepage use the product name Auditbeat.
+    - 'source_facts.name: auditbeat'
   docs-sources:
     - >
-      https://www.elastic.co/docs/reference/beats/auditbeat identifies Auditbeat as an
-      Elastic Beat for collecting Linux Audit Framework activity and file-integrity
-      changes.
-    - >
-      https://www.elastic.co/docs/reference/beats/auditbeat/directory-layout documents
-      path.config as the configuration-file directory and default package/archive paths.
-    - >
-      https://www.elastic.co/docs/reference/beats/auditbeat/keystore documents optional
-      secret storage in the Auditbeat keystore under path.data, not a separate static
-      credentials file.
+      Official Elastic Auditbeat docs include configuration, directory layout, modules,
+      and command reference.
+    - 'source_facts.homepage: https://www.elastic.co/beats/auditbeat'
   repo-sources:
     - >
-      source_facts.repo already provides https://github.com/elastic/beats; prompt
-      instructs returning repo as null when source_facts.repo is present.
+      source_facts.repo already has https://github.com/elastic/beats; per instruction
+      repo is returned null when source_facts.repo is present.
   tags-sources:
     - >
-      https://www.elastic.co/docs/reference/beats/auditbeat describes Auditbeat as a
-      lightweight shipper for audit activity, file integrity changes, and Elastic Beats
-      ingestion.
+      Official Elastic Auditbeat docs describe audit data collection, Elastic Stack
+      output, and command-line operation.
+    - 'source_facts.description: Lightweight Shipper for Audit Data'
 category-confidence: high
 category-path:
-  - security
-  - audit-monitoring
+  - system
+  - audit
+  - monitoring
 display-name-confidence: high
 docs-confidence: high
 repo-confidence: high
