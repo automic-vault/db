@@ -56,6 +56,21 @@ def read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def git_known_paths(paths: list[str]) -> list[str]:
+    known: list[str] = []
+    for path in paths:
+        result = subprocess.run(
+            ["git", "ls-files", "--cached", "--others", "--exclude-standard", "--", path],
+            cwd=ROOT,
+            check=True,
+            stdout=subprocess.PIPE,
+            text=True,
+        )
+        if result.stdout.strip():
+            known.append(path)
+    return known
+
+
 def parse_prepared_run_dir(stdout: str) -> Path | None:
     match = PREPARE_OUTPUT_PATTERN.search(stdout)
     if not match:
@@ -146,14 +161,17 @@ def run_prepare_enrichment(command: list[str], *, timeout: int) -> Path | None:
 
 
 def commit_if_changed(message: str) -> str | None:
-    run(["git", "add", "-A", "--", *COMMIT_PATHS])
-    diff = subprocess.run(["git", "diff", "--cached", "--quiet", "--", *COMMIT_PATHS], cwd=ROOT)
+    path_args = git_known_paths(COMMIT_PATHS)
+    if not path_args:
+        return None
+    run(["git", "add", "-A", "--", *path_args])
+    diff = subprocess.run(["git", "diff", "--cached", "--quiet", "--", *path_args], cwd=ROOT)
     if diff.returncode == 0:
         return None
     if diff.returncode != 1:
         diff.check_returncode()
     changed = subprocess.run(
-        ["git", "diff", "--cached", "--name-only", "--", *COMMIT_PATHS],
+        ["git", "diff", "--cached", "--name-only", "--", *path_args],
         cwd=ROOT,
         check=True,
         stdout=subprocess.PIPE,

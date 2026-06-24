@@ -64,10 +64,28 @@ def ensure_root() -> Path:
     return ROOT
 
 
+def git_known_paths(paths: list[str | Path]) -> list[str]:
+    known: list[str] = []
+    for path in paths:
+        path_arg = Path(path).as_posix()
+        result = subprocess.run(
+            ["git", "ls-files", "--cached", "--others", "--exclude-standard", "--", path_arg],
+            cwd=ROOT,
+            check=True,
+            stdout=subprocess.PIPE,
+            text=True,
+        )
+        if result.stdout.strip():
+            known.append(path_arg)
+    return known
+
+
 def git_commit_if_changed(message: str, paths: list[str | Path]) -> str | None:
     if not paths:
         return None
-    path_args = [Path(path).as_posix() for path in paths]
+    path_args = git_known_paths(paths)
+    if not path_args:
+        return None
     subprocess.run(["git", "add", "-A", "--", *path_args], cwd=ROOT, check=True)
     diff = subprocess.run(["git", "diff", "--cached", "--quiet", "--", *path_args], cwd=ROOT)
     if diff.returncode == 0:
