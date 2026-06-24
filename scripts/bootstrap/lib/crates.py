@@ -177,6 +177,20 @@ def db_dump_metadata_matches(local_meta: dict[str, Any], remote_meta: dict[str, 
     )
 
 
+def source_definition_hash(*, min_recent_downloads: int, recent_window_days: int) -> str:
+    return stable_hash({
+        "schema": SCHEMA_VERSION,
+        "selected_files": sorted(SELECTED_DUMP_FILES),
+        "min_recent_downloads": min_recent_downloads,
+        "recent_window_days": recent_window_days,
+        "source_inspection": {
+            "internal_binary_name_re": INTERNAL_BINARY_NAME_RE.pattern,
+            "generic_test_binary_names": sorted(GENERIC_TEST_BINARY_NAMES),
+            "max_archive_bytes": CRATES_IO_SOURCE_MAX_INSPECT_BYTES,
+        },
+    })
+
+
 def download_db_dump(*, refresh: bool = False, url: str = CRATES_IO_DUMP_URL, output_path: Path = CRATES_IO_DUMP_PATH) -> tuple[Path, dict[str, Any]]:
     meta = read_json_file(CRATES_IO_DUMP_META_PATH, {}) or {}
     checked_at = parse_int(meta.get("checked_at"))
@@ -566,6 +580,10 @@ def build_index_from_dump(
     dump_meta: dict[str, Any] | None = None,
     source_archive_fetcher: Callable[[str, str], bytes] | None = None,
 ) -> dict[str, Any]:
+    definition_hash = source_definition_hash(
+        min_recent_downloads=min_recent_downloads,
+        recent_window_days=recent_window_days,
+    )
     with tempfile.TemporaryDirectory(prefix="avdb-cratesio-") as tmp:
         files = extract_selected_csvs(dump_path, Path(tmp))
         crates_by_id = {
@@ -677,17 +695,7 @@ def build_index_from_dump(
                 "mode": "conservative internal-binary exclusion",
                 **inspection_summary,
             },
-            "definition_hash": stable_hash({
-                "schema": SCHEMA_VERSION,
-                "selected_files": sorted(SELECTED_DUMP_FILES),
-                "min_recent_downloads": min_recent_downloads,
-                "recent_window_days": recent_window_days,
-                "source_inspection": {
-                    "internal_binary_name_re": INTERNAL_BINARY_NAME_RE.pattern,
-                    "generic_test_binary_names": sorted(GENERIC_TEST_BINARY_NAMES),
-                    "max_archive_bytes": CRATES_IO_SOURCE_MAX_INSPECT_BYTES,
-                },
-            }),
+            "definition_hash": definition_hash,
         },
         "crates": crates,
     }
@@ -705,6 +713,18 @@ def build_crates_index(
         dump_path, dump_meta = download_db_dump(refresh=refresh)
     else:
         dump_meta = {"source_url": dump_path.as_posix(), "checked_at": int(time.time())}
+    definition_hash = source_definition_hash(
+        min_recent_downloads=min_recent_downloads,
+        recent_window_days=recent_window_days,
+    )
+    existing_index = read_json_file(output_path, {}) or {}
+    existing_source = existing_index.get("source") if isinstance(existing_index, dict) else {}
+    if (
+        isinstance(existing_source, dict)
+        and db_dump_metadata_matches(existing_source.get("dump") or {}, dump_meta)
+        and existing_source.get("definition_hash") == definition_hash
+    ):
+        return existing_index
     index = build_index_from_dump(
         dump_path,
         min_recent_downloads=min_recent_downloads,
