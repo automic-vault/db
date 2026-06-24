@@ -3,20 +3,19 @@ display-name: Auditbeat
 repo: null
 docs:
   - https://www.elastic.co/docs/reference/beats/auditbeat
-  - https://www.elastic.co/docs/reference/beats/auditbeat/configuring-howto-auditbeat
+  - https://www.elastic.co/docs/reference/beats/auditbeat/directory-layout
+  - https://www.elastic.co/docs/reference/beats/auditbeat/keystore
 config-file-location:
-  linux:
-    - /etc/auditbeat/auditbeat.yml
   unix:
-    - '{extract.path}/auditbeat.yml'
+    - '{path.config}/auditbeat.yml'
 credentials-file-location: null
 tags:
   - audit
-  - beats
   - cli
   - elastic
   - monitoring
   - security
+  - shipper
 geiger:
   category: infrastructure
   color: orange
@@ -29,31 +28,36 @@ geiger:
 provenance:
   category-sources:
     - >
-      Elastic Auditbeat docs describe audit and file integrity modules for shipping
-      audit data.
-    - source_facts.description says Lightweight Shipper for Audit Data.
+      https://www.elastic.co/docs/reference/beats/auditbeat describes Auditbeat as
+      collecting audit events and detecting critical file changes for security policy
+      violations.
   display-name-sources:
-    - Elastic official docs and source_facts.name use Auditbeat/auditbeat.
+    - https://www.elastic.co/docs/reference/beats/auditbeat uses the heading Auditbeat.
   docs-sources:
     - >
-      Elastic Auditbeat docs identify Auditbeat under Beats reference documentation and
-      explain configuration in auditbeat.yml.
+      https://www.elastic.co/docs/reference/beats/auditbeat identifies Auditbeat as an
+      Elastic Beat for collecting Linux Audit Framework activity and file-integrity
+      changes.
     - >
-      Elastic Directory layout documents packaged Linux config path /etc/auditbeat and
-      archive config path {extract.path}.
+      https://www.elastic.co/docs/reference/beats/auditbeat/directory-layout documents
+      path.config as the configuration-file directory and default package/archive paths.
+    - >
+      https://www.elastic.co/docs/reference/beats/auditbeat/keystore documents optional
+      secret storage in the Auditbeat keystore under path.data, not a separate static
+      credentials file.
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/elastic/beats; prompt
-      requires repo null when supplied.
+      instructs returning repo as null when source_facts.repo is present.
   tags-sources:
     - >
-      source_facts.description and Elastic Auditbeat docs identify audit data shipping,
-      Beats, Elastic, monitoring, and security use.
+      https://www.elastic.co/docs/reference/beats/auditbeat describes Auditbeat as a
+      lightweight shipper for audit activity, file integrity changes, and Elastic Beats
+      ingestion.
 category-confidence: high
 category-path:
   - security
-  - audit
-  - monitoring
+  - audit-monitoring
 display-name-confidence: high
 docs-confidence: high
 repo-confidence: high
