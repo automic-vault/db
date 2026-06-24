@@ -44,6 +44,15 @@ class BuildPipelineTests(unittest.TestCase):
         self.assertIn("cache/npmjs/index.json", input_paths)
         self.assertNotIn("cache/cratesio/index.json", input_paths)
 
+    def test_render_projects_reruns_when_cask_entries_change(self):
+        render_step = next(
+            step
+            for step in steps(refresh=False, fetch_manifests=False, manifest_limit=0)
+            if step.name == "render-projects"
+        )
+
+        self.assertIn("cache/brew/cask-entries.json", {path.as_posix() for path in render_step.inputs})
+
     def test_crates_index_is_refresh_sensitive_without_feeding_authority_db(self):
         pipeline_steps = steps(refresh=True, fetch_manifests=False, manifest_limit=0)
         crates_step = next(step for step in pipeline_steps if step.name == "crates-index")

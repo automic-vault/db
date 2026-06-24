@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import ast
 import re
+import urllib.parse
 from pathlib import Path
 from typing import Any
 
-from .brew import formula_record
+from .brew import clean_summary, formula_record, repository_project_url
 from .common import AGENTS_DIR, AGENTS_JSON_DIR, COMBINED_DIR, DETERMINISTIC_DIR, HUMAN_OVERRIDE_DIR, STAGE_DIR, read_json, reset_dir, sync_tree, write_text_if_changed
+from .casks import read_cask_authority
 from .executables import read_executable_index
 from .managers import manager_matcher, package_manager_routes
 from .yaml_writer import yaml_text
@@ -62,17 +64,63 @@ def project_record(formula: dict[str, Any], executables: list[str], matcher: dic
     return record
 
 
+def cask_project_record(token: str, metadata: dict[str, Any], executables: list[str]) -> dict[str, Any] | None:
+    if not token or not executables:
+        return None
+    homepage = metadata.get("homepage") if isinstance(metadata.get("homepage"), str) else ""
+    url = metadata.get("url") if isinstance(metadata.get("url"), str) else ""
+    aliases = [alias for alias in metadata.get("aliases", []) if isinstance(alias, str) and alias]
+    record = {
+        "id": f"cask:{token}",
+        "display-name": token,
+        "homepage": homepage,
+        "repo": repository_project_url(homepage) or repository_project_url(url) or None,
+        "package-manager": {"brew-cask": token},
+        "package-manager-url": f"https://formulae.brew.sh/cask/{urllib.parse.quote(token, safe='@+/')}",
+        "version": metadata.get("version") if isinstance(metadata.get("version"), str) else "",
+        "description": clean_summary(metadata.get("summary")),
+        "source-archive": url,
+        "executables": sorted(set(executables)),
+        "provenance": {
+            "provider": "brew-cask",
+            "source": "https://formulae.brew.sh/api/cask.json",
+            "cask": token,
+        },
+    }
+    if aliases:
+        record["aliases"] = sorted(set(aliases))
+    return record
+
+
 def render_stage(formulae: list[dict[str, Any]], manager_indexes: dict[str, Any]) -> int:
     reset_dir(STAGE_DIR / "deterministic")
     executables = read_executable_index()
     matcher = manager_matcher(manager_indexes)
     count = 0
+    formula_names = set()
     for formula in sorted(formulae, key=lambda item: str(item.get("name") or "")):
         name = str(formula.get("name") or "")
+        if name:
+            formula_names.add(name)
         record = project_record(formula, executables.get(name, []), matcher)
         if record is None:
             continue
         write_text_if_changed(STAGE_DIR / "deterministic" / f"{name}.yml", yaml_text(record))
+        count += 1
+    cask_entries, casks = read_cask_authority()
+    cask_executables: dict[str, list[str]] = {}
+    for executable, provider in cask_entries.items():
+        if not provider.startswith("cask:"):
+            continue
+        token = provider.split(":", 1)[1]
+        cask_executables.setdefault(token, []).append(executable)
+    for token, metadata in sorted(casks.items()):
+        if token in formula_names:
+            continue
+        record = cask_project_record(token, metadata, cask_executables.get(token, []))
+        if record is None:
+            continue
+        write_text_if_changed(STAGE_DIR / "deterministic" / f"{token}.yml", yaml_text(record))
         count += 1
     return count
 
