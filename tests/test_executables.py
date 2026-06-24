@@ -176,7 +176,7 @@ class ExecutableSeedTests(unittest.TestCase):
         self.assertIn("1password-cli", db["casks"])
         self.assertEqual(db["npms"], {})
 
-    def test_automic_vault_db_export_strips_volatile_cask_metadata(self):
+    def test_automic_vault_db_export_keeps_cask_install_metadata(self):
         self.assertEqual(
             stable_cask_metadata(
                 {
@@ -196,6 +196,9 @@ class ExecutableSeedTests(unittest.TestCase):
                 "1password-cli": {
                     "summary": "1Password CLI",
                     "version": "2.0.0",
+                    "sourceArchive": "https://example.com/op.zip",
+                    "url": "https://example.com/op.zip",
+                    "sha256": "abc123",
                     "last_updated_at": "2026-06-15T12:00:00Z",
                     "pulse_kind": "updated",
                     "binaries": [{"source": "op", "target": "op"}],

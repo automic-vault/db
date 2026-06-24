@@ -100,6 +100,7 @@ def cask_metadata(cask: dict[str, Any]) -> dict[str, Any] | None:
         "homepage": cask.get("homepage") or "",
         "aliases": cask.get("old_tokens") or [],
         "url": url,
+        "sourceArchive": url,
         "sha256": sha256,
         "version": version,
         "dependencies": sorted(set(formula_dependencies)),

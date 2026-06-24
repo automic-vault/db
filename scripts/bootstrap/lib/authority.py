@@ -299,15 +299,13 @@ def overlay_homebrew_pulse_metadata(
 
 
 def stable_cask_metadata(casks: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
-    volatile_keys = {"sourceArchive", "url", "sha256"}
-    return {
-        token: {
-            key: value
-            for key, value in metadata.items()
-            if key not in volatile_keys
-        }
-        for token, metadata in casks.items()
-    }
+    result = {}
+    for token, metadata in casks.items():
+        item = dict(metadata)
+        if "sourceArchive" not in item and isinstance(item.get("url"), str):
+            item["sourceArchive"] = item["url"]
+        result[token] = item
+    return result
 
 
 def npm_pulse_kind_from_last_updated_at(last_updated_at: Any) -> str | None:

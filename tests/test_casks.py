@@ -45,6 +45,7 @@ class CaskAuthorityTests(unittest.TestCase):
                 "homepage": "https://example.com",
                 "aliases": ["old-example-cli"],
                 "url": "https://example.com/example.zip",
+                "sourceArchive": "https://example.com/example.zip",
                 "sha256": "abc123",
                 "version": "1.2.3",
                 "dependencies": ["jq"],
