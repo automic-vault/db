@@ -195,6 +195,7 @@ class ExecutableSeedTests(unittest.TestCase):
             {
                 "1password-cli": {
                     "summary": "1Password CLI",
+                    "version": "2.0.0",
                     "last_updated_at": "2026-06-15T12:00:00Z",
                     "pulse_kind": "updated",
                     "binaries": [{"source": "op", "target": "op"}],

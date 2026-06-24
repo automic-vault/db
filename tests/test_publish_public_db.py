@@ -76,13 +76,17 @@ class PublishPublicDbTests(unittest.TestCase):
                 with mock.patch.object(publish, "run") as run:
                     with mock.patch.object(
                         publish,
-                        "fetch_s3_json",
-                        return_value={"generated_at": "2026-06-17T13:01:56Z"},
+                        "fetch_s3_head",
+                        return_value={
+                            "ContentLength": source.stat().st_size,
+                            "CacheControl": "public, no-cache",
+                            "ContentType": "application/json; charset=utf-8",
+                        },
                     ):
                         with mock.patch.object(
                             publish,
-                            "fetch_public_json",
-                            return_value={"generated_at": "2026-06-17T13:01:56Z"},
+                            "fetch_public_generated_at",
+                            return_value="2026-06-17T13:01:56Z",
                         ):
                             with contextlib.redirect_stdout(io.StringIO()):
                                 self.assertEqual(publish.main(), 0)

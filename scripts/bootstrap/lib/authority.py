@@ -299,7 +299,7 @@ def overlay_homebrew_pulse_metadata(
 
 
 def stable_cask_metadata(casks: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
-    volatile_keys = {"version", "sourceArchive", "url", "sha256"}
+    volatile_keys = {"sourceArchive", "url", "sha256"}
     return {
         token: {
             key: value
