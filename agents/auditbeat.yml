@@ -4,19 +4,22 @@ repo: null
 docs:
   - https://www.elastic.co/docs/reference/beats/auditbeat
   - https://www.elastic.co/docs/reference/beats/auditbeat/configuring-howto-auditbeat
+  - https://www.elastic.co/docs/reference/beats/auditbeat/directory-layout
+  - https://www.elastic.co/docs/reference/beats/auditbeat/keystore
 config-file-location:
   linux:
     - /etc/auditbeat/auditbeat.yml
   unix:
     - '{extract.path}/auditbeat.yml'
 credentials-file-location:
+  linux:
+    - /etc/auditbeat/beats.keystore
   unix:
-    - ${path.config}/beats.keystore
+    - '{path.config}/beats.keystore'
 tags:
   - audit
   - cli
   - elastic
-  - linux
   - monitoring
   - security
 geiger:
@@ -31,31 +34,26 @@ geiger:
 provenance:
   category-sources:
     - >
-      Elastic Auditbeat documentation describes Auditbeat as a shipper for Linux audit
-      framework and file integrity events.
-    - 'source_facts.description: Lightweight Shipper for Audit Data'
+      Elastic official Auditbeat reference says Auditbeat audits user and process
+      activity, centralizes audit events, and detects critical file changes.
   display-name-sources:
     - Elastic official documentation uses the product name Auditbeat.
   docs-sources:
     - >
-      Elastic Auditbeat Reference is the official documentation surface:
+      Elastic official Auditbeat reference describes Auditbeat, configuration, directory
+      layout, and secrets keystore:
       https://www.elastic.co/docs/reference/beats/auditbeat
-    - >
-      Elastic Configure Auditbeat documents the default auditbeat.yml file and links to
-      Directory layout:
-      https://www.elastic.co/docs/reference/beats/auditbeat/configuring-howto-auditbeat
   repo-sources:
     - >
-      source_facts.repo already supplied as https://github.com/elastic/beats; prompt
-      requires repo:null when source_facts.repo is present.
+      source_facts.repo already provided https://github.com/elastic/beats, so repo
+      returned as null per prompt.
   tags-sources:
-    - Elastic auditbeat.reference.yml documents auditd and file_integrity modules.
     - >
-      source_facts.description and current_curation.tags identify audit, monitoring,
-      elastic, and CLI/system usage.
+      Elastic official Auditbeat reference describes audit events, Linux Audit Framework
+      collection, file-change detection, and Elastic Stack output.
 category-confidence: high
 category-path:
-  - system
+  - security
   - audit-monitoring
 display-name-confidence: high
 docs-confidence: high
