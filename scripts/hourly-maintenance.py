@@ -152,7 +152,17 @@ def commit_if_changed(message: str) -> str | None:
         return None
     if diff.returncode != 1:
         diff.check_returncode()
-    subprocess.run(["git", "commit", "-m", message, "--", *COMMIT_PATHS], cwd=ROOT, check=True)
+    changed = subprocess.run(
+        ["git", "diff", "--cached", "--name-only", "--", *COMMIT_PATHS],
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    changed_paths = [line for line in changed.stdout.splitlines() if line]
+    if not changed_paths:
+        return None
+    subprocess.run(["git", "commit", "-m", message, "--", *changed_paths], cwd=ROOT, check=True)
     result = subprocess.run(
         ["git", "rev-parse", "--short", "HEAD"],
         cwd=ROOT,
