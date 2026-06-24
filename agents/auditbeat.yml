@@ -5,8 +5,8 @@ docs:
   - https://www.elastic.co/docs/reference/beats/auditbeat
   - https://www.elastic.co/docs/reference/beats/auditbeat/configuring-howto-auditbeat
 config-file-location:
-  unix:
-    - '{path.config}/auditbeat.yml'
+  linux:
+    - /etc/auditbeat/auditbeat.yml
 credentials-file-location:
   unix:
     - ${path.config}/beats.keystore
@@ -14,7 +14,7 @@ tags:
   - audit
   - cli
   - elastic
-  - file-integrity
+  - linux-audit
   - monitoring
   - security
 geiger:
@@ -29,36 +29,31 @@ geiger:
 provenance:
   category-sources:
     - >
-      Elastic's official Auditbeat reference describes Auditbeat as collecting audit
-      events from the Linux Audit Framework and detecting changes to critical files for
-      security policy violations.
-    - 'source_facts.description says: Lightweight Shipper for Audit Data.'
+      Elastic Auditbeat reference describes collecting Linux Audit Framework events and
+      identifying potential security policy violations.
   display-name-sources:
-    - Elastic's official Auditbeat reference title uses Auditbeat.
-    - source_facts.name is auditbeat.
+    - Elastic documentation heading and product pages use the name Auditbeat.
   docs-sources:
     - >
-      Elastic's official Auditbeat reference is at
-      https://www.elastic.co/docs/reference/beats/auditbeat.
+      Elastic Auditbeat reference page describes Auditbeat as a Beat for auditing user
+      and process activity and file integrity/security policy changes.
     - >
-      Elastic's official Configure Auditbeat page says the default configuration file is
+      Elastic Auditbeat systemd page documents BEAT_CONFIG_OPTS default -c
+      /etc/auditbeat/auditbeat.yml for DEB/RPM Linux services.
+    - >
+      Elastic Configure Auditbeat page says the default configuration file is
       auditbeat.yml and links to Directory layout.
     - >
-      Elastic's official Directory layout page documents path.config as the
-      configuration-files location and default Unix package paths such as
-      /etc/auditbeat.
-    - >
-      Elastic's official auditbeat.reference.yml documents keystore.path as
-      ${path.config}/beats.keystore for keys and sensitive values.
+      Elastic auditbeat.reference.yml documents keystore.path default
+      ${path.config}/beats.keystore for sensitive values.
   repo-sources:
     - >
-      source_facts.repo already provides https://github.com/elastic/beats, so repo is
-      returned as null per prompt.
+      source_facts.repo already provided https://github.com/elastic/beats; prompt
+      requires returning repo as null when input repo is present.
   tags-sources:
     - >
-      Elastic's official Auditbeat reference describes audit events, Linux Audit
-      Framework collection, file-integrity monitoring, and Elastic Beat behavior.
-    - source_facts.executables lists the auditbeat command-line executable.
+      Elastic Auditbeat reference names Linux Audit Framework audit events, file
+      integrity changes, security policy violations, and Elastic Beat usage.
 category-confidence: high
 category-path:
   - security
