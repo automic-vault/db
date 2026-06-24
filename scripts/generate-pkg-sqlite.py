@@ -650,6 +650,31 @@ def page_search_text(page_module: Any, page: Any, locale: dict[str, Any] | None)
         pieces.extend(str(item) for item in page.approval_gate.get("rules") or [])
     if getattr(page, "agent_safety_answer", None):
         pieces.extend(str(value) for value in page.agent_safety_answer.values())
+    for match in getattr(page, "external_package_manager_matches", []):
+        if not isinstance(match, dict):
+            continue
+        pieces.extend(
+            str(match.get(key) or "")
+            for key in (
+                "command",
+                "displayName",
+                "evidence",
+                "manager",
+                "packageId",
+                "packageName",
+                "platform",
+                "reason",
+            )
+        )
+        source = match.get("source")
+        if isinstance(source, dict):
+            pieces.extend(str(source.get(key) or "") for key in ("sourceLabel", "sourceUrl"))
+        metadata = match.get("metadata")
+        if isinstance(metadata, dict):
+            pieces.extend(
+                str(metadata.get(key) or "")
+                for key in ("description", "sourcePackage", "summary")
+            )
     taxonomy = page.extra.get("pkgTaxonomy") if isinstance(page.extra.get("pkgTaxonomy"), dict) else {}
     pieces.extend(str(item) for item in page_module.taxonomy_terms(taxonomy))
     return page_module.normalize_space(" ".join(str(piece or "") for piece in pieces))
