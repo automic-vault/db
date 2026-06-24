@@ -7,17 +7,14 @@ docs:
   - https://www.elastic.co/docs/reference/beats/auditbeat/directory-layout
   - https://www.elastic.co/docs/reference/beats/auditbeat/keystore
 config-file-location:
-  linux:
-    - /etc/auditbeat/auditbeat.yml
   unix:
-    - '{extract.path}/auditbeat.yml'
+    - '{path.config}/auditbeat.yml'
 credentials-file-location:
-  linux:
-    - /etc/auditbeat/beats.keystore
   unix:
-    - '{path.config}/beats.keystore'
+    - '{path.data}/auditbeat.keystore'
 tags:
   - audit
+  - beats
   - cli
   - elastic
   - monitoring
@@ -33,28 +30,34 @@ geiger:
     - metadata:service
 provenance:
   category-sources:
-    - >
-      Elastic official Auditbeat reference says Auditbeat audits user and process
-      activity, centralizes audit events, and detects critical file changes.
+    - Elastic Auditbeat docs describe Auditbeat as a Beat for audit/security event data.
+    - 'source_facts.description: Lightweight Shipper for Audit Data.'
   display-name-sources:
-    - Elastic official documentation uses the product name Auditbeat.
+    - Elastic official docs use the product name Auditbeat.
   docs-sources:
     - >
-      Elastic official Auditbeat reference describes Auditbeat, configuration, directory
-      layout, and secrets keystore:
-      https://www.elastic.co/docs/reference/beats/auditbeat
+      Elastic Auditbeat docs at https://www.elastic.co/docs/reference/beats/auditbeat
+      are the official documentation.
+    - >
+      Elastic Auditbeat keystore docs state the keystore is created in the directory
+      defined by path.data.
+    - >
+      Elastic Configure Auditbeat docs state the default configuration file is
+      auditbeat.yml and link to Directory layout.
+    - Elastic Directory layout docs define path.config and path.data defaults.
   repo-sources:
     - >
-      source_facts.repo already provided https://github.com/elastic/beats, so repo
-      returned as null per prompt.
+      source_facts.repo already contains https://github.com/elastic/beats; prompt
+      requires returning repo as null when source_facts.repo is populated.
   tags-sources:
     - >
-      Elastic official Auditbeat reference describes audit events, Linux Audit Framework
-      collection, file-change detection, and Elastic Stack output.
+      Elastic Auditbeat docs identify Auditbeat as part of Beats and document
+      audit/security data collection.
+    - 'source_facts.description: Lightweight Shipper for Audit Data.'
 category-confidence: high
 category-path:
-  - security
-  - audit-monitoring
+  - system
+  - audit
 display-name-confidence: high
 docs-confidence: high
 repo-confidence: high
