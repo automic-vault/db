@@ -4,9 +4,16 @@ homepage: https://www.elastic.co/beats/auditbeat
 repo: https://github.com/elastic/beats
 docs:
   - https://www.elastic.co/docs/reference/beats/auditbeat
+  - https://www.elastic.co/docs/reference/beats/auditbeat/configuring-howto-auditbeat
+  - https://www.elastic.co/docs/reference/beats/auditbeat/directory-layout
+  - https://www.elastic.co/docs/reference/beats/auditbeat/keystore
 config-file-location:
-  linux: /etc/auditbeat/auditbeat.yml
-credentials-file-location: null
+  unix:
+    - /etc/auditbeat/auditbeat.yml
+    - /usr/share/auditbeat/auditbeat.yml
+    - '{extract.path}/auditbeat.yml'
+credentials-file-location:
+  unix: ${path.config}/beats.keystore
 category: security
 package-manager:
   brew: auditbeat
@@ -18,9 +25,9 @@ tags:
   - audit
   - cli
   - elastic
-  - linux
   - monitoring
   - security
+  - shipper
 description: Lightweight Shipper for Audit Data
 executables:
   - auditbeat
