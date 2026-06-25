@@ -1,14 +1,27 @@
 id: brew:aws-sso-cli
-display-name: aws-sso-cli
+display-name: AWS SSO CLI
 repo: null
 docs:
   - https://synfinatic.github.io/aws-sso-cli
+config-file-location:
+  unix:
+    - ~/.config/aws-sso/config.yaml
+    - ~/.aws-sso/config.yaml
+    - ~/.aws/config
+credentials-file-location:
+  unix:
+    - ~/.aws/sso/cache/botocore-client-id-<region>.json
+    - ~/.aws/sso/cache/<random>.json
+    - ~/.aws/cli/cache/<random>.json
+    - ~/.aws/credentials
 tags:
-  - api
   - aws
   - cli
   - credentials
+  - iam-identity-center
+  - keyring
   - sso
+  - sts
 geiger:
   category: appliance
   color: green
@@ -20,21 +33,25 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - 'source_facts.description: securely manages AWS API credentials using AWS SSO'
-  display-name-sources:
-    - source_facts.name
-  docs-sources:
     - >
-      source_facts.homepage is the official documentation site; current_curation.docs
-      matches it
+      Official README describes a secure replacement for aws configure sso focused on
+      AWS IAM Identity Center and AWS account role access.
+  display-name-sources:
+    - 'Official README title: AWS SSO CLI.'
+  docs-sources:
+    - Official README links to https://synfinatic.github.io/aws-sso-cli/ as Documentation.
   repo-sources:
-    - source_facts.repo already populated; per instruction repo returned as null
+    - >
+      source_facts.repo already provides https://github.com/synfinatic/aws-sso-cli;
+      prompt requires repo null when source_facts.repo is populated.
   tags-sources:
-    - source_facts.description
-    - source_facts.executables
+    - >
+      Official README and docs mention AWS IAM Identity Center, SSO, STS token
+      credentials, keyring storage, and managing ~/.aws/config.
 category-confidence: high
 category-path:
   - cloud-infrastructure
+  - aws-identity
 display-name-confidence: high
 docs-confidence: high
 repo-confidence: high
