@@ -1,14 +1,25 @@
 id: brew:aws-iam-authenticator
-display-name: aws-iam-authenticator
+display-name: AWS IAM Authenticator for Kubernetes
 repo: null
 docs:
+  - https://github.com/kubernetes-sigs/aws-iam-authenticator/blob/master/docs/development.md
   - https://github.com/kubernetes-sigs/aws-iam-authenticator#readme
+config-file-location:
+  unix:
+    - /etc/aws-iam-authenticator/config.yaml
+    - /etc/kubernetes/aws-iam-authenticator/kubeconfig.yaml
+credentials-file-location:
+  unix:
+    - ~/.aws/credentials
+  windows:
+    - '%UserProfile%\.aws\credentials'
 tags:
   - authentication
   - aws
   - cli
   - iam
   - kubernetes
+  - sts
 geiger:
   category: infrastructure
   color: orange
@@ -20,19 +31,26 @@ geiger:
     - text:kubernetes
 provenance:
   category-sources:
-    - 'source_facts.description: uses AWS IAM credentials to authenticate to Kubernetes'
+    - >
+      Official README describes a tool for using AWS IAM credentials to authenticate to
+      Kubernetes clusters.
   display-name-sources:
-    - source_facts.name
+    - 'Official README title: AWS IAM Authenticator for Kubernetes.'
   docs-sources:
-    - current_curation.docs README; source_facts.homepage is official GitHub repository
+    - >
+      Official GitHub README is the primary documentation surface and links to
+      docs/development.md.
   repo-sources:
-    - source_facts.repo already populated; per instruction repo returned as null
+    - source_facts.repo already provided; prompt requires returning repo as null when present.
   tags-sources:
-    - source_facts.description
-    - source_facts.package-manager
+    - >
+      Official README documents AWS IAM, Kubernetes authentication, role/user mappings,
+      and STS GetCallerIdentity.
 category-confidence: high
 category-path:
   - cloud-infrastructure
+  - kubernetes
+  - authentication
 display-name-confidence: high
 docs-confidence: high
 repo-confidence: high
