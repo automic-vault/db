@@ -1,13 +1,24 @@
 id: brew:barman
-display-name: barman
+display-name: Barman
 repo: null
 docs:
-  - https://www.pgbarman.org
+  - https://docs.pgbarman.org/release/3.12.0/user_guide/configuration.html
+  - >
+    https://www.enterprisedb.com/docs/supported-open-source/barman/single-server-streaming/step02-backup-setup
+config-file-location:
+  unix:
+    - /etc/barman.conf
+    - ~/.barman.conf
+    - /etc/barman.d/*.conf
+credentials-file-location:
+  unix:
+    - ~/.pgpass
 tags:
   - backup
   - cli
   - postgresql
   - recovery
+  - wal
 geiger:
   category: appliance
   color: green
@@ -19,19 +30,33 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - source_facts.description
+    - >
+      Official Barman docs describe configuration for backing up, recovering, and
+      replicating PostgreSQL servers.
+    - 'source_facts.description: Backup and Recovery Manager for PostgreSQL.'
   display-name-sources:
-    - current_curation.display-name
+    - Official GitHub repository title and Barman docs use Barman as the project name.
+    - 'source_facts.name: barman.'
   docs-sources:
-    - current_curation.docs
+    - >
+      EDB official Barman setup guide documents using ~/.pgpass for PostgreSQL
+      connection passwords.
+    - >
+      Official Barman configuration reference documents /etc/barman.conf,
+      ~/.barman.conf, and /etc/barman.d/*.conf.
   repo-sources:
-    - source_facts.repo populated
+    - source_facts.repo is already populated; prompt instructs returning repo as null.
   tags-sources:
-    - source_facts.description
+    - >
+      Official Barman docs cover PostgreSQL backup, recovery, replication, WAL
+      archiving, and CLI configuration.
+    - source_facts.executables lists barman and barman-cloud/barman-wal CLI tools.
 category-confidence: high
 category-path:
   - data
+  - postgresql
+  - backup
 display-name-confidence: high
-docs-confidence: medium
+docs-confidence: high
 repo-confidence: high
-tags-confidence: medium
+tags-confidence: high
