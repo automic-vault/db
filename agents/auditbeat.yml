@@ -3,21 +3,17 @@ display-name: Auditbeat
 repo: null
 docs:
   - https://www.elastic.co/docs/reference/beats/auditbeat
-  - https://www.elastic.co/docs/reference/beats/auditbeat/configuring-howto-auditbeat
-  - https://www.elastic.co/docs/reference/beats/auditbeat/directory-layout
-  - https://www.elastic.co/docs/reference/beats/auditbeat/keystore
 config-file-location:
-  unix:
+  linux:
     - /etc/auditbeat/auditbeat.yml
-    - '{path.home}/auditbeat.yml'
-credentials-file-location:
-  unix:
-    - ${path.config}/beats.keystore
+credentials-file-location: null
 tags:
   - audit
   - cli
   - elastic
+  - linux
   - monitoring
+  - security
 geiger:
   category: infrastructure
   color: orange
@@ -30,34 +26,28 @@ geiger:
 provenance:
   category-sources:
     - >
-      Elastic describes Auditbeat as collecting audit data and source_facts.description
-      says Lightweight Shipper for Audit Data.
+      Elastic describes Auditbeat as a lightweight shipper for audit data and its docs
+      cover collecting audit information and Linux audit framework events.
   display-name-sources:
-    - Elastic official docs title and source_facts.name use Auditbeat/auditbeat.
+    - Official Elastic docs and source_facts.name use Auditbeat/auditbeat.
   docs-sources:
-    - Elastic Auditbeat docs are under https://www.elastic.co/docs/reference/beats/auditbeat.
     - >
-      Elastic Configure Auditbeat says the default config file is auditbeat.yml and its
-      location varies by platform.
-    - >
-      Elastic Directory layout lists /etc/auditbeat as the deb/rpm config directory and
-      {path.home} for archive installs.
-    - >
-      Elastic auditbeat.reference.yml documents keystore.path as
-      ${path.config}/beats.keystore.
+      Official Elastic Auditbeat reference docs at
+      https://www.elastic.co/docs/reference/beats/auditbeat/; Elastic directory layout
+      documents config directory /etc/auditbeat for deb/rpm and auditbeat.reference.yml
+      says it is in the same directory as auditbeat.yml.
   repo-sources:
     - >
-      source_facts.repo already contains https://github.com/elastic/beats; prompt
-      requires repo=null when present.
+      source_facts.repo already provides https://github.com/elastic/beats; prompt
+      requires returning repo as null when input repo is present.
   tags-sources:
     - >
-      Elastic Auditbeat docs and source_facts.description identify audit data
-      shipping/monitoring.
-    - source_facts.executables lists the auditbeat CLI.
+      Official Elastic Auditbeat docs describe audit data shipping, modules,
+      Elasticsearch/Kibana output, and Linux audit collection.
 category-confidence: high
 category-path:
-  - system
-  - audit
+  - security
+  - audit-monitoring
 display-name-confidence: high
 docs-confidence: high
 repo-confidence: high
