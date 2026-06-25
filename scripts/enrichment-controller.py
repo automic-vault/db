@@ -76,7 +76,7 @@ def apply_command(run: dict[str, Any]) -> list[str]:
         str(run["run_id"]),
     ]
     if bool(run.get("include_missing_curated_fields")):
-        command.insert(5, "--include-missing-curated-fields")
+        command.append("--include-missing-curated-fields")
     else:
         command.append("--commit-after-batch")
     return command

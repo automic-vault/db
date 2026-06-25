@@ -89,7 +89,8 @@ class EnrichmentControllerTests(unittest.TestCase):
 
         self.assertIn("--include-missing-curated-fields", command)
         self.assertNotIn("--commit-after-batch", command)
-        self.assertEqual(command[-1], "20260623T010101Z")
+        self.assertEqual(command[command.index("--batch-size") + 1], "3")
+        self.assertEqual(command[-2:], ["20260623T010101Z", "--include-missing-curated-fields"])
 
     def test_apply_command_omits_include_missing_when_not_requested(self):
         controller = load_enrichment_controller()
