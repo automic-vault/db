@@ -72,7 +72,10 @@ timeout = int(sys.argv[1])
 command = sys.argv[2:]
 process = subprocess.Popen(command, start_new_session=True)
 try:
-    raise SystemExit(process.wait(timeout=timeout))
+    returncode = process.wait(timeout=timeout)
+    if returncode < 0:
+        raise SystemExit(128 + (-returncode))
+    raise SystemExit(returncode)
 except KeyboardInterrupt:
     try:
         os.killpg(process.pid, signal.SIGTERM)
