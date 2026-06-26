@@ -2,8 +2,13 @@ id: brew:buildkitd
 display-name: buildkitd
 repo: null
 docs:
-  - https://github.com/moby/buildkit/blob/master/docs/buildkitd.toml.md
+  - https://docs.docker.com/build/buildkit/toml-configuration
   - https://github.com/moby/buildkit#readme
+config-file-location:
+  unix:
+    - /etc/buildkit/buildkitd.toml
+    - ~/.config/buildkit/buildkitd.toml
+credentials-file-location: null
 tags:
   - buildkit
   - cache
@@ -11,6 +16,7 @@ tags:
   - containers
   - daemon
   - dockerfile
+  - oci
 geiger:
   category: infrastructure
   color: orange
@@ -23,31 +29,25 @@ geiger:
 provenance:
   category-sources:
     - >
-      source_facts.description says buildkitd is the daemon package for the BuildKit
-      builder toolkit.
-    - >
-      source_facts.homepage and source_facts.repo point to the official moby/buildkit
-      repository.
+      Official moby/buildkit README states BuildKit is composed of the buildkitd daemon
+      and buildctl client.
   display-name-sources:
-    - current_curation.display-name is buildkitd.
-    - source_facts.name is buildkitd.
+    - Official moby/buildkit README names the daemon binary buildkitd.
   docs-sources:
-    - >
-      Official repository docs include buildkitd.toml daemon configuration documentation
-      and the README.
-    - source_facts.repo points to the official moby/buildkit repository.
+    - Official Docker buildkitd.toml docs document daemon configuration.
+    - Official moby/buildkit README describes the buildkitd daemon.
   repo-sources:
     - >
-      source_facts.repo is already populated with https://github.com/moby/buildkit, so
-      repo is returned as null per instruction.
+      source_facts.repo is already set to https://github.com/moby/buildkit; prompt
+      requires repo null when present.
   tags-sources:
-    - current_curation.tags supplies cli.
-    - source_facts.description identifies the BuildKit daemon package.
-    - source_facts.executables lists buildkitd.
+    - >
+      Official Docker buildkitd.toml docs and moby/buildkit README document daemon,
+      container, Dockerfile, OCI worker, and cache behavior.
 category-confidence: high
 category-path:
   - developer-tools
-  - build-systems
+  - build-daemons
 display-name-confidence: high
 docs-confidence: high
 repo-confidence: high
