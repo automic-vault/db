@@ -408,6 +408,7 @@ def apply_prepared_batches(
             confidence_threshold=args.confidence_threshold,
             today=today,
             dry_run=args.dry_run,
+            preserve_existing_fields=args.include_missing_curated_fields,
         )
         add_summary(batch_summary, apply_summary)
         add_summary(summary, batch_summary)

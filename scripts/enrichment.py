@@ -794,6 +794,7 @@ def apply_results(
     confidence_threshold: str,
     today: str,
     dry_run: bool = False,
+    preserve_existing_fields: bool = False,
 ) -> dict[str, int]:
     summary = {"reviewed": len(results), "changed": 0, "rejected": 0, "skipped_low_confidence": 0, "no_op": 0}
     for result in results:
@@ -804,7 +805,13 @@ def apply_results(
             continue
         entry = state.setdefault(project_id, {})
         original = deepcopy(record)
-        changed, skipped = merge_result(record, entry, result, confidence_threshold)
+        changed, skipped = merge_result(
+            record,
+            entry,
+            result,
+            confidence_threshold,
+            preserve_existing_fields=preserve_existing_fields,
+        )
         entry["last_verified"] = today
         entry["field_confidence"] = {
             "repo": result["repo-confidence"],
@@ -824,8 +831,9 @@ def apply_results(
         if skipped:
             summary["skipped_low_confidence"] += skipped
         if not dry_run:
-            write_agent_json_record(record, result)
-            write_agent_record(record, result)
+            output_result = result_for_agent_record(original, result) if preserve_existing_fields else result
+            write_agent_json_record(record, output_result)
+            write_agent_record(record, output_result)
         if curation_facts(original) == curation_facts(record):
             summary["no_op"] += 1
             continue
@@ -852,7 +860,14 @@ def agent_record_from_result(result: dict[str, Any]) -> dict[str, Any]:
     return agent_record_from_json(result)
 
 
-def merge_result(record: dict[str, Any], entry: dict[str, Any], result: dict[str, Any], threshold: str) -> tuple[bool, int]:
+def merge_result(
+    record: dict[str, Any],
+    entry: dict[str, Any],
+    result: dict[str, Any],
+    threshold: str,
+    *,
+    preserve_existing_fields: bool = False,
+) -> tuple[bool, int]:
     skipped = 0
     ownership = entry.setdefault("field_ownership", {})
     managed = entry.setdefault("managed_values", {})
@@ -882,7 +897,9 @@ def merge_result(record: dict[str, Any], entry: dict[str, Any], result: dict[str
             managed[field] = ""
             ownership[field] = "managed" if ownership.get(field) != "manual" else ownership[field]
             continue
-        is_empty = current_value in ("", [], None) or (field == "tags" and current_value == ["cli"])
+        is_empty = missing_curated_value(field, current_value)
+        if preserve_existing_fields and not is_empty:
+            continue
         if field in confidence_fields and not confidence_allows(confidence_fields[field], threshold) and not is_empty:
             skipped += 1
             continue
@@ -902,6 +919,67 @@ def merge_result(record: dict[str, Any], entry: dict[str, Any], result: dict[str
         ownership[field] = "managed" if ownership.get(field) != "manual" else ownership[field]
         changed = True
     return changed, skipped
+
+
+def missing_curated_value(field: str, value: Any) -> bool:
+    return value in ("", [], None) or (field == "tags" and value == ["cli"])
+
+
+def result_for_agent_record(original: dict[str, Any], result: dict[str, Any]) -> dict[str, Any]:
+    agent_path = original.get("__agent_path")
+    current = parse_project_yaml(agent_path) if isinstance(agent_path, Path) and agent_path.exists() else {}
+    merged = result if not current else json_result_from_agent_record(current, result)
+    facts = curation_facts(original)
+    field_pairs = (
+        ("repo", "repo"),
+        ("display-name", "display-name"),
+        ("category", "category_path"),
+        ("docs", "docs"),
+        ("config-file-location", "config-file-location"),
+        ("credentials-file-location", "credentials-file-location"),
+        ("tags", "tags"),
+    )
+    for curated_field, result_field in field_pairs:
+        if missing_curated_value(curated_field, facts.get(curated_field)):
+            merged[result_field] = result[result_field]
+            confidence_field = f"{curated_field}-confidence"
+            if confidence_field in result:
+                merged[confidence_field] = result[confidence_field]
+            source_field = {
+                "repo": "repo_sources",
+                "display-name": "display_name_sources",
+                "category": "category_sources",
+                "docs": "docs_sources",
+                "tags": "tags_sources",
+            }.get(curated_field)
+            if source_field and source_field in result:
+                merged[source_field] = result[source_field]
+    return merged
+
+
+def json_result_from_agent_record(record: dict[str, Any], fallback: dict[str, Any]) -> dict[str, Any]:
+    provenance = record.get("provenance") if isinstance(record.get("provenance"), dict) else {}
+    category_path = record.get("category-path") or record.get("category_path") or []
+    return {
+        "id": record.get("id") or fallback["id"],
+        "repo": record.get("repo"),
+        "repo-confidence": record.get("repo-confidence") or fallback["repo-confidence"],
+        "display-name": record.get("display-name") or fallback["display-name"],
+        "display-name-confidence": record.get("display-name-confidence") or fallback["display-name-confidence"],
+        "category_path": category_path or fallback["category_path"],
+        "category-confidence": record.get("category-confidence") or fallback["category-confidence"],
+        "docs": record.get("docs") or [],
+        "docs-confidence": record.get("docs-confidence") or fallback["docs-confidence"],
+        "config-file-location": record.get("config-file-location") if "config-file-location" in record else None,
+        "credentials-file-location": record.get("credentials-file-location") if "credentials-file-location" in record else None,
+        "tags": record.get("tags") or [],
+        "tags-confidence": record.get("tags-confidence") or fallback["tags-confidence"],
+        "repo_sources": provenance.get("repo-sources") or [],
+        "docs_sources": provenance.get("docs-sources") or [],
+        "category_sources": provenance.get("category-sources") or [],
+        "tags_sources": provenance.get("tags-sources") or [],
+        "display_name_sources": provenance.get("display-name-sources") or [],
+    }
 
 
 def write_run_artifacts(run_dir: Path, input_payload: dict[str, Any], prompt: str) -> tuple[Path, Path]:

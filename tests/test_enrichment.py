@@ -239,6 +239,39 @@ class EnrichmentTests(unittest.TestCase):
         )
         self.assertEqual(record["tags"], ["cli", "git", "kubernetes", "manual"])
 
+    def test_missing_field_apply_preserves_existing_curation(self):
+        record = sample_record()
+        record["display-name"] = "Bat"
+        record["docs"] = ["https://github.com/sharkdp/bat#readme"]
+        record["category"] = "developer-tools"
+        record["tags"] = ["cli", "syntax-highlighting"]
+        state = {"brew:bat": {"field_ownership": {}, "managed_values": {}}}
+        summary = apply_results(
+            {"brew:bat": record},
+            state,
+            [
+                sample_result(
+                    **{
+                        "display-name": "wrong",
+                        "docs": ["https://example.com/wrong"],
+                        "category_path": ["security"],
+                        "tags": ["cli", "wrong"],
+                    }
+                )
+            ],
+            confidence_threshold="medium",
+            today=date.today().isoformat(),
+            dry_run=True,
+            preserve_existing_fields=True,
+        )
+        self.assertEqual(summary["changed"], 1)
+        self.assertEqual(record["display-name"], "Bat")
+        self.assertEqual(record["docs"], ["https://github.com/sharkdp/bat#readme"])
+        self.assertEqual(record["category"], "developer-tools")
+        self.assertEqual(record["tags"], ["cli", "syntax-highlighting"])
+        self.assertEqual(record["config-file-location"], {"unix": ["~/.config/bat/config"], "windows": ["%APPDATA%\\bat\\config"]})
+        self.assertEqual(record["credentials-file-location"], {"unix": ["~/.config/bat/credentials"]})
+
     def test_repo_is_applied_only_when_missing(self):
         missing = sample_record()
         missing["repo"] = None
