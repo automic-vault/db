@@ -3,6 +3,24 @@ display-name: ClamAV
 repo: null
 docs:
   - https://docs.clamav.net/
+config-file-location:
+  linux:
+    - /etc/clamav/freshclam.conf
+    - /etc/clamav/clamd.conf
+  macos:
+    - /usr/local/etc/clamav/freshclam.conf
+    - /usr/local/etc/clamav/clamd.conf
+    - /opt/local/etc/freshclam.conf
+    - /opt/local/etc/clamd.conf
+  unix:
+    - /usr/local/etc/freshclam.conf
+    - /usr/local/etc/clamd.conf
+    - /usr/local/etc/clamav-milter.conf
+  windows:
+    - HKEY_LOCAL_MACHINE/Software/ClamAV/ConfDir
+    - C:\Program Files\ClamAV
+    - C:\ClamAV
+credentials-file-location: null
 tags:
   - antivirus
   - cli
@@ -22,24 +40,28 @@ geiger:
 provenance:
   category-sources:
     - >
-      source_facts.description says Anti-virus software; official ClamAV README
-      describes an open source antivirus engine for malware and threats.
+      source_facts.description says ClamAV is anti-virus software; official docs
+      describe scanning, daemon, signature update, and malware-detection tools.
   display-name-sources:
-    - source_facts.name is clamav; official website and GitHub README use ClamAV.
+    - >
+      source_facts.name, source_facts.homepage, and official docs identify the project
+      as ClamAV.
   docs-sources:
-    - Official ClamAV GitHub README states documentation is hosted at docs.clamav.net.
+    - >
+      source_facts.homepage points to ClamAV; current_curation.docs and official site
+      use https://docs.clamav.net/ for documentation.
   repo-sources:
-    - source_facts.repo is already populated, so repo was intentionally not re-determined.
+    - >
+      source_facts.repo is already populated with https://github.com/Cisco-Talos/clamav;
+      prompt requires repo=null when source_facts.repo is already set.
   tags-sources:
     - >
-      source_facts.description and executables include antivirus scanning tools;
-      official ClamAV README describes malware/threat detection and signature
-      documentation.
+      source_facts.executables and official ClamAV usage/configuration docs cover
+      clamscan, clamd, freshclam, signatures, and daemon-based scanning.
 category-confidence: high
 category-path:
   - security
   - antivirus
-  - malware-detection
 display-name-confidence: high
 docs-confidence: high
 repo-confidence: high
