@@ -2,12 +2,33 @@ id: brew:chdig
 display-name: chdig
 repo: null
 docs:
+  - https://github.com/azat/chdig/blob/main/Documentation/Actions.md
+  - https://github.com/azat/chdig/blob/main/Documentation/FAQ.md
   - https://github.com/azat/chdig#readme
+config-file-location:
+  unix:
+    - ./clickhouse-client.[xml|yaml|yml]
+    - $XDG_CONFIG_HOME/clickhouse/config.[xml|yaml|yml]
+    - ~/.config/clickhouse/config.[xml|yaml|yml]
+    - ~/.clickhouse-client/config.[xml|yaml|yml]
+    - /etc/clickhouse-client/config.[xml|yaml|yml]
+    - path set by CLICKHOUSE_CONFIG
+    - '--config'
+credentials-file-location:
+  unix:
+    - ./clickhouse-client.[xml|yaml|yml]
+    - $XDG_CONFIG_HOME/clickhouse/config.[xml|yaml|yml]
+    - ~/.config/clickhouse/config.[xml|yaml|yml]
+    - ~/.clickhouse-client/config.[xml|yaml|yml]
+    - /etc/clickhouse-client/config.[xml|yaml|yml]
+    - path set by CLICKHOUSE_CONFIG
+    - '--config'
 tags:
   - cli
   - clickhouse
   - database
   - debugging
+  - flamegraphs
   - query-analysis
   - tui
 geiger:
@@ -21,19 +42,30 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - source_facts.description says chdig digs into ClickHouse with a TUI interface.
+    - Official README describes a top-like TUI for ClickHouse introspection and debugging.
+    - 'source_facts.description says: Dig into ClickHouse with TUI interface.'
   display-name-sources:
-    - source_facts.name is chdig and source_facts.homepage is the official chdig repository.
+    - Official README heading and source_facts.name use chdig.
   docs-sources:
     - >
-      source_facts.homepage is the official GitHub repository; the README is the
-      official documentation surface.
-  repo-sources:
-    - source_facts.repo already has a value, so repo is returned as null per instruction.
-  tags-sources:
+      Official ClickHouse Client docs at
+      https://clickhouse.com/docs/interfaces/client#configuration_files list the default
+      client config file search order.
     - >
-      source_facts.description identifies ClickHouse inspection with a TUI;
-      source_facts.executables lists chdig.
+      Official FAQ at https://github.com/azat/chdig/blob/main/Documentation/FAQ.md
+      documents --config/CLICKHOUSE_CONFIG and connection credentials.
+    - >
+      Official README at https://github.com/azat/chdig describes chdig as a ClickHouse
+      TUI and links FAQ, Actions, and developer docs.
+  repo-sources:
+    - >
+      source_facts.repo already contains https://github.com/azat/chdig; prompt requires
+      repo null when supplied.
+  tags-sources:
+    - Official FAQ documents query, connection, config, and ClickHouse diagnostics behavior.
+    - >
+      Official README lists TUI, ClickHouse, cluster, historical, flamegraph, Perfetto,
+      logs, query pipeline, and clickhouse-client compatibility features.
 category-confidence: high
 category-path:
   - developer-tools
