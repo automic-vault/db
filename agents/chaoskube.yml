@@ -3,6 +3,12 @@ display-name: chaoskube
 repo: null
 docs:
   - https://github.com/linki/chaoskube#readme
+config-file-location:
+  unix:
+    - ~/.kube/config
+credentials-file-location:
+  unix:
+    - ~/.kube/config
 tags:
   - chaos-engineering
   - cli
@@ -23,30 +29,32 @@ geiger:
 provenance:
   category-sources:
     - >
-      source_facts.description says chaoskube periodically kills random Kubernetes pods;
-      official GitHub README says it tests systems under arbitrary pod failures and
-      documents Kubernetes/Helm deployment.
+      Official README says chaoskube periodically kills random pods in a Kubernetes
+      cluster to test behavior under pod failures.
   display-name-sources:
-    - >
-      source_facts.name is chaoskube; official GitHub README heading and repository name
-      use chaoskube.
+    - Official README title and source_facts.name both identify the project as chaoskube.
   docs-sources:
     - >
-      Official GitHub README is the primary documentation surface, covering why,
-      examples, Helm install, raw manifests, configuration, filtering, limits, and
-      flags.
+      Kubernetes official docs at
+      https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/
+      document $HOME/.kube/config as the default kubeconfig path.
+    - >
+      Official README at https://github.com/linki/chaoskube#readme documents chaoskube
+      usage, configuration flags, Helm install, and kubeconfig behavior.
   repo-sources:
     - >
-      source_facts.repo already contains https://github.com/linki/chaoskube; per
-      instruction, repo is returned as null and not re-evaluated.
+      source_facts.repo already supplies https://github.com/linki/chaoskube; prompt
+      requires repo=null when source_facts.repo is present.
   tags-sources:
     - >
-      source_facts.description and official GitHub README identify Kubernetes pod
-      termination, chaos testing, Helm installation, pod filters, and Go implementation.
+      Official README documents Kubernetes pod termination, target filtering, Helm
+      installation, CLI flags/env vars, and resilience testing purpose; official go.mod
+      identifies the Go module.
 category-confidence: high
 category-path:
   - cloud-infrastructure
   - kubernetes
+  - chaos-engineering
 display-name-confidence: high
 docs-confidence: high
 repo-confidence: high
