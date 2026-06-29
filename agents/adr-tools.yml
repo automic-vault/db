@@ -5,6 +5,83 @@ docs:
   - https://github.com/npryce/adr-tools#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ADR Tools adopted the same source-control-native posture as ADRs themselves: its
+      install documentation recommends Homebrew on macOS, release archives or Git on
+      Linux/macOS, Git Bash or WSL on Windows, and shell autocomplete installation where
+      supported.
+    - >
+      The provided package metadata shows distribution through Homebrew, Debian, Ubuntu,
+      and Nix. The GitHub repository's large star and fork counts also reflect broad
+      recognition among architecture-documentation users, but its day-to-day adoption is
+      usually invisible because the generated ADR files live inside other projects'
+      repositories.
+  package-nerd-significance:
+    - >
+      ADR Tools is package-nerd significant because it is a tiny shell distribution that
+      turns an architectural practice into a Unix command. Its behavior is easy to
+      audit, easy to vendor, and easy for package managers to ship without a runtime
+      stack beyond POSIX-ish shell tooling.
+    - >
+      It also shaped conventions that other tools follow, especially the default
+      `doc/adr` directory and numbered Markdown filenames. That convention is visible in
+      adr-viewer, which defaults to the same path because ADR Tools generates it.
+  project-history:
+    - >
+      The project records its own first ADR on 2016-02-12, deciding to use Architecture
+      Decision Records for its architecture decisions. Its README positions the tool
+      around a log of ADRs, with Markdown records stored under a project subdirectory,
+      defaulting to `doc/adr`.
+    - >
+      ADR Tools deliberately uses Unix shell scripts. The project ADR directory includes
+      decisions such as implementing the tool as shell scripts, using a single command
+      with subcommands, storing records in Markdown, invoking `adr-config` for
+      installation-specific configuration, and using ISO-8601 dates.
+    - >
+      The 2018 release series added repository upgrades, ISO-8601 date format support,
+      arbitrary links between ADRs, graph visualisation output, generated tables of
+      contents, bash completion, better help text, Git Bash support on Windows, and
+      parent-directory search for ADR directories.
+  related-projects:
+    - adr-viewer consumes ADR directories and defaults to ADR Tools' `doc/adr` path.
+    - >
+      Michael Nygard's ADR article is linked from the README as the conceptual source
+      for the record format and practice.
+  sources:
+    - https://github.com/npryce/adr-tools#readme
+    - https://github.com/npryce/adr-tools/releases
+    - https://github.com/npryce/adr-tools/tree/master/doc/adr
+    - https://raw.githubusercontent.com/npryce/adr-tools/master/INSTALL.md
+    - >
+      https://raw.githubusercontent.com/npryce/adr-tools/master/doc/adr/0001-record-architecture-decisions.md
+    - source_facts.package-manager
+  summary:
+    - >
+      ADR Tools is Nat Pryce's shell-based command-line toolkit for creating and
+      maintaining Architecture Decision Records in a source tree. It became one of the
+      reference implementations for teams that wanted ADRs as simple numbered Markdown
+      files rather than a hosted documentation system.
+  timeline:
+    - '2016: Project ADR 1 recorded the use of Architecture Decision Records.'
+    - >
+      2016: Early ADRs chose shell scripts, a single command with subcommands, and
+      Markdown format.
+    - '2018: Version 2.0.0 added ISO-8601 dates and repository upgrade support.'
+    - '2018: Version 2.1.0 added arbitrary links and Graphviz history/relationship output.'
+    - '2018: Version 2.2.0 added better help, bash autocomplete, and Git Bash support.'
+    - '2018: Version 3.0.0 added parent-directory ADR discovery and graph layout improvements.'
+  usage:
+    - >
+      The common workflow is `adr init` to create an ADR directory, `adr new` to create
+      a numbered Markdown record, and `adr help` for subcommands. The README says new
+      records are opened in the user's editor through `VISUAL` or `EDITOR`.
+    - >
+      Teams use it to keep architectural decisions close to code, review them like any
+      other text change, and link or supersede older decisions as architecture changes.
+      Generated graphs and tables of contents make it useful beyond the first few
+      records.
 tags:
   - adr
   - architecture-decisions
@@ -22,27 +99,33 @@ geiger:
     - text:record
 provenance:
   category-sources:
-    - >
-      source_facts.description and official README describe command-line tools for
-      Architecture Decision Records.
+    - current_curation.category
+    - source_facts.description
   display-name-sources:
-    - Official repository README heading is ADR Tools.
+    - current_curation.display-name
+    - https://github.com/npryce/adr-tools#readme
   docs-sources:
-    - Official GitHub repository README is the primary documentation surface for adr-tools.
+    - current_curation.docs
+    - source_facts.homepage
+  history-sources:
+    - https://github.com/npryce/adr-tools#readme
+    - https://github.com/npryce/adr-tools/releases
+    - https://github.com/npryce/adr-tools/tree/master/doc/adr
+    - https://raw.githubusercontent.com/npryce/adr-tools/master/INSTALL.md
+    - >
+      https://raw.githubusercontent.com/npryce/adr-tools/master/doc/adr/0001-record-architecture-decisions.md
+    - source_facts.package-manager
   repo-sources:
-    - >
-      source_facts.repo is already set to https://github.com/npryce/adr-tools; repo
-      returned as null per instruction.
+    - source_facts.repo
   tags-sources:
-    - >
-      Official README describes managing ADRs stored as Markdown files and lists
-      architecture/documentation topics.
+    - current_curation.tags
+    - https://github.com/npryce/adr-tools#readme
+    - source_facts.description
 category-confidence: high
 category-path:
   - developer-tools
-  - documentation
-  - architecture-decisions
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

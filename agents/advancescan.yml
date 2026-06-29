@@ -3,8 +3,87 @@ display-name: AdvanceSCAN
 repo: null
 docs:
   - https://www.advancemame.it/scan-readme.html
-config-file-location: null
+config-file-location:
+  unix:
+    - ./advscan.rc
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The provided package facts show AdvanceSCAN in Homebrew, Alpine, and MacPorts.
+      That narrower distribution footprint matches its niche: it is not a general
+      archive manager, but a specialist tool for emulator users maintaining ROM and
+      sample collections.
+    - >
+      Its official documentation is written for users with existing MAME-family
+      workflows: generate an XML information file with `mame -listxml`, configure ROM
+      directories in `advscan.rc`, then run `advscan` to fix or report on the
+      collection.
+  package-nerd-significance:
+    - >
+      AdvanceSCAN matters to package nerds because it represents an older, very Unixy
+      style of emulator collection maintenance: one command, one text config file,
+      metadata on stdin, and archive mutation controlled by explicit flags.
+    - >
+      It is also historically interesting because it is the parent context for
+      AdvanceCOMP. What began as ROM-set scanning and compression helpers later split
+      into separate packages: AdvanceSCAN for correctness of ROM collections,
+      AdvanceCOMP for byte-level recompression.
+  project-history:
+    - >
+      The official history traces the tool back to MAMESCAN in 1998, when a new
+      `listinfo` command was posted to the MAME list. The project became AdvanceSCAN in
+      the 0.6 beta in May 2002, after a major revision, cleanup, C++ update, and
+      addition of AdvanceDIFF and AdvanceZIP.
+    - >
+      AdvanceSCAN 1.0 was released in May 2002. Early releases added Windows support,
+      PNG and MNG compression helpers, garbage detection for zipped ROMs, XML input
+      support, filters for working/preliminary/parent/clone ROM sets, CHD support, and
+      safer handling of damaged ZIP/CHD files.
+    - >
+      In 2003, recompression utilities were removed from AdvanceSCAN and moved into
+      AdvanceCOMP, clarifying the split between ROM-set management and general-purpose
+      recompression. Later releases focused on MAME metadata compatibility, CHD
+      versions, XML handling, 64-bit support, and build modernization.
+  related-projects:
+    - AdvanceMAME and AdvanceMESS are the emulator projects AdvanceSCAN was built to support.
+    - AdvanceCOMP split out of AdvanceSCAN to handle recompression utilities separately.
+    - >
+      MAME metadata output, especially `-listxml`, is central to how AdvanceSCAN
+      identifies and repairs ROM sets.
+  sources:
+    - https://github.com/amadvance/advancescan#readme
+    - https://www.advancemame.it/doc-advscan
+    - https://www.advancemame.it/scan-history
+    - https://www.advancemame.it/scan-readme
+    - source_facts.package-manager
+  summary:
+    - >
+      AdvanceSCAN is a command-line ROM manager for AdvanceMAME, AdvanceMESS, and other
+      MAME derivatives. It maintains zipped ROM and sample archives using emulator
+      metadata, with particular attention to differential merging, safe cleanup, and
+      ROM-set reporting.
+  timeline:
+    - '1998: MAMESCAN 0.0 posted a new MAME listinfo command.'
+    - '1999: MAMESCAN 0.1 marked the first version.'
+    - '2002: AdvanceSCAN 0.6 beta renamed the project and added AdvanceDIFF and AdvanceZIP.'
+    - '2002: AdvanceSCAN 1.0 became the first public release.'
+    - '2003: AdvanceSCAN 1.5 removed recompression utilities into the AdvanceCOMP package.'
+    - '2004: AdvanceSCAN added XML, filtering, CHD, and safer damaged archive handling.'
+    - '2013: AdvanceSCAN 1.17 moved into a git repository.'
+    - '2015: AdvanceSCAN 1.18 updated to a new autoconf/git format.'
+  usage:
+    - >
+      A typical workflow starts by creating `advscan.rc` in the current directory or
+      passing another file with `--cfg`. The config names ROM, new ROM, unknown ROM,
+      import, sample, and disk paths. The tool then reads emulator metadata from
+      standard input, commonly from `mame -listxml`, and applies operations such as
+      `advscan -R < info.xml` or report generation.
+    - >
+      AdvanceSCAN is intentionally conservative about data loss. The docs say removed or
+      overwritten ZIP contents are saved under unknown directories, damaged archives are
+      renamed, and dry-run/report modes exist for checking actions before modifying a
+      set.
 tags:
   - advancemame
   - advancemess
@@ -22,30 +101,32 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description says it is a ROM manager for AdvanceMAME/MESS; official
-      AdvanceSCAN page says it is a command-line ROM manager for AdvanceMAME,
-      AdvanceMESS, and MAME derivatives.
+    - current_curation.category
+    - source_facts.description
   display-name-sources:
-    - current_curation.display-name gives AdvanceSCAN; official project page uses AdvanceSCAN.
+    - current_curation.display-name
+    - https://www.advancemame.it/scan-readme
   docs-sources:
-    - >
-      Official AdvanceSCAN README page is the project documentation surface; equivalent
-      extensionless official page was also checked.
+    - current_curation.docs
+    - https://www.advancemame.it/scan-readme
+    - source_facts.homepage
+  history-sources:
+    - https://github.com/amadvance/advancescan#readme
+    - https://www.advancemame.it/doc-advscan
+    - https://www.advancemame.it/scan-history
+    - https://www.advancemame.it/scan-readme
+    - source_facts.package-manager
   repo-sources:
-    - >
-      source_facts.repo is already set to https://github.com/amadvance/advancescan; repo
-      returned as null per instruction.
+    - source_facts.repo
   tags-sources:
-    - >
-      Official AdvanceSCAN page describes zip archive ROM management and differential
-      ROM set generation.
+    - current_curation.tags
+    - https://www.advancemame.it/scan-readme
+    - source_facts.description
 category-confidence: high
 category-path:
   - games
-  - emulation
-  - rom-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

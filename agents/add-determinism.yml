@@ -5,9 +5,69 @@ docs:
   - https://github.com/keszybz/add-determinism#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README documents intended integration with RPM build-root postprocessing
+      through --brp mode and links to redhat-rpm-config pull requests adding add-det and
+      linkdupes to %__os_install_post. The supplied package-manager metadata also shows
+      packaging in Homebrew, Fedora/DNF, Nix, and Arch/pacman.
+  package-nerd-significance:
+    - >
+      This is a small but very package-manager-native tool: it encodes distro build-root
+      concerns, reproducible-build conventions, and RPM macro integration in one binary
+      crate. For package nerds, the interesting part is not a new file format but a
+      practical attempt to make post-build cleanup deterministic, portable across
+      builders, and cheap to add to packaging pipelines.
+  project-history:
+    - >
+      The GitHub repository was created in March 2024, and the official README presents
+      the project as a from-scratch Rust implementation inspired by Debian's
+      strip-nondeterminism. The README explains the Fedora/RHEL motivation directly: the
+      author wanted tooling suitable for RPM buildroots without pulling Perl into all
+      build environments, and with behavior tuned for Fedora-style artifacts such as
+      Python bytecode.
+    - >
+      The project quickly grew beyond a single timestamp scrubber. add-det rewrites
+      supported archive and generated-file formats in place while preserving safety on
+      failures; linkdupes handles duplicate files in build trees while accounting for
+      SOURCE_DATE_EPOCH and SELinux contexts.
+  related-projects:
+    - strip-nondeterminism is cited by the README as the inspiration.
+    - redhat-rpm-config is cited by the README for RPM post-install integration.
+  sources:
+    - https://api.github.com/repos/keszybz/add-determinism
+    - https://api.github.com/repos/keszybz/add-determinism/tags?per_page=100
+    - https://github.com/keszybz/add-determinism#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      add-determinism is a Rust package-build postprocessor for removing common sources
+      of nondeterminism after a build has produced files. Its two command-line programs,
+      add-det and linkdupes, are aimed at reproducible package builds rather than
+      general end-user file cleanup.
+  timeline:
+    - '2024-03: GitHub repository created.'
+    - '2024: v0.1.0 appears in the official tag list.'
+    - >
+      Current README: add-det and linkdupes are documented as build postprocessors for
+      reproducible package builds.
+  usage:
+    - >
+      Package maintainers run add-det over files or directories to clamp or strip
+      metadata in ar, jar, javadoc HTML, gzip, pyc, and zip outputs. In check mode it
+      reports files that would be modified without rewriting them, which makes it useful
+      in reproducibility tests.
+    - >
+      linkdupes walks build output trees and hardlinks files with identical content and
+      compatible metadata. Its package-build angle is that it can clamp mtimes against
+      SOURCE_DATE_EPOCH and avoid unsafe hardlinking across mismatched SELinux contexts.
 tags:
   - cli
   - reproducible-builds
+  - rpm
+  - rust
+  - source-date-epoch
 geiger:
   category: appliance
   color: green
@@ -19,23 +79,29 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - current_curation.category
+    - official README describes package-build reproducibility tools.
     - source_facts.description
   display-name-sources:
-    - 'official README: https://github.com/keszybz/add-determinism#readme'
+    - official GitHub repository name.
     - source_facts.name
   docs-sources:
-    - 'official README: https://github.com/keszybz/add-determinism#readme'
-    - source_facts.homepage
+    - source_facts.homepage and official GitHub README.
+  history-sources:
+    - https://api.github.com/repos/keszybz/add-determinism
+    - https://api.github.com/repos/keszybz/add-determinism/tags?per_page=100
+    - https://github.com/keszybz/add-determinism#readme
+    - source_facts.package-manager
   repo-sources:
-    - source_facts.repo already present; per instruction repo returned as null
+    - source_facts.repo is already populated; prompt requires repo to be returned as null.
   tags-sources:
-    - current_curation.tags
-    - source_facts.description
+    - official README usage and processors.
+    - source_facts.executables
 category-confidence: high
 category-path:
   - developer-tools
+  - reproducible-builds
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
