@@ -5,6 +5,69 @@ docs:
   - https://github.com/kaegi/alass
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Official releases provide Windows and Linux executables, while source builds use
+      Rust and Cargo. The supplied package-manager facts show distribution through
+      Homebrew as `alass` and Scoop as `main/alass`.
+    - >
+      The tool's adoption sits in the media-maintenance niche: users with mismatched
+      subtitle files, different cuts, advertisement breaks, or framerate drift can run a
+      local binary instead of manually editing subtitle timestamps.
+  package-nerd-significance:
+    - >
+      alass is a neat package-manager specimen because it wraps a specialized media
+      algorithm into a normal CLI install. The package saves users from compiling a Rust
+      workspace and C voice-activity component just to fix one badly timed subtitle
+      file.
+    - >
+      It also shows the recurring package-manager pattern where the executable name
+      differs from the crate/workspace internals: Homebrew users get `alass-cli`, while
+      the human-facing project name remains simply `alass`.
+  project-history:
+    - >
+      The public GitHub repository was created in February 2017. The README ties the
+      algorithmic basis to the author's bachelor's thesis and presentation, and notes
+      that the program was previously called `aligner` before being renamed to `alass`
+      because the old name was hard to find in search engines.
+    - >
+      The workspace is split into `alass-core`, the reusable algorithm library, and
+      `alass-cli`, the official command-line tool for end users. That split lets
+      downstream code reuse the synchronization algorithm while package managers expose
+      the practical CLI.
+  related-projects:
+    - 'alass-core: reusable library crate containing the synchronization algorithm.'
+    - 'alass-cli: official command-line tool for end users.'
+    - 'FFmpeg and ffprobe: external tools used by alass to extract audio from video references.'
+  sources:
+    - https://api.github.com/repos/kaegi/alass
+    - https://github.com/kaegi/alass
+    - input source_facts.package-manager
+  summary:
+    - >
+      alass is a Rust command-line tool for Automatic Language-Agnostic Subtitle
+      Synchronization. It aligns subtitle timing to a movie or to another subtitle file,
+      correcting offsets, splits, and framerate differences without depending on the
+      spoken language.
+  timeline:
+    - '2017: Public GitHub repository created.'
+    - >
+      Initial project period: README documents the bachelor's thesis and presentation
+      behind the algorithm.
+    - 'Later: Project renamed from `aligner` to `alass` for searchability.'
+    - '2023: Repository metadata shows continued activity into late 2023.'
+  usage:
+    - >
+      Basic use is `alass movie.mp4 incorrect_subtitle.srt output.srt`, or using a
+      reference subtitle instead of a video file. For video references, `ffmpeg` and
+      `ffprobe` are used to extract audio, with paths overridable through
+      `ALASS_FFMPEG_PATH` and `ALASS_FFPROBE_PATH`.
+    - >
+      The README documents tuning with `--split-penalty` and a faster `--no-splits` mode
+      when only a constant shift is desired. Supported subtitle formats include `.srt`,
+      `.ssa`, `.ass`, and `.idx`, while common video formats are supported through
+      FFmpeg.
 tags:
   - cli
   - subtitles
@@ -21,21 +84,24 @@ geiger:
     - text:sync
 provenance:
   category-sources:
-    - >
-      current_curation.category_path; source_facts.description: Automatic
-      Language-Agnostic Subtitle Synchronization
+    - Official README describes synchronizing subtitles to movies.
   display-name-sources:
-    - source_facts.name; current_curation.display-name
+    - Official GitHub README and source_facts.name.
   docs-sources:
-    - source_facts.homepage and current_curation.docs point to the official GitHub README
+    - Official GitHub README is the primary documentation surface.
+  history-sources:
+    - https://api.github.com/repos/kaegi/alass
+    - https://github.com/kaegi/alass
+    - input source_facts.package-manager
   repo-sources:
-    - source_facts.repo already provided; per instruction repo returned as null
+    - source_facts.repo is already populated, so repo is returned as null per prompt.
   tags-sources:
-    - current_curation.tags; source_facts.description and executable alass-cli
+    - source_facts.description and official README.
 category-confidence: high
 category-path:
   - media
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -2,13 +2,77 @@ id: brew:akamai
 display-name: Akamai CLI
 repo: null
 docs:
+  - https://techdocs.akamai.com/developer/docs/about-clis
   - https://github.com/akamai/cli
 config-file-location:
   unix:
-    - ~/.edgerc
+    - ~/.akamai-cli/config
 credentials-file-location:
   unix:
     - ~/.edgerc
+history:
+  adoption-history:
+    - >
+      Adoption follows Akamai's developer and operations audience. Official instructions
+      cover release binaries, Homebrew, Docker images, and building from source, which
+      made the CLI available both to local workstation users and CI/container users.
+    - >
+      The README explicitly documents the Homebrew formula path for users who want
+      package-manager updates, while non-Homebrew installs can use the CLI's own upgrade
+      check introduced for v0.3.0 or later.
+  package-nerd-significance:
+    - >
+      Akamai CLI is interesting to package nerds because it is both a package and a
+      package host. Homebrew installs the base binary, and the binary then manages its
+      own Git-backed command packages in `$HOME/.akamai-cli`.
+    - >
+      That layered model is common among vendor CLIs with broad API surfaces: keep the
+      base command stable, then let product teams ship smaller command repositories
+      without turning one formula into a giant monolith.
+  project-history:
+    - >
+      The public GitHub repository was created in May 2017. The README describes a base
+      CLI that can install ready-to-use product packages or serve as a framework for
+      custom solutions written in Go, Python, or JavaScript.
+    - >
+      The project adopted a package-oriented model inside the CLI itself. Built-in
+      commands such as `install`, `uninstall`, `update`, `upgrade`, `search`, and
+      `config` manage command packages under `$HOME/.akamai-cli`, while product packages
+      use executable naming conventions such as `akamai-<command>`.
+  related-projects:
+    - >
+      Akamai EdgeGrid: the authentication scheme and `.edgerc` credential format used by
+      Akamai-branded CLI packages.
+    - 'akamai-docker: official Docker images that bundle the CLI and public packages.'
+    - >
+      Akamai product CLI packages: GitHub repositories named with the `cli-` convention
+      and installable through `akamai install`.
+  sources:
+    - https://api.github.com/repos/akamai/cli
+    - https://github.com/akamai/cli
+    - https://techdocs.akamai.com/developer/docs/about-clis
+    - input source_facts.repo
+  summary:
+    - >
+      Akamai CLI is Akamai's command-line framework for configuring Akamai platform
+      products and APIs. The base `akamai` command is intentionally extensible: users
+      install product-specific command packages, and those packages share conventions
+      for authentication, command naming, and updates.
+  timeline:
+    - '2017: Public `akamai/cli` repository created.'
+    - >
+      v0.3.0 and later: README documents first-run automatic upgrade checks for
+      non-Homebrew installs.
+    - '2026: Repository metadata still points users to Akamai developer CLI documentation.'
+  usage:
+    - >
+      The central operational file is `~/.edgerc`, the standard EdgeGrid credential
+      file. Akamai-branded packages use it by default, and commands can override the
+      file and section with `--edgerc` and `--section`.
+    - >
+      A common workflow is to install the base `akamai` command, install a product
+      package such as Property Manager, then run product-specific commands with shared
+      global flags such as `--accountkey`, `--edgerc`, and `--section`.
 tags:
   - akamai
   - api
@@ -25,20 +89,29 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - 'Homebrew source_facts description: Akamai API CLI toolkit'
+    - >
+      Official README describes configuring Akamai's platform and products from the
+      command line.
   display-name-sources:
-    - official repository naming
+    - Official README heading.
   docs-sources:
-    - official GitHub README
+    - >
+      GitHub repository homepage points to official Akamai developer CLI docs; upstream
+      README is official source documentation.
+  history-sources:
+    - https://api.github.com/repos/akamai/cli
+    - https://github.com/akamai/cli
+    - https://techdocs.akamai.com/developer/docs/about-clis
+    - input source_facts.repo
   repo-sources:
-    - source_facts.repo already populated
+    - source_facts.repo is already populated, so repo is returned as null per prompt.
   tags-sources:
-    - source_facts description
+    - source_facts.description and official Akamai CLI README.
 category-confidence: high
 category-path:
   - cloud-infrastructure
-  - cli
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

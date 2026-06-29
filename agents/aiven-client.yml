@@ -10,6 +10,70 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.config/aiven/aiven-credentials.json
+history:
+  adoption-history:
+    - >
+      Adoption is mainly tied to Aiven customers and operators rather than to a
+      general-purpose developer audience. Official docs document pip and Homebrew
+      installation, and the Homebrew formula appears in the input package-manager facts
+      as `brew:aiven-client`.
+    - >
+      The tool's durable package-manager value is that it gives Homebrew users a
+      first-party `avn` binary without needing to remember Python packaging details,
+      while still staying aligned with the PyPI package and the upstream Aiven API.
+  package-nerd-significance:
+    - >
+      For package-manager users, `aiven-client` is a classic vendor CLI formula: the
+      package is not interesting because it is a new language runtime, but because it
+      pins a first-party cloud API surface into reproducible local tooling.
+    - >
+      The split between PyPI, uvx, and Homebrew also makes it a useful example of a
+      Python command-line package that needs to feel native in several installer
+      cultures while preserving one executable name, `avn`.
+  project-history:
+    - >
+      The public GitHub repository was created in December 2015, fitting Aiven's early
+      period of exposing its managed-service platform through APIs and automation
+      tooling. The README describes `aiven-client (avn)` as the official command-line
+      client for Aiven and positions it beside the backend service rather than as a
+      third-party wrapper.
+    - >
+      The project remained a Python CLI with a small Unix-friendly surface: install from
+      PyPI or Homebrew, authenticate once, then drive Aiven resources through commands
+      that can emit raw REST API JSON for use with tools such as `jq`.
+  related-projects:
+    - 'Aiven API: the REST API surface that the CLI exposes for shell usage.'
+    - >
+      Aiven MCP: a newer official Aiven tool documented alongside the CLI for
+      natural-language management of Aiven services.
+  sources:
+    - https://aiven.io/docs/tools/cli
+    - https://api.github.com/repos/aiven/aiven-client
+    - https://github.com/aiven/aiven-client
+    - input source_facts.package-manager.brew
+  summary:
+    - >
+      Aiven CLI is the official command-line client for Aiven's managed cloud services
+      platform. It is distributed as the `aiven-client` Python package and installs the
+      `avn` executable, giving users a scriptable interface to Aiven projects, services,
+      users, events, clouds, and access tokens.
+  timeline:
+    - '2015: Public GitHub repository created for `aiven/aiven-client`.'
+    - 'Later: Official docs document PyPI, uvx, and Homebrew installation paths.'
+    - >
+      2026: Official docs still present the Aiven CLI as the scriptable command-line
+      interface for the Aiven platform.
+  usage:
+    - >
+      Typical use starts with `avn user login`, either with a username/password flow or
+      an access token generated in the Aiven Console. The client can also read an auth
+      token from `~/.config/aiven/aiven-credentials.json` and a default project from
+      `~/.config/aiven/aiven-client.json`.
+    - >
+      The CLI is used for project selection, cloud-region listing, service management,
+      event inspection, access-token management, and automation scripts. Its `--json`
+      output is explicitly documented for piping REST API responses into other
+      command-line tools.
 tags:
   - aiven
   - api
@@ -27,24 +91,27 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - official Aiven docs say the CLI uses the Aiven platform and services through the API
-    - 'source_facts.description: Official command-line client for Aiven'
+    - >
+      Official docs describe the CLI as the scriptable interface to Aiven's platform and
+      services.
   display-name-sources:
-    - 'official docs title: Aiven CLI'
-    - 'official repository description: official command-line client for Aiven'
+    - Official docs title and upstream README.
   docs-sources:
-    - official Aiven CLI documentation
-    - official docs link to the aiven-client GitHub repository
+    - Official Aiven CLI docs page and upstream README.
+  history-sources:
+    - https://aiven.io/docs/tools/cli
+    - https://api.github.com/repos/aiven/aiven-client
+    - https://github.com/aiven/aiven-client
+    - input source_facts.package-manager.brew
   repo-sources:
-    - official Aiven docs related pages link to aiven-client repository on GitHub
-    - official GitHub repository description identifies it as the official Aiven CLI
+    - Official docs link to the aiven-client GitHub repository; source_facts.repo is empty.
   tags-sources:
-    - official docs describe scriptable Aiven platform/service management through the API
-    - source_facts.description
+    - source_facts.description, source_facts.executables, official Aiven CLI docs.
 category-confidence: high
 category-path:
   - cloud-infrastructure
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

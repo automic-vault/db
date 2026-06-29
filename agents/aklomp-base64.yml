@@ -5,6 +5,73 @@ docs:
   - https://github.com/aklomp/base64
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The project is packaged across several ecosystems in the supplied input facts:
+      Homebrew as `aklomp-base64`, Alpine as `base64`, Chocolatey as `base64`, MacPorts
+      as `base64`, and Scoop as `main/base64`.
+    - >
+      Its adoption is mostly among users who need a faster streaming Base64
+      implementation or a small embeddable C library rather than among users seeking a
+      new interface. The README emphasizes a self-contained object file, a matching C
+      header, and a standalone test binary compatible with the system utility style.
+  package-nerd-significance:
+    - >
+      This is the sort of package that package managers preserve because a tiny boring
+      utility hides a lot of CPU-specific detail. The interesting part is not the
+      command syntax; it is the portable packaging of SIMD code paths, runtime dispatch,
+      and a fallback that still works on plain C99 targets.
+    - >
+      The Homebrew formula name is also notable: `aklomp-base64` distinguishes this
+      implementation from the platform-provided `base64`, which is exactly the naming
+      problem binary package managers run into with faster replacements for POSIX-ish
+      tools.
+  project-history:
+    - >
+      The public GitHub repository was created in September 2013. The README says that,
+      at the time of original release, the author believed it was the only Base64
+      library offering SIMD acceleration, and links to the author's article explaining a
+      SIMD approach to Base64 encoding and decoding.
+    - >
+      Over time the project accumulated multiple optimized codecs: SSSE3, SSE4.1,
+      SSE4.2, AVX, AVX2, AVX512, NEON, AArch64/NEON, plain 32/64-bit fallback routines,
+      and optional OpenMP parallelism. The README records contributions and influence
+      from Inkymail's fork and Wojciech Mula's SIMD Base64 work.
+  related-projects:
+    - >
+      Inkymail/base64: fork credited for original AVX2, NEON, and AArch64/NEON codec
+      contributions.
+    - >
+      Wojciech Mula's Base64 SIMD work: source of optimizations and AVX512 encoder basis
+      credited in the README.
+    - 'System `base64` utilities: the behavioral comparison point for the standalone binary.'
+  sources:
+    - https://api.github.com/repos/aklomp/base64
+    - https://github.com/aklomp/base64
+    - input source_facts.package-manager
+  summary:
+    - >
+      aklomp/base64 is a fast C99 Base64 streaming encoder/decoder and library with SIMD
+      and OpenMP acceleration. Homebrew installs it as `aklomp-base64` to avoid
+      colliding conceptually with the standard `base64` utility while still shipping a
+      standalone `base64`-style command.
+  timeline:
+    - '2013: Public GitHub repository created.'
+    - >
+      Original release period: README says the project was, to the author's knowledge,
+      the only SIMD-accelerated Base64 library.
+    - 'Later: AVX2, NEON, AArch64/NEON, AVX512, and OpenMP paths are documented in the README.'
+    - '2025: Repository metadata shows continued maintenance activity.'
+  usage:
+    - >
+      As a command-line tool, it reads and writes streaming Base64 data in the spirit of
+      existing Unix `base64` programs. As a library, callers include
+      `include/libbase64.h` and link `lib/libbase64.o` or their own build product.
+    - >
+      The code chooses optimized codecs at runtime on x86, can be compiled with
+      feature-specific flags, and exposes flags such as `BASE64_FORCE_AVX2`,
+      `BASE64_FORCE_NEON64`, and `BASE64_FORCE_PLAIN` for testing or explicit selection.
 tags:
   - base64
   - c
@@ -23,26 +90,24 @@ geiger:
     - text:stream
 provenance:
   category-sources:
-    - official GitHub repository description matches source_facts.description
-    - >
-      source_facts.description: Fast Base64 stream encoder/decoder in C99, with SIMD
-      acceleration
+    - Official README describes a C99 library and standalone encoder/decoder utility.
   display-name-sources:
-    - current_curation.display-name
-    - 'official GitHub repository name: aklomp/base64'
+    - Official GitHub repository owner/name.
   docs-sources:
-    - official GitHub README is the primary documentation surface
+    - Official GitHub README is the primary documentation surface.
+  history-sources:
+    - https://api.github.com/repos/aklomp/base64
+    - https://github.com/aklomp/base64
+    - input source_facts.package-manager
   repo-sources:
-    - source_facts.repo already provided; per instruction repo returned as null
+    - source_facts.repo is already populated, so repo is returned as null per prompt.
   tags-sources:
-    - >
-      official repository description identifies Base64 stream encoder/decoder with SIMD
-      acceleration
-    - source_facts.description
+    - source_facts.description and official README.
 category-confidence: high
 category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
