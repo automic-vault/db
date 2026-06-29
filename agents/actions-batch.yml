@@ -2,18 +2,62 @@ id: brew:actions-batch
 display-name: actions-batch
 repo: null
 docs:
+  - https://blog.alexellis.io/github-actions-timesharing-supercomputer
   - https://github.com/alexellis/actions-batch#readme
 config-file-location: null
 credentials-file-location:
   unix:
     - ~/pat.txt
     - ~/batch
-    - ./.secrets/*
+    - .secrets/*
+history:
+  adoption-history:
+    - >
+      The README targets GitHub-hosted runners, private repositories, self-hosted
+      runners, and Actuated runners, so adoption is mostly in the GitHub Actions and
+      self-hosted runner niche rather than as a general batch scheduler.
+  package-nerd-significance:
+    - >
+      For package-manager users, actions-batch is interesting because it packages GitHub
+      Actions as an ad hoc batch-compute backend: a single local CLI wraps repository
+      creation, workflow generation, token handling, secrets, and artifact download.
+  project-history:
+    - >
+      The project appeared as a public GitHub repository in October 2022 and was
+      documented by the author in a blog post that explains the time-sharing analogy,
+      disposable repository workflow, and artifact retrieval model. Public releases
+      began in December 2023 with v0.0.1.
+  related-projects:
+    - >
+      The README points readers to alexellis/run-job for one-shot Kubernetes jobs and
+      OpenFaaS for portable functions.
+  sources:
+    - Author blog post linked from the README for project framing.
+    - GitHub repository and releases API for creation and release dates.
+    - Official README for usage, supported runners, secrets, artifacts, and related projects.
+  summary:
+    - >
+      actions-batch is a small Go CLI by Alex Ellis for submitting shell scripts to
+      disposable GitHub Actions workflows and collecting logs or artifacts. Its own
+      description frames it as a time-sharing supercomputer built on GitHub Actions.
+  timeline:
+    - '2022: Public GitHub repository created.'
+    - '2023: README examples show artifact download and secret injection workflows.'
+    - '2023: v0.0.1 initial release published on GitHub.'
+    - '2023: v0.0.3 followed the next day with logging changes.'
+  usage:
+    - >
+      Users pass a script with --file, identify an owner with --owner, provide a GitHub
+      token via --token-file, and optionally pass secrets via --secrets-from. The tool
+      creates a temporary workflow, runs it, and can download files placed in an uploads
+      directory.
 tags:
+  - artifacts
   - automation
   - batch
   - cli
   - github-actions
+  - self-hosted-runners
 geiger:
   category: appliance
   color: green
@@ -25,25 +69,36 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - 'Official README: https://github.com/alexellis/actions-batch#readme'
-    - current_curation.category_path
-    - source_facts.description
+    - >
+      Official README describes submitting scripts to GitHub Actions runners and
+      downloading artifacts.
+    - 'source_facts.description: Time-sharing supercomputer built on GitHub Actions.'
   display-name-sources:
-    - 'Official README: https://github.com/alexellis/actions-batch#readme'
-    - source_facts.name
+    - Official README title is actions-batch.
+    - source_facts.name is actions-batch.
   docs-sources:
-    - Official README documents --token-file examples and --secrets-from .secrets
-    - 'Official README: https://github.com/alexellis/actions-batch#readme'
+    - Official README links the author blog post and documents usage examples.
+    - source_facts.homepage is the author's official project blog post.
+  history-sources:
+    - Author blog post linked from the README for project framing.
+    - GitHub repository and releases API for creation and release dates.
+    - Official README for usage, supported runners, secrets, artifacts, and related projects.
   repo-sources:
-    - source_facts.repo already populated; per instruction, repo returned null
+    - >
+      source_facts.repo already provides https://github.com/alexellis/actions-batch;
+      prompt requires repo null when source_facts.repo is present.
   tags-sources:
-    - 'Official README: https://github.com/alexellis/actions-batch#readme'
-    - current_curation.tags
-    - source_facts.description
+    - >
+      Official README documents GitHub Actions runners, batch job scripts, secrets, and
+      artifact download.
+    - source_facts.executables lists actions-batch.
 category-confidence: high
 category-path:
   - cloud-infrastructure
+  - ci
+  - batch-computing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

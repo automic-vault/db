@@ -10,10 +10,71 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.acme.sh/account.conf
+history:
+  adoption-history:
+    - >
+      acme.sh became a popular package-manager ACME client because it fits shared
+      hosting, appliances, routers, and small servers where a shell-only dependency
+      profile matters. The official README's 'Who Uses acme.sh?' section names
+      deployments and integrations such as FreeBSD.org, Proxmox,
+      pfSense/OPNsense-adjacent tooling, and other hosting/control-panel environments.
+    - >
+      The input package-manager facts show acme.sh packaged across Homebrew, Alpine,
+      Debian, Nix, and Arch. The GitHub API reports a large public repository with tens
+      of thousands of stars and thousands of forks, consistent with broad operational
+      adoption.
+  package-nerd-significance:
+    - >
+      acme.sh matters to package nerds because it is a rare security-critical tool whose
+      portability comes from plain POSIX-ish shell rather than a language runtime. That
+      makes it attractive for Homebrew, distro, appliance, and container packaging,
+      while its large dnsapi collection creates a sprawling map of DNS provider
+      integrations in one scriptable package.
+  project-history:
+    - >
+      The GitHub repository was created in December 2015, shortly after Let's Encrypt
+      made ACME-based certificate automation a practical mainstream workflow. The
+      official README describes acme.sh as a full ACME protocol implementation written
+      in Unix shell and tested across Linux, BSDs, macOS, Solaris-family systems, Haiku,
+      and Windows via Cygwin.
+    - >
+      The project grew from a Let's Encrypt-oriented client into a general ACME client.
+      Its README lists support for multiple CAs including ZeroSSL, Let's Encrypt,
+      SSL.com, Google Public CA, Actalis, Pebble, and any RFC 8555-compliant CA, while
+      the wiki documents the large DNS API surface used for automated DNS-01 validation.
+  related-projects:
+    - >
+      Related projects include Let's Encrypt, ZeroSSL, Certbot, Pebble, RFC 8555 ACME
+      servers, and the DNS provider APIs supported by acme.sh's dnsapi wiki.
+  sources:
+    - >
+      Official README, official wiki, official dnsapi wiki page, GitHub
+      repository/release metadata, and source_facts.package-manager.
+  summary:
+    - >
+      acme.sh is a pure Unix shell ACME client for issuing, renewing, and installing TLS
+      certificates. It is designed around a small shell script, broad Unix
+      compatibility, no Python dependency, and automated renewals through cron.
+  timeline:
+    - '2015-12-26: GitHub repository created.'
+    - >
+      2016-04-06: Earliest GitHub release metadata in the current repository lists
+      version 1.2.2.
+    - '2016-07-02: Version 2.3.0 tag commit appears in the repository tag history.'
+    - '2024: 3.0.x releases continue regular bug-fix and integration work.'
+    - '2026-04-28: Release 3.1.3 published.'
+  usage:
+    - >
+      Typical package usage installs the acme.sh command, stores working state under
+      ~/.acme.sh by default, creates a cron renewal job, and issues certificates with
+      webroot, standalone, TLS-ALPN, Apache, Nginx, DNS, DNS alias, stateless, or DNS
+      persist modes. DNS API credentials are exported once and then saved into
+      ~/.acme.sh/account.conf for later renewal runs.
 tags:
   - acme
   - certificates
   - cli
+  - dns-01
   - letsencrypt
   - shell
   - tls
@@ -29,26 +90,32 @@ geiger:
 provenance:
   category-sources:
     - >
-      current_curation.category_path; official README describes an ACME protocol client
-      for issuing and renewing certificates.
+      Official README describes a full ACME protocol client for issuing and renewing
+      SSL/TLS certificates.
   display-name-sources:
-    - source_facts.name; official README heading uses acme.sh.
+    - Official README title and source_facts.name use acme.sh.
   docs-sources:
     - >
-      Official README links the wiki and provides install, issue, renew, DNS, and
-      certificate installation usage.
+      Official README links the GitHub wiki as the documentation surface and also serves
+      as official repository documentation.
+  history-sources:
+    - >
+      Official README, official wiki, official dnsapi wiki page, GitHub
+      repository/release metadata, and source_facts.package-manager.
   repo-sources:
     - >
-      source_facts.repo is already populated; repo intentionally returned as null per
-      instruction.
+      source_facts.repo is already set to https://github.com/acmesh-official/acme.sh;
+      prompt requires returning repo as null when already supplied.
   tags-sources:
     - >
-      current_curation.tags; official README describes ACME, certificates, shell
-      implementation, supported CAs, and DNS modes.
+      Official README lists ACME protocol, TLS certificates, DNS mode, shell
+      compatibility, Let's Encrypt, and other CAs.
 category-confidence: high
 category-path:
   - security
+  - tls-certificates
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
