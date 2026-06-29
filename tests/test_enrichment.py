@@ -17,6 +17,7 @@ from scripts.enrichment import (
     hash_source_facts,
     needs_new_curation,
     normalize_docs,
+    normalize_history,
     normalize_path_locations,
     normalize_repo,
     normalize_tags,
@@ -76,6 +77,16 @@ def sample_result(**overrides):
         "credentials-file-location": {
             "unix": ["~/.config/bat/credentials"],
         },
+        "history": {
+            "summary": ["bat is a cat-style source viewer for terminals."],
+            "project-history": ["bat was created as a modern clone of cat with syntax highlighting and Git integration."],
+            "adoption-history": ["It became part of the wave of Rust command-line tools packaged by Homebrew and other managers."],
+            "usage": ["Developers use bat as an interactive replacement for cat and as a pager companion."],
+            "package-nerd-significance": ["It is often packaged alongside ripgrep, fd, and exa as an example of modern Unix-style CLI replacements."],
+            "timeline": ["2018: Homebrew package metadata describes bat as a cat clone with syntax highlighting."],
+            "related-projects": ["ripgrep", "fd"],
+        },
+        "history-confidence": "medium",
         "tags": ["cli-tool", "git", "k8s"],
         "tags-confidence": "high",
         "repo_sources": [],
@@ -83,6 +94,7 @@ def sample_result(**overrides):
         "category_sources": ["README"],
         "tags_sources": ["README"],
         "display_name_sources": ["GitHub About"],
+        "history_sources": ["Official README"],
     }
     result.update(overrides)
     return result
@@ -185,6 +197,7 @@ class EnrichmentTests(unittest.TestCase):
         record["tags"] = ["cli", "git"]
         record["config-file-location"] = None
         record["credentials-file-location"] = None
+        record["history"] = None
         state = {"brew:bat": {"last_verified": date.today().isoformat(), "field_confidence": {"repo": "high"}}}
         selected = select_projects(
             [record],
@@ -271,6 +284,7 @@ class EnrichmentTests(unittest.TestCase):
         self.assertEqual(record["tags"], ["cli", "syntax-highlighting"])
         self.assertEqual(record["config-file-location"], {"unix": ["~/.config/bat/config"], "windows": ["%APPDATA%\\bat\\config"]})
         self.assertEqual(record["credentials-file-location"], {"unix": ["~/.config/bat/credentials"]})
+        self.assertEqual(record["history"]["summary"], ["bat is a cat-style source viewer for terminals."])
 
     def test_repo_is_applied_only_when_missing(self):
         missing = sample_record()
@@ -302,7 +316,10 @@ class EnrichmentTests(unittest.TestCase):
         self.assertEqual(record["category-path"], ["developer-tools"])
         self.assertEqual(record["config-file-location"]["unix"], ["~/.config/bat/config"])
         self.assertEqual(record["credentials-file-location"]["unix"], ["~/.config/bat/credentials"])
+        self.assertEqual(record["history-confidence"], "medium")
+        self.assertEqual(record["history"]["sources"], ["Official README"])
         self.assertEqual(record["provenance"]["repo-sources"], ["GitHub"])
+        self.assertEqual(record["provenance"]["history-sources"], ["Official README"])
 
     def test_agent_yaml_emits_top_level_location_nulls(self):
         text = yaml_text(
@@ -311,15 +328,18 @@ class EnrichmentTests(unittest.TestCase):
                     **{
                         "config-file-location": None,
                         "credentials-file-location": None,
+                        "history": None,
                     }
                 )
             )
         )
         self.assertIn("config-file-location: null\n", text)
         self.assertIn("credentials-file-location: null\n", text)
+        self.assertIn("history: null\n", text)
         parsed = parse_simple_yaml(text)
         self.assertIsNone(parsed["config-file-location"])
         self.assertIsNone(parsed["credentials-file-location"])
+        self.assertIsNone(parsed["history"])
 
     def test_agent_yaml_preserves_windows_backslashes_readably(self):
         text = yaml_text(agent_record_from_result(sample_result()))
@@ -347,6 +367,9 @@ class EnrichmentTests(unittest.TestCase):
                 "  unix:\n"
                 "    - $HOME/.config/bat/credentials\n"
                 "    - $XDG_CONFIG_HOME/bat/credentials\n"
+                "history:\n"
+                "  summary:\n"
+                "    - Modern cat clone for terminals.\n"
                 "category-path:\n"
                 "  - developer-tools\n"
                 "tags:\n"
@@ -363,6 +386,7 @@ class EnrichmentTests(unittest.TestCase):
             record["credentials-file-location"],
             {"unix": ["~/.config/bat/credentials", "$XDG_CONFIG_HOME/bat/credentials"]},
         )
+        self.assertEqual(record["history"], {"summary": ["Modern cat clone for terminals."]})
         self.assertEqual(record["category"], "developer-tools")
         self.assertNotIn("repo-confidence", record)
 
@@ -400,6 +424,18 @@ class EnrichmentTests(unittest.TestCase):
 
     def test_tag_canonicalization(self):
         self.assertEqual(normalize_tags(["cli-tool", "k8s", "awscli", "utility"]), ["aws", "cli", "kubernetes"])
+
+    def test_history_normalization_keeps_supported_lists(self):
+        self.assertEqual(
+            normalize_history(
+                {
+                    "summary": "A compact package history.",
+                    "timeline": ["2018: First package", "2018: First package"],
+                    "ignored": ["nope"],
+                }
+            ),
+            {"summary": ["A compact package history."], "timeline": ["2018: First package"]},
+        )
 
     def test_parse_project_yaml_round_trip_subset(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -503,6 +539,8 @@ class EnrichmentTests(unittest.TestCase):
         self.assertIn("Prefer `unix` when official docs describe one shared Unix-like path", prompt)
         self.assertIn("top-level `null` for `credentials-file-location`", prompt)
         self.assertIn("Never return `git://`, `ssh://`, or `git@host:` clone URLs", prompt)
+        self.assertIn("neutral Wikipedia-style package history", prompt)
+        self.assertIn("Use more paragraphs for significant packages", prompt)
 
     def test_path_location_normalization_splits_or_alternatives(self):
         self.assertEqual(
@@ -551,6 +589,16 @@ class EnrichmentTests(unittest.TestCase):
         self.assertTrue(any("display_name_sources must cite at least one source" in error for error in errors))
         self.assertEqual(invalid_results[0]["id"], "brew:bat")
 
+    def test_validate_codex_payload_rejects_missing_history_sources_when_history_present(self):
+        result = sample_result(history_sources=[])
+        normalized, errors, invalid_results = validate_codex_payload_partial(
+            {"results": [result]},
+            {"brew:bat"},
+        )
+        self.assertEqual(normalized, [])
+        self.assertTrue(any("history_sources must cite at least one source" in error for error in errors))
+        self.assertEqual(invalid_results[0]["id"], "brew:bat")
+
     def test_validate_codex_payload_rejects_invalid_path_locations(self):
         result = sample_result(
             **{
@@ -590,7 +638,11 @@ class EnrichmentTests(unittest.TestCase):
         self.assertEqual(item_schema["display-name"]["minLength"], 1)
         self.assertIn("config-file-location", schema["properties"]["results"]["items"]["required"])
         self.assertIn("credentials-file-location", schema["properties"]["results"]["items"]["required"])
+        self.assertIn("history", schema["properties"]["results"]["items"]["required"])
+        self.assertIn("history-confidence", schema["properties"]["results"]["items"]["required"])
         self.assertEqual(item_schema["config-file-location"]["anyOf"][0]["type"], "null")
+        self.assertEqual(item_schema["history"]["anyOf"][0]["type"], "null")
+        self.assertIn("usage", item_schema["history"]["anyOf"][1]["properties"])
         credentials_object = item_schema["credentials-file-location"]["anyOf"][1]
         self.assertFalse(credentials_object["additionalProperties"])
         self.assertEqual(credentials_object["properties"]["windows"]["type"], "array")

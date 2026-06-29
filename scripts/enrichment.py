@@ -23,6 +23,7 @@ CURATED_FIELDS = (
     "tags",
     "config-file-location",
     "credentials-file-location",
+    "history",
 )
 PATH_LOCATION_FIELDS = ("config-file-location", "credentials-file-location")
 PATH_LOCATION_PLATFORMS = ("unix", "linux", "macos", "windows")
@@ -368,6 +369,44 @@ def split_location_alternatives(value: str) -> list[str]:
     return [part.strip() for part in re.split(r"\s+or\s+", value) if part.strip()]
 
 
+HISTORY_LIST_FIELDS = (
+    "summary",
+    "project-history",
+    "adoption-history",
+    "usage",
+    "package-nerd-significance",
+    "timeline",
+    "related-projects",
+    "sources",
+)
+
+
+def normalize_history(value: Any) -> dict[str, list[str]] | None:
+    if value is None or value == {}:
+        return None
+    if not isinstance(value, dict):
+        return None
+    result: dict[str, list[str]] = {}
+    for field in HISTORY_LIST_FIELDS:
+        items = normalize_history_list(value.get(field))
+        if items:
+            result[field] = items
+    return result or None
+
+
+def normalize_history_list(value: Any) -> list[str]:
+    if isinstance(value, str):
+        value = [value]
+    if not isinstance(value, list):
+        return []
+    items = []
+    for item in value:
+        text = re.sub(r"\s+", " ", str(item or "")).strip()
+        if text and text not in items:
+            items.append(text)
+    return items
+
+
 def source_facts(record: dict[str, Any]) -> dict[str, Any]:
     if isinstance(record.get("__source_record"), dict):
         record = record["__source_record"]
@@ -408,6 +447,7 @@ def curation_facts(record: dict[str, Any]) -> dict[str, Any]:
         "credentials-file-location": normalize_path_locations(
             record["credentials-file-location"] if "credentials-file-location" in record else {}
         ),
+        "history": normalize_history(record.get("history")),
         "category_path": path,
         "category": path[0] if path else "",
         "tags": normalize_tags(record.get("tags")),
@@ -434,7 +474,7 @@ def load_projects(provider: str = "brew", projects_dir: Path = DETERMINISTIC_DIR
         combined_path = COMBINED_DIR / path.name
         if combined_path.exists():
             combined = parse_project_yaml(combined_path)
-            for key in ("repo", "display-name", "docs", "category", "tags", *PATH_LOCATION_FIELDS):
+            for key in ("repo", "display-name", "docs", "category", "tags", "history", *PATH_LOCATION_FIELDS):
                 if key in PATH_LOCATION_FIELDS and key in combined:
                     record[key] = combined[key]
                     continue
@@ -584,11 +624,11 @@ def prompt_text(input_path: Path, project_count: int | None = None) -> str:
         if project_count is None or project_count > 10
         else "Review the full input in one pass and return one result for every project id."
     )
-    return f"""/goal Reliably enrich every project in the input JSON with official repository URL, official documentation URLs, category, tags, display name, config file location, credentials file location, confidence, and source notes.
+    return f"""/goal Reliably enrich every project in the input JSON with official repository URL, official documentation URLs, category, tags, display name, config file location, credentials file location, package history, adoption history, usage notes, confidence, and source notes.
 
 {batching_line}
 
-Determine official repository URL, official documentation URLs, category, tags, display name, config file location, and credentials file location for the projects listed in this input JSON:
+Determine official repository URL, official documentation URLs, category, tags, display name, config file location, credentials file location, and package-nerd history/usage for the projects listed in this input JSON:
 
 {input_path}
 
@@ -613,6 +653,8 @@ Do not emit placeholder fallback rows. For every result:
 - Use top-level `null` for `config-file-location` when no official config file location is documented.
 - Use top-level `null` for `credentials-file-location` when credentials are absent, unknown, or not applicable.
 - Cite concise official source notes.
+- For `history`, write neutral Wikipedia-style package history focused on CLI/package-manager culture: project origins, adoption history, common usage, and why package nerds care. Use more paragraphs for significant packages. Use `history: null` when reliable source-backed history is too thin.
+- `history` fields are arrays of paragraph strings: `summary`, `project-history`, `adoption-history`, `usage`, `package-nerd-significance`, `timeline`, `related-projects`, and `sources`. Use concise timeline strings like `2016: First public release`.
 - If you rely on supplied input rather than web research, cite the specific input field, such as `source_facts.description`, `source_facts.homepage`, or `current_curation.category`.
 
 Only determine repo when source_facts.repo is empty, missing, or null. If source_facts.repo already has a value, return repo as null and do not second-guess it. Repositories must be official HTTP(S) source-control project URLs, not package-manager pages, mirrors, tutorials, blogs, wikis, or documentation pages. Never return `git://`, `ssh://`, or `git@host:` clone URLs; convert them to the corresponding official HTTP(S) repository URL or return null if no official HTTP(S) repo page exists.
@@ -714,6 +756,8 @@ def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[s
         errors.append("config-file-location is required")
     if "credentials-file-location" not in item:
         errors.append("credentials-file-location is required")
+    if "history" not in item:
+        errors.append("history is required")
     config_file_location = normalize_path_locations(
         item.get("config-file-location"),
         errors=errors,
@@ -726,6 +770,13 @@ def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[s
         field="credentials-file-location",
         require_arrays=True,
     )
+    history = normalize_history(item.get("history"))
+    if item.get("history") not in (None, {}) and history is None:
+        errors.append("history must be null or an object with supported string-list fields")
+    history_sources = normalize_sources(item.get("history_sources"))
+    if history and history_sources:
+        history = dict(history)
+        history["sources"] = history_sources
     result = {
         "id": str(item.get("id")),
         "repo": repo,
@@ -738,6 +789,8 @@ def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[s
         "docs-confidence": normalize_confidence(item.get("docs-confidence"), errors, "docs-confidence"),
         "config-file-location": config_file_location,
         "credentials-file-location": credentials_file_location,
+        "history": history,
+        "history-confidence": normalize_confidence(item.get("history-confidence"), errors, "history-confidence"),
         "tags": tags,
         "tags-confidence": normalize_confidence(item.get("tags-confidence"), errors, "tags-confidence"),
         "docs_sources": normalize_sources(item.get("docs_sources")),
@@ -745,8 +798,9 @@ def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[s
         "category_sources": normalize_sources(item.get("category_sources")),
         "tags_sources": normalize_sources(item.get("tags_sources")),
         "display_name_sources": normalize_sources(item.get("display_name_sources")),
+        "history_sources": history_sources,
     }
-    for field in ("docs_sources", "repo_sources", "category_sources", "tags_sources", "display_name_sources"):
+    for field in ("docs_sources", "repo_sources", "category_sources", "tags_sources", "display_name_sources", "history_sources"):
         if has_placeholder_source(result[field]):
             errors.append(f"{field} must cite official sources, not placeholder provenance")
     required_sources = {
@@ -755,6 +809,7 @@ def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[s
         "display_name_sources": bool(display_name),
         "docs_sources": bool(docs),
         "repo_sources": bool(repo),
+        "history_sources": bool(history),
     }
     for field, required in required_sources.items():
         if required and not result[field]:
@@ -819,6 +874,7 @@ def apply_results(
             "category": result["category-confidence"],
             "docs": result["docs-confidence"],
             "tags": result["tags-confidence"],
+            "history": result["history-confidence"],
         }
         entry["provenance"] = {
             "repo_sources": result["repo_sources"],
@@ -826,6 +882,7 @@ def apply_results(
             "category_sources": result["category_sources"],
             "tags_sources": result["tags_sources"],
             "display_name_sources": result["display_name_sources"],
+            "history_sources": result["history_sources"],
         }
         entry["curation_hash"] = hash_curation_facts(record)
         if skipped:
@@ -879,6 +936,7 @@ def merge_result(
         "docs": normalize_docs(result["docs"]),
         "config-file-location": normalize_path_locations(result.get("config-file-location")),
         "credentials-file-location": normalize_path_locations(result.get("credentials-file-location")),
+        "history": normalize_history(result.get("history")),
         "tags": normalize_tags(result["tags"]),
     }
     confidence_fields = {
@@ -887,6 +945,7 @@ def merge_result(
         "category": result["category-confidence"],
         "docs": result["docs-confidence"],
         "tags": result["tags-confidence"],
+        "history": result["history-confidence"],
     }
     changed = False
     for field, new_value in field_values.items():
@@ -937,6 +996,7 @@ def result_for_agent_record(original: dict[str, Any], result: dict[str, Any]) ->
         ("docs", "docs"),
         ("config-file-location", "config-file-location"),
         ("credentials-file-location", "credentials-file-location"),
+        ("history", "history"),
         ("tags", "tags"),
     )
     for curated_field, result_field in field_pairs:
@@ -951,6 +1011,7 @@ def result_for_agent_record(original: dict[str, Any], result: dict[str, Any]) ->
                 "category": "category_sources",
                 "docs": "docs_sources",
                 "tags": "tags_sources",
+                "history": "history_sources",
             }.get(curated_field)
             if source_field and source_field in result:
                 merged[source_field] = result[source_field]
@@ -972,6 +1033,8 @@ def json_result_from_agent_record(record: dict[str, Any], fallback: dict[str, An
         "docs-confidence": record.get("docs-confidence") or fallback["docs-confidence"],
         "config-file-location": record.get("config-file-location") if "config-file-location" in record else None,
         "credentials-file-location": record.get("credentials-file-location") if "credentials-file-location" in record else None,
+        "history": record.get("history") if "history" in record else None,
+        "history-confidence": record.get("history-confidence") or fallback["history-confidence"],
         "tags": record.get("tags") or [],
         "tags-confidence": record.get("tags-confidence") or fallback["tags-confidence"],
         "repo_sources": provenance.get("repo-sources") or [],
@@ -979,6 +1042,7 @@ def json_result_from_agent_record(record: dict[str, Any], fallback: dict[str, An
         "category_sources": provenance.get("category-sources") or [],
         "tags_sources": provenance.get("tags-sources") or [],
         "display_name_sources": provenance.get("display-name-sources") or [],
+        "history_sources": provenance.get("history-sources") or [],
     }
 
 

@@ -12,6 +12,7 @@ KEY_ORDER = [
     "docs",
     "config-file-location",
     "credentials-file-location",
+    "history",
     "category",
     "package-manager",
     "package-manager-match",
@@ -140,7 +141,7 @@ def needs_multiline(value: str) -> bool:
 
 
 def should_emit_null(key: str, parent_key: str | None = None) -> bool:
-    return key in {"repo", "config-file-location", "credentials-file-location"} or parent_key == "credentials-file-location"
+    return key in {"repo", "config-file-location", "credentials-file-location", "history"} or parent_key == "credentials-file-location"
 
 
 def quote_scalar(value: str) -> str:

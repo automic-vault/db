@@ -164,6 +164,10 @@ def geiger_summary_for_package_id(package_id: Any) -> dict[str, Any] | None:
 
 
 def agent_record_from_json(result: dict[str, Any]) -> dict[str, Any]:
+    history = result.get("history") if "history" in result else None
+    if isinstance(history, dict) and result.get("history_sources"):
+        history = dict(history)
+        history["sources"] = result.get("history_sources") or []
     record = {
         "id": result["id"],
         "repo": result.get("repo") or None,
@@ -174,6 +178,8 @@ def agent_record_from_json(result: dict[str, Any]) -> dict[str, Any]:
         "docs-confidence": result.get("docs-confidence"),
         "config-file-location": result.get("config-file-location") if "config-file-location" in result else None,
         "credentials-file-location": result.get("credentials-file-location") if "credentials-file-location" in result else None,
+        "history": history,
+        "history-confidence": result.get("history-confidence"),
         "category-path": result.get("category_path") or [],
         "category-confidence": result.get("category-confidence"),
         "tags": result.get("tags") or [],
@@ -184,6 +190,7 @@ def agent_record_from_json(result: dict[str, Any]) -> dict[str, Any]:
             "category-sources": result.get("category_sources") or [],
             "tags-sources": result.get("tags_sources") or [],
             "display-name-sources": result.get("display_name_sources") or [],
+            "history-sources": result.get("history_sources") or [],
         },
     }
     geiger = geiger_summary_for_package_id(record["id"])
@@ -214,7 +221,7 @@ def merge_agent_layer(record: dict[str, Any], path: Path) -> None:
     agent = parse_simple_yaml(path.read_text(encoding="utf-8"))
     if record.get("repo") in (None, "", "null") and agent.get("repo") not in (None, "", "null", []):
         record["repo"] = agent["repo"]
-    for key in ("display-name", "docs", "tags", "config-file-location", "credentials-file-location"):
+    for key in ("display-name", "docs", "tags", "history", "config-file-location", "credentials-file-location"):
         value = agent.get(key)
         if key in PATH_LOCATION_FIELDS and key in agent:
             record[key] = combined_path_locations(value)

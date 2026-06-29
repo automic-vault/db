@@ -677,6 +677,13 @@ def page_search_text(page_module: Any, page: Any, locale: dict[str, Any] | None)
             )
     taxonomy = page.extra.get("pkgTaxonomy") if isinstance(page.extra.get("pkgTaxonomy"), dict) else {}
     pieces.extend(str(item) for item in page_module.taxonomy_terms(taxonomy))
+    history = getattr(page, "history", None)
+    if isinstance(history, dict):
+        for value in history.values():
+            if isinstance(value, list):
+                pieces.extend(str(item) for item in value)
+            else:
+                pieces.append(str(value))
     return page_module.normalize_space(" ".join(str(piece or "") for piece in pieces))
 
 
@@ -811,6 +818,7 @@ def full_package_data(page_module: Any, page: Any, route: PackageRoute | None = 
         "upstreamDocs": getattr(page, "upstream_docs", ""),
         "configFileLocations": getattr(page, "config_file_locations", {}),
         "credentialsFileLocations": getattr(page, "credentials_file_locations", {}),
+        "history": getattr(page, "history", None),
         "category": getattr(page, "category", ""),
         "license": getattr(page, "license", ""),
         "sourceArchive": getattr(page, "source_archive", ""),
