@@ -226,6 +226,9 @@ def merge_agent_layer(record: dict[str, Any], path: Path) -> None:
         if key in PATH_LOCATION_FIELDS and key in agent:
             record[key] = combined_path_locations(value)
             continue
+        if key == "history" and key in agent:
+            record[key] = value
+            continue
         if value not in (None, "", [], {}):
             record[key] = value
     category_path = agent.get("category-path") or agent.get("category_path")

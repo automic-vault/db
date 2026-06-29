@@ -7,6 +7,73 @@ docs:
   - https://www.gnu.org/software/binutils
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Target-prefixed Binutils packages became a standard packaging pattern for cross
+      development because they let multiple toolchains coexist without shadowing host
+      tools such as as, ld, ar, objdump, or readelf. Homebrew exposes this convention
+      directly through executables such as aarch64-elf-as, aarch64-elf-ld,
+      aarch64-elf-objcopy, and aarch64-elf-readelf.
+    - >
+      Homebrew analytics in the official formula API show the package is a niche but
+      active cross-toolchain component, with installs tracked separately from the host
+      binutils formula.
+  package-nerd-significance:
+    - >
+      For package-manager users, this formula is the low-level base of an AArch64
+      bare-metal toolchain. Getting the target triplet, prefix, and Binutils/GCC pairing
+      right is the difference between a reproducible cross build and a host-tool leak
+      that fails later in the build.
+    - >
+      Package nerds care because Binutils packages are both leaf CLI tools and
+      dependency infrastructure: they expose many small executables, interact closely
+      with compiler specs, and often need to be versioned in step with cross compilers.
+  project-history:
+    - >
+      GNU Binutils is maintained in Sourceware's combined binutils-gdb.git repository,
+      whose official gitweb summary describes the repository as gdb and binutils and
+      publishes an HTTPS repository URL. The current Sourceware Binutils documentation
+      is generated from the Binutils 2.46 sources and covers gas, ld, BFD, libctf,
+      gprof, gprofng, SFrame, and the binary utilities manual.
+    - >
+      The Homebrew formula is not a fork of Binutils; it packages the GNU release for
+      the aarch64-elf target. As of the official Homebrew formula API checked for this
+      batch, the stable formula uses GNU Binutils 2.46.1.
+  related-projects:
+    - GCC commonly consumes Binutils as the assembler/linker layer in GNU cross-toolchains.
+    - GDB shares Sourceware's binutils-gdb.git repository with Binutils.
+    - >
+      The aarch64-elf-gcc and aarch64-elf-gdb Homebrew formulae are natural companions
+      for this target-specific Binutils package.
+  sources:
+    - https://formulae.brew.sh/api/formula/aarch64-elf-binutils.json
+    - https://sourceware.org/binutils/docs/
+    - https://sourceware.org/git/?p=binutils-gdb.git;a=summary
+  summary:
+    - >
+      aarch64-elf-binutils is Homebrew's target-prefixed packaging of GNU Binutils for
+      AArch64 bare-metal cross development. It provides the assembler, linker, archive
+      tools, object-file inspection tools, and related utilities under aarch64-elf-*
+      executable names.
+  timeline:
+    - >
+      2026: Sourceware's current Binutils documentation is generated from the Binutils
+      2.46 sources.
+    - '2026: Sourceware git tags list an official GNU Binutils 2.46.1 release.'
+    - >
+      2026: Homebrew's aarch64-elf-binutils formula packages GNU Binutils 2.46.1 for
+      aarch64-elf cross development.
+  usage:
+    - >
+      Users install aarch64-elf-binutils when they need to assemble, link, convert,
+      inspect, strip, or archive objects for AArch64 ELF targets outside the host
+      operating system ABI. It is commonly paired with a matching cross GCC and, when
+      debugging is needed, a target-matched GDB.
+    - >
+      The package's target prefix matters operationally: build systems and
+      cross-compilers can call aarch64-elf-as or aarch64-elf-ld explicitly, avoiding
+      accidental use of platform-native tools.
 category: developer-tools
 package-manager:
   brew: aarch64-elf-binutils
