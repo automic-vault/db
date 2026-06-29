@@ -478,6 +478,9 @@ def load_projects(provider: str = "brew", projects_dir: Path = DETERMINISTIC_DIR
                 if key in PATH_LOCATION_FIELDS and key in combined:
                     record[key] = combined[key]
                     continue
+                if key == "history" and key in combined:
+                    record[key] = combined[key]
+                    continue
                 if combined.get(key) not in (None, "", [], {}):
                     record[key] = combined[key]
         record["__source_record"] = source_record

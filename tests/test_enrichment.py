@@ -15,6 +15,7 @@ from scripts.enrichment import (
     curation_facts,
     hash_curation_facts,
     hash_source_facts,
+    load_projects,
     needs_new_curation,
     normalize_docs,
     normalize_history,
@@ -109,6 +110,7 @@ def sample_enrich_project_args(**overrides):
         "dry_run": False,
         "force": False,
         "include_missing_curated_fields": False,
+        "only_missing_curated_fields": False,
         "limit": 0,
         "mode": "new",
         "phase": "prepare",
@@ -207,6 +209,31 @@ class EnrichmentTests(unittest.TestCase):
             include_missing_curated_fields=True,
         )
         self.assertEqual(selected, [])
+
+    def test_load_projects_preserves_combined_history_null(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            projects = Path(tmp) / "projects"
+            combined = Path(tmp) / "combined"
+            projects.mkdir()
+            combined.mkdir()
+            (projects / "aamath.yml").write_text(
+                "id: brew:aamath\n"
+                "display-name: aamath\n"
+                "package-manager:\n"
+                "  brew: aamath\n"
+                "executables:\n"
+                "  - aamath\n",
+                encoding="utf-8",
+            )
+            (combined / "aamath.yml").write_text(
+                "id: brew:aamath\n"
+                "history: null\n",
+                encoding="utf-8",
+            )
+            with mock.patch("scripts.enrichment.COMBINED_DIR", combined):
+                record = load_projects(projects_dir=projects)[0]
+        self.assertIn("history", record)
+        self.assertIsNone(record["history"])
 
     def test_review_stale_updated_selection(self):
         record = sample_record()
@@ -705,6 +732,26 @@ class EnrichmentTests(unittest.TestCase):
                 manifest = module.prepare_run(args, [record], run_dir)
 
         self.assertTrue(manifest["include_missing_curated_fields"])
+
+    def test_only_missing_curated_fields_selects_only_missing_records(self):
+        module = load_enrich_projects_module()
+        args = sample_enrich_project_args(only_missing_curated_fields=True)
+        missing = sample_record()
+        missing["id"] = "brew:missing-history"
+        missing["display-name"] = "Missing History"
+        missing["repo"] = "https://example.com/missing-history"
+        missing["docs"] = ["https://example.com/missing-history/docs"]
+        missing["category"] = "developer-tools"
+        missing["tags"] = ["cli", "test"]
+        missing["config-file-location"] = None
+        missing["credentials-file-location"] = None
+        reviewed = dict(missing)
+        reviewed["id"] = "brew:reviewed-history"
+        reviewed["history"] = None
+        state = {}
+        with mock.patch.object(module, "load_projects", return_value=[missing, reviewed]):
+            _projects, selected = module.selected_projects_for_args(args, state, date.today().isoformat())
+        self.assertEqual([record["id"] for record in selected], ["brew:missing-history"])
 
     def test_apply_phase_consumes_codex_output_and_commits_after_valid_batch(self):
         module = load_enrich_projects_module()

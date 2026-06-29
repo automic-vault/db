@@ -17,6 +17,7 @@ from scripts.bootstrap.lib.common import CACHE_DIR, ROOT, ensure_root, git_commi
 from scripts.bootstrap.lib.render import render_combined_tree
 from scripts.enrichment import (
     apply_results,
+    has_missing_curated_fields,
     load_projects,
     prompt_text,
     review_input,
@@ -71,6 +72,11 @@ def parse_args() -> argparse.Namespace:
         "--include-missing-curated-fields",
         action="store_true",
         help="Also select projects missing any field tracked in CURATED_FIELDS, including newly added curated fields.",
+    )
+    parser.add_argument(
+        "--only-missing-curated-fields",
+        action="store_true",
+        help="Select only projects missing a field tracked in CURATED_FIELDS.",
     )
     parser.add_argument("--run-id", help="Resume or write artifacts under a specific enrichment run id.")
     parser.add_argument("--dry-run", action="store_true", help="Build cache/input artifacts without invoking Codex or editing YAML.")
@@ -457,8 +463,10 @@ def selected_projects_for_args(args: argparse.Namespace, state: dict[str, Any], 
         state,
         mode=args.mode,
         today=today,
-        include_missing_curated_fields=args.include_missing_curated_fields,
+        include_missing_curated_fields=args.include_missing_curated_fields or args.only_missing_curated_fields,
     )
+    if args.only_missing_curated_fields:
+        selected = [record for record in selected if has_missing_curated_fields(record)]
     if args.limit:
         selected = selected[: args.limit]
     return projects, selected
