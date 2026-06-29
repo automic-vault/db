@@ -5,6 +5,64 @@ docs:
   - https://github.com/remko/age-plugin-se#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Official installation instructions lead with Homebrew and prebuilt binaries, with
+      Alpine packages also published from the upstream release page. The supplied
+      package metadata shows the tool packaged in Homebrew, MacPorts, and Nix, which
+      fits its niche: a macOS-first security utility that package managers make easy to
+      install on developer machines.
+  package-nerd-significance:
+    - >
+      For package nerds, age-plugin-se is interesting because it is a small plugin that
+      turns Apple's hardware-backed key storage into a Unix-style age recipient. It is
+      also a good example of the age plugin model spreading beyond software-only key
+      files into platform security hardware.
+  project-history:
+    - >
+      The project was created by Remko Troncon in January 2023 and is implemented as a
+      plugin for the age encryption ecosystem. Its README presents the tool as a Secure
+      Enclave bridge for age, with examples using `age-plugin-se keygen`, age
+      recipients, and normal `age --decrypt -i` workflows.
+    - >
+      Early public releases in 2023 were marked as prereleases. Version 0.1.0 followed
+      in April 2024, and later releases added packaging and compatibility work. By the
+      0.2.x line in December 2025, the README also documented conversion from `age1se`
+      recipients to age plugin-tag recipients, reflecting age's broader plugin-recipient
+      evolution.
+  related-projects:
+    - age provides the file-encryption tool and plugin mechanism.
+    - Passage is documented by the upstream README as a password-manager use case.
+    - age-plugin-yubikey is a sibling hardware-backed age plugin for PIV tokens.
+  sources:
+    - official GitHub releases API
+    - official GitHub repository metadata
+    - source_facts.package-manager
+    - upstream README
+  summary:
+    - >
+      age-plugin-se is an age plugin that binds age identities to Apple's Secure
+      Enclave, giving age users a way to decrypt files with device-bound keys and macOS
+      biometric or passcode access control.
+  timeline:
+    - '2023: GitHub repository created.'
+    - '2023: First prerelease builds published.'
+    - '2024: v0.1.0 released.'
+    - >
+      2025: v0.2.x releases published with the project still focused on Secure Enclave
+      age identities.
+  usage:
+    - >
+      The core workflow is to generate an identity with `age-plugin-se keygen`, encrypt
+      to the printed public recipient using `age`, and decrypt on the matching Secure
+      Enclave machine by passing the identity file to age. The README emphasizes that
+      the private key is bound to the device and recommends encrypting long-term data to
+      a backup key as well.
+    - >
+      The README also documents use with Passage, the file-based password manager built
+      around age, so users can unlock password-store entries with Touch ID while
+      retaining an ordinary age backup identity.
 tags:
   - age
   - cli
@@ -22,28 +80,28 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official README describes age-plugin-se as an age plugin enabling encryption using
-      Apple's Secure Enclave.
+    - 'source_facts.description: Age plugin for Apple Secure Enclave'
+    - upstream README describes encryption using Apple's Secure Enclave
   display-name-sources:
-    - Official GitHub repository and README title use age-plugin-se.
+    - source_facts.name
   docs-sources:
-    - >
-      Official GitHub README is the primary documentation surface and includes
-      requirements, installation, usage, and development sections.
+    - 'source_facts.homepage and upstream README: https://github.com/remko/age-plugin-se#readme'
+  history-sources:
+    - official GitHub releases API
+    - official GitHub repository metadata
+    - source_facts.package-manager
+    - upstream README
   repo-sources:
     - >
-      source_facts.repo already has https://github.com/remko/age-plugin-se; per
-      instructions repo is returned as null.
+      source_facts.repo already supplied; prompt requires returning repo as null when
+      source_facts.repo is present.
   tags-sources:
-    - >
-      Official README says it is an age plugin for Apple Secure Enclave and documents
-      keygen/recipients CLI usage.
+    - upstream README describes age, CLI encryption, macOS 14, and Secure Enclave usage
 category-confidence: high
 category-path:
   - security
-  - encryption
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

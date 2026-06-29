@@ -6,6 +6,86 @@ docs:
   - https://github.com/kholtman/afio/blob/master/afio.1
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      afio's adoption sits in traditional Unix backup culture: scripts feed pathnames
+      into afio, and afio writes cpio-format archives to files, pipes, tape devices, or
+      multi-volume media. The supplied package-manager facts list Homebrew, Debian,
+      Ubuntu, MacPorts, and Nix, showing that distributions still carry it for
+      compatibility and existing backup workflows.
+    - >
+      The README explicitly warns new users not to start using afio if they have never
+      used it as an archive engine before, but also states that existing users can
+      expect compatibility work for Unix time_t extensions before 2038. That is a rare
+      official statement of legacy maintenance rather than growth.
+  package-nerd-significance:
+    - >
+      afio is package-nerd history in executable form: cpio archives, tape/floppy
+      multi-volume workflows, gzip-per-file compression, remote archive names, and
+      backup-script integration all survived into a maintained GitHub repository.
+    - >
+      Its README is unusually honest about maintenance economics and bit-rot risk. That
+      makes the package valuable not only as a tool, but as a case study in how old Unix
+      utilities age: keep compatibility, fix security and portability issues, avoid new
+      backup-destroying surprises.
+  project-history:
+    - >
+      The official README says afio is one of the oldest open-source projects around,
+      started in 1985, and is now in maintenance-only mode. Its HISTORY file preserves
+      older context, including Mark Brukhartz/Lachman Associates-era README material
+      describing afio as a better way to deal with cpio-format archives, faster than
+      cpio, more diverse for magnetic tape options, and more graceful with input
+      corruption.
+    - >
+      The Linux line of afio passed through Dave Gymer's port, Andrew Stevens' cleanup
+      work, and Koen Holtman's maintenance beginning around version 2.3.5 for Linux. The
+      HISTORY file records additions such as gzip-aware compression handling, backup
+      scripts, new options, verification improvements, and many portability and
+      hard-link fixes through the 2.4 series.
+    - >
+      The current maintainer's 2018 note in the README explains the modern maintenance
+      policy: bug fixes, portability fixes, and security fixes are welcome, but major
+      new features are unlikely because the maintainer prioritizes avoiding silent
+      backup failures and because cheap hard drives made afio's old floppy/tape-oriented
+      strengths less central for average Linux users.
+  related-projects:
+    - >
+      Related projects and concepts include cpio, tar, gzip, magnetic tape backup,
+      floppy backup, rsync, Unix backup scripts, and year-2038 time_t compatibility
+      work.
+  sources:
+    - https://github.com/kholtman/afio/blob/master/HISTORY
+    - https://github.com/kholtman/afio/blob/master/README
+    - https://github.com/kholtman/afio/blob/master/afio.1
+    - source_facts.package-manager
+    - source_facts.repo
+  summary:
+    - >
+      afio is a cpio-format archive tool aimed especially at backup scripts. The
+      official README says it handles input corruption somewhat gracefully, supports
+      interactive multi-volume archives, and can make compressed archives safer than
+      compressed tar or cpio archives.
+  timeline:
+    - '1985: Official README says afio started.'
+    - >
+      2.3.5: HISTORY records Koen Holtman's Linux maintenance line beginning around this
+      version.
+    - '2.4.8beta1: README says support for files greater than 2 GB began.'
+    - '2018: Maintainer note describes maintenance-only mode.'
+    - >
+      2.5.2: Current README version with security, multivolume naming, bug, and
+      portability fixes.
+  usage:
+    - >
+      The manpage documents five core modes: -o to create an archive from pathnames on
+      standard input, -i to unpack, -t to list contents, -r to verify an archive against
+      the filesystem, and -p to copy files to directories.
+    - >
+      A key usage difference from tar -z style archives is that afio compresses
+      individual files inside the archive rather than the whole archive datastream. The
+      manpage and README both emphasize that this makes compressed afio archives more
+      robust after corruption.
 tags:
   - archive
   - backup
@@ -23,33 +103,34 @@ geiger:
 provenance:
   category-sources:
     - >
-      Official README says afio makes cpio-format archives and is best used in backup
-      scripts: https://github.com/kholtman/afio
-    - current_curation.category_path
+      Official README says afio makes cpio-format archives and is best used as an
+      archive engine in backup scripts.
   display-name-sources:
-    - 'Official GitHub repository and README use afio: https://github.com/kholtman/afio'
-    - source_facts.name
+    - Official README identifies the project as afio 2.5.2.
   docs-sources:
     - >
-      Official README describes afio and states the GitHub repository is the official
-      home page: https://github.com/kholtman/afio
-    - >
-      Official repository includes afio.1 man page:
-      https://github.com/kholtman/afio/blob/master/afio.1
+      current_curation.docs point to the official README and afio.1 manpage in the
+      GitHub repository.
+  history-sources:
+    - https://github.com/kholtman/afio/blob/master/HISTORY
+    - https://github.com/kholtman/afio/blob/master/README
+    - https://github.com/kholtman/afio/blob/master/afio.1
+    - source_facts.package-manager
+    - source_facts.repo
   repo-sources:
     - >
-      source_facts.repo already has https://github.com/kholtman/afio; per instruction
-      repo was not re-determined
+      source_facts.repo already supplied https://github.com/kholtman/afio, so repo is
+      returned as null per prompt instruction.
   tags-sources:
     - >
-      Official README describes cpio-format archives, backup-script use, and
-      fault-tolerant compression: https://github.com/kholtman/afio
-    - current_curation.tags
+      Official README and manpage document archive creation, backup-script use, CLI
+      modes, and cpio-format archives.
 category-confidence: high
 category-path:
   - system
-  - backup-archive
+  - archive
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -6,6 +6,76 @@ docs:
   - https://github.com/RJVB/afsctool#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      afsctool is narrow but useful enough to appear in macOS-oriented package sets: the
+      supplied facts list Homebrew, MacPorts, and Nix. That adoption tracks its niche:
+      users who need to inspect or recompress files with Apple filesystem compression
+      from scripts rather than through Finder or filesystem internals.
+    - >
+      The RJVB fork also documents package-manager build dependencies and gives Homebrew
+      and MacPorts examples, which helps explain why downstream formulae can build it
+      despite the tool's macOS-specific subject matter.
+  package-nerd-significance:
+    - >
+      afsctool is a classic small system package: obscure until you need it, highly
+      platform-specific, and tightly bound to filesystem behavior and Apple compression
+      formats. It is interesting to package maintainers because its dependency story and
+      feature set move with macOS filesystem APIs and compression libraries.
+    - >
+      The Homebrew formula exposes the RJVB fork rather than only the older brkirch
+      page, so curation needs both sources: the original homepage explains the tool's
+      purpose, while the repository explains the maintained code users actually install.
+  project-history:
+    - >
+      The original afsctool was published by brkirch as a Mac OS X utility for HFS+
+      compression. The RJVB repository identifies itself as a modified version of
+      brkirch's afsctool and documents changes around error reporting, large-file memory
+      pressure, multiple file arguments, backups, read-only files, and parallel
+      compression.
+    - >
+      The RJVB fork became the source used by modern package managers. Its README
+      records versioned feature work in the 1.6 and 1.7 series, including parallel
+      compression options, additional compression types introduced by Apple in OS X 10.9
+      and later, LZVN support, and later LZFSE support.
+  related-projects:
+    - >
+      Apple HFS+ and APFS filesystem compression are the core operating-system features
+      afsctool manipulates.
+    - >
+      RJVB's LZVN fork and the lzfse/lzfse reference implementation are mentioned by the
+      README as compression-library dependencies in the 1.7 series.
+    - zfsctool is the same repository's experimental ZFS-oriented companion utility.
+  sources:
+    - https://api.github.com/repos/RJVB/afsctool
+    - https://brkirch.wordpress.com/afsctool/
+    - https://github.com/RJVB/afsctool#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      afsctool is a command-line utility for applying, removing, and inspecting Apple
+      filesystem compression. The original brkirch page describes it as an AFSC tool for
+      HFS+ compression on Mac OS X 10.6 or later; the packaged RJVB fork extends that
+      lineage with APFS-related work and a companion zfsctool.
+  timeline:
+    - '2012: brkirch afsctool page published for the original AFSC utility.'
+    - '2015: RJVB afsctool GitHub repository created.'
+    - >
+      2018: RJVB 1.6.9 release commit added size sorting and reverse-worker options for
+      parallel mode.
+    - '2024: RJVB repository still receiving updates according to GitHub metadata.'
+  usage:
+    - >
+      Typical usage is post-hoc compression or inspection of files and folders already
+      on a supported filesystem. The RJVB fork adds options for parallel compression,
+      sorting work items by size, and changing compression types when the operating
+      system and linked libraries support them.
+    - >
+      zfsctool, built from the same repository, adapts the afsctool idea to ZFS
+      recompression statistics and experiments. The README is explicit that zfsctool is
+      still a work in progress, so package users should treat afsctool as the primary
+      stable executable.
 tags:
   - apfs
   - cli
@@ -23,32 +93,30 @@ geiger:
     - text:compress
 provenance:
   category-sources:
-    - >
-      Official/repository README describes applying HFS+ compression and zfsctool
-      functionality: https://github.com/RJVB/afsctool
-    - current_curation.category_path
+    - https://github.com/RJVB/afsctool#readme
+    - source_facts.description
   display-name-sources:
-    - 'Official/repository README title uses afsctool: https://github.com/RJVB/afsctool'
+    - https://brkirch.wordpress.com/afsctool/
     - source_facts.name
   docs-sources:
-    - >
-      Official/repository README points to brkirch afsctool page and documents
-      build/usage context: https://github.com/RJVB/afsctool
-    - source_facts.homepage
+    - current_curation.docs
+    - https://brkirch.wordpress.com/afsctool/
+    - https://github.com/RJVB/afsctool#readme
+  history-sources:
+    - https://api.github.com/repos/RJVB/afsctool
+    - https://brkirch.wordpress.com/afsctool/
+    - https://github.com/RJVB/afsctool#readme
+    - source_facts.package-manager
   repo-sources:
-    - >
-      source_facts.repo already has https://github.com/RJVB/afsctool; per instruction
-      repo was not re-determined
+    - source_facts.repo
   tags-sources:
-    - >
-      Official/repository README describes AFSC/HFS+ compression, APFS-era macOS
-      context, and zfsctool: https://github.com/RJVB/afsctool
-    - current_curation.tags
+    - https://github.com/RJVB/afsctool#readme
+    - source_facts.executables
 category-confidence: high
 category-path:
   - system
-  - filesystem-compression
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

@@ -6,6 +6,66 @@ docs:
   - https://github.com/pcarrier/afuse#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      afuse is packaged in Homebrew, Debian, Fedora, and Ubuntu according to the
+      supplied facts. That distribution profile fits its Unix utility role: it is small,
+      scriptable, and useful to people composing sshfs or other FUSE filesystems.
+    - >
+      The package also ships afuse-avahissh, an example script that uses
+      Avahi-discovered SFTP hosts to pre-populate the afuse root. That helper makes the
+      tool more discoverable as a network-filesystem convenience package rather than
+      only a FUSE primitive.
+  package-nerd-significance:
+    - >
+      afuse is a compact example of the Unix packaging sweet spot: one executable, one
+      helper script, and a behavior that becomes powerful only when combined with sshfs,
+      Avahi, and shell templates.
+    - >
+      It also carries historical packaging details: old SourceForge/SVN origins, FUSE
+      ABI expectations, and platform notes for Linux, macOS, and FreeBSD.
+  project-history:
+    - >
+      The upstream NEWS file records an initial 0.1 release, followed by 0.1.1 moving to
+      SVN because SourceForge CVS was unreliable, 0.2 adding timeout-based unmounting,
+      0.4 adding macOS and FreeBSD support plus root pre-population, and 0.5.0 adding a
+      mount_dir option. The current GitHub repository was created in 2013 and preserves
+      that earlier SourceForge/SVN lineage in commit messages.
+    - >
+      The README presents afuse as a minimal user-space automounter rather than a full
+      replacement for system automount services. Its design advantage is that it runs as
+      the invoking user, so mount commands can use that user's environment, ssh-agent,
+      and graphical session when appropriate.
+  related-projects:
+    - FUSE is the userspace filesystem interface afuse is built on.
+    - sshfs is the example mount command used in the README.
+    - Avahi is used by the afuse-avahissh helper for service discovery.
+  sources:
+    - https://api.github.com/repos/pcarrier/afuse
+    - https://github.com/pcarrier/afuse#readme
+    - https://raw.githubusercontent.com/pcarrier/afuse/master/NEWS
+    - source_facts.package-manager
+  summary:
+    - >
+      afuse is an automounting filesystem implemented in user space with FUSE. It
+      manages a directory of virtual directories and mounts a filesystem on demand when
+      a path is accessed.
+  timeline:
+    - '2008: 0.2 release commit imported from SourceForge SVN.'
+    - '2013: GitHub repository created.'
+    - '2022: 0.5.0 release commit added mount_dir support.'
+    - '2026: Supplied package facts show afuse in Homebrew, Debian, Fedora, and Ubuntu.'
+  usage:
+    - >
+      A common invocation uses mount_template and unmount_template options, for example
+      mounting sshfs targets below an afuse mountpoint and unmounting them with
+      fusermount. afuse can also pre-populate its root directory from an external
+      command and supports options such as exact_getattr and flushwrites.
+    - >
+      The README warns that automounted filesystems are proxied through afuse and real
+      mounts live under a temporary instance-specific directory, so there is overhead
+      and stale temporary directories can remain after unclean shutdowns.
 category: system
 package-manager:
   brew: afuse
