@@ -3,12 +3,83 @@ display-name: aicommit
 homepage: https://github.com/coder/aicommit
 repo: https://github.com/coder/aicommit
 docs:
-  - https://github.com/coder/aicommit
+  - https://github.com/coder/aicommit#readme
 config-file-location:
   unix:
     - COMMITS.md in repository root
     - ~/COMMITS.md
-credentials-file-location: null
+credentials-file-location:
+  linux:
+    - ${XDG_CONFIG_HOME}/aicommit/openai.key
+    - ~/.config/aicommit/openai.key
+  macos: ~/Library/Application Support/aicommit/openai.key
+  windows: '%AppData%\aicommit\openai.key'
+history:
+  adoption-history:
+    - >
+      Official installation paths are Homebrew, go install, and GitHub release binaries.
+      The supplied package facts also list a winget package, giving it modest
+      cross-platform package-manager presence despite its small scope.
+    - >
+      The package belongs to the 2024 wave of single-purpose AI developer CLIs: tools
+      that do one Git-adjacent task with LLM assistance rather than trying to become a
+      full IDE assistant.
+  package-nerd-significance:
+    - >
+      aicommit is small, but package-nerd-relevant because it shows how quickly AI
+      utilities became normal CLI packages: a single binary, Homebrew formula, Go
+      install path, release artifacts, environment-variable configuration, and optional
+      local secret persistence.
+    - >
+      Its narrowness is the point. It can be packaged, audited, and replaced more easily
+      than a large assistant, while still touching a high-frequency developer workflow.
+  project-history:
+    - >
+      The GitHub repository was created in August 2024, and releases followed rapidly
+      through the autumn of that year. The README frames the project around an
+      opinionated problem: many AI commit-message tools exist, but this one tries to
+      follow a repository's existing commit style.
+    - >
+      The implementation uses OpenAI-compatible chat completions, defaults to an OpenAI
+      model, and supports overriding the base URL for compatible providers. The source
+      includes a persistent key path under the user's config directory and a COMMITS.md
+      style-guide convention.
+  related-projects:
+    - >
+      aicommit is related to Git, OpenAI-compatible APIs, local model gateways such as
+      LiteLLM, and other AI commit-message generators.
+    - >
+      It uses a repository-local COMMITS.md convention instead of a broader
+      project-management or changelog system.
+  sources:
+    - https://api.github.com/repos/coder/aicommit
+    - https://api.github.com/repos/coder/aicommit/releases?per_page=100
+    - https://github.com/coder/aicommit#readme
+    - https://raw.githubusercontent.com/coder/aicommit/main/cmd/aicommit/main.go
+    - https://raw.githubusercontent.com/coder/aicommit/main/cmd/aicommit/savekey.go
+    - source_facts.package-manager
+  summary:
+    - >
+      aicommit is Coder's small Go CLI for generating Git commit messages from staged
+      changes. It is intentionally narrower than a general coding assistant: it builds a
+      prompt from repository history and diffs, streams a model-generated message, and
+      then runs git commit unless used in dry-run or ref-targeting modes.
+  timeline:
+    - '2024: GitHub repository created in August.'
+    - '2024: v0.3.x and v0.4.x releases published within days of repository creation.'
+    - '2024: v0.6.5 released in November.'
+    - '2026: Input package facts list Homebrew and winget packaging.'
+  usage:
+    - >
+      Users stage changes, provide OPENAI_API_KEY or save a key with --save-key, and run
+      aicommit. Flags support amending the previous commit, dry-running the generated
+      git command, targeting a specific ref, adding extra context, changing the model,
+      and using an OpenAI-compatible base URL.
+    - >
+      Style configuration is file-based: aicommit reads COMMITS.md from the repository
+      root when present, otherwise ~/COMMITS.md. This makes the package interesting for
+      teams that want generated messages to match local conventions rather than a
+      generic conventional-commits template.
 category: developer-tools
 package-manager:
   brew: aicommit

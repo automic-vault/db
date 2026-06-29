@@ -13,6 +13,69 @@ credentials-file-location:
     - claude_desktop_config.json
     - ~/.cursor/mcp.json
     - .cursor/mcp.json
+history:
+  adoption-history:
+    - >
+      Public GitHub releases show rapid 1.x activity through late 2025 and early 2026,
+      with v1.13.0 published on 2026-03-07. Homebrew packaging gives users a native
+      formula in addition to the README's `npx -y airtable-mcp-server` launch path.
+    - >
+      Adoption is coupled to Airtable personal access tokens and MCP client config
+      files: users install the executable, grant Airtable scopes such as
+      `schema.bases:read` and `data.records:read`, and store `AIRTABLE_API_KEY` in the
+      generated client config.
+  package-nerd-significance:
+    - >
+      This package is a neat example of Homebrew packaging an MCP server: the executable
+      is small, but the interesting operational state lives in editor or assistant
+      config files and environment variables rather than in the package prefix.
+    - >
+      It also captures the 2025-era packaging pattern for AI tool servers: an
+      npm-oriented command, optional Homebrew formula, service-specific API token, and a
+      schema of named tools that the host LLM client discovers at runtime.
+  project-history:
+    - >
+      The repository README describes the project as an MCP server for Airtable
+      databases, enabling LLMs to inspect database schemas and read and write records.
+      It is a TypeScript/Node-style CLI distributed as `airtable-mcp-server` and
+      commonly launched through `npx` from an MCP client configuration.
+    - >
+      The project belongs to the first wave of small service-specific MCP servers that
+      appeared after MCP clients began standardizing external tool connections. Its own
+      README points users to generated MCP client config for Claude Code, Claude
+      Desktop, Cursor, Cline, VS Code, and more.
+  related-projects:
+    - Airtable is the backing database/API service.
+    - The Model Context Protocol is the integration protocol used by the server.
+    - >
+      Claude Desktop, Claude Code, Cursor, Cline, and VS Code are named by the README as
+      supported MCP client configuration targets.
+  sources:
+    - https://github.com/domdomegg/airtable-mcp-server
+    - https://github.com/domdomegg/airtable-mcp-server/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      airtable-mcp-server is a Model Context Protocol server that gives LLM clients read
+      and write access to Airtable bases. It packages Airtable schema inspection, record
+      operations, table and field mutation, and comments into MCP tools.
+  timeline:
+    - >
+      2025: airtable-mcp-server appears as an MCP server for Airtable with npm-style
+      execution and client-generated config.
+    - '2025-10-26: v1.9.x releases published on GitHub.'
+    - '2026-03-07: v1.13.0 published on GitHub releases.'
+  usage:
+    - >
+      The server exposes tools for listing bases and tables, describing table schemas,
+      listing/searching/getting records, creating/updating/deleting records,
+      creating/updating tables and fields, and reading or creating comments. It can also
+      run in HTTP mode using `MCP_TRANSPORT=http PORT=3000 npx airtable-mcp-server`.
+    - >
+      Its default usage is not a human-facing CLI session but a background MCP server
+      launched by a client such as Claude Desktop or Cursor. The configuration file
+      therefore doubles as the credential location because the Airtable token is set as
+      `AIRTABLE_API_KEY` in that client config.
 tags:
   - airtable
   - automation
@@ -32,25 +95,40 @@ geiger:
     - text:server
 provenance:
   category-sources:
-    - official README describes a Model Context Protocol server for Airtable databases
-    - 'source_facts.description: MCP Server for Airtable'
+    - >
+      https://github.com/domdomegg/airtable-mcp-server README: Model Context Protocol
+      server for Airtable databases.
+    - 'source_facts.description: MCP Server for Airtable.'
   display-name-sources:
-    - 'official GitHub README heading: airtable-mcp-server'
-    - source_facts.name
+    - >
+      https://github.com/domdomegg/airtable-mcp-server README heading uses
+      airtable-mcp-server.
+    - 'source_facts.name: airtable-mcp-server.'
   docs-sources:
     - >
-      official GitHub README is the primary documentation surface and includes
-      installation, configuration, tools, and HTTP transport
+      https://github.com/domdomegg/airtable-mcp-server README contains installation,
+      configuration, and tool documentation.
+    - 'source_facts.homepage: https://github.com/domdomegg/airtable-mcp-server.'
+  history-sources:
+    - https://github.com/domdomegg/airtable-mcp-server
+    - https://github.com/domdomegg/airtable-mcp-server/releases
+    - source_facts.package-manager
   repo-sources:
-    - official GitHub repository from source_facts.homepage and README
+    - >
+      https://github.com/domdomegg/airtable-mcp-server is the official README and source
+      repository.
+    - source_facts.homepage points to the same GitHub repository.
   tags-sources:
     - >
-      official README describes Airtable Model Context Protocol server with tools for
-      bases, tables, records, fields, and comments
+      https://github.com/domdomegg/airtable-mcp-server README documents MCP tools,
+      Airtable API token, and Node/npx execution.
+    - source_facts.executables lists airtable-mcp-server.
 category-confidence: high
 category-path:
   - developer-tools
+  - mcp
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

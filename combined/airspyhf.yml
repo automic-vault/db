@@ -7,6 +7,70 @@ docs:
   - https://github.com/airspy/airspyhf
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Airspy HF+ adoption follows the hardware and SDR-operator audience: users need a
+      small host package that their SDR applications and scripts can call. The source
+      facts show packaging in Homebrew, Alpine, Debian, Fedora, MacPorts, Nix, Ubuntu,
+      and openSUSE.
+    - >
+      The README documents Windows and Linux builds, and explicitly distinguishes Linux
+      udev rule choices from macOS USB behavior. That detail is important for
+      distribution adoption because a package can compile cleanly while still failing to
+      give ordinary users access to the USB receiver.
+  package-nerd-significance:
+    - >
+      Airspy HF+ is a small package with real platform edges: USB access, udev policy,
+      shared libraries, and downstream SDR applications all matter. It is a
+      package-manager example where the correctness of install-time permissions can be
+      as important as the version number.
+    - >
+      It also shows how hardware-specific packages split inside one vendor ecosystem:
+      `airspy` and `airspyhf` are related but separately packaged because the devices
+      and host libraries differ.
+  project-history:
+    - >
+      The official airspyhf repository describes itself as a user-mode driver and host
+      software for Airspy HF+, a high-performance software defined radio for the HF and
+      VHF bands. It points to the Airspy HF+ product page and shares the broader Airspy
+      software-defined-radio ecosystem.
+    - >
+      The README names Ian Gilmour and Youssef Touil as principal authors and states
+      that the user-mode driver is based on Airspy R2, itself based on HackRF. That
+      gives the package a clear hardware-family lineage rather than presenting it as a
+      generic SDR abstraction.
+  related-projects:
+    - Airspy R2 is named by the README as the basis for the Airspy HF user-mode driver.
+    - HackRF is named as the deeper project lineage behind Airspy R2.
+    - airspyone_host is the sibling host package for Airspy devices outside the HF+ line.
+  sources:
+    - https://airspy.com/
+    - https://github.com/airspy/airspyhf
+    - https://github.com/airspy/airspyhf/tags
+    - source_facts.package-manager
+  summary:
+    - >
+      Airspy HF+ is the host software package for the Airspy HF+ receiver family,
+      focused on high-performance SDR reception in the HF and VHF bands. It provides
+      libairspyhf and utilities such as `airspyhf_info`, `airspyhf_rx`, and
+      calibration/control tools.
+  timeline:
+    - '2010s: Airspy HF+ host software is published for the HF/VHF Airspy receiver line.'
+    - >
+      2020s: airspyhf is packaged across Homebrew, Alpine, Debian, Fedora, MacPorts,
+      Nix, Ubuntu, and openSUSE according to source_facts.
+    - '2020s: Repository tags include releases from 1.0 through later 1.x tags.'
+  usage:
+    - >
+      Typical package usage is hardware enablement: run `airspyhf_info` to verify the
+      attached receiver, `airspyhf_rx` to capture samples, and calibration or GPIO
+      utilities when tuning the device setup. GUI SDR applications may depend on the
+      installed library underneath.
+    - >
+      On Linux, the documented build options install udev rules using either
+      plugdev-style access or uaccess, while macOS does not need those udev options.
+      That makes the same source package slightly different across operating systems.
 category: media
 package-manager:
   apk: airspyhf
@@ -23,8 +87,10 @@ tags:
   - cli
   - driver
   - hf
+  - libusb
   - radio
   - sdr
+  - usb
 description: Driver and tools for a software-defined radio
 executables:
   - airspyhf_calibrate

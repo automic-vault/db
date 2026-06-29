@@ -1,7 +1,7 @@
 id: brew:ahcpd
 display-name: ahcpd
 homepage: https://www.irif.fr/~jch/software/ahcp/
-repo: https://git.wifi.pps.univ-paris-diderot.fr/?p=ahcpd.git
+repo: https://github.com/jech/ahcpd
 docs:
   - https://www.irif.fr/~jch/software/ahcp
   - https://www.irif.fr/~jch/software/ahcp/ahcpd.html
@@ -9,6 +9,77 @@ docs:
 config-file-location:
   unix: /etc/ahcpd.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official project page says AHCP was used on the PPS network and notes packages
+      for Debian, Ubuntu, Fedora Extras, Arch Linux, and OpenWrt. The supplied package
+      facts add Homebrew, Nix, and other Linux distribution packaging, showing the
+      daemon's life as a specialist networking package rather than a mainstream desktop
+      utility.
+    - >
+      The official page also says AHCP was expected to be replaced eventually by an
+      extended Homenet HNCP protocol, which helps explain its maintenance profile:
+      useful and packaged, but tied to a specific era of mesh-network experimentation.
+  package-nerd-significance:
+    - >
+      ahcpd matters to package nerds as a compact example of late-2000s mesh-network
+      plumbing: a real daemon, protocol draft, man page, distro packages, and OpenWrt
+      relevance, but with a scope far narrower than DHCP clients or router-advertisement
+      daemons.
+    - >
+      It is also a useful reminder that not every packaged network daemon is broadly
+      deployed. Some packages exist because a small protocol ecosystem needs
+      reproducible builds and service integration across Unix-like systems.
+  project-history:
+    - >
+      The official AHCP page describes the protocol as a replacement for router
+      discovery and DHCP in mobile ad-hoc networks, and as a companion to routing
+      protocols such as Babel or OLSR. The ahcpd change log records an initial public
+      release in August 2007.
+    - >
+      The implementation evolved quickly from 2007 through 2011. Early releases added
+      NTP server configuration, IPv4 stateful configuration, daemon operation, and
+      server redundancy features. In August 2009, ahcpd 0.50 redesigned AHCP as a
+      client-server protocol layered over a multicast routing layer, explicitly breaking
+      compatibility with the older protocol.
+  related-projects:
+    - >
+      Babel and OLSR are named by the official AHCP page as routing protocols expected
+      to provide routes while AHCP handles address and service configuration.
+    - >
+      HNCP is named by the official page as the Homenet protocol the author hoped would
+      eventually replace AHCP.
+  sources:
+    - https://raw.githubusercontent.com/jech/ahcpd/master/CHANGES
+    - https://raw.githubusercontent.com/jech/ahcpd/master/README
+    - https://www.irif.fr/~jch/software/ahcp
+    - https://www.irif.fr/~jch/software/ahcp/ahcpd.html
+    - source_facts.package-manager
+  summary:
+    - >
+      ahcpd is Juliusz Chroboczek's daemon implementation of AHCP, the Ad-Hoc
+      Configuration Protocol. It targets IPv6 and dual-stack IPv6/IPv4 autoconfiguration
+      for mesh and ad-hoc networks where ordinary DHCP or IPv6 router discovery is
+      awkward because there is no conveniently placed server on every link.
+  timeline:
+    - '2007: ahcpd 0.1 initial public release.'
+    - '2008: ahcpd added IPv4 stateful configuration and daemon operation.'
+    - '2009: ahcpd 0.50 redesigned AHCP as a client-server protocol over multicast routing.'
+    - >
+      2010: ahcpd 0.51 added plain-text server configuration files and prefix delegation
+      support.
+    - '2011: ahcpd 0.53 fixed client renewal behavior and set packet TOS as network control.'
+  usage:
+    - >
+      Client use can be as simple as running ahcpd on an interface as root. Server use
+      requires a configuration file; the official README shows ahcpd launched with -c
+      /etc/ahcpd.conf and a file containing mode, IPv6 and IPv4 prefixes, lease
+      directory, name servers, and NTP servers.
+    - >
+      The man page documents ahcpd as a daemon with client, server, and forwarder modes.
+      It also documents operational files such as /var/lib/ahcp-unique-id and scripts
+      under /etc/ahcp/ that perform the actual interface configuration.
 category: networking
 package-manager:
   brew: ahcpd

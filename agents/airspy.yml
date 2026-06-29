@@ -6,12 +6,77 @@ docs:
   - https://github.com/airspy/airspyone_host
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Airspy's adoption is tied to SDR hardware ownership and to distribution packaging.
+      The Homebrew source facts list packages for Homebrew, Debian, MacPorts, Nix, Arch,
+      Ubuntu, and openSUSE, reflecting the need for easy host-tool installs across
+      desktop SDR workstations.
+    - >
+      The upstream repository documents Windows, Linux, and FreeBSD builds. On Linux it
+      installs udev rules and runs `ldconfig`, which is a classic sign that the package
+      is both a CLI utility set and a system library used by other SDR programs.
+  package-nerd-significance:
+    - >
+      Airspy is interesting to package maintainers because hardware support lives at the
+      awkward edge between libraries, CLI tools, USB permissions, and downstream GUI
+      applications. A working package needs the right libusb dependency, library
+      installation, and device access rules, not just a compiled binary.
+    - >
+      It is also part of the SDR packaging constellation: HackRF, rtl-sdr, Airspy HF+,
+      SDR#, and SoapySDR-style integrations all shape how users expect radio hardware
+      packages to install and coexist.
+  project-history:
+    - >
+      The official Airspy site describes the hardware line as high-quality
+      software-defined radio receivers for governments, professionals, academics, and
+      hobbyists, and its page metadata dates the site to 2014. The airspyone_host
+      repository is the host-side software for Airspy and describes the project as a
+      low-cost, open-source software radio platform.
+    - >
+      The host software's README names Benjamin Vernoux and Youssef Touil as principal
+      authors and notes that Airspy is based on the HackRF project. That lineage
+      matters: Airspy sits in the same open SDR tradition as HackRF while packaging a
+      narrower set of host tools for Airspy hardware.
+  related-projects:
+    - HackRF is named by the Airspy host README as a basis for the project.
+    - Airspy HF+ is the related HF/VHF receiver line with its own host package.
+    - libusb is the USB access dependency documented by the build instructions.
+  sources:
+    - https://airspy.com/
+    - https://github.com/airspy/airspyone_host
+    - source_facts.package-manager
+  summary:
+    - >
+      Airspy is the host software package for Airspy SDR receivers, exposing libairspy
+      and command-line utilities for inspecting devices, receiving samples,
+      reading/writing device settings, and integrating Airspy hardware into SDR software
+      stacks.
+  timeline:
+    - '2014: The official Airspy site metadata records publication of the Airspy SDR site.'
+    - >
+      2010s: airspyone_host provides host software for Airspy as a low-cost open-source
+      software radio platform.
+    - >
+      2020s: Airspy host tools are packaged across Homebrew, Debian, MacPorts, Nix,
+      Arch, Ubuntu, and openSUSE according to source_facts.
+  usage:
+    - >
+      Users install the host package to get commands such as `airspy_info`, `airspy_rx`,
+      `airspy_gpio`, `airspy_r820t`, and `airspy_spiflash`. These tools inspect attached
+      receivers, receive IQ samples, and manage lower-level device controls.
+    - >
+      The package is usually not the whole SDR application. It is the plumbing layer
+      that lets SDR frontends and scripts talk to Airspy USB hardware through libusb and
+      libairspy.
 tags:
   - cli
   - driver
   - libusb
   - radio
   - sdr
+  - usb
 geiger:
   category: appliance
   color: green
@@ -23,23 +88,35 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - official README describes AirSpy host software for a software radio platform
-    - 'source_facts.description: Driver and tools for a software-defined radio'
+    - >
+      https://github.com/airspy/airspyone_host README: tiny and efficient software
+      defined radio.
+    - 'source_facts.description: Driver and tools for a software-defined radio.'
   display-name-sources:
-    - 'official README heading: AirSpy'
-    - 'source_facts.name: airspy'
+    - 'current_curation.display-name: Airspy.'
+    - https://github.com/airspy/airspyone_host README heading uses AirSpy.
   docs-sources:
-    - official GitHub README documents host software build/install
-    - official product site is linked from the README
+    - >
+      https://github.com/airspy/airspyone_host README documents the host software build
+      and tools.
+    - 'source_facts.homepage: https://airspy.com/.'
+  history-sources:
+    - https://airspy.com/
+    - https://github.com/airspy/airspyone_host
+    - source_facts.package-manager
   repo-sources:
-    - source_facts.repo already provided; per instruction repo returned as null
+    - >
+      source_facts.repo already supplied as https://github.com/airspy/airspyone_host;
+      prompt requires repo null when source_facts.repo is present.
   tags-sources:
-    - official README describes AirSpy as software-defined radio host software and tools
-    - source_facts.description
+    - https://github.com/airspy/airspyone_host README documents libusb-based host software.
+    - source_facts.executables lists Airspy command-line tools.
 category-confidence: high
 category-path:
   - media
+  - software-defined-radio
 display-name-confidence: high
-docs-confidence: high
+docs-confidence: medium
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
