@@ -11,6 +11,88 @@ config-file-location:
     - INSTALL_DIR/etc/astrometry.cfg
     - /usr/local/astrometry/etc/astrometry.cfg
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Astrometry.net adoption spans two modes: the hosted nova.astrometry.net web
+      service for casual uploads and the local command-line solver for observatories,
+      astrophotographers, pipelines, and archive processing. The README points users to
+      the web service, the documentation, downloadable code snapshots, Docker
+      containers, and index files.
+    - >
+      Package-manager adoption is broad because local solving needs repeatable binaries
+      and large offline index files. Homebrew, Debian, and Ubuntu package it, and the
+      upstream README documents a Docker image invocation such as
+      astrometrynet/solver:0.98 solve-field image.jpg for containerized use.
+  package-nerd-significance:
+    - >
+      This is a package nerd favorite because it brings a serious scientific stack to a
+      normal CLI install: dozens of executables, FITS table tools, plotting helpers, WCS
+      transformers, and index builders all land on PATH. The real payload is split
+      between packaged code and separately managed index data, so the package's
+      usability depends on documentation, data placement, and config paths as much as on
+      the binary itself.
+    - >
+      It is also a canonical example of scientific reproducibility becoming operational
+      infrastructure. The same algorithms that backed a journal paper became a web
+      service, a Docker solver, distribution packages, and a local command-line
+      workhorse used outside professional astronomy.
+  project-history:
+    - >
+      The codebase dates to the Astrometry.net Team work by Michael Blanton, David W.
+      Hogg, Dustin Lang, Keir Mierle, and Sam Roweis, with copyright notices beginning
+      in 2006. The accompanying 2010 Astronomical Journal paper, 'Astrometry.net: Blind
+      astrometric calibration of arbitrary astronomical images,' framed the project as a
+      way to create correct astrometric metadata for useful astronomical images in
+      archival disarray.
+    - >
+      The official code README says the original code release backed up the claims in
+      the paper for scientific repeatability, then became more robust and usable for a
+      wider audience. That origin still shows in the package: it is not just a single
+      solver binary, but a research-to-operations toolkit including HEALPIX support,
+      kd-tree code, FITS utilities, index builders, and a web-service stack.
+  related-projects:
+    - nova.astrometry.net is the hosted web service using much of the same software.
+    - USNO-B, Tycho-2, 2MASS, and Gaia are reference catalogs used for index files.
+    - >
+      FITS and WCS standards are the file and metadata formats the command-line tools
+      manipulate.
+  sources:
+    - https://astrometry.net/doc/changelog.html
+    - https://astrometry.net/doc/readme.html
+    - https://astrometrynet.readthedocs.io/en/latest/readme.html
+    - https://github.com/dstndstn/astrometry.net#readme
+  summary:
+    - >
+      Astrometry.net is the classic open-source blind astrometric calibration system:
+      give it an astronomical image without reliable coordinates and it solves the sky
+      position, writes standards-compliant WCS metadata, and can annotate known objects.
+      The Homebrew formula exposes both the famous solve-field command and a large
+      toolbox of FITS, WCS, plotting, index-building, and catalog utilities.
+  timeline:
+    - '2006: Copyright notices begin for the Astrometry.net Team code.'
+    - >
+      2010: The Astrometry.net blind astrometric calibration paper was published in The
+      Astronomical Journal.
+    - >
+      2012: The Sphinx documentation set identifies the project documentation authorship
+      and code docs era.
+    - >
+      2024: Upstream tags reached the 0.9x series, with 0.98 available in the documented
+      Docker example.
+  usage:
+    - >
+      The core CLI workflow is to install the code, download the index files appropriate
+      for the field sizes being solved, optionally edit INSTALL_DIR/etc/astrometry.cfg,
+      and run solve-field against an image, FITS file, URL, or xylist. The docs explain
+      that the backend reads astrometry.cfg, normally
+      /usr/local/astrometry/etc/astrometry.cfg, to find index files and control solver
+      behavior.
+    - >
+      solve-field is the main high-level command-line interface. It extracts sources,
+      creates augmented xylists, calls the backend solver, and writes output files such
+      as WCS and annotated products. Power users constrain scale, depth, radius, CPU
+      limit, source extraction, plotting, and index selection for speed and reliability.
 category: science
 package-manager:
   brew: astrometry-net
@@ -24,6 +106,8 @@ tags:
   - cli
   - fits
   - image-processing
+  - plate-solving
+  - wcs
 description: Automatic identification of astronomical images
 executables:
   - an-fitstopnm

@@ -6,6 +6,80 @@ docs:
   - https://github.com/freebsd/atf#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ATF is strongly associated with BSD operating-system testing. The README
+      explicitly recommends binary packages for FreeBSD, NetBSD/pkgsrc, OpenBSD, and
+      Ubuntu, and the NEWS file calls out FreeBSD test-suite support in the 0.19
+      release. That made ATF familiar to package maintainers who care about base-system
+      regression tests, portable shell tests, and tests shipped alongside system
+      components.
+    - >
+      Its package-manager footprint is broad for such a specialized tool: the input
+      lists packages in Homebrew, MacPorts, pkgsrc-adjacent systems, Debian/Ubuntu,
+      Fedora, Nix, and Alpine. That packaging spread matters because ATF tests are often
+      consumed by downstream distributions rather than only by application developers.
+  package-nerd-significance:
+    - >
+      ATF is package-nerd infrastructure: it is not glamorous, but it sits in the
+      plumbing between source trees, operating-system test suites, and downstream
+      package validation. Its removal of the old runner tools in favor of Kyua is the
+      sort of split that explains why different packages may depend on atf libraries,
+      atf-sh, or Kyua separately.
+    - >
+      The long quiet period between the 2014 0.21 release and later 2024/2025 releases
+      is also notable for maintainers: old system-test tooling can remain relevant for a
+      decade when it is embedded in OS and packaging workflows.
+  project-history:
+    - >
+      The official README describes ATF as libraries for C, C++, and POSIX shell, with
+      ATF-based tests relying on an external execution engine rather than shipping one
+      itself. The same README identifies Kyua as the preferred execution engine, which
+      reflects ATF's later role as the test-definition layer inside a larger BSD testing
+      stack.
+    - >
+      The NEWS file records a major 2014 transition: version 0.19 moved project hosting
+      from Google Code, where ATF had been a Kyua subproject, to GitHub as a first-class
+      project. That release also separated deprecated tools such as atf-run and
+      atf-report from the maintained libraries, foreshadowing the modern split where
+      Kyua handles execution.
+  related-projects:
+    - Kyua is the preferred execution engine for ATF-based tests.
+    - FreeBSD's test suite is a major downstream context for ATF.
+    - >
+      pkgsrc, OpenBSD ports, Debian/Ubuntu, and other package systems distribute ATF or
+      ATF shell tooling.
+  sources:
+    - https://github.com/freebsd/atf#readme
+    - https://raw.githubusercontent.com/freebsd/atf/master/NEWS
+  summary:
+    - >
+      ATF, the Automated Testing Framework, is a small but historically important Unix
+      testing framework for writing test programs in C, C++, and POSIX shell. Its value
+      is less about being a fashionable standalone test runner and more about providing
+      a consistent test-program API and command-line interface for base-system and
+      ports/package test suites.
+  timeline:
+    - >
+      2014: ATF 0.19 moved from Google Code to GitHub and separated deprecated
+      runner/reporting tools.
+    - '2014: ATF 0.20 removed the deprecated tools from the maintained release line.'
+    - >
+      2014: ATF 0.21 restored and refreshed manual-page documentation and improved
+      FreeBSD-current compatibility.
+    - '2024: ATF 0.22 refreshed the codebase for modern C++ and build-system compatibility.'
+    - '2025: ATF 0.23 fixed release tarball generation and other build/test issues.'
+  usage:
+    - >
+      ATF is used to write test cases in C, C++, or shell that expose a consistent
+      interface to humans and automation. In practice, users commonly install ATF
+      alongside Kyua, write tests with atf-c, atf-c++, or atf-sh, and let Kyua discover
+      and run them.
+    - >
+      The Homebrew formula exposes at least the atf-sh executable, which is the part
+      many command-line package users encounter first when running or authoring
+      shell-based tests.
 category: developer-tools
 package-manager:
   apk: atf

@@ -10,6 +10,80 @@ config-file-location:
   windows:
     - .\atlas.hcl
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Atlas is packaged as a standalone CLI through the project's install script,
+      Homebrew tap, Docker image, and npm entry point. The input also shows distribution
+      through Homebrew, MacPorts, Nix, Fedora, and winget-like sources, though package
+      names can collide with unrelated projects such as the numeric ATLAS library on
+      some Linux distributions.
+    - >
+      Its adoption story is tied to CI/CD and infrastructure integrations. Official docs
+      list GitHub Actions, GitLab CI, CircleCI, Bitbucket Pipes, Azure DevOps, Terraform
+      provider, Kubernetes operator, ArgoCD, Flux, Crossplane, and a Go SDK, positioning
+      Atlas as migration infrastructure for teams that already operate with GitOps and
+      deployment pipelines.
+  package-nerd-significance:
+    - >
+      Atlas is interesting to package people because it packages a lot of
+      database-migration machinery into a single Go CLI while also exposing Docker, npm,
+      Terraform-provider, Kubernetes-operator, and CI surfaces. It is both a local
+      developer tool and deploy-time infrastructure.
+    - >
+      It also sits in the same mental bucket as Terraform for databases: HCL files,
+      declarative plans, diffing, safety analysis, and CI gates. That makes the formula
+      useful even for users who never adopt Atlas Cloud.
+  project-history:
+    - >
+      The official README frames Atlas as a language-agnostic tool for managing and
+      migrating database schemas using modern DevOps principles. It offers two main
+      workflows: declarative schema management, where Atlas compares the current
+      database to a desired schema, and versioned migrations, where Atlas plans, lints,
+      and applies migration directories.
+    - >
+      Atlas grew around a broader schema ecosystem rather than a single database. The
+      README lists support for PostgreSQL, MySQL/MariaDB, SQL Server, SQLite,
+      ClickHouse, Redshift, Oracle, Snowflake, CockroachDB, TiDB, Databricks, Spanner,
+      Aurora DSQL, and Azure Fabric, plus ORM loaders across Go, TypeScript, Python,
+      Java, .NET, and PHP.
+  related-projects:
+    - >
+      Terraform is a conceptual neighbor and an official integration target through the
+      Atlas Terraform provider.
+    - >
+      Ent, GORM, Prisma, SQLAlchemy, Django, Hibernate, EF Core, Doctrine, and other
+      ORMs are documented schema input sources.
+    - Atlas Cloud is the hosted companion for monitoring, governance, and CI workflows.
+  sources:
+    - https://atlasgo.io/atlas-schema/projects
+    - https://atlasgo.io/cli-reference
+    - https://atlasgo.io/docs
+    - https://github.com/ariga/atlas#readme
+  summary:
+    - >
+      Atlas is Ariga's database schema-as-code and migration CLI. It treats database
+      structure as something that can be inspected, diffed, planned, linted, tested,
+      versioned, and deployed through DevOps workflows rather than managed only by ad
+      hoc SQL migration scripts.
+  timeline:
+    - '0.x: Official Git tags include early cmd/atlas releases beginning at v0.5.0.'
+    - '1.x: Official Git tags include v1.0.0 and later 1.x releases.'
+    - >
+      Current: The official README documents broad database, ORM, CI/CD, Terraform,
+      Kubernetes, and AI-tool integrations.
+  usage:
+    - >
+      Atlas users inspect existing schemas, write desired schemas in HCL, SQL, or ORM
+      models, run atlas schema apply for declarative changes, or use atlas migrate
+      diff/lint/apply for versioned migration directories. A dev database URL is
+      commonly used so Atlas can compute diffs and safety checks before touching
+      production.
+    - >
+      Project configuration is normally atlas.hcl in the current working directory when
+      using --env, with -c/--config able to point at another file. Atlas can validate
+      that config with atlas config validate, and its CLI reference shows
+      file://atlas.hcl as the default config URL.
 tags:
   - cli
   - database
@@ -19,32 +93,33 @@ tags:
   - schema-management
 provenance:
   category-sources:
-    - https://atlasgo.io/docs says Atlas manages and migrates database schemas.
-    - 'source_facts.description: Database toolkit'
+    - Official README describes Atlas as a database schema management and migration toolkit.
   display-name-sources:
-    - 'current_curation.display-name: Atlas'
-    - https://atlasgo.io/ page title and branding use Atlas.
+    - Official README heading uses Atlas.
   docs-sources:
+    - Official docs live at https://atlasgo.io/docs.
     - >
-      https://atlasgo.io/atlas-schema/projects is the official Atlas project
-      configuration documentation.
-    - https://atlasgo.io/docs is the official Atlas documentation root.
+      Official project-configuration docs at https://atlasgo.io/atlas-schema/projects
+      describe atlas.hcl.
+  history-sources:
+    - https://atlasgo.io/atlas-schema/projects
+    - https://atlasgo.io/cli-reference
+    - https://atlasgo.io/docs
+    - https://github.com/ariga/atlas#readme
   repo-sources:
     - >
-      source_facts.repo already has https://github.com/ariga/atlas; per instruction,
-      repo was not re-determined.
+      source_facts.repo already provides https://github.com/ariga/atlas; prompt requires
+      repo null when source_facts.repo is present.
   tags-sources:
-    - current_curation.tags supplied cli, database, devops, migrations, schema-management.
     - >
-      https://atlasgo.io/docs describes database schema management,
-      declarative/versioned migrations, HCL/SQL schema definitions, and DevOps
-      workflows.
-    - source_facts.executables lists atlas CLI.
+      Official README documents CLI usage, database migrations, HCL/SQL/ORM schemas,
+      DevOps workflows, and schema management.
 category-confidence: high
 category-path:
   - data
-  - database-schema-management
+  - schema-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

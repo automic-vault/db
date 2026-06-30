@@ -9,6 +9,71 @@ config-file-location:
   unix: ~/.athenacli/athenaclirc
 credentials-file-location:
   unix: ~/.athenacli/athenaclirc
+history:
+  adoption-history:
+    - >
+      The README and install docs list pip, Docker, and Homebrew installation paths. In
+      package-manager terms, this is a narrower project than ATF or Atlantis, but it
+      still crossed the threshold from Python package to Homebrew formula, which is
+      meaningful for data engineers who install query clients as ordinary command-line
+      tools.
+    - >
+      The input confirms Homebrew packaging for the formula. No broad official
+      downstream history was found beyond the project docs and repository tags, so
+      adoption claims should stay modest.
+  package-nerd-significance:
+    - >
+      AthenaCLI is a good example of the dbcli pattern spreading beyond traditional
+      databases. For package collectors, the interesting bit is the dependency stack and
+      UX lineage: prompt-toolkit and mycli ideas repackaged for a serverless AWS SQL
+      engine.
+    - >
+      It also shows why some data CLI tools carry credentials in their own rc files even
+      when they can reuse AWS CLI-style environment variables or profiles.
+  project-history:
+    - >
+      The official README presents AthenaCLI as a command-line interface for AWS Athena
+      and says it is a member of the dbcli community. Its credits are unusually
+      explicit: the author thanks pgcli and mycli, says AthenaCLI was created based on a
+      clone of mycli, and credits PyAthena as the pure-Python Athena adapter underneath
+      the tool.
+    - >
+      That lineage explains the shape of the project. AthenaCLI is less an isolated AWS
+      wrapper than a specialization of the Python prompt-toolkit/dbcli ecosystem for a
+      cloud query service, keeping the familiar database-shell ergonomics while adding
+      Athena-specific credentials, region, S3 staging directory, workgroup, and profile
+      handling.
+  related-projects:
+    - pgcli and mycli are direct UX and code-lineage influences.
+    - PyAthena provides the Python Athena adapter credited by the project.
+    - Amazon Athena is the target query service.
+  sources:
+    - https://github.com/dbcli/athenacli#readme
+    - https://raw.githubusercontent.com/dbcli/athenacli/master/docs/install.rst
+    - https://raw.githubusercontent.com/dbcli/athenacli/master/docs/usage.rst
+  summary:
+    - >
+      AthenaCLI is a dbcli-style terminal client for Amazon Athena. It brings the
+      pgcli/mycli interaction model--SQL completion, syntax highlighting, table-aware
+      suggestions, favorite queries, and pretty tabular output--to AWS Athena users who
+      prefer a local REPL over the AWS console.
+  timeline:
+    - >
+      Undated: AthenaCLI was created as a dbcli-community Athena client inspired by
+      pgcli/mycli and based on a clone of mycli.
+    - 'Undated: Official docs documented pip, Docker, and Homebrew installation paths.'
+    - 'Release tags: The official Git repository exposes tags from v0.1.1 through v1.7.0.'
+  usage:
+    - >
+      AthenaCLI can start an interactive REPL for an optional database name or execute
+      SQL with -e and exit. The usage docs cover connecting with AWS credentials,
+      region, S3 staging directory, workgroup, and AWS profile, while the README shows
+      quick examples for creating a table, running a SELECT, and saving favorite
+      queries.
+    - >
+      On first launch, AthenaCLI creates ~/.athenacli/athenaclirc. The README documents
+      required AWS access key, secret key, region, S3 staging directory, and workgroup
+      settings, and also documents environment-variable alternatives.
 category: data
 package-manager:
   brew: athenacli

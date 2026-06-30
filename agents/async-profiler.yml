@@ -6,10 +6,74 @@ docs:
   - https://github.com/async-profiler/async-profiler#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The project became a default recommendation in the JVM performance community
+      because it is scriptable, produces portable output, and does not require a
+      heavyweight GUI profiler. The package is distributed through Homebrew, MacPorts,
+      and Nix in the supplied package metadata, while upstream publishes Linux and macOS
+      binaries plus nightly builds from GitHub Actions.
+    - >
+      Recent 4.x releases show continued production-oriented maintenance rather than
+      archival status: v4.3 added native lock profiling, latency filtering,
+      Prometheus-format metrics, and Java-agent/JMX control, while v4.4 added
+      differential flame graphs and call-trace memory limits.
+  package-nerd-significance:
+    - >
+      async-profiler is one of those packages whose formula matters more than its size
+      suggests: a native tool with JVM-specific privileges, OS-specific packaging,
+      architecture-specific binaries, and output formats that plug into a large
+      performance-debugging ecosystem. It is also a good example of a CLI package that
+      package managers make discoverable to users who otherwise would only encounter it
+      through conference talks or performance postmortems.
+  project-history:
+    - >
+      The project started in 2016 with an initial proof of concept for profiling Java
+      without the safepoint bias that affected many traditional JVM profilers. The
+      README describes the core design as combining HotSpot-specific stack collection
+      with native facilities such as perf events, so it can show Java frames alongside
+      native, kernel, GC, and JIT compiler activity.
+    - >
+      Over time async-profiler grew from a CPU sampler into a broader observability
+      utility. Official documentation now covers CPU, allocation, native memory, lock,
+      wall-clock, hardware/software counter, container, Java Flight Recorder,
+      FlameGraph, OTLP, pprof, and converter workflows.
+  related-projects:
+    - >
+      The project sits near HotSpot, Linux perf events, Java Flight Recorder, Brendan
+      Gregg-style FlameGraphs, OpenTelemetry, and pprof-style profiling workflows.
+  sources:
+    - Official git metadata from https://github.com/async-profiler/async-profiler.git
+    - https://github.com/async-profiler/async-profiler#readme
+    - https://github.com/async-profiler/async-profiler/releases.atom
+    - https://github.com/async-profiler/async-profiler/tree/master/docs
+  summary:
+    - >
+      async-profiler is a low-overhead sampling profiler for HotSpot-based Java
+      runtimes. Its package-manager identity is unusually strong because the everyday
+      tool is a small native CLI, `asprof`, that produces artifacts Java engineers
+      already trade around: flame graphs, collapsed stacks, JFR recordings, traces,
+      trees, heatmaps, and converter outputs.
+  timeline:
+    - '2016: Initial Git commit and proof-of-concept async profiler work.'
+    - 'v1.x: Early public release series established the standalone profiler package.'
+    - >
+      2026: v4.3 added native lock profiling, latency filtering, Prometheus metrics, and
+      Java-agent/JMX control.
+    - '2026: v4.4 added differential flame graphs and further FlameGraph/JFR/OTLP improvements.'
+  usage:
+    - >
+      The normal package-manager workflow is to install the CLI and run `asprof` against
+      a live JVM PID, for example saving a 30-second profile to an HTML flame graph.
+      More advanced workflows attach it as a Java agent, run continuous loops, emit
+      JFR/OTLP/pprof-compatible data, or convert recordings with the bundled converter
+      tooling.
 tags:
   - cli
   - flamegraph
   - java
+  - jfr
   - performance
   - profiler
 geiger:
@@ -23,31 +87,33 @@ geiger:
     - text:sync
 provenance:
   category-sources:
-    - >
-      Official README: https://github.com/async-profiler/async-profiler#readme describes
-      low-overhead Java profiling and supported profile types.
-    - 'source_facts.description: Sampling CPU & HEAP profiler for Java'
+    - https://github.com/async-profiler/async-profiler#readme
+    - source_facts.description
   display-name-sources:
-    - 'Official repository title: https://github.com/async-profiler/async-profiler'
+    - https://github.com/async-profiler/async-profiler#readme
     - source_facts.name
   docs-sources:
-    - >
-      Official README documentation section links the docs directory:
-      https://github.com/async-profiler/async-profiler#documentation
+    - current_curation.docs
+    - https://github.com/async-profiler/async-profiler#readme
+  history-sources:
+    - Official git metadata from https://github.com/async-profiler/async-profiler.git
+    - https://github.com/async-profiler/async-profiler#readme
+    - https://github.com/async-profiler/async-profiler/releases.atom
+    - https://github.com/async-profiler/async-profiler/tree/master/docs
   repo-sources:
     - >
-      source_facts.repo already has https://github.com/async-profiler/async-profiler;
-      per instruction repo is returned as null when source_facts.repo is populated.
+      source_facts.repo is already populated; prompt instructs returning repo as null in
+      that case.
   tags-sources:
-    - >
-      Official README: https://github.com/async-profiler/async-profiler#readme describes
-      Java CPU, heap, allocation, lock, and performance-counter profiling.
-    - source_facts.executables lists asprof and jfrconv.
+    - https://github.com/async-profiler/async-profiler#readme
+    - https://github.com/async-profiler/async-profiler/blob/master/docs/ProfilerOptions.md
+    - source_facts.description
 category-confidence: high
 category-path:
   - developer-tools
   - profiling
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

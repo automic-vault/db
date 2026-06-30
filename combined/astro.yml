@@ -3,14 +3,108 @@ display-name: Astro CLI
 homepage: https://www.astronomer.io/
 repo: https://github.com/astronomer/astro-cli
 docs:
+  - https://www.astronomer.io/docs/astro/cli/configure-cli
   - https://www.astronomer.io/docs/astro/cli/overview
   - https://www.astronomer.io/docs/astro/cli/reference
 config-file-location:
-  unix: .astro/config.yaml
-  windows: .astro/config.yaml
+  unix:
+    - .astro/config.yaml
+    - ~/.astro/config.yaml
+  windows:
+    - .astro/config.yaml
+    - '%USERPROFILE%\.astro\config.yaml'
 credentials-file-location:
-  unix: .astro/config.yaml
-  windows: .astro/config.yaml
+  unix: ~/.astro/config.yaml
+  windows: '%USERPROFILE%\.astro\config.yaml'
+history:
+  adoption-history:
+    - >
+      Homebrew packages the CLI as astro and the upstream README documents brew install
+      astro for macOS, winget install -e --id Astronomer.Astro for Windows, and an
+      install.astronomer.io shell installer for Linux. That multi-channel distribution
+      matters because Airflow teams often need the same CLI in laptops, CI, and
+      enterprise Windows workstations.
+    - >
+      Adoption is tied to Astronomer's hosted Astro and Astronomer Software/Private
+      Cloud products rather than being a general Airflow replacement. The CLI became the
+      user-facing packaging point for Astronomer's Airflow workflow: initialize a
+      project, run it locally, test DAGs, and deploy to a managed Deployment.
+  package-nerd-significance:
+    - >
+      For package nerds, astro is a good example of a cloud-product CLI that still earns
+      a normal package-manager slot because its heavy dependencies are external services
+      and container runtimes, not vendored platform SDKs. The package is mostly a single
+      command surface, but it orchestrates Docker/Podman, generated project files,
+      Airflow commands, and authenticated API calls.
+    - >
+      The formula is also notable because it has to track a fast-moving SaaS CLI while
+      preserving enough compatibility for CI images and developer laptops. Astronomer's
+      docs warn that backward compatibility is guaranteed only between matching minor
+      versions of the platform and CLI, which makes package version selection
+      operationally important.
+  project-history:
+    - >
+      The CLI grew out of Astronomer's Airflow platform tooling and was distributed
+      publicly as the astro-cli repository. Its README describes it as a command-line
+      interface for data orchestration that works with Astronomer products, and its
+      release notes mark all releases before 1.0.0 as beta. Version 1.0.0 was published
+      in May 2022 as the converged Astro CLI release, while Astronomer's own CLI release
+      notes document the transition from older astrocloud command names to the
+      standardized astro login, astro logout, astro dev init, and deployment commands.
+    - >
+      The tool's center of gravity is local developer experience for Airflow: astro dev
+      init creates a project skeleton, astro dev start runs the Airflow stack locally in
+      containers, and deployment/workspace commands talk to Astronomer APIs. Later
+      releases added Windows package-manager support, organization and context
+      switching, richer config commands, and deployment inspection/logging features.
+  related-projects:
+    - >
+      Apache Airflow is the workflow engine Astro CLI packages around for local and
+      managed development.
+    - Docker or Podman provide the local container runtime used by astro dev commands.
+    - >
+      Astronomer Astro and Astronomer Software/Private Cloud are the platform targets
+      for deployment and context commands.
+  sources:
+    - https://github.com/astronomer/astro-cli#readme
+    - https://github.com/astronomer/astro-cli/releases/tag/v1.0.0
+    - https://github.com/astronomer/astro-cli/releases/tag/v1.6.0
+    - https://www.astronomer.io/docs/astro/cli/configure-cli
+    - https://www.astronomer.io/docs/astro/cli/develop-project
+    - https://www.astronomer.io/docs/astro/cli/release-notes
+  summary:
+    - >
+      Astro CLI is Astronomer's command-line interface for developing Apache Airflow
+      projects locally and deploying them to Astronomer products. In package-manager
+      terms it is the small Go binary that turns a directory of DAGs, requirements,
+      Dockerfile, and Astro project metadata into a repeatable local Airflow environment
+      and a deployable unit.
+  timeline:
+    - >
+      2021: Public beta-era Astro CLI releases were already being published from the
+      astronomer/astro-cli repository.
+    - '2022-05-27: Astro CLI v1.0.0 was published as the converged v1 release.'
+    - >
+      2022-06-28: Astronomer documented Astro CLI 1.2.0 and the standardized astro
+      command names.
+    - '2022-10-27: Astro CLI v1.6.0 added documented winget installation support for Windows.'
+    - >
+      2026: Astronomer documentation continues to position Astro CLI as the command
+      reference and local development tool for Astro projects.
+  usage:
+    - >
+      Typical package usage starts with brew install astro, then astro dev init in an
+      empty project directory and astro dev start to build and run local Airflow
+      containers. The generated project includes dags, tests, Dockerfile,
+      requirements.txt, packages.txt, plugins, include, and an .astro/config.yaml file
+      for project settings.
+    - >
+      Astro CLI stores project settings in .astro/config.yaml and global settings in a
+      user-level Astro config file. Astronomer documentation notes project-level
+      settings such as webserver and Postgres ports and says global configuration is
+      stored centrally with the executable, for example under ~/.astro/config.yaml on
+      Unix-like systems. Login-related context and cached identity state also live in
+      the user-level config.
 category: data
 package-manager:
   brew: astro
@@ -22,6 +116,7 @@ tags:
   - astronomer
   - cli
   - data-orchestration
+  - deployment
   - local-development
 description: To build and run Airflow DAGs locally and interact with the Astronomer API
 executables:

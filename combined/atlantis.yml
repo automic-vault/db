@@ -8,10 +8,92 @@ config-file-location:
   unix:
     - atlantis.yaml at repository root
     - repos.yaml
-    - another path passed with --repo-config
-    - /path/to/config.yaml passed with --config
+    - path passed with --repo-config
+    - path passed with --config
 credentials-file-location:
   unix: ~/.aws/credentials
+history:
+  adoption-history:
+    - >
+      The 2017 launch post gives unusually concrete early adoption data: at Hootsuite,
+      Atlantis had expanded to 144 Terraform repositories, managed thousands of AWS
+      resources, and was used for every Terraform change. It also reported 78
+      contributors to Terraform repositories, 58 of them developers, as evidence of
+      broader developer participation.
+    - >
+      Atlantis later became community infrastructure around Terraform pull-request
+      workflows. The current docs point users to a CNCF Slack channel, and the project
+      footer identifies Atlantis as a Series of LF Projects, LLC project. Its Homebrew
+      and Nix packaging in the input reflect the common pattern of installing the server
+      binary locally for tests, demos, and self-hosted deployment images.
+  package-nerd-significance:
+    - >
+      Atlantis matters because it is one of the classic 'single binary plus webhook
+      server' DevOps tools that package managers can distribute cleanly even though
+      production deployment is usually containerized or Kubernetes-based.
+    - >
+      For Terraform users, it also marks an era before and alongside hosted Terraform
+      Cloud workflows, where teams wanted a transparent, self-hosted PR bot that fit
+      existing Git review rules and credential boundaries.
+  project-history:
+    - >
+      Atlantis was announced as open source in September 2017 after more than a year of
+      internal use at Hootsuite. The introductory post describes its original problem
+      statement: make Terraform collaboration effective in pull requests and let
+      developers contribute infrastructure changes without handing out local provider
+      credentials.
+    - >
+      The official README now summarizes the same product shape in package-friendly
+      terms: Atlantis is a self-hosted Go application that listens for Terraform
+      pull-request events, runs terraform plan, import, and apply remotely, and comments
+      output back to the pull request.
+  related-projects:
+    - Terraform is the core tool Atlantis automates.
+    - >
+      OpenTofu is relevant to later Atlantis ecosystem usage, though the core official
+      README remains Terraform-centered.
+    - >
+      GitHub, GitLab, Bitbucket, and other VCS providers are integration targets for
+      pull-request automation.
+  sources:
+    - https://github.com/runatlantis/atlantis#readme
+    - >
+      https://raw.githubusercontent.com/runatlantis/atlantis/main/runatlantis.io/blog/2017/introducing-atlantis.md
+    - >
+      https://raw.githubusercontent.com/runatlantis/atlantis/main/runatlantis.io/docs/provider-credentials.md
+    - >
+      https://raw.githubusercontent.com/runatlantis/atlantis/main/runatlantis.io/docs/repo-level-atlantis-yaml.md
+    - >
+      https://raw.githubusercontent.com/runatlantis/atlantis/main/runatlantis.io/docs/server-side-repo-config.md
+  summary:
+    - >
+      Atlantis is a self-hosted pull-request automation service for Terraform. It
+      listens to VCS webhooks, runs terraform plan and apply remotely, and comments
+      results back on the pull request, turning infrastructure changes into a reviewable
+      Git workflow.
+  timeline:
+    - '2017: Atlantis was announced as open source after more than a year of use at Hootsuite.'
+    - >
+      2017: The launch post reported 144 Terraform repositories and organization-wide
+      use for Terraform changes at Hootsuite.
+    - >
+      v0.1.0: Repo-level atlantis.yaml and core project/workflow configuration keys are
+      documented as available since the earliest config version.
+    - >
+      Current: Official docs describe Atlantis as an LF Projects project with CNCF Slack
+      community channels.
+  usage:
+    - >
+      Operators run atlantis server and connect it to GitHub, GitLab, Bitbucket, or
+      similar systems with webhooks and credentials. Developers comment commands such as
+      atlantis plan or atlantis apply on pull requests, and Atlantis performs Terraform
+      operations on the server where provider credentials are available.
+    - >
+      Configuration is split between repo-level atlantis.yaml, used from the repository
+      root for project and workflow structure, and server-side repo config, commonly
+      repos.yaml, passed with --repo-config. Provider credentials are intentionally left
+      to the hosting environment: docs mention environment variables, cloud instance
+      roles, Vault, and files such as ~/.aws/credentials.
 category: cloud-infrastructure
 package-manager:
   brew: atlantis
