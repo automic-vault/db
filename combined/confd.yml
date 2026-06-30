@@ -11,6 +11,73 @@ config-file-location:
     - /etc/confd/conf.d/*.toml
     - /etc/confd/templates/*.tmpl
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      confd was adopted mainly as glue for hosts and containers that needed dynamic
+      configuration without pulling a full configuration-management stack into the
+      application. Its official community pointers to IRC, a mailing list, and a project
+      website reflect the period when service discovery and sidecar-style config
+      rendering were still being standardized in operations culture.
+    - >
+      The Homebrew, apk, and Nix package entries in the supplied package facts reflect
+      its continued packaging as a small operational binary rather than a language
+      library.
+  package-nerd-significance:
+    - >
+      For package maintainers, confd is a good example of the mid-2010s Go single-binary
+      ops tool: statically distributable, service-discovery aware, and useful even when
+      installed outside a larger platform. Its formula/cross-platform packaging value
+      comes from turning distributed configuration into a conventional executable with
+      predictable /etc/confd paths.
+  project-history:
+    - >
+      The project presents itself as a Go tool for keeping local configuration files up
+      to date from etcd, Consul, DynamoDB, Redis, Vault, ZooKeeper, AWS SSM Parameter
+      Store, environment variables, or files. Its default configuration model centers on
+      TOML at /etc/confd/confd.toml plus template resources under /etc/confd.
+    - >
+      Release notes show the project expanding alongside the infrastructure systems
+      common in the mid-2010s: DynamoDB support appeared in the v0.10 era, Vault and
+      Redis arrived in 0.12 alpha releases, etcd v3 and Windows support arrived in
+      v0.13.0, and AWS SSM Parameter Store plus file backends arrived in v0.14.0.
+  related-projects:
+    - >
+      Official documentation names etcd, Consul, DynamoDB, Redis, Vault, ZooKeeper, AWS
+      SSM Parameter Store, and Go templates as core adjacent technologies.
+  sources:
+    - https://github.com/kelseyhightower/confd#readme
+    - https://github.com/kelseyhightower/confd/blob/master/docs/configuration-guide.md
+    - https://github.com/kelseyhightower/confd/releases
+    - https://github.com/kelseyhightower/confd/releases/tag/v0.10.0
+    - https://github.com/kelseyhightower/confd/releases/tag/v0.13.0
+    - https://github.com/kelseyhightower/confd/releases/tag/v0.14.0
+    - https://github.com/kelseyhightower/confd/releases/tag/v0.16.0
+  summary:
+    - >
+      confd is a lightweight configuration-management daemon and CLI for rendering local
+      configuration files from templates backed by service-discovery and key-value
+      systems. It became familiar in early container and microservice deployments
+      because it sat beside an application, watched systems such as etcd or Consul,
+      rendered files, and triggered reload commands.
+  timeline:
+    - >
+      2015: v0.10.0 release notes list DynamoDB backend support and a build-system
+      change to gb.
+    - '2016: 0.12 alpha releases added Vault, DynamoDB, and Redis backend work.'
+    - >
+      2017: v0.13.0 added etcd v3 and Windows support; v0.14.0 added AWS SSM Parameter
+      Store and file backends.
+    - >
+      2018: v0.16.0 included backend improvements for etcd v3, Vault, file, and Redis
+      and shipped smaller UPX-compressed executables.
+  usage:
+    - >
+      Typical use is to define template resources, point confd at a backend, render
+      target files, and optionally run checks or reload commands when the rendered
+      configuration changes. The tool is especially associated with daemon
+      configuration, reverse proxies, and twelve-factor-ish deployments where
+      authoritative values live outside the local filesystem.
 category: system
 package-manager:
   apk: confd
@@ -31,5 +98,14 @@ executables:
   - confd
 provenance:
   formula: confd
+  history-sources:
+    - https://github.com/kelseyhightower/confd#readme
+    - https://github.com/kelseyhightower/confd/blob/master/docs/configuration-guide.md
+    - https://github.com/kelseyhightower/confd/releases
+    - https://github.com/kelseyhightower/confd/releases/tag/v0.10.0
+    - https://github.com/kelseyhightower/confd/releases/tag/v0.13.0
+    - https://github.com/kelseyhightower/confd/releases/tag/v0.14.0
+    - https://github.com/kelseyhightower/confd/releases/tag/v0.16.0
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
