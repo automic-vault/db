@@ -6,6 +6,68 @@ docs:
   - https://github.com/oconnor663/bao#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Bao is niche compared with general-purpose checksum tools, but it is packaged
+      where Rust cryptography and content-addressed tooling users might need it. The
+      supplied package facts list Homebrew and Nix packaging, and the README points Rust
+      users to the bao_bin crate on crates.io for the CLI.
+  package-nerd-significance:
+    - >
+      Bao matters to package nerds less as a mass-market CLI and more as an artifact of
+      the BLAKE3 ecosystem. It shows how tree hashes can support verified partial reads,
+      outboard metadata, and streaming-friendly integrity checks.
+    - >
+      It is also notable packaging-wise because the command is provided by the bao_bin
+      Rust crate while the repository also contains the bao library crate, so package
+      definitions need to select the binary crate behavior rather than assuming a
+      single-crate CLI.
+  project-history:
+    - >
+      The official Git history begins in November 2016 with preliminary
+      verified-streaming work, and the 0.1.0 tag followed in October 2017. The README
+      explains that Bao's original motivation was secure streaming of large attachments
+      where a recipient knows a root hash but does not want to download the whole file
+      before verification.
+    - >
+      The current spec documents an important historical shift: earlier Bao versions
+      used BLAKE2 in a custom tree hashing mode, then the BLAKE3 project evolved out of
+      that tree mode. After BLAKE3 was published separately, Bao was rebased and
+      narrowed to focus on verified streaming.
+  related-projects:
+    - >
+      Bao is directly related to BLAKE3, the BLAKE3 specification, b3sum-style hashing,
+      Rust crates.io packaging, and content-addressed storage or secure streaming
+      systems that need partial verification.
+  sources:
+    - https://github.com/oconnor663/bao
+    - https://github.com/oconnor663/bao/blob/master/README.md
+    - https://github.com/oconnor663/bao/blob/master/docs/spec.md
+    - https://github.com/oconnor663/bao/commit/0d41eb137a6d1bb496e7546a12515051c9c0a140
+    - input.source_facts.package-manager
+  summary:
+    - >
+      Bao is a Rust implementation of BLAKE3 verified streaming. It provides both a
+      library crate and the bao command-line utility for encoding, decoding, hashing,
+      and verifying byte streams with tree-hash-based random access.
+  timeline:
+    - '2016: Public Git history begins with preliminary verified-streaming work.'
+    - '2017: 0.1.0 is tagged after Cargo metadata is added.'
+    - '2018: Early 0.x tags iterate on the Rust crate and encoding format.'
+    - >
+      2020s: Bao is rebased around BLAKE3 after earlier versions used BLAKE2 in a custom
+      tree mode.
+    - '2025: 0.13.1 is tagged as a recent maintenance release.'
+  usage:
+    - >
+      The README demonstrates bao encode, bao hash, bao decode, slice extraction,
+      decode-slice, and outboard mode. The main workflow is to store or transmit encoded
+      data plus a known BLAKE3 hash, then verify bytes as they are streamed or randomly
+      sliced.
+    - >
+      The project cautions that Bao is beta cryptography software and has not been
+      formally audited, an important usage note for security-sensitive deployments.
 tags:
   - blake3
   - cli
@@ -25,6 +87,12 @@ provenance:
     - >
       Official GitHub README links the Bao spec and describes the project and bao
       command-line utility: https://github.com/oconnor663/bao#readme
+  history-sources:
+    - https://github.com/oconnor663/bao
+    - https://github.com/oconnor663/bao/blob/master/README.md
+    - https://github.com/oconnor663/bao/blob/master/docs/spec.md
+    - https://github.com/oconnor663/bao/commit/0d41eb137a6d1bb496e7546a12515051c9c0a140
+    - input.source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/oconnor663/bao, so
@@ -39,5 +107,6 @@ category-path:
   - cryptography
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
