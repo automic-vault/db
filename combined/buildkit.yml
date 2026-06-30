@@ -7,6 +7,76 @@ docs:
   - https://github.com/moby/buildkit#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      BuildKit first became visible to Docker users through opt-in Docker builds,
+      commonly via `DOCKER_BUILDKIT=1 docker build`, and then through Docker Buildx. The
+      README now notes that `docker build` uses Buildx and BuildKit by default since
+      Docker Engine 23.0, making BuildKit part of the ordinary Docker build path rather
+      than only an experimental backend.
+    - >
+      The upstream README lists Moby & Docker, Docker Buildx, Tekton Pipelines, Dagger,
+      Earthly, Gitpod, Depot, Namespace, and other projects as users, showing how
+      BuildKit moved from Docker internals into a broader cloud-native build substrate.
+  package-nerd-significance:
+    - >
+      BuildKit matters because it made Docker builds less linear and less
+      Dockerfile-bound: concurrent dependency resolution, content-addressed cache
+      behavior, cache exporters, and frontends gave package and CI people a much sharper
+      tool for reproducible image construction.
+    - >
+      It is also one of the clearer examples of a major container tool escaping its
+      original CLI: the Homebrew formula gives macOS users `buildctl`, while the daemon
+      normally lives on Linux or in a VM such as Lima.
+  project-history:
+    - >
+      The project came out of a 2017 Moby proposal to separate the `docker build`
+      experience into a reusable backend and allow different frontends to compile build
+      descriptions into a lower-level build graph. The public `moby/buildkit` repository
+      was created on 2017-05-31 and describes BuildKit as a toolkit for converting
+      source code to build artifacts efficiently, expressively, and repeatably.
+    - >
+      BuildKit's README presents LLB as the core intermediate representation and
+      explicitly frames it as a Dockerfile-independent build graph format. That
+      architectural split is the historical reason BuildKit became useful outside
+      classic Dockerfiles: Dockerfile syntax is one frontend, but other projects can
+      generate LLB directly or through their own frontend.
+  related-projects:
+    - >
+      BuildKit is closely related to `buildkitd`, `buildctl`, Docker Buildx,
+      Moby/Docker, Dockerfile frontends, containerd, OCI image tooling, Tekton, Dagger,
+      and Earthly.
+  sources:
+    - https://api.github.com/repos/moby/buildkit
+    - https://docs.docker.com/build/buildkit
+    - https://github.com/moby/buildkit#readme
+    - https://github.com/moby/moby/issues/32925
+  summary:
+    - >
+      BuildKit is the Moby/Docker-era build backend that turned container image building
+      into a reusable, cache-aware build toolkit rather than a Dockerfile-only code
+      path. Its public identity centers on `buildctl`, `buildkitd`, LLB build graphs,
+      pluggable frontends, cache import/export, and OCI/containerd-oriented workers.
+  timeline:
+    - '2017: Moby BuildKit proposal and public `moby/buildkit` repository appear.'
+    - >
+      2018: Moby/Docker integration makes BuildKit available to Docker users through
+      opt-in build paths.
+    - '2023: Docker Engine 23.0 makes Docker builds use Buildx and BuildKit by default.'
+    - >
+      2026: The upstream repository remains active and BuildKit is broadly used by
+      container build systems.
+  usage:
+    - >
+      As a standalone package, BuildKit is usually used as the `buildctl` client
+      speaking to a `buildkitd` daemon. Users build Dockerfiles, export images or OCI
+      artifacts, import and export caches, run rootless builds, or expose BuildKit as a
+      service for CI and distributed builder setups.
+    - >
+      For package-manager users, the appeal is that the same engine behind modern Docker
+      builds can be installed separately, scripted directly, and connected to non-Docker
+      runtimes or remote build workers.
 category: developer-tools
 package-manager:
   apk: buildctl

@@ -8,6 +8,76 @@ docs:
   - https://github.com/anthropics/buffa/blob/main/docs/migration-from-protobuf.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      buffa is young and pre-1.0, so its public adoption history is still mostly
+      package-manager and Rust-crate availability rather than broad ecosystem
+      standardization. The Homebrew formula packages the generator binaries for users
+      who want CLI/plugin installation outside Cargo.
+    - >
+      Its migration guides from `prost` and `protobuf` position it for Rust teams
+      already invested in Protobuf who want editions support, zero-copy view types,
+      reflection, `no_std + alloc`, or a different generated-code API.
+  package-nerd-significance:
+    - >
+      buffa is interesting as a Rust Protobuf stack that integrates with both Cargo and
+      Buf's remote-plugin packaging model. It shows the newer pattern where code
+      generators can be consumed through the Buf Schema Registry instead of every
+      developer installing matching local binaries.
+    - >
+      For package maintainers, the notable surface is split between library crates and
+      CLI plugin executables, which makes it both a Rust dependency and a system
+      package.
+  project-history:
+    - >
+      The project was created to fill a Rust ecosystem gap identified in its README: an
+      actively maintained, pure-Rust Protobuf library with editions support. Its design
+      treats editions as the main abstraction while keeping proto2 and proto3 as feature
+      presets inside that model.
+    - >
+      buffa is organized as a small workspace of runtime, descriptor, code generation,
+      build-helper, and protoc-plugin crates, with `protoc-gen-buffa` also published as
+      a Buf remote plugin.
+  related-projects:
+    - >
+      `prost` and `protobuf` are the Rust Protobuf implementations explicitly covered by
+      buffa migration guides.
+    - >
+      Buf is the recommended generation path in the README through the
+      `buf.build/anthropics/buffa` remote plugin.
+    - `protoc` remains supported through local protoc generator binaries and `buffa-build`.
+  sources:
+    - https://github.com/anthropics/buffa
+    - https://github.com/anthropics/buffa/blob/main/docs/guide.md
+    - https://github.com/anthropics/buffa/blob/main/docs/migration-from-prost.md
+    - https://github.com/anthropics/buffa/blob/main/docs/migration-from-protobuf.md
+    - source_facts.package-manager
+  summary:
+    - >
+      buffa is Anthropic's pure-Rust Protocol Buffers implementation with first-class
+      support for protobuf editions, distributed as Rust crates and protoc-compatible
+      generator binaries.
+  timeline:
+    - >
+      2020s: Protobuf editions created a new compatibility target for Protobuf
+      implementations.
+    - >
+      2025: buffa pre-1.0 tags appeared publicly and the README documented semver
+      expectations for 0.x releases.
+    - >
+      2025: Homebrew packaged the `protoc-gen-buffa` and `protoc-gen-buffa-packaging`
+      executables.
+  usage:
+    - >
+      Recommended use is through `buf generate` with the `buf.build/anthropics/buffa`
+      remote plugin, or locally through `protoc-gen-buffa` and
+      `protoc-gen-buffa-packaging`. Rust build-script users can also use `buffa-build`
+      from `build.rs` when `protoc` is available.
+    - >
+      The generated API emphasizes owned and borrowed message representations,
+      unknown-field preservation, binary/JSON/text encodings, runtime reflection, and
+      compatibility with protobuf editions.
 category: developer-tools
 package-manager:
   brew: buffa

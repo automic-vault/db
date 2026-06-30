@@ -7,6 +7,90 @@ docs:
   - https://btrfs.readthedocs.io/en/latest/Administration.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      btrfs-progs is packaged broadly because Btrfs administration requires matching
+      userspace tools. The input metadata lists Alpine, Homebrew, Debian, Fedora/dnf,
+      Nix, Arch/pacman, Ubuntu, and openSUSE/zypper packaging.
+    - >
+      Adoption grew with Btrfs use in Linux distributions, storage appliances,
+      snapshotting workflows, rollback systems, container hosts, and developer machines
+      that want cheap snapshots, checksummed metadata/data, compression, and
+      send/receive replication.
+    - >
+      Homebrew packaging is mostly for tooling and cross-platform workflows rather than
+      native macOS filesystem administration, because Btrfs itself is a Linux
+      filesystem.
+  package-nerd-significance:
+    - >
+      btrfs-progs is significant because it is the package-manager face of a Linux
+      filesystem. Updating it is not cosmetic: userspace/kernel feature compatibility,
+      rescue environments, static binaries, and signed release provenance all matter.
+    - >
+      It is also a good example of packaging a tool suite whose safest operation depends
+      on kernel behavior, hardware characteristics, and filesystem feature flags.
+      Package maintainers care about version alignment, release notes, and conservative
+      defaults more than a single executable.
+  project-history:
+    - >
+      Btrfs is documented as a modern copy-on-write filesystem for Linux focused on
+      advanced features, fault tolerance, repair, and easy administration. btrfs-progs
+      packages the tools and manual pages needed to create and operate those filesystems
+      from userspace.
+    - >
+      The btrfs-progs repository hosts the main btrfs administration command,
+      mkfs.btrfs, libbtrfsutil C and Python bindings, manual pages, and documentation
+      sources. Its release cycle is time-based and follows Linux kernel releases, with
+      signed tags and tarballs hosted on kernel.org.
+    - >
+      The GitHub mirror/repository metadata shows public repository creation in 2013,
+      while the tool history follows Btrfs itself and its kernel/userspace split. The
+      project deliberately tracks kernel feature compatibility: btrfs-progs version X.Y
+      declares support for kernel features of the same version.
+  related-projects:
+    - Btrfs is the Linux copy-on-write filesystem administered by btrfs-progs.
+    - >
+      The Linux kernel contains the filesystem implementation whose feature set
+      btrfs-progs tracks.
+    - libbtrfsutil provides C and Python bindings for some Btrfs userspace operations.
+    - BusyBox-style standalone btrfs.box builds support rescue and constrained environments.
+  sources:
+    - https://api.github.com/repos/kdave/btrfs-progs
+    - https://api.github.com/repos/kdave/btrfs-progs/tags?per_page=10
+    - https://btrfs.readthedocs.io/en/latest
+    - https://btrfs.readthedocs.io/en/latest/Administration.html
+    - https://btrfs.readthedocs.io/en/latest/CHANGES.html
+    - https://btrfs.readthedocs.io/en/latest/Introduction.html
+    - https://github.com/kdave/btrfs-progs
+    - source_facts.package-manager
+  summary:
+    - >
+      btrfs-progs is the userspace tool suite for administering Btrfs filesystems. It is
+      the command-line half of a major Linux filesystem: mkfs, check, rescue,
+      send/receive, subvolume, device, balance, scrub, image, and related tools all live
+      here.
+  timeline:
+    - '2013: Public GitHub repository metadata records creation of kdave/btrfs-progs.'
+    - '2010s: btrfs-progs matures alongside Btrfs kernel support and distribution adoption.'
+    - >
+      2020s: Release cycle follows Linux kernel releases, with signed release tags and
+      kernel.org tarballs.
+    - '2026: GitHub tags include v7.0 and late 6.x releases, reflecting ongoing maintenance.'
+  usage:
+    - >
+      The main btrfs command is the administration entry point, while mkfs.btrfs creates
+      filesystems. Other tools support conversion, image capture, rescue, check, logical
+      mapping, tuning, superblock selection, and fsck integration.
+    - >
+      Common workflows include creating a filesystem, mounting it with Btrfs-specific
+      options, creating subvolumes and snapshots, balancing allocation profiles,
+      scrubbing for checksum errors, replacing devices, and using send/receive for
+      incremental replication.
+    - >
+      There is no general per-user credentials file. Configuration is primarily
+      filesystem state, mount options, kernel interfaces, and command-line usage rather
+      than a single application config file.
 category: system
 package-manager:
   apk: btrfs-progs

@@ -5,6 +5,82 @@ docs:
   - https://github.com/containers/bubblewrap#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      bubblewrap spread because Flatpak and related desktop sandboxing systems needed a
+      small shared primitive instead of each project carrying its own privileged helper.
+      The README lists Flatpak, rpm-ostree unprivileged, and bwrap-oci as users or
+      intended users.
+    - >
+      The input package metadata shows broad Linux distribution packaging through
+      Alpine, Debian, Fedora/dnf, Nix, Arch/pacman, Ubuntu, and openSUSE/zypper, plus
+      Homebrew. That breadth reflects its role as plumbing for sandbox frameworks rather
+      than as an end-user application.
+    - >
+      Security-sensitive adoption is cautious: bubblewrap constructs a sandbox, but the
+      actual security boundary depends on the arguments supplied by the caller. This
+      makes it attractive for larger frameworks that own policy and want a narrow
+      mechanism.
+  package-nerd-significance:
+    - >
+      bubblewrap is package-manager-significant because a small CLI becomes part of the
+      desktop Linux trust base. Its package version, setuid/user-namespace behavior, CVE
+      history, and distribution kernel defaults can affect whether higher-level
+      sandboxing stacks actually work.
+    - >
+      It is also a clean example of separating mechanism from policy: package the tiny
+      sandbox constructor once, let Flatpak and peers define the higher-level sandbox
+      rules.
+  project-history:
+    - >
+      The bubblewrap README positions it against system-administrator container runtimes
+      such as Docker and systemd-nspawn: those tools are not suitable to hand directly
+      to unprivileged users, while bubblewrap is designed around unprivileged sandbox
+      construction.
+    - >
+      The original code predates modern unprivileged user namespaces and inherits from
+      xdg-app helper code, which in turn derives from linux-user-chroot. Older
+      bubblewrap also supported a setuid mode for systems without unprivileged user
+      namespaces, but the README notes that setuid support has been removed.
+    - >
+      The public GitHub repository was created in February 2016. The repository
+      description identifies bubblewrap as a low-level unprivileged sandboxing tool used
+      by Flatpak and similar projects, with topics for Linux containers and user
+      namespaces.
+  related-projects:
+    - Flatpak is the most prominent higher-level application sandbox stack using bubblewrap.
+    - xdg-app helper is part of bubblewrap's code lineage.
+    - linux-user-chroot is an older related sandbox/chroot tool in the lineage.
+    - Firejail is a comparable desktop sandboxing project discussed in the bubblewrap README.
+    - xdg-dbus-proxy is commonly paired with bubblewrap to mediate D-Bus access.
+  sources:
+    - https://api.github.com/repos/containers/bubblewrap
+    - https://api.github.com/repos/containers/bubblewrap/tags?per_page=10
+    - https://github.com/containers/bubblewrap#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      bubblewrap is a low-level Linux sandboxing tool that constructs restricted process
+      environments with namespaces, bind mounts, seccomp, and related kernel features.
+      It is best known as the small, auditable sandbox primitive used by Flatpak and
+      similar desktop/container tools.
+  timeline:
+    - 'Pre-2016: Code lineage passes through linux-user-chroot and xdg-app helper.'
+    - '2016: Public GitHub repository for bubblewrap is created.'
+    - '2010s: bubblewrap becomes associated with Flatpak-style application sandboxing.'
+    - '2020s: setuid mode is removed; user namespaces are the documented sandbox basis.'
+    - '2026: Tags include v0.11.x, showing continuing maintenance.'
+  usage:
+    - >
+      bwrap creates a new mount namespace whose root is an empty tmpfs, then
+      command-line options bind selected host paths, create proc/dev views, unshare
+      namespaces, apply seccomp filters, and run a command inside the resulting
+      environment.
+    - >
+      Typical direct use is scripting a constrained shell or process; typical indirect
+      use is through Flatpak or another framework that assembles a policy-specific bwrap
+      command. The project has no ordinary per-user config file or credentials store.
 tags:
   - cli
   - containers
@@ -31,6 +107,11 @@ provenance:
     - source_facts.name is bubblewrap.
   docs-sources:
     - Official GitHub README is the primary documentation surface for bubblewrap.
+  history-sources:
+    - https://api.github.com/repos/containers/bubblewrap
+    - https://api.github.com/repos/containers/bubblewrap/tags?per_page=10
+    - https://github.com/containers/bubblewrap#readme
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/containers/bubblewrap;
@@ -46,5 +127,6 @@ category-path:
   - sandboxing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

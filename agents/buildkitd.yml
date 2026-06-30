@@ -9,6 +9,68 @@ config-file-location:
     - /etc/buildkit/buildkitd.toml
     - ~/.config/buildkit/buildkitd.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      `buildkitd` adoption followed BuildKit adoption: once Docker Buildx and then
+      Docker Engine 23.0 made BuildKit the default build engine, the daemon became the
+      infrastructure component behind many local, remote, and CI builder setups.
+    - >
+      The daemon is especially visible outside Docker Desktop and Docker Engine
+      defaults, where users run BuildKit directly on Linux hosts, in Kubernetes, in
+      containers, or from macOS through a Linux VM such as Lima.
+  package-nerd-significance:
+    - >
+      `buildkitd` is the boring but important half of BuildKit packaging: without the
+      daemon, `buildctl` is just a client. Splitting the Homebrew formula surface
+      between BuildKit tools and the daemon reflects the practical difference between a
+      portable CLI and a Linux-oriented build service.
+    - >
+      For people who package container tooling, `buildkitd` is a case study in shipping
+      a service-oriented build engine whose useful configuration is mostly runtime
+      paths, sockets, workers, and cache policy rather than project-local config files.
+  project-history:
+    - >
+      The daemon exists because BuildKit was designed as a reusable backend rather than
+      a monolithic CLI operation. The 2017 Moby proposal described BuildKit as a
+      long-running service optimized for parallel execution, complex projects, and
+      multiple builds at the same time.
+    - >
+      In the BuildKit repository, `buildkitd` is documented as the daemon paired with
+      the `buildctl` client. It supports OCI and containerd worker backends, rootless
+      operation, systemd socket activation, TCP exposure, Kubernetes/containerized
+      deployments, and daemon configuration through `buildkitd.toml`.
+  related-projects:
+    - >
+      `buildkitd` is part of BuildKit and is used with `buildctl`, Docker Buildx,
+      Moby/Docker, containerd, runc/crun, Lima, Kubernetes, and OCI image tooling.
+  sources:
+    - https://api.github.com/repos/moby/buildkit
+    - https://docs.docker.com/build/buildkit/toml-configuration
+    - https://github.com/moby/buildkit#readme
+    - https://github.com/moby/moby/issues/32925
+  summary:
+    - >
+      `buildkitd` is the daemon side of BuildKit: the long-running service that executes
+      BuildKit build graphs, manages workers and cache, and exposes the API used by
+      `buildctl`, Docker Buildx, and other clients.
+  timeline:
+    - '2017: BuildKit proposal describes a long-running build service.'
+    - '2017: Public `moby/buildkit` repository is created.'
+    - '2023: Docker Engine 23.0 makes Buildx and BuildKit the default Docker build path.'
+    - '2026: `buildkitd.toml` remains the documented daemon configuration surface.'
+  usage:
+    - >
+      Users start `buildkitd` as root or rootless, point clients at its Unix socket or
+      TCP endpoint, and tune behavior with `/etc/buildkit/buildkitd.toml` or
+      `~/.config/buildkit/buildkitd.toml`. It manages worker backends, garbage
+      collection, cache storage, network settings, entitlements, and registry
+      configuration.
+    - >
+      Package-manager users care about `buildkitd` when they need a real BuildKit
+      service instead of only the `buildctl` client, for example to run local CI
+      builders, expose a remote build farm endpoint, or experiment with non-Docker
+      workers.
 tags:
   - buildkit
   - cache
@@ -36,6 +98,11 @@ provenance:
   docs-sources:
     - Official Docker buildkitd.toml docs document daemon configuration.
     - Official moby/buildkit README describes the buildkitd daemon.
+  history-sources:
+    - https://api.github.com/repos/moby/buildkit
+    - https://docs.docker.com/build/buildkit/toml-configuration
+    - https://github.com/moby/buildkit#readme
+    - https://github.com/moby/moby/issues/32925
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/moby/buildkit; prompt
@@ -50,5 +117,6 @@ category-path:
   - build-daemons
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
