@@ -7,6 +7,86 @@ docs:
   - https://confluence.ecmwf.int/display/ECFLOW/ecFlowUI+Documentation
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ecFlow's adoption is strongest in operational forecasting and scientific
+      production environments where workflows are long-running, dependency-heavy, and
+      monitored by teams. ECMWF's own documentation frames it as production
+      infrastructure rather than a general-purpose desktop scheduler.
+    - >
+      The package split is important: Homebrew's ecflow-ui package includes
+      ecflow_client and ecflow_ui executables, giving workstation users a way to inspect
+      and control ecFlow suites without necessarily packaging the full server deployment
+      in the same way.
+  package-nerd-significance:
+    - >
+      ecflow-ui matters to package nerds because it is a UI/client package carved out of
+      a larger scheduler ecosystem. That is a classic operational packaging problem:
+      users may need local client tools and a GUI even when servers live elsewhere.
+    - >
+      It also represents a lineage change in scientific operations tooling: SMS to
+      ecFlow 4 to ecFlow 5, CDP to Python, and a move toward open GitHub-hosted ECMWF
+      software with documented maturity status.
+  project-history:
+    - >
+      ECMWF's ecFlow documentation says ecFlow is a client/server workflow package for
+      running many programs with dependencies on each other and on time, in a controlled
+      environment with failure tolerance and restart capabilities. It is used at ECMWF
+      to run all operational suites across a range of platforms.
+    - >
+      The history documented by ECMWF starts with SMS, the Supervisor Monitoring
+      Scheduler, which ECMWF used for almost three decades. SMS let scientists,
+      analysts, and operators design, submit, and monitor jobs in Research and
+      Operations, and was also used by many organizations outside ECMWF member states.
+    - >
+      ecFlow 4 superseded SMS as a complete object-oriented rewrite using modern
+      standardized components. The proprietary CDP scripting language used by SMS was
+      replaced by Python. Development of ecFlow 4 later stopped, support continued, and
+      ecFlow 5 replaced it.
+    - >
+      The ecFlow repository was created on GitHub in August 2020, but the documentation
+      and copyright history show an older ECMWF project line. The current documentation
+      is for ecFlow 5.16.0 and lists ecflow_client, ecflow_ui, ecflow_server, and the
+      Python API as the main components.
+  related-projects:
+    - SMS, the Supervisor Monitoring Scheduler, is ecFlow's direct predecessor.
+    - >
+      ecflow_client, ecflow_server, ecflow_ui, and the Python ecflow module are the main
+      components of the same system.
+    - >
+      The documentation explicitly notes that ecFlow is a scheduler and not a queueing
+      system such as NQS, SGE, LoadLeveler, or PBS, though it can submit jobs to
+      queueing systems.
+  sources:
+    - https://github.com/ecmwf/ecflow
+    - https://raw.githubusercontent.com/ecmwf/ecflow/develop/README.md
+    - https://ecflow.readthedocs.io/en/latest/
+    - https://ecflow.readthedocs.io/en/latest/overview.html
+    - https://ecflow.readthedocs.io/en/latest/_sources/overview.rst.txt
+    - https://github.com/ecmwf/ecflow/releases
+    - https://api.github.com/repos/ecmwf/ecflow
+  summary:
+    - >
+      ecFlowUI is the graphical client shipped with ECMWF's ecFlow workflow manager. As
+      a Homebrew package, ecflow-ui exposes the UI and client pieces of an operational
+      workflow system used to define, submit, monitor, and restart large
+      dependency-driven job suites.
+  timeline:
+    - '2009: ecFlow documentation copyright range begins.'
+    - '2011: ECMWF newsletter article introduces ecFlow.'
+    - '2020: ECMWF ecFlow GitHub repository created.'
+    - '2024: ecFlow 5.12 and 5.13 release series visible in GitHub releases.'
+    - '2026: ecFlow 5.16.0 released and documented on Read the Docs.'
+  usage:
+    - >
+      ecFlow runs a server that receives requests from clients over TCP/IP. Clients
+      include ecflow_client, ecflow_ui, scripts, and the Python API; suite jobs
+      communicate status and events back through child commands embedded in scripts.
+    - >
+      ecFlowUI is the Qt-based graphical client used to monitor and visualize the
+      node-tree hierarchy. The CLI and Python API are used for suite definition,
+      automation, and communication with the server.
 category: developer-tools
 package-manager:
   brew: ecflow-ui
@@ -29,5 +109,14 @@ executables:
   - ecflow_ui.x
 provenance:
   formula: ecflow-ui
+  history-sources:
+    - https://github.com/ecmwf/ecflow
+    - https://raw.githubusercontent.com/ecmwf/ecflow/develop/README.md
+    - https://ecflow.readthedocs.io/en/latest/
+    - https://ecflow.readthedocs.io/en/latest/overview.html
+    - https://ecflow.readthedocs.io/en/latest/_sources/overview.rst.txt
+    - https://github.com/ecmwf/ecflow/releases
+    - https://api.github.com/repos/ecmwf/ecflow
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

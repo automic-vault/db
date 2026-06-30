@@ -10,6 +10,96 @@ config-file-location:
     - pki/vars
     - vars
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Easy-RSA became widely packaged because OpenVPN deployments frequently need a
+      local certificate authority. The input source facts show package-manager coverage
+      across Homebrew, Debian, Ubuntu, Fedora/DNF, Arch/pacman, Alpine, openSUSE/zypper,
+      MacPorts, Nix, and Scoop.
+    - >
+      That packaging footprint is the adoption story: Easy-RSA is not a flashy
+      standalone application, but it is the small utility administrators expect to find
+      next to OpenVPN in OS package repositories. Homebrew packages the official release
+      tarball from GitHub, and the README points users to GitHub releases or named tags
+      for downloads.
+    - >
+      Easy-RSA 3 remains active enough for OpenSSL 3 compatibility concerns to shape
+      branch status. The README marks older 3.0.x and release/2.x branches as not
+      compatible with OpenSSL 3, while master tracks the 3.2.x rolling line.
+  package-nerd-significance:
+    - >
+      Easy-RSA matters to package nerds because it is a tiny utility with an outsized
+      operational footprint. A single shell script plus OpenSSL became the common path
+      for bootstrapping PKI in OpenVPN environments across many Unix distributions.
+    - >
+      It is also a reminder that important packages are not always daemons or libraries.
+      Sometimes the historically important package is a CLI that administrators run only
+      when they provision, rotate, or revoke certificates, then leave untouched for
+      months.
+  project-history:
+    - >
+      Easy-RSA originated in the OpenVPN ecosystem and still co-exists with OpenVPN
+      development while remaining a separate project. The official README describes
+      current development on the 3.x release cycle and keeps prior 2.x and 1.x lines as
+      release branches for tracking and possible back-porting.
+    - >
+      The 3.x documentation describes a portable POSIX shell implementation with OpenSSL
+      as the cryptographic backend. Easy-RSA 3 changed the configuration model from
+      older versions: it can run with built-in defaults and no mandatory config file,
+      while optional settings can come from command-line options, environment variables,
+      or a `vars` file.
+    - >
+      The tool's long-lived value is its narrowness. It does not try to be a web CA,
+      enterprise PKI service, or certificate inventory system. It gives OpenVPN and TLS
+      administrators a scriptable way to initialize a `pki` directory, build a CA,
+      import certificate requests, sign client/server/intermediate certificates, revoke
+      certificates, and generate CRLs.
+  related-projects:
+    - >
+      OpenVPN is the adjacent VPN project and community context in which Easy-RSA is
+      documented and supported.
+    - OpenSSL is the cryptographic backend used for certificate and key operations.
+    - >
+      X.509 PKI, certificate revocation lists, certificate signing requests, and
+      intermediate CAs are the standards and workflows Easy-RSA automates.
+  sources:
+    - https://github.com/OpenVPN/easy-rsa
+    - https://github.com/OpenVPN/easy-rsa/blob/master/README.quickstart.md
+    - https://github.com/OpenVPN/easy-rsa/blob/master/doc/EasyRSA-Readme.md
+    - https://formulae.brew.sh/api/formula/easy-rsa.json
+  summary:
+    - >
+      Easy-RSA is OpenVPN's shell-based CLI utility for creating and managing a small
+      X.509 public key infrastructure. It is best known as the practical
+      certificate-authority helper that many OpenVPN administrators install when they
+      need to generate a CA, server/client certificates, requests, and certificate
+      revocation lists without operating a full CA platform.
+  timeline:
+    - 'Pre-3.x: Easy-RSA 1.x and 2.x existed as earlier OpenVPN-era release branches.'
+    - >
+      3.x: Easy-RSA moved to the current POSIX shell/OpenSSL-backed project line with
+      optional `vars` configuration and built-in defaults.
+    - '2025: Homebrew packages Easy-RSA 3.2.x from official GitHub release tarballs.'
+    - >
+      2026: The official README tracks master as the active 3.2.x rolling development
+      branch and marks older 3.0/2.x/1.x lines as archived or unmaintained.
+  usage:
+    - >
+      The quickstart flow is the classic CA workflow: run `easyrsa init-pki`, `easyrsa
+      build-ca`, generate a keypair/request on the requesting system, import the request
+      on the CA system, sign it as a client/server/CA type, and move the signed
+      certificate back to the requester.
+    - >
+      Operational commands cover revocation and CRL publication (`easyrsa revoke`,
+      `easyrsa gen-crl`), Diffie-Hellman parameter generation, request/certificate
+      inspection, and private-key passphrase changes. The documentation recommends using
+      releases rather than the rolling master branch.
+    - >
+      Easy-RSA stores generated CA state in the `pki` directory, including CA
+      certificates, private keys, serial numbers, issued certificates, request files,
+      and revocation data. That makes the package easy to understand and easy to back
+      up, but also puts responsibility for private-key handling on the administrator.
 tags:
   - certificate-authority
   - certificates
@@ -40,6 +130,11 @@ provenance:
     - >
       Official GitHub README points users to README.quickstart.md and the doc/ directory
       for 3.x documentation.
+  history-sources:
+    - https://github.com/OpenVPN/easy-rsa
+    - https://github.com/OpenVPN/easy-rsa/blob/master/README.quickstart.md
+    - https://github.com/OpenVPN/easy-rsa/blob/master/doc/EasyRSA-Readme.md
+    - https://formulae.brew.sh/api/formula/easy-rsa.json
   repo-sources:
     - >
       source_facts.repo already supplied as https://github.com/OpenVPN/easy-rsa; repo
@@ -56,5 +151,6 @@ category-path:
   - certificate-authority
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

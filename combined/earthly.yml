@@ -10,6 +10,109 @@ config-file-location:
     - Earthfile
 credentials-file-location:
   unix: ~/.earthly/config.yml
+history:
+  adoption-history:
+    - >
+      Earthly gained adoption among teams that wanted Docker-like reproducibility
+      without rewriting language-specific builds. The official shutdown post says
+      Earthly had been adopted by thousands of teams worldwide and integrated into
+      diverse CI/CD environments, while GitHub metadata shows a large open-source
+      audience for a build tool of this class.
+    - >
+      Homebrew packages Earthly directly from the official GitHub repository, and the
+      project also documents installation through its own website and Docker Hub
+      artifacts. That mix put Earthly in the normal package-manager path for macOS and
+      Linux developers experimenting with repeatable CI builds.
+    - >
+      Its adoption also exposed the hard part of selling build infrastructure: Earthly's
+      local open-source experience was useful enough that many users could avoid the
+      paid satellite runner layer. The 2025 announcement explicitly names bottom-up
+      adoption and open-source cannibalization as reasons the commercial service could
+      not sustain the project.
+  package-nerd-significance:
+    - >
+      Earthly matters to package nerds because it is one of the cleaner examples of the
+      post-Docker build-tool wave: one CLI, one project file, OCI/container assumptions
+      everywhere, and a package-manager install story that makes CI build graphs feel
+      like local developer commands.
+    - >
+      It also illustrates a recurring open-source infrastructure pattern. The free CLI
+      delivered most of the developer value locally, while the commercial layer tried to
+      monetize shared cache and remote execution. That makes Earthly historically
+      interesting even after active maintenance ended.
+  project-history:
+    - >
+      The GitHub repository was created in March 2020 and Earthly's own 2025 message
+      describes that moment as the project's launch. Earthly's core idea was to put
+      build steps inside containers, define reusable targets in Earthfiles, and make the
+      same build logic run on a laptop, in remote runners, or under CI systems such as
+      Jenkins, CircleCI, GitHub Actions, and GitLab CI.
+    - >
+      The implementation uses BuildKit-style container layers and caching underneath,
+      but presents a general-purpose build system rather than only a Docker image
+      builder. The README describes Earthly as a CI/CD framework that wraps existing
+      compilers and language tooling instead of replacing `go`, `npm`, Maven, Gradle,
+      Cargo, and similar ecosystem tools.
+    - >
+      Earthly Technologies later commercialized the open-source CLI through Earthly
+      Cloud, Satellites, shared cache, secrets, and logs. In April 2025, founder Vlad A.
+      Ionescu announced that Earthly commercial services would be phased out and active
+      maintenance of the open-source project would end except for critical fixes, while
+      encouraging the community to organize a fork.
+  related-projects:
+    - >
+      Docker and Dockerfiles are central reference points for Earthly's syntax and
+      execution model.
+    - >
+      Moby BuildKit is the lower-level build technology Earthly's README identifies as
+      related to Earthfiles.
+    - Make is the other explicit inspiration for Earthly's target-oriented build style.
+    - >
+      Dagger is named by Earthly's 2025 announcement as an alternative direction in
+      programmable CI/CD.
+  sources:
+    - https://github.com/earthly/earthly
+    - https://docs.earthly.dev/
+    - https://docs.earthly.dev/docs/earthfile
+    - https://earthly.dev/blog/shutting-down-earthfiles-cloud/
+    - https://formulae.brew.sh/api/formula/earthly.json
+  summary:
+    - >
+      Earthly is a container-native build automation tool built around Earthfiles, a
+      target-oriented syntax that deliberately resembles Dockerfiles and Makefiles. Its
+      package-manager identity is the `earthly` CLI: developers install one binary,
+      write an `Earthfile`, and run targets such as `earthly +build` locally or in CI.
+    - >
+      The project became notable because it treated reproducible builds, monorepo build
+      graphs, Docker/BuildKit caching, and CI portability as one developer-tooling
+      problem. The official repository now notes that Earthly is no longer actively
+      maintained, while the 2025 company post explains the shutdown of Earthly
+      Satellites and the end of active open-source maintenance.
+  timeline:
+    - '2020-03: The official GitHub repository was created.'
+    - '2020: Earthly launched as a container-native build automation project.'
+    - '2024: Homebrew packaged Earthly 0.8.x from the official GitHub repository.'
+    - >
+      2025-04: Earthly announced the phase-out of Earthly Cloud/Satellites and the end
+      of active open-source maintenance.
+    - >
+      2025-07: GitHub releases show Earthly 0.8.16, the stable version packaged by
+      Homebrew at review time.
+  usage:
+    - >
+      Typical usage starts with an `Earthfile` in a repository. A user defines targets,
+      recipes, artifacts, and images, then runs the `earthly` CLI against those targets.
+      Earthly executes the graph in containers, caches intermediate work, and can run
+      independent targets in parallel.
+    - >
+      Earthly is commonly used as a portable wrapper around existing build commands: one
+      target might run tests with a language toolchain image, another might save a
+      compiled artifact, and another might save a container image. The point is not to
+      replace build tools, but to make their environment and orchestration repeatable.
+    - >
+      Teams historically used Earthly both on developer machines and inside CI, often to
+      make the local reproduction of a failed pipeline less painful than repeatedly
+      pushing trial commits.
 category: developer-tools
 package-manager:
   brew: earthly
@@ -30,5 +133,12 @@ executables:
   - earthly
 provenance:
   formula: earthly
+  history-sources:
+    - https://github.com/earthly/earthly
+    - https://docs.earthly.dev/
+    - https://docs.earthly.dev/docs/earthfile
+    - https://earthly.dev/blog/shutting-down-earthfiles-cloud/
+    - https://formulae.brew.sh/api/formula/earthly.json
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
