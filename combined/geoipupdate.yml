@@ -15,6 +15,59 @@ credentials-file-location:
     - /usr/local/etc/GeoIP.conf
     - /etc/GeoIP.conf
   windows: C:\ProgramData\MaxMind\GeoIPUpdate\GeoIP.conf
+history:
+  adoption-history:
+    - >
+      GeoIP Update is the recommended MaxMind path for users of binary GeoIP and GeoLite
+      databases. Official installation instructions cover Linux tarballs, Ubuntu PPA
+      packages, Debian packages, RPM packages, macOS tarballs, Homebrew, Windows zip
+      distributions, Docker, Proto, and Go source installs.
+  package-nerd-significance:
+    - >
+      For package maintainers, GeoIP Update is a classic operational CLI: the executable
+      is small, but correct packaging depends on default config paths, credential-file
+      handling, cron or service integration, TLS behavior, and platform-specific install
+      conventions. It is also a bridge between package managers and licensed data
+      distribution rather than a normal static data package.
+  project-history:
+    - >
+      The maintained public repository describes GeoIP Update as code for updating GeoIP
+      databases and records MaxMind copyright beginning in 2018. MaxMind's upgrade
+      documentation says version 4.x, released in 2019, was a rewrite of the older
+      `geoipupdate` codebase while preserving the same core behavior and
+      configuration-file format.
+    - >
+      The v4 rewrite added broader platform support, notably Windows, and changed
+      security expectations inherited from older 2.x and 3.x deployments: HTTPS and
+      certificate verification became mandatory, and paid database downloads required
+      both account ID and license key.
+  related-projects:
+    - >
+      GeoIP Update belongs to MaxMind's GeoIP and GeoLite ecosystem, alongside MaxMind
+      binary databases, CSV database downloads, Docker images, and the MMDB database
+      format.
+  sources:
+    - https://dev.maxmind.com/geoip/updating-databases/
+    - https://dev.maxmind.com/geoip/upgrading-geoip-update/
+    - https://github.com/maxmind/geoipupdate
+  summary:
+    - >
+      GeoIP Update is MaxMind's command-line client for automatically downloading GeoIP
+      and GeoLite binary databases. It is tied to MaxMind's database distribution model:
+      users configure account credentials and edition IDs in `GeoIP.conf`, then run
+      `geoipupdate` manually, from cron, in containers, or through package-manager
+      installs.
+  timeline:
+    - '2018: The maintained repository records MaxMind copyright beginning in 2018.'
+    - '2019: Version 4.x was released as a rewrite from a modern code base.'
+    - '2024: MaxMind began using R2 presigned URLs for database downloads.'
+  usage:
+    - >
+      Practitioners use GeoIP Update to keep local MaxMind binary databases fresh for
+      web analytics, fraud detection, network policy, logging, and geolocation services.
+      The configuration file stores account ID, license key, and edition IDs, and Unix
+      deployments commonly automate the command with cron so local `.mmdb` files are
+      refreshed without application code handling MaxMind download details.
 category: networking
 package-manager:
   brew: geoipupdate
@@ -38,5 +91,10 @@ executables:
   - geoipupdate
 provenance:
   formula: geoipupdate
+  history-sources:
+    - https://dev.maxmind.com/geoip/updating-databases/
+    - https://dev.maxmind.com/geoip/upgrading-geoip-update/
+    - https://github.com/maxmind/geoipupdate
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
