@@ -10,6 +10,76 @@ config-file-location:
     - $workspace/.bazelversion
 credentials-file-location:
   unix: ~/.netrc
+history:
+  adoption-history:
+    - >
+      Bazelisk became common because Bazel workspaces are sensitive to major-version
+      changes, incompatible flags, and migration timing. A checked-in .bazelversion lets
+      teams upgrade Bazel atomically with the source changes needed for that upgrade.
+    - >
+      The input records Bazelisk packaging across Homebrew, Chocolatey, MacPorts, Nix,
+      Arch, Scoop, winget, and zypper, and the README also documents npm distribution
+      for frontend developers.
+  package-nerd-significance:
+    - >
+      Bazelisk is package-nerd significant because it separates the
+      package-manager-installed launcher from the project-selected compiler/build-tool
+      version, similar in spirit to nvm-style runtime management.
+    - >
+      It is also the practical glue that makes versioned Bazel formulas less painful:
+      repositories can declare their expected Bazel line while users keep one stable
+      launcher installed.
+  project-history:
+    - >
+      The bazelbuild/bazelisk repository begins in September 2018 with a Python script,
+      and the README notes that Bazelisk was later rewritten in Go. The maintained Go
+      version is now the documented implementation.
+    - >
+      Bazelisk's core model is intentionally simple: it can be invoked as bazel or
+      bazelisk, reads USE_BAZEL_VERSION, .bazeliskrc, .bazelversion, or fallback
+      settings, downloads official Bazel releases or forked releases, then passes
+      arguments through to the selected Bazel binary.
+  related-projects:
+    - Bazel is the binary Bazelisk selects and executes.
+    - >
+      bazel@7 and bazel@8 are versioned package-manager alternatives, while Bazelisk
+      lets a workspace choose those or newer upstream releases dynamically.
+    - >
+      bazel-diff and bazel-remote CI setups often benefit from Bazelisk because graph
+      hashing and remote-cache behavior should use the workspace's intended Bazel
+      version.
+  sources:
+    - >
+      Upstream git history for https://github.com/bazelbuild/bazelisk starts in
+      September 2018.
+    - >
+      https://github.com/bazelbuild/bazelisk#readme documents Bazelisk's launcher
+      purpose, Python-to-Go history, version selection, .bazelversion, .bazeliskrc,
+      downloads, auth, --migrate, and --bisect.
+    - source_facts.package-manager records cross-package-manager availability.
+  summary:
+    - >
+      Bazelisk is the Bazel launcher and version manager that makes Bazel behave like a
+      repo-pinned toolchain: it chooses, downloads, verifies, and runs the Bazel version
+      requested by the current workspace.
+  timeline:
+    - '2018-09: Upstream git history starts with a Python bazelisk implementation.'
+    - '2018-10: Early commits implement lookup of the latest Bazel release.'
+    - >
+      2020s: The README documents the maintained Go rewrite, .bazelversion and
+      .bazeliskrc selection, fork support, verification, --migrate, and --bisect.
+    - >
+      2020s: Package managers distribute Bazelisk as both bazelisk and bazel for drop-in
+      Bazel launching.
+  usage:
+    - >
+      Developers install Bazelisk as bazel on PATH, check a .bazelversion file into the
+      repository, and let Bazelisk download and run the matching Bazel binary on laptops
+      and CI.
+    - >
+      Advanced workflows use .bazeliskrc and environment variables for custom release
+      mirrors, SHA256 verification, forked Bazel releases, GitHub tokens, migration
+      runs, bisecting Bazel versions, and wrapper scripts under tools/bazel.
 category: developer-tools
 package-manager:
   brew: bazelisk

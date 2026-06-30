@@ -15,6 +15,75 @@ config-file-location:
     - '%USERPROFILE%\.bazelrc'
     - '%HOME%/.bazelrc'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Bazel 8 adoption was tied to migration work: repositories needed to move external
+      dependencies from WORKSPACE to MODULE.bazel/Bzlmod and prepare for Bazel 9's
+      planned removal of WORKSPACE functionality.
+    - >
+      The official Bazel 8 release post reported the Bazel Central Registry hosting more
+      than 500 modules with 2500+ versions, showing that the module ecosystem had become
+      broad enough to support default Bzlmod workflows.
+  package-nerd-significance:
+    - >
+      bazel@8 is historically significant because it packages the moment Bazel's
+      external dependency system crossed from optional migration to default behavior.
+    - >
+      It also shows why build tools keep versioned formulas: a Bazel major version
+      encodes ecosystem compatibility decisions, not merely executable features.
+  project-history:
+    - >
+      Bazel 8.0 LTS was released on December 9, 2024. The official release post
+      describes it as a streamlining release with Bzlmod as the default for dependency
+      management and major bundled rulesets split into Starlark modules.
+    - >
+      The release post says Bzlmod began as an experimental feature in Bazel 5, became
+      generally available in Bazel 6, was turned on in Bazel 7, and in Bazel 8 works
+      with the old WORKSPACE mechanism turned off by default.
+  related-projects:
+    - Bazelisk is commonly used to pin Bazel 8 in repository-local .bazelversion files.
+    - >
+      Bazel Central Registry is the module ecosystem that makes Bazel 8's default Bzlmod
+      workflow practical.
+    - >
+      bazel-remote remains important for Bazel 8 users because remote caching and Build
+      without the Bytes are central to modern Bazel performance.
+  sources:
+    - >
+      Upstream git tag history for https://github.com/bazelbuild/bazel/tree/8.0.0
+      confirms the 2024-12-09 release tag.
+    - https://bazel.build/versions/8.7.0/docs provides official Bazel 8 documentation.
+    - https://bazel.build/versions/8.7.0/run/bazelrc documents Bazel 8 bazelrc locations.
+    - >
+      https://blog.bazel.build/2024/12/09/bazel-8-release.html documents the Bazel 8.0
+      LTS release, Bzlmod/WORKSPACE changes, ruleset modularization, and BCR module
+      counts.
+    - source_facts.package-manager records versioned package availability.
+  summary:
+    - >
+      bazel@8 packages the Bazel 8 long-term-support line, the release that made Bzlmod
+      the normal dependency-management path and turned off automatic WORKSPACE reading
+      by default.
+  timeline:
+    - >
+      2021: Bzlmod is introduced experimentally in the Bazel 5 era, according to the
+      Bazel 8 release post.
+    - '2023-12: Bazel 7 turns Bzlmod on by default.'
+    - '2024-12-09: Bazel 8.0 LTS is released.'
+    - '2024-12: Bazel 8 stops automatically reading WORKSPACE and WORKSPACE.bzlmod by default.'
+    - >
+      2026: The input's Homebrew metadata shows bazel@8 still packaged as a versioned
+      formula with Bazel 8.7.x executables.
+  usage:
+    - >
+      Users install bazel@8 when they want the Bazel 8 LTS behavior without jumping to
+      the latest unversioned Bazel formula. This is useful for CI images, reproducible
+      developer setup, and staged migration to Bzlmod and Starlark-loaded rules.
+    - >
+      Bazel 8 workspaces commonly pair the versioned binary with .bazelrc flags,
+      MODULE.bazel, Bazel Central Registry modules, and Bazelisk-managed version
+      pinning.
 category: developer-tools
 package-manager:
   apk: bazel8

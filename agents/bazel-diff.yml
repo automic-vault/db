@@ -6,6 +6,70 @@ docs:
   - https://github.com/Tinder/bazel-diff#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is strongest among Bazel monorepo users who need deterministic
+      affected-target selection for pull-request CI. The Homebrew formula packages it as
+      a standalone CLI, making it accessible outside the original Tinder repository.
+    - >
+      Later README additions describe an experimental HTTP query service and cached hash
+      generation, showing a shift from one-shot local comparison toward always-on CI
+      infrastructure for large repositories.
+  package-nerd-significance:
+    - >
+      For package-history nerds, bazel-diff is a good example of the post-Bazel
+      ecosystem filling operational gaps around monorepo CI rather than replacing Bazel
+      itself.
+    - >
+      It also illustrates why Bazel-adjacent packages often matter more as automation
+      primitives than as developer-facing build tools: the interesting artifact is the
+      affected-target JSON consumed by CI.
+  project-history:
+    - >
+      The upstream repository begins in September 2020 with a v1.0-era implementation of
+      Bazel target diffing. Its README frames the project as an answer to a gap in Bazel
+      itself, pointing to the long-running Bazel feature request for native target
+      diffing and to a BazelCon talk as design inspiration.
+    - >
+      The tool's implementation history is tied to very large Bazel graphs: the README
+      calls out streamed protobuf query output, avoidance of long command-line query
+      lists, support for renamed/deleted/modified files, and testing against projects
+      with tens of thousands of targets.
+  related-projects:
+    - Bazel supplies the query and build graph model that bazel-diff analyzes.
+    - >
+      Aspect's impacted command is documented by bazel-diff as a Starlark/Aspect CLI way
+      to expose a similar impacted-target workflow.
+    - >
+      Bazelisk is commonly paired with bazel-diff in CI so the Bazel binary used for
+      graph hashing matches the workspace's pinned version.
+  sources:
+    - Upstream git history for https://github.com/Tinder/bazel-diff starts in September 2020.
+    - >
+      https://github.com/Tinder/bazel-diff#readme documents origins, use cases,
+      impacted-target workflow, scale notes, and related Bazel feature request.
+    - source_facts.package-manager-url records the Homebrew packaging surface.
+  summary:
+    - >
+      bazel-diff is Tinder's command-line utility for computing the Bazel targets
+      affected between two Git revisions, letting CI systems build or test the precise
+      changed target set instead of rerunning an entire monorepo.
+  timeline:
+    - '2020-09: Upstream git history starts with the initial v1.0-era bazel-diff code.'
+    - '2020s: Homebrew packages bazel-diff as a standalone CLI for macOS and Linux users.'
+    - >
+      2020s: README-documented features expand to build graph distance metrics and an
+      experimental long-running query service.
+  usage:
+    - >
+      A typical workflow checks out a base revision, generates Bazel graph hashes,
+      checks out a final revision, generates hashes again, and runs get-impacted-targets
+      to emit the changed target labels as JSON.
+    - >
+      The tool is used when correctness matters more than approximate file globs: its
+      docs explicitly warn that incorrect affected-test selection erodes trust in
+      green-to-red CI transitions.
 tags:
   - bazel
   - build-tool
@@ -37,6 +101,12 @@ provenance:
     - >
       Official repository has a docs directory:
       https://github.com/Tinder/bazel-diff/tree/master/docs
+  history-sources:
+    - Upstream git history for https://github.com/Tinder/bazel-diff starts in September 2020.
+    - >
+      https://github.com/Tinder/bazel-diff#readme documents origins, use cases,
+      impacted-target workflow, scale notes, and related Bazel feature request.
+    - source_facts.package-manager-url records the Homebrew packaging surface.
   repo-sources:
     - >
       source_facts.repo already populated; prompt requires repo null when
@@ -52,5 +122,6 @@ category-path:
   - build-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

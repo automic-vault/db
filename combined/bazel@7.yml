@@ -15,6 +15,73 @@ config-file-location:
     - '%USERPROFILE%\.bazelrc'
     - '%HOME%/.bazelrc'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Versioned bazel@7 packaging exists because many Bazel users pin major versions
+      while migrating rulesets, WORKSPACE macros, .bazelrc flags, and CI images.
+    - >
+      The input records bazel@7 across Homebrew, Alpine, Nix, and other package
+      managers, showing the release line remained useful after newer Bazel versions
+      shipped.
+  package-nerd-significance:
+    - >
+      bazel@7 is significant because it captures a rare package-manager case where the
+      older major version is not just legacy: it is the compatibility runway for a
+      build-system ecosystem migration.
+    - >
+      It also marks the period when Bazel's module system moved from opt-in
+      experimentation to the default path for external dependency management.
+  project-history:
+    - >
+      Bazel 7.0 LTS was released on December 11, 2023. The official release post
+      describes several multi-year efforts landing together: Bzlmod, Build without the
+      Bytes, Skymeld, and platform-based toolchain resolution for bundled Android and
+      C++ rules.
+    - >
+      For package users, the key historical point is that Bazel 7 made Bzlmod default
+      while still allowing old WORKSPACE-based dependency setup to continue. That made
+      Bazel 7 a bridge release for repositories preparing for the stricter Bazel 8 and
+      Bazel 9 migration path.
+  related-projects:
+    - >
+      Bazelisk can select Bazel 7 from .bazelversion or USE_BAZEL_VERSION, making it a
+      common companion to bazel@7.
+    - Bazel Central Registry and Bzlmod are central to the Bazel 7 adoption story.
+    - bazel-remote and bazel-diff remain adjacent CI tools for Bazel 7 workspaces.
+  sources:
+    - >
+      Upstream git tag history for https://github.com/bazelbuild/bazel/tree/7.0.0
+      confirms the 2023-12-11 release tag.
+    - https://bazel.build/versions/7.7.0/docs provides official Bazel 7 documentation.
+    - https://bazel.build/versions/7.7.0/run/bazelrc documents Bazel 7 bazelrc locations.
+    - >
+      https://blog.bazel.build/2023/12/11/bazel-7-release.html documents the Bazel 7.0
+      LTS release, Bzlmod default, and migration context.
+    - source_facts.package-manager records versioned package availability.
+  summary:
+    - >
+      bazel@7 packages the Bazel 7 long-term-support line, a major transition release
+      where Bzlmod became enabled by default while legacy WORKSPACE support still
+      remained available.
+  timeline:
+    - '2023-12-11: Bazel 7.0 LTS is released.'
+    - '2023-12: Bzlmod, Build without the Bytes, and Skymeld are enabled by default in Bazel 7.'
+    - >
+      2024: Bazel 7 remains the compatibility line before Bazel 8 disables WORKSPACE by
+      default.
+    - >
+      2026: The input's Homebrew metadata shows bazel@7 still packaged as a versioned
+      formula with Bazel 7.7.x executables.
+  usage:
+    - >
+      Users install bazel@7 when a workspace or CI fleet is standardized on the Bazel 7
+      LTS series, often alongside .bazelversion or Bazelisk so local and CI invocations
+      agree.
+    - >
+      Bazel 7 users commonly exercise Bzlmod migration while retaining WORKSPACE
+      compatibility, then use the versioned docs and bazelrc docs to control flags
+      during migration.
 category: developer-tools
 package-manager:
   apk: bazel7

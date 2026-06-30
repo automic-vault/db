@@ -11,6 +11,68 @@ credentials-file-location:
   unix:
     - path passed with --htpasswd_file
     - $BAZEL_REMOTE_HTPASSWD_FILE
+history:
+  adoption-history:
+    - >
+      bazel-remote became useful as Bazel users adopted remote caching to make monorepo
+      and CI builds faster without adopting remote execution at the same time.
+    - >
+      Homebrew and Nix packaging reflect its role as deployable infrastructure: users
+      install a single binary, point Bazel at its HTTP or gRPC endpoint, and size local
+      disk or cloud-backed storage for their build workload.
+  package-nerd-significance:
+    - >
+      bazel-remote is package-nerd interesting because it packages build acceleration as
+      a small Go service rather than a SaaS product or heavyweight cluster.
+    - >
+      It sits at the boundary between package manager convenience and fleet
+      infrastructure: a Homebrew-installed binary can be enough for local experiments,
+      but the same executable can serve multi-terabyte-per-day CI traffic.
+  project-history:
+    - >
+      The project began in August 2017 as a basic HTTP cache and grew into a production
+      remote-cache server with disk storage, least-recently-used eviction, S3 and GCS
+      backends, gRPC support, REAPI compatibility, and Prometheus-friendly operational
+      endpoints.
+    - >
+      Its README reports that bazel-remote has served terabytes of cache artifacts per
+      day since April 2018 on commodity hardware and AWS servers, which is unusually
+      explicit operational history for a package-manager formula.
+  related-projects:
+    - Bazel is the primary client and provides remote cache flags used with bazel-remote.
+    - bazelbuild/remote-apis defines the REAPI services that bazel-remote implements in part.
+    - >
+      Remote execution systems can use bazel-remote as a cache component or as a simpler
+      alternative when execution offload is unnecessary.
+  sources:
+    - Upstream git history for https://github.com/buchgr/bazel-remote starts in August 2017.
+    - >
+      https://github.com/buchgr/bazel-remote#readme documents project purpose,
+      production-use history since April 2018, APIs, storage backends, configuration,
+      and auth.
+    - source_facts.package-manager-url records the Homebrew packaging surface.
+  summary:
+    - >
+      bazel-remote is a standalone HTTP/1.1 and gRPC remote build cache for Bazel and
+      other REAPI clients, optimized for teams that want remote cache performance
+      without operating a full remote execution service.
+  timeline:
+    - '2017-08: Upstream git history starts with an initial HTTP cache implementation.'
+    - >
+      2018-04: README reports bazel-remote serving terabytes of cache artifacts per day
+      from this period onward.
+    - >
+      2020s: README documents HTTP/1.1, gRPC REAPI, cloud proxy backends, zstd
+      compressed blobs, and operational endpoints.
+  usage:
+    - >
+      Operators configure a cache directory, maximum cache size, HTTP and/or gRPC
+      listener, optional TLS/authentication, and optional proxy backends through flags,
+      environment variables, or a YAML config file.
+    - >
+      Bazel clients use bazel-remote for action-cache and content-addressable-storage
+      reads and writes, while the server exposes /status, CAS test endpoints, metrics,
+      and optional Remote Asset API support.
 tags:
   - bazel
   - cli
@@ -40,6 +102,13 @@ provenance:
     - >
       Official repository README documents bazel-remote usage, configuration, and
       authentication: https://github.com/buchgr/bazel-remote#readme
+  history-sources:
+    - Upstream git history for https://github.com/buchgr/bazel-remote starts in August 2017.
+    - >
+      https://github.com/buchgr/bazel-remote#readme documents project purpose,
+      production-use history since April 2018, APIs, storage backends, configuration,
+      and auth.
+    - source_facts.package-manager-url records the Homebrew packaging surface.
   repo-sources:
     - >
       source_facts.repo already populated; prompt requires repo null when
@@ -54,5 +123,6 @@ category-path:
   - build-cache
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
