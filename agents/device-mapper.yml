@@ -6,6 +6,58 @@ docs:
   - https://sourceware.org/lvm2
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      device-mapper became a baseline Linux storage dependency because it sits
+      underneath logical volume management and related block-device targets. It is
+      packaged across Linux distributions as device-mapper or dmsetup, and Homebrew's
+      formula gives macOS users access to the same userspace tooling for inspection,
+      build, and compatibility workflows.
+  package-nerd-significance:
+    - >
+      device-mapper matters to package nerds because it is infrastructure plumbing:
+      small command-line tools, a C library, kernel interfaces, and release coupling to
+      LVM2. Its formula is less about a user-facing app and more about making Linux
+      storage primitives available to scripts, tests, ports, and dependent packages.
+  project-history:
+    - >
+      The Sourceware device-mapper page describes device-mapper as a Linux kernel
+      component present since kernel 2.6 and required by LVM2 and EVMS. Its userspace
+      code, including dmsetup and libdevmapper, is maintained alongside the LVM2 source
+      package, tying the package's release history to LVM2 rather than to an independent
+      device-mapper release stream.
+    - >
+      The LVM2 Sourceware page records that LVM2 needs device-mapper support in the
+      kernel, libdevmapper, and the LVM2 userspace tools. It also documents the
+      source-control migration: the primary copy moved from CVS before June 7, 2012, and
+      the Git repository moved to GitLab on June 30, 2023.
+  related-projects:
+    - >
+      LVM2 is the primary related userspace project and maintains the current dmsetup
+      and libdevmapper source.
+    - >
+      EVMS and the original LVM are historical related projects named by the Sourceware
+      device-mapper page.
+  sources:
+    - https://sourceware.org/dm/
+    - https://sourceware.org/lvm2/
+  summary:
+    - >
+      device-mapper is the Linux kernel block-device mapping framework and its companion
+      userspace tools and library. In package-manager terms, the Homebrew formula
+      exposes dmsetup, dmstats, and libdevmapper from the LVM2-maintained userspace code
+      rather than a standalone application.
+  timeline:
+    - 'Linux 2.6: device-mapper is part of the kernel block-device stack.'
+    - '2012-06-07: LVM2 source history before this date was maintained in CVS.'
+    - '2023-06-30: LVM2 and device-mapper userspace source moved to GitLab.'
+  usage:
+    - >
+      Package users mostly meet device-mapper through dmsetup and libdevmapper. The
+      tools are used to create, inspect, deactivate, and report mapped block devices,
+      while higher-level systems such as LVM2 build logical-volume workflows on top of
+      the same kernel/userspace interface.
 tags:
   - cli
   - device-mapper
@@ -37,6 +89,9 @@ provenance:
     - >
       Official Sourceware LVM2 page documents the maintained source and man-page
       documentation for dmsetup/libdevmapper.
+  history-sources:
+    - https://sourceware.org/dm/
+    - https://sourceware.org/lvm2/
   repo-sources:
     - >
       Official Sourceware Device-mapper page says dmsetup and libdevmapper userspace
@@ -54,5 +109,6 @@ category-path:
   - logical-volume-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
