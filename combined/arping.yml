@@ -6,6 +6,73 @@ docs:
   - https://github.com/ThomasHabets/arping#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      arping's adoption comes from a small but persistent network-admin niche: it
+      answers questions that IP `ping` cannot answer, especially before assigning an
+      address, on networks where ICMP is filtered, or when a MAC address is known but
+      the IP address is not.
+    - >
+      The supplied package facts show it in Homebrew, Debian, Ubuntu, MacPorts, Nix,
+      apk, and other Unix-like package collections. That breadth is typical for compact
+      diagnostic tools whose behavior is simple, scriptable, and useful during
+      installation, DHCP, address-conflict, and appliance-discovery work.
+  package-nerd-significance:
+    - >
+      arping is a classic example of a tiny network utility with a complicated name
+      space: several unrelated projects and operating systems have shipped commands
+      named `arping`. This package's identity is the Thomas Habets implementation, so
+      the official GitHub repo and README are important disambiguators.
+    - >
+      Its dependency split also matters to packagers: Arping 2.x requires libnet 1.1+,
+      while the older 1.x line existed for libnet 1.0.x users.
+  project-history:
+    - >
+      The current upstream repository's default branch is `arping-2.x`, while an
+      `arping-1.x` branch remains visible. The README explains that Arping 1.x was
+      finally removed from the Arping 2.x tarball in 2.09, leaving older
+      2.08-and-earlier packages as the path for libnet 1.0.x users.
+    - >
+      The manual page is dated June 21, 2003 and documents the classic behavior: send
+      ARP requests for IP targets, directed broadcast ICMP echo requests for MAC
+      targets, and print replies. The current build metadata identifies version 2.29 and
+      requires libnet 1.1 or newer plus libpcap, with optional Linux privilege-dropping
+      support through libcap/seccomp-related checks.
+  related-projects:
+    - libnet is used for packet construction.
+    - libpcap is used for packet capture.
+    - arp-scan is a range-scanning cousin rather than the same tool.
+    - iputils has shipped a different `arping` implementation on Linux.
+  sources:
+    - https://github.com/ThomasHabets/arping#readme
+    - https://raw.githubusercontent.com/ThomasHabets/arping/arping-2.x/INSTALL
+    - https://raw.githubusercontent.com/ThomasHabets/arping/arping-2.x/configure.ac
+    - https://raw.githubusercontent.com/ThomasHabets/arping/arping-2.x/doc/arping.8
+    - source_facts.package-manager
+  summary:
+    - >
+      ARP Ping, usually packaged as `arping`, is Thomas Habets' LAN diagnostic utility
+      for sending ARP and ICMP-style pings to hosts. It is aimed at discovering whether
+      an IPv4 address is already taken, mapping IPs and MACs, and diagnosing local-link
+      problems where ordinary `ping` is not enough.
+  timeline:
+    - '2003: Manual page dated June 21 documents arping behavior and options.'
+    - >
+      2.09: Arping 1.x removed from the Arping 2.x tarball and autotools build system
+      introduced.
+    - '2.29: Current version recorded in configure.ac.'
+  usage:
+    - >
+      The README's core example is checking whether an address is taken on a LAN before
+      using it. The manpage documents `-c` for counts, `-i` for interface selection,
+      `-d` for duplicate replies, raw output modes, broadcast/source-address options,
+      unsolicited ARP with `-U`, VLAN tagging, and seccomp toggles.
+    - >
+      Unlike `arp-scan`, which sweeps ranges, Thomas Habets' arping is centered on
+      targeted ARP/MAC/IP probes. It can ping by IP to get a MAC, ping by MAC to get an
+      IP when hosts respond to broadcast pings, and send unsolicited ARP to update
+      neighbors' ARP caches.
 category: networking
 package-manager:
   apk: arping

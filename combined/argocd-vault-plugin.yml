@@ -8,6 +8,55 @@ docs:
 config-file-location:
   unix: /path/to/config/file.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption follows Argo CD's GitOps operational model: teams want manifests in Git
+      while keeping secret values in dedicated secret stores. The documentation focuses
+      on ways to supply backend configuration through Kubernetes Secrets, configuration
+      files, and environment variables, which matches real Argo CD repo-server and
+      plugin workflows.
+  package-nerd-significance:
+    - >
+      For package managers, this formula matters because it packages a small but
+      operationally important GitOps helper: one executable that sits between Kubernetes
+      YAML, Argo CD plugin execution, and several external secret-store SDKs. Its
+      configuration surface is intentionally portable, so the Homebrew binary can be
+      used locally for manifest generation or installed into Argo CD plugin images.
+  project-history:
+    - >
+      The project lives in argoproj-labs, the Argo project area for ecosystem tooling.
+      Its README presents it as a plugin for retrieving secrets from backends such as
+      HashiCorp Vault, IBM Cloud Secrets Manager, AWS Secrets Manager, Google Secret
+      Manager, Yandex Cloud Lockbox, and 1Password Connect, then injecting the values
+      into Kubernetes resources.
+  related-projects:
+    - Argo CD provides the GitOps controller and plugin execution model.
+    - >
+      HashiCorp Vault, AWS Secrets Manager, Google Secret Manager, IBM Cloud Secrets
+      Manager, Yandex Cloud Lockbox, and 1Password Connect are documented secret
+      backends.
+  sources:
+    - https://argocd-vault-plugin.readthedocs.io/en/stable/
+    - https://argocd-vault-plugin.readthedocs.io/en/stable/config/
+    - https://github.com/argoproj-labs/argocd-vault-plugin
+  summary:
+    - >
+      Argo CD Vault Plugin is an Argo CD config-management plugin that reads secret
+      references from Kubernetes manifests and resolves them from secret-management
+      systems before Argo CD applies the rendered resources.
+  timeline:
+    - '2020s: Project maintained under argoproj-labs for Argo CD ecosystem use.'
+    - >
+      Current stable docs: Read the Docs documents backend configuration through
+      Kubernetes Secrets, config files, and environment variables.
+  usage:
+    - >
+      The common CLI shape is `argocd-vault-plugin generate`, optionally with `-c
+      /path/to/config/file.yaml` for a Viper-supported configuration file or `-s` for a
+      Kubernetes Secret containing backend settings. It is also registered as an Argo CD
+      config-management plugin so manifests can be rendered during application
+      reconciliation.
 category: cloud-infrastructure
 package-manager:
   brew: argocd-vault-plugin

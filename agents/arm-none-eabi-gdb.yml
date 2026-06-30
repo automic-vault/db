@@ -24,6 +24,83 @@ config-file-location:
     - ~/.gdbinit
     - .gdbinit
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GDB became a default debugger in Unix-like development environments because it can
+      debug native programs, remote targets, simulators, and many languages from a
+      single CLI. Sourceware's project page explicitly describes native, remote, and
+      simulator operation, which is exactly the capability embedded developers rely on
+      when a workstation debugger talks to a microcontroller through a probe or debug
+      server.
+    - >
+      The cross-target package form reflects adoption by embedded toolchains and package
+      managers: users install a target-specific binary named `arm-none-eabi-gdb` so
+      scripts and IDE integrations can call the debugger that matches the rest of the
+      ARM bare-metal toolchain.
+  package-nerd-significance:
+    - >
+      This is a good example of a package name encoding a compiler target triple. The
+      upstream repo is GDB, but the package identity is the cross-debugger binary name,
+      so metadata needs to avoid inventing a separate `arm-none-eabi-gdb` upstream while
+      still preserving the target-specific executable users actually install.
+    - >
+      Its config story is unusually important for curation because GDB loads both global
+      and per-directory initialization files, and local `.gdbinit` behavior is a common
+      source of convenience, reproducibility, and security policy decisions.
+  project-history:
+    - >
+      GDB is one of the long-running GNU development tools. Sourceware's old-release
+      archive lists GDB 2.0 in February 1987 and a long sequence of 2.x, 3.x, 4.x, and
+      later releases, while the current manual is maintained by the Free Software
+      Foundation and Sourceware. The project moved into the Sourceware-hosted
+      binutils-gdb Git repository, where current sources, release branches, generated
+      manuals, bug tracking, and release notes are published.
+    - >
+      For package users, arm-none-eabi-gdb matters because GDB's target architecture
+      support can be packaged separately from the host debugger. The `arm-none-eabi`
+      tuple conventionally points at ARM embedded systems without an operating-system
+      ABI, so this package sits next to cross GCC, binutils, OpenOCD, vendor board SDKs,
+      and firmware build systems rather than ordinary host-native debugging.
+  related-projects:
+    - GNU Binutils shares the upstream binutils-gdb repository.
+    - GNU GCC and the `arm-none-eabi` cross toolchain are common companions.
+    - >
+      OpenOCD, pyOCD, and vendor debug servers commonly provide the remote target
+      endpoint used by embedded GDB sessions.
+  sources:
+    - https://sourceware.org/gdb/
+    - https://sourceware.org/gdb/current/
+    - https://sourceware.org/gdb/current/onlinedocs/gdb.html/Startup.html
+    - https://sourceware.org/gdb/news/
+    - https://sourceware.org/pub/gdb/old-releases/
+    - source_facts.description
+    - source_facts.executables
+  summary:
+    - >
+      arm-none-eabi-gdb is the Homebrew-packaged GNU Debugger built for the ARM
+      bare-metal target tuple. The upstream project is GDB itself: the GNU Project
+      debugger maintained at Sourceware in the shared binutils-gdb repository, with the
+      formula name exposing the embedded cross-debugging target rather than a separate
+      upstream project.
+  timeline:
+    - "1987: Sourceware's old-release archive lists gdb-2.0."
+    - '1999: Sourceware lists pre- and post-reformat GDB source snapshots.'
+    - >
+      2025: GDB 17.1 released with debugger adapter protocol, Python, Guile, and
+      target-support changes.
+    - '2026: GDB 17.2 released as a corrective release.'
+  usage:
+    - >
+      Typical use is command-line or IDE-driven debugging of firmware ELF files, often
+      connecting to a remote target such as `gdbserver` or an embedded debug server. GDB
+      startup reads early init files, system init files, home init files, local
+      `.gdbinit`, command files, and command-line `-ex` or `-x` commands, which is why
+      package users care about the exact init-file paths.
+    - >
+      The package installs executables such as `arm-none-eabi-gdb`,
+      `arm-none-eabi-gdb-add-index`, and `arm-none-eabi-gstack`, according to the
+      supplied package facts.
 tags:
   - arm
   - cli
@@ -43,23 +120,28 @@ geiger:
 provenance:
   category-sources:
     - >
-      source_facts.description says GNU debugger for arm-none-eabi cross development;
-      current_curation.category is developer-tools.
+      source_facts.description identifies this as GNU debugger for arm-none-eabi cross
+      development.
   display-name-sources:
-    - >
-      source_facts.name is arm-none-eabi-gdb; source_facts.description identifies it as
-      GNU debugger for arm-none-eabi cross development.
+    - source_facts.name
   docs-sources:
-    - Official GDB documentation page lists online manuals including the GDB User Manual.
-    - Official GDB manual documents initialization files and startup behavior.
+    - >
+      https://sourceware.org/gdb/documentation/ is the official GDB documentation index
+      and links to the current user manual.
+  history-sources:
+    - https://sourceware.org/gdb/
+    - https://sourceware.org/gdb/current/
+    - https://sourceware.org/gdb/current/onlinedocs/gdb.html/Startup.html
+    - https://sourceware.org/gdb/news/
+    - https://sourceware.org/pub/gdb/old-releases/
+    - source_facts.description
+    - source_facts.executables
   repo-sources:
-    - >
-      Official GDB current-source page says the GDB sources are available via git and
-      gives the HTTPS clone URL https://sourceware.org/git/binutils-gdb.git.
+    - https://sourceware.org/gdb/current/ lists the read-only git clone URL for binutils-gdb.
   tags-sources:
-    - >
-      source_facts.description says GNU debugger for arm-none-eabi cross development;
-      current_curation.tags supplies arm, cli, cross-debugging, debugger, embedded, gdb.
+    - https://sourceware.org/gdb/
+    - source_facts.description
+    - source_facts.executables
 category-confidence: high
 category-path:
   - developer-tools
@@ -67,5 +149,6 @@ category-path:
   - embedded
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

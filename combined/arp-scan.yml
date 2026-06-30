@@ -7,6 +7,88 @@ docs:
   - https://github.com/royhills/arp-scan#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README explicitly says many distributions provide binary packages and that BSD
+      users may install from ports. The supplied facts show broad package-manager
+      coverage across apk, Homebrew, Debian, Fedora/dnf, MacPorts, Nix, pacman, Ubuntu,
+      and zypper, which matches its role as the canonical packaged ARP LAN scanner.
+    - >
+      arp-scan became a package-manager staple because it solves a common administrator
+      problem without requiring IP-layer cooperation: discovering hosts on the local
+      Ethernet segment and mapping MAC prefixes to vendors. It is small enough for
+      scripts, but detailed enough for security inventories, lab networks, appliance
+      discovery, and duplicate-address investigations.
+  package-nerd-significance:
+    - >
+      arp-scan is the baseline package against which newer ARP scanners are compared. It
+      is also a neat example of why network tools need package metadata beyond a
+      homepage: raw socket privileges, capability installation, bundled data files,
+      manual pages, and helper scripts all affect the package experience.
+    - >
+      The name collision with arp-scan-rs is important: both may install an `arp-scan`
+      command, but their upstreams, licenses, implementation languages, option sets, and
+      release histories are distinct.
+  project-history:
+    - >
+      Roy Hills' upstream changelog records version 1.4 on 2006-06-26 as the first
+      stable public version, after internal versions 1.0 through 1.2 and a 1.3 beta.
+      Early work quickly moved from Linux packet sockets toward portable link-layer
+      support, adding BPF support for BSD and Darwin, Solaris DLPI work, IEEE OUI/IAB
+      update scripts, and packet-generation tests.
+    - >
+      The project moved from an internal SVN repository to GitHub in 2013 during the
+      1.9.2 cycle. That move also changed the development identifiers from increasing
+      SVN revision IDs to Git object hashes and shifted public collaboration toward
+      issues and pull requests.
+    - >
+      Later releases kept the old-school Unix toolchain shape, using autoconf/automake,
+      libpcap, manual pages, and text data files, while modernizing around security and
+      portability. The 1.10.0 release added Linux POSIX.1e capability support, flexible
+      output formatting, JSON/XML-format examples, and a consolidated IEEE registry
+      file.
+  related-projects:
+    - arp-scan-rs is a Rust rewrite inspired by arp-scan.
+    - libpcap provides packet capture support.
+    - libcap enables Linux CAP_NET_RAW packaging.
+    - IEEE registry data backs MAC vendor lookups.
+  sources:
+    - https://github.com/royhills/arp-scan#readme
+    - https://github.com/royhills/arp-scan/blob/master/ChangeLog
+    - https://github.com/royhills/arp-scan/blob/master/NEWS.md
+    - source_facts.executables
+    - source_facts.package-manager
+  summary:
+    - >
+      arp-scan is a C network scanning tool that discovers and fingerprints IPv4 hosts
+      on a local network using ARP. Upstream documents support for Linux, BSD, macOS,
+      and Solaris, and ships the companion commands `arp-fingerprint`, `get-oui`, and
+      `mac-vendor` data handling.
+  timeline:
+    - '2006: Version 1.4 released as the first stable version.'
+    - '2007: Version 1.6 released after portability and frame-handling improvements.'
+    - '2011: Version 1.8 added macOS support and changed license from GPLv2 to GPLv3.'
+    - '2013: Development moved from internal SVN to GitHub.'
+    - >
+      2022: Version 1.10.0 added Linux libcap capability support and flexible output
+      formatting.
+    - '2025: Changelog shows continuing maintenance and IEEE registry updates.'
+  usage:
+    - >
+      The core invocation sends ARP requests on a local link and prints responding
+      IP/MAC/vendor rows. The README points users to `arp-scan --help` and the manual
+      pages for `arp-scan(1)`, `arp-fingerprint(1)`, `get-oui(1)`, and `mac-vendor(5)`.
+    - >
+      Packaging details matter because the executable needs raw-packet privileges.
+      Upstream's packager notes ask Linux builders to enable libcap support when
+      possible; `make install` can install `arp-scan` with `CAP_NET_RAW` or fall back to
+      setuid root.
+    - >
+      The tool's vendor lookup depends on local IEEE registry-derived files. Upstream
+      has repeatedly updated its OUI/IAB handling as IEEE changed registry formats and
+      URLs, and 1.10.0 moved `mac-vendor.txt` into the system configuration directory so
+      local changes can survive upgrades.
 category: networking
 package-manager:
   apk: arp-scan

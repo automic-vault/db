@@ -3,8 +3,75 @@ display-name: Argon2
 repo: null
 docs:
   - https://github.com/P-H-C/phc-winner-argon2#readme
+  - https://www.rfc-editor.org/rfc/rfc9106
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Argon2's adoption path moved from competition winner to reference implementation
+      to language bindings and standards-track-adjacent guidance. The PHC site notes
+      bindings for most languages, while RFC 9106 explicitly aims to simplify adoption
+      of Argon2 in Internet protocols.
+    - >
+      Package adoption is broad because the reference implementation is useful both
+      directly and indirectly: developers install the CLI to benchmark or generate
+      hashes, while distributions also build `libargon2` for applications, password
+      managers, authentication systems, and language bindings.
+  package-nerd-significance:
+    - >
+      Argon2 is package-nerd catnip because a tiny CLI package exposes a major
+      cryptographic primitive with tunable resource costs. It is one of the rare
+      formulae where build flags, SIMD support, libraries, headers, and command-line
+      behavior all matter to downstream consumers.
+    - >
+      It also illustrates how security primitives travel through package ecosystems: a
+      competition reference implementation becomes a distro library, then a dependency
+      of higher-level language packages and authentication stacks.
+  project-history:
+    - >
+      The Password Hashing Competition began after its organizers concluded that modern
+      applications lacked a widely accepted password-hashing standard. The PHC site says
+      the competition ran from 2013 to 2015, received 24 candidates, shortlisted
+      finalists, and selected Argon2 in July 2015.
+    - >
+      Argon2 was designed by Alex Biryukov, Daniel Dinu, and Dmitry Khovratovich. The
+      reference repository describes the implementation as C code for the PHC-winning
+      function and documents the Argon2i, Argon2d, and Argon2id variants with time,
+      memory, and parallelism parameters.
+    - >
+      RFC 9106, published in September 2021 by the IRTF Crypto Forum Research Group,
+      gave an implementer-oriented description of Argon2 version 1.3 with test vectors.
+      It names Argon2id as the primary variant for implementations of the RFC, with
+      Argon2d and Argon2i as supplementary variants.
+  related-projects:
+    - PHC finalists recognized alongside Argon2 included Catena, Lyra2, Makwa, and yescrypt.
+    - BLAKE2b is the hash function used inside RFC 9106's Argon2 description.
+  sources:
+    - https://github.com/P-H-C/phc-winner-argon2
+    - https://www.password-hashing.net/
+    - https://www.rfc-editor.org/rfc/rfc9106
+  summary:
+    - >
+      Argon2 is a memory-hard password-hashing function and command-line utility. The
+      Homebrew package builds the reference C implementation from the Password Hashing
+      Competition winner repository.
+  timeline:
+    - '2013: Password Hashing Competition begins.'
+    - '2014: PHC submissions close and finalists are shortlisted.'
+    - '2015-07: PHC announces Argon2 as the winner.'
+    - '2021-09: RFC 9106 publishes an implementer-oriented Argon2 description and test vectors.'
+  usage:
+    - >
+      The `argon2` executable reads the password from standard input and accepts a salt
+      plus flags for variant, iterations, memory, parallelism, hash length, encoded
+      output, raw output, and Argon2 version. The README also documents static and
+      shared libraries for embedding the algorithm in C programs.
+    - >
+      For package users, the CLI is often a test and interoperability tool rather than
+      the main production integration. Its encoded hash output is useful for checking
+      parameters and verifying that bindings or server frameworks produce compatible
+      values.
 tags:
   - cli
   - cryptography
@@ -20,24 +87,26 @@ geiger:
     - metadata:library-like
 provenance:
   category-sources:
-    - 'Official README: https://github.com/P-H-C/phc-winner-argon2#readme'
-    - 'source_facts.description: Password hashing library and CLI utility'
+    - PHC site and README describe Argon2 as a password-hashing function.
+    - source_facts.description
   display-name-sources:
-    - 'Official README heading: https://github.com/P-H-C/phc-winner-argon2#readme'
-    - source_facts.name
+    - 'Official README heading: Argon2.'
+    - current_curation.display-name
   docs-sources:
-    - >
-      Official repository README documents Argon2 usage and command-line utility:
-      https://github.com/P-H-C/phc-winner-argon2#readme
+    - Official README and RFC 9106 document the reference implementation and algorithm.
+    - current_curation.docs
+  history-sources:
+    - https://github.com/P-H-C/phc-winner-argon2
+    - https://www.password-hashing.net/
+    - https://www.rfc-editor.org/rfc/rfc9106
   repo-sources:
     - >
-      source_facts.repo already present; per instruction repo is returned as null and
-      not second-guessed.
+      source_facts.repo is already populated with
+      https://github.com/P-H-C/phc-winner-argon2; prompt requires repo null when
+      source_facts.repo is present.
   tags-sources:
-    - >
-      Official README describes Argon2 as a password-hashing function and command-line
-      utility: https://github.com/P-H-C/phc-winner-argon2#readme
-    - source_facts.description
+    - Official README documents the CLI utility and cryptographic password-hashing use.
+    - source_facts.executables
 category-confidence: high
 category-path:
   - security
@@ -45,5 +114,6 @@ category-path:
   - password-hashing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

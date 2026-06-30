@@ -7,6 +7,92 @@ docs:
   - https://gcc.gnu.org/onlinedocs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The supplied package facts show arm-none-eabi-gcc in Homebrew, MacPorts, Arch,
+      Fedora-family, and zypper-family package metadata. That cross-package spread
+      exists because embedded ARM developers often work from macOS or Linux hosts and
+      need repeatable target-prefixed tools outside their system compiler.
+    - >
+      GCC's broader adoption comes from being the default or reference compiler across
+      many free-software and embedded environments. The arm-none-eabi variant rides that
+      history while serving a narrower target: freestanding code where libc, startup
+      files, linker scripts, and hardware-specific flags are chosen by the firmware
+      project.
+  package-nerd-significance:
+    - >
+      arm-none-eabi-gcc is a classic example of why package managers carry cross
+      compilers as separate packages. The target prefix preserves host compiler behavior
+      while making build systems select the intended architecture, ABI, and runtime
+      assumptions.
+    - >
+      For package nerds, the package is interesting because it turns GCC from a host
+      compiler into a relocatable toolchain component. The visible command names encode
+      the target, and the rest of the ecosystem hangs off that convention: pkg-config
+      wrappers, CMake toolchain files, Cargo/Make firmware builds, and objcopy-based
+      image generation.
+  project-history:
+    - >
+      GCC's official homepage says GCC was originally written as the compiler for the
+      GNU operating system and now includes front ends for C, C++, Objective-C,
+      Objective-C++, Fortran, Ada, Go, D, Modula-2, COBOL, Rust, and Algol 68, along
+      with runtime libraries such as libstdc++.
+    - >
+      The GCC project emphasizes regular high-quality releases, support for many native
+      and cross targets, publicly available Git sources, and weekly snapshots. The
+      official Git page documents https://gcc.gnu.org/git/gcc.git as the clone URL and
+      links to online Git history.
+    - >
+      The arm-none-eabi packaging is not a separate compiler lineage; it is GCC
+      configured as a cross compiler. The official ARM options manual documents
+      ARM-specific switches such as -mabi, -mfloat-abi, -march, and -mcpu, which are the
+      kinds of controls embedded ARM users combine with linker scripts and binutils.
+  related-projects:
+    - >
+      Related projects include GNU Binutils, GDB, newlib, libstdc++, OpenOCD, CMSIS,
+      microcontroller SDKs, and build systems that consume GCC cross toolchains.
+    - >
+      The closest package sibling in this batch is arm-none-eabi-binutils, which
+      provides the assembler/linker/object tools that GCC invokes or complements.
+  sources:
+    - https://gcc.gnu.org/
+    - https://gcc.gnu.org/git.html
+    - https://gcc.gnu.org/onlinedocs
+    - https://gcc.gnu.org/onlinedocs/gcc/ARM-Options.html
+    - https://gcc.gnu.org/onlinedocs/gcc/Overall-Options.html
+    - https://gcc.gnu.org/releases.html
+    - input.source_facts.executables
+    - input.source_facts.package-manager
+  summary:
+    - >
+      arm-none-eabi-gcc is a target-prefixed GCC cross compiler for bare-metal ARM EABI
+      development. The upstream project is GCC, the GNU Compiler Collection; the package
+      name selects the ARM freestanding target used by firmware, microcontroller,
+      bootloader, and embedded-runtime builds.
+  timeline:
+    - >
+      GNU era: GCC begins as the compiler for the GNU operating system, according to the
+      official GCC homepage.
+    - '2024: GCC 14.1 is released, according to the official release list.'
+    - '2025: GCC 15.1 is released, according to the official release list.'
+    - >
+      2026: GCC 16.1 is released and the homepage lists GCC 16.1, 15.3, and 14.4 among
+      supported releases.
+    - 'Current: Homebrew packages the arm-none-eabi-prefixed GCC executable set.'
+  usage:
+    - >
+      The package installs commands such as arm-none-eabi-gcc, arm-none-eabi-g++,
+      arm-none-eabi-cpp, arm-none-eabi-gcc-ar, arm-none-eabi-gcc-nm,
+      arm-none-eabi-gcc-ranlib, gcov tools, and lto-dump. Users compile C/C++ or
+      assembly inputs to ARM EABI objects and link firmware images through a matching
+      binutils and runtime setup.
+    - >
+      Official GCC documentation describes the compiler driver pipeline from
+      preprocessing and compilation through assembly and linking, plus target-specific
+      options. In embedded use, package users commonly combine arm-none-eabi-gcc with
+      arm-none-eabi-binutils, startup code, linker scripts, and optional C libraries
+      such as newlib.
 category: developer-tools
 package-manager:
   brew: arm-none-eabi-gcc

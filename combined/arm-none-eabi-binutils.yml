@@ -7,6 +7,82 @@ docs:
   - https://www.gnu.org/software/binutils
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The supplied package facts show arm-none-eabi-binutils packaged in Homebrew,
+      Fedora-derived packaging, MacPorts, and Arch. That spread reflects the
+      embedded-development pattern: host systems need cross tools that do not replace
+      native /usr/bin ar, as, ld, objcopy, objdump, or strip.
+    - >
+      Because bare-metal ARM development often needs objcopy to create raw binaries or
+      S-records, objdump/readelf for inspection, and linker scripts for memory layout,
+      Binutils is often installed even before the full compiler and C library story is
+      settled.
+  package-nerd-significance:
+    - >
+      This is one of the canonical cross-toolchain packages: small, target-prefixed, and
+      boring in the right way. It makes build-system discovery deterministic and keeps
+      host and target binary tools separate.
+    - >
+      For package nerds, arm-none-eabi-binutils is the layer that reveals how much
+      embedded build output is not just compilation. Firmware packaging depends on
+      linker scripts, section placement, ELF metadata, stripped images, raw binary
+      conversion, and post-link inspection.
+  project-history:
+    - >
+      The upstream project is GNU Binutils, maintained through Sourceware's
+      binutils-gdb.git repository. The official documentation is generated from the
+      Binutils sources and covers the binary utilities, GNU assembler, GNU linker, BFD,
+      profiling tools, and support libraries.
+    - >
+      The arm-none-eabi prefix is packaging and target selection rather than a fork. It
+      tells build systems and compiler drivers that these tools target ARM with no
+      hosted operating system and the Embedded ABI, a common setup for microcontrollers,
+      firmware, bootloaders, and freestanding runtime work.
+  related-projects:
+    - >
+      Related projects include arm-none-eabi-gcc, newlib or other embedded C libraries,
+      GDB, OpenOCD, CMSIS-based firmware projects, and build systems that consume
+      target-prefixed toolchains.
+    - >
+      It is a sibling of arm-linux-gnueabihf-binutils, but aims at bare-metal EABI
+      rather than GNU/Linux hard-float userland.
+  sources:
+    - https://sourceware.org/binutils/docs
+    - https://sourceware.org/binutils/docs/as.html
+    - https://sourceware.org/binutils/docs/binutils.html
+    - https://sourceware.org/binutils/docs/ld.html
+    - https://sourceware.org/git/gitweb.cgi?p=binutils-gdb.git;a=summary
+    - input.source_facts.executables
+    - input.source_facts.package-manager
+  summary:
+    - >
+      arm-none-eabi-binutils is the target-prefixed GNU Binutils package for bare-metal
+      ARM EABI development. It provides the low-level assembler, linker, archiver,
+      object-copy, object-dump, symbol, size, string, strip, and ELF-inspection tools
+      used before or alongside a matching arm-none-eabi GCC.
+  timeline:
+    - >
+      1991-2026: Current Sourceware manuals for gas and ld carry Free Software
+      Foundation copyright ranges beginning in 1991.
+    - '2026: Sourceware publishes documentation for Binutils 2.46.'
+    - '2026: Sourceware git tags include official GNU Binutils 2.46 and 2.46.1 releases.'
+    - >
+      Current: Homebrew, MacPorts, Arch, and Fedora-family package metadata include
+      arm-none-eabi-binutils variants.
+  usage:
+    - >
+      The package installs commands such as arm-none-eabi-as, arm-none-eabi-ld,
+      arm-none-eabi-objcopy, arm-none-eabi-objdump, arm-none-eabi-readelf, and
+      arm-none-eabi-strip. Users call them directly in firmware build scripts or
+      indirectly through arm-none-eabi-gcc.
+    - >
+      Official Binutils documentation describes objcopy as able to translate object-file
+      formats and generate raw binary output, objdump as an object-file inspection tool,
+      gas as a family of assemblers, and ld as the linker that combines object and
+      archive files. Those are exactly the jobs that make the package central to
+      embedded packaging.
 category: developer-tools
 package-manager:
   brew: arm-none-eabi-binutils

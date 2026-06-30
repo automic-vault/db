@@ -6,6 +6,83 @@ docs:
   - https://sourceware.org/binutils/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The arm-linux-gnueabihf target prefix exists for cross development aimed at ARM
+      GNU/Linux systems using the hard-float ABI. In package-manager terms, the formula
+      avoids colliding with host tools by installing prefixed commands such as
+      arm-linux-gnueabihf-as, arm-linux-gnueabihf-ld, arm-linux-gnueabihf-objdump, and
+      arm-linux-gnueabihf-readelf.
+    - >
+      The supplied package facts show this exact cross-binutils package in Homebrew.
+      That narrower packaging footprint is expected: cross-binutils packages are often
+      target-specific and maintained where users need a particular embedded, board,
+      sysroot, or foreign-architecture build workflow.
+  package-nerd-significance:
+    - >
+      This package is significant because cross-compilation lives and dies by boring
+      names. A target-prefixed binutils set makes autotools, Makefiles, CMake toolchain
+      files, and compiler drivers find the right ar, as, ld, objcopy, and strip without
+      replacing the host system's own tools.
+    - >
+      For package nerds, arm-linux-gnueabihf-binutils is not exciting because it adds
+      features beyond GNU Binutils; it is useful because it packages a precise target
+      tuple. That tuple carries ABI expectations into command names and build-system
+      discovery.
+  project-history:
+    - >
+      GNU Binutils is the long-running GNU collection of binary tools around object
+      files, archives, assembly, and linking. Sourceware's current documentation set
+      includes manuals for gas, ld, BFD, libctf, gprof, gprofng, and the binary
+      utilities such as ar, objcopy, objdump, readelf, size, strings, strip, and nm.
+    - >
+      The Sourceware git repository is shared as binutils-gdb.git and identifies itself
+      as the official gdb and binutils repository, with HTTPS, git, and SSH URLs.
+      Current documentation is generated from Binutils 2.46 sources, and the git tag
+      list includes official GNU Binutils 2.45, 2.46, and 2.46.1 release tags.
+  related-projects:
+    - >
+      Related upstream components are GCC, GDB, gas, ld, BFD, libctf, gprof, gprofng,
+      and the GNU binary utilities.
+    - >
+      Related packaging patterns include arm-none-eabi-binutils for bare-metal ARM and
+      target-prefixed GCC packages that drive these binutils under the hood.
+  sources:
+    - https://sourceware.org/binutils/docs
+    - https://sourceware.org/binutils/docs/as.html
+    - https://sourceware.org/binutils/docs/binutils.html
+    - https://sourceware.org/binutils/docs/ld.html
+    - https://sourceware.org/git/gitweb.cgi?p=binutils-gdb.git;a=summary
+    - input.source_facts.executables
+    - input.source_facts.package-manager
+  summary:
+    - >
+      arm-linux-gnueabihf-binutils is a Homebrew cross-toolchain packaging of GNU
+      Binutils for the arm-linux-gnueabihf target. The upstream project is GNU Binutils;
+      the target-prefixed formula gives users assembler, linker, archive, symbol,
+      object-copy, object-dump, and ELF-inspection tools that emit or inspect ARM
+      GNU/Linux hard-float ABI objects.
+  timeline:
+    - >
+      1991-2026: Current Sourceware manuals for ld and gas carry Free Software
+      Foundation copyright ranges beginning in 1991.
+    - '2026: Sourceware publishes documentation for Binutils 2.46.'
+    - '2026: Sourceware git tags include official GNU Binutils 2.46 and 2.46.1 releases.'
+    - 'Current: Homebrew packages the arm-linux-gnueabihf-prefixed Binutils executable set.'
+  usage:
+    - >
+      Users install the package when they need binutils for ARM Linux objects from a
+      non-ARM or differently configured host. The tools are used directly, or indirectly
+      through a matching cross GCC, build system, or configure triplet that calls the
+      prefixed assembler, linker, archiver, ranlib, objcopy, objdump, readelf, and
+      strip.
+    - >
+      The upstream manuals document the shared behavior: gas is the GNU assembler
+      family, ld combines object and archive files and supports multiple object formats
+      through BFD, and objcopy/objdump/readelf inspect or transform binary objects. The
+      Homebrew package simply exposes those capabilities under the arm-linux-gnueabihf
+      prefix.
 category: developer-tools
 package-manager:
   brew: arm-linux-gnueabihf-binutils

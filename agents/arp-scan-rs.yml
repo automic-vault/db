@@ -6,6 +6,73 @@ docs:
   - https://github.com/kongbytes/arp-scan-rs#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The project documents installation through Homebrew, prebuilt Linux binaries from
+      GitHub releases, and Cargo. That makes its adoption path more
+      Rust-and-package-manager oriented than the classic C tool: users can install it as
+      `arp-scan-rs` in Homebrew while still running an executable named `arp-scan`.
+    - >
+      Its package-manager identity is slightly confusing on purpose: the formula is
+      `arp-scan-rs`, but the CLI command is `arp-scan`. Package nerds should treat it as
+      an alternative implementation, not as the same upstream as `royhills/arp-scan`.
+  package-nerd-significance:
+    - >
+      arp-scan-rs is interesting because it deliberately reuses the familiar `arp-scan`
+      command shape while changing implementation language, install channels, and output
+      expectations. It is a good test case for metadata systems that distinguish package
+      names, executable names, and upstream lineages.
+    - >
+      The tool also shows the modern LAN-scanner packaging pattern: single binary, Rust
+      workspace, Cargo install, Homebrew formula, GitHub releases, and structured output
+      for scripts.
+  project-history:
+    - >
+      The upstream project is organized as a Rust workspace with `arp-scan` and
+      `arp-scan-lib` members. Its official package metadata records version 0.15.1,
+      AGPL-3.0-or-later licensing, and a repository/homepage at GitHub.
+    - >
+      Unlike the older C `arp-scan`, arp-scan-rs appears as a modern rewrite focused on
+      packaged binaries, Cargo installation, structured output, and ergonomic scan
+      profiles. The README's roadmap marks features such as JSON/YAML export, MAC vendor
+      lookup, scan profiles, timing controls, bandwidth control, wide network ranges,
+      and partial SIGINT results as shipped across the 0.7.0 through 0.13.0 releases.
+  related-projects:
+    - royhills/arp-scan is the explicitly cited inspiration.
+    - IEEE OUI registry data is used for MAC vendor lookup.
+    - >
+      Rust crates such as pnet, pnet_datalink, clap, serde, and csv appear in the
+      workspace dependencies.
+  sources:
+    - https://github.com/kongbytes/arp-scan-rs#readme
+    - https://kongbytes.io/docs/arp-scan
+    - https://raw.githubusercontent.com/kongbytes/arp-scan-rs/master/Cargo.toml
+    - source_facts.executables
+    - source_facts.package-manager
+  summary:
+    - >
+      arp-scan-rs is a Rust ARP scanner CLI from KongBytes. The project presents itself
+      as a fast, minimal Rust binary for local-network discovery, explicitly inspired by
+      Roy Hills' `arp-scan`.
+  timeline:
+    - '0.7.0: JSON and YAML exports marked as released in the roadmap.'
+    - '0.8.0: Fine-grained scan timing and faster response-thread closing marked as released.'
+    - '0.9.0: MAC vendor lookup marked as released.'
+    - >
+      0.10.0: Scan profiles, packet customization, time estimation, and
+      bandwidth-related features marked as released.
+    - '0.15.1: Current workspace package version in Cargo.toml.'
+  usage:
+    - >
+      The documented default workflow is to list interfaces with `arp-scan -l`, then
+      scan the selected or default IPv4 LAN with ARP requests. Options cover interface
+      selection, target CIDR selection, timeouts, request intervals, bandwidth limiting,
+      retries, source and destination MAC customization, VLAN tags, and output formats.
+    - >
+      The README and docs also describe optional IEEE OUI CSV lookup at
+      `/usr/share/arp-scan/ieee-oui.csv`, JSON/YAML/CSV output, predefined
+      default/fast/stealth/chaos profiles, and local hostname resolution controls.
 tags:
   - arp
   - cli
@@ -14,31 +81,33 @@ tags:
   - rust
 provenance:
   category-sources:
-    - >
-      source_facts.description says ARP scan tool for fast local network scans;
-      current_curation.category is networking.
+    - https://kongbytes.io/docs/arp-scan
+    - source_facts.description
   display-name-sources:
-    - source_facts.name is arp-scan-rs; official GitHub repository is kongbytes/arp-scan-rs.
+    - source_facts.name
   docs-sources:
     - >
-      Official GitHub repository About section links to kongbytes.io/docs/arp-scan as
-      project docs.
-    - >
-      Official README documents usage examples, installation, getting started, and
-      command options.
+      https://kongbytes.io/docs/arp-scan is the official KongBytes documentation page;
+      the GitHub README is linked from the official repository.
+  history-sources:
+    - https://github.com/kongbytes/arp-scan-rs#readme
+    - https://kongbytes.io/docs/arp-scan
+    - https://raw.githubusercontent.com/kongbytes/arp-scan-rs/master/Cargo.toml
+    - source_facts.executables
+    - source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already has https://github.com/kongbytes/arp-scan-rs, so repo is
-      returned as null per instruction.
+      source_facts.repo already contains https://github.com/kongbytes/arp-scan-rs;
+      prompt requires returning repo as null when source_facts.repo is present.
   tags-sources:
-    - >
-      source_facts.description says Rust ARP scan tool for local network scans;
-      current_curation.tags supplies arp, cli, lan-discovery, network-scanner, rust.
+    - https://github.com/kongbytes/arp-scan-rs#readme
+    - source_facts.description
 category-confidence: high
 category-path:
   - networking
-  - network-scanning
+  - network-discovery
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
