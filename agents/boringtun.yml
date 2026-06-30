@@ -5,6 +5,71 @@ docs:
   - https://github.com/cloudflare/boringtun#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      BoringTun's adoption story is unusually concrete for a low-level networking
+      library: Cloudflare's README says it is deployed on millions of iOS and Android
+      consumer devices and thousands of Cloudflare Linux servers.
+    - >
+      Cloudflare's WARP posts tie BoringTun to the 1.1.1.1/WARP client stack, making it
+      part of a large production VPN deployment rather than only a reference
+      implementation.
+  package-nerd-significance:
+    - >
+      BoringTun matters to package nerds because it is a Rust networking primitive with
+      a real production pedigree, a split library/CLI shape, and a clear relationship to
+      the broader WireGuard ecosystem.
+    - >
+      It also illustrates the packaging distinction between protocol implementation,
+      command-line frontend, and OS integration: installing boringtun-cli gives a
+      binary, but useful operation still depends on TUN devices, WireGuard tooling, and
+      platform networking permissions.
+  project-history:
+    - >
+      Cloudflare announced BoringTun publicly on March 27, 2019 after evaluating
+      existing WireGuard implementations and choosing Rust for a portable, memory-safe,
+      high-performance userspace implementation. The repository itself was created in
+      October 2018, matching the blog's account that the project had been under
+      development before the source release.
+    - >
+      The README describes two deliverables: boringtun-cli for Linux and macOS userspace
+      tunnels, and the boringtun library for client applications that supply their own
+      platform-specific tunnel and network stacks.
+  related-projects:
+    - WireGuard is the VPN protocol BoringTun implements.
+    - >
+      wireguard-go is the userspace implementation Cloudflare compared against when
+      explaining why BoringTun was created.
+    - Cloudflare WARP is the large-scale client product that uses BoringTun.
+  sources:
+    - https://api.github.com/repos/cloudflare/boringtun
+    - https://api.github.com/repos/cloudflare/boringtun/releases?per_page=100
+    - https://blog.cloudflare.com/announcing-warp-for-linux-and-proxy-mode/
+    - https://blog.cloudflare.com/boringtun-userspace-wireguard-rust/
+    - https://github.com/cloudflare/boringtun
+  summary:
+    - >
+      BoringTun is Cloudflare's Rust userspace implementation of the WireGuard protocol,
+      distributed as both a library and the boringtun-cli command-line tool.
+  timeline:
+    - '2018-10: Official GitHub repository metadata shows the repository created.'
+    - '2019-03: Cloudflare announced and open sourced BoringTun.'
+    - >
+      2021: Cloudflare described WARP for Linux using BoringTun as its WireGuard
+      implementation.
+    - '2022: GitHub release metadata shows v0.4.0 in the public release feed.'
+    - '2026: Repository metadata shows continued activity.'
+  usage:
+    - >
+      As a CLI, boringtun-cli starts a userspace WireGuard tunnel for an interface and
+      can be used with wg and wg-quick through WG_QUICK_USERSPACE_IMPLEMENTATION. As a
+      library, it exposes the WireGuard protocol machinery for clients that implement
+      their own transport and tunnel integration.
+    - >
+      Because it is userspace and permissively licensed, BoringTun is useful where the
+      Linux kernel WireGuard module is unavailable or where client apps need portable
+      WireGuard behavior across mobile and desktop platforms.
 tags:
   - cli
   - rust
@@ -31,6 +96,12 @@ provenance:
     - >
       https://github.com/cloudflare/boringtun#readme is the official repository README
       and documentation surface.
+  history-sources:
+    - https://api.github.com/repos/cloudflare/boringtun
+    - https://api.github.com/repos/cloudflare/boringtun/releases?per_page=100
+    - https://blog.cloudflare.com/announcing-warp-for-linux-and-proxy-mode/
+    - https://blog.cloudflare.com/boringtun-userspace-wireguard-rust/
+    - https://github.com/cloudflare/boringtun
   repo-sources:
     - >
       source_facts.repo is already populated, so repo is returned as null per prompt
@@ -45,5 +116,6 @@ category-path:
   - vpn
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

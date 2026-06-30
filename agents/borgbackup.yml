@@ -15,6 +15,85 @@ credentials-file-location:
     - ~/Library/Application Support/borg/keys/
   windows:
     - C:\Users\<user>\AppData\Roaming\borg\keys\
+history:
+  adoption-history:
+    - >
+      Borg's adoption grew among Linux, macOS, and BSD users who wanted a command-line
+      alternative to rsync-style mirror backups and tarball rotation. The
+      package-manager data in the input shows broad distribution coverage across Alpine,
+      Homebrew, Debian, DNF, MacPorts, Nix, Arch, Ubuntu, and openSUSE, matching its
+      role as infrastructure software rather than an application-specific tool.
+    - >
+      The docs also call out JSON output for frontends, which helped a small ecosystem
+      of wrappers and graphical tools build on the CLI instead of a Python API. That
+      front-end contract matters because backup tools need automation, monitoring, and
+      restore UX without weakening the reliability of the core command.
+  package-nerd-significance:
+    - >
+      BorgBackup is package-nerd significant because it is a backup tool where packaging
+      quality directly affects data safety: users care about reproducible binaries, FUSE
+      support for mounting archives, Python/Cython extension compatibility, OpenSSL or
+      crypto backend behavior, and careful upgrade notes. Its package name also
+      preserves the full project name while the CLI is simply `borg`.
+    - >
+      It is also a canonical example of a serious CLI exposing machine-readable output
+      for frontends while refusing to promise a stable internal Python API. That
+      boundary is exactly the kind of packaging and integration decision that
+      distribution maintainers and backup-tool operators notice.
+  project-history:
+    - >
+      Borg began publicly as a fork of Attic. The project's first GitHub issue, opened
+      May 13, 2015, states that the fork was made to allow different approaches to
+      development, goals, and policy, with emphasis on openness, accepting good pull
+      requests, discussing changes publicly, and avoiding accidental compatibility
+      breaks.
+    - >
+      The official documentation describes Borg's core design: split files into
+      variable-length chunks, store only chunks not already present in the repository,
+      optionally compress data, and protect data with client-side authenticated
+      encryption. Borg's SSH-friendly repository model made it practical for daily
+      off-site backups to hosts that were not fully trusted.
+    - >
+      Borg reached 1.0.0 on March 5, 2016. The current stable documentation is for Borg
+      1.4.4, while the master README warns that Borg 2 is in beta and should not be used
+      for production backups, showing an active but compatibility-conscious split
+      between stable backup users and future repository-format work.
+  related-projects:
+    - >
+      Related projects include Attic, the project Borg forked from, plus command-line
+      backup tools such as restic, duplicity, rsync-based backup systems, and Borg
+      frontends that consume the documented CLI JSON output.
+  sources:
+    - https://borgbackup.readthedocs.io/en/stable/
+    - https://borgbackup.readthedocs.io/en/stable/internals/frontends.html
+    - https://github.com/borgbackup/borg/issues/1
+    - https://github.com/borgbackup/borg/releases/tag/1.0.0
+    - https://github.com/borgbackup/borg/releases/tag/1.4.4
+  summary:
+    - >
+      BorgBackup is a deduplicating backup program with optional compression and
+      authenticated encryption. It is one of the most important Unix-style backup CLIs
+      in modern package repositories because it combines content-defined chunking,
+      encrypted remote repositories over SSH, and scriptable command-line operation.
+  timeline:
+    - >
+      2015: Borg fork goals issue opened, documenting the fork from Attic and project
+      policy goals.
+    - '2015: 0.26.x through 0.29.x release series published before 1.0.'
+    - '2016: Borg 1.0.0 published.'
+    - '2025: Borg 2.0 beta releases continue for testing only.'
+    - '2026: Borg 1.4.4 stable release published.'
+  usage:
+    - >
+      Typical use starts by creating a repository with encryption, then running `borg
+      create` repeatedly so only new chunks are stored. Users commonly set `BORG_REPO`,
+      back up to a local path or SSH remote, prune old archives, mount archives as file
+      systems for browsing, and use JSON/log output in automation.
+    - >
+      Borg's key workflows are daily encrypted off-site backups, space-efficient backups
+      of large changing files such as VM images, multi-machine repositories where chunk
+      deduplication crosses archive boundaries, and disaster-recovery restores from
+      append-only or otherwise protected storage.
 tags:
   - archive
   - backup
@@ -42,6 +121,12 @@ provenance:
     - >
       Official documentation is hosted at https://borgbackup.readthedocs.io/en/stable/
       and the project homepage is https://www.borgbackup.org/.
+  history-sources:
+    - https://borgbackup.readthedocs.io/en/stable/
+    - https://borgbackup.readthedocs.io/en/stable/internals/frontends.html
+    - https://github.com/borgbackup/borg/issues/1
+    - https://github.com/borgbackup/borg/releases/tag/1.0.0
+    - https://github.com/borgbackup/borg/releases/tag/1.4.4
   repo-sources:
     - >
       Official GitHub repository https://github.com/borgbackup/borg is linked by
@@ -56,5 +141,6 @@ category-path:
   - system
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -12,6 +12,67 @@ config-file-location:
   macos: ~/.boring.toml
   windows: ~/.boring.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is early and package-manager-focused. The batch input records Homebrew
+      and Nix packaging, which is typical for a modern single-binary CLI aimed at
+      developers who frequently need repeatable port forwards.
+    - >
+      Because boring delegates authentication and host identity to SSH configuration, it
+      fits into existing developer workflows without asking users to maintain a separate
+      credential store.
+  package-nerd-significance:
+    - >
+      boring is package-nerd interesting because it is a deliberately small wrapper
+      around a ubiquitous system tool: it packages as one CLI, but its real value is
+      making OpenSSH port-forwarding state reproducible and inspectable.
+    - >
+      Its platform-specific default config paths are a useful curation detail, since
+      Linux follows XDG while macOS and Windows use a home-directory TOML file.
+  project-history:
+    - >
+      The public GitHub repository was created in September 2024, and its earliest
+      GitHub release in the public release feed is 0.4.0 from October 2024. The official
+      site describes it as a simple command-line SSH tunnel manager with TOML
+      configuration, ssh_config compatibility, and automatic reconnections.
+    - >
+      The project keeps its scope narrow: it manages tunnel definitions and process
+      lifecycle around SSH rather than trying to replace OpenSSH or become a general VPN
+      system.
+  related-projects:
+    - OpenSSH is the underlying transport and tunneling mechanism.
+    - >
+      ssh_config is part of the expected configuration workflow because boring can match
+      hosts against SSH config.
+    - >
+      autossh and other SSH tunnel managers are adjacent tools, but boring focuses on
+      named TOML-managed tunnels.
+  sources:
+    - https://alebeck.github.io/boring/
+    - https://api.github.com/repos/alebeck/boring
+    - https://api.github.com/repos/alebeck/boring/releases?per_page=100
+    - https://github.com/alebeck/boring
+    - source_facts.package-manager
+  summary:
+    - >
+      boring is a small Go CLI for managing SSH tunnels from a TOML file, positioned as
+      a simpler way to keep local, remote, SOCKS, and reverse SOCKS forwards organized.
+  timeline:
+    - '2024-09: Official GitHub repository metadata shows the public repository created.'
+    - '2024-10: GitHub release metadata shows release 0.4.0 published.'
+    - >
+      2026: Repository metadata and package input show ongoing development and packaging
+      in Homebrew and Nix.
+  usage:
+    - >
+      Users define named tunnels in a TOML file, then use the CLI to list, open, close,
+      and group them. The README documents local, remote, SOCKS, and socks-remote modes
+      plus fields for host, user, identity, port, keep-alive, and grouping.
+    - >
+      The tool reads standard SSH configuration where possible and falls back to
+      familiar defaults such as the current user, port 22, ssh-agent, and standard
+      identity files.
 category: networking
 package-manager:
   brew: boring

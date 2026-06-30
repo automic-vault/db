@@ -27,6 +27,67 @@ config-file-location:
     - ..\project-config.jam
     - ..\..\project-config.jam
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption came primarily through Boost itself: users building Boost from source,
+      distro maintainers packaging Boost components, and C++ projects reusing
+      Boost.Build all needed the `b2` command. Homebrew, MacPorts, Nix, Scoop, DNF, and
+      APK package names in the input show that the build engine became worth packaging
+      independently of the full Boost library set.
+  package-nerd-significance:
+    - >
+      B2 is package-nerd significant because it is a build tool whose package name
+      preserves older history: `boost-build` installs the `b2` executable, while old
+      documentation and scripts may still mention bjam. It is also one of the few
+      non-Make, non-CMake build systems that package maintainers routinely had to
+      understand because Boost is so widely depended on.
+  project-history:
+    - >
+      Boost.Build grew out of the Jam family of build tools and kept the Jamfile model:
+      projects describe targets and build properties in Jam syntax, while users invoke
+      the `b2` engine with variants such as debug, release, toolset, threading, and
+      other feature values. The official manual now presents the tool as B2 and includes
+      both the user manual and Boost.Jam documentation, reflecting the long transition
+      from the older bjam/Boost.Build naming to the shorter B2 command.
+    - >
+      The Boost repository history shows the build tool tracking Boost's release cadence
+      with tags such as boost-1.83.0 through boost-1.91.0, while standalone B2 releases
+      such as 4.1.0 through 4.4.1 appeared on GitHub in 2019-2021. That dual identity is
+      why package collections often expose it as a separate CLI while C++ developers
+      encounter it as part of Boost source builds.
+  related-projects:
+    - >
+      Related projects include the Boost C++ Libraries, Boost.Jam, Perforce Jam ancestry
+      as documented in the manual, and competing C/C++ build systems such as Make,
+      CMake, Meson, and Ninja.
+  sources:
+    - https://github.com/boostorg/build/releases/tag/4.4.1
+    - https://github.com/boostorg/build/tags
+    - https://www.boost.org/doc/libs/latest/tools/build/doc/html/index.html
+    - source_facts.package-manager
+  summary:
+    - >
+      B2, still packaged by Homebrew as boost-build, is Boost's Jam-based build system
+      for C and C++ projects. In package-manager culture it matters less as a
+      general-purpose build-tool challenger than as the canonical way many developers
+      have built, tested, and installed the Boost C++ Libraries themselves.
+  timeline:
+    - >
+      2000s: Boost.Build/Boost.Jam become the standard build machinery for the Boost C++
+      Libraries.
+    - '2019: Standalone B2 4.1.0 release published on GitHub.'
+    - '2021: B2 4.4.1 published as a standalone GitHub release.'
+    - >
+      2023-2026: The boostorg/build repository continues to carry Boost release tags,
+      including boost-1.83.0 through boost-1.91.0.
+  usage:
+    - >
+      Typical use is to run `b2` in a tree containing Jamfiles, optionally passing build
+      properties such as variant, toolset, threading, address-model, or install prefix.
+      For Boost users, `b2 install` and variant-specific builds are the historically
+      important workflows; for non-Boost projects, B2 is a portable C++ build system
+      with project hierarchies and target requirements.
 category: developer-tools
 package-manager:
   apk: boost-build
