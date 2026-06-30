@@ -10,6 +10,88 @@ config-file-location:
     - /etc/fwupd/fwupd.conf
     - /etc/fwupd/remotes.d
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      fwupd's adoption is inseparable from LVFS. The LVFS homepage says the service is
+      used by all major Linux distributions to provide metadata for clients such as
+      fwupdmgr and GNOME Software, and the fwupd README says the project is configured
+      by default to download firmware from LVFS.
+    - >
+      The package is broadly distributed across Linux distributions and package
+      managers. Upstream documentation explicitly tells users to rely on
+      distro-maintained packages in most cases, making fwupd a canonical example of
+      firmware update functionality moving into the Linux distribution layer.
+    - >
+      LVFS documentation also frames the service for hardware vendors, end users, and
+      developers, with vendor-uploaded redistributable firmware packaged in `.cab`
+      archives and consumed by clients on end-user machines.
+  package-nerd-significance:
+    - >
+      fwupd is one of the most important Linux firmware packages because it bridges OS
+      package management, hardware vendor firmware, desktop software centers, signed
+      metadata, device plugins, and boot-time update mechanisms.
+    - >
+      It is also a packaging case study in why some tools should be maintained by
+      distributions: the upstream README emphasizes dependency complexity, integration
+      testing, and interactions with other system software such as GNOME Software.
+    - >
+      For package historians, fwupd and LVFS mark a shift from vendor-specific firmware
+      downloads toward a shared Linux firmware update pipeline.
+  project-history:
+    - >
+      The GitHub repository was created in February 2015, and the LVFS website carries a
+      2015 copyright notice. Early tags used names such as `fwupd_0_1_0`; later releases
+      moved to numeric version tags and by 2026 the project had 2.x releases.
+    - >
+      The upstream README describes fwupd as a daemon for session software to update
+      firmware and advises most end users to use the version packaged and tested by
+      their Linux distribution instead of compiling it manually.
+    - >
+      Over time, fwupd grew from a daemon and CLI into a plugin-based firmware update
+      framework with support for LVFS remotes, graphical frontends, enterprise approval
+      workflows, report-history feedback, device emulation, Host Security ID
+      documentation, and security tooling such as fuzzing and static analysis.
+  related-projects:
+    - >
+      LVFS is the central related service and provides firmware metadata and hosting for
+      fwupd clients.
+    - GNOME Software is a graphical frontend named by LVFS and upstream docs.
+    - Passim can republish fwupd metadata on local networks.
+    - dbxtool and fwupdtool are related command-line tools documented with fwupd.
+  sources:
+    - https://api.github.com/repos/fwupd/fwupd
+    - https://fwupd.github.io/
+    - https://fwupd.github.io/libfwupdplugin/fwupd-remotes.d.html
+    - https://fwupd.github.io/libfwupdplugin/fwupd.conf.html
+    - https://fwupd.org/
+    - https://github.com/fwupd/fwupd
+    - https://raw.githubusercontent.com/fwupd/fwupd/main/README.md
+  summary:
+    - >
+      fwupd is a Linux system daemon and command-line toolset for making device firmware
+      updates automatic, safe, and reliable. It is closely tied to the Linux Vendor
+      Firmware Service, the metadata and firmware distribution service used by major
+      Linux distributions and client software such as fwupdmgr and GNOME Software.
+  timeline:
+    - '2015: Public fwupd repository created and LVFS website copyright begins.'
+    - '2015: Early `fwupd_0_1_0` tags appear.'
+    - '2021: 1.6.x releases published.'
+    - '2026: 2.1.x releases published.'
+    - '2026: 2.0.21 release published.'
+  usage:
+    - >
+      The basic command-line flow is to run `fwupdmgr get-devices`, refresh metadata,
+      check updates, and run `fwupdmgr update`. Some updates apply live, while others
+      are staged for the next boot.
+    - >
+      Configuration is Linux system-level. Official generated docs describe
+      `/etc/fwupd/fwupd.conf` as the main daemon config and provide a separate manual
+      page for `fwupd-remotes.d` remote configuration.
+    - >
+      For enterprises, approved updates can constrain which firmware is available from a
+      central source. For local-network efficiency, fwupd can integrate with Passim to
+      republish downloaded metadata for nearby clients.
 category: system
 package-manager:
   apk: fwupd
@@ -35,5 +117,14 @@ executables:
   - fwupdtool
 provenance:
   formula: fwupd
+  history-sources:
+    - https://api.github.com/repos/fwupd/fwupd
+    - https://fwupd.github.io/
+    - https://fwupd.github.io/libfwupdplugin/fwupd-remotes.d.html
+    - https://fwupd.github.io/libfwupdplugin/fwupd.conf.html
+    - https://fwupd.org/
+    - https://github.com/fwupd/fwupd
+    - https://raw.githubusercontent.com/fwupd/fwupd/main/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
