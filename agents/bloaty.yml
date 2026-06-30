@@ -6,6 +6,94 @@ docs:
   - https://github.com/google/bloaty/blob/main/doc/using.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Bloaty's adoption followed the path of a specialist but widely useful developer
+      tool: first-party docs and releases on GitHub, then packaging across major
+      developer distributions. The input metadata records packages in Alpine apk,
+      Homebrew, Fedora dnf, MacPorts, Nix, and Arch/pacman.
+    - >
+      Its cross-platform binary-format support helped adoption outside one
+      operating-system niche. Engineers working on native applications, toolchains,
+      mobile code, embedded binaries, and Wasm can all use the same CLI vocabulary to
+      ask where bytes went.
+  package-nerd-significance:
+    - >
+      Bloaty is package-nerd catnip because it explains package bloat with evidence
+      instead of vibes. It bridges low-level object-file knowledge and everyday package
+      maintenance by making debug sections, symbol tables, compile units, `.text`,
+      `.rodata`, Mach-O load commands, and ELF program headers visible in a table humans
+      can act on.
+    - >
+      The tool is also a useful counterweight to vague binary-size debates. Package
+      maintainers can compare stripped and unstripped builds, bundled dependencies, LTO
+      changes, debug-info packaging, static-linking choices, and architecture-specific
+      output using one reproducible CLI.
+    - >
+      Compared with traditional tools such as `size`, `nm`, `objdump`, `readelf`, or
+      linker map files, Bloaty packages several views into one profiler and preserves
+      totals so the reported rows account for the whole file. That makes it unusually
+      practical for maintainers who need to decide whether a size increase belongs in
+      code, debug metadata, linked libraries, compiler output, or packaging policy.
+  project-history:
+    - >
+      The official repository was created in 2016 and describes Bloaty as a size
+      profiler for binaries. Its README frames the core question directly: finding what
+      makes a binary big by showing size profiles across file size and virtual-memory
+      size.
+    - >
+      Bloaty's implementation is unusually deep for a size-reporting CLI. The README and
+      internals documentation describe custom ELF, DWARF, and Mach-O parsing,
+      experimental PE/COFF and WebAssembly support, disassembly-assisted attribution,
+      hierarchical profiles, size diffs, demangling, separate debug files, and custom
+      data sources.
+    - >
+      The project reached Bloaty McBloatface v1.0 in August 2018 and v1.1 in May 2020.
+      Its README also notes that it is not an official Google product, a common marker
+      for Google-hosted open source tools that are useful outside their original
+      internal context.
+  related-projects:
+    - >
+      `size`, `nm`, `objdump`, `readelf`, linker map files, and platform object-file
+      tools are the traditional neighbors Bloaty complements.
+    - >
+      ELF, DWARF, Mach-O, PE/COFF, and WebAssembly are the binary/debug formats named by
+      Bloaty's official docs.
+    - >
+      Bloaty bundles or can use dependencies including protobuf, RE2, Capstone, and
+      pkg-config according to its README.
+  sources:
+    - GitHub repository metadata via gh api repos/google/bloaty
+    - https://github.com/google/bloaty#readme
+    - https://github.com/google/bloaty/blob/main/doc/how-bloaty-works.md
+    - https://github.com/google/bloaty/blob/main/doc/using.md
+    - https://github.com/google/bloaty/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      Bloaty, formally styled in its help text as Bloaty McBloatface, is Google's open
+      source size profiler for binaries. It became a familiar package-manager utility
+      for engineers who care about what actually makes an executable, library, firmware
+      image, or WebAssembly artifact large.
+  timeline:
+    - '2016: Official Google-hosted Bloaty repository created.'
+    - '2018: Bloaty McBloatface v1.0 released.'
+    - '2020: Bloaty McBloatface v1.1 released.'
+    - >
+      Package era: Bloaty appears across apk, Homebrew, dnf, MacPorts, Nix, and pacman
+      according to package metadata.
+  usage:
+    - >
+      The basic workflow is `bloaty FILE`, optionally with `-d` data sources such as
+      sections, symbols, segments, or compile units. Bloaty reports both file size and
+      VM size because debug data, zero-initialized data, mapped segments, and metadata
+      can affect disk and runtime footprints differently.
+    - >
+      A second major workflow is size diffing: users pass a current binary and a base
+      binary separated by `--` to see exactly which sections, symbols, compile units, or
+      other sources grew or shrank. That makes Bloaty especially attractive for release
+      engineering and CI checks where size regressions need blameable output.
 tags:
   - binary-size
   - cli
@@ -31,6 +119,13 @@ provenance:
     - >
       Official user documentation documents -c FILE for loading a configuration file but
       no fixed config-file location.
+  history-sources:
+    - GitHub repository metadata via gh api repos/google/bloaty
+    - https://github.com/google/bloaty#readme
+    - https://github.com/google/bloaty/blob/main/doc/how-bloaty-works.md
+    - https://github.com/google/bloaty/blob/main/doc/using.md
+    - https://github.com/google/bloaty/releases
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already supplies https://github.com/google/bloaty; prompt
@@ -45,5 +140,6 @@ category-path:
   - profiling
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
