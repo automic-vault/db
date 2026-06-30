@@ -6,6 +6,63 @@ docs:
   - https://github.com/containers/crun#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      crun is distributed broadly through Linux and source package ecosystems, including
+      Alpine, Debian, Fedora/DNF, Nix, pacman, Ubuntu, zypper, and Homebrew. Its broad
+      packaging footprint reflects its role as a drop-in OCI runtime option for systems
+      using container engines such as Podman.
+  package-nerd-significance:
+    - >
+      crun is important to package history because it made the OCI runtime layer more
+      diverse than the Go-based runc default. Its C implementation, library mode,
+      reproducible static build path through Nix, and heavy distro packaging make it a
+      low-level dependency that package maintainers care about for performance,
+      hardening, and container stack composition.
+  project-history:
+    - >
+      The official README frames crun as an alternative implementation of the OCI
+      runtime specification. Its rationale is that a low-level container runtime
+      benefits from being written in C, and that crun can also be used as a library
+      instead of only as an external process.
+    - >
+      The public tag history begins with 0.4 in 2019, reaches 1.0 in 2021, and continues
+      through frequent 1.x releases. Recent release notes show steady work on security
+      hardening, cgroups, mount handling, CRIU integration, krun integration, idmapped
+      mounts, and runtime compatibility.
+  related-projects:
+    - >
+      crun implements the Open Containers Initiative runtime specification and is
+      commonly discussed alongside runc, Podman, CRIU, libkrun/krun, Nix, and Linux
+      cgroup/systemd integration.
+  sources:
+    - https://github.com/containers/crun#readme
+    - https://github.com/containers/crun/blob/main/NEWS
+    - https://github.com/containers/crun/releases
+    - https://github.com/opencontainers/runtime-spec
+    - https://formulae.brew.sh/formula/crun
+  summary:
+    - >
+      crun is a fast, low-memory OCI container runtime written in C. It is a system
+      package rather than an application framework: users and higher-level tools call it
+      to create and manage containers from OCI runtime bundles.
+  timeline:
+    - '2019: 0.4 public tag'
+    - '2021: 1.0 release'
+    - '2025: 1.25 and 1.26 releases add hardening and CRIU-related changes'
+    - '2026: 1.28 release'
+  usage:
+    - >
+      crun is used where OCI runtime compatibility, startup latency, small memory
+      footprint, and C library integration matter. The README compares it with runc,
+      highlights faster startup and lower memory usage, and documents build dependencies
+      across Fedora, RHEL, Ubuntu, Alpine, and openSUSE Tumbleweed.
+    - >
+      Package users generally do not invoke crun for application logic; they install it
+      so container engines and scripts can select it as the OCI runtime. Build-time
+      options such as shared libraries and static Nix builds matter for distribution
+      maintainers.
 category: system
 package-manager:
   apk: crun
@@ -30,5 +87,12 @@ executables:
   - crun
 provenance:
   formula: crun
+  history-sources:
+    - https://github.com/containers/crun#readme
+    - https://github.com/containers/crun/blob/main/NEWS
+    - https://github.com/containers/crun/releases
+    - https://github.com/opencontainers/runtime-spec
+    - https://formulae.brew.sh/formula/crun
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

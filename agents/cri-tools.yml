@@ -11,6 +11,62 @@ config-file-location:
   windows:
     - '%USERPROFILE%\.crictl\crictl.yaml'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      crictl and critest became general-availability tools in the v1.11 era according to
+      their official docs. The project is maintained under kubernetes-sigs and points
+      users to Kubernetes SIG Node community channels, which made it part of the normal
+      Kubernetes runtime-development workflow rather than a third-party diagnostic
+      utility.
+  package-nerd-significance:
+    - >
+      For package maintainers, cri-tools matters because it is version-skew sensitive:
+      the official README recommends matching the cri-tools and Kubernetes minor
+      versions. It is also a canonical example of a Kubernetes-adjacent package where
+      the CLI binary is operationally useful but its version policy follows a larger
+      platform's release cadence.
+  project-history:
+    - >
+      The project grew around Kubernetes' Container Runtime Interface, the gRPC plugin
+      interface that lets kubelet work with different container runtimes without
+      recompiling cluster components. Its README describes the scope narrowly: debugging
+      and validation tools for kubelet CRI, not a user-facing container runtime or a
+      replacement orchestration layer.
+    - >
+      The compatibility matrix ties cri-tools minor versions to Kubernetes minor
+      versions, with v0.1 aligned to Kubernetes 1.7 and later 1.x releases tracking
+      Kubernetes release branches. That version coupling is central to how distributions
+      package it, because CRI features can diverge between Kubernetes and cri-tools
+      minor versions.
+  related-projects:
+    - Kubernetes kubelet and cri-api define the runtime interface that cri-tools exercises.
+    - containerd, CRI-O, and cri-dockerd are common CRI-compatible runtimes used with crictl.
+  sources:
+    - https://github.com/kubernetes-sigs/cri-tools#readme
+    - https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md
+    - https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/validation.md
+    - https://kubernetes.io/docs/concepts/containers/cri/
+    - https://github.com/kubernetes-sigs/cri-tools/releases/tag/v0.1
+  summary:
+    - >
+      cri-tools is the Kubernetes SIG Node companion project for Container Runtime
+      Interface debugging and conformance tooling. It packages crictl for direct CRI
+      interaction and critest for validation tests, making it useful to runtime
+      implementers, cluster operators, and distribution maintainers who need a tool
+      outside the kubelet itself.
+  timeline:
+    - '2017: v0.1 release published for the Kubernetes 1.7 compatibility line.'
+    - '2018: crictl and CRI validation testing documented as GA since v1.11.0.'
+    - >
+      2020s: Project continues to follow Kubernetes minor release lines and ships crictl
+      and critest archives from GitHub releases.
+  usage:
+    - >
+      crictl is used to inspect, pull, run, stop, and debug containers and pod sandboxes
+      through CRI-compatible runtimes such as containerd, CRI-O, and cri-dockerd.
+      critest is used to verify that a runtime's CRI server implementation conforms to
+      Kubernetes expectations without running full Kubernetes end-to-end tests.
 tags:
   - cli
   - container-runtime-interface
@@ -43,6 +99,12 @@ provenance:
       Official repository contains dedicated docs/crictl.md and docs/critest.md
       documentation pages.
     - source_facts.homepage is the official GitHub repository.
+  history-sources:
+    - https://github.com/kubernetes-sigs/cri-tools#readme
+    - https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md
+    - https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/validation.md
+    - https://kubernetes.io/docs/concepts/containers/cri/
+    - https://github.com/kubernetes-sigs/cri-tools/releases/tag/v0.1
   repo-sources:
     - source_facts.repo already has a value, so repo is returned as null per instruction.
   tags-sources:
@@ -55,5 +117,6 @@ category-path:
   - kubernetes
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

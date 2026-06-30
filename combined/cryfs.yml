@@ -7,6 +7,57 @@ docs:
 config-file-location:
   unix: vaultdir/cryfs.config
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The upstream README documents distribution through apt, pacman, Homebrew,
+      MacPorts, Nix, and experimental Windows builds, and also mentions GUI integrations
+      such as SiriKali and KDE Plasma Vault. That breadth explains why package managers
+      carry CryFS even though it is a specialized filesystem tool: users need it
+      installed close to the operating system, FUSE layer, and desktop integration
+      points.
+  package-nerd-significance:
+    - >
+      CryFS matters to packagers because it pulls ordinary package management into
+      filesystem integration: macOS users need macFUSE, Linux users need FUSE support,
+      Windows builds use DokanY, and the project has historically cared about distro
+      packages as first-class install routes. The package is therefore more than a
+      binary drop; it is a small filesystem stack with platform-specific runtime
+      expectations.
+  project-history:
+    - >
+      CryFS was published as an open-source cryptographic filesystem for the cloud, with
+      its official site describing a design that encrypts content, filenames, directory
+      structure, timestamps, and other metadata into fixed-size encrypted blocks. The
+      official technical page cites a 2015 master's thesis and a 2017 DBSec publication
+      for the security analysis behind the design.
+  related-projects:
+    - >
+      The CryFS documentation contrasts its block-based metadata-hiding approach with
+      file-based encrypted filesystems such as EncFS and gocryptfs, and the README
+      points to SiriKali and KDE Plasma Vault as GUI front ends that can use CryFS.
+  sources:
+    - https://www.cryfs.org/howitworks
+    - https://github.com/cryfs/cryfs
+    - https://api.github.com/repos/cryfs/cryfs/releases
+  summary:
+    - >
+      CryFS is an encrypted filesystem aimed at storing data safely on cloud-sync
+      services. In package-manager terms it sits at the intersection of FUSE filesystem
+      tooling, local encryption utilities, and privacy-oriented desktop workflows.
+  timeline:
+    - "2015: The official security-analysis page cites the CryFS master's thesis."
+    - '2017: The official site cites a DBSec publication on the CryFS construction.'
+    - '2024: CryFS 1.0.0 was published on the official GitHub releases page.'
+    - '2025: The 1.0.x and 2.0.0-alpha release lines were active on GitHub.'
+  usage:
+    - >
+      A typical CryFS workflow creates a vault directory, stores an encrypted
+      configuration file named cryfs.config there, and mounts decrypted contents through
+      the cryfs command. Its cloud-storage focus is visible in the official examples
+      naming Dropbox, iCloud, OneDrive, and similar services, while the docs warn about
+      non-concurrent use and corruption risks if multiple devices or sync clients write
+      at the same time.
 category: security
 package-manager:
   brew: cryfs
@@ -32,5 +83,10 @@ executables:
   - cryfs-unmount
 provenance:
   formula: cryfs
+  history-sources:
+    - https://www.cryfs.org/howitworks
+    - https://github.com/cryfs/cryfs
+    - https://api.github.com/repos/cryfs/cryfs/releases
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

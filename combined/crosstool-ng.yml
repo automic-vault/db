@@ -7,6 +7,68 @@ docs:
 config-file-location:
   unix: .config
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      crosstool-NG grew around embedded Linux and cross-compilation communities, where
+      prebuilt toolchains are often either too generic, too old, or mismatched to a
+      target. Its documentation keeps a direct connection to the crossgcc mailing list
+      and to projects such as Buildroot, ptxdist, and OpenEmbedded.
+  package-nerd-significance:
+    - >
+      crosstool-NG matters in package history because it turns a compiler stack into a
+      reproducible configurable artifact. It sits between full root filesystem builders
+      and ad hoc compiler builds: unlike Buildroot or OpenEmbedded, its stated target is
+      only the toolchain, leaving the resulting compiler usable by other build systems
+      and package workflows.
+  project-history:
+    - >
+      The project traces its lineage to Dan Kegel's original crosstool scripts, patch
+      repository, and prepared configuration files. Yann E. Morin later reorganized that
+      work, added uClibc and menu-driven configuration support, and released the new
+      implementation as crosstool-NG, short for crosstool Next Generation.
+    - >
+      The official documentation says Yann Morin became busy with Buildroot and other
+      projects in late 2014, after which Bryan Hundven became the new maintainer. The
+      GitHub README also records older Mercurial repositories as read-only and points
+      current development to GitHub.
+  related-projects:
+    - >
+      The documentation compares crosstool-NG with Buildroot, ptxdist, and OpenEmbedded,
+      and credits the original crosstool project as its direct ancestor.
+  sources:
+    - https://crosstool-ng.github.io/docs/introduction/
+    - https://crosstool-ng.github.io/docs/configuration/
+    - https://crosstool-ng.github.io/docs/toolchain-types/
+    - https://crosstool-ng.github.io/docs/credits/
+    - https://github.com/crosstool-ng/crosstool-ng#readme
+    - https://github.com/crosstool-ng/crosstool-ng/releases
+    - https://formulae.brew.sh/formula/crosstool-ng
+  summary:
+    - >
+      crosstool-NG is a configurable toolchain builder focused on producing
+      cross-compilation toolchains. It is a package-nerd staple because it automates the
+      otherwise tedious assembly of binutils, GCC, C libraries, kernel headers,
+      debuggers, and target-specific patches.
+  timeline:
+    - "2000s: Dan Kegel's crosstool provides the precursor scripts and patches"
+    - >
+      2000s: Yann E. Morin releases crosstool-NG with uClibc and menu-driven
+      configuration support
+    - '2014: Bryan Hundven becomes maintainer'
+    - '2025: crosstool-ng 1.28.0 release'
+  usage:
+    - >
+      Users configure crosstool-NG through a Linux-kernel-style menuconfig flow,
+      producing a `.config` file that controls target architecture, component versions,
+      installation prefix, samples, and options. Typical workflows start from a sample
+      tuple, run `ct-ng menuconfig`, and then build a native, cross, cross-native, or
+      Canadian Cross toolchain.
+    - >
+      Because `ct-ng` is implemented as a make script, the project is familiar to
+      source-based packaging users: it downloads and builds upstream components, applies
+      version-specific patches, and installs an isolated toolchain such as under
+      `/opt/x-tools/${CT_TARGET}`.
 category: developer-tools
 package-manager:
   apk: crosstool-ng
@@ -26,5 +88,14 @@ executables:
   - ct-ng
 provenance:
   formula: crosstool-ng
+  history-sources:
+    - https://crosstool-ng.github.io/docs/introduction/
+    - https://crosstool-ng.github.io/docs/configuration/
+    - https://crosstool-ng.github.io/docs/toolchain-types/
+    - https://crosstool-ng.github.io/docs/credits/
+    - https://github.com/crosstool-ng/crosstool-ng#readme
+    - https://github.com/crosstool-ng/crosstool-ng/releases
+    - https://formulae.brew.sh/formula/crosstool-ng
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
