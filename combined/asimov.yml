@@ -6,6 +6,57 @@ docs:
   - https://github.com/stevegrunwell/asimov#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Asimov's adoption is Homebrew-centered. The official README calls Homebrew the
+      easiest installation route, documents `brew install asimov`, and shows `sudo brew
+      services start asimov` for running the scheduled job automatically once a day.
+    - >
+      The input facts list only Homebrew packaging, which matches the macOS-only scope.
+      It is a package-manager convenience wrapper around native macOS backup controls
+      rather than a cross-platform backup system.
+  package-nerd-significance:
+    - >
+      Asimov matters to package nerds because it encodes a practical truth about
+      dependency managers: generated dependency directories are expensive to back up and
+      cheap to recreate. It turns that convention into a small macOS maintenance
+      package.
+  project-history:
+    - >
+      The GitHub repository was created in October 2017. The README presents the
+      motivating problem for developers using Time Machine: project dependency
+      directories can be large, generated, and recoverable from package manifests, so
+      backing them up is often unnecessary.
+    - >
+      Release metadata shows v0.1.0 in October 2017, v0.2.0 in November 2017, and v0.3.0
+      in June 2020. The README continues to describe a small shell-oriented utility
+      rather than a daemon-heavy system service.
+  related-projects:
+    - Apple Time Machine is the backup system Asimov configures.
+    - `tmutil` is the native macOS command Asimov wraps.
+    - Homebrew services is documented as the scheduled-run installation path.
+  sources:
+    - https://api.github.com/repos/stevegrunwell/asimov/releases
+    - https://github.com/stevegrunwell/asimov
+    - source_facts.package-manager
+  summary:
+    - >
+      Asimov is a macOS command-line utility that excludes development dependency
+      directories from Time Machine backups. It is deliberately narrow: scan for
+      restorable dependency trees such as `node_modules`, then ask Apple's `tmutil` to
+      exclude them so backups waste less space.
+  timeline:
+    - '2017: GitHub repository created.'
+    - '2017: v0.1.0 and v0.2.0 releases published.'
+    - '2020: v0.3.0 release published.'
+    - '2024: Repository still received pushes.'
+  usage:
+    - >
+      Users either run `asimov` on demand or install it as a Homebrew service. Asimov
+      scans for recognized dependency directories next to corresponding project files,
+      checks whether they are already excluded, and uses `tmutil` to mark them as
+      excluded from Time Machine.
 category: system
 package-manager:
   brew: asimov
