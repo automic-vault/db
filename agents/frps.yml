@@ -5,6 +5,62 @@ docs:
   - https://gofrp.org/en/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      frps is packaged separately because server operators often need only the public
+      relay component. That packaging mirrors real deployments where frps may live on a
+      VPS while many clients connect from private networks.
+    - >
+      frp's large GitHub audience and broad binary release matrix helped make frps a
+      common choice in self-hosting, homelab, NAT traversal, and remote-access
+      workflows.
+  package-nerd-significance:
+    - >
+      frps matters to package history because it is a role-specific binary from a larger
+      Go upstream. Separate packaging lets a server image or host install the relay
+      daemon without implying that local client tunnel definitions should also be
+      present.
+  project-history:
+    - >
+      frp was created on GitHub in 2015 and developed as a paired client/server
+      tunneling system. The upstream README describes the architecture in terms of frps
+      on a public server and frpc on a LAN host that cannot be directly reached from the
+      Internet.
+    - >
+      The project has continued through frequent 0.x releases while the maintainers
+      discuss a future v2 design. In the v0.69 line, the release notes formalized a
+      compatibility policy and introduced a versioned wire protocol between frpc and
+      frps.
+  related-projects:
+    - frpc is the client counterpart shipped by the same upstream frp project.
+    - >
+      The upstream README relates future v2 work to cloud-native proxy and service-mesh
+      ideas, including Envoy-like extensibility.
+  sources:
+    - https://api.github.com/repos/fatedier/frp
+    - https://github.com/fatedier/frp
+    - https://github.com/fatedier/frp/releases
+    - https://gofrp.org/en/docs
+  summary:
+    - >
+      frps is the server-side command in frp, the fast reverse proxy project. It runs on
+      a host with a reachable address and accepts frpc client connections so private
+      services can be exposed through TCP, UDP, HTTP, HTTPS, and related proxy modes.
+  timeline:
+    - '2015: The frp GitHub repository was created.'
+    - '2017: Public GitHub releases show established v0.x binary distribution.'
+    - '2026: v0.69.0 introduced the compatibility policy and versioned wire protocol.'
+    - '2026: v0.69.1 refined protocol behavior for UDP-family proxy payloads.'
+  usage:
+    - >
+      A common frps setup is to place the binary and server TOML configuration on a
+      public host, configure a bind port, and then allow frpc clients to register
+      proxies through it. Server-side features include dashboards, authentication, port
+      controls, TCP multiplexing, protocol support, and management plugins.
+    - >
+      The server is the upgrade anchor in mixed-version deployments: the v0.69.0 release
+      notes tell users to upgrade frps before frpc when moving through protocol changes.
 tags:
   - cli
   - reverse-proxy
@@ -32,6 +88,11 @@ provenance:
     - >
       Official gofrp.org documentation page says it documents how to deploy and use frp
       and links to server configuration reference.
+  history-sources:
+    - https://api.github.com/repos/fatedier/frp
+    - https://github.com/fatedier/frp
+    - https://github.com/fatedier/frp/releases
+    - https://gofrp.org/en/docs
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/fatedier/frp, so repo
@@ -46,5 +107,6 @@ category-path:
   - proxy
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

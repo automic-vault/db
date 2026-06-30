@@ -13,6 +13,76 @@ config-file-location:
     - ${HOME}/.config/freetds.conf
     - ${sysconfdir}/freetds.conf (default /usr/local/etc/freetds.conf)
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      FreeTDS grew because many open source applications needed access to Sybase and
+      Microsoft SQL Server without relying on proprietary client libraries. The user
+      guide explicitly cites use from Perl, PHP, and other language bindings that expect
+      DB-Library or CT-Library APIs.
+    - >
+      The project documentation describes the libraries as mature and stable, with users
+      including large corporations, U.S. federal government systems, and web servers
+      running Apache and PHP. That official framing explains why FreeTDS became a common
+      dependency below scripting-language database adapters.
+  package-nerd-significance:
+    - >
+      FreeTDS is a classic compatibility-layer package: small command-line utilities on
+      the surface, but a large C library stack underneath for database adapters.
+      Packagers care about ODBC manager choices, OpenSSL support, iconv behavior, ABI
+      naming, and where freetds.conf is searched.
+    - >
+      It is also historically important because it kept DB-Library-style clients useful
+      after vendors shifted focus. The official guide notes Microsoft's DB-Library
+      deprecation while presenting FreeTDS as a maintained route for code that still
+      fits that API.
+  project-history:
+    - >
+      The official user guide says FreeTDS began in early 1997 when Brian Bruns, a
+      Sybase DBA, wanted DB-Library programs to run under Linux. The first work focused
+      on DB-Library and TDS 5.0, then expanded to CT-Library compatibility, TDS 4.2,
+      ODBC, and TDS 7.0/7.1 support.
+    - >
+      As the project matured, the official history names contributors who expanded the
+      ODBC driver, BCP support, CT-Library cursors, and documentation. The README
+      describes the resulting codebase as portable C libraries plus utilities for
+      Unix-like systems, Windows, VMS, and macOS.
+  related-projects:
+    - FreeTDS/JDBC was a related Java JDBC driver mentioned in the official project history.
+    - DBD::Sybase is cited in the user guide as a Perl binding that works well with FreeTDS.
+    - unixODBC and iODBC are related driver managers used by the FreeTDS ODBC implementation.
+  sources:
+    - https://github.com/FreeTDS/freetds
+    - https://raw.githubusercontent.com/FreeTDS/freetds/master/NEWS.md
+    - https://raw.githubusercontent.com/FreeTDS/freetds/master/README.md
+    - https://www.freetds.org/userguide/FreeTDShistory.html
+    - https://www.freetds.org/userguide/projects.html
+    - https://www.freetds.org/userguide/what.html
+  summary:
+    - >
+      FreeTDS is a free implementation of the Sybase and Microsoft SQL Server client
+      libraries and utilities for the Tabular Data Stream protocol. It gives Unix-like
+      systems and other platforms DB-Library, CT-Library, ODBC, interactive SQL, and
+      bulk-copy tooling for TDS-speaking databases.
+  timeline:
+    - >
+      1984: Sybase developed the TDS protocol for Sybase SQL Server, according to the
+      FreeTDS user guide background.
+    - >
+      1990: Sybase and Microsoft entered a technology sharing agreement that led to
+      Microsoft's SQL Server line.
+    - '1997: Brian Bruns began FreeTDS to run DB-Library programs on Linux.'
+    - '2002: James K. Lowden became maintainer after joining to improve documentation.'
+    - '1.5: Release notes add TDS 8.0 support and allow freetds.conf under ~/.config on Unix.'
+  usage:
+    - >
+      Package users commonly install FreeTDS for libtds, ODBC drivers, and command-line
+      tools such as tsql, freebcp, fisql, osql, bsqldb, defncopy, and datacopy.
+      Configuration revolves around freetds.conf and ODBC driver manager integration.
+    - >
+      Current NEWS entries show ongoing maintenance around encryption, TDS 8.0, UTF-8
+      and old Sybase compatibility, Windows Unicode paths, ODBC behavior, bulk copy, and
+      Unix configuration search paths.
 category: data
 package-manager:
   apk: freetds
@@ -46,5 +116,13 @@ executables:
   - tsql
 provenance:
   formula: freetds
+  history-sources:
+    - https://github.com/FreeTDS/freetds
+    - https://raw.githubusercontent.com/FreeTDS/freetds/master/NEWS.md
+    - https://raw.githubusercontent.com/FreeTDS/freetds/master/README.md
+    - https://www.freetds.org/userguide/FreeTDShistory.html
+    - https://www.freetds.org/userguide/projects.html
+    - https://www.freetds.org/userguide/what.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
