@@ -6,6 +6,65 @@ docs:
   - https://flang.llvm.org/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Flang's adoption is tied to the LLVM toolchain rather than a standalone language
+      ecosystem. It gives LLVM distributions, package managers, and compiler users a
+      Fortran frontend that participates in LLVM's common infrastructure.
+    - >
+      The official docs' distinction between LLVM Flang and Classic Flang matters for
+      users and packagers because the name has referred to more than one Fortran
+      compiler lineage.
+  package-nerd-significance:
+    - >
+      Flang is significant because it brings Fortran into the LLVM package universe,
+      making Fortran compilation part of the same modular compiler stack used by Clang
+      and other LLVM frontends.
+    - >
+      For compiler-package curators, the key nerd detail is FIR: a Fortran-specific IR
+      layered on MLIR before conversion to LLVM IR, exposing more of the compiler
+      pipeline than a black-box Fortran driver.
+  project-history:
+    - >
+      LLVM Flang lives in the monorepo under `llvm-project/flang` and is documented by
+      the Flang team. The documentation copyright spans 2017-2026 and the current docs
+      describe an actively developed frontend that can generate executables for a number
+      of examples while some functionality remains missing.
+    - >
+      The compiler architecture is documented around analysis, lowering, and object-code
+      generation/linking. Analysis creates a decorated parse tree and symbol table,
+      lowering converts that information into FIR, a Fortran dialect of MLIR, and later
+      passes produce LLVM IR for the existing LLVM code-generation pipeline.
+  related-projects:
+    - Classic Flang is the separate historical compiler explicitly distinguished by the docs.
+    - LLVM provides the broader compiler infrastructure and monorepo.
+    - MLIR and FIR are central to Flang lowering before LLVM IR generation.
+  sources:
+    - https://flang.llvm.org/docs
+    - https://flang.llvm.org/docs/Overview.html
+    - https://github.com/llvm/llvm-project
+  summary:
+    - >
+      Flang is LLVM's Fortran frontend. The official documentation distinguishes LLVM
+      Flang from Classic Flang, describes it as a separate and independent Fortran
+      compiler, and notes that LLVM Flang is under active development.
+  timeline:
+    - '2017: Flang documentation copyright begins in the official docs.'
+    - >
+      2020s: LLVM Flang is documented as separate from Classic Flang and under active
+      development.
+    - >
+      2026: Current docs include Flang 23 in-progress release notes and updated
+      compiler-phase documentation.
+  usage:
+    - >
+      Users invoke `flang` as a compiler driver for Fortran source. The docs also show
+      developer-oriented `-fc1` and `-mmlir` commands for dumping preprocessing output,
+      parse trees, symbol tables, FIR, MLIR pass output, and LLVM IR.
+    - >
+      No user credentials or persistent configuration file are documented in the
+      supplied curation or the official Flang docs.
 category: language-runtime
 package-manager:
   brew: flang
@@ -34,5 +93,10 @@ executables:
   - tco
 provenance:
   formula: flang
+  history-sources:
+    - https://flang.llvm.org/docs
+    - https://flang.llvm.org/docs/Overview.html
+    - https://github.com/llvm/llvm-project
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

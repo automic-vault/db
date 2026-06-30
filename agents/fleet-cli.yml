@@ -8,6 +8,74 @@ config-file-location:
   unix:
     - fleet.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Fleet is part of the Rancher/SUSE Kubernetes management ecosystem, so its adoption
+      is tied to multi-cluster Kubernetes operations rather than a general-purpose
+      developer CLI audience. The supplied package metadata records Homebrew, Nix, and
+      zypper packaging, which matches its role as an operator/admin tool installed on
+      workstations and CI environments.
+  package-nerd-significance:
+    - >
+      Fleet CLI is package-nerd significant as a packaged Kubernetes control-plane
+      companion: it is not the controller itself, but a local binary that lets operators
+      inspect and reproduce Fleet's bundle pipeline. That makes it useful for debugging
+      GitOps state, packaging release artifacts, and validating cluster targeting before
+      controller reconciliation.
+  project-history:
+    - >
+      The rancher/fleet repository was created in 2020. The upstream README describes
+      Fleet as GitOps and HelmOps at scale, designed for many clusters while still
+      lightweight enough for a single cluster.
+    - >
+      Fleet's design turns raw Kubernetes YAML, Helm charts, Kustomize trees, or
+      combinations of those sources into Helm-backed deployments, emphasizing control,
+      consistency, visibility, and auditability. The CLI documentation positions the
+      `fleet` binary as a way to create, preview, target, and deploy bundles from local
+      files without always requiring a GitRepo.
+  related-projects:
+    - Rancher and SUSE provide the broader Kubernetes management context.
+    - >
+      Helm, Kustomize, Kubernetes manifests, GitRepo resources, Bundle resources,
+      fleet-controller, fleet-agent, and fleet-examples are central related components
+      in the official docs.
+  sources:
+    - https://api.github.com/repos/rancher/fleet
+    - https://fleet.rancher.io/
+    - https://fleet.rancher.io/how-tos-for-users/install-use-fleet-cli
+    - https://fleet.rancher.io/reference/ref-fleet-yaml
+    - https://formulae.brew.sh/formula/fleet-cli
+    - https://github.com/rancher/fleet
+    - https://raw.githubusercontent.com/rancher/fleet/master/README.md
+  summary:
+    - >
+      Fleet CLI is the command-line tool for Rancher Fleet, a Kubernetes GitOps and
+      HelmOps system for deploying workloads from Git and local bundle sources across
+      one or many clusters. The package matters because it exposes Fleet bundle
+      creation, targeting, diffing, deployment, and diagnostics as a standalone binary.
+  timeline:
+    - '2020: rancher/fleet repository created.'
+    - >
+      2020s: Fleet documentation presents the project as GitOps and HelmOps at scale for
+      Kubernetes clusters.
+    - >
+      2020s: Fleet CLI documentation describes standalone local bundle workflows with
+      `fleet apply`, `fleet target`, and `fleet deploy`.
+    - >
+      2026: v0.15.x release line is current in the official documentation and GitHub
+      releases metadata.
+  usage:
+    - >
+      Fleet CLI can create bundles from Helm charts, Kubernetes manifests, Kustomize
+      directories, and `fleet.yaml` files. Documented commands include `fleet apply` for
+      creating or previewing bundles, `fleet target` for evaluating cluster targeting
+      rules, and `fleet deploy` for applying a targeted bundle to a cluster.
+    - >
+      `fleet.yaml` adds bundle options; the docs state that any directory containing
+      `fleet.yaml` is automatically turned into a bundle. The file can define namespace
+      behavior, Helm options, Kustomize settings, target customizations, rollout
+      behavior, dependencies, and monitoring ignore rules.
 tags:
   - cli
   - gitops
@@ -37,6 +105,14 @@ provenance:
     - >
       Official Fleet documentation provides install/use and CLI reference pages:
       https://fleet.rancher.io/how-tos-for-users/install-use-fleet-cli
+  history-sources:
+    - https://api.github.com/repos/rancher/fleet
+    - https://fleet.rancher.io/
+    - https://fleet.rancher.io/how-tos-for-users/install-use-fleet-cli
+    - https://fleet.rancher.io/reference/ref-fleet-yaml
+    - https://formulae.brew.sh/formula/fleet-cli
+    - https://github.com/rancher/fleet
+    - https://raw.githubusercontent.com/rancher/fleet/master/README.md
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -51,5 +127,6 @@ category-path:
   - gitops
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
