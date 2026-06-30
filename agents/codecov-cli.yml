@@ -8,6 +8,70 @@ config-file-location:
     - codecov.yml
     - .github/codecov.yml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The input package facts list Homebrew, Chocolatey, and Nix packages, while the
+      official docs document pip and binary installation. That mix is typical for a CI
+      utility expected to run on developer laptops and heterogeneous CI images.
+    - >
+      Because Codecov is used inside CI, adoption is workflow-driven: projects add the
+      CLI to CI steps, pass coverage reports, and authenticate with repository or
+      organization upload tokens.
+  package-nerd-significance:
+    - >
+      Codecov CLI is important package-manager plumbing because it is a small executable
+      that many CI pipelines depend on for coverage upload. Its packaging surface spans
+      Python packaging, signed standalone binaries, Homebrew, Chocolatey, and Nix, which
+      makes it a cross-platform delivery problem rather than only a Python library.
+    - >
+      For package maintainers, it also reflects a broader shift away from ad hoc shell
+      uploaders toward signed, versioned, auditable CLI tools in CI supply chains.
+  project-history:
+    - >
+      The GitHub repository was created on 2022-02-17, and the first release metadata
+      available through GitHub shows v0.1.0 on 2023-02-28. The official README and docs
+      describe the CLI as a way for users to interact with Codecov directly from the
+      terminal or CI platform.
+    - >
+      Codecov's docs explicitly position the CLI as a replacement path for the NodeJS
+      binary uploader in upload workflows, with installation either through `pip install
+      codecov-cli` or signed binary downloads from `cli.codecov.io` and GitHub releases.
+  related-projects:
+    - >
+      Related Codecov projects include the older NodeJS binary uploader, Codecov's
+      coverage service, Codecov YAML configuration, Codecov GitHub/GitLab/Bitbucket
+      integrations, and Codecov self-hosted or enterprise installations referenced in
+      the official docs.
+  sources:
+    - https://github.com/codecov/codecov-cli
+    - https://docs.codecov.com/docs/the-codecov-cli
+    - https://docs.codecov.com/docs/codecov-yaml
+  summary:
+    - >
+      Codecov CLI is Codecov's official command-line client for uploading coverage and
+      interacting with Codecov from a terminal or CI system. It replaces or complements
+      older uploader workflows with commands for creating commits, creating reports,
+      uploading coverage, selecting PR bases, sending notifications, and related CI
+      automation.
+  timeline:
+    - '2022-02-17: GitHub repository created.'
+    - '2023-02-28: v0.1.0 release published.'
+    - >
+      2023: Official README documents pip and binary installation plus replacement of
+      the NodeJS binary uploader.
+    - '2026-04-21: v11.2.x releases published, showing a mature release line.'
+  usage:
+    - >
+      The official docs show `codecovcli upload-process` as the wrapper for
+      create-commit, create-report, and do-upload, and describe options such as upload
+      token, file selection, flags, slug, branch, PR, and CI parameter auto-loading.
+    - >
+      Codecov configuration is controlled through Codecov YAML. The docs state that
+      repository YAML is stored as a standalone `codecov.yml` file in the repository,
+      and the FAQ allows `codecov.yml` or `.codecov.yml` in the repository root, `dev/`,
+      or `.github/` directories. The current curation records the common `codecov.yml`
+      and `.github/codecov.yml` paths.
 tags:
   - ci
   - cli
@@ -34,6 +98,10 @@ provenance:
     - 'source_facts.name: codecov-cli'
   docs-sources:
     - official Codecov documentation page for the Codecov CLI
+  history-sources:
+    - https://github.com/codecov/codecov-cli
+    - https://docs.codecov.com/docs/the-codecov-cli
+    - https://docs.codecov.com/docs/codecov-yaml
   repo-sources:
     - official GitHub repository is codecov/codecov-cli for Codecov's command-line interface
     - source_facts.repo is empty
@@ -48,5 +116,6 @@ category-path:
   - ci-cd
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
