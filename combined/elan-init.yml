@@ -9,6 +9,66 @@ docs:
 config-file-location:
   unix: lean-toolchain
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      elan became central to modern Lean usage because Lean projects often depend on
+      precise compiler versions, especially around Lean 4 nightly and stable releases.
+      The Lean reference manual documents elan as the standard way to manage installed
+      toolchains, select defaults, and override versions per project.
+    - >
+      Its package adoption is practical rather than flashy: package managers distribute
+      `elan-init`, while the installed proxies expose Lean, Lake, and related tools
+      under their usual command names.
+  package-nerd-significance:
+    - >
+      elan is a clean example of the rustup pattern spreading to another language
+      ecosystem: a tiny manager package, shim executables, per-project version files,
+      and lazy toolchain installation. That makes it especially interesting in
+      package-manager databases because the package name `elan-init` is only the
+      installer face of a larger language runtime workflow.
+  project-history:
+    - >
+      The elan repository was created in April 2018 as Lean's answer to
+      language-specific version managers. Its README explicitly describes the
+      implementation as a fork of rustup, adapted from Rust's toolchain model to Lean's
+      compiler, package manager, and release infrastructure.
+    - >
+      The design followed Lean's project-local workflow: a repository can commit a
+      `lean-toolchain` file, and elan will automatically select and download the
+      required Lean version when `lean` or `lake` is invoked.
+  related-projects:
+    - >
+      elan is closely related to Lean, Lake, leanpkg, and rustup. Its model also
+      resembles ghcup, pyenv, nvm, and other language version managers, but it is
+      tightly integrated with Lean's official toolchain naming.
+  sources:
+    - https://github.com/leanprover/elan
+    - https://raw.githubusercontent.com/leanprover/elan/master/README.md
+    - >
+      https://lean-lang.org/doc/reference/latest/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan
+    - https://api.github.com/repos/leanprover/elan
+    - https://api.github.com/repos/leanprover/elan/releases
+  summary:
+    - >
+      elan is the Lean theorem prover toolchain manager. It installs Lean toolchains and
+      places proxy binaries such as `lean`, `lake`, and `elan` on PATH so a project can
+      select the compiler version declared in its `lean-toolchain` file.
+  timeline:
+    - '2018: GitHub repository created for the Lean toolchain manager.'
+    - '2023: README examples show Lean 4 nightly toolchains selected by `lean-toolchain`.'
+    - '2025: v4.0.0 released for the Lean 4 era.'
+    - '2026: v4.2.x releases continue active maintenance.'
+  usage:
+    - >
+      Typical usage starts with the `elan-init` installer, which installs into `~/.elan`
+      by default and can update shell startup files. After installation, `elan show`,
+      `elan default`, and project-local `lean-toolchain` files control which Lean
+      version is active.
+    - >
+      For package maintainers, elan matters because a single package can provide a
+      family of executables while deferring the actual Lean compiler download until a
+      project requests a specific toolchain.
 category: language-runtime
 package-manager:
   brew: elan-init
@@ -39,5 +99,13 @@ executables:
   - leanpkg
 provenance:
   formula: elan-init
+  history-sources:
+    - https://github.com/leanprover/elan
+    - https://raw.githubusercontent.com/leanprover/elan/master/README.md
+    - >
+      https://lean-lang.org/doc/reference/latest/Build-Tools-and-Distribution/Managing-Toolchains-with-Elan
+    - https://api.github.com/repos/leanprover/elan
+    - https://api.github.com/repos/leanprover/elan/releases
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

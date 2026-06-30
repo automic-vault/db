@@ -5,6 +5,70 @@ docs:
   - https://sourceware.org/elfutils
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      elfutils is adopted most visibly through Linux distribution and toolchain plumbing
+      rather than end-user application workflows. The project page emphasizes GNU/Linux
+      process and core-file support, and the debuginfod documentation shows how other
+      Sourceware tools such as GDB and Binutils can use libdebuginfod to retrieve debug
+      information, executables, and source files on demand.
+  package-nerd-significance:
+    - >
+      Package maintainers care about elfutils because it sits in the boring but critical
+      layer between compiler output, stripped binaries, split debug packages, core
+      dumps, and debugger UX. It is the kind of package whose utilities show up in build
+      logs, debug-symbol pipelines, reproducibility investigations, and distribution
+      debug-info services rather than in application feature lists.
+  project-history:
+    - >
+      The official project page presents elfutils as a toolkit for reading, creating,
+      and modifying ELF binary files and for finding and handling DWARF debug data,
+      symbols, thread state, stack traces, processes, and core files. Sourceware is the
+      upstream home, with source available from the Sourceware git repository and
+      releases published from the Sourceware elfutils area.
+    - >
+      A later important extension is debuginfod, documented by Sourceware and GNU
+      Binutils as an elfutils component. debuginfod turns debug-info lookup into an HTTP
+      service indexed by build IDs, with client libraries that debuggers and binary
+      tools can use when local separate debug files are missing.
+  related-projects:
+    - >
+      GNU Binutils overlaps with elfutils at the command-line binary-inspection layer
+      and can be built with libdebuginfod support.
+    - GDB uses the debuginfod client library to retrieve missing debug resources.
+    - >
+      DWARF and ELF are the core data formats that elfutils reads, writes, validates,
+      and exposes to other tools.
+  sources:
+    - https://sourceware.org/elfutils/
+    - https://sourceware.org/elfutils/Debuginfod.html
+    - https://sourceware.org/binutils/docs/binutils/debuginfod.html
+    - https://sourceware.org/gdb/current/onlinedocs/gdb.html/Debuginfod.html
+  summary:
+    - >
+      elfutils is a Sourceware-hosted collection of libraries and command-line tools for
+      working with ELF objects and DWARF debug data on GNU/Linux. Its niche is
+      lower-level than a single debugger or compiler: it gives distribution maintainers,
+      toolchain developers, debuggers, profilers, and post-mortem analysis workflows
+      reusable ELF/DWARF libraries plus eu-* inspection utilities.
+  timeline:
+    - >
+      Sourceware era: Upstream source and releases are hosted under the Sourceware
+      elfutils project.
+    - >
+      0.178: debuginfod began shipping as part of elfutils, according to GNU Binutils
+      documentation.
+    - >
+      Current use: debuginfod client support lets tools query servers for missing ELF,
+      DWARF, executable, and source artifacts by build ID.
+  usage:
+    - >
+      Typical package usage is command-line inspection and transformation through tools
+      such as eu-readelf, eu-objdump, eu-nm, eu-strip, eu-stack, eu-elflint, and
+      eu-unstrip, or library usage through libelf, libdw, and libdebuginfod. debuginfod
+      usage centers on configuring debug tools to query one or more HTTP servers for
+      artifacts identified by build ID.
 tags:
   - binary-analysis
   - cli
@@ -38,6 +102,11 @@ provenance:
       Official Sourceware elfutils page is the project homepage and documentation/index
       surface.
     - source_facts.source-archive is hosted under sourceware.org/elfutils.
+  history-sources:
+    - https://sourceware.org/elfutils/
+    - https://sourceware.org/elfutils/Debuginfod.html
+    - https://sourceware.org/binutils/docs/binutils/debuginfod.html
+    - https://sourceware.org/gdb/current/onlinedocs/gdb.html/Debuginfod.html
   repo-sources:
     - >
       Official Sourceware elfutils page lists git clone
@@ -58,5 +127,6 @@ category-path:
   - elf
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
