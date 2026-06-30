@@ -6,6 +6,69 @@ docs:
   - https://github.com/devstructure/doubledown#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The repository has tags for early releases such as v0.0.1 and v0.0.2, with GitHub
+      activity concentrated between 2010 and 2013. Homebrew packaging keeps the command
+      discoverable, but the project appears historically useful rather than broadly
+      active today.
+    - >
+      doubledown's adoption story is tied to DevStructure users and local-editor
+      remote-development habits before tools like VS Code Remote, Mutagen, Syncthing,
+      and container-native development environments became common.
+  package-nerd-significance:
+    - >
+      doubledown is a neat package-manager fossil: a small wrapper around SSH, rsync,
+      and file watching that captures a specific remote-development workflow from the
+      early 2010s.
+    - >
+      Its significance is mainly historical. It shows how much developer tooling used to
+      be composed from narrow Unix commands before integrated remote IDEs and always-on
+      sync daemons absorbed that workflow.
+  project-history:
+    - >
+      The GitHub repository was created in August 2010 and the README credits Richard
+      Crowley as author. The tool belongs to the pre-container, pre-cloud-IDE deployment
+      era when many developers edited files locally but tested or ran them on a remote
+      Unix host.
+    - >
+      Its implementation model is intentionally built from classic Unix pieces:
+      ssh-agent for authentication, SSH keys, rsync for initial bidirectional
+      synchronization, and platform file watchers through `doubledown-fsevents` and
+      `doubledown-inotify`.
+  related-projects:
+    - rsync and SSH are the core transport and synchronization tools that doubledown wraps.
+    - doubledown-fsevents and doubledown-inotify handle platform-specific file watching.
+    - >
+      Mutagen, Syncthing, Unison, and editor-native remote development tools cover
+      adjacent synchronization workflows today.
+  sources:
+    - https://github.com/devstructure/doubledown
+    - https://api.github.com/repos/devstructure/doubledown
+    - https://api.github.com/repos/devstructure/doubledown/tags?per_page=10
+    - https://formulae.brew.sh/formula/doubledown
+  summary:
+    - >
+      doubledown is a DevStructure command-line tool for syncing local changes to a
+      remote directory over SSH and rsync, then watching the local directory for further
+      changes. Its README presents it as a helper for users who wanted to edit locally
+      in TextMate or another IDE while deploying changes to a remote server.
+  timeline:
+    - '2010: Public GitHub repository created.'
+    - '2010: Early v0.0.x tags appear in the repository.'
+    - '2013: Last recorded repository push date in the GitHub API.'
+    - '2026: Homebrew still carries a doubledown formula.'
+  usage:
+    - >
+      The documented command shape is `doubledown [-i identity] local
+      [user@]server:remote`. It starts or uses an ssh-agent, requires SSH key
+      authentication, pulls remote files that do not exist locally, uploads local
+      changes, and then hands off to a filesystem watcher.
+    - >
+      Because it repeatedly connects to the server, the README explicitly requires SSH
+      key pairs rather than password authentication. That makes it closer to a developer
+      loop tool than a one-shot file transfer command.
 category: developer-tools
 package-manager:
   brew: doubledown
@@ -24,5 +87,11 @@ executables:
   - doubledown-inotify
 provenance:
   formula: doubledown
+  history-sources:
+    - https://github.com/devstructure/doubledown
+    - https://api.github.com/repos/devstructure/doubledown
+    - https://api.github.com/repos/devstructure/doubledown/tags?per_page=10
+    - https://formulae.brew.sh/formula/doubledown
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

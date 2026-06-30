@@ -9,6 +9,115 @@ config-file-location:
     - /etc/dovecot/dovecot.conf
     - /etc/dovecot/conf.d/*.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Dovecot's adoption follows the needs of Unix mail hosting: small self-hosted
+      servers, ISPs, universities, hosting providers, and large mailbox platforms all
+      needed a fast, secure IMAP/POP3 backend that could work with standard mailbox
+      formats and existing MTAs. The official site emphasizes performance, transparent
+      mailbox indexes, standard mbox and Maildir compatibility, flexible authentication,
+      standards compliance, and easy migration from other IMAP and POP3 servers.
+    - >
+      Package-manager adoption is broad and long-lived. Homebrew packages Dovecot for
+      macOS and Linux users, while the package metadata for this batch shows it
+      available across Alpine, Debian, Fedora, MacPorts, Nix, Arch, Ubuntu, and openSUSE
+      families. That breadth is typical for infrastructure software that administrators
+      expect to install from the base OS package ecosystem.
+    - >
+      The release stream remains active: the official site lists Dovecot 2.4.0 in
+      January 2025, 2.4.1 in March 2025, 2.4.2 in October 2025, 2.4.3 in March 2026, and
+      2.4.4 in May 2026. The GitHub repository also shows active maintenance into 2026.
+  package-nerd-significance:
+    - >
+      Dovecot is package-nerd significant because it is not just another network daemon;
+      it is a core component in the Unix email stack. A working Dovecot package means
+      config-file layout, service supervision, authentication modules, TLS support,
+      mailbox permissions, plugins, and upgrade paths all have to line up with the host
+      distribution's conventions.
+    - >
+      It is also a good example of infrastructure packaging longevity. A Dovecot install
+      can sit at the boundary between decades-old mailbox formats and modern security
+      expectations, so distro maintainers care about ABI-compatible plugins, migration
+      notes, CVEs, service defaults, and predictable config locations.
+    - >
+      For Homebrew specifically, Dovecot is useful to developers and administrators who
+      test mail stacks locally on macOS, run small personal servers, or need
+      command-line utilities such as `doveadm` outside a Linux distribution.
+  project-history:
+    - >
+      Dovecot's own v1.0.0 release announcement in April 2007 says the 1.0 release took
+      almost five years, placing the project's public development roots in the early
+      2000s. The announcement was sent by Timo Sirainen, who also authored many later
+      release messages.
+    - >
+      The project developed from a secure IMAP server into a larger mail backend with
+      POP3, LMTP, ManageSieve integration through Pigeonhole, the `doveadm`
+      administration tool, flexible authentication backends, mailbox indexing, and
+      multiple storage formats. The current documentation describes Dovecot CE as the
+      open-source version and Dovecot Core as the documented community-edition codebase.
+    - >
+      Dovecot 2.0, released in August 2010, was a major architectural step. Its release
+      announcement lists a redesigned master process with less code running as root,
+      per-IP configuration support, dsync mailbox synchronization, LMTP, mdbox storage,
+      `doveadm`, multi-connection IMAP/POP3 processes, COMPRESS=DEFLATE support, and a
+      director service for NFS-oriented installations.
+    - >
+      Commercially, Dovecot became part of a larger email-platform ecosystem. The
+      official docs describe Dovecot Pro as an Open-Xchange commercial product that uses
+      Dovecot Core as part of the Palomar architecture, while the community edition
+      remains the open-source single-server-oriented package documented at
+      doc.dovecot.org.
+  related-projects:
+    - Pigeonhole is the Dovecot project that adds Sieve and ManageSieve support.
+    - >
+      Postfix, Exim, and OpenSMTPD are common SMTP partners for Dovecot authentication
+      and mailbox delivery workflows.
+    - Maildir, mbox, and mdbox are important mailbox-storage formats in Dovecot deployments.
+    - >
+      Cyrus IMAP, Courier IMAP, UW IMAP, and other IMAP/POP3 servers are historical and
+      operational comparison points.
+  sources:
+    - https://dovecot.org/
+    - https://doc.dovecot.org/
+    - https://github.com/dovecot/core
+    - https://api.github.com/repos/dovecot/core
+    - https://api.github.com/repos/dovecot/core/releases?per_page=5
+    - https://dovecot.org/pipermail/dovecot-news/2007-April/000043.html
+    - https://dovecot.org/pipermail/dovecot-news/2010-August/000167.html
+    - https://pigeonhole.dovecot.org/
+    - https://formulae.brew.sh/formula/dovecot
+  summary:
+    - >
+      Dovecot is a widely deployed open-source IMAP and POP3 server for Linux and
+      Unix-like systems, written with security, performance, and operational simplicity
+      as central goals. It is one of the canonical mail-server packages, alongside MTAs
+      such as Postfix, Exim, and OpenSMTPD.
+  timeline:
+    - '2007: Dovecot v1.0.0 is released after almost five years of development.'
+    - >
+      2010: Dovecot v2.0.0 is released with a redesigned master process, LMTP, dsync,
+      mdbox, doveadm, and other major changes.
+    - '2015: The public GitHub `dovecot/core` repository is created.'
+    - '2025: Dovecot v2.4.0 is released.'
+    - '2026: Dovecot v2.4.4 is released and the core repository remains active.'
+  usage:
+    - >
+      Administrators use Dovecot to serve mailboxes over IMAP and POP3, receive local
+      delivery over LMTP, authenticate users against local files, PAM, LDAP, SQL,
+      OAuth2, and other backends, and expose mail filtering through Sieve and
+      ManageSieve via Pigeonhole.
+    - >
+      In a common Unix mail stack, an MTA such as Postfix, Exim, or OpenSMTPD handles
+      SMTP while Dovecot handles mailbox access and often authentication. The official
+      site explicitly calls out direct SMTP authentication integration with Postfix 2.3+
+      and Exim 4.64+, and also points to Dovecot's submission service for authenticated
+      relaying.
+    - >
+      The operational toolbox includes `dovecot` for the daemon, `doveconf` for
+      configuration inspection, `doveadm` for administration, migration and
+      synchronization tools such as dsync, and Sieve utilities for mail filtering
+      workflows.
 category: networking
 package-manager:
   apk: dovecot
@@ -43,5 +152,16 @@ executables:
   - sievec
 provenance:
   formula: dovecot
+  history-sources:
+    - https://dovecot.org/
+    - https://doc.dovecot.org/
+    - https://github.com/dovecot/core
+    - https://api.github.com/repos/dovecot/core
+    - https://api.github.com/repos/dovecot/core/releases?per_page=5
+    - https://dovecot.org/pipermail/dovecot-news/2007-April/000043.html
+    - https://dovecot.org/pipermail/dovecot-news/2010-August/000167.html
+    - https://pigeonhole.dovecot.org/
+    - https://formulae.brew.sh/formula/dovecot
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
