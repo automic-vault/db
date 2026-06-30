@@ -7,6 +7,91 @@ docs:
   - https://git.kernel.org/pub/scm/utils/dtc/dtc.git/tree/README
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      dtc adoption follows Linux and embedded adoption rather than an application
+      popularity curve. Whenever a board port, bootloader, firmware workflow, or kernel
+      build needs DTS-to-DTB compilation or libfdt tools, dtc becomes part of the build
+      or debugging environment.
+    - >
+      Package-manager coverage is broad: the input package metadata records Alpine,
+      Homebrew, Fedora/DNF, MacPorts, Nix, Arch/pacman, winget, and zypper packages.
+      Homebrew analytics are much higher than the other packages in this batch, which
+      fits dtc's role as infrastructure pulled in by embedded, kernel, and hardware
+      workflows.
+  package-nerd-significance:
+    - >
+      dtc is significant because it is one of those packages that looks small in a
+      package list but represents an entire hardware-description ABI. If you build
+      kernels, bootloaders, board support packages, or firmware images, `dtc` is often
+      just there, quietly turning text descriptions into boot-time data.
+    - >
+      For package nerds, it is also a reminder that not all important packages are
+      user-facing applications. dtc is plumbing: versioned tarballs from kernel.org, a
+      dual GPL/BSD license model, libfdt consumers, distro packaging, and an executable
+      family that shows up anywhere embedded Linux work happens.
+  project-history:
+    - >
+      The Linux kernel documentation explains the historical setting: Devicetree came
+      from Open Firmware as a way for firmware to describe hardware to an operating
+      system, long used on PowerPC and SPARC. In 2005, PowerPC Linux cleanup required DT
+      support broadly, and the Flattened Device Tree format was created so bootloaders
+      such as U-Boot and kexec could pass a binary blob to the kernel without requiring
+      a full Open Firmware implementation.
+    - >
+      dtc is the userspace compiler around that format. Its manual says the compiler
+      takes a device tree in one format and emits another, typically compiling DTS
+      source into DTB binary output, while also supporting filesystem-style input,
+      assembly output, YAML intermediate output, libfdt, fdtdump, fdtget, fdtput,
+      fdtoverlay, and related tools.
+    - >
+      The upstream repository is maintained on git.kernel.org by the DTC group. The
+      official manual names git.kernel.org as the source location and gives the HTTP(S)
+      upstream repository URL, making it the authoritative repo rather than a
+      package-manager mirror.
+  related-projects:
+    - Linux Devicetree support is the main operating-system context for dtc.
+    - >
+      U-Boot and kexec are named by the Linux kernel documentation as bootloaders or
+      loaders modified to pass and modify DTB data.
+    - >
+      libfdt is part of the dtc source tree and provides library access to Flattened
+      Device Tree data.
+    - >
+      Devicetree.org specifications are cited by the Linux kernel documentation as the
+      format overview.
+  sources:
+    - https://git.kernel.org/pub/scm/utils/dtc/dtc.git
+    - https://git.kernel.org/pub/scm/utils/dtc/dtc.git/plain/Documentation/manual.txt
+    - https://git.kernel.org/pub/scm/utils/dtc/dtc.git/refs/
+    - https://www.kernel.org/doc/html/latest/devicetree/usage-model.html
+    - https://formulae.brew.sh/api/formula/dtc.json
+  summary:
+    - >
+      dtc is the Device Tree Compiler, the upstream toolchain for converting
+      human-readable Devicetree Source files into binary Devicetree Blob files and back.
+      It is a small command-line package, but it sits on a critical path for Linux,
+      embedded boards, bootloaders, firmware descriptions, and hardware bring-up.
+  timeline:
+    - >
+      2005: Linux kernel documentation describes Flattened Device Tree creation during
+      PowerPC Linux cleanup.
+    - '2006-01: The dtc refs page shows the `dwg-last` tag.'
+    - '2007-08: The dtc refs page shows v1.0.0.'
+    - '2011-05: The dtc refs page shows v1.3.0.'
+    - '2021-06: The dtc refs page shows v1.6.1.'
+    - '2026-05: The dtc refs page shows v1.8.1, packaged by Homebrew as the stable version.'
+  usage:
+    - >
+      The core command compiles between input formats such as `dts`, `dtb`, and
+      filesystem representation, and output formats such as `dtb`, `dts`, assembly, and
+      YAML. Common workflows include compiling board `.dts` files, decompiling `.dtb`
+      blobs for inspection, generating overlays with symbol and fixup metadata, and
+      using libfdt utilities in scripts.
+    - >
+      The package has no user config file or credentials. It is a compiler/tool suite
+      whose behavior is driven by command-line options and source files.
 category: developer-tools
 package-manager:
   apk: dtc
@@ -37,5 +122,12 @@ executables:
   - fdtput
 provenance:
   formula: dtc
+  history-sources:
+    - https://git.kernel.org/pub/scm/utils/dtc/dtc.git
+    - https://git.kernel.org/pub/scm/utils/dtc/dtc.git/plain/Documentation/manual.txt
+    - https://git.kernel.org/pub/scm/utils/dtc/dtc.git/refs/
+    - https://www.kernel.org/doc/html/latest/devicetree/usage-model.html
+    - https://formulae.brew.sh/api/formula/dtc.json
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
