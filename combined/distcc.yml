@@ -10,6 +10,60 @@ config-file-location:
     - $DISTCC_DIR/hosts
     - ~/.distcc/hosts
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      distcc's own documentation describes use at scales ranging from a few build hosts
+      to environments with hundreds of distcc servers supporting many simultaneous
+      compiles. The project also records later maintainer transitions and continued
+      releases, including 3.2 in 2011, 3.3 in 2018, 3.4 in 2021, and ongoing 3.x
+      development.
+  package-nerd-significance:
+    - >
+      distcc is a long-running example of Unix build acceleration that works with
+      ordinary compiler invocations instead of replacing the whole build system. That
+      makes it especially attractive in package-manager culture, where maintainers often
+      need to build large C and C++ dependency graphs while preserving normal toolchain
+      semantics.
+  project-history:
+    - >
+      The project presents itself as a free distributed C/C++ compiler system that can
+      run builds across several networked machines without requiring a shared
+      filesystem, synchronized clocks, or matching installed headers and libraries on
+      every host. Its 3.0 series added pump mode, a Google-contributed path that
+      distributes preprocessing as well as compilation when client and server systems
+      are compatible enough.
+  related-projects:
+    - >
+      ccache is often paired conceptually with distcc because both reduce C and C++
+      build cost, though ccache avoids repeated compilation through local cache hits
+      while distcc spreads remaining compilation across machines.
+    - >
+      icecream occupies the same distributed-compilation niche but uses a
+      scheduler-oriented model, while distcc stays close to conventional compiler
+      command lines.
+  sources:
+    - https://github.com/distcc/distcc#readme
+    - https://raw.githubusercontent.com/distcc/distcc/master/NEWS
+    - https://distcc.github.io/man/distcc_1.html
+    - https://distcc.github.io/man/distccd_1.html
+  summary:
+    - >
+      distcc is a distributed C, C++, and Objective-C compilation front end originally
+      written by Martin Pool. It matters to package and ports maintainers because it
+      attacks one of the classic pain points of source-based packaging: repeated local
+      compiler work during large builds.
+  timeline:
+    - '2008: distcc 3.0 adds pump mode for distributed preprocessing.'
+    - '2011: distcc 3.2 adds IPv6 support and optional GSS-API authentication.'
+    - '2018: distcc 3.3 adds cross-compilation support and Python 3 support.'
+    - '2021: distcc 3.4 continues the 3.x line with build and monitoring fixes.'
+  usage:
+    - >
+      Users typically export a host list through DISTCC_HOSTS or place host
+      configuration under the distcc directory, then invoke parallel builds through make
+      -j with CC=distcc or compiler masquerading. The server side is handled by distccd,
+      while monitoring and helper commands support day-to-day build-farm operation.
 category: developer-tools
 package-manager:
   apk: distcc
@@ -39,5 +93,11 @@ executables:
   - update-distcc-symlinks
 provenance:
   formula: distcc
+  history-sources:
+    - https://github.com/distcc/distcc#readme
+    - https://raw.githubusercontent.com/distcc/distcc/master/NEWS
+    - https://distcc.github.io/man/distcc_1.html
+    - https://distcc.github.io/man/distccd_1.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
