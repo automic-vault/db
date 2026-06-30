@@ -4,8 +4,82 @@ homepage: https://brooklyn.apache.org
 repo: https://github.com/apache/brooklyn-client
 docs:
   - https://brooklyn.apache.org/v/latest
+  - https://brooklyn.apache.org/v/latest/ops/cli
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Brooklyn's packaging history reflects a classic Apache server-plus-client split.
+      The official docs list platform-specific CLI downloads for Windows, Linux, and OS
+      X, and also note that the client binaries are included inside the Apache Brooklyn
+      distribution under `bin/brooklyn-client-cli/`.
+    - >
+      Homebrew packages only the CLI formula as `apache-brooklyn-cli`, exposing the `br`
+      executable for users who want to operate a Brooklyn server without installing the
+      full distribution locally.
+  package-nerd-significance:
+    - >
+      The package is interesting because it is a narrow client extracted from a larger
+      Java-based Apache platform. Installing a small Go CLI through Homebrew gives
+      operators the useful terminal surface of Brooklyn without pulling in the full
+      server runtime.
+    - >
+      It also shows the older Apache cloud-management era in package form: YAML
+      blueprints, jclouds-style locations, application trees, effectors, sensors,
+      catalog items, and server-side config exposed through one `br` command.
+  project-history:
+    - >
+      Apache Brooklyn's root README describes the platform as a system that supports
+      blueprints in YAML or Java, deploys them to many clouds and target environments,
+      monitors deployments, maintains a live model, and runs autonomic policies to keep
+      applications healthy.
+    - >
+      The CLI client is a separate Apache Brooklyn sub-project, written in Go. Its
+      README says the repository contains the CLI client for Apache Brooklyn and can be
+      built directly with Maven or inside Docker.
+    - >
+      Official CLI docs describe `br` as a Brooklyn command-line client application. The
+      command set covers login, deploying YAML blueprints, listing applications, reading
+      sensors and config, invoking effectors, catalog operations, activity logs,
+      policies, entity trees, and version checks against a running Brooklyn server.
+  related-projects:
+    - Apache Brooklyn is the server and management platform controlled by the CLI.
+    - >
+      Brooklyn blueprints are YAML or Java application models deployed and managed
+      through the platform.
+    - Apache jclouds-style cloud locations are part of the broader Brooklyn operating model.
+  sources:
+    - https://brooklyn.apache.org/v/latest/ops/cli/
+    - https://github.com/apache/brooklyn#readme
+    - https://github.com/apache/brooklyn-client#readme
+    - >
+      https://raw.githubusercontent.com/apache/brooklyn-docs/master/guide/ops/cli/cli-ref-guide.md
+  summary:
+    - >
+      Apache Brooklyn CLI is the `br` command-line client for Apache Brooklyn, an Apache
+      cloud application management project used to model, deploy, monitor, and manage
+      applications across clouds and other environments.
+  timeline:
+    - >
+      2014: Apache Brooklyn NOTICE files identify Apache Software Foundation copyright
+      beginning in 2014.
+    - >
+      2019: Official CLI reference source in brooklyn-docs records `br` command
+      documentation metadata.
+    - >
+      2020: Brooklyn docs build metadata shows the published GitBook-era latest docs and
+      CLI pages.
+  usage:
+    - >
+      The basic workflow is `br login <URL> [username [password]]`, followed by commands
+      such as `br deploy`, `br application`, `br catalog`, `br sensor`, `br effector`,
+      and `br config`. The official docs note that username and password can be omitted
+      when connecting to a localhost server with no security enabled.
+    - >
+      The CLI is not the Brooklyn server itself. It is a remote-control tool for a
+      running Brooklyn instance, so its package value is in scripting, automation, and
+      inspecting cloud application state from a terminal.
 category: cloud-infrastructure
 package-manager:
   brew: apache-brooklyn-cli

@@ -4,6 +4,8 @@ repo: https://github.com/ansible/ansible
 docs:
   - https://docs.ansible.com/projects/ansible/latest/index.html
   - https://docs.ansible.com/projects/ansible/latest/reference_appendices/config.html
+  - >
+    https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html
 config-file-location:
   unix:
     - $ANSIBLE_CONFIG
@@ -11,6 +13,100 @@ config-file-location:
     - ~/.ansible.cfg
     - /etc/ansible/ansible.cfg
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Red Hat announced its agreement to acquire Ansible in October 2015, framing it as
+      an IT automation and DevOps platform with a simplified automation model. Red Hat
+      later positioned Ansible as the upstream foundation for Red Hat Ansible Automation
+      Platform, bringing the community tool into enterprise automation portfolios while
+      keeping the open source CLI and collection ecosystem central.
+    - >
+      The official repository and docs show why Ansible became a package-manager staple:
+      it can be installed with pip or platform package managers, exposes many
+      executables such as ansible, ansible-playbook, ansible-galaxy, ansible-vault, and
+      ansible-inventory, and has a release process around ansible-core plus the
+      community package. For distro maintainers, that split matters because the package
+      named ansible is no longer just a monolithic core tree; it represents a curated
+      battery-included distribution of automation content.
+  package-nerd-significance:
+    - >
+      Ansible is one of the canonical examples of a language ecosystem tool that escaped
+      into every system package manager. Brew, Debian, Fedora, Arch, Nix, MacPorts, and
+      others package it because infrastructure automation is needed before an
+      environment is fully bootstrapped, and users often want the tool from the same
+      package substrate they use to install Python, SSH, and cloud CLIs.
+    - >
+      For package nerds, ansible@13 is interesting because the formula name tracks the
+      community package major version rather than just ansible-core. That convention
+      makes the package a snapshot of the Ansible distribution model: core engine,
+      bundled collections, compatibility promises, and a four-week community
+      minor-release rhythm all wrapped behind the familiar ansible command.
+  project-history:
+    - >
+      The upstream repository describes Ansible as created by Michael DeHaan and
+      sponsored by Red Hat, with contributions from more than 5,000 users. Its stated
+      design principles emphasize a minimal learning curve, parallel management, no
+      custom agents or additional open ports, SSH as the default transport,
+      human-friendly infrastructure descriptions, and usability without root.
+    - >
+      A major packaging shift arrived with the post-2.9 split between ansible-core and
+      the Ansible community package. The official release and maintenance documentation
+      describes the community package as preserving the broad functionality users knew
+      from Ansible 2.9 by bundling ansible-core with more than 85 Collections containing
+      thousands of modules and plugins, while ansible-core serves users who want only
+      the core engine and selected collections.
+  related-projects:
+    - ansible-core is the core automation engine and CLI foundation.
+    - >
+      Ansible Collections carry modules, plugins, and roles distributed alongside or
+      independently from the community package.
+    - >
+      Red Hat Ansible Automation Platform is the enterprise product built on the Ansible
+      upstream ecosystem.
+  sources:
+    - https://docs.ansible.com/projects/ansible/latest/reference_appendices/config.html
+    - >
+      https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html
+    - https://github.com/ansible/ansible
+    - >
+      https://www.redhat.com/en/about/press-releases/red-hat-acquire-it-automation-and-devops-leader-ansible
+    - https://www.redhat.com/en/blog/why-red-hat-acquired-ansible
+    - source_facts.package-manager
+  summary:
+    - >
+      Ansible is a Python-based IT automation system and command-line toolset for
+      configuration management, application deployment, cloud provisioning, ad-hoc
+      administration, network automation, and multi-node orchestration. Its
+      package-manager appeal comes from the combination of a normal CLI install, an
+      agentless SSH transport model, and human-readable playbooks that can be copied
+      between laptops, CI systems, and servers without deploying a daemon first.
+  timeline:
+    - >
+      Early 2013: Red Hat describes Ansible as a popular IT automation tool launched in
+      early 2013.
+    - '2015: Red Hat announces an agreement to acquire Ansible, Inc.'
+    - >
+      2020: Ansible 2.10-era packaging formalizes the ansible-core and Ansible community
+      package split.
+    - >
+      2026: Ansible 13-era packages continue the community-package major-version line
+      over current ansible-core releases.
+  usage:
+    - >
+      Common CLI usage centers on inventory-driven ad-hoc commands and YAML playbooks.
+      Operators use ansible for one-off tasks, ansible-playbook for repeatable
+      orchestration, ansible-galaxy for roles and collections, ansible-vault for
+      encrypted variables, and ansible-config to inspect or generate configuration. The
+      documented configuration search order is the ANSIBLE_CONFIG environment variable,
+      ansible.cfg in the current directory, ~/.ansible.cfg, then
+      /etc/ansible/ansible.cfg.
+    - >
+      Package users care about Ansible's trust boundary: a local ansible.cfg is powerful
+      enough that the docs call out security risks when the current directory is
+      world-writable. That makes Ansible unusually sensitive to cwd, environment
+      variables, Python versions, and collection paths compared with many simpler Unix
+      commands.
 tags:
   - automation
   - cli
@@ -20,23 +116,36 @@ tags:
   - orchestration
 provenance:
   category-sources:
-    - >
-      Official Ansible README describes configuration management, application
-      deployment, cloud provisioning, network automation, and orchestration.
+    - https://github.com/ansible/ansible
+    - source_facts.description
   display-name-sources:
-    - Official Ansible documentation and GitHub README use Ansible.
+    - https://github.com/ansible/ansible
+    - source_facts.name
   docs-sources:
-    - Official Ansible community documentation index and configuration settings reference.
-  repo-sources:
-    - Official Ansible GitHub repository README links docs.ansible.com and describes Ansible.
-  tags-sources:
+    - https://docs.ansible.com/projects/ansible/latest/index.html
+    - https://docs.ansible.com/projects/ansible/latest/reference_appendices/config.html
     - >
-      Official Ansible README lists configuration management, deployment, cloud
-      provisioning, ad-hoc tasks, network automation, and orchestration.
+      https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html
+  history-sources:
+    - https://docs.ansible.com/projects/ansible/latest/reference_appendices/config.html
+    - >
+      https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html
+    - https://github.com/ansible/ansible
+    - >
+      https://www.redhat.com/en/about/press-releases/red-hat-acquire-it-automation-and-devops-leader-ansible
+    - https://www.redhat.com/en/blog/why-red-hat-acquired-ansible
+    - source_facts.package-manager
+  repo-sources:
+    - https://github.com/ansible/ansible
+  tags-sources:
+    - https://github.com/ansible/ansible
+    - source_facts.executables
 category-confidence: high
 category-path:
   - cloud-infrastructure
+  - automation
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -10,6 +10,68 @@ config-file-location:
     - ${XDG_CONFIG_HOME}/anyenv/anyenv-install
     - ${HOME}/.config/anyenv/anyenv-install
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      anyenv is most common among shell users who already accept the rbenv/pyenv/nodenv
+      style of shims and per-user runtime directories. The input facts show Homebrew
+      packaging, and the official README starts with Homebrew setup for macOS users
+      before describing manual git checkout.
+    - >
+      The project is intentionally niche: it does not replace each language manager's
+      ecosystem, it reduces the installation and shell-profile repetition around using
+      many of them.
+  package-nerd-significance:
+    - >
+      anyenv is package-manager glue for package-manager people: it manages managers.
+      Its interesting bit is not a runtime resolver, but the small manifest protocol
+      that bootstraps many language-specific env tools from one command.
+    - >
+      It is also a reminder that shell initialization is real packaging surface.
+      anyenv's value is partly that it centralizes PATH and init setup, avoiding a
+      growing dotfile pile of independent *env snippets.
+  project-history:
+    - >
+      The official README describes anyenv as 'All in one for **env' and a simple
+      wrapper around rbenv-style environment managers. It installs managers such as
+      rbenv, pyenv, and nodenv through manifest scripts, then lets the individual
+      manager handle language/runtime installation.
+    - >
+      The companion anyenv-install repository defines the manifest format. A manifest is
+      just a shell script using install_env and optional install_plugin calls, which
+      keeps anyenv's core small and pushes per-manager installation rules into a
+      separate manifest directory.
+  related-projects:
+    - rbenv, pyenv, and nodenv are examples shown in the official usage docs.
+    - anyenv-install is the official manifest repository used by anyenv install --init.
+    - anyenv-update and anyenv-git are plugins listed by the official README.
+  sources:
+    - >
+      Official anyenv README, anyenv.github.io, anyenv-install README, and
+      source_facts.package-manager.
+  summary:
+    - >
+      anyenv is a wrapper for rbenv-style environment managers. It exists for developers
+      who use several language-specific '*env' tools and do not want to clone and
+      shell-initialize each one by hand.
+  timeline:
+    - >
+      2010s: anyenv adopts the rbenv-style manager pattern as a wrapper around multiple
+      '*env' tools.
+    - >
+      2020s: The repository reaches the v1.1.x tag series and remains documented through
+      anyenv.github.io and GitHub README.
+    - '2026: Homebrew package facts list anyenv as an available formula.'
+  usage:
+    - >
+      A user installs anyenv, runs anyenv init, initializes the manifest directory with
+      anyenv install --init, and then installs managers with commands such as anyenv
+      install rbenv, anyenv install pyenv, and anyenv install nodenv. After restarting
+      the shell, the installed manager commands are available.
+    - >
+      Configuration centers on ANYENV_DEFINITION_ROOT, the directory containing install
+      manifests. If not set, official docs fall back to
+      ${XDG_CONFIG_HOME}/anyenv/anyenv-install or ${HOME}/.config/anyenv/anyenv-install.
 category: developer-tools
 package-manager:
   brew: anyenv

@@ -5,6 +5,71 @@ docs:
   - https://github.com/tseemann/any2fasta#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      any2fasta's adoption is mostly in bioinformatics packaging rather than broad
+      developer-tool culture. The input facts list Homebrew, Debian, and Ubuntu
+      packages, and the README advertises Bioconda installation and shows a Bioconda
+      downloads badge.
+    - >
+      Its portability comes from the constraint that it requires Perl 5.10 or higher and
+      only core modules, so it is easy for Linux distributions, Conda channels, and
+      Homebrew to ship without pulling in a scientific Python or BioPerl stack.
+  package-nerd-significance:
+    - >
+      any2fasta is a good example of the bioinformatics single-script package that earns
+      its place because it avoids both heavyweight frameworks and subtle format-loss
+      bugs. It is not a platform, but it is exactly the kind of executable that becomes
+      sticky in Snakemake, Nextflow, and ad hoc lab pipelines.
+    - >
+      For package managers, its simplicity is the feature: a Perl script, GPL-3.0
+      licensing, no CPAN dependency tree, and tests that can be run with bats.
+  project-history:
+    - >
+      The official README explains the motivation directly: existing tools such as
+      readseq and EMBOSS seqret mangled identifiers containing characters like pipes or
+      dots, and heavier libraries such as BioPerl and Biopython were more
+      dependency-heavy and slower for the author's pipeline needs. any2fasta was written
+      as a fast, dependency-light alternative focused on preserving useful IDs.
+    - >
+      The tool supports GenBank, EMBL, GFF with sequence, FASTA, FASTQ, CLUSTAL,
+      STOCKHOLM, GFA, and PDB input, with gzip, bzip2, zip, and other Perl
+      IO::Uncompress-supported compression formats.
+  related-projects:
+    - >
+      readseq and EMBOSS seqret are named by upstream as tools any2fasta was designed to
+      avoid for ID-preservation reasons.
+    - >
+      BioPerl and Biopython are named by upstream as heavier libraries not needed for
+      this script's conversion task.
+    - Bioconda is an important distribution channel for bioinformatics users.
+  sources:
+    - Official README and source_facts.package-manager/license.
+  summary:
+    - >
+      any2fasta is Torsten Seemann's small Perl command-line converter for turning
+      common biological sequence formats into FASTA. Its appeal is deliberately
+      unglamorous: one executable, core Perl modules only, compressed-file support, and
+      output that fits Unix pipelines.
+  timeline:
+    - >
+      2010s: any2fasta is developed as a lightweight alternative to readseq, EMBOSS
+      seqret, BioPerl, and Biopython for FASTA conversion.
+    - >
+      2020s: The project is packaged across Bioconda and OS package managers, including
+      Homebrew, Debian, and Ubuntu in the input facts.
+    - '2025: The public tag list reaches v0.8.1 in the official Git repository.'
+  usage:
+    - >
+      The common usage is shell redirection: run any2fasta on a GenBank, FASTQ, GFF,
+      PDB, or compressed input file and redirect FASTA output. The README examples
+      include converting genome.gbk, seq.gbk.gz, protein.pdb.bz2, stdin, multiple
+      inputs, and compressed FASTQ streams.
+    - >
+      Options are intentionally small and pipeline-friendly: print help/version, quiet
+      mode, skip bad inputs, normalize nucleotide case, replace non-AGTC characters with
+      N, include GBK/EMBL version IDs, or strip FASTA/FASTQ descriptions.
 tags:
   - bioinformatics
   - cli
@@ -23,27 +88,26 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official README says it supports GenBank, EMBL, GFF, FASTA, FASTQ, CLUSTAL,
-      Stockholm, GFA, and PDB inputs.
-    - source_facts.description says it converts sequence formats to FASTA.
+    - Official README describes converting biological sequence formats to FASTA.
   display-name-sources:
-    - Official README heading is any2fasta.
-    - source_facts.name
+    - Official README title.
   docs-sources:
-    - Official GitHub README contains quick start, installation, usage, options, and examples.
+    - Official GitHub README is the official documentation surface.
+  history-sources:
+    - Official README and source_facts.package-manager/license.
   repo-sources:
     - >
-      source_facts.repo already has https://github.com/tseemann/any2fasta; per
-      instruction returning null.
+      source_facts.repo already populated; prompt requires repo null when
+      source_facts.repo has a value.
   tags-sources:
-    - Official README lists supported biological sequence formats and CLI options.
-    - source_facts.description
+    - Official README supported formats and source_facts.executables.
 category-confidence: high
 category-path:
   - science
   - bioinformatics
+  - sequence-conversion
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

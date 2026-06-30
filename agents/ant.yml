@@ -1,9 +1,10 @@
 id: brew:ant
 display-name: Apache Ant
-repo: https://gitbox.apache.org/repos/asf/ant.git
+repo: https://gitbox.apache.org/repos/asf?p=ant.git%3Ba%3Dsummary
 docs:
   - https://ant.apache.org/manual
   - https://ant.apache.org/manual/running.html
+  - https://ant.apache.org/faq.html
 config-file-location:
   unix:
     - ./build.xml
@@ -13,6 +14,82 @@ config-file-location:
     - '%HOME%\antrc_pre.bat'
     - '%HOME%\antrc_post.bat'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Ant spread with Apache Jakarta and early Java open source because it replaced
+      platform-specific Make behavior with Java tasks and XML build files. The FAQ
+      explicitly says Ant became the build tool of choice for many projects after
+      starting as Tomcat's build mechanism.
+    - >
+      Package-manager adoption followed naturally. A Java developer could install ant
+      from a distro, Homebrew, Chocolatey, Scoop, or Nix, then run the same build.xml
+      across operating systems. The official manual also documents user extension
+      loading through ${user.home}/.ant/lib and ANT_HOME/lib, which gave packaged Ant a
+      stable core while letting developers add optional tasks and third-party jars
+      outside the base package.
+  package-nerd-significance:
+    - >
+      Ant matters to package nerds because it is both build dependency and historical
+      artifact. Many old Java source packages still expect ant, build.xml, and optional
+      task jars, so distros keep it around even when newer Java projects prefer Maven or
+      Gradle.
+    - >
+      It also embodies an earlier packaging style: a stable launcher plus ANT_HOME,
+      user-local .ant/lib extensions, and XML task definitions. Understanding Ant
+      explains a large slice of legacy Java packaging, bootstrap builds, and why package
+      recipes so often patch build.xml rather than invoking a generated build graph.
+  project-history:
+    - >
+      Apache's FAQ says Ant began inside the Tomcat code base when Tomcat was donated to
+      the Apache Software Foundation. James Duncan Davidson, also the original Tomcat
+      author, created it to build Tomcat and nothing else.
+    - >
+      The same FAQ records the inflection point: other open source Java projects,
+      especially Jakarta and older Java Apache projects, realized Ant solved problems
+      they had with Makefiles. In January 2000 Ant moved to a separate CVS module,
+      became independent of Tomcat, and became Apache Ant. The first stand-alone
+      official release, Ant 1.1, followed on 19 July 2000.
+    - >
+      Ant's manual preserves the core convention that made it sticky: running ant with
+      no arguments looks for build.xml in the current directory and runs the default
+      target. That simple file convention became part of Java project muscle memory
+      before Maven and Gradle dominated newer builds.
+  related-projects:
+    - Apache Ivy is an Ant-related dependency management project.
+    - Apache AntUnit is a test framework for Ant build files.
+    - >
+      Maven and Gradle are later Java build tools that displaced Ant for many new
+      projects but still coexist with it in legacy and bootstrap builds.
+  sources:
+    - https://ant.apache.org/faq.html
+    - https://ant.apache.org/git.html
+    - https://ant.apache.org/index.html
+    - https://ant.apache.org/manual/running.html
+    - source_facts.package-manager
+  summary:
+    - >
+      Apache Ant is a Java library and command-line build tool that drives build
+      processes described as XML targets and extension points. It became the classic
+      Java-era alternative to Make: portable, task-oriented, and distributed as a
+      packageable command named ant.
+  timeline:
+    - '2000: Ant moves from Tomcat into a separate CVS module and becomes Apache Ant.'
+    - '2000: Tomcat 3.1 ships an early wider-audience Ant version later called Ant 0.3.1.'
+    - '2000: Ant 1.1 is released as the first official stand-alone product.'
+    - '2003: Ant 1.6 changes library loading around ANT_HOME/lib and ${user.home}/.ant/lib.'
+    - '2024: Apache announces the Ant 1.9.x release series end of life.'
+    - '2026: Apache Ant 1.10.17 is released for Java 8 and higher.'
+  usage:
+    - >
+      The default command is simply ant, which runs build.xml in the current directory.
+      Users can pass -buildfile or -f for another build file, -Dname=value for
+      properties, target names for specific tasks, logging flags such as -quiet and
+      -verbose, and -lib for extra task jars.
+    - >
+      The Unix wrapper reads ~/.antrc before startup; the Windows wrapper runs
+      %HOME%\antrc_pre.bat and %HOME%\antrc_post.bat. Those files are startup hooks,
+      while build.xml is the project build definition.
 tags:
   - apache
   - build-tool
@@ -30,25 +107,32 @@ geiger:
     - text:build tool
 provenance:
   category-sources:
-    - >
-      source_facts.description: Java build tool; Apache Ant manual documents build files
-      and command-line usage.
+    - https://ant.apache.org/index.html
+    - source_facts.description
   display-name-sources:
-    - Official Apache Ant manual and homepage use Apache Ant; current_curation.display-name.
+    - https://ant.apache.org/index.html
+    - source_facts.name
   docs-sources:
-    - Official Apache Ant User Manual and Running Apache Ant page.
+    - https://ant.apache.org/faq.html
+    - https://ant.apache.org/manual
+    - https://ant.apache.org/manual/running.html
+  history-sources:
+    - https://ant.apache.org/faq.html
+    - https://ant.apache.org/git.html
+    - https://ant.apache.org/index.html
+    - https://ant.apache.org/manual/running.html
+    - source_facts.package-manager
   repo-sources:
-    - >
-      Official Apache Ant Git Repositories page lists
-      https://gitbox.apache.org/repos/asf/ant.git as the main Ant module.
+    - https://ant.apache.org/git.html
   tags-sources:
-    - >
-      Official manual states Ant buildfiles are XML; source_facts.description identifies
-      it as a Java build tool.
+    - https://ant.apache.org/index.html
+    - https://ant.apache.org/manual/running.html
 category-confidence: high
 category-path:
   - developer-tools
+  - build-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -5,8 +5,65 @@ repo: https://github.com/marler8997/anyzig
 docs:
   - https://github.com/marler8997/anyzig#readme
   - https://marler8997.github.io/anyzig
-config-file-location: null
+config-file-location:
+  unix: ./build.zig.zon
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Its Homebrew formula packages the wrapper under the name `anyzig` while installing
+      an executable named `zig`, making it useful for developers who want `brew install
+      anyzig` to provide a version-aware Zig command instead of one fixed compiler
+      build.
+    - >
+      The public tag series uses date-like releases such as `v2025_02_10` through
+      `v2026_03_26`, suggesting an actively updated compatibility shim rather than a
+      frozen compiler distribution.
+  package-nerd-significance:
+    - >
+      Package nerds care because anyzig turns a single executable name into a
+      project-sensitive Zig launcher. That is attractive in Homebrew, where replacing
+      the normal `zig` command with a shim lets multiple project compiler versions
+      coexist without installing and selecting separate formulae by hand.
+  project-history:
+    - >
+      The upstream README describes anyzig as a universal Zig executable that reads
+      `minimum_zig_version` from `build.zig.zon`, searching the current directory and
+      parent directories. When a needed Zig version is missing, it downloads that
+      compiler into Zig's global cache using an operation equivalent to `zig fetch`.
+    - >
+      The project also tracks Zig-adjacent practice around the Mach game engine. Its
+      README documents Mach nominated Zig versions, recognizes versions ending in
+      `-mach`, and can read `.mach_zig_version` from `build.zig.zon` for projects that
+      follow Mach's version stream.
+  related-projects:
+    - Zig is the compiler that anyzig dispatches to.
+    - >
+      Mach is supported through nominated Zig version handling and a `.mach_zig_version`
+      field.
+  sources:
+    - https://github.com/marler8997/anyzig#readme
+    - https://github.com/marler8997/anyzig.git tags via `git ls-remote --tags`
+  summary:
+    - >
+      anyzig is a small Zig toolchain wrapper that installs as a `zig` executable and
+      dispatches to the Zig version declared by a project. Its niche is the same one
+      occupied by language-version shims in other ecosystems: make the command name
+      stable while allowing each checkout to pin a compiler.
+  timeline:
+    - >
+      2025: Public date-stamped release tags such as `v2025_02_10` appear in the
+      upstream Git repository.
+    - >
+      2025: README documents Mach nominated Zig version handling and `.mach_zig_version`
+      support.
+    - '2026: Date-stamped tags continue through `v2026_03_26` in the upstream Git repository.'
+  usage:
+    - >
+      Typical use is transparent: run `zig` inside a Zig project and let anyzig choose
+      the version from `build.zig.zon`. The README also documents an explicit-version
+      form such as `zig 0.13.0 build-exe myproject.zig` and an `zig any ...` command
+      namespace for anyzig-specific commands.
 category: developer-tools
 package-manager:
   apk: zig

@@ -5,8 +5,89 @@ repo: https://github.com/anycable/anycable
 docs:
   - https://docs.anycable.io/anycable-go/configuration
   - https://docs.anycable.io/getting_started
-config-file-location: null
+config-file-location:
+  unix:
+    - ./anycable.toml
+    - /etc/anycable/anycable.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      AnyCable's adoption story started in the Rails world, where it offered a path away
+      from running large numbers of persistent WebSocket connections inside Ruby
+      application processes. The official README links talks from RailsClub Moscow 2016,
+      RubyConfMY 2017, RubyKaigi 2018, Wroc_Love.rb 2018, and RubyConf 2018, plus an
+      Evil Martians post marking AnyCable 1.0 after four years of real-time web with
+      Ruby and Go.
+    - >
+      The docs now present AnyCable beyond Rails: Laravel, Node.js serverless, Python
+      and generic HTTP backends, Hotwire, SSE, long polling, Pusher protocol, GraphQL,
+      and server-side reliable streams. That wider docs surface explains why anycable-go
+      is packaged as a standalone Homebrew formula rather than only as a Ruby gem
+      transitive artifact.
+  package-nerd-significance:
+    - >
+      AnyCable-Go matters because it is a case study in splitting a framework feature
+      into a polyglot service. Homebrew installs a Go binary, RubyGems installs the
+      Rails-side pieces, npm may install client packages, and deployment docs bridge all
+      of them.
+    - >
+      The project also shows how a package can be a protocol implementation rather than
+      just an app. Its significance is tied to Action Cable compatibility, the extended
+      Action Cable protocol, reliable streams, and the ability to operate realtime
+      traffic with Go's runtime characteristics while keeping Rails channel code.
+  project-history:
+    - >
+      The AnyCable README says the project lets applications use any WebSocket server as
+      a replacement for a Ruby server such as Action Cable, while keeping the same
+      Action Cable protocol and JavaScript client compatibility. The current docs
+      broaden the positioning: AnyCable is a realtime server with delivery guarantees
+      for Rails, Laravel, Node.js, Python, and any backend that can speak HTTP.
+    - >
+      The Go server grew alongside the Ruby/Rails integration. Official docs describe
+      two operating modes: RPC-backed mode, where the server delegates connection and
+      subscription logic to an application, and standalone pub/sub mode, where signed
+      streams and JWT-style authentication allow use without a full Action Cable
+      backend.
+  related-projects:
+    - Action Cable is the Rails WebSocket framework whose protocol AnyCable supports.
+    - anycable and anycable-rails are the Ruby-side integration packages.
+    - anycable-client is the JavaScript client SDK linked from the official docs.
+    - Lite Cable is mentioned by the docs for non-Rails Ruby application logic.
+  sources:
+    - >
+      Official AnyCable README, docs markdown bundle, configuration docs, release feed,
+      and source_facts.description.
+  summary:
+    - >
+      AnyCable-Go is the Go realtime server component of AnyCable, a framework for
+      replacing or extending Ruby on Rails Action Cable with a separate WebSocket
+      service. In package-manager terms, it is the installable server binary that turns
+      AnyCable from a Ruby gem into a deployable realtime system.
+  timeline:
+    - '2016: Official README links a RailsClub Moscow talk about AnyCable.'
+    - >
+      2018: Official README links RubyKaigi, Wroc_Love.rb, and RubyConf talks focused on
+      high-speed cables and Ruby/Go realtime architecture.
+    - >
+      2020: Official README links AnyCable 1.0 coverage after four years of real-time
+      web with Ruby and Go.
+    - '2024: Official docs note TOML configuration support in anycable-go since v1.5.4.'
+    - >
+      2026: The official release feed shows v1.6.15 with maintenance fixes and Go
+      toolchain updates.
+  usage:
+    - >
+      Operators run anycable-go as a WebSocket/realtime server and configure it with
+      environment variables, CLI flags, or, since v1.5.4, a TOML config file. Official
+      docs say it looks for ./anycable.toml and /etc/anycable/anycable.toml by default,
+      and also accepts --config-path.
+    - >
+      For Rails, a typical deployment pairs anycable-go with anycable or anycable-rails
+      in the application, a broadcast adapter such as Redis, NATS, or HTTP, and a
+      WebSocket URL pointed at the AnyCable server. For non-Rails usage, users can run
+      standalone signed streams, MySQL-like clients are irrelevant, and the operational
+      focus becomes pub/sub, delivery guarantees, and connection draining.
 category: developer-tools
 package-manager:
   brew: anycable-go
