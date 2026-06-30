@@ -14,6 +14,72 @@ config-file-location:
     - CMAKE_INSTALL_PREFIX/etc/flexiblasrc64
     - ~/.flexiblasrc64
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      FlexiBLAS is packaged beyond source tarballs: the official page documents
+      installation through the project's Debian/Ubuntu APT repository, Fedora/EPEL dnf
+      packages, and the FreeBSD ports collection. It is also available through Homebrew,
+      MacPorts, and Fedora package metadata in the supplied input.
+    - >
+      The project added integration points for scientific tools, including a GNU Octave
+      interface and an R interface maintained separately, which helped make backend
+      switching visible to users of higher-level numerical environments.
+  package-nerd-significance:
+    - >
+      FlexiBLAS is interesting to package maintainers because it turns BLAS backend
+      selection into policy and configuration rather than a relink step. That is
+      valuable in distributions and HPC modules where multiple BLAS providers coexist
+      and users need repeatable performance comparisons.
+    - >
+      The package also exposes the subtle ABI problem behind 'just swap libblas.so': not
+      every BLAS/LAPACK provider is arranged as one compatible shared library, so
+      FlexiBLAS wraps multi-file providers into a single selectable backend.
+  project-history:
+    - >
+      The project dates its copyright to 2013-2025 and describes itself as a wrapper
+      that provides a GNU Fortran-compatible BLAS/LAPACK interface while dispatching
+      calls to selectable backend implementations such as Netlib BLAS, OpenBLAS, ATLAS,
+      Intel MKL, and BLIS.
+    - >
+      The official project page frames FlexiBLAS around a practical HPC problem: BLAS is
+      central to numerical software, but benchmarking, debugging, and tuning often
+      require trying different BLAS implementations. FlexiBLAS makes that switch a
+      runtime choice controlled by configuration files and environment variables.
+  related-projects:
+    - >
+      Related BLAS/LAPACK implementations named by the project include Netlib BLAS,
+      OpenBLAS, ATLAS, Intel MKL, and BLIS.
+    - >
+      Related scientific integration projects include the GNU Octave add-on and the
+      separately hosted r-flexiblas R interface.
+  sources:
+    - https://gitlab.mpi-magdeburg.mpg.de/software/flexiblas-release
+    - https://www.mpi-magdeburg.mpg.de/projects/flexiblas
+  summary:
+    - >
+      FlexiBLAS is a BLAS and LAPACK wrapper library from the Max Planck Institute for
+      Dynamics of Complex Technical Systems. Its niche is runtime switching of numerical
+      linear algebra backends without rebuilding or relinking applications.
+  timeline:
+    - '2013: Project copyright period begins for FlexiBLAS.'
+    - '2015: FlexiBLAS material was presented at OctConf through an official project poster.'
+    - >
+      2018: FlexiBLAS talks and posters appeared at GAMM, OVGU Magdeburg, and CoSaS
+      according to the official project page.
+    - '2021: Official material included an EasyBuild tech talk about FlexiBLAS.'
+    - '2025: Version 3.5.0 was published on the official project page and repository.'
+  usage:
+    - >
+      Users link software against libflexiblas as they would link a reference BLAS, then
+      choose the actual backend through configuration files, the FLEXIBLAS environment
+      variable, or the flexiblas command-line tool. The same mechanism supports
+      per-system, per-user, and per-host defaults.
+    - >
+      Package users care about the split between normal and 64-bit-integer builds:
+      official documentation notes suffixed library, directory, command, and
+      configuration names such as flexiblas64 and flexiblasrc64 when INTEGER8 support is
+      enabled.
 category: science
 package-manager:
   brew: flexiblas
@@ -34,5 +100,9 @@ executables:
   - flexiblas-config
 provenance:
   formula: flexiblas
+  history-sources:
+    - https://gitlab.mpi-magdeburg.mpg.de/software/flexiblas-release
+    - https://www.mpi-magdeburg.mpg.de/projects/flexiblas
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

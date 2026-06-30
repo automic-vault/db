@@ -5,6 +5,66 @@ docs:
   - https://github.com/knurling-rs/flip-link#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README documents installation from crates.io with cargo install flip-link and
+      configuration through .cargo/config.toml, making it a drop-in build-tool package
+      for embedded Rust projects.
+    - >
+      The input package metadata records packaging in Homebrew, Nix, and Arch, showing
+      adoption outside Cargo for users who install embedded toolchain helpers through
+      system package managers.
+  package-nerd-significance:
+    - >
+      flip-link is significant because it packages a linker-level safety trick as a
+      small CLI rather than requiring every embedded project to maintain custom linker
+      scripts.
+    - >
+      For Rust package maintainers, it is also a clear example of tooling that belongs
+      in the build environment: the binary is tiny, target-specific, and wired through
+      Cargo configuration rather than imported as a normal runtime library.
+  project-history:
+    - >
+      The README explains the motivating bug class: stack overflows in bare-metal
+      Cortex-M Rust programs can collide with .bss and .data static variables, causing
+      undefined behavior even in code without unsafe blocks.
+    - >
+      flip-link changes the link layout so the stack grows toward the physical RAM
+      boundary instead of into static data. A stack overflow then becomes a hardware
+      exception handled through the Cortex-M runtime rather than silent memory
+      corruption.
+  related-projects:
+    - flip-link is part of Knurling, Ferrous Systems' embedded Rust tooling effort.
+    - >
+      It is closely related to cortex-m-rt, rust-lld, Cargo target configuration, and
+      ARM Cortex-M bare-metal Rust applications.
+  sources:
+    - https://crates.io/crates/flip-link
+    - https://github.com/knurling-rs/flip-link
+    - https://github.com/knurling-rs/flip-link/blob/main/CHANGELOG.md
+  summary:
+    - >
+      flip-link is a Rust linker wrapper from the Knurling embedded tooling project. It
+      adds zero-cost stack overflow protection to bare-metal embedded Rust programs by
+      flipping the memory layout used for ARM Cortex-M targets.
+  timeline:
+    - '2020: v0.1.0 was released.'
+    - >
+      2021: v0.1.3 improved documentation and project checks around the stack overflow
+      problem and solution.
+    - '2022: v0.1.6 updated the project to Rust 2021 and improved memory.x handling.'
+    - '2024: v0.1.9 recommended target linker configuration for recent Cargo versions.'
+    - '2025: v0.1.10 added help behavior and a fuller parser for ORIGIN and LENGTH expressions.'
+  usage:
+    - >
+      Users set the target linker to flip-link for bare-metal ARM targets, replacing
+      rust-lld in Cargo configuration. flip-link invokes the Rust toolchain linker after
+      adjusting the memory layout.
+    - >
+      The official docs note support for ARM Cortex-M programs using cortex-m-rt 0.6.x
+      and 0.7.x with LLD, with other architectures and runtime crates outside the tested
+      scope.
 tags:
   - cli
   - cortex-m
@@ -33,6 +93,10 @@ provenance:
     - >
       Official GitHub README documents the problem, solution, installation, usage,
       architecture support, and logging.
+  history-sources:
+    - https://crates.io/crates/flip-link
+    - https://github.com/knurling-rs/flip-link
+    - https://github.com/knurling-rs/flip-link/blob/main/CHANGELOG.md
   repo-sources:
     - source_facts.repo is already populated, so repo was intentionally not re-determined.
   tags-sources:
@@ -46,5 +110,6 @@ category-path:
   - linker
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
