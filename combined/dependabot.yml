@@ -7,6 +7,60 @@ docs:
 config-file-location:
   unix: .github/dependabot.yml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is mainly among people who already operate Dependabot at scale. The
+      README points users to Go installation, GitHub releases, and Homebrew, which made
+      the tool easy to reach from developer laptops and CI debugging sessions without
+      building Dependabot internals by hand.
+  package-nerd-significance:
+    - >
+      For package nerds, Dependabot CLI is interesting because it exposes the machinery
+      behind automated dependency PRs: ecosystem identifiers, manifest directory
+      selection, registry credentials, update strategies, and the split between updater
+      containers and a credential-injecting proxy.
+  project-history:
+    - >
+      The CLI repository was created under the official Dependabot GitHub organization
+      in 2022. Its README describes a Go command that runs Dependabot jobs, pulls the
+      updater and proxy container images, and records the pull-request operations that a
+      hosted Dependabot run would normally perform.
+    - >
+      The tool is closely tied to Dependabot's broader configuration model: the same
+      package ecosystem names, repository paths, registry credentials, and update-job
+      concepts show up in both CLI job files and GitHub's official dependabot.yml
+      documentation.
+  related-projects:
+    - >
+      Dependabot CLI depends conceptually on dependabot-core for package ecosystem
+      behavior and on GitHub's dependabot.yml configuration model for hosted repository
+      updates.
+  sources:
+    - https://github.com/dependabot/cli#readme
+    - https://api.github.com/repos/dependabot/cli
+    - >
+      https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference
+  summary:
+    - >
+      Dependabot CLI is the command-line companion for running Dependabot update jobs
+      outside the hosted GitHub workflow. It is aimed less at end users casually
+      enabling dependency updates and more at maintainers, security engineers, and
+      package ecosystem developers who need to reproduce, debug, or smoke-test the exact
+      update jobs that Dependabot runs.
+  timeline:
+    - '2022: Official dependabot/cli repository created.'
+    - '2022: README examples documented `dependabot update` and smoke-test workflows.'
+    - >
+      2026: GitHub Docs continue to document dependabot.yml as the primary configuration
+      surface for Dependabot.
+  usage:
+    - >
+      Typical usage is to run `dependabot update` for a package ecosystem and
+      repository, or to pass a YAML job description for security-update and
+      private-registry cases. The CLI can pass tokens from environment variables into
+      the proxy so that the updater can access GitHub APIs and package registries
+      without directly receiving secrets.
 category: developer-tools
 package-manager:
   brew: dependabot
@@ -23,5 +77,11 @@ executables:
   - dependabot
 provenance:
   formula: dependabot
+  history-sources:
+    - https://github.com/dependabot/cli#readme
+    - https://api.github.com/repos/dependabot/cli
+    - >
+      https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium
