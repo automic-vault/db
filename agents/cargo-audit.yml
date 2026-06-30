@@ -6,6 +6,75 @@ docs:
   - https://rustsec.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      cargo-audit became a standard safety check in Rust projects because it fits
+      Cargo's workflow: install the subcommand, run it at the top level of a project,
+      and fail CI when a dependency matches an advisory.
+    - >
+      Distribution adoption is broad. The supplied Homebrew facts list Alpine, Homebrew,
+      Nix, Arch Linux, and openSUSE packages, and the upstream README explicitly
+      documents installation through Alpine, Arch Linux, Homebrew, and OpenBSD in
+      addition to `cargo install`.
+  package-nerd-significance:
+    - >
+      cargo-audit is package-nerd significant because it made Rust vulnerability
+      metadata operational at package-install and CI time. For Rust projects, Cargo.lock
+      is the exact package graph, and cargo-audit turns that graph into a security
+      boundary.
+    - >
+      It also helped normalize advisory-driven package hygiene in Rust. Instead of
+      treating vulnerability feeds as external enterprise tooling, cargo-audit made them
+      part of the everyday Cargo subcommand culture.
+  project-history:
+    - >
+      The RustSec repository was created in February 2017 as RustSec API and tooling.
+      cargo-audit became the user-facing Cargo subcommand for checking project lockfiles
+      against advisories published in the RustSec Advisory Database.
+    - >
+      The official RustSec site describes RustSec as a vulnerability database for Rust
+      crates published through crates.io and lists cargo-audit as the get-started tool
+      for auditing Cargo.lock files. The cargo-audit README documents lockfile auditing,
+      advisory ignores, CI usage, an experimental fix command, and binary auditing.
+  related-projects:
+    - >
+      cargo-audit is tied directly to the RustSec Advisory Database and the RustSec
+      advisory-db repository where vulnerabilities are reported.
+    - >
+      Related tools include cargo-auditable for binary dependency embedding, audit-check
+      for GitHub Actions, cargo-deny for broader dependency policy checks, and reachsec
+      as an experimental reachability companion mentioned by the cargo-audit README.
+  sources:
+    - https://api.github.com/repos/rustsec/rustsec
+    - https://github.com/rustsec/rustsec
+    - https://raw.githubusercontent.com/rustsec/rustsec/main/cargo-audit/README.md
+    - https://rustsec.org/
+    - source_facts.package-manager
+  summary:
+    - >
+      cargo-audit is the canonical RustSec command-line tool for scanning Cargo.lock
+      files against the RustSec Advisory Database. It is one of the Rust ecosystem's
+      best-known supply-chain security utilities because it connects ordinary Cargo
+      projects to a community-maintained vulnerability database.
+  timeline:
+    - '2017: rustsec/rustsec repository created on GitHub.'
+    - >
+      2021: GitHub releases include cargo-audit/v0.16.0 under the rustsec repository
+      release scheme.
+    - >
+      2026: RustSec site continues to list cargo-audit as primary tooling for Cargo.lock
+      vulnerability auditing.
+  usage:
+    - >
+      The common usage is `cargo audit` in a project containing Cargo.lock. The tool
+      reports advisories from the RustSec database and can be wired into CI systems; the
+      README includes examples for Travis CI and points GitHub Actions users to the
+      RustSec audit-check action.
+    - >
+      cargo-audit also has a binary-auditing path. The README documents `cargo audit
+      bin`, noting that binaries built with cargo-auditable can be audited accurately
+      because their dependency lists are embedded in the executable.
 tags:
   - cargo
   - cli
@@ -33,6 +102,12 @@ provenance:
   docs-sources:
     - current_curation.docs lists the official RustSec cargo-audit README and rustsec.org.
     - source_facts.homepage is https://rustsec.org/.
+  history-sources:
+    - https://api.github.com/repos/rustsec/rustsec
+    - https://github.com/rustsec/rustsec
+    - https://raw.githubusercontent.com/rustsec/rustsec/main/cargo-audit/README.md
+    - https://rustsec.org/
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/rustsec/rustsec; prompt says
@@ -48,5 +123,6 @@ category-path:
   - security
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

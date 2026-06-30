@@ -5,6 +5,76 @@ docs:
   - https://github.com/rust-secure-code/cargo-auditable#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      cargo-auditable has unusually concrete adoption evidence for a niche Rust tool.
+      Its README states that Microsoft uses it internally, that multiple Linux
+      distributions build Rust packages with it, and that Chainguard includes it in a
+      Rust base container with a default cargo wrapper.
+    - >
+      The README names Alpine Linux, NixOS, openSUSE, Void Linux, Chimera Linux, Wolfi
+      OS, and Ubuntu 26.04 adoption or opt-in paths. The supplied package-manager facts
+      also list Alpine, Homebrew, Debian, Nix, Arch Linux, Ubuntu, and openSUSE
+      packages.
+  package-nerd-significance:
+    - >
+      cargo-auditable matters because binary packages sever the obvious connection
+      between an executable and its Cargo.lock. Embedding dependency metadata lets
+      downstream package repositories, container scanners, and security teams audit Rust
+      binaries after they have left the build tree.
+    - >
+      For package nerds, it is a bridge between language-package metadata and
+      distro/container reality. It makes Rust binaries inspectable in the same places
+      where operators already scan containers, distribution packages, and release
+      artifacts.
+  project-history:
+    - >
+      The public repository was created in January 2019 under the rust-secure-code
+      organization. The README says the end goal is for Cargo itself to encode this kind
+      of information in binaries, and points to Rust RFC work as the long-term upstream
+      path.
+    - >
+      The project's design is intentionally package-manager friendly: the embedded data
+      is JSON, zlib-compressed, placed in a linker section named `.dep-v0`, and designed
+      not to disrupt reproducible builds.
+  related-projects:
+    - >
+      cargo-auditable is directly related to cargo-audit, which can scan binaries built
+      with it accurately.
+    - >
+      The README lists consumer tools including Trivy, Grype, OSV Scanner, Syft, Docker
+      BuildKit Syft scanner, Blint, wasm-tools, rust-audit-info, and auditable2cdx, plus
+      Cargo SBOM and Rust RFC work as upstream-adjacent efforts.
+  sources:
+    - https://api.github.com/repos/rust-secure-code/cargo-auditable
+    - https://github.com/rust-secure-code/cargo-auditable
+    - https://raw.githubusercontent.com/rust-secure-code/cargo-auditable/master/README.md
+    - https://rustsec.org/
+    - source_facts.package-manager
+  summary:
+    - >
+      cargo-auditable is a Rust supply-chain tool that makes compiled Rust binaries
+      self-describing by embedding dependency-tree data into a dedicated linker section.
+      Its practical purpose is to let tools such as cargo-audit, Trivy, Grype, Syft, OSV
+      Scanner, and related SBOM tooling recover what crates went into a production
+      executable.
+  timeline:
+    - '2019: cargo-auditable repository created on GitHub.'
+    - '2024: GitHub releases show a v0.6.4 release in May.'
+    - >
+      2026: README documents distribution adoption, cargo-audit integration, and nightly
+      Cargo SBOM precursor support.
+  usage:
+    - >
+      The standard workflow is to install cargo-auditable and cargo-audit, build with
+      `cargo auditable build --release`, and then run `cargo audit bin` on the resulting
+      executable.
+    - >
+      The tool works as a wrapper around Cargo: arguments are passed through, and users
+      who cannot change direct Cargo invocation can use documented replacement-cargo
+      guidance. On nightly Rust, the README documents using Cargo's unstable SBOM
+      precursor for more accurate dependency recording.
 tags:
   - auditability
   - cargo
@@ -31,6 +101,12 @@ provenance:
     - >
       source_facts.homepage is the official GitHub repository
       https://github.com/rust-secure-code/cargo-auditable.
+  history-sources:
+    - https://api.github.com/repos/rust-secure-code/cargo-auditable
+    - https://github.com/rust-secure-code/cargo-auditable
+    - https://raw.githubusercontent.com/rust-secure-code/cargo-auditable/master/README.md
+    - https://rustsec.org/
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already provides
@@ -45,5 +121,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

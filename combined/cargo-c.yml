@@ -7,6 +7,84 @@ docs:
 config-file-location:
   unix: Cargo.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      cargo-c is one of the more significant Rust packaging tools because it lets Rust
+      libraries participate in long-established C and Unix packaging workflows. The
+      README lists users including ebur128, gcode-rs, gst-plugins-rs, lewton, libdovi,
+      libimagequant, librsvg, rav1e, rustls-ffi, sled, pathfinder, and udbserver.
+    - >
+      Distribution adoption is broad for a Cargo plugin: the input records Alpine,
+      Homebrew, Debian, Fedora, MacPorts, Nix, Arch, Ubuntu, and openSUSE packaging.
+      Crates.io reports more than 960,000 downloads and over 90 published versions,
+      reflecting an actively maintained compatibility layer rather than a one-shot
+      helper.
+  package-nerd-significance:
+    - >
+      cargo-c matters because it solves a packaging boundary that Rust itself
+      deliberately does not hide: Rust crates are not automatically C libraries. By
+      generating the Unix packaging pieces expected by downstream consumers, it lets
+      Rust code enter ecosystems built around C headers, SONAMEs, pkg-config, and distro
+      install prefixes.
+    - >
+      For package maintainers, cargo-c is a practical adapter between language-package
+      metadata and system-package policy. It is especially visible in multimedia and
+      systems libraries where Rust implementations need to be consumed by C applications
+      or by build systems such as Meson.
+  project-history:
+    - >
+      The lu-zero/cargo-c repository was created in May 2019 and cargo-c 0.1.0 was
+      published to crates.io in June 2019 with cargo-cbuild and cargo-cinstall binaries.
+      The project grew into a four-command suite: cargo-capi, cargo-cbuild,
+      cargo-cinstall, and cargo-ctest.
+    - >
+      The README describes cargo-c as a bridge between Cargo and traditional C library
+      distribution. It uses Cargo.toml metadata under `package.metadata.capi` to
+      configure headers, pkg-config files, generated or copied assets, library names,
+      versioning, install paths, and target-specific behavior.
+    - >
+      cargo-c integrates with cbindgen for header generation and pkg-config for consumer
+      metadata. Its versioning scheme also tracks the embedded Cargo version in current
+      releases, tying the tool's behavior to the Cargo implementation it vendors or
+      embeds.
+  related-projects:
+    - cbindgen is used for C header generation.
+    - pkg-config is the metadata format cargo-c emits for C consumers.
+    - >
+      Projects listed by the README as users include gst-plugins-rs, librsvg, rav1e,
+      rustls-ffi, libimagequant, lewton, and sled.
+  sources:
+    - 'GitHub repository API metadata: https://api.github.com/repos/lu-zero/cargo-c'
+    - 'Official README: https://github.com/lu-zero/cargo-c#readme'
+    - Package-manager adoption from source_facts.package-manager.
+    - 'crates.io API metadata and versions: https://crates.io/api/v1/crates/cargo-c'
+  summary:
+    - >
+      cargo-c is a Cargo applet for building, testing, installing, and packaging Rust
+      crates as C ABI-compatible libraries with headers, pkg-config files, static
+      libraries, and dynamic libraries.
+  timeline:
+    - '2019-05-23: GitHub repository lu-zero/cargo-c was created.'
+    - >
+      2019-06-26: cargo-c 0.1.0 was published on crates.io with cargo-cbuild and
+      cargo-cinstall.
+    - '2019-2021: The command set expanded to include cargo-capi and cargo-ctest.'
+    - >
+      2020s: README documented real users including gst-plugins-rs, librsvg, rav1e,
+      rustls-ffi, and libimagequant.
+    - '2026-06-01: Version 0.10.23+cargo-0.97.1 was published.'
+  usage:
+    - >
+      Users install cargo-c from crates.io with `cargo install cargo-c`. `cargo cbuild`
+      builds a library and produces a C header and pkg-config file, `cargo ctest` builds
+      and runs tests, and `cargo cinstall` installs the generated library, header, and
+      metadata into a destination prefix.
+    - >
+      A typical project adds a C API module, a `capi` feature, and optional
+      `package.metadata.capi` settings in Cargo.toml. cargo-c then produces artifacts
+      that C and C-compatible build systems can consume through headers, shared or
+      static libraries, and pkg-config.
 category: developer-tools
 package-manager:
   apk: cargo-c

@@ -5,6 +5,75 @@ docs:
   - https://github.com/RalfJung/cargo-careful#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      cargo-careful is more specialized than general debugging Cargo plugins, but it
+      fills an important space between ordinary `cargo test` and exhaustive
+      interpreters. Crates.io reports more than 169,000 downloads, while the input
+      records Homebrew and Nix packaging.
+    - >
+      Its author and positioning connect it to Rust's unsafe-code verification culture.
+      The README explicitly compares it with Miri: cargo-careful is less exhaustive but
+      faster, supports arbitrary system and C FFI calls, and works on code Miri may not
+      be able to run.
+  package-nerd-significance:
+    - >
+      cargo-careful matters to package nerds because it packages unstable compiler and
+      standard-library checking behavior into a repeatable Cargo command. It gives
+      library maintainers a way to add stronger runtime checking to test workflows
+      without rewriting tests for a separate interpreter.
+    - >
+      It is also a good example of Cargo as a safety-tool host: the package itself is
+      small, but it coordinates rustup components, nightly rustc flags, standard-library
+      rebuilding, sanitizers, and target-specific platform diagnostics.
+  project-history:
+    - >
+      Ralf Jung's cargo-careful repository and first crates.io release both appeared in
+      September 2022. The README describes it as a way to run Rust code extra carefully
+      by opting into checks that help detect undefined behavior.
+    - >
+      The tool builds or uses a checked standard library and passes rustc flags that
+      enable stricter runtime behavior, including pointer alignment and null checks,
+      collection consistency checks, strict initialization checks, and extra
+      const-evaluation UB checks. Later versions also document sanitizer support and
+      Apple Main Thread Checker integration on Apple platforms.
+  related-projects:
+    - >
+      Miri is the related Rust interpreter/checker that the README recommends for more
+      exhaustive undefined-behavior detection.
+    - rustup and the `rustc-src` component are involved in cargo-careful setup.
+    - >
+      Rust nightly compiler flags and sanitizer support are the underlying mechanisms
+      cargo-careful coordinates.
+  sources:
+    - 'GitHub repository API metadata: https://api.github.com/repos/RalfJung/cargo-careful'
+    - 'Official README: https://github.com/RalfJung/cargo-careful#readme'
+    - Package-manager adoption from source_facts.package-manager.
+    - 'crates.io API metadata and versions: https://crates.io/api/v1/crates/cargo-careful'
+  summary:
+    - >
+      cargo-careful is a Cargo subcommand for running Rust programs and tests with extra
+      nightly-only runtime checks, a standard library built with debug assertions, and
+      optional sanitizer support.
+  timeline:
+    - '2022-09-22: GitHub repository RalfJung/cargo-careful was created.'
+    - '2022-09-22: cargo-careful 0.1.0 was published on crates.io.'
+    - >
+      2020s: README documented the relationship with Miri, nightly-only UB checks,
+      sanitizer support, and Main Thread Checker integration.
+    - '2026-04-01: Version 0.4.10 was published.'
+  usage:
+    - >
+      Users install it with `cargo install cargo-careful` and run commands such as
+      `cargo +nightly careful test` or `cargo +nightly careful run`. The README says all
+      `cargo test` and `cargo run` flags are supported and that a recent nightly
+      toolchain is required.
+    - >
+      On first use it may need the `rustc-src` rustup component to perform setup. It
+      also honors common Rust flag sources such as `CARGO_ENCODED_RUSTFLAGS`,
+      `RUSTFLAGS`, and Cargo's `build.rustflags`, and it sets a `cfg(careful)`
+      configuration flag for conditional code.
 tags:
   - cargo
   - cli
@@ -33,6 +102,11 @@ provenance:
     - >
       Official GitHub README at https://github.com/RalfJung/cargo-careful#readme
       documents cargo-careful usage and behavior.
+  history-sources:
+    - 'GitHub repository API metadata: https://api.github.com/repos/RalfJung/cargo-careful'
+    - 'Official README: https://github.com/RalfJung/cargo-careful#readme'
+    - Package-manager adoption from source_facts.package-manager.
+    - 'crates.io API metadata and versions: https://crates.io/api/v1/crates/cargo-careful'
   repo-sources:
     - >
       source_facts.repo is already populated with
@@ -47,5 +121,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

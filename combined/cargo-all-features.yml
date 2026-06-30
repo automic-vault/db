@@ -7,6 +7,69 @@ docs:
 config-file-location:
   unix: Cargo.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is niche but practical among Rust crate maintainers who use optional
+      dependencies and feature-gated APIs. The supplied package-manager facts list
+      Homebrew, Nix, and Arch Linux packages, showing that the tool became available
+      beyond `cargo install`.
+    - >
+      The README's rationale is CI maintenance: manually updating per-feature jobs is
+      easy to forget, and testing only individual flags is not exhaustive.
+  package-nerd-significance:
+    - >
+      cargo-all-features is package-nerd useful because Rust feature flags are part of
+      package identity. A crate version is not just one build; it may expose many
+      combinations that downstream packages rely on.
+    - >
+      Its value is not broad fame but sharp ergonomics: it turns a maintenance-prone CI
+      matrix into a Cargo-native check that package authors can run locally or in
+      automation.
+  project-history:
+    - >
+      The public repository was created in May 2020. Its README frames the tool around
+      Cargo package and workspace commands that run subcommands across all feature flag
+      combinations.
+    - >
+      The project stayed intentionally narrow: it provides `cargo all-features` plus
+      build, check, and test variants, with configuration kept in Cargo.toml under
+      package metadata.
+  related-projects:
+    - >
+      cargo-all-features is related to Cargo feature flags, Cargo workspaces, and Rust
+      CI systems that need to test optional dependency combinations.
+    - >
+      It is conceptually adjacent to cargo-hack, another Rust ecosystem tool often used
+      for feature-combination checking, though this batch's official sources only
+      document cargo-all-features itself.
+  sources:
+    - https://api.github.com/repos/frewsxcv/cargo-all-features
+    - https://api.github.com/repos/frewsxcv/cargo-all-features/tags
+    - https://github.com/frewsxcv/cargo-all-features
+    - https://raw.githubusercontent.com/frewsxcv/cargo-all-features/master/README.md
+    - source_facts.package-manager
+  summary:
+    - >
+      cargo-all-features is a small Cargo subcommand suite for building, checking, and
+      testing Rust crates across combinations of feature flags. It addresses a
+      Rust-specific packaging problem: feature combinations can compile differently, and
+      CI matrices often miss bad interactions.
+  timeline:
+    - '2020: cargo-all-features repository created on GitHub.'
+    - '2020: Git tags include an early 0.1.0 tag and later 1.x releases.'
+    - >
+      2026: Repository metadata shows the project still available with Rust, Cargo,
+      testing, and feature-flag topics.
+  usage:
+    - >
+      Users run commands such as `cargo all-features build`, `cargo all-features check`,
+      or `cargo all-features test` at a package or workspace root. The tool then
+      exercises feature flag combinations for the requested Cargo subcommand.
+    - >
+      Configuration lives in Cargo.toml under `[package.metadata.cargo-all-features]`,
+      where users can skip incompatible feature sets, include or deny selected features,
+      cap combination size, and split work into chunks for CI.
 category: developer-tools
 package-manager:
   brew: cargo-all-features

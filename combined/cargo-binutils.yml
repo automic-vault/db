@@ -6,6 +6,91 @@ docs:
   - https://github.com/rust-embedded/cargo-binutils#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      cargo-binutils became a standard convenience tool in embedded Rust because it
+      connects Cargo builds with artifact inspection commands that embedded developers
+      already need for symbol tables, section sizes, disassembly, and binary conversion.
+      Its maintenance home in rust-embedded and its packaging across Homebrew, Debian,
+      Ubuntu, Nix, pacman, and Fedora-style package names reflect that it escaped the
+      purely crates.io audience.
+    - >
+      Crates.io reports more than 2.7 million total downloads and the current crate
+      metadata classifies it under command-line utilities and development tools. That
+      adoption is reinforced by rustup's llvm-tools component: cargo-binutils does not
+      ship its own LLVM, it makes the toolchain-provided LLVM tools easier to call.
+  package-nerd-significance:
+    - >
+      For package nerds, cargo-binutils is interesting because it packages
+      compiler-toolchain internals as stable-feeling Cargo subcommands without vendoring
+      the underlying tools. It sits at the boundary between rustup components, LLVM
+      command naming, Cargo metadata, and distribution packaging.
+    - >
+      It is especially notable in embedded packaging culture: size reports, symbol
+      listings, object copying, and disassembly are routine release tasks for firmware,
+      and cargo-binutils made those tasks reproducible from a Rust package-manager
+      workflow.
+  project-history:
+    - >
+      The crate appeared on crates.io in June 2018 as a proxy for llvm-nm, llvm-objdump,
+      llvm-size, and related tools. Early crate metadata pointed at Jorge Aparicio's
+      japaric/cargo-binutils repository, and the project later settled under the
+      rust-embedded organization, where the README says it is maintained by the Embedded
+      Working Group Tools team while also noting that it is not an official Rust
+      project.
+    - >
+      Its scope grew from a small set of cargo-nm, cargo-objcopy, cargo-objdump,
+      cargo-profdata, and cargo-size commands into a broader wrapper set that also
+      includes rust-* command proxies such as rust-objcopy, rust-size, rust-readobj,
+      rust-strip, rust-lld, and rust-cov. The current README frames the tool as sugar
+      over LLVM tools from rustup's llvm-tools component.
+  related-projects:
+    - rustup's llvm-tools component supplies the LLVM binaries that cargo-binutils invokes.
+    - >
+      LLVM binutils such as llvm-nm, llvm-objdump, llvm-objcopy, llvm-size,
+      llvm-readobj, and llvm-strip are the underlying tools exposed by the package.
+    - >
+      The rust-embedded working group ecosystem is the cultural home for many of the
+      workflows cargo-binutils targets.
+  sources:
+    - >
+      GitHub repository API metadata:
+      https://api.github.com/repos/rust-embedded/cargo-binutils
+    - 'Official README: https://github.com/rust-embedded/cargo-binutils#readme'
+    - Package-manager adoption from source_facts.package-manager.
+    - 'crates.io API metadata and versions: https://crates.io/api/v1/crates/cargo-binutils'
+  summary:
+    - >
+      cargo-binutils is a Cargo subcommand suite that makes the LLVM binary-inspection
+      tools shipped in Rust toolchains feel like native Cargo workflows. It provides
+      rust-* proxies for LLVM tools and cargo-* commands that can build a Rust target
+      and then inspect the resulting artifact.
+  timeline:
+    - '2018-04-06: Current rust-embedded/cargo-binutils GitHub repository was created.'
+    - >
+      2018-06-29: cargo-binutils 0.1.0 was published on crates.io with cargo-nm,
+      cargo-objcopy, cargo-objdump, cargo-profdata, and cargo-size binaries.
+    - >
+      2018-12-19: The 0.1.6 crate metadata still referenced the earlier
+      japaric/cargo-binutils repository.
+    - >
+      2020: The 0.2 and 0.3 lines expanded the proxy set with more rust-* and cargo-*
+      LLVM tools.
+    - >
+      2025-08-26: Version 0.4.0 was published, listing the broader command set including
+      cargo-cov, cargo-readobj, cargo-strip, rust-lld, and rust-as.
+  usage:
+    - >
+      A typical installation is `cargo install cargo-binutils` followed by `rustup
+      component add llvm-tools`. Users then run commands such as `cargo size --release`,
+      `cargo objdump --release -- --disassemble`, `cargo nm --release`, or the
+      lower-level `rust-size` and `rust-objdump` proxies.
+    - >
+      The important usage pattern is build-and-inspect: cargo-binutils can accept
+      familiar Cargo selectors such as `--bin`, `--example`, `--lib`, `--target`, and
+      `--release`, build the requested target, and pass the generated artifact path to
+      the LLVM tool.
 category: developer-tools
 package-manager:
   brew: cargo-binutils

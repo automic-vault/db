@@ -8,6 +8,72 @@ config-file-location:
   unix: Cargo.toml
   windows: Cargo.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      cargo-bundle occupies a narrower niche than compiler or profiling Cargo plugins:
+      desktop and GUI Rust applications. Crates.io reports more than 150,000 downloads,
+      and the input records Homebrew and Nix packaging.
+    - >
+      The project remained useful because early Rust desktop applications needed a
+      Cargo-native way to bridge from a compiled binary to platform packaging
+      conventions without adopting a full application framework.
+  package-nerd-significance:
+    - >
+      cargo-bundle is historically interesting because it embeds desktop packaging
+      metadata inside Cargo.toml rather than treating app bundling as an entirely
+      external release step. It shows how Rust package metadata became a place for
+      downstream packaging intent, not just dependency resolution.
+    - >
+      For package maintainers, it connects Rust crates to platform-native artifacts such
+      as `.app`, `.deb`, and `.msi`, making it a small but useful example of Cargo
+      crossing from language package manager into OS package production.
+  project-history:
+    - >
+      The cargo-bundle repository was created in January 2016 and the first crates.io
+      release followed in March 2016. The README positions it as a tool for generating
+      macOS app bundles, iOS bundles, Debian packages, and experimental Windows MSI
+      installers from Cargo-built executables.
+    - >
+      Its design centers on a `[package.metadata.bundle]` section in Cargo.toml. That
+      metadata describes user-facing application attributes such as name, identifier,
+      icon, version, resources, copyright, category, descriptions, Debian dependencies,
+      macOS frameworks, and URL schemes.
+  related-projects:
+    - Cargo provides the build and subcommand interface cargo-bundle extends.
+    - >
+      Platform packaging formats documented by the project include macOS app bundles,
+      Debian packages, Windows MSI installers, RPM packages, and AppImage.
+    - >
+      The Rust desktop packaging space overlaps conceptually with later
+      application-packaging frameworks, but cargo-bundle remains a small Cargo-native
+      bundling tool.
+  sources:
+    - 'GitHub repository API metadata: https://api.github.com/repos/burtonageo/cargo-bundle'
+    - 'Official README: https://github.com/burtonageo/cargo-bundle#readme'
+    - Package-manager adoption from source_facts.package-manager.
+    - 'crates.io API metadata and versions: https://crates.io/api/v1/crates/cargo-bundle'
+  summary:
+    - >
+      cargo-bundle is a Cargo subcommand for wrapping Rust GUI executables into
+      operating-system application bundles and installer formats.
+  timeline:
+    - '2016-01-10: GitHub repository burtonageo/cargo-bundle was created.'
+    - '2016-03-22: cargo-bundle 0.0.0 was published on crates.io.'
+    - >
+      2016 onward: README documented `[package.metadata.bundle]` as the Cargo.toml
+      integration point for bundle metadata.
+    - '2026-05-30: Version 0.11.0 was published.'
+  usage:
+    - >
+      Users install it with `cargo install cargo-bundle`, add
+      `[package.metadata.bundle]` to Cargo.toml, and run `cargo bundle` from the package
+      directory. The command supports familiar Cargo selectors and build controls such
+      as `--bin`, `--example`, `--release`, `--profile`, `--target`, and feature flags.
+    - >
+      The README documents output formats including deb, ios, msi, wxsmsi, osx, rpm, and
+      appimage, while also warning that the project status is early alpha and that the
+      metadata format is not guaranteed stable.
 category: developer-tools
 package-manager:
   brew: cargo-bundle

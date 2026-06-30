@@ -6,6 +6,75 @@ docs:
   - https://github.com/matthiaskrgr/cargo-cache#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      cargo-cache gained adoption because Cargo caches can become large on developer
+      machines and CI systems. The README explicitly discusses CI cleanup before storing
+      `$CARGO_HOME`, and crates.io reports more than 3 million downloads.
+    - >
+      The input records Homebrew, Nix, and Arch packaging. Its high download count for a
+      maintenance tool reflects a recurring need rather than glamour: package caches
+      grow quietly, and developers want a Cargo-aware cleanup tool before deleting
+      directories by hand.
+  package-nerd-significance:
+    - >
+      cargo-cache is package-nerd plumbing: it exposes the physical layout and cost of
+      Cargo's package cache. That makes it useful for people who care about how
+      registries, source archives, git checkouts, installed binaries, and CI caches
+      accumulate over time.
+    - >
+      It also documents a conservative cleanup philosophy. The default inspection mode
+      is read-only, and autoclean keeps reconstructable originals, matching the
+      practical rule that cache tools should save disk without surprising the package
+      manager.
+  project-history:
+    - >
+      The cargo-cache repository was created in December 2017, and the first crates.io
+      release followed in October 2018. The README describes it as a tool for displaying
+      information about `~/.cargo/` or `$CARGO_HOME`, with optional cache pruning.
+    - >
+      The project began as the maintainer's learning-by-doing Rust project, according to
+      the README, but accumulated a practical feature set: size summaries, autoclean,
+      dry-run removals, git repository garbage collection, regex cache queries,
+      largest-item reports, alternative registry support, age-based removal,
+      unreferenced-cache cleanup, sccache stats, and verification of extracted crate
+      sources.
+  related-projects:
+    - Cargo's `$CARGO_HOME` cache layout is the main system cargo-cache inspects.
+    - >
+      sccache is related only as a cache that cargo-cache can summarize; the README says
+      cargo-cache is not itself a compiler cache.
+    - >
+      Cargo registry archives, registry source checkouts, git databases, and git
+      checkouts are the package-manager structures exposed by the tool.
+  sources:
+    - 'GitHub repository API metadata: https://api.github.com/repos/matthiaskrgr/cargo-cache'
+    - 'Official README: https://github.com/matthiaskrgr/cargo-cache#readme'
+    - Package-manager adoption from source_facts.package-manager.
+    - 'crates.io API metadata and versions: https://crates.io/api/v1/crates/cargo-cache'
+  summary:
+    - >
+      cargo-cache is a Cargo subcommand for inspecting and pruning the Cargo home cache,
+      including registry archives, extracted sources, git checkouts, installed binaries,
+      toolchains, local target caches, and sccache summaries.
+  timeline:
+    - '2017-12-05: GitHub repository matthiaskrgr/cargo-cache was created.'
+    - '2018-10-17: cargo-cache 0.0.0 was published on crates.io.'
+    - '2022-09-11: Version 0.8.3 was published.'
+    - >
+      2020s: README documented CI cleanup, sccache summaries, alternative registries,
+      verification, and unreferenced-cache cleanup.
+  usage:
+    - >
+      `cargo cache` prints a size breakdown without deleting anything. `cargo cache
+      --autoclean` removes extracted crate sources and git checkouts while keeping
+      original archives and bare repositories so Cargo can reconstruct them as needed.
+    - >
+      Other documented workflows include `--top-cache-items` for largest entries,
+      `--dry-run` before removals, `cargo cache query` for regex searches, `cargo cache
+      clean-unref` for cache entries not referenced by a Cargo.toml, `cargo cache sc`
+      for local sccache stats, and `cargo cache verify` for extracted crate sources.
 category: developer-tools
 package-manager:
   brew: cargo-cache
