@@ -6,6 +6,56 @@ docs:
   - https://www.sqlite.org/dbhash.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      dbhash is a specialist utility rather than a broad application. Its adoption comes
+      from SQLite's ubiquity: database users often need to compare two SQLite files
+      whose on-disk bytes differ after VACUUM, page-size changes, journal-mode changes,
+      backup, or other operations, while the logical schema and content remain
+      equivalent.
+  package-nerd-significance:
+    - >
+      For package maintainers and database-heavy developers, dbhash is a small example
+      of SQLite's tool-first culture: a single-purpose binary built from the canonical
+      source tree that solves a real reproducibility problem better than hashing
+      database files byte-for-byte.
+  project-history:
+    - >
+      The official SQLite documentation describes dbhash as part of SQLite's source
+      tree, implemented by the single C source file tool/dbhash.c. The SQLite source
+      repository is a Fossil repository whose README says it contains SQLite source
+      history going back to May 2000.
+  related-projects:
+    - >
+      dbhash is closely tied to SQLite itself and related SQLite maintenance tools. It
+      complements SQLite backup, VACUUM, REINDEX, ANALYZE, and schema inspection
+      workflows by comparing logical database content.
+  sources:
+    - https://www.sqlite.org/dbhash.html
+    - https://www.sqlite.org/src/dir?ci=trunk
+    - https://sqlite.org/src
+  summary:
+    - >
+      dbhash is an SQLite command-line utility that computes a SHA1 hash of a database's
+      schema and content, ignoring storage-level details that do not change the
+      represented data. It is packaged separately in some ecosystems because it is a
+      useful database-inspection tool even for users who are not building SQLite itself.
+  timeline:
+    - >
+      2000: SQLite source repository history begins, according to the official
+      repository README.
+    - '2025: The dbhash documentation page records a May 2025 update.'
+    - >
+      Present: The official docs describe building dbhash from the canonical SQLite
+      source tree.
+  usage:
+    - >
+      Users run dbhash with one or more SQLite database files and compare the resulting
+      hashes. The official documentation also notes options for restricting hashing to
+      specific tables, content only, or schema only, making it useful in tests, release
+      checks, and remote verification where transferring a whole database would be
+      expensive.
 category: developer-tools
 package-manager:
   brew: dbhash
@@ -21,5 +71,10 @@ executables:
   - dbhash
 provenance:
   formula: dbhash
+  history-sources:
+    - https://www.sqlite.org/dbhash.html
+    - https://www.sqlite.org/src/dir?ci=trunk
+    - https://sqlite.org/src
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
