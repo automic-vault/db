@@ -5,6 +5,49 @@ docs:
   - https://github.com/containers/conmon#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      conmon became distribution-visible because Podman and CRI-O need a separate
+      monitor that can outlive the foreground manager. The README says it should usually
+      be packaged with the user's container manager, and the input package metadata
+      lists it across Homebrew, apk, Debian, Ubuntu, Fedora/dnf, Nix, pacman, and
+      zypper.
+  package-nerd-significance:
+    - >
+      conmon is a useful package-manager specimen because it exposes a normally hidden
+      layer of the container stack as its own shippable binary. Packaging it correctly
+      matters for Podman and CRI-O behavior, especially install paths such as libexec
+      locations used by those managers.
+  project-history:
+    - >
+      The upstream README describes conmon as an OCI container runtime monitor and
+      communication tool. It double-forks, starts the OCI runtime as its child, keeps
+      standard streams attachable, writes logs, and records exit status for the
+      higher-level manager.
+    - >
+      The project is maintained under the containers GitHub organization, the same
+      ecosystem that hosts Podman-adjacent container tooling. Its design goal is
+      deliberately narrow: the README calls it the smallest daemon a container can have.
+  related-projects:
+    - Podman and CRI-O are the container managers named by the README.
+    - runc and crun are the OCI runtimes named by the README.
+  sources:
+    - https://github.com/containers/conmon
+    - https://github.com/containers/conmon/releases
+  summary:
+    - >
+      conmon is a small C monitor process for OCI containers. Its niche is not launching
+      a whole container stack, but sitting between a container manager such as Podman or
+      CRI-O and an OCI runtime such as runc or crun.
+  timeline:
+    - '2019: GitHub releases include early 0.x and 2.0.x conmon releases.'
+    - '2026: Input package metadata lists conmon in major Linux and macOS package managers.'
+  usage:
+    - >
+      Most users do not run conmon directly. It is installed as support infrastructure
+      for Podman, CRI-O, and other OCI-container workflows, where it keeps container
+      attach sockets, logging, and exit reporting separate from the manager process.
 tags:
   - cli
   - containers
@@ -35,6 +78,9 @@ provenance:
     - source_facts.name
   docs-sources:
     - official GitHub README is the primary documentation surface
+  history-sources:
+    - https://github.com/containers/conmon
+    - https://github.com/containers/conmon/releases
   repo-sources:
     - source_facts.repo already provided; per instructions repo returned as null
   tags-sources:
@@ -46,5 +92,6 @@ category-path:
   - containers
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

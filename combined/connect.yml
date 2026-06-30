@@ -7,6 +7,41 @@ docs:
 config-file-location:
   unix: ~/.ssh/config
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The package persists because corporate and campus networks still put SSH behind
+      SOCKS or HTTPS proxies. Input metadata lists it for Homebrew, Nix, and Scoop,
+      which fits its cross-platform C design.
+  package-nerd-significance:
+    - >
+      connect is packaging old-school Unix glue: one C file, one binary, and one exact
+      job. Its significance is that it packages an OpenSSH extension pattern rather than
+      a standalone network service.
+  project-history:
+    - >
+      The official README explains the origin plainly: OpenSSH delegated proxying to the
+      ProxyCommand mechanism, and connect.c was made for that purpose. The tool stayed
+      intentionally small, portable, and independent from OpenSSH.
+  related-projects:
+    - OpenSSH ProxyCommand is the interface connect is designed to serve.
+    - SOCKS and HTTP CONNECT proxies are the network mechanisms it relays through.
+  sources:
+    - https://github.com/gotoh/ssh-connect
+  summary:
+    - >
+      connect, upstreamed as ssh-connect/connect.c, is a small proxy relay intended for
+      OpenSSH ProxyCommand use. It lets SSH cross SOCKS and HTTP CONNECT proxies without
+      embedding those proxy mechanisms in OpenSSH itself.
+  timeline:
+    - '2000s: README-era revision strings and tags show a long-lived single-purpose C utility.'
+    - '2026: Input package metadata still lists connect in multiple package managers.'
+  usage:
+    - >
+      Users normally compile or install the single connect binary and reference it from
+      ~/.ssh/config with a ProxyCommand line. The README documents SOCKS4, SOCKS4a,
+      SOCKS5, HTTP CONNECT, proxy credentials, debug mode, and local socket relay
+      behavior.
 category: networking
 package-manager:
   brew: connect
@@ -28,5 +63,8 @@ executables:
   - connect
 provenance:
   formula: connect
+  history-sources:
+    - https://github.com/gotoh/ssh-connect
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium
