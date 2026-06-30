@@ -6,6 +6,63 @@ docs:
   - https://github.com/eradman/ephemeralpg#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ephemeralpg is not a mass-market database package, but it has a clear testing
+      niche: teams that need PostgreSQL-specific behavior in tests without shared state.
+      Homebrew and Nix packaging make the tool easy to install in developer workstations
+      and CI images.
+  package-nerd-significance:
+    - >
+      ephemeralpg is interesting because it solves a common developer-tools problem with
+      shell and standard PostgreSQL tools instead of a service daemon. It is small,
+      inspectable, and very package-manager-friendly: install it, call `pg_tmp`, and get
+      a disposable database URI.
+  project-history:
+    - >
+      The NEWS file records version 1.0 on January 7, 2015 as an initial Bitbucket
+      release and describes it as a cross-platform implementation in fewer than one
+      hundred lines of code. Later releases added TCP binding through the bundled
+      `getsocket` utility, better cleanup behavior, PostgreSQL-version compatibility
+      fixes, extra server options, and a test framework.
+    - >
+      The project moved hosting from Bitbucket to GitHub in version 2.8 on September 25,
+      2019. Its public project page was still maintained in 2025 and documents `pg_tmp`
+      as a compact shell script for unit and integration testing with PostgreSQL in any
+      language.
+  related-projects:
+    - >
+      ephemeralpg depends on the standard PostgreSQL toolchain, especially `initdb`,
+      `pg_ctl`, `postgres`, and `psql`, and includes helper utilities such as
+      `getsocket` plus optional contrib scripts.
+  sources:
+    - https://eradman.com/ephemeralpg/
+    - https://github.com/eradman/ephemeralpg
+    - https://raw.githubusercontent.com/eradman/ephemeralpg/master/NEWS
+  summary:
+    - >
+      Ephemeral PostgreSQL is a compact test utility centered on `pg_tmp`, a shell
+      script that starts isolated temporary PostgreSQL databases. It gives test suites a
+      real PostgreSQL server without making developers keep a long-lived database around
+      or substitute SQLite for PostgreSQL behavior.
+  timeline:
+    - '2015-01-07: Version 1.0 initially released on Bitbucket.'
+    - '2015-12-12: Version 1.7 added a more extensive `make test` framework.'
+    - '2016-03-29: Version 2.0 allowed temporary directories with initdb/start/stop arguments.'
+    - '2019-09-25: Version 2.8 moved hosting from Bitbucket to GitHub.'
+    - '2025-02-06: Version 3.4 adjusted startup behavior and Mac OS locale handling.'
+  usage:
+    - >
+      A common workflow is `uri=$(pg_tmp)` followed by running `psql` or an application
+      test suite against that connection URI. The tool can start a database on a random
+      TCP port, keep it alive for a specified window, pass server options such as
+      disabling autovacuum, and garbage-collect temporary databases automatically.
+    - >
+      The project page explains several performance techniques: avoiding fully
+      sequential init/start/stop work, disabling runtime fsync, spinning for the first
+      connection, pre-initializing a background database under `/tmp`, and shutting down
+      asynchronously.
 tags:
   - cli
   - postgresql
@@ -35,6 +92,10 @@ provenance:
     - >
       source_facts.homepage is the official project page; official GitHub README
       documents installation and pg_tmp examples.
+  history-sources:
+    - https://eradman.com/ephemeralpg/
+    - https://github.com/eradman/ephemeralpg
+    - https://raw.githubusercontent.com/eradman/ephemeralpg/master/NEWS
   repo-sources:
     - >
       source_facts.repo is empty; official project page and GitHub repository identify
@@ -50,5 +111,6 @@ category-path:
   - testing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
