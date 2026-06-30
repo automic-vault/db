@@ -3,10 +3,76 @@ display-name: Avro C++
 homepage: https://avro.apache.org/
 repo: https://github.com/apache/avro
 docs:
-  - https://avro.apache.org/docs/1.12.0
+  - https://avro.apache.org/docs
   - https://avro.apache.org/docs/1.12.0/api/cpp/html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Avro adoption grew around data pipelines that need compact records and schema
+      evolution. Apache's own site now positions Avro as a leading record serialization
+      format and emphasizes streaming data pipelines, which explains why package
+      managers keep separate language/runtime formulas.
+    - >
+      The C++ package is most relevant where native services want Avro compatibility
+      without a JVM runtime. It is less famous than avro-tools, but it matters in
+      packaging because generated headers, libraries, and ABI concerns are different
+      from shipping a Java jar.
+  package-nerd-significance:
+    - >
+      avro-cpp is a good example of why one upstream project can produce several
+      formulas. The source tree and release cadence are shared with Apache Avro, but the
+      build products are native C++ libraries and a generator binary, so downstream
+      packagers treat it differently from avro-c and avro-tools.
+    - >
+      It is also a useful litmus test for multi-language serialization projects: if the
+      C++ binding builds cleanly and tracks the shared specification, the format is more
+      credible outside JVM-centered data stacks.
+  project-history:
+    - >
+      Apache Avro reached its first official release as Avro 1.0.0 in July 2010. Its
+      design centered on a shared schema specification, binary encoding, object
+      container files, and language bindings so data could move between systems without
+      each implementation inventing its own wire format.
+    - >
+      The C++ binding follows that multi-language model inside the main Apache Avro
+      repository. It lets C++ programs use Avro records and schemas directly, while
+      avrogencpp gives statically typed C++ projects generated code from Avro schemas.
+  related-projects:
+    - avro-c provides the neighboring native C implementation and file utilities.
+    - avro-tools provides Java command-line utilities for schema and data-file work.
+    - >
+      Other Apache Avro bindings include JVM languages, Python, C#, PHP, Ruby, Rust,
+      JavaScript, and Perl.
+  sources:
+    - https://avro.apache.org/
+    - https://avro.apache.org/blog/2010/07/15/avro-1.0.0/
+    - https://avro.apache.org/blog/releases/
+    - https://avro.apache.org/docs/
+    - https://avro.apache.org/docs/1.12.0/api/cpp/html/
+    - https://github.com/apache/avro
+    - source_facts.executables
+  summary:
+    - >
+      Avro C++ is Apache Avro's C++ binding and code-generation package. In Homebrew it
+      is the small native companion to the broader Avro project, centered on the
+      avrogencpp executable and C++ API documentation.
+  timeline:
+    - '2010: Apache Avro 1.0.0 announced as the first Avro release.'
+    - '2021: Avro 1.11.0 released with a large set of project fixes and features.'
+    - '2024: Avro 1.12.0 released by the Apache Avro community.'
+    - '2025: Avro 1.12.1 listed as the latest Apache Avro release.'
+  usage:
+    - >
+      Typical usage is schema-first: write or receive an Avro schema, generate C++ types
+      with avrogencpp when useful, then serialize or deserialize records through the C++
+      library. For dynamic or inspection workflows, users often pair it with the
+      separate Java or C command-line tools.
+    - >
+      Avro C++ does not have a documented global config file or credential file.
+      Schemas, generated code, and application-level settings are the practical
+      configuration surface.
 category: data
 package-manager:
   brew: avro-cpp

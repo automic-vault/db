@@ -15,6 +15,63 @@ credentials-file-location:
     - ./.autorestic.env
     - ~/.autorestic.env
     - ~/.config/autorestic/.autorestic.env
+history:
+  adoption-history:
+    - >
+      autorestic's adoption path is typical of small but useful backup tooling: binaries
+      and shell installer first, then package-manager availability. Its own installation
+      docs list Homebrew, Fedora, AUR, Docker, and manual binary installation, while the
+      package input records availability in Homebrew, Fedora, Alpine, MacPorts, and Nix.
+  package-nerd-significance:
+    - >
+      For package users, autorestic is interesting because it packages an opinionated
+      workflow rather than a storage engine. It depends on restic's ecosystem but adds a
+      declarative layer that makes repeated laptop, server, and Docker-volume backups
+      easier to reproduce across machines.
+  project-history:
+    - >
+      The project was created in 2019 by cupcakearmy as a higher-level CLI for restic.
+      The official README and docs frame it as a response to restic becoming cumbersome
+      when many locations need to be backed up to multiple destinations.
+    - >
+      The first GitHub release, 0.1 Alpha, was published in June 2019. Later
+      documentation describes the version 2 configuration format and a migration path
+      for users coming from the older 0.x series, indicating a rewrite or format break
+      significant enough for backup operators to notice.
+  related-projects:
+    - 'restic: the backup program autorestic wraps.'
+    - >
+      rclone-compatible and cloud backends: commonly reached through restic backend
+      configuration.
+    - "system cron: used by autorestic's scheduled backup workflow."
+  sources:
+    - https://github.com/cupcakearmy/autorestic
+    - >
+      https://raw.githubusercontent.com/cupcakearmy/autorestic/master/docs/pages/backend/env.md
+    - https://raw.githubusercontent.com/cupcakearmy/autorestic/master/docs/pages/config.md
+    - https://raw.githubusercontent.com/cupcakearmy/autorestic/master/docs/pages/index.md
+    - >
+      https://raw.githubusercontent.com/cupcakearmy/autorestic/master/docs/pages/installation.md
+    - source_facts.package-manager
+  summary:
+    - >
+      autorestic is a config-driven backup wrapper around restic. Its niche is turning
+      restic's low-level repository commands into a YAML-managed backup layout with
+      named locations, multiple backends, hooks, retention policies, and cron-oriented
+      automation.
+  timeline:
+    - '2019: GitHub repository created and 0.1 Alpha release published.'
+    - '2020s: Version 2 YAML configuration and environment-file credential handling documented.'
+    - >
+      2020s: Distribution through Homebrew, Fedora, AUR, Docker, and other package sets
+      broadened the install path beyond the upstream shell installer.
+  usage:
+    - >
+      Users define locations and backends in `.autorestic.yml`, then run commands such
+      as backup, forget, check, restore, or cron integration through the `autorestic`
+      executable. The docs emphasize storing backend credentials in environment
+      variables or a sibling `.autorestic.env` file so repository keys do not have to
+      live directly in YAML.
 tags:
   - backup
   - cli
@@ -32,35 +89,39 @@ geiger:
 provenance:
   category-sources:
     - >
-      Official autorestic docs describe backup locations, encrypted backups, cron jobs,
-      and restic wrapping.
+      source_facts.description says it is a high level CLI utility for restic; official
+      docs describe backup automation.
   display-name-sources:
-    - Official autorestic docs title and GitHub repository identify the project as autorestic.
+    - source_facts.name and official README title use autorestic.
   docs-sources:
     - >
-      Official autorestic config docs at https://autorestic.vercel.app/config document
-      default .autorestic.yml search paths.
+      Official config docs document `.autorestic.yml` search paths; official environment
+      docs document `.autorestic.env` next to the config.
     - >
-      Official autorestic docs at https://autorestic.vercel.app/ describe it as a
-      high-level CLI utility and wrapper for restic.
+      source_facts.homepage and current_curation.docs point to the official autorestic
+      docs; upstream README links to https://autorestic.vercel.app/ as docs.
+  history-sources:
+    - https://github.com/cupcakearmy/autorestic
     - >
-      Official autorestic environment docs at https://autorestic.vercel.app/backend/env
-      document .autorestic.env next to the config file for credentials/environment
-      values.
+      https://raw.githubusercontent.com/cupcakearmy/autorestic/master/docs/pages/backend/env.md
+    - https://raw.githubusercontent.com/cupcakearmy/autorestic/master/docs/pages/config.md
+    - https://raw.githubusercontent.com/cupcakearmy/autorestic/master/docs/pages/index.md
+    - >
+      https://raw.githubusercontent.com/cupcakearmy/autorestic/master/docs/pages/installation.md
+    - source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo is already populated with
-      https://github.com/cupcakearmy/autorestic; prompt requires returning repo as null
-      when source_facts.repo has a value.
+      source_facts.repo already contains https://github.com/cupcakearmy/autorestic;
+      prompt requires repo=null when source_facts.repo is populated.
   tags-sources:
     - >
-      Official autorestic docs and GitHub README describe YAML config files, backup
-      locations, restic, and a CLI workflow.
+      Official README describes a config-driven restic backup CLI with YAML files,
+      hooks, cron jobs, and multiple backends.
 category-confidence: high
 category-path:
   - system
-  - backup
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

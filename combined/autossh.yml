@@ -7,6 +7,65 @@ docs:
   - https://www.harding.motd.ca/autossh/README.txt
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      autossh spread through Unix package systems because it solves an operationally
+      boring but persistent problem: keeping reverse tunnels, long-lived forwards, and
+      remote sessions running. The official page notes availability in OpenBSD and
+      FreeBSD ports, Cygwin, and some Linux distributions; the input records packages
+      across Homebrew, Debian, Ubuntu, Fedora, Alpine, Arch, MacPorts, Nix, Scoop, and
+      zypper ecosystems.
+  package-nerd-significance:
+    - >
+      autossh is the sort of tiny package that persists because it does exactly one
+      sysadmin job and has almost no policy surface. Package maintainers care about it
+      because it sits at the intersection of OpenSSH option churn, daemon supervision,
+      legacy Unix platforms, and service startup semantics.
+  project-history:
+    - >
+      The official README traces autossh's idea to rstunnel, Reliable SSH Tunnel. Early
+      autossh releases changed the monitoring mechanism from the original rstunnel-style
+      idea to a loop of SSH forwardings and later added support for a remote echo
+      service.
+    - >
+      The CHANGES file records version 1.1 as the initial release, then shows the
+      program growing through practical tunnel-management fixes: startup gate handling,
+      monitor-port behavior, signal handling, backgrounding, pid files, autoconf
+      support, and compatibility with OpenSSH option changes.
+  related-projects:
+    - 'OpenSSH: autossh supervises the ssh client and passes through most options.'
+    - 'rstunnel: upstream credits it as the original idea.'
+    - 'screen: upstream mentions use with screen for persistent sessions.'
+  sources:
+    - https://www.harding.motd.ca/autossh
+    - https://www.harding.motd.ca/autossh/CHANGES.txt
+    - https://www.harding.motd.ca/autossh/README.txt
+    - source_facts.package-manager
+  summary:
+    - >
+      autossh is a small C utility that starts ssh, monitors the connection, and
+      restarts it when the session dies or stops passing traffic. It became a standard
+      package-manager tool for keeping SSH tunnels alive without writing a custom
+      supervisor loop.
+  timeline:
+    - 'Version 1.1: Initial release recorded in upstream CHANGES.'
+    - >
+      Version 1.2: Major restructuring added looped forwarded ports for connection tests
+      and backoff after rapid failures.
+    - 'Version 1.3: Remote echo-service monitoring and SIGUSR1 restart behavior added.'
+    - 'Version 1.4: Basic GNU autoconf support and pid-file support added.'
+    - '2019: Version 1.4g update noted on the official homepage.'
+  usage:
+    - >
+      The normal invocation is `autossh -M port[:echo_port] [ssh options]`. autossh owns
+      only a few flags, notably the monitor port, foreground/background behavior, and
+      version output; most arguments are passed through to ssh.
+    - >
+      For modern OpenSSH, the README documents `-M 0` to disable monitor ports and rely
+      on SSH exit behavior, often paired with `ServerAliveInterval`,
+      `ServerAliveCountMax`, and `ExitOnForwardFailure`. This is why autossh is common
+      in init scripts, launch agents, simple service units, and admin one-liners.
 category: networking
 package-manager:
   apk: autossh

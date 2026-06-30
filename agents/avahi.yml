@@ -11,6 +11,96 @@ config-file-location:
     - /etc/avahi/services/*.service
     - ~/.config/avahi/browse-domains
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Avahi became the default service-discovery stack for many Linux distributions
+      because it solved the practical need for `.local` hostnames, printer discovery,
+      file-sharing discovery, and application service announcements without Apple's
+      proprietary Bonjour implementation. The official site explicitly says it ships by
+      default in most distributions.
+    - >
+      Package adoption is broad and split by component: distributions package the
+      daemon, utilities, libraries, autoipd, compatibility libraries, and development
+      headers. The input records packages in Homebrew, Debian/Ubuntu, Fedora, Alpine,
+      Arch, MacPorts, Nix, and zypper ecosystems, with Debian and Ubuntu exposing
+      `avahi-autoipd` as a named package entry for this formula mapping.
+  package-nerd-significance:
+    - >
+      Avahi is one of those packages whose importance is larger than the visible command
+      line. It touches init systems, D-Bus activation, NSS integration through nss-mdns,
+      C libraries, desktop printer discovery, service publication, firewall behavior,
+      and network-manager assumptions.
+    - >
+      For maintainers, Avahi is a compatibility and integration package: it needs
+      correct defaults, split subpackages, service files, optional UI bindings, and
+      careful coexistence with other mDNS stacks. Its release notes regularly mention
+      distribution-facing changes such as systemd integration, default configuration
+      updates, API additions, and compatibility fixes for FreeBSD, Solaris, musl, and
+      containers.
+  project-history:
+    - >
+      The upstream README names Lennart Poettering and Trent Lloyd among the authors and
+      describes Avahi as a DNS-SD over mDNS implementation compatible with Apple
+      Bonjour. The official site says it is primarily targeted at Linux, runs on many
+      BSD-like systems, and is not ported to Windows.
+    - >
+      Avahi's architecture matters because it is not only a daemon. The source tree
+      includes client libraries, core libraries, D-Bus API documentation, compatibility
+      layers for Howl and Bonjour-style DNS-SD APIs, Python and UI utilities, service
+      type databases, man pages, and XML service definitions.
+    - >
+      The modern project infrastructure moved from older hosting patterns toward GitHub.
+      The official site notes that in December 2023 the repositories moved from the
+      lathiat namespace to the avahi organization namespace, and that avahi.org itself
+      moved to GitHub Pages.
+  related-projects:
+    - 'nss-mdns: upstream companion project for resolving `.local` hostnames through NSS.'
+    - 'Apple Bonjour/Zeroconf: compatible technology referenced by the official site.'
+    - 'D-Bus: primary API transport for most Avahi usage.'
+    - >
+      systemd and Linux distribution init systems: frequent integration points in
+      release notes.
+  sources:
+    - https://avahi.org/
+    - https://raw.githubusercontent.com/avahi/avahi/master/README
+    - https://raw.githubusercontent.com/avahi/avahi/master/docs/NEWS
+    - https://raw.githubusercontent.com/avahi/avahi/master/man/avahi-daemon.conf.5.xml.in
+    - source_facts.package-manager
+  summary:
+    - >
+      Avahi is a free LGPL implementation of multicast DNS and DNS Service Discovery,
+      compatible with Apple's Bonjour/Zeroconf stack and primarily targeted at Linux. It
+      provides the daemon, D-Bus API, libraries, compatibility layers, command-line
+      utilities, and service-file conventions used for local-network discovery.
+  timeline:
+    - >
+      2004: Copyright range in the upstream README begins, marking the early Avahi
+      development era.
+    - >
+      2010-2012: 0.6.x bugfix releases continued distribution hardening and system
+      integration.
+    - '2016: Avahi 0.6.32 released with configuration-default changes and bug fixes.'
+    - >
+      2017: Avahi 0.7 released with binary TXT records in XML service files and gobject
+      context support.
+    - >
+      2020: Avahi 0.8 released with D-Bus/API additions, Qt5 and libevent mainloop
+      integration, and CVE-2017-6519 mitigation.
+    - >
+      2023: Official repositories moved to the avahi GitHub organization and the website
+      moved to GitHub Pages.
+  usage:
+    - >
+      Typical user-facing tools include `avahi-browse`, `avahi-publish`,
+      `avahi-resolve`, `avahi-set-host-name`, `avahi-daemon`, and `avahi-autoipd`.
+      Services can be published through D-Bus APIs or by placing XML service definitions
+      in `/etc/avahi/services`.
+    - >
+      Configuration centers on `avahi-daemon.conf`, installed under the package system
+      configuration directory, commonly `/etc/avahi/avahi-daemon.conf`. The man page
+      also documents user browse domains through `$AVAHI_BROWSE_DOMAINS` or
+      `~/.config/avahi/browse-domains`.
 tags:
   - cli
   - dns-sd
@@ -30,32 +120,36 @@ geiger:
 provenance:
   category-sources:
     - >
-      Official README: Avahi is a DNS-SD over mDNS service discovery suite compatible
-      with Bonjour.
-    - >
-      Official avahi.org homepage: Avahi facilitates service discovery on a local
-      network via mDNS/DNS-SD.
+      source_facts.description and official site describe mDNS/DNS-SD service discovery
+      for local networks.
   display-name-sources:
-    - Official homepage title and GitHub README use Avahi.
+    - Official website and README use Avahi.
   docs-sources:
-    - Official GitHub README identifies the website, bug tracker, and Git URL.
     - >
-      Official avahi.org homepage links to doxygen documentation and the avahi/avahi
-      GitHub repository.
+      Official site and man-page XML document service definitions under
+      /etc/avahi/services and browse-domain config under ~/.config/avahi/browse-domains.
+    - >
+      source_facts.homepage and current_curation.docs point to the official Avahi site,
+      Doxygen docs, and official GitHub repository.
+  history-sources:
+    - https://avahi.org/
+    - https://raw.githubusercontent.com/avahi/avahi/master/README
+    - https://raw.githubusercontent.com/avahi/avahi/master/docs/NEWS
+    - https://raw.githubusercontent.com/avahi/avahi/master/man/avahi-daemon.conf.5.xml.in
+    - source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already set to https://github.com/avahi/avahi; prompt requires
-      returning repo as null when source_facts.repo is present.
+      source_facts.repo already contains https://github.com/avahi/avahi; prompt requires
+      repo=null when source_facts.repo is populated.
   tags-sources:
     - >
-      Official avahi.org homepage identifies mDNS/DNS-SD, service discovery,
-      Bonjour/Zeroconf compatibility, and Linux focus.
-    - source_facts.executables lists Avahi CLI tools such as avahi-browse and avahi-publish.
+      Official README and website describe mDNS, DNS-SD, Bonjour/Zeroconf compatibility,
+      D-Bus API, and command-line utilities.
 category-confidence: high
 category-path:
   - networking
-  - service-discovery
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

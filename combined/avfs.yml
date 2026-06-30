@@ -4,9 +4,90 @@ homepage: https://avf.sourceforge.net/
 repo: https://sourceforge.net/p/avf/git
 docs:
   - https://avf.sourceforge.net/
+  - https://sourceforge.net/p/avf/git/ci/master/tree/NEWS
   - https://sourceforge.net/p/avf/git/ci/master/tree/README
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      AVFS is packaged across a wide spread of Unix-like distributions in the batch
+      input: Alpine, Homebrew, Debian, Nix, Arch, Ubuntu, and openSUSE. That adoption
+      pattern fits a mature system utility whose value is broad but specialized.
+    - >
+      The README frames AVFS as something any program can use without recompilation or
+      kernel changes. Package adoption likely followed from that generic utility:
+      shells, editors, file managers, and scripts can browse archives through the same
+      virtual path model.
+  package-nerd-significance:
+    - >
+      AVFS is interesting because it packages a shell-native alternative to one-off
+      archive commands. Instead of teaching every tool about tar, zip, gzip, or remote
+      protocols, AVFS makes those resources look like directories.
+    - >
+      It is also a long-lived SourceForge project that survived multiple Unix eras:
+      LD_PRELOAD tricks, CODA, FUSE, 32-bit limits, new compression formats, and
+      distribution hardening. That makes it a tidy example of compatibility maintenance
+      as package culture.
+  project-history:
+    - >
+      AVFS began as a userspace filesystem experiment for archive and remote-file
+      access. Its own NEWS file records a version 0.1 first release, then rapid
+      additions of ZIP, RAR, symbolic links, Solaris support, autoconf, and Midnight
+      Commander external filesystem handlers in the early 0.x series.
+    - >
+      The project changed shape as Unix filesystem integration changed. Version 0.5
+      introduced avfscoda because the preload method would not work for GLIBC 2.1 and
+      newer. Version 0.9.0 was a major rewrite that changed the magic character from `@`
+      to `#`, added ftp, http, rsh, and dav handlers, and reworked caching and
+      multithreaded operation. Version 0.9.7 added FUSE support, which became the more
+      durable packaging story for modern Linux systems.
+    - >
+      AVFS continued to receive maintenance long after its early SourceForge-era design.
+      Later releases added xz/lzma, zip64, lzip, zstd, rar 5, macOS build fixes, FUSE 3
+      support, and large-file/time_t fixes, keeping a very old idea usable on current
+      systems.
+  related-projects:
+    - >
+      Midnight Commander's extfs handlers are used by AVFS for several archive and
+      package formats.
+    - >
+      Pavel Machek's podfuk is listed by the AVFS homepage as a similar userspace
+      filesystem project.
+  sources:
+    - https://avf.sourceforge.net/
+    - https://sourceforge.net/p/avf/git/ci/master/tree/NEWS
+    - https://sourceforge.net/p/avf/git/ci/master/tree/README
+    - source_facts.package-manager
+  summary:
+    - >
+      AVFS is a virtual filesystem for looking inside archives, compressed files, and
+      some remote resources through ordinary file operations. Its distinctive user
+      interface is the `#` path syntax, where a regular archive path can become a
+      browsable virtual directory.
+  timeline:
+    - '0.1: First release.'
+    - '0.2: ZIP support, partial RAR support, Solaris stability, modular handlers.'
+    - '0.5: avfscoda introduced for newer GLIBC systems.'
+    - >
+      0.9.0: Major rewrite; magic character changed to `#`; ftp, http, rsh, and dav
+      handlers added.
+    - '2006: Version 0.9.7 added FUSE installation support.'
+    - '2011: Version 1.0.0 released.'
+    - '2019: Version 1.1.0 removed CODA and PRELOAD support.'
+    - >
+      2026: Version 1.3.0 added FUSE 3 support and made system zlib the default when
+      available.
+  usage:
+    - >
+      Typical usage is to append `#` to an archive path, such as listing `file.tgz#/` or
+      copying files out of `zipfile.zip#/*`. The README also documents virtual handlers
+      for ftp, ssh, http, WebDAV, floppies, package formats, and the `/#avfsstat`
+      control/status namespace.
+    - >
+      Modern users mostly care about `avfsd`, `mountavfs`, and the FUSE form. The older
+      library and preload approaches remain part of the project's history, but FUSE made
+      AVFS fit normal package-manager expectations better.
 category: system
 package-manager:
   apk: avfs

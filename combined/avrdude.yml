@@ -4,6 +4,7 @@ homepage: https://www.nongnu.org/avrdude/
 repo: https://github.com/avrdudes/avrdude
 docs:
   - https://avrdudes.github.io/avrdude
+  - https://avrdudes.github.io/avrdude/8.1/avrdude_2.html
   - https://avrdudes.github.io/avrdude/8.1/avrdude_4.html
 config-file-location:
   unix:
@@ -17,6 +18,91 @@ config-file-location:
     - <directory from which avrdude.exe loaded>/avrdude.conf
     - <directory from which avrdude.exe loaded>/avrdude.rc
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      AVRDUDE is widely packaged because it sits in the critical path between compiled
+      AVR firmware and physical chips. The official README tells Linux users to install
+      the `avrdude` package through their distribution and macOS users to use MacPorts
+      or Homebrew; the batch input additionally lists Alpine, Debian, Fedora, Nix,
+      pacman, Scoop, Ubuntu, winget, and openSUSE.
+    - >
+      Its adoption expanded with AVR hobbyist and Arduino-era workflows. The README's
+      example programs an Arduino Uno using the `arduino` programmer protocol, and
+      package managers keep AVRDUDE close to avr-gcc, bootloaders, USB programmer rules,
+      and embedded build systems.
+  package-nerd-significance:
+    - >
+      AVRDUDE is one of those unglamorous packages that makes embedded development feel
+      like Unix: compile a HEX file, call one command, program a board. It is
+      scriptable, cross-platform, and has enough programmer backends to outlive
+      generations of hardware adapters.
+    - >
+      It is also a packaging coordination point. Distributions have to ship the binary,
+      the evolving `avrdude.conf`, docs, udev or USB access guidance, and sometimes
+      Windows/macOS release artifacts. The result is a small CLI with a surprisingly
+      large hardware compatibility surface.
+  project-history:
+    - >
+      AVRDUDE was originally written in 2003 by Brian S. Dean under the name AVRPROG for
+      FreeBSD. The official manual says it was renamed AVRDUDE when interest grew in a
+      Windows port, avoiding a naming conflict with Atmel's AVRPROG.EXE.
+    - >
+      For many years the project lived in public repositories on Savannah at nongnu.org,
+      where it was ported beyond FreeBSD to Linux, macOS, and Windows. The manual names
+      Ted Roth, Eric Weddington, and Jorg Wunsch among the developers behind the porting
+      effort, and the README says Jorg Wunsch has maintained it since 2006 with help
+      from contributors.
+    - >
+      In 2022, AVRDUDE moved to GitHub under the `avrdudes` organization. Current
+      documentation is published through GitHub Pages, with older release manuals kept
+      online, and the active repository continues to add programmer support, device
+      database updates, CI packaging, Python bindings, and a GUI demonstrator for
+      libavrdude.
+  related-projects:
+    - >
+      Atmel/Microchip AVR toolchains and device packs feed the device definitions
+      AVRDUDE uses.
+    - Arduino bootloader workflows commonly invoke AVRDUDE for board programming.
+    - >
+      libavrdude and the version 8 GUI demonstrator expose AVRDUDE functionality beyond
+      the traditional CLI.
+  sources:
+    - https://avrdudes.github.io/avrdude/8.1/avrdude_2.html
+    - https://avrdudes.github.io/avrdude/8.1/avrdude_4.html
+    - https://github.com/avrdudes/avrdude/blob/main/NEWS
+    - https://github.com/avrdudes/avrdude/blob/main/README.md
+    - source_facts.package-manager
+  summary:
+    - >
+      AVRDUDE, the AVR Downloader/Uploader, is the standard command-line utility for
+      programming Microchip AVR microcontrollers. It writes and reads flash, EEPROM,
+      fuse bits, lock bits, and other device memories through a large set of supported
+      programmers and bootloaders.
+  timeline:
+    - '2003: Brian S. Dean originally wrote AVRDUDE as AVRPROG for FreeBSD.'
+    - '2006: Jorg Wunsch became maintainer according to the current README.'
+    - >
+      Savannah era: Project source lived on savannah.nongnu.org and was ported to Linux,
+      macOS, and Windows.
+    - '2022: Project moved to GitHub at avrdudes/avrdude.'
+    - '2025: Online manual for version 8.1 generated and published on GitHub Pages.'
+    - '2025: Version 8.1 added new AVR parts and PICkit/SNAP programmer support updates.'
+    - >
+      2026: Repository activity continues with device, programmer, build, and USB
+      behavior fixes.
+  usage:
+    - >
+      A typical invocation selects a part with `-p`, a programmer with `-c`, a port with
+      `-P`, and a memory operation with `-U`, for example writing an Intel HEX file to
+      flash. The manual also documents direct instruction mode, terminal mode,
+      programmer-specific extended parameters, and configuration entries for new parts
+      or programmers.
+    - >
+      AVRDUDE's configuration file is central to its package behavior because part and
+      programmer definitions live there. The manual documents system config lookup near
+      the executable and `/usr/local/etc/avrdude.conf`, plus user config in
+      `~/.config/avrdude/avrdude.rc` or `~/.avrduderc`.
 category: developer-tools
 package-manager:
   apk: avrdude

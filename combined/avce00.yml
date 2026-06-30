@@ -3,11 +3,78 @@ display-name: AVCE00
 homepage: http://avce00.maptools.org/avce00/index.html
 repo: null
 docs:
-  - https://avce00.maptools.org/docs/v7_bin_cover.html
-  - https://avce00.maptools.org/docs/v7_e00_cover.html
-  - https://avce00.maptools.org/avce00/avce00.html
+  - http://avce00.maptools.org/avce00/HISTORY.TXT
+  - http://avce00.maptools.org/avce00/avce00.html
+  - http://avce00.maptools.org/avce00/index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      AVCE00's adoption history is mostly the history of old GIS data surviving in Unix
+      package sets. It is packaged in Homebrew, Debian, and Ubuntu according to the
+      batch input, which is plausible for a stable converter whose upstream last release
+      predates much of modern package hosting.
+    - >
+      The project's most important downstream signal is its link to OGR: the 2.0.0
+      history notes that direct E00 read support was added for OGR. That makes AVCE00
+      part of the practical tooling around legacy Arc/Info interchange, even if most
+      users encounter coverage conversion today through higher-level GIS stacks.
+  package-nerd-significance:
+    - >
+      For package nerds, AVCE00 is a classic preservation package: small C code, old
+      file formats, no runtime service, and high value when the one ancient dataset
+      arrives. It is the sort of formula that may sit untouched for years and then save
+      a migration.
+    - >
+      Its source distribution includes documentation, a revision history, portable
+      makefiles, and command-line utilities. That makes it easy for distributions to
+      keep around despite the project being effectively mature.
+  project-history:
+    - >
+      Daniel Morissette published AVCE00 in 1999 after reverse-engineering enough of the
+      Arc/Info binary coverage layout to expose it through E00-style read and write
+      functions. The project documentation emphasizes that the ESRI binary coverage
+      format was not documented, so support grew through analysis of binary dumps and
+      community reports.
+    - >
+      The early 1999 releases moved quickly from read support to E00-to-coverage
+      creation, annotation and region handling, Windows builds, and command-line
+      conversion tools. Version 1.1 added PC Arc/Info coverage support in 2000, version
+      1.2 switched to an MIT-style license and added PC coverage write support, and
+      version 2.0.0 in 2006 added direct E00 reading functions used for OGR E00 read
+      support.
+  related-projects:
+    - E00Compr is the sibling MapTools library for compressed E00 files.
+    - OGR/GDAL is the notable related GIS stack mentioned in the AVCE00 2.0.0 history.
+  sources:
+    - http://avce00.maptools.org/avce00/HISTORY.TXT
+    - http://avce00.maptools.org/avce00/avce00.html
+    - http://avce00.maptools.org/avce00/index.html
+    - source_facts.package-manager
+  summary:
+    - >
+      AVCE00 is a small ANSI C GIS conversion library and set of command-line tools for
+      treating ESRI Arc/Info binary vector coverages as ASCII E00 export files. Its
+      niche is deliberately narrow: it lets GIS users and translator authors read and
+      write an older proprietary coverage format without needing Arc/Info itself.
+  timeline:
+    - '1999: Version 0.1 first released with support for the most common coverage file types.'
+    - '1999: E00-to-coverage creation and Windows build support added across early releases.'
+    - '2000: Version 1.1 added PC Arc/Info coverage support.'
+    - '2000: Version 1.2 switched to an MIT-style license and added PC coverage write support.'
+    - '2006: Version 2.0.0 added direct E00 read functions used for OGR E00 read support.'
+  usage:
+    - >
+      The package includes `avcexport` for converting a binary Arc/Info coverage to E00,
+      `avcimport` for creating a binary coverage from an E00 file, `avcdelete`, and
+      `avctest`. The library can also be embedded in translators by replacing read/write
+      functions with AVCE00's line-oriented APIs.
+    - >
+      AVCE00 matters when a package user has old coverage directories, wants text E00
+      interchange, or needs a converter that can run in a script on Unix-like systems.
+      It is not a general GIS library; it is a focused compatibility tool for an aging
+      but historically common ESRI format.
 category: data
 package-manager:
   brew: avce00

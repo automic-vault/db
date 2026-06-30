@@ -2,10 +2,79 @@ id: brew:avro-c
 display-name: Avro C
 repo: https://github.com/apache/avro
 docs:
-  - https://avro.apache.org/docs/1.12.0
+  - https://avro.apache.org/docs
   - https://avro.apache.org/docs/1.12.0/api/c
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Avro became common in data-engineering environments because it carries schemas
+      with serialized data and supports schema evolution. Apache's current project site
+      describes Avro as a leading serialization format for record data and a first
+      choice for streaming data pipelines, with implementations across JVM languages,
+      Python, C/C++, C#, PHP, Ruby, Rust, JavaScript, and Perl.
+    - >
+      The C package is a practical packaging target for users who need small native
+      tools or C library integration without pulling in the Java toolchain. On Unix
+      package managers it fills the niche between the full Java avro-tools jar and
+      embedding Avro support in larger data platforms.
+  package-nerd-significance:
+    - >
+      For package nerds, avro-c is interesting because it is a native-library subpackage
+      split out of a multi-language Apache project. It gives Homebrew, Nix, and
+      Debian-style systems a way to install Avro's C ABI and CLI utilities without
+      treating the whole project as a Java artifact.
+    - >
+      It also shows the awkward but useful boundary between data-format standards and
+      language ecosystems: one upstream release, many language bindings, and multiple
+      downstream formulas for the same specification.
+  project-history:
+    - >
+      Apache Avro's first official release was Avro 1.0.0 on July 15, 2010. The project
+      was framed from the start as a serialization system with rich data structures,
+      compact binary encoding, object container files, RPC support, and language
+      bindings where code generation is optional rather than mandatory.
+    - >
+      The C implementation lives in the main Apache Avro repository rather than a
+      separate project. That matters for packagers: language bindings, command-line
+      tools, release artifacts, and the shared Avro specification move together under
+      the Apache release process.
+  related-projects:
+    - Apache Avro Java and avro-tools share the same upstream repository and specification.
+    - Avro C++ is the neighboring native binding for C++ programs and code generation.
+    - >
+      Apache Hadoop, Kafka-oriented data pipelines, and other record-processing systems
+      are common consumers of Avro data, though they package their own integrations
+      separately.
+  sources:
+    - https://avro.apache.org/
+    - https://avro.apache.org/blog/2010/07/15/avro-1.0.0/
+    - https://avro.apache.org/blog/releases/
+    - https://avro.apache.org/docs/
+    - https://github.com/apache/avro
+    - source_facts.executables
+  summary:
+    - >
+      Avro C is the C implementation and command-line tooling slice of Apache Avro,
+      Apache's schema-based data serialization system. In Homebrew it exposes utilities
+      such as avrocat, avroappend, avropipe, and avromod for working with Avro object
+      container files from a Unix shell.
+  timeline:
+    - '2010: Apache Avro 1.0.0 announced as the first Avro release.'
+    - '2021: Avro 1.11.0 released with 120 JIRA issues addressed.'
+    - '2024: Avro 1.12.0 released by the Apache Avro community.'
+    - '2025: Avro 1.12.1 listed as the latest Apache Avro release.'
+  usage:
+    - >
+      The C utilities are mostly file and stream tools: avrocat inspects or emits
+      records, avroappend appends data to container files, avropipe moves Avro data
+      through pipelines, and avromod edits Avro container metadata. They are useful in
+      shell workflows where the Java avro-tools package would be heavier than necessary.
+    - >
+      There is no standard per-user configuration file or credential store for Avro C
+      itself. Behavior is driven by schemas, Avro container metadata, command-line
+      arguments, and application code using the C API.
 tags:
   - apache
   - avro
@@ -24,23 +93,35 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - Apache Avro homepage describes Avro as a data serialization system.
-  display-name-sources:
-    - Apache Avro 1.12.0 API docs title the implementation page Avro C.
-  docs-sources:
-    - Apache Avro 1.12.0 API docs provide an Avro C page focused on the C implementation.
-    - Apache Avro 1.12.0 documentation is the official versioned documentation surface.
-  repo-sources:
     - >
-      Apache Avro How to Contribute says to clone the GitHub mirror at
-      https://github.com/apache/avro.git.
+      Apache Avro describes itself as a data serialization system:
+      https://avro.apache.org/docs/
+  display-name-sources:
+    - current_curation.display-name
+    - source_facts.name
+  docs-sources:
+    - 'Apache Avro C API docs: https://avro.apache.org/docs/1.12.0/api/c/'
+    - 'Apache Avro documentation index: https://avro.apache.org/docs/'
+  history-sources:
+    - https://avro.apache.org/
+    - https://avro.apache.org/blog/2010/07/15/avro-1.0.0/
+    - https://avro.apache.org/blog/releases/
+    - https://avro.apache.org/docs/
+    - https://github.com/apache/avro
+    - source_facts.executables
+  repo-sources:
+    - 'Official Apache Avro source repository: https://github.com/apache/avro'
   tags-sources:
-    - Apache Avro C docs describe the C implementation and Avro data serialization features.
+    - >
+      Apache Avro docs and project site describe Avro serialization, schemas, C/C++
+      implementations, and CLI/package executables: https://avro.apache.org/
+    - source_facts.executables
 category-confidence: high
 category-path:
   - data
   - serialization
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -4,6 +4,7 @@ repo: https://github.com/aws-amplify/amplify-cli
 docs:
   - https://docs.amplify.aws/gen1/javascript/tools/cli
   - https://docs.amplify.aws/gen1/react/tools/cli/reference/files
+  - https://docs.amplify.aws/react/reference/cli-commands
 config-file-location:
   unix:
     - amplify/.config/
@@ -11,14 +12,100 @@ config-file-location:
     - amplify/#current-cloud-backend/backend-config.json
     - amplify/team-provider-info.json
     - amplify/cli.json
-    - ~/.amplify/amplify-configuration.json
-    - ~/.amplify/plugins.json
+    - amplify/**/cli-inputs.json
     - ~/.aws/amplify/deployment-secrets.json
 credentials-file-location:
   unix:
     - ~/.aws/credentials
   windows:
     - '%USERPROFILE%\.aws\credentials'
+history:
+  adoption-history:
+    - >
+      Amplify CLI was adopted heavily by frontend and mobile developers who wanted
+      AWS-backed auth, APIs, storage, functions, and hosting without hand-writing all of
+      the CloudFormation. Its category model let users add Cognito, AppSync, S3, Lambda,
+      and hosting resources from prompts and then commit the resulting project files.
+    - >
+      The tool also became a source of package-manager friction because it is an
+      npm-distributed CLI with a large plugin ecosystem, but many users want it
+      installed like any other system command. Homebrew and Scoop formulas serve that
+      audience by making amplify available outside a per-project node_modules tree.
+  package-nerd-significance:
+    - >
+      For package nerds, aws-amplify is a case study in packaging a fast-moving
+      JavaScript cloud CLI as a system formula. It has to bridge npm expectations, Node
+      version support, AWS credentials, generated project files, and the fact that the
+      product line split between Gen 1 CLI and Gen 2 ampx workflows.
+    - >
+      It is also historically useful because old Amplify projects often encode their
+      backend state in generated JSON files. Having a reproducible CLI installation can
+      be the difference between being able to pull, inspect, migrate, or retire an older
+      Amplify backend.
+  project-history:
+    - >
+      AWS announced the AWS Amplify library and AWS Mobile CLI in 2017, and that
+      announcement now carries an editorial note directing users to the AWS Amplify CLI.
+      In August 2018, AWS announced the Amplify CLI toolchain as the newer workflow for
+      configuring local project state and deploying cloud resources.
+    - >
+      The Amplify CLI's Gen 1 architecture used AWS CloudFormation and nested stacks so
+      developers could add or modify backend configurations locally before pushing them
+      to an AWS account. Its file layout grew around an amplify/ project directory
+      containing backend state, team environment metadata, feature flags, and generated
+      client configuration.
+    - >
+      Amplify later introduced Gen 2, a code-first TypeScript backend experience built
+      on AWS CDK constructs. AWS made Amplify Gen 2 generally available on May 6, 2024,
+      which shifted new projects toward ampx and file-based TypeScript backend
+      definitions while leaving Gen 1 CLI documentation in maintenance mode.
+  related-projects:
+    - >
+      AWS Amplify Gen 2 backend tooling uses the @aws-amplify/backend-cli package and
+      ampx commands.
+    - >
+      AWS CDK underpins Amplify Gen 2's backend-building model and can be used for
+      custom resources.
+    - >
+      AWS CloudFormation is the deployment substrate used by the Gen 1 CLI and
+      nested-stack architecture.
+  sources:
+    - https://aws.amazon.com/about-aws/whats-new/2024/05/aws-amplify-gen-2-available/
+    - https://aws.amazon.com/blogs/mobile/announcing-aws-amplify-and-the-aws-mobile-cli/
+    - https://aws.amazon.com/blogs/mobile/announcing-the-aws-amplify-cli-toolchain/
+    - https://docs.amplify.aws/gen1/javascript/tools/cli/
+    - https://docs.amplify.aws/gen1/react/tools/cli/reference/files/
+    - https://docs.amplify.aws/react/reference/cli-commands/
+    - https://docs.aws.amazon.com/sdkref/latest/guide/file-location.html
+    - https://github.com/aws-amplify/amplify-cli
+  summary:
+    - >
+      AWS Amplify CLI is the command-line toolchain for creating, integrating, and
+      managing AWS-backed web and mobile app services. The Homebrew package installs the
+      amplify command, historically centered on Amplify Gen 1 workflows such as amplify
+      init, add, push, pull, and env management.
+  timeline:
+    - >
+      2017: AWS announced AWS Amplify and the AWS Mobile CLI, with later guidance to use
+      Amplify CLI going forward.
+    - '2018: AWS announced the AWS Amplify CLI toolchain.'
+    - '2021: AWS Amplify CLI added support for function environment variables and secrets.'
+    - '2024: AWS Amplify Gen 2 became generally available as a fullstack TypeScript experience.'
+    - '2027: AWS Amplify Gen 1 documentation says Gen 1 reaches end of life on May 1, 2027.'
+  usage:
+    - >
+      In Gen 1 workflows, users run amplify configure to connect local tooling to an AWS
+      account, amplify init to create an Amplify project, amplify add <category> to
+      model backend resources, and amplify push to deploy generated CloudFormation. The
+      CLI writes project state under amplify/ and consumes AWS shared config and
+      credentials files for account access.
+    - >
+      Amplify's documented project files include amplify/.config/, backend-config.json
+      under both amplify/backend and amplify/#current-cloud-backend,
+      team-provider-info.json, cli.json, category cli-inputs.json files, generated
+      client configuration, and deployment secrets stored outside the repository. Gen 2
+      workflows instead use npx ampx commands and generate amplify_outputs.json for
+      client configuration.
 tags:
   - amplify
   - aws
@@ -37,28 +124,48 @@ geiger:
 provenance:
   category-sources:
     - >
-      Official AWS Amplify CLI docs say it creates, integrates, and manages AWS cloud
-      services for apps.
+      AWS Amplify CLI docs describe a toolchain for creating, integrating, and managing
+      AWS cloud services: https://docs.amplify.aws/gen1/javascript/tools/cli/
+    - >
+      Amplify CLI README describes CloudFormation and nested-stack usage:
+      https://github.com/aws-amplify/amplify-cli
   display-name-sources:
-    - Official aws-amplify/amplify-cli README heading is AWS Amplify CLI (Gen 1).
+    - 'Official AWS Amplify CLI repository title: https://github.com/aws-amplify/amplify-cli'
+    - current_curation.display-name
   docs-sources:
-    - Official AWS Amplify Gen 1 CLI documentation describes the CLI as a unified toolchain.
+    - 'AWS Amplify Gen 1 CLI docs: https://docs.amplify.aws/gen1/javascript/tools/cli/'
     - >
-      Official AWS Amplify files-and-folders reference documents project and shared
-      config files.
+      AWS Amplify Gen 2 CLI commands reference:
+      https://docs.amplify.aws/react/reference/cli-commands/
+    - >
+      AWS Amplify files and folders reference:
+      https://docs.amplify.aws/gen1/react/tools/cli/reference/files/
+    - >
+      AWS shared config and credentials file locations:
+      https://docs.aws.amazon.com/sdkref/latest/guide/file-location.html
+  history-sources:
+    - https://aws.amazon.com/about-aws/whats-new/2024/05/aws-amplify-gen-2-available/
+    - https://aws.amazon.com/blogs/mobile/announcing-aws-amplify-and-the-aws-mobile-cli/
+    - https://aws.amazon.com/blogs/mobile/announcing-the-aws-amplify-cli-toolchain/
+    - https://docs.amplify.aws/gen1/javascript/tools/cli/
+    - https://docs.amplify.aws/gen1/react/tools/cli/reference/files/
+    - https://docs.amplify.aws/react/reference/cli-commands/
+    - https://docs.aws.amazon.com/sdkref/latest/guide/file-location.html
+    - https://github.com/aws-amplify/amplify-cli
   repo-sources:
-    - >
-      Official aws-amplify/amplify-cli GitHub README identifies AWS Amplify CLI as the
-      toolchain and repository.
+    - 'Official AWS Amplify CLI repository: https://github.com/aws-amplify/amplify-cli'
   tags-sources:
     - >
-      Official aws-amplify/amplify-cli README says the CLI uses AWS CloudFormation and
-      nested stacks for app development.
+      AWS Amplify CLI docs and README cover AWS, CLI, CloudFormation, and serverless app
+      categories: https://docs.amplify.aws/gen1/javascript/tools/cli/ and
+      https://github.com/aws-amplify/amplify-cli
 category-confidence: high
 category-path:
   - cloud-infrastructure
-  - app-development
+  - serverless
+  - developer-cli
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
