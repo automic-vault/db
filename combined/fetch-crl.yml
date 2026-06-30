@@ -10,6 +10,61 @@ config-file-location:
     - /etc/fetch-crl.conf
     - /etc/fetch-crl.d/
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Official Nikhef documentation frames fetch-crl around IGTF-style trust-anchor
+      deployments and points users to the IGTF distribution area for packages. That
+      places the tool in the long-running grid-PKI maintenance path where administrators
+      need repeatable CRL refreshes for certificate authorities rather than an
+      interactive certificate-management application.
+  package-nerd-significance:
+    - >
+      For package maintainers, fetch-crl is interesting because it is glue code at the
+      boundary between PKI policy, filesystem layout, init or cron scheduling, and
+      library-specific certificate stores. Its version 3 rewrite removed dependencies on
+      shell helpers such as wget and lynx, making the packaged behavior more
+      self-contained and predictable.
+  project-history:
+    - >
+      The fetch-crl3 line is a complete rewrite of earlier fetch-crl 1.x and 2.x
+      tools. The project README credits the original fetch-crl to Fabio Hernandez for
+      the EU DataGrid project, notes significant contributions from Steve Traylen, and
+      identifies David Groep as the author of the version 3 rewrite at Nikhef.
+  related-projects:
+    - >
+      fetch-crl is closely tied to IGTF trust-anchor metadata, OpenSSL hash-directory
+      conventions, NSS databases, and grid-security certificate directories.
+  sources:
+    - https://wiki.nikhef.nl/grid/FetchCRL3
+    - https://github.com/dlgroep/fetch-crl
+    - https://raw.githubusercontent.com/dlgroep/fetch-crl/master/README
+    - https://raw.githubusercontent.com/dlgroep/fetch-crl/master/CHANGES
+  summary:
+    - >
+      fetch-crl is a small but operationally important PKI utility for retrieving
+      certificate revocation lists for installed trust anchors. Its home is grid and
+      research-computing infrastructure rather than end-user security tooling: it reads
+      trust-anchor metadata, downloads CRLs, verifies and formats them, and installs
+      them where OpenSSL, NSS, or other consumers can find them.
+  timeline:
+    - 'EU DataGrid era: Original fetch-crl developed by Fabio Hernandez.'
+    - >
+      2010-2013: fetch-crl3 copyright period in the README for David Groep and
+      Nikhef-related research-grid work.
+    - >
+      3.0: Complete Perl rewrite, preserving the role of earlier 1.x and 2.x utilities
+      while adding stateful retrieval and multiple output formats.
+    - >
+      3.0.23: Official Nikhef documentation lists proxy handling improvements as the
+      package changes in that documentation.
+  usage:
+    - >
+      Typical use is unattended Unix administration: fetch-crl reads /etc/fetch-crl.conf
+      by default, can merge drop-in files from /etc/fetch-crl.d, and defaults
+      trust-anchor metadata to /etc/grid-security/certificates. Version 3 added stateful
+      retrieval, HEAD requests, multiple output formats, proxy controls, retry/fallback
+      URLs, per-trust-anchor suppression, and parallel retrieval.
 category: security
 package-manager:
   brew: fetch-crl
@@ -31,5 +86,11 @@ executables:
   - fetch-crl
 provenance:
   formula: fetch-crl
+  history-sources:
+    - https://wiki.nikhef.nl/grid/FetchCRL3
+    - https://github.com/dlgroep/fetch-crl
+    - https://raw.githubusercontent.com/dlgroep/fetch-crl/master/README
+    - https://raw.githubusercontent.com/dlgroep/fetch-crl/master/CHANGES
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
