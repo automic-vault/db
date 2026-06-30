@@ -4,8 +4,72 @@ homepage: https://github.com/pypa/auditwheel
 repo: https://github.com/pypa/auditwheel
 docs:
   - https://github.com/pypa/auditwheel#readme
+  - https://packaging.python.org/en/latest/specifications/platform-compatibility-tags
+  - https://peps.python.org/pep-0513
+  - https://peps.python.org/pep-0600
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      auditwheel became part of the expected PyPI release workflow for projects shipping
+      compiled extensions on Linux: build in a manylinux container, run auditwheel show
+      to inspect shared-library dependencies, then run auditwheel repair to vendor
+      allowed libraries and retag the wheel. The PyPA packaging guide lists auditwheel
+      across manylinux standards, and the supplied package facts show Homebrew, Fedora,
+      and Nix packaging.
+  package-nerd-significance:
+    - >
+      auditwheel is package-nerd core infrastructure because it encodes the
+      uncomfortable boundary between Python packaging metadata, ELF linking, glibc
+      symbol versions, containerized build images, and PyPI installer compatibility. It
+      is the tool maintainers reach for when a wheel works on the build host but needs
+      to work across Linux distributions.
+  project-history:
+    - >
+      The auditwheel GitHub repository was created in January 2016, and PyPI records the
+      first 1.0.0 upload on 2016-01-21. The README describes it as a tool for auditing
+      and relabeling Linux and Android wheels.
+    - >
+      PEP 513, the manylinux1 proposal, explicitly introduced auditwheel as a
+      command-line executable able to inspect wheel dependencies and automatically copy
+      external shared libraries into wheels, update RPATH, and add suitable platform
+      tags. Later policy work, especially PEP 600, kept auditwheel as the practical
+      implementation guide while avoiding making it the normative definition of
+      manylinux itself.
+  related-projects:
+    - >
+      auditwheel is closely tied to PyPA's manylinux container images, pip's platform
+      tag compatibility logic, wheel metadata, patchelf, PEP 513, PEP 571, PEP 599, PEP
+      600, and the packaging.python.org platform compatibility tag specification.
+  sources:
+    - https://api.github.com/repos/pypa/auditwheel
+    - https://github.com/pypa/auditwheel#readme
+    - https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/
+    - https://peps.python.org/pep-0513/
+    - https://peps.python.org/pep-0600/
+    - https://pypi.org/pypi/auditwheel/json
+  summary:
+    - >
+      auditwheel is a PyPA command-line tool for auditing and repairing Linux and
+      Android Python wheels so they comply with manylinux and related binary
+      compatibility policies. It is one of the small tools that turned Python binary
+      distribution on Linux from a packaging argument into a repeatable release step.
+  timeline:
+    - '2016: auditwheel repository was created and 1.0.0 was uploaded to PyPI.'
+    - '2016: PEP 513 approved manylinux1 and described auditwheel as the repair/audit tool.'
+    - '2018: manylinux2010 was approved through PEP 571.'
+    - '2019: manylinux2014 was approved through PEP 599.'
+    - '2019: PEP 600 approved perennial manylinux_x_y tags.'
+    - >
+      2021: musllinux tags were approved through PEP 656 and later supported in the same
+      ecosystem.
+  usage:
+    - >
+      The README documents two main commands. auditwheel show reports external shared
+      libraries and symbol-version compatibility against manylinux policies. auditwheel
+      repair copies required external libraries into the wheel, rewrites RPATH entries,
+      and emits a repaired wheel with manylinux tags.
 category: developer-tools
 package-manager:
   brew: auditwheel
@@ -15,6 +79,7 @@ package-manager-url: https://formulae.brew.sh/formula/auditwheel
 license: MIT
 tags:
   - cli
+  - elf
   - manylinux
   - packaging
   - python

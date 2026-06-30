@@ -2,13 +2,91 @@ id: brew:atuin-server
 display-name: atuin-server
 repo: null
 docs:
-  - https://docs.atuin.sh/cli
   - https://docs.atuin.sh/cli/self-hosting/server-setup
   - https://github.com/atuinsh/atuin#readme
 config-file-location:
   unix:
     - ~/.config/atuin/server.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Atuin's README advertises support for zsh, bash, fish, nushell, xonsh, and
+      PowerShell, which put the client in the daily path of shell users rather than only
+      in a backend role. The same repository publishes release assets for both `atuin`
+      and `atuin-server` across Linux, macOS, Windows, and musl targets, giving package
+      managers a clear split between the interactive CLI and the deployable sync
+      service.
+    - >
+      The Homebrew package metadata in this batch shows `atuin-server` packaged
+      separately from `atuin`, while the same source facts list Alpine, Homebrew, and
+      Arch packages. That separate formula tracks the upstream split: users who only
+      need the local shell-history UI install `atuin`, while operators who want private
+      sync install `atuin-server`.
+  package-nerd-significance:
+    - >
+      For package maintainers, `atuin-server` is a neat example of a Rust project that
+      outgrew a single CLI binary and exposed a second artifact with different runtime
+      expectations: service management, database configuration, network binding,
+      reverse-proxy TLS, and persistent storage. That makes it a distinct package even
+      though it shares the upstream repository and release train with Atuin.
+    - >
+      The package also shows why formula splits matter. Installing the server on a
+      workstation is unnecessary for most Atuin users, while bundling it into only the
+      main CLI would make self-hosting less obvious for operators. Separate packaging
+      lets Homebrew, Alpine, and Arch users install just the role they need.
+  project-history:
+    - >
+      The Atuin repository was created in October 2020 and describes the project as
+      replacing traditional shell history with a SQLite database plus extra command
+      context. Its README presents sync as optional and fully encrypted, with users able
+      to rely on the hosted service, self-host, or run entirely without sync.
+    - >
+      The server moved from being started through the main `atuin` binary to a separate
+      `atuin-server` binary before v18.12.0. The current self-hosting guide documents
+      that upgrade boundary and states that every release publishes prebuilt
+      `atuin-server` binaries and installer scripts.
+  related-projects:
+    - >
+      Atuin client: the interactive shell-history CLI that records, searches, imports,
+      and syncs history.
+    - 'PostgreSQL and SQLite: supported backing stores for self-hosted sync servers.'
+    - >
+      Shell history systems in zsh, bash, fish, nushell, xonsh, and PowerShell: the
+      native history layers Atuin augments or replaces.
+  sources:
+    - https://api.github.com/repos/atuinsh/atuin
+    - https://api.github.com/repos/atuinsh/atuin/releases
+    - https://docs.atuin.sh/cli/guide/sync/
+    - https://docs.atuin.sh/cli/self-hosting/server-setup/
+    - https://github.com/atuinsh/atuin#readme
+  summary:
+    - >
+      atuin-server is the self-hosted sync companion for Atuin, the shell-history tool
+      that stores command history in SQLite locally and can synchronize encrypted
+      history between machines. The server package matters to package users because it
+      splits Atuin's privacy-preserving sync backend into a deployable binary that can
+      be installed, containerized, and upgraded separately from the interactive
+      shell-history CLI.
+  timeline:
+    - '2020: The Atuin repository was created on GitHub.'
+    - '2021: Early GitHub releases in the 0.6 series were published.'
+    - '2022: Atuin moved through v0.10 and then jumped to v11.'
+    - '2024: The 18.x release line began.'
+    - '2026: v18.16.x releases shipped separate `atuin` and `atuin-server` artifacts.'
+  usage:
+    - >
+      A self-hosted server can be started with `atuin-server start` and configured
+      through `~/.config/atuin/server.toml` or environment variables. The documented
+      server configuration includes listen host, port, open-registration behavior, and
+      `db_uri`, with PostgreSQL 14+ and SQLite 3+ documented as supported storage
+      backends.
+    - >
+      The server is used by configuring clients with a `sync_address`, then registering,
+      logging in, and running `atuin sync`. The sync guide emphasizes that the history
+      is end-to-end encrypted before it reaches the server, so the server package is
+      infrastructure for storage and synchronization rather than a plaintext
+      command-history database.
 tags:
   - cli
   - postgresql
@@ -31,31 +109,37 @@ geiger:
 provenance:
   category-sources:
     - >
-      Official Atuin docs describe Atuin as shell history sync/search and self-hosted
-      sync server software; current_curation.category is `developer-tools`.
+      Atuin server setup docs describe a self-hosted sync server requiring a
+      binary/container and database.
+    - source_facts.description describes a sync server for improved shell history.
   display-name-sources:
-    - >
-      source_facts.name is `atuin-server`; official server setup docs state the server
-      is distributed as a separate binary named `atuin-server`.
+    - Atuin server setup docs name the distributed binary `atuin-server`.
+    - source_facts.name=atuin-server
   docs-sources:
+    - Atuin README links official docs and describes the client/server sync model.
     - >
-      Official Atuin documentation has a dedicated self-hosting server setup page; Atuin
-      homepage and README link to docs.atuin.sh for self-hosting and setup.
+      Atuin docs server setup page documents installing and running the separate
+      atuin-server binary.
+  history-sources:
+    - https://api.github.com/repos/atuinsh/atuin
+    - https://api.github.com/repos/atuinsh/atuin/releases
+    - https://docs.atuin.sh/cli/guide/sync/
+    - https://docs.atuin.sh/cli/self-hosting/server-setup/
+    - https://github.com/atuinsh/atuin#readme
   repo-sources:
     - >
-      source_facts.repo already has official repository URL
-      `https://github.com/atuinsh/atuin`; per instructions repo is returned as null when
-      source_facts.repo is populated.
+      source_facts.repo already contains https://github.com/atuinsh/atuin; prompt
+      requires returning repo as null when source_facts.repo is present.
   tags-sources:
     - >
-      Official Atuin server setup docs describe the `atuin-server` sync server,
-      PostgreSQL 14+ support, SQLite support, and self-hosting.
+      Atuin server setup docs mention PostgreSQL, SQLite, self-hosting, and the separate
+      atuin-server binary.
+    - source_facts.description mentions shell history and sync.
 category-confidence: high
 category-path:
   - developer-tools
-  - shell
-  - sync-server
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

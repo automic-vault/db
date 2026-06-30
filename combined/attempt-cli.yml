@@ -8,6 +8,65 @@ docs:
   - https://maxbondabe.github.io/attempt/usage.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README documents installation through Cargo and Homebrew, placing attempt in
+      the modern Rust CLI distribution pattern: publish a crate for Rust users and a
+      Homebrew formula for macOS package-manager users.
+    - >
+      Its adoption story is use-case-led rather than ecosystem-led. The manual
+      explicitly compares one case to wait-for-it.sh: waiting for services in
+      docker-compose-like environments when the user is not restricted to Bash. It also
+      targets robust scripts that call temporarily unavailable services.
+  package-nerd-significance:
+    - >
+      attempt is package-nerd interesting because it turns a shell pattern into a
+      dedicated binary. Instead of every script growing its own retry loop, timeout
+      handling, jitter, and output predicate checks, the package offers a small
+      auditable command.
+    - >
+      It is also a tidy example of a Rust CLI whose package name and binary name differ:
+      Homebrew packages attempt-cli, Cargo installs attempt-cli, but users run
+      `attempt`.
+  project-history:
+    - >
+      The official README presents attempt as a focused CLI for retrying commands that
+      may fail temporarily. The Cargo metadata names the crate attempt-cli, exposes the
+      binary as `attempt`, uses the 2021 Rust edition, and describes the project as
+      public-domain software under the Unlicense.
+    - >
+      The public release history is short: GitHub releases show v1.0.1 and v1.1.0 in
+      September 2025, followed by v1.1.1 in January 2026. That makes it a relatively
+      young tool compared with the older Unix packages in this batch.
+  related-projects:
+    - >
+      Related tools and patterns include wait-for-it.sh, retry loops in shell scripts,
+      exponential-backoff libraries, timeout wrappers, and orchestration readiness
+      checks in Docker Compose or CI scripts.
+  sources:
+    - Official Cargo.toml.
+    - Official GitHub releases API.
+    - Official README.
+    - Official mdBook manual intro and usage pages.
+  summary:
+    - >
+      attempt is a small Rust command-line tool for retrying fallible commands with
+      delays, retry policies, jitter, timeouts, and backoff strategies.
+  timeline:
+    - '2025-09: GitHub release v1.0.1 published.'
+    - '2025-09: GitHub release v1.1.0 published.'
+    - '2026-01: GitHub release v1.1.1 published.'
+  usage:
+    - >
+      The basic invocation is `attempt [BACKOFF] [OPTIONS] [COMMAND]...`. Official
+      examples retry database migrations when output contains `server not ready`, use
+      exponential backoff, change attempt counts, add jitter, and separate attempt
+      arguments from child-command arguments with `--`.
+    - >
+      The manual explains the mental model: classify failures with retry policy, choose
+      a backoff schedule, set a retry limit, and optionally use exponential backoff to
+      start aggressively while backing off during persistent outages.
 category: developer-tools
 package-manager:
   brew: attempt-cli

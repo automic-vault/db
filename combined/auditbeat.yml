@@ -13,7 +13,66 @@ config-file-location:
     - /usr/share/auditbeat/auditbeat.yml
     - '{extract.path}/auditbeat.yml'
 credentials-file-location:
-  unix: ${path.config}/beats.keystore
+  unix: ${path.data}/auditbeat.keystore
+history:
+  adoption-history:
+    - >
+      Auditbeat's adoption path followed the Beats model: install a small agent on
+      servers, configure modules and outputs, and centralize events in Elasticsearch or
+      related Elastic deployments. The supplied package-manager facts show Homebrew,
+      Chocolatey, and Nix packaging, while Elastic's own directory-layout docs cover
+      deb, rpm, Docker, and archive installations.
+  package-nerd-significance:
+    - >
+      Auditbeat matters to package people because it is not just a command but a service
+      with config, data, log, module, keystore, and platform-specific installation
+      layout expectations. Correct packaging decides whether auditbeat.yml, path.data,
+      systemd units, Docker defaults, and secure settings land where Elastic's docs say
+      they should.
+  project-history:
+    - >
+      Auditbeat lives in the Elastic Beats monorepo, which GitHub reports as created in
+      2014 for lightweight shippers for Elasticsearch and Logstash. The official docs
+      describe Auditbeat as an Elastic Beat based on the libbeat framework.
+    - >
+      The Beats repository history shows Auditbeat was initially added on 2017-06-26 in
+      commit 4ad2066, described as migrating the audit module from Metricbeat into its
+      own Beat. Beats 6.0.0 was published later in 2017, putting Auditbeat into the 6.x
+      era of the Beats family.
+  related-projects:
+    - >
+      Auditbeat is related to libbeat and the wider Beats family, especially Metricbeat
+      because its initial audit module was migrated from Metricbeat. It is also part of
+      Elastic's ingestion tooling alongside newer Elastic Agent workflows.
+  sources:
+    - https://api.github.com/repos/elastic/beats
+    - https://api.github.com/repositories/16554739/commits?path=auditbeat
+    - https://www.elastic.co/docs/reference/beats/auditbeat
+    - https://www.elastic.co/docs/reference/beats/auditbeat/configuring-howto-auditbeat
+    - https://www.elastic.co/docs/reference/beats/auditbeat/directory-layout
+    - https://www.elastic.co/docs/reference/beats/auditbeat/keystore
+  summary:
+    - >
+      Auditbeat is Elastic's lightweight Beat for audit and security event collection.
+      It ships operating-system audit data, Linux Audit Framework events, and file
+      integrity signals into the Elastic Stack, making it part CLI daemon, part security
+      telemetry collector, and part package-managed agent.
+  timeline:
+    - '2014: Elastic Beats repository was created.'
+    - >
+      2017: Auditbeat was initially added by migrating the audit module from Metricbeat
+      into its own Beat.
+    - '2017: Beats 6.0.0 was published.'
+    - >
+      2026: Elastic's current docs list Auditbeat reference material for Elastic Stack
+      and Elastic Cloud Serverless.
+  usage:
+    - >
+      The official docs describe Auditbeat as a shipper that audits user and process
+      activity, collects Linux Audit Framework events, and detects changes to critical
+      files such as binaries and configuration files. Operators edit auditbeat.yml, set
+      paths and outputs, optionally store secrets in an Auditbeat keystore, and run the
+      service as part of an Elastic ingestion pipeline.
 category: security
 package-manager:
   brew: auditbeat

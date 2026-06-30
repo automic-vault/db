@@ -21,6 +21,83 @@ credentials-file-location:
     - <project>/.npmrc
     - ~/.npmrc
     - path configured by npmrc-auth-file / npmrcAuthFile
+history:
+  adoption-history:
+    - >
+      Because aube is very new, adoption history is better described as packaging and
+      compatibility positioning than long-term ecosystem penetration. The batch input
+      shows Homebrew, Nix, and WinGet packaging, while the README also documents
+      installation through mise, npm, npx, and Homebrew from the jdx tap.
+    - >
+      The project deliberately targets migration paths instead of a clean-room
+      ecosystem. Its README and docs say it reads and writes pnpm, npm, Yarn, Bun, and
+      aube lockfiles in place, reads pnpm-compatible `.npmrc`, and can use existing
+      `pnpm-workspace.yaml` files as migration inputs. That gives package nerds an
+      obvious reason to watch it even before it has years of production history.
+  package-nerd-significance:
+    - >
+      aube is significant less because it has a long legacy and more because it is a
+      snapshot of 2026 package-manager concerns: lockfile interoperability, global
+      content-addressable stores, supply-chain gating, lifecycle-script isolation,
+      runtime management, package-manager shims, and package-manager version pinning.
+    - >
+      For Homebrew-style metadata, aube is also a reminder that JavaScript package
+      managers are not only JavaScript packages. The official install paths include
+      native release binaries, mise, npm installer scripts, and Homebrew, and the
+      command set exposes multicall shims (`aube`, `aubr`, `aubx`) that all need to land
+      correctly in a user's PATH.
+  project-history:
+    - >
+      The GitHub repository was created in April 2026. The first public release was
+      v1.0.0-beta.1 on April 18, 2026, and subsequent release titles show a rapid march
+      through npm distribution, Linux portability, lockfile compatibility,
+      lifecycle-script handling, warm-install performance, security gates, and pnpm
+      parity.
+    - >
+      The official README explains the central design: aube installs automatically when
+      a script or binary is run, drops into existing projects using existing lockfiles,
+      and emphasizes security defaults such as lifecycle-script approval, transitive
+      dependency controls, and a 24-hour cooling window for brand-new releases.
+  related-projects:
+    - 'pnpm: aube reads pnpm-compatible configuration and existing pnpm workspace files.'
+    - 'npm and Yarn: aube reads shared `.npmrc` registry/auth settings and existing lockfiles.'
+    - 'Bun: aube compares against Bun in benchmarks and supports Bun lockfiles.'
+    - 'mise: the README recommends mise as the primary install and runtime-management path.'
+  sources:
+    - https://api.github.com/repos/jdx/aube
+    - https://api.github.com/repos/jdx/aube/releases
+    - https://aube.jdx.dev/
+    - https://aube.jdx.dev/package-manager/configuration.html
+    - https://aube.jdx.dev/package-manager/registry-auth.html
+    - https://github.com/jdx/aube#readme
+  summary:
+    - >
+      aube is a 2026 Node.js package manager focused on automatic installs before
+      scripts, pnpm-compatible configuration and lockfile workflows, and stricter
+      supply-chain defaults. Its history is short, but unusually dense: the public beta,
+      v1.0 release train, and rapid follow-up releases all happened within months.
+  timeline:
+    - '2026-04: Repository created and v1.0.0-beta.1 published as the first public release.'
+    - >
+      2026-04: Early beta releases added npm distribution, Linux portability, lockfile
+      compatibility, and warm-install improvements.
+    - >
+      2026-05: v1.13 and later releases emphasized supply-chain gates, OSV checks,
+      lifecycle-script content sniffing, Yarn Berry compatibility, and pnpm parity.
+    - '2026-06: v1.18.2 noted the project move to jdx; v1.25.1 refreshed benchmarks.'
+  usage:
+    - >
+      Day-to-day aube usage centers on running the command the developer actually
+      wanted: `aubr test`, `aube test`, `aube exec vitest`, or `aubx cowsay hi`. If
+      dependencies are missing or stale, aube installs first; if they are fresh, it
+      skips straight to the script or binary.
+    - >
+      Configuration is intentionally spread across familiar Node package-manager
+      surfaces: `.npmrc`, user aube config, workspace YAML, `package.json`, environment
+      variables, and CLI flags. The docs state that user config defaults to
+      `~/.config/aube/config.toml` or `$XDG_CONFIG_HOME/aube/config.toml`, while
+      registry tokens and npm-compatible auth live in `.npmrc` or a configured auth
+      file.
 tags:
   - cli
   - dependency-management
@@ -32,33 +109,37 @@ tags:
   - security
 provenance:
   category-sources:
-    - >
-      Official docs: https://aube.jdx.dev/ describes aube as a Node.js package manager
-      that auto-installs dependencies and reads/writes common Node lockfiles.
+    - Aube README describes a package manager for Node.js projects.
     - 'source_facts.description: Fast Node.js package manager'
   display-name-sources:
-    - 'Official homepage title: https://aube.jdx.dev/'
-    - 'source_facts.name: aube'
+    - Aube README and docs title the project `aube`.
+    - source_facts.name=aube
   docs-sources:
-    - 'Official docs homepage: https://aube.jdx.dev/'
-    - >
-      Official docs navigation links Configuration, Settings, Registry and auth, and CLI
-      Reference from https://aube.jdx.dev/
+    - Aube homepage and README link official docs at https://aube.jdx.dev.
+    - Official configuration, registry-auth, settings, and CLI pages are under aube.jdx.dev.
+  history-sources:
+    - https://api.github.com/repos/jdx/aube
+    - https://api.github.com/repos/jdx/aube/releases
+    - https://aube.jdx.dev/
+    - https://aube.jdx.dev/package-manager/configuration.html
+    - https://aube.jdx.dev/package-manager/registry-auth.html
+    - https://github.com/jdx/aube#readme
   repo-sources:
     - >
-      source_facts.repo is already populated with https://github.com/endevco/aube; per
-      instruction, repo was not redetermined and is returned as null.
+      source_facts.repo already contains https://github.com/endevco/aube; prompt
+      requires returning repo as null when source_facts.repo is present.
   tags-sources:
     - >
-      Official docs: https://aube.jdx.dev/ says aube uses npm registry protocols,
-      pnpm-compatible configuration, lockfiles, and security defaults.
-    - 'source_facts.description: Fast Node.js package manager'
-    - 'source_facts.executables: aube, aubr, aubx'
+      Aube README describes package-manager behavior, Node.js runtime switching,
+      lockfile compatibility, and security defaults.
+    - >
+      Aube configuration docs describe pnpm-compatible `.npmrc`, workspace YAML,
+      registry auth, and npm-compatible settings.
 category-confidence: high
 category-path:
   - developer-tools
-  - package-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

@@ -11,6 +11,81 @@ config-file-location:
     - ~/.atoprc
     - /etc/default/atop
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Atop is packaged broadly in Linux distributions and also appears in Homebrew, but
+      its natural home is Linux operations. The input package facts list Debian, Ubuntu,
+      Fedora, Alpine, Arch, Nix, and openSUSE packages, matching a tool used by
+      administrators who need historical process-level data after an incident.
+    - >
+      Its adoption is helped by features that fill gaps between `top`, `sar`, and
+      process accounting: storing daily raw logs, preserving exited-process activity,
+      and showing disk, network, memory, CPU, cgroup, thread, container, and optional
+      GPU details in one terminal interface.
+  package-nerd-significance:
+    - >
+      Atop matters to package nerds because it is one of the rare terminal monitors
+      where packaging, init integration, and log retention policy are core to the tool's
+      value. Installing it is not just dropping a binary; distributions often wire it
+      into periodic logging so historical data exists when the user finally needs it.
+    - >
+      It is also Linux-specific in a principled way. The package exposes kernel
+      counters, cgroups, optional BPF/network modules, and daemonized logging rather
+      than trying to be a lowest-common-denominator cross-platform monitor.
+  project-history:
+    - >
+      The official README credits Gerlof Langeveld as creator and maintainer and
+      describes Atop as an ASCII full-screen performance monitor for Linux. Unlike
+      simple top-style views, Atop records activity for all processes active during an
+      interval, including processes that have already exited before the next screen
+      refresh.
+    - >
+      The project has evolved from live resource display into a broader
+      performance-analysis suite. The README emphasizes daily logging of compressed raw
+      counters for long-term analysis, atopsar reporting from those logs, cgroup-level
+      resource consumption, optional per-process network accounting through netatop or
+      netatop-bpf, and GPU accounting through atopgpud.
+    - >
+      Recent GitHub releases show continued active maintenance: v2.10.0 in January 2024,
+      v2.11.x in 2024 and 2025, and v2.12.x in 2025. The June 2026 man page indicates
+      ongoing documentation updates for live bar graph mode, cgroup mode, raw log
+      writing, JSON/parsable output, and twin mode.
+  related-projects:
+    - >
+      Related tools include top, htop, iotop, pidstat, sysstat/sar, dstat, glances,
+      netatop, netatop-bpf, atopgpud, and atopsar. Atop's distinguishing feature is
+      tying live process/resource display to long-term raw logs.
+  sources:
+    - Official GitHub README.
+    - Official GitHub releases API.
+    - Official atop(1), atoprc(5), and atopsar(1) man pages.
+    - input source_facts.package-manager.
+  summary:
+    - >
+      Atop is an advanced Linux system and process monitor. It combines live terminal
+      monitoring, process accounting, raw log recording, and historical reporting
+      through companion tools such as atopsar.
+  timeline:
+    - '2024-01: GitHub release v2.10.0 published.'
+    - '2024-07: GitHub release v2.11.0 published.'
+    - '2025-04: GitHub release v2.11.1 published.'
+    - '2025-06: GitHub release v2.12.0 published.'
+    - '2025-09: GitHub release v2.12.1 published.'
+    - '2026-06: Official atop(1) man page date reflects continued documentation maintenance.'
+  usage:
+    - >
+      Interactive usage is top-like: run `atop` with an interval and optional samples,
+      switch views, inspect busy resources, and use colors or markers for critical
+      resource pressure. The man page also documents bar graph mode, cgroup text mode,
+      process text mode, parsable or JSON output, raw log writing, and replay from raw
+      files.
+    - >
+      Historical usage centers on `/var/log/atop/atop_YYYYMMDD` raw logs and `atopsar`,
+      which can extract reports from prior Atop recordings or sample live kernel
+      counters. The atoprc manual documents system-wide `/etc/atoprc` and user
+      `~/.atoprc` settings for defaults such as flags, intervals, thresholds, colors,
+      and resource line limits.
 category: system
 package-manager:
   apk: atop

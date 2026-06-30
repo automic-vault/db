@@ -4,6 +4,8 @@ homepage: https://atuin.sh/
 repo: https://github.com/atuinsh/atuin
 docs:
   - https://docs.atuin.sh
+  - https://docs.atuin.sh/cli/configuration/config
+  - https://docs.atuin.sh/cli/guide/sync
 config-file-location:
   unix:
     - $XDG_CONFIG_HOME/atuin/config.toml
@@ -14,6 +16,100 @@ credentials-file-location:
     - $XDG_DATA_HOME/atuin/session
     - ~/.local/share/atuin/key
     - ~/.local/share/atuin/session
+history:
+  adoption-history:
+    - >
+      Atuin's adoption path followed shell users rather than service operators first.
+      The README lists zsh, bash, fish, nushell, xonsh, and PowerShell support, and the
+      quickstart flow is a shell install, `atuin register`, `atuin import auto`, and
+      `atuin sync`.
+    - >
+      The package-manager metadata in this batch shows wide packaging across Alpine,
+      Homebrew, Debian, Fedora, MacPorts, Nix, Arch, Scoop, WinGet, and openSUSE. That
+      spread is a strong package-culture signal: Atuin is not only a Cargo crate or
+      GitHub binary, but a tool distributions expect terminal users to install through
+      their normal system package channels.
+    - >
+      The README also advertises community channels and a contributor graph, while the
+      GitHub API showed roughly thirty thousand stars during this run. Those are not
+      functional requirements, but they explain why shell-history nerds recognize Atuin
+      as part of the modern Rust CLI wave alongside tools that replace long-lived Unix
+      defaults with richer local databases and fuzzy interfaces.
+  package-nerd-significance:
+    - >
+      Atuin is package-nerd catnip because it turns a humble dotfile-era feature into a
+      cross-shell, cross-platform database-backed CLI with state, sync, packaging
+      splits, and XDG-path behavior. Formula metadata has to know not just the
+      executable name, but also the data files that become personal secrets.
+    - >
+      It also illustrates the Rust CLI packaging pattern: upstream publishes release
+      artifacts and installers, but downstream package managers carry the tool for users
+      who want normal upgrades and shell integration without a curl pipe. The separate
+      `atuin-server` formula adds another wrinkle because the same repository produces
+      both a daily interactive CLI and a deployable sync service.
+  project-history:
+    - >
+      The Atuin GitHub repository was created in October 2020. The README frames the
+      project as replacing existing shell history with a SQLite database and adding
+      contextual metadata, search UI, statistics, and optional encrypted synchronization
+      through an Atuin server.
+    - >
+      Atuin's early public release history in the GitHub releases API reaches at least
+      the 0.6 series in 2021, with later version lines moving through v11 in 2022, v17
+      in 2023, and v18 in 2024. By the 18.x series, the project had a large release
+      surface: prebuilt binaries, installers, shell integrations, a self-hosted server
+      binary, documentation, and continuing changes to search, sync, daemon, and
+      AI-related terminal workflows.
+    - >
+      The project kept the local-first model central while expanding the surrounding
+      system. Configuration docs still describe `~/.config/atuin/config.toml` and
+      `~/.local/share/atuin`, while the sync guide documents registering, storing a
+      local encryption key, and using manual or automatic sync.
+  related-projects:
+    - 'atuin-server: the self-hosted sync server split into its own installable binary.'
+    - "SQLite: Atuin's default local history database."
+    - 'fzf-style fuzzy search: the documented inspiration for Atuin fuzzy search syntax.'
+    - >
+      Native shell history in zsh, bash, fish, nushell, xonsh, and PowerShell: the
+      behavior Atuin augments or replaces.
+  sources:
+    - https://api.github.com/repos/atuinsh/atuin
+    - https://api.github.com/repos/atuinsh/atuin/releases
+    - https://docs.atuin.sh/cli/configuration/config/
+    - https://docs.atuin.sh/cli/guide/sync/
+    - https://github.com/atuinsh/atuin#readme
+  summary:
+    - >
+      Atuin is a shell-history replacement that records commands in a local SQLite
+      database, adds command context such as exit status and duration, and optionally
+      syncs encrypted history between machines. It is popular with terminal-heavy users
+      because it modernizes one of the oldest Unix workflows without forcing a specific
+      shell.
+  timeline:
+    - '2020: Atuin repository created on GitHub.'
+    - '2021: Early 0.6 and 0.7 releases published.'
+    - '2022: v0.10 shipped and the project later jumped to v11.'
+    - '2023: v17 release line published.'
+    - '2024: v18 release line began.'
+    - '2026: v18.16.x releases included continued shell, sync, server, and AI workflow changes.'
+  usage:
+    - >
+      Atuin's everyday usage is interactive: bind Ctrl-R or the up arrow to its
+      full-screen history search, import old shell history, and search across commands
+      with filters for exit status, time, current directory, session, host, or
+      workspace. The README example searches successful `make` commands run after a
+      natural-language time expression.
+    - >
+      The configuration docs state that Atuin stores config in
+      `~/.config/atuin/config.toml`, data under `~/.local/share/atuin` unless XDG
+      variables override it, and defaults the local history database to
+      `~/.local/share/atuin/history.db`. The same docs identify the encryption key and
+      session-token paths, which is why package databases should treat those files as
+      credentials rather than mere cache.
+    - >
+      Sync is optional. With one machine it behaves like an encrypted backup; with
+      multiple machines it unifies history across terminals and hosts. Users can use the
+      hosted Atuin service, self-host `atuin-server`, or skip sync entirely.
 category: developer-tools
 package-manager:
   apk: atuin

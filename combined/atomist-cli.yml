@@ -11,6 +11,81 @@ config-file-location:
     - ~/.atomist/client.config-${profile}.json
 credentials-file-location:
   unix: ~/.atomist/client.config.json
+history:
+  adoption-history:
+    - >
+      Adoption was tied to Atomist users rather than general Unix users. The README says
+      users needed an Atomist workspace to interact with the Atomist API, and it points
+      developers to Atomist's getting-started and developer prerequisites docs.
+    - >
+      The CLI mattered most inside Atomist's ecosystem: configuring API keys and
+      workspaces, starting local Software Delivery Machines, fetching GraphQL schema for
+      API clients, and installing Kubernetes utilities into clusters. Homebrew support
+      made it feel like a normal macOS developer tool even though its useful surface
+      depended on Atomist's hosted services.
+  package-nerd-significance:
+    - >
+      Atomist CLI is interesting to package nerds because it is a Homebrew-packaged Node
+      CLI for a hosted developer automation service. The formula installed a local
+      command, but the command's value came from remote Atomist APIs, which is a pattern
+      common to modern DevOps CLIs.
+    - >
+      Its changelog also captures a short, intense ecosystem period: milestone releases
+      in 2018, rapid SemVer increments in 2019, and then little public release activity
+      after the 1.8.x line. That makes it a snapshot of the Atomist SDM era rather than
+      a broadly adopted general-purpose Unix utility.
+  project-history:
+    - >
+      The official README defines the Atomist CLI as a unified command-line tool for
+      interacting with Atomist services. The package is a Node.js command distributed as
+      the npm package @atomist/cli and, for macOS users, as the Homebrew formula
+      atomist-cli.
+    - >
+      The changelog shows an active 2018 to 2019 release train around the Atomist 1.0
+      milestone. Early versions added install messaging, Windows fixes, workspace
+      login/configuration, Homebrew formula support, SDM-related commands, GraphQL
+      schema fetching, and Kubernetes commands. Release 1.8.0 in September 2019
+      deprecated or removed some outdated commands while adding debug/dev flags and
+      changing Kubernetes command naming.
+  related-projects:
+    - >
+      Related official Atomist projects include atomist/atomist-sdm, atomist/sdm-local,
+      and @atomist/automation-client, which the CLI used to configure and run Software
+      Delivery Machine workflows.
+  sources:
+    - Official CHANGELOG.md.
+    - Official README.
+    - Official lib/config.ts.
+    - Official package.json.
+  summary:
+    - >
+      Atomist CLI is the command-line client for Atomist's software delivery automation
+      platform. It connected local developer machines to Atomist services, workspaces,
+      GraphQL schema fetching, Software Delivery Machine development, and Kubernetes
+      helper workflows.
+  timeline:
+    - '2018: Early 0.6.x releases added install messaging and Windows command fixes.'
+    - '2018-08: 1.0.0-M.1 aligned the CLI with Atomist 1.0 milestone dependencies.'
+    - '2018-10: 1.0.0-RC.2 added Homebrew formula template and bash completion.'
+    - '2018-12: 1.1.0 added login and config commands to connect to a workspace.'
+    - >
+      2019-03: 1.2.0 added SDM extension-pack install, provider/workspace creation, and
+      Kubernetes SDM deployment changes.
+    - >
+      2019-09: 1.8.0 added dev/debug flags, changed Kubernetes command naming, and
+      removed or deprecated outdated commands.
+  usage:
+    - >
+      The README documents `atomist config` for local configuration, `atomist kube
+      --environment=MY_CLUSTER` for Kubernetes utilities, `atomist gql-fetch` for
+      downloading a workspace GraphQL schema, and `atomist --help` for command
+      discovery.
+    - >
+      The official source writes an API key and workspace IDs into the user
+      configuration after validating the key and optionally creating one through an
+      Atomist browser login flow. In practice, the CLI was a bootstrap and glue tool:
+      install it, authenticate, connect a workspace, then use it to drive Atomist SDM
+      and platform workflows.
 category: developer-tools
 package-manager:
   brew: atomist-cli
