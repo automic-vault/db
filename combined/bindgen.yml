@@ -8,6 +8,69 @@ docs:
 config-file-location:
   unix: rustfmt.toml in the directory where bindgen is run
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      bindgen became infrastructure rather than just a utility: crates use it from
+      build.rs scripts to follow system headers at build time, while package managers
+      ship the standalone CLI for developers who want generated bindings on demand. The
+      supplied package facts list Homebrew, Debian, Fedora, and Ubuntu packages, and
+      crates.io reports hundreds of millions of crate downloads.
+  package-nerd-significance:
+    - >
+      bindgen matters to package people because it turns native ABI drift into a
+      build-time concern. When a distribution updates libclang, libc headers, OpenSSL,
+      LLVM, or another C dependency, Rust packages that rely on bindgen can regenerate
+      declarations instead of shipping stale vendored bindings.
+    - >
+      It is also a classic example of Rust's pragmatic systems story: memory-safe
+      application code still has to meet decades of C APIs, and bindgen is the conveyor
+      belt between those worlds. Its dependency on libclang makes it sensitive to
+      compiler packaging, SDK paths, sysroots, cross-compilation flags, and
+      reproducible-build environments.
+  project-history:
+    - >
+      The bindgen crate was first published to crates.io in November 2014, before the
+      current rust-lang/rust-bindgen GitHub repository was created in June 2016. The
+      project later became a Rust organization project and documents both a library API
+      and a bindgen command-line tool.
+    - >
+      The README describes bindgen as automatically generating Rust FFI bindings to C
+      and some C++ libraries, and the user guide documents command-line use, libclang
+      requirements, build-script integration, and allow/block-listing. The changelog and
+      GitHub releases show a continuing 0.x release line, with 0.72.1 published in
+      August 2025.
+  related-projects:
+    - >
+      Related Rust FFI projects include cbindgen, which emits C headers from Rust APIs,
+      and clang-sys, which exposes libclang bindings used by bindgen. In downstream
+      packages, bindgen often appears beside cc, pkg-config, and system library
+      development headers.
+  sources:
+    - GitHub API reports repository creation in 2016.
+    - GitHub README documents purpose, user guide, environment variables, and release policy.
+    - >
+      crates.io API reports first crate publication in 2014, latest version, and
+      download adoption.
+    - input.source_facts.package-manager lists distro/package-manager availability.
+  summary:
+    - >
+      bindgen is the Rust ecosystem's standard bridge from C and C++ header files to
+      Rust FFI declarations. It uses Clang/libclang to understand native headers, then
+      emits Rust declarations that let crates call C libraries without hand-maintaining
+      large extern blocks.
+  timeline:
+    - '2014: bindgen crate first appears on crates.io.'
+    - '2016: rust-lang/rust-bindgen GitHub repository is created.'
+    - '2024: 0.70.x and 0.71.x releases continue the modern changelog line.'
+    - '2025: 0.72.1 is published on crates.io and GitHub releases.'
+  usage:
+    - >
+      Typical use is to point bindgen at a wrapper header, pass any needed Clang include
+      or target arguments, and either write the generated Rust to a file or integrate
+      generation into a Cargo build script. The README also documents environment
+      variables such as BINDGEN_EXTRA_CLANG_ARGS for end-user control without patching
+      downstream crates.
 category: developer-tools
 package-manager:
   brew: bindgen
