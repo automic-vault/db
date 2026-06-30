@@ -9,6 +9,74 @@ config-file-location:
     - /usr/lib/sasl2/<application>.conf
     - /etc/sasl2/<application>.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Cyrus SASL became infrastructure rather than an end-user app: mail servers, LDAP
+      stacks, Kerberos/GSSAPI deployments, and other network services could depend on a
+      common SASL implementation. The official feature list shows plugins for local
+      databases, PAM, SQL, LDAP, Active Directory, Kerberos, proxied IMAP auth, and
+      multiple SASL mechanisms.
+    - >
+      Package managers keep Cyrus SASL available because many other packages need
+      headers, libraries, plugins, or command-line utilities such as saslauthd and
+      saslpasswd2. It is the sort of package that appears quietly in dependency trees
+      and becomes visible when authentication fails.
+  package-nerd-significance:
+    - >
+      Cyrus SASL is package-nerd-significant because it is glue code for authentication.
+      It is not flashy, but it explains why mail, LDAP, and Kerberos-capable server
+      packages often drag in sasl libraries, mechanism plugins, and helper daemons.
+  project-history:
+    - >
+      The official documentation ties Cyrus SASL to the Carnegie Mellon Cyrus project,
+      originally an enterprise mail-system effort interested in scalable, administrable
+      systems. Cyrus SASL split out the authentication layer as a reusable library for
+      both client and server writers.
+    - >
+      The modern documentation describes Cyrus SASL as an implementation of the SASL
+      specification, with Cyrus IMAP as one major consumer but not the only one. The
+      package includes the library, authentication daemons and utilities, mechanism
+      plugins, and sysadmin/developer documentation.
+    - >
+      The documentation still carries upgrade material for SASLv1 to SASLv2
+      applications, which reflects the library's long service life across older mail and
+      network-service deployments.
+  related-projects:
+    - Cyrus IMAP uses Cyrus SASL for mail-server authentication support.
+    - >
+      Kerberos, LDAP, PAM, SQL databases, and SASL mechanism RFCs are common integration
+      points.
+    - OpenLDAP and other network services are frequent downstream users of SASL libraries.
+  sources:
+    - https://www.cyrusimap.org/sasl/
+    - https://www.cyrusimap.org/sasl/sasl/installation.html
+    - https://github.com/cyrusimap/cyrus-sasl
+    - https://github.com/cyrusimap/cyrus-sasl#readme
+    - https://raw.githubusercontent.com/cyrusimap/cyrus-sasl/master/doc/legacy/index.html
+    - https://www.rfc-editor.org/rfc/rfc4422
+  summary:
+    - >
+      Cyrus SASL is the Cyrus project's C implementation of the Simple Authentication
+      and Security Layer API. It lets client and server applications plug in
+      authentication mechanisms such as PLAIN, SCRAM, GSSAPI, OTP, EXTERNAL, and others
+      without each application implementing every mechanism itself.
+  timeline:
+    - '1990s: Cyrus project at Carnegie Mellon builds scalable mail-system infrastructure.'
+    - '2006: RFC 4422 defines the modern SASL framework referenced by Cyrus SASL documentation.'
+    - '2016: cyrusimap/cyrus-sasl repository appears on GitHub.'
+    - '2022: Cyrus SASL 2.1.28 documented as the latest stable version on the official site.'
+  usage:
+    - >
+      Administrators use Cyrus SASL by installing the library and desired plugins,
+      selecting mechanisms, configuring application-specific SASL options, and
+      optionally running saslauthd. Application developers link against libsasl and use
+      callbacks or configuration files to let SASL perform authentication and
+      authorization services.
+    - >
+      The installation guide documents application configuration through the
+      application's own config callback or through per-application SASL configuration
+      files such as /usr/lib/sasl/Appname.conf.
 tags:
   - authentication
   - cli
@@ -35,6 +103,13 @@ provenance:
     - Official cyrusimap.org SASL documentation uses the name Cyrus SASL.
   docs-sources:
     - Official cyrusimap.org has dedicated Cyrus SASL documentation and installation guide.
+  history-sources:
+    - https://www.cyrusimap.org/sasl/
+    - https://www.cyrusimap.org/sasl/sasl/installation.html
+    - https://github.com/cyrusimap/cyrus-sasl
+    - https://github.com/cyrusimap/cyrus-sasl#readme
+    - https://raw.githubusercontent.com/cyrusimap/cyrus-sasl/master/doc/legacy/index.html
+    - https://www.rfc-editor.org/rfc/rfc4422
   repo-sources:
     - >
       source_facts.repo already has https://github.com/cyrusimap/cyrus-sasl; per
@@ -49,5 +124,6 @@ category-path:
   - authentication
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
