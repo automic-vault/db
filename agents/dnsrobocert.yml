@@ -10,6 +10,63 @@ config-file-location:
 credentials-file-location:
   unix:
     - /etc/dnsrobocert/config.yml
+history:
+  adoption-history:
+    - >
+      DNSroboCert is packaged for Homebrew, but its official user guide presents pipx
+      and Docker as the main installation paths. That fits its audience: self-hosters
+      and operators who want long-running certificate automation rather than a one-shot
+      ACME client invocation.
+  package-nerd-significance:
+    - >
+      DNSroboCert is interesting to package maintainers because it wraps several moving
+      parts that usually leak into local scripts: Certbot, Lexicon provider plugins,
+      provider credentials, renewal cadence, Docker volumes, and certificate propagation
+      hooks. Its package surface is small, but its runtime configuration is
+      security-sensitive.
+  project-history:
+    - >
+      The GitHub repository was created in June 2017, and the first GitHub release,
+      1.0.0, followed later that month. The official documentation describes the design
+      as orchestration of Certbot for certificate issuance and Lexicon for standardized
+      DNS provider updates.
+    - >
+      The project grew around the operational gap left by HTTP/TLS challenge tools:
+      private services, non-web services, wildcard certificates, and deployments where
+      opening an inbound web challenge is not practical. Its documentation emphasizes
+      Docker support, dynamic reload of configuration, regular renewal, hooks, and DNS
+      alias mode.
+  related-projects:
+    - >
+      Certbot is the underlying ACME client named by the docs. Lexicon provides the DNS
+      provider API layer. The docs compare DNSroboCert's use case with reverse-proxy
+      automation such as Traefik and nginx-proxy companion, and mention acme.sh DNS
+      alias mode as related DNS challenge practice.
+  sources:
+    - https://dnsrobocert.readthedocs.io/en/latest/
+    - https://dnsrobocert.readthedocs.io/en/latest/user_guide.html
+    - https://dnsrobocert.readthedocs.io/en/latest/configuration_reference.html
+    - https://api.github.com/repos/adferrand/dnsrobocert
+    - https://api.github.com/repos/adferrand/dnsrobocert/releases?per_page=100
+    - https://formulae.brew.sh/formula/dnsrobocert
+  summary:
+    - >
+      DNSroboCert is a certificate automation tool for Let's Encrypt DNS-01 challenges.
+      Its niche is coordinating ACME issuance, DNS provider credentials, renewal, and
+      post-renewal hooks in one YAML-driven service.
+  timeline:
+    - '2017: GitHub repository created.'
+    - '2017: First GitHub release, 1.0.0, published.'
+    - '2020: Documentation examples use the 3.0.0 installation flow and container paths.'
+    - >
+      2026: v3.27.0 release published and Read the Docs displays DNSroboCert 3.27.0
+      documentation.
+  usage:
+    - >
+      Users maintain a central YAML file, typically /etc/dnsrobocert/config.yml, with
+      acme, profiles, and certificates sections. Profiles hold DNS provider credentials
+      for Lexicon, certificates reference those profiles, and the service validates the
+      file before issuing or renewing certificates.
 tags:
   - acme
   - automation
@@ -38,6 +95,13 @@ provenance:
     - >
       source_facts.homepage points to official DNSroboCert documentation; official
       GitHub Pages documentation is also maintained for the project.
+  history-sources:
+    - https://dnsrobocert.readthedocs.io/en/latest/
+    - https://dnsrobocert.readthedocs.io/en/latest/user_guide.html
+    - https://dnsrobocert.readthedocs.io/en/latest/configuration_reference.html
+    - https://api.github.com/repos/adferrand/dnsrobocert
+    - https://api.github.com/repos/adferrand/dnsrobocert/releases?per_page=100
+    - https://formulae.brew.sh/formula/dnsrobocert
   repo-sources:
     - >
       Official DNSroboCert documentation and package metadata identify
@@ -53,5 +117,6 @@ category-path:
   - dns
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

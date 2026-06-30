@@ -9,6 +9,81 @@ config-file-location:
   unix:
     - dnscrypt-proxy.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      dnscrypt-proxy has unusually broad package-manager coverage for a DNS privacy
+      daemon: it appears in Homebrew, Debian and Ubuntu, Fedora/DNF, Arch, Alpine,
+      MacPorts, Nix, Chocolatey, Scoop, Winget, and openSUSE-style packaging. That
+      spread reflects both the cross-platform Go implementation and the recurring
+      sysadmin need for a local encrypted-DNS forwarder.
+    - >
+      The project also became part of a wider DNS privacy ecosystem around public
+      resolver lists, DNS stamp configuration, and anonymized DNS relays. Those
+      surrounding lists and conventions matter to adoption because they let packaged
+      clients work from shared resolver metadata rather than hard-coded vendor
+      endpoints.
+  package-nerd-significance:
+    - >
+      dnscrypt-proxy is significant because it carried DNSCrypt from protocol idea to
+      reinstallable infrastructure component. It is the package people reach for when
+      they want encrypted DNS as a local Unix service rather than as a browser feature.
+    - >
+      It also marks the period when DNS privacy packaging stopped being just resolver
+      software and started including local forwarders, public resolver metadata, relay
+      lists, and policy knobs such as filtering and blocklists.
+  project-history:
+    - >
+      The project grew out of DNSCrypt, a protocol for authenticating communication
+      between DNS clients and resolvers. The DNSCrypt project documents the protocol as
+      a way to protect DNS traffic from spoofing and tampering, and dnscrypt-proxy
+      became the practical client-side program that made that protocol usable on
+      Unix-like systems, Windows, and package-managed desktops.
+    - >
+      The modern dnscrypt-proxy repository is written in Go and presents itself as a
+      flexible DNS proxy rather than a single-protocol experiment. Its documentation and
+      repository cover DNSCrypt, DNS-over-HTTPS, relay support, filtering, caching, and
+      service installation, which is why it has remained the default packaged client for
+      users who want encrypted recursive DNS without running a full resolver stack.
+  related-projects:
+    - >
+      Related projects include dnscrypt-wrapper on the server side, DNSCrypt
+      resolver-list repositories, dnsmasq and Unbound as local forwarders that can chain
+      to dnscrypt-proxy, and dnsdist for higher-volume DNS traffic management.
+  sources:
+    - https://dnscrypt.info/
+    - https://github.com/DNSCrypt/dnscrypt-proxy
+    - https://github.com/DNSCrypt/dnscrypt-proxy/wiki
+    - https://github.com/DNSCrypt/dnscrypt-proxy/releases
+    - https://github.com/DNSCrypt/dnscrypt-resolvers
+    - https://formulae.brew.sh/formula/dnscrypt-proxy
+  summary:
+    - >
+      dnscrypt-proxy is the long-running client proxy for encrypted DNS in the DNSCrypt
+      project. It sits between local applications and upstream resolvers, giving
+      package-manager users a daemonized way to use DNSCrypt and related encrypted-DNS
+      transports without changing every application.
+  timeline:
+    - >
+      2011: DNSCrypt public resolver infrastructure and resolver metadata begin the
+      long-running public-list tradition.
+    - '2017: The current Go-based dnscrypt-proxy release line reaches public 2.x releases.'
+    - >
+      2019: The DNSCrypt project documents anonymized DNSCrypt relays, extending the
+      ecosystem beyond simple client-to-resolver encryption.
+    - >
+      2020s: dnscrypt-proxy remains packaged across major Unix, Windows, and macOS
+      package managers as a local encrypted-DNS daemon.
+  usage:
+    - >
+      Typical use is to run dnscrypt-proxy as a local service listening on localhost or
+      a LAN address, then point the operating system, dnsmasq, Unbound, or another
+      resolver toward it. The package is popular with users who want encrypted upstream
+      DNS, filtering, cache control, and resolver selection from a single small daemon.
+    - >
+      In package-manager culture, dnscrypt-proxy is also the command-line counterpart to
+      GUI DNS privacy settings: it gives power users a text configuration file, service
+      manager integration, and auditable resolver lists.
 tags:
   - cli
   - dns
@@ -37,6 +112,13 @@ provenance:
     - >
       source_facts.homepage is the official DNSCrypt site; official GitHub wiki/README
       provide project documentation.
+  history-sources:
+    - https://dnscrypt.info/
+    - https://github.com/DNSCrypt/dnscrypt-proxy
+    - https://github.com/DNSCrypt/dnscrypt-proxy/wiki
+    - https://github.com/DNSCrypt/dnscrypt-proxy/releases
+    - https://github.com/DNSCrypt/dnscrypt-resolvers
+    - https://formulae.brew.sh/formula/dnscrypt-proxy
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/DNSCrypt/dnscrypt-proxy; per
@@ -52,5 +134,6 @@ category-path:
   - privacy
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -12,6 +12,75 @@ config-file-location:
     - /etc/dnsdist.yml
     - /usr/local/etc/dnsdist.yml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      dnsdist spread through the same operator channels as PowerDNS Authoritative Server
+      and PowerDNS Recursor: distribution packages, appliance-like DNS deployments, and
+      SRE runbooks for large resolver fleets. Its Homebrew presence is useful for local
+      testing, but its real adoption story is production DNS traffic management.
+    - >
+      The project became especially relevant as DNS operators needed middle layers for
+      DDoS mitigation, policy routing, encrypted-DNS front doors, and blue-green
+      resolver migrations without changing every backend server.
+  package-nerd-significance:
+    - >
+      dnsdist matters because it is not just another DNS server package; it is the DNS
+      traffic switchboard between clients and server packages. It gives package
+      collections a purpose-built tool for the messy operational layer that otherwise
+      lives in custom iptables, HAProxy, or resolver-specific hacks.
+    - >
+      It also connects several packaging worlds: PowerDNS source releases, distro
+      service files, Homebrew lab installs, Lua scripting, Prometheus-style
+      observability, and modern encrypted-DNS endpoints.
+  project-history:
+    - >
+      PowerDNS introduced dnsdist in 2015 as a small, DNS-specific load balancer rather
+      than a generic TCP/UDP proxy. The goal was to understand DNS enough to route,
+      drop, rate-limit, and inspect traffic while staying fast enough for resolver and
+      authoritative-server front ends.
+    - >
+      The 1.0.0 release in 2016 made dnsdist a stable part of the PowerDNS family.
+      Subsequent documentation emphasized dynamic configuration, Lua rules, packet
+      caches, health checks, DNS-over-TLS and DNS-over-HTTPS handling, metrics, and
+      operational controls for hostile or high-volume DNS traffic.
+  related-projects:
+    - >
+      Related projects include PowerDNS Authoritative Server and PowerDNS Recursor as
+      backend peers, Unbound and BIND as alternative backends, dnsmasq for small-network
+      forwarding, and dnscrypt-proxy for encrypted-DNS client forwarding.
+  sources:
+    - https://www.dnsdist.org/
+    - https://www.dnsdist.org/getting-started.html
+    - https://www.dnsdist.org/changelog.html
+    - https://blog.powerdns.com/2015/03/11/introducing-dnsdist
+    - https://blog.powerdns.com/2016/04/21/dnsdist-1-0-0-released
+    - https://github.com/PowerDNS/pdns
+    - https://formulae.brew.sh/formula/dnsdist
+  summary:
+    - >
+      dnsdist is PowerDNS's DNS-aware load balancer and policy engine. It is used to
+      place rules, caching, traffic steering, and abuse mitigation in front of recursive
+      or authoritative DNS server pools.
+  timeline:
+    - '2015-03-11: PowerDNS publishes its introduction to dnsdist.'
+    - '2016-04-21: dnsdist 1.0.0 is released.'
+    - >
+      2016-12: dnsdist 1.1.0 follows with more production-oriented features and feedback
+      from deployments.
+    - >
+      2020s: dnsdist continues as part of the PowerDNS/pdns source tree and has its own
+      documentation site and package identity.
+  usage:
+    - >
+      Common deployments place dnsdist on the edge of a resolver or authoritative
+      cluster, where it load-balances queries, drops abusive clients, applies Lua
+      selectors, keeps packet-cache state, exposes metrics, and forwards healthy traffic
+      to backend DNS servers.
+    - >
+      For package users, dnsdist is the sharp DNS operations tool: install the package,
+      write a small rules/config file, and get DNS-specific traffic control without
+      composing a generic proxy with DNS scripts.
 category: networking
 package-manager:
   apk: dnsdist
@@ -35,5 +104,14 @@ executables:
   - dnsdist
 provenance:
   formula: dnsdist
+  history-sources:
+    - https://www.dnsdist.org/
+    - https://www.dnsdist.org/getting-started.html
+    - https://www.dnsdist.org/changelog.html
+    - https://blog.powerdns.com/2015/03/11/introducing-dnsdist
+    - https://blog.powerdns.com/2016/04/21/dnsdist-1-0-0-released
+    - https://github.com/PowerDNS/pdns
+    - https://formulae.brew.sh/formula/dnsdist
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
