@@ -7,6 +7,73 @@ docs:
 config-file-location:
   unix: Cargo.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is specialized but visible: the supplied package-manager facts list
+      Homebrew and Nix packages, and crates.io records tens of thousands of downloads.
+      It serves maintainers who tune feature flags more often than the average Cargo
+      user.
+    - >
+      The addition of `cargo features prune`, documented in the README, moves the tool
+      beyond manual toggling toward automated feature minimization with safeguards for
+      known false positives.
+  package-nerd-significance:
+    - >
+      cargo-features-manager is notable because Cargo feature sets are one of Rust
+      packaging's more subtle sources of compile time, dependency surface, and behavior
+      changes. A TUI for toggling and pruning features makes that metadata more
+      inspectable than hand-editing arrays in Cargo.toml.
+    - >
+      Its false-positive list and keep configuration show the hard part of feature
+      minimization: not every unused-looking feature is semantically safe to remove.
+  project-history:
+    - >
+      The GitHub repository was created in April 2023 and the crate was published on
+      crates.io days later. The README describes a TUI-like CLI that lets users view
+      available dependency features and toggle them, with changes written directly back
+      to Cargo.toml.
+    - >
+      The README now states that the project has moved to Tangled, while crates.io
+      metadata also lists Tangled as the homepage and repository. The GitHub repository
+      remains the documentation URL supplied by the package input, but the upstream
+      project identity has shifted.
+  related-projects:
+    - Cargo.toml is the manifest edited by cargo-features-manager.
+    - >
+      Cargo features and optional dependencies are the package metadata concepts the
+      tool visualizes and edits.
+    - >
+      Tangled is the current upstream hosting target referenced by the README and
+      crates.io metadata.
+  sources:
+    - https://api.github.com/repos/ToBinio/cargo-features-manager
+    - https://crates.io/api/v1/crates/cargo-features-manager
+    - https://github.com/ToBinio/cargo-features-manager#readme
+    - https://raw.githubusercontent.com/ToBinio/cargo-features-manager/master/README.md
+    - input.source_facts.package-manager
+  summary:
+    - >
+      cargo-features-manager is a Rust Cargo helper that provides a terminal UI for
+      enabling, disabling, and pruning dependency features in Cargo.toml. It focuses on
+      a pain point that appears once Rust projects accumulate optional dependencies and
+      feature-driven configuration.
+  timeline:
+    - '2023: ToBinio/cargo-features-manager GitHub repository created.'
+    - '2023: cargo-features-manager crate first published on crates.io.'
+    - >
+      2026: crates.io metadata points homepage and repository fields at Tangled and
+      shows the 0.12.0 release line.
+  usage:
+    - >
+      Users run `cargo features` in a project root to open a dependency selector and
+      feature selector, then toggle features with keyboard navigation. `cargo features
+      -d <dependency>` jumps directly to a dependency's feature selector.
+    - >
+      `cargo features prune` attempts to disable features not required for compilation,
+      with flags such as `--dry-run`, `--only-dependency`, `--skip-tests`, and a
+      Cargo.toml `cargo-features-manager.keep` section for features that should be
+      preserved.
 category: developer-tools
 package-manager:
   brew: cargo-features-manager

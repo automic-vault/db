@@ -5,6 +5,62 @@ docs:
   - https://codeberg.org/jplatte/cargo-depgraph#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is niche but broad enough for distribution packaging: the supplied
+      package-manager facts list Homebrew, Nix, and Arch Linux packages, and crates.io
+      records tens of thousands of downloads. That puts cargo-depgraph in the class of
+      Rust ecosystem utilities that are not core workflow tools, but are useful enough
+      to be packaged by Unix-oriented distributions.
+  package-nerd-significance:
+    - >
+      Package nerds care about cargo-depgraph because it exposes Cargo resolver state
+      visually: optional dependencies, target-specific dependencies, build dependencies,
+      dev dependencies, and transitive optional edges become inspectable without
+      hand-reading `Cargo.lock` and `Cargo.toml` trees.
+    - >
+      It is also a good example of the Rust community's habit of building small Cargo
+      subcommands around `cargo metadata`, then letting traditional Unix tools such as
+      Graphviz handle the final representation.
+  project-history:
+    - >
+      The crate was published on crates.io in July 2020 with the description that it
+      creates dependency graphs for Cargo projects using cargo metadata and Graphviz.
+      Its official repository metadata has since appeared under jplatte's Codeberg
+      account, while crates.io still records the older SourceHut repository URL,
+      suggesting a repository-hosting move rather than a change in purpose.
+    - >
+      The README's examples focus on piping `cargo depgraph` into Graphviz's `dot`, and
+      the documented output legend shows the project grew around Cargo-specific
+      semantics rather than generic graph rendering.
+  related-projects:
+    - Cargo metadata is the data source that lets cargo-depgraph inspect Rust package graphs.
+    - Graphviz is the rendering toolchain used by the README examples.
+    - >
+      Other Cargo inspection tools, such as cargo tree, overlap in dependency
+      exploration but present the graph as text rather than DOT output.
+  sources:
+    - https://codeberg.org/api/v1/repos/jplatte/cargo-depgraph
+    - https://codeberg.org/jplatte/cargo-depgraph#readme
+    - https://crates.io/api/v1/crates/cargo-depgraph
+    - input.source_facts.package-manager
+  summary:
+    - >
+      cargo-depgraph is a Cargo subcommand for turning a Rust package's Cargo metadata
+      into Graphviz dependency graphs. It fills the small but durable need to see
+      feature, target, dev, build, optional, and transitive dependency structure as an
+      image or DOT graph.
+  timeline:
+    - '2020: cargo-depgraph crate first published on crates.io.'
+    - '2023: crates.io metadata for cargo-depgraph last updated at version 1.6.0.'
+    - '2026: Codeberg repository metadata lists jplatte/cargo-depgraph as an active repository.'
+  usage:
+    - >
+      Users run `cargo depgraph [options] | dot -Tpng > graph.png` from a Cargo project,
+      with Graphviz installed locally or another DOT renderer available. Common options
+      include `--all-deps` and `--all-deps --dedup-transitive-deps` for fuller
+      dependency views.
 tags:
   - cargo
   - cli
@@ -34,6 +90,11 @@ provenance:
     - >
       Official Codeberg README describes cargo-depgraph installation, usage, Graphviz
       output, options discovery, and output explanation.
+  history-sources:
+    - https://codeberg.org/api/v1/repos/jplatte/cargo-depgraph
+    - https://codeberg.org/jplatte/cargo-depgraph#readme
+    - https://crates.io/api/v1/crates/cargo-depgraph
+    - input.source_facts.package-manager
   repo-sources:
     - >
       Official sourcehut notice branch says the project moved to
@@ -48,5 +109,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

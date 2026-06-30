@@ -6,6 +6,68 @@ docs:
   - https://github.com/LukeMathWalker/cargo-chef#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      cargo-chef spread through Rust backend and CI workflows because Docker build cache
+      misses are especially painful for projects with large dependency graphs. The
+      project publishes a prebuilt Docker image, and the crate has accumulated millions
+      of crates.io downloads, showing adoption beyond a one-off example tool.
+    - >
+      Packaging in Homebrew, apk, and Nix reflects its use by developers who want the
+      subcommand available outside pure cargo-install workflows.
+  package-nerd-significance:
+    - >
+      For package managers, cargo-chef is interesting because it turns Cargo metadata
+      into a build-cache artifact. It is a small CLI, but it sits directly at the
+      intersection of Cargo workspaces, lockfiles, reproducible images, and CI build
+      economics.
+    - >
+      It is also a recognizable Rust ecosystem answer to the `requirements.txt`-style
+      dependency layer used in other language containers.
+  project-history:
+    - >
+      The project was created by Luca Palmieri in 2020 and its README says it was
+      initially developed for the deployment chapter of Zero to Production in Rust. The
+      upstream repository describes the command as a way to speed up Rust Docker builds
+      using Docker layer caching.
+    - >
+      Its design codified a pattern Rust teams were already hand-rolling in Dockerfiles:
+      copy manifests first, build dependencies, then copy application sources.
+      cargo-chef made that approach workspace-aware and less fragile by generating a
+      recipe from Cargo.toml and Cargo.lock inputs.
+  related-projects:
+    - Cargo is the package manager and build tool that cargo-chef extends.
+    - >
+      Docker and the official Rust container images are the primary environment targeted
+      by the documented workflow.
+    - Zero to Production in Rust is the book project that originally motivated the tool.
+  sources:
+    - https://api.github.com/repos/LukeMathWalker/cargo-chef
+    - https://crates.io/api/v1/crates/cargo-chef
+    - https://github.com/LukeMathWalker/cargo-chef#readme
+  summary:
+    - >
+      cargo-chef is a Cargo subcommand for making Rust container builds friendlier to
+      Docker layer caching. It analyzes a project into a dependency recipe, builds that
+      recipe in an earlier image layer, and lets later source-code-only changes reuse
+      the expensive dependency build.
+  timeline:
+    - '2020: GitHub repository created and first crates.io release published.'
+    - '2020: README documents its origin in Zero to Production in Rust.'
+    - >
+      2025-2026: Release stream continues through the 0.1.x series, with crates.io
+      showing more than three million downloads by June 2026.
+  usage:
+    - >
+      A typical workflow runs `cargo chef prepare --recipe-path recipe.json` after
+      copying the source tree in a planner stage, then `cargo chef cook --release
+      --recipe-path recipe.json` in a builder stage before copying the full application
+      code.
+    - >
+      The README emphasizes that the tool is mainly intended for container builds, not
+      normal local development, because it writes the project skeleton needed to cache
+      dependencies.
 category: developer-tools
 package-manager:
   apk: cargo-chef

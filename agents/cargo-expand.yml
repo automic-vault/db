@@ -8,6 +8,73 @@ config-file-location:
     - $CARGO_HOME/config.toml
     - ~/.cargo/config.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      cargo-expand is widely adopted: it is packaged by Homebrew, Nix, Arch Linux, and
+      Alpine in the supplied facts, and crates.io records millions of downloads. Its
+      GitHub repository also has thousands of stars, strong evidence that it is a
+      mainstream Rust diagnostic tool.
+    - >
+      Its adoption tracks the rise of procedural macros and derive-heavy frameworks in
+      Rust. When generated code is hard to reason about, `cargo expand` became the
+      common first tool for understanding what the compiler is seeing.
+  package-nerd-significance:
+    - >
+      cargo-expand matters because macro expansion is one of Rust packaging's hidden
+      dependency surfaces: derives and procedural macros can add trait impls, bounds,
+      helper items, and code paths that are invisible in source form. Seeing that
+      generated code helps maintainers debug builds, features, and public API behavior.
+    - >
+      It is also a classic Cargo-subcommand success story: a thin, focused wrapper
+      around a compiler capability became the community default because it matched how
+      Rust developers actually inspect package code.
+  project-history:
+    - >
+      The GitHub repository and crates.io crate were both created in June 2016. The
+      README describes cargo-expand as a wrapper around `cargo rustc --profile=check --
+      -Zunpretty=expanded`, printing the result of macro expansion and derive expansion
+      for the current crate.
+    - >
+      The project was created by David Tolnay, whose broader Rust tooling ecosystem
+      includes heavily used macro and parsing crates. cargo-expand became especially
+      useful as Rust derive macros, procedural macros, and macro-heavy libraries became
+      common in everyday Rust code.
+    - >
+      The README includes an explicit disclaimer that macro expansion to text is lossy
+      and intended as a debugging aid, not a promise that the printed code can be
+      compiled or behaves exactly like the original.
+  related-projects:
+    - rustc provides the underlying macro expansion output exposed by cargo-expand.
+    - rustfmt is used to make expanded output more readable when installed.
+    - >
+      syn is referenced in README screenshots and is part of the wider Rust procedural
+      macro tooling ecosystem.
+  sources:
+    - https://api.github.com/repos/dtolnay/cargo-expand
+    - https://crates.io/api/v1/crates/cargo-expand
+    - https://github.com/dtolnay/cargo-expand#readme
+    - https://raw.githubusercontent.com/dtolnay/cargo-expand/master/README.md
+    - input.source_facts.package-manager
+  summary:
+    - >
+      cargo-expand is the standard Rust developer tool for seeing macro-expanded code
+      from a Cargo project. It wraps compiler expansion output in an ergonomic Cargo
+      subcommand and formats the result for human inspection.
+  timeline:
+    - '2016: dtolnay/cargo-expand GitHub repository created.'
+    - '2016: cargo-expand crate first published on crates.io.'
+    - '2026: crates.io metadata shows active releases in the 1.0.x line.'
+  usage:
+    - >
+      Users run `cargo expand` in a Cargo project to print expanded code. Common
+      variants include expanding a test target, selecting a module or item path,
+      disabling rustfmt with `--ugly`, or using configuration under the `[expand]`
+      section of `$CARGO_HOME/config.toml`.
+    - >
+      cargo-expand optionally formats output with rustfmt and can use themes or paging
+      configured in Cargo's user config file, making compiler-oriented output easier to
+      read in terminals.
 tags:
   - cargo
   - cli
@@ -35,6 +102,12 @@ provenance:
     - >
       Official GitHub repository README at https://github.com/dtolnay/cargo-expand
       documents usage, options, and configuration.
+  history-sources:
+    - https://api.github.com/repos/dtolnay/cargo-expand
+    - https://crates.io/api/v1/crates/cargo-expand
+    - https://github.com/dtolnay/cargo-expand#readme
+    - https://raw.githubusercontent.com/dtolnay/cargo-expand/master/README.md
+    - input.source_facts.package-manager
   repo-sources:
     - source_facts.repo is already populated; prompt requires repo:null when present.
   tags-sources:
@@ -46,5 +119,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

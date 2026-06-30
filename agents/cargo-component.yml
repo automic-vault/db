@@ -8,6 +8,72 @@ config-file-location:
     - Cargo.toml
     - .vscode/settings.json
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption has followed the WebAssembly component-model community rather than
+      general Rust CLI usage. crates.io metadata shows hundreds of thousands of
+      downloads by June 2026, and Homebrew and Nix packaging make it easier to install
+      for component-model experiments and CI builds.
+    - >
+      The README notes that Rust's upstream wasm32-wasip2 target now produces components
+      for some WASI use cases, leaving cargo-component most relevant where projects need
+      non-WASI WIT interfaces, component dependencies, or features not yet covered by
+      plain Cargo.
+  package-nerd-significance:
+    - >
+      cargo-component is significant because it treats WebAssembly components as
+      packageable dependencies inside Cargo projects. For package ecosystem watchers, it
+      is a live example of how Rust's package manager might evolve when language
+      packages and portable component interfaces meet.
+    - >
+      It also marks a transitional period: component-model tooling is moving quickly,
+      and the README explicitly frames cargo-component as useful until more support
+      lands in the Rust compiler and Cargo.
+  project-history:
+    - >
+      The repository was created in 2022 under the Bytecode Alliance. Its README
+      describes cargo-component as an experimental attempt to imagine what first-class
+      Rust support for WebAssembly components might look like before Cargo itself has
+      native component-model support.
+    - >
+      The project grew alongside Bytecode Alliance work on the WebAssembly component
+      model, wit-bindgen, Wasmtime, and WASI Preview 2. It uses Cargo.toml metadata and
+      generates Rust bindings so component interfaces can be used in a Cargo-like
+      development loop.
+  related-projects:
+    - The WebAssembly component model defines the component format cargo-component targets.
+    - >
+      wit-bindgen generates bindings for WIT interfaces and is closely related to
+      cargo-component's generated Rust bindings.
+    - Wasmtime supplies WASI adapter work referenced by the README.
+    - >
+      Rust's wasm32-wasip2 target is an upstream alternative for some WASI-only
+      component builds.
+  sources:
+    - https://api.github.com/repos/bytecodealliance/cargo-component
+    - https://crates.io/api/v1/crates/cargo-component
+    - https://github.com/bytecodealliance/cargo-component#readme
+  summary:
+    - >
+      cargo-component is a Bytecode Alliance Cargo subcommand for creating WebAssembly
+      components from Rust projects. It exists to bridge Cargo workflows with the
+      WebAssembly component model, WIT interfaces, generated bindings, and component
+      dependencies.
+  timeline:
+    - '2021: crates.io records an initial cargo-component publication.'
+    - '2022: GitHub repository created under bytecodealliance/cargo-component.'
+    - '2024: README references Rust 1.82 adding the upstream wasm32-wasip2 target.'
+    - '2025: GitHub releases show the 0.21.x series.'
+  usage:
+    - >
+      The documented flow starts with `cargo component new --lib <name>` or a command
+      component, creates a `wit/world.wit` interface, implements generated bindings in
+      Rust, and builds with `cargo component build`.
+    - >
+      The tool can also add and update component interface dependencies through
+      Cargo.toml, and it supports adapter configuration in
+      `[package.metadata.component]` for WASI Preview 1 to Preview 2 adaptation.
 tags:
   - cargo
   - cargo-subcommand
@@ -37,6 +103,10 @@ provenance:
       Official Bytecode Alliance GitHub README at
       https://github.com/bytecodealliance/cargo-component#readme is the primary
       documentation surface.
+  history-sources:
+    - https://api.github.com/repos/bytecodealliance/cargo-component
+    - https://crates.io/api/v1/crates/cargo-component
+    - https://github.com/bytecodealliance/cargo-component#readme
   repo-sources:
     - source_facts.repo is already populated; prompt instructs returning repo as null.
   tags-sources:
@@ -48,5 +118,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

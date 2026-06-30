@@ -7,6 +7,76 @@ docs:
 config-file-location:
   unix: Cargo.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption followed the Rust performance-tooling path: the tool became a quick
+      install for developers who wanted Linux `perf`, macOS tracing, or Windows
+      collection wrapped in one Cargo-friendly command.
+    - >
+      By 2026 the crate had hundreds of thousands of crates.io downloads and the GitHub
+      repository had several thousand stars, which is notable for a narrow profiling
+      utility.
+  package-nerd-significance:
+    - >
+      cargo-flamegraph is a good example of the Rust ecosystem turning a well-known
+      systems technique into a package-manager-native workflow. Its package-nerd
+      importance is less the flame graph idea itself and more the way it hides the
+      fiddly collector/postprocessor chain behind Cargo subcommands.
+    - >
+      It also connects several Rust performance projects: Cargo as the invocation layer,
+      Inferno as the renderer, platform sampling tools as data sources, and newer
+      alternatives such as Samply for interactive profiling.
+  project-history:
+    - >
+      The flamegraph-rs repository was created in March 2019 and published the
+      `flamegraph` crate at version 0.1.0 the same day. The README presents the project
+      as a Rust-powered flamegraph generator with additional Cargo support, built on Jon
+      Gjengset's Inferno Rust flamegraph library.
+    - >
+      The project ships both `flamegraph` and `cargo-flamegraph` binaries. That split
+      let it serve Rust developers through Cargo's subcommand convention while remaining
+      useful for profiling non-Rust executables.
+  related-projects:
+    - Inferno is the Rust flamegraph rendering library used underneath flamegraph-rs.
+    - >
+      Linux `perf`, Apple `xctrace`, Windows DTrace, and Blondie are the platform
+      collection backends documented by the project.
+    - >
+      Samply is called out by the README as a related Rust profiler with a Firefox
+      Profiler UI.
+  sources:
+    - https://api.github.com/repos/flamegraph-rs/flamegraph
+    - https://crates.io/crates/flamegraph
+    - https://github.com/flamegraph-rs/flamegraph#readme
+  summary:
+    - >
+      cargo-flamegraph is the Cargo-facing entry point for flamegraph-rs/flamegraph, a
+      Rust implementation of a flame graph workflow that can profile Cargo projects as
+      well as arbitrary binaries.
+    - >
+      Its appeal is pragmatic: it turns the usual sampler-plus-postprocessor performance
+      workflow into `cargo flamegraph`, producing an SVG flame graph without requiring
+      users to wire Perl scripts and shell pipelines together by hand.
+  timeline:
+    - '2019-03-07: GitHub repository created and `flamegraph` 0.1.0 published to crates.io.'
+    - >
+      2019: Project launches with both `flamegraph` and `cargo-flamegraph` binaries for
+      general and Cargo-specific profiling.
+    - >
+      2020s: README documents Linux `perf`, macOS tracing, and Windows backends,
+      broadening the tool beyond its original Unix-like profiling niche.
+    - '2026: Repository remains active and the crate has more than 800,000 crates.io downloads.'
+  usage:
+    - >
+      For Rust projects, users commonly run `cargo flamegraph`, which defaults to
+      profiling a release build. The README also documents profiling specific binaries,
+      examples, tests, benchmarks, existing processes, and arbitrary executables via
+      `flamegraph -- /path/to/binary`.
+    - >
+      The tool relies on platform profilers: Linux uses `perf`, macOS uses `xctrace`,
+      and Windows support is available through the Blondie backend or DTrace when
+      present.
 category: developer-tools
 package-manager:
   apk: cargo-flamegraph

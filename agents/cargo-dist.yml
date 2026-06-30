@@ -11,6 +11,84 @@ config-file-location:
     - dist-workspace.toml
     - dist.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      cargo-dist grew as Rust CLI authors wanted repeatable binary releases without
+      maintaining bespoke GitHub Actions matrices and installer scripts. The supplied
+      package-manager facts show packaging across Homebrew, Debian/Ubuntu as `dist`,
+      Nix, Arch Linux, and winget, indicating adoption beyond the Rust-only install
+      path.
+    - >
+      crates.io records more than one hundred thousand downloads, while the GitHub
+      repository has thousands of stars. That combination of registry use,
+      cross-platform package-manager presence, and generated CI support makes it one of
+      the more visible Rust-origin release automation tools.
+  package-nerd-significance:
+    - >
+      cargo-dist matters to package nerds because it treats release artifacts as
+      first-class package metadata: archives, installers, checksums, changelogs,
+      manifests, hosting locations, and package-manager publishing become a repeatable
+      graph instead of ad hoc release notes.
+    - >
+      It also captures a common Rust ecosystem pattern: a tool starts as a Cargo
+      subcommand, then expands into broader developer tooling while keeping Cargo
+      workspace integration as a core path.
+  project-history:
+    - >
+      The cargo-dist crate appeared on crates.io in September 2022, and the GitHub
+      repository was created in October 2022. Its early identity was tightly
+      Rust-centered, but the official README now labels the project `dist (formerly
+      known as cargo-dist)`, reflecting its wider release-engineering ambitions.
+    - >
+      The README describes the project as a tool that plans, builds, hosts, publishes,
+      and announces releases. A defining design choice is generated CI: `dist init` can
+      generate release workflows that wait for version tags, build artifacts on multiple
+      platforms, create or edit GitHub Releases, and attach generated release notes and
+      artifacts.
+    - >
+      The project also documents self-hosting: dist's own releases are produced through
+      dist-generated release machinery, with cargo-release used for version and
+      changelog mechanics.
+  related-projects:
+    - oranda is referenced by the README as a companion for generated project websites.
+    - >
+      cargo-release is documented in the repository's release workflow for version,
+      changelog, and tag mechanics.
+    - >
+      GitHub Releases and GitHub Actions are central hosting and CI targets in the
+      official documentation.
+  sources:
+    - https://api.github.com/repos/axodotdev/cargo-dist
+    - https://axodotdev.github.io/cargo-dist/book/
+    - https://crates.io/api/v1/crates/cargo-dist
+    - https://github.com/axodotdev/cargo-dist
+    - https://raw.githubusercontent.com/axodotdev/cargo-dist/main/README.md
+    - input.source_facts.package-manager
+  summary:
+    - >
+      cargo-dist, now branded in its README as `dist`, is a release and
+      binary-distribution tool from Axo that generates shippable artifacts, installers,
+      release manifests, and CI workflows for Rust and other projects. It occupies the
+      packaging layer between `cargo build` and public distribution channels such as
+      GitHub Releases and package managers.
+  timeline:
+    - '2022: cargo-dist crate first published on crates.io.'
+    - '2022: axodotdev/cargo-dist GitHub repository created.'
+    - >
+      2024: README documents generated CI workflows, installers, release manifests,
+      package publishing, and self-hosted releases.
+    - '2026: crates.io metadata shows active updates and the 0.32.x release line.'
+  usage:
+    - >
+      A typical user initializes configuration with `dist init`, commits the generated
+      configuration and CI workflow, then publishes by pushing a version tag. dist plans
+      the release, builds archives and installers, produces a machine-readable manifest,
+      and can host artifacts on a GitHub Release.
+    - >
+      Configuration can live in Cargo.toml, package.json, dist-workspace.toml, or
+      dist.toml, which matches the project's move from a Cargo-only helper toward a
+      general binary distribution tool.
 tags:
   - binary-distribution
   - cargo
@@ -45,6 +123,13 @@ provenance:
     - >
       Official config reference is
       https://axodotdev.github.io/cargo-dist/book/reference/config.html.
+  history-sources:
+    - https://api.github.com/repos/axodotdev/cargo-dist
+    - https://axodotdev.github.io/cargo-dist/book/
+    - https://crates.io/api/v1/crates/cargo-dist
+    - https://github.com/axodotdev/cargo-dist
+    - https://raw.githubusercontent.com/axodotdev/cargo-dist/main/README.md
+    - input.source_facts.package-manager
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per prompt.
   tags-sources:
@@ -58,5 +143,6 @@ category-path:
   - release-automation
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

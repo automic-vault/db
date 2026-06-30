@@ -7,6 +7,73 @@ docs:
 config-file-location:
   unix: fuzz/Cargo.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      cargo-fuzz became the mainstream Rust path for libFuzzer-based testing because it
+      followed Cargo conventions and came with an official guide. The Rust Fuzz Book
+      places it alongside afl.rs but explicitly recommends cargo-fuzz for Rust code.
+    - >
+      The rust-fuzz ecosystem also keeps a trophy-case repository for bugs found through
+      fuzz testing, reinforcing cargo-fuzz as part of Rust's security and reliability
+      culture rather than a standalone experiment.
+  package-nerd-significance:
+    - >
+      cargo-fuzz is one of the clearest examples of Cargo's subcommand model turning
+      advanced compiler/runtime machinery into a discoverable package. It hides LLVM
+      sanitizer and libFuzzer details behind a small command set that Rust maintainers
+      can add to CI and security workflows.
+    - >
+      For package-history work, it also marks a moment when fuzzing moved from
+      specialist security tooling into normal Rust package maintenance.
+  project-history:
+    - >
+      The cargo-fuzz repository and crate were created in February 2017, early in Rust's
+      effort to make fuzz testing practical for library authors. The README describes it
+      as a Cargo subcommand for fuzzing with libFuzzer, while the Rust Fuzz Book
+      clarifies that cargo-fuzz invokes a fuzzer rather than being a fuzzer itself.
+    - >
+      The tool standardized the `fuzz/` directory layout for Rust crates. `cargo fuzz
+      init` creates a fuzzing project, `cargo fuzz add` creates targets, and `cargo fuzz
+      run` executes them through libFuzzer via the libfuzzer-sys crate.
+  related-projects:
+    - libFuzzer is the fuzzing engine invoked by cargo-fuzz through libfuzzer-sys.
+    - The Rust Fuzz Book also documents afl.rs as another Rust fuzzing tool.
+    - rust-fuzz/trophy-case collects bugs found by cargo-fuzz and other fuzzing tools.
+  sources:
+    - https://api.github.com/repos/rust-fuzz/cargo-fuzz
+    - https://crates.io/crates/cargo-fuzz
+    - https://github.com/rust-fuzz/cargo-fuzz#readme
+    - https://rust-fuzz.github.io/book/cargo-fuzz.html
+    - https://rust-fuzz.github.io/book/introduction.html
+  summary:
+    - >
+      cargo-fuzz is the standard Cargo subcommand for driving libFuzzer against Rust
+      crates. It is part of the rust-fuzz project family and is documented by the Rust
+      Fuzz Book as the recommended tool for fuzz testing Rust code.
+    - >
+      The package matters because it made coverage-guided fuzzing feel like an ordinary
+      Rust workflow: initialize a fuzz target, add test harnesses, run them through
+      Cargo, minimize failing inputs, and generate coverage.
+  timeline:
+    - '2017-02-21: GitHub repository created and cargo-fuzz 0.1.0 published to crates.io.'
+    - '2017: Rust Fuzz Book documents cargo-fuzz as a recommended Rust fuzzing path.'
+    - >
+      2020s: The tool grows commands for testcase minimization, corpus minimization, and
+      coverage reporting.
+    - >
+      2026: Crate has more than 3 million crates.io downloads and remains active under
+      rust-fuzz.
+  usage:
+    - >
+      Typical usage begins with `cargo fuzz init`, then `cargo fuzz add <target>`, and
+      then `cargo fuzz run <target>`. The README also documents commands for formatting
+      generated inputs, minimizing a crashing testcase, minimizing corpora, and
+      collecting coverage.
+    - >
+      The README notes important platform constraints: libFuzzer needs LLVM sanitizer
+      support, Unix-like operating systems for the primary workflow, a nightly compiler
+      for unstable flags, and a C++11 compiler.
 category: developer-tools
 package-manager:
   brew: cargo-fuzz
