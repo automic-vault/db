@@ -11,8 +11,105 @@ config-file-location:
     - /usr/local/etc/apptainer/apptainer.conf
     - /etc/apptainer/apptainer.conf
     - /usr/local/etc/apptainer/remote.yaml
+    - /etc/apptainer/remote.yaml
 credentials-file-location:
-  unix: ~/.apptainer/remote.yaml
+  unix:
+    - ~/.apptainer/remote.yaml
+    - ~/.apptainer/docker-config.json
+history:
+  adoption-history:
+    - >
+      Apptainer's adoption is strongest in HPC because it maps container workflows onto
+      shared clusters where Docker's daemon model, root privileges, and isolation
+      defaults are often a poor fit. Its docs emphasize single-file SIF images,
+      integration with GPUs and high-speed filesystems, and preserving the user's host
+      identity by default.
+    - >
+      The compatibility strategy helped adoption after the rename. Official docs
+      describe SIF image compatibility, support for `SINGULARITY_` environment variables
+      during transition, a `singularity` symlink to the same binary, and automatic user
+      configuration migration.
+    - >
+      Distribution packaging matters because Apptainer is used on managed systems:
+      clusters often install it centrally, admins control global configuration under
+      `/etc/apptainer` or `/usr/local/etc/apptainer`, and users keep remotes, keys,
+      caches, and registry credentials under `~/.apptainer`.
+  package-nerd-significance:
+    - >
+      Apptainer is a packaging story about containers for places where containers are
+      infrastructure, not just developer convenience. It packages runtime policy, SIF
+      image handling, OCI interop, user namespace tradeoffs, cluster admin controls, and
+      backwards compatibility with a large Singularity install base.
+    - >
+      For package nerds, the rename is especially interesting because the package
+      intentionally ships compatibility: old command names, old environment variable
+      prefixes, image-format stability, and migration from old user config directories.
+      That reduced the blast radius of a governance and trademark-driven project
+      transition.
+  project-history:
+    - >
+      The user guide says Apptainer was first developed at Lawrence Berkeley National
+      Laboratory to run complex applications on HPC clusters in a simple, portable, and
+      reproducible way. It became popular at HPC and academic sites before expanding
+      into industry.
+    - >
+      In November 2021, the project announced that Singularity was moving into the Linux
+      Foundation and being renamed Apptainer to avoid confusion with other
+      Singularity-named products and to keep the project under community governance. The
+      announcement says the first Apptainer release would be 1.0 in a new GitHub
+      repository.
+    - >
+      The Apptainer changelog records v1.0.0 in March 2022. That release changed the
+      primary executable from `singularity` to `apptainer`, renamed `/etc/singularity`
+      to `/etc/apptainer`, migrated per-user configuration from `~/.singularity` to
+      `~/.apptainer`, and retained a `singularity` command symlink for compatibility.
+    - >
+      The v1.1.0 release in September 2022 made a major packaging and security shift:
+      Apptainer no longer installed a setuid-root component by default, relying instead
+      on unprivileged user namespaces for most operations and moving the setuid portion
+      into optional packaging.
+  related-projects:
+    - Singularity is the original project lineage and compatibility target.
+    - >
+      SingularityCE/Sylabs Singularity is the related fork/product line discussed in the
+      rename announcement.
+    - SIF is the container image format shared across Apptainer and Singularity workflows.
+    - >
+      OCI/Docker registries and ORAS endpoints are supported container sources and
+      publication targets.
+  sources:
+    - https://apptainer.org/docs/admin/main/configfiles.html
+    - https://apptainer.org/docs/user/main/cli/apptainer_remote_login.html
+    - https://apptainer.org/docs/user/main/introduction.html
+    - https://apptainer.org/docs/user/main/singularity_compatibility.html
+    - https://apptainer.org/news/community-announcement-20211130/
+    - https://github.com/apptainer/apptainer/blob/main/CHANGELOG.md
+  summary:
+    - >
+      Apptainer is an open-source Linux container platform focused on high-performance
+      computing, reproducibility, security, and unprivileged execution. It is the Linux
+      Foundation continuation and rename of the community Singularity project.
+  timeline:
+    - '2017: User docs copyright history reflects the Sylabs/Singularity era.'
+    - >
+      2021: Community announcement says Singularity moved to the Linux Foundation and
+      was renamed Apptainer.
+    - '2022: Changelog records Apptainer v1.0.0.'
+    - '2022: Changelog records v1.1.0 changing the default away from setuid-root installation.'
+    - '2024: Changelog records v1.3.x releases with OCI, packaging, and filesystem fixes.'
+    - '2026: Main user/admin docs continue under the Apptainer project.'
+  usage:
+    - >
+      Users build, pull, run, shell into, and exec containers with the `apptainer` CLI.
+      Typical sources include SIF files, Docker/OCI registries, ORAS endpoints, and
+      definition files used to build reproducible scientific or commercial software
+      environments.
+    - >
+      Administrators tune `apptainer.conf` for setuid behavior, namespaces, bind mounts,
+      networking, GPUs, cgroups, and helper binary paths. Remote endpoints and keyserver
+      settings are managed through `remote.yaml`; login commands store endpoint
+      credentials, and OCI registry credentials can live in
+      `~/.apptainer/docker-config.json` or a custom `--authfile`.
 category: cloud-infrastructure
 package-manager:
   apk: apptainer
@@ -30,6 +127,7 @@ tags:
   - hpc
   - linux
   - sandbox
+  - singularity
 description: Application container and unprivileged sandbox platform for Linux
 executables:
   - apptainer

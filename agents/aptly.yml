@@ -11,6 +11,92 @@ config-file-location:
     - ~/.aptly.conf
     - /etc/aptly.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      aptly is adopted by teams that need more than a static apt directory but less than
+      a full distribution archive infrastructure. It is common in CI/CD, appliance,
+      internal repository, and staged-rollout workflows where the exact set of .deb
+      packages must be reproducible.
+    - >
+      The supplied metadata records Homebrew, Debian, Ubuntu, and Nix packaging. That
+      cross-environment packaging matters because repository publishers are often run
+      from build hosts, release machines, or CI containers rather than only on Debian
+      servers.
+  package-nerd-significance:
+    - >
+      aptly is beloved package-nerd territory because it exposes the moving parts of apt
+      repository management: Packages files, pools, signatures, snapshots, mirrors,
+      publication, and rollback. It turns repository state into named objects you can
+      reason about and automate.
+    - >
+      Its snapshot model is the key significance. APT normally consumes the current
+      state of a repository; aptly lets maintainers freeze and publish exact package
+      sets, which is the difference between 'upgrade from whatever the mirror has today'
+      and 'deploy this tested repository state'.
+    - >
+      It also bridges old Debian archive concepts with modern infrastructure
+      expectations: API control, cloud storage backends, CI-friendly publishing, and
+      reproducibility.
+  project-history:
+    - >
+      The official aptly overview defines the project around repeatability and
+      controlled changes in package environments. It models repositories as mirrors,
+      local repos, snapshots, and published repositories that apt clients can consume.
+    - >
+      aptly matured from a CLI-oriented repository tool into a broader
+      repository-management service. Its documentation covers command groups for
+      mirrors, repos, snapshots, packages, publishing, serving, and a REST API, while
+      later releases added storage backends, API endpoints, concurrency fixes, and
+      support for modern repository metadata.
+    - >
+      Release history shows the project continuing well beyond its early 1.x line.
+      Version 1.6.0 added large repository and API capabilities such as YAML config
+      defaults, swagger API documentation, etcd database support, Azure storage support,
+      multi-distribution publishing, and improved mirroring. Version 1.6.3 added GCS,
+      Artifactory, AppStream mirror support, multiple GPG keys, and reproducible-build
+      support.
+  related-projects:
+    - APT is the client-side package manager that consumes aptly-published repositories.
+    - >
+      dpkg and Debian package metadata define the .deb files and repository indexes
+      aptly manipulates.
+    - GnuPG is central to signing and verifying published apt repository metadata.
+  sources:
+    - https://github.com/aptly-dev/aptly/releases
+    - https://github.com/aptly-dev/aptly/tags?page=3
+    - https://www.aptly.info/doc/configuration/
+    - https://www.aptly.info/doc/overview/
+    - source_facts.package-manager
+  summary:
+    - >
+      aptly is a Debian repository management tool for mirroring, snapshotting,
+      publishing, and serving apt repositories. Its central idea is repeatable package
+      environments through immutable snapshots and controlled repository changes.
+  timeline:
+    - '2017: aptly 1.1.x tags show the early 1.x line and package-pool layout changes.'
+    - '2019: aptly 1.4.0 release line continues storage and repository maintenance work.'
+    - '2022: aptly 1.5.0 release moves artifact handling away from Bintray-era infrastructure.'
+    - >
+      2024: aptly 1.6.0 adds YAML config defaults, swagger API docs, etcd support, Azure
+      storage, and multi-distribution publishing.
+    - >
+      2026: aptly 1.6.3 adds GCS and Artifactory publishing, AppStream mirror support,
+      multiple GPG keys, and reproducible-build support.
+  usage:
+    - >
+      Operators create mirrors of remote repositories, create local repositories for
+      custom packages, take immutable snapshots, filter or merge snapshots, then publish
+      a snapshot or local repo under a distribution/prefix for apt clients.
+    - >
+      Configuration is JSON by default and loaded from ~/.aptly.conf or /etc/aptly.conf
+      unless overridden with -config. The same config can define rootDir storage,
+      dependency behavior, GPG behavior, filesystem publishing endpoints, S3 endpoints,
+      Swift endpoints, logging, metrics, and API serving behavior.
+    - >
+      The REST API makes aptly useful as infrastructure plumbing: release jobs can
+      upload packages, create snapshots, switch published repositories, and expose
+      deterministic repository states to fleets.
 tags:
   - apt
   - cli
@@ -30,32 +116,36 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official aptly homepage describes mirror, local repo, snapshot, publish, S3, and
-      REST API features.
+    - Official aptly overview describes mirrors, repos, snapshots, publishing, and API use.
     - 'source_facts.description: Swiss army knife for Debian repository management'
   display-name-sources:
-    - Official homepage and GitHub README use the name aptly.
+    - Official aptly documentation and repository use the lowercase name aptly.
     - source_facts.name
   docs-sources:
     - >
-      Official aptly documentation pages for overview, configuration, global flags, and
-      REST API.
+      Official aptly overview, configuration documentation, command reference, and REST
+      API documentation.
+    - current_curation.docs
+  history-sources:
+    - https://github.com/aptly-dev/aptly/releases
+    - https://github.com/aptly-dev/aptly/tags?page=3
+    - https://www.aptly.info/doc/configuration/
+    - https://www.aptly.info/doc/overview/
+    - source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already has https://github.com/aptly-dev/aptly; per instruction
-      repo enrichment is null when source_facts.repo is present.
+      source_facts.repo is already populated; prompt requires repo to be null rather
+      than re-determined.
   tags-sources:
     - >
-      Official aptly overview describes mirrors, local repos, snapshots, publishing, and
-      REST API service.
+      Official aptly docs list mirror, repo, snapshot, publish, serve, and REST API
+      command surfaces.
     - source_facts.description
 category-confidence: high
 category-path:
   - system
-  - package-management
-  - repository-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

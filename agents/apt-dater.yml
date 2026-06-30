@@ -12,6 +12,75 @@ credentials-file-location:
   unix:
     - ~/.ssh/apt-dater
     - ~/.ssh/apt-dater.pub
+history:
+  adoption-history:
+    - >
+      apt-dater's adoption is mostly in Debian-style administration circles. The
+      supplied package metadata records Debian, Ubuntu, Alpine, Nix, and Homebrew
+      packages, which matches a tool aimed at Debian-family update workflows but useful
+      from non-Debian admin workstations too.
+    - >
+      The project is small compared with APT itself, but its presence in multiple
+      package managers reflects a specific operator need: update many apt-managed
+      machines without installing a heavier orchestration stack.
+  package-nerd-significance:
+    - >
+      apt-dater is package-nerd software in the literal sense: it is a package-update
+      console for people who administer many apt machines. It exposes the social layer
+      around apt operations: host inventory, SSH identity, sudo policy, terminal
+      multiplexing, and update status.
+    - >
+      It is also a reminder that not every package-management tool is a solver or
+      repository system. Some are thin operational wrappers around existing package
+      managers, and those wrappers matter when a fleet is still maintained by direct
+      SSH.
+  project-history:
+    - >
+      The upstream README presents apt-dater as a management-server tool: copy example
+      configuration into ~/.config/apt-dater, list managed hosts, and use SSH plus sudo
+      on those hosts to run package updates.
+    - >
+      Its 1.0-era releases show the tool maturing around terminal multiplexers, host
+      refresh behavior, localization, reproducible builds, and configuration backend
+      changes. Version 1.0.2 switched configuration handling to libxml2 and included
+      conversion support for older hosts.conf data.
+  related-projects:
+    - APT and apt-get are the package tools apt-dater drives on managed hosts.
+    - >
+      needrestart appears in upstream sudo examples for detecting services or kernels
+      that need restart after upgrades.
+    - screen and tmux are related terminal multiplexer backends used by apt-dater workflows.
+  sources:
+    - https://github.com/DE-IBH/apt-dater#readme
+    - https://github.com/DE-IBH/apt-dater/releases
+    - https://raw.githubusercontent.com/DE-IBH/apt-dater/master/NEWS
+    - source_facts.package-manager
+  summary:
+    - >
+      apt-dater is a terminal tool for keeping one or more Debian GNU/Linux hosts up to
+      date over SSH. It sits in the old sysadmin niche between package-manager front
+      ends and fleet-management systems.
+  timeline:
+    - >
+      2010s: apt-dater 0.9.x and 1.0.x releases refine cluster support, SSH/session
+      handling, and terminal multiplexer behavior.
+    - >
+      2014: 1.0.0 pre-release series includes libconfig-backed configuration and ADP 7.0
+      support.
+    - >
+      2015: 1.0.2 switches the configuration engine to libxml2 and adds legacy
+      hosts.conf conversion.
+    - '2021: 1.0.4 release includes tmux and Debian build-environment maintenance fixes.'
+  usage:
+    - >
+      A typical setup creates ~/.config/apt-dater/apt-dater.conf, hosts.conf, and
+      screenrc on the management machine, generates an SSH key such as ~/.ssh/apt-dater,
+      installs the public key on managed hosts, and configures sudo for apt-get and
+      related commands.
+    - >
+      The executable apt-dater coordinates the host view, while adsh acts as an SSH
+      wrapper that can record sessions. The tool expects managed hosts to have SSH and
+      sudo available.
 tags:
   - apt
   - cli
@@ -30,29 +99,31 @@ geiger:
     - text:ssh
 provenance:
   category-sources:
-    - Official README says apt-dater keeps one or more Debian GNU/Linux hosts up to date.
+    - Official README describes updating Debian GNU/Linux hosts from a management server.
     - 'source_facts.description: Manage package updates on remote hosts using SSH'
   display-name-sources:
-    - 'Official GitHub repository title/README: DE-IBH/apt-dater / README for apt-dater.'
+    - Official repository and README use the name apt-dater.
     - source_facts.name
   docs-sources:
-    - >
-      Official GitHub README is the primary documentation surface and includes
-      setup/configuration instructions.
+    - Official upstream README at https://github.com/DE-IBH/apt-dater#readme.
+    - current_curation.docs
+  history-sources:
+    - https://github.com/DE-IBH/apt-dater#readme
+    - https://github.com/DE-IBH/apt-dater/releases
+    - https://raw.githubusercontent.com/DE-IBH/apt-dater/master/NEWS
+    - source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already has https://github.com/DE-IBH/apt-dater; per instruction
-      repo enrichment is null when source_facts.repo is present.
+      source_facts.repo is already populated; prompt requires repo to be null rather
+      than re-determined.
   tags-sources:
-    - Official README describes Debian host updates over SSH.
+    - Official README documents SSH, sudo, apt-get, and managed host update workflows.
     - source_facts.description
-    - source_facts.executables
 category-confidence: high
 category-path:
   - system
-  - package-management
-  - remote-maintenance
 display-name-confidence: high
-docs-confidence: high
+docs-confidence: medium
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

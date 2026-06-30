@@ -4,9 +4,85 @@ homepage: https://github.com/chainguard-dev/apko
 repo: https://github.com/chainguard-dev/apko
 docs:
   - https://github.com/chainguard-dev/apko/blob/main/docs/apko_file.md
+  - https://edu.chainguard.dev/open-source/apko
   - https://github.com/chainguard-dev/apko#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README documents Homebrew installation, go install from source, and use of the
+      cgr.dev/chainguard/apko container image. The supplied package metadata also
+      records packaging in Alpine apk, Homebrew, Nix, pacman, and zypper, which fits a
+      tool aimed at distro and container-package workflows.
+    - >
+      GitHub repository metadata showed over 1.6k stars and an active release stream.
+      The latest official release assets include signed binaries and checksums,
+      reflecting packaging practices expected in supply-chain-oriented infrastructure
+      tools.
+  package-nerd-significance:
+    - >
+      apko is important to package nerds because it moves image construction from
+      shell-script layers to package-manager inputs. Instead of a Dockerfile mutating a
+      filesystem, an image is a closure over APK repositories, package names, keys,
+      accounts, paths, and metadata.
+    - >
+      For distroless-style images, SBOM generation, rebuild speed, and bit-for-bit
+      reproducibility, apko is a concrete example of packaging discipline influencing
+      container image tooling.
+  project-history:
+    - >
+      The public repository was created in February 2022. The README says apko was
+      created by Chainguard because they needed secure, reproducible container images
+      for their tooling, with speed important because images are rebuilt constantly for
+      new versions and patches.
+    - >
+      The design is explicitly declarative. Official docs state that apko files are YAML
+      definitions of an image and that, unlike Dockerfiles, there is no equivalent of
+      RUN statements. That restriction lets apko make stronger claims about image
+      contents and reproducibility and generate metadata such as SBOMs.
+    - >
+      apko is paired with melange, Chainguard's tool for building APK packages from
+      source. The README frames melange plus apko as covering most use cases: package
+      software into APKs with melange, then assemble minimal OCI images from those
+      packages with apko.
+  related-projects:
+    - >
+      The README names melange as apko's sister tool for producing APK packages, and
+      says apko's design is influenced by ko and distroless. It also points to
+      kontain.me as related declarative image-building work.
+  sources:
+    - https://api.github.com/repos/chainguard-dev/apko
+    - https://api.github.com/repos/chainguard-dev/apko/releases
+    - https://api.github.com/repos/chainguard-dev/melange
+    - https://github.com/chainguard-dev/apko#readme
+    - https://github.com/chainguard-dev/apko/blob/main/docs/apko_file.md
+    - source_facts.package-manager
+  summary:
+    - >
+      apko is Chainguard's apk-based OCI image builder: it builds container images
+      directly from APK package repositories and a declarative YAML file, without
+      Dockerfiles or RUN steps. It belongs to the supply-chain-focused family of tools
+      that treat packages, SBOMs, and reproducibility as first-class image-build inputs.
+  timeline:
+    - '2022: Public chainguard-dev/apko repository created on GitHub.'
+    - >
+      2022: README quickstart already showed apk-package-based Alpine image builds and
+      SBOM generation.
+    - '2022: Companion melange repository was created for building APK packages from source.'
+    - >
+      2026: Official release stream reached the v1.2.x series with signed multi-platform
+      binaries.
+  usage:
+    - >
+      A typical apko file specifies APK repositories and packages under contents, then
+      image metadata such as entrypoint, command, environment, accounts, paths,
+      architectures, annotations, and layering. apko build writes a tar image, while
+      apko publish pushes directly to a registry.
+    - >
+      There is no fixed user config file location in the official docs; users pass an
+      apko YAML file path to the CLI. The file can include another local file or a file
+      from a remote git repository.
 category: cloud-infrastructure
 package-manager:
   apk: apko
@@ -22,6 +98,7 @@ tags:
   - container-images
   - dockerfile-alternative
   - oci
+  - reproducible-builds
   - sbom
 description: Build OCI images from APK packages directly without Dockerfile
 executables:

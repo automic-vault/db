@@ -3,9 +3,7 @@ display-name: Apprise
 repo: https://github.com/caronc/apprise
 docs:
   - https://appriseit.com/
-  - https://appriseit.com/config
-  - https://appriseit.com/dev
-  - https://appriseit.com/guides
+  - https://github.com/caronc/apprise#readme
 config-file-location:
   unix:
     - ~/.apprise
@@ -16,27 +14,109 @@ config-file-location:
     - ~/.config/apprise.conf
     - ~/.config/apprise.yml
     - ~/.config/apprise.yaml
+    - ~/.apprise/apprise
+    - ~/.apprise/apprise.conf
+    - ~/.apprise/apprise.yml
+    - ~/.apprise/apprise.yaml
+    - ~/.config/apprise/apprise
+    - ~/.config/apprise/apprise.conf
+    - ~/.config/apprise/apprise.yml
+    - ~/.config/apprise/apprise.yaml
     - /etc/apprise
-    - /etc/apprise.conf
     - /etc/apprise.yml
     - /etc/apprise.yaml
+    - /etc/apprise/apprise
     - /etc/apprise/apprise.conf
     - /etc/apprise/apprise.yml
     - /etc/apprise/apprise.yaml
   windows:
-    - '%APPDATA%/Apprise/apprise'
-    - '%APPDATA%/Apprise/apprise.conf'
-    - '%APPDATA%/Apprise/apprise.yml'
-    - '%APPDATA%/Apprise/apprise.yaml'
-    - '%LOCALAPPDATA%/Apprise/apprise'
-    - '%LOCALAPPDATA%/Apprise/apprise.conf'
-    - '%LOCALAPPDATA%/Apprise/apprise.yml'
-    - '%LOCALAPPDATA%/Apprise/apprise.yaml'
+    - '%APPDATA%\Apprise\apprise'
+    - '%APPDATA%\Apprise\apprise.conf'
+    - '%APPDATA%\Apprise\apprise.yml'
+    - '%APPDATA%\Apprise\apprise.yaml'
+    - '%LOCALAPPDATA%\Apprise\apprise'
+    - '%LOCALAPPDATA%\Apprise\apprise.conf'
+    - '%LOCALAPPDATA%\Apprise\apprise.yml'
+    - '%LOCALAPPDATA%\Apprise\apprise.yaml'
+    - '%ALLUSERSPROFILE%\Apprise\apprise'
+    - '%ALLUSERSPROFILE%\Apprise\apprise.conf'
+    - '%ALLUSERSPROFILE%\Apprise\apprise.yml'
+    - '%ALLUSERSPROFILE%\Apprise\apprise.yaml'
+    - '%PROGRAMFILES%\Apprise\apprise'
+    - '%PROGRAMFILES%\Apprise\apprise.conf'
+    - '%PROGRAMFILES%\Apprise\apprise.yml'
+    - '%PROGRAMFILES%\Apprise\apprise.yaml'
+    - '%COMMONPROGRAMFILES%\Apprise\apprise'
+    - '%COMMONPROGRAMFILES%\Apprise\apprise.conf'
+    - '%COMMONPROGRAMFILES%\Apprise\apprise.yml'
+    - '%COMMONPROGRAMFILES%\Apprise\apprise.yaml'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Apprise's adoption came from the automation and self-hosting world: backup
+      scripts, monitoring jobs, CI tasks, download managers, and home-lab tools can send
+      alerts through whatever notification service a user already has. Package
+      availability across Homebrew, Debian, Fedora, Arch, Alpine, Nix, and Ubuntu
+      reflects that sysadmin-style use case.
+    - >
+      Because Apprise is both a library and a CLI, it fits into Python applications as
+      an embedded notification backend and into shell scripts as a standalone `apprise`
+      command.
+  package-nerd-significance:
+    - >
+      Apprise is package-manager-friendly glue: it turns dozens of optional API
+      integrations into one dependency with a stable CLI surface. That makes it
+      attractive to packagers and downstream tools that want broad notification support
+      without vendoring service-specific clients.
+    - >
+      The package is also a reminder that URL schemes can be a compact configuration
+      language. For package nerds, Apprise's long service table is effectively a
+      registry of notification transports encoded as CLI-friendly strings.
+  project-history:
+    - >
+      PyPI records Apprise releases beginning with 0.0.1 in November 2017. The official
+      README frames the project as a way for developers and operators to avoid writing
+      one integration per notification provider.
+    - >
+      The 1.0.0 release appeared on PyPI in August 2022, and current releases continue
+      to add providers and service syntax while keeping the central model: notification
+      targets are encoded as URLs and can be supplied directly, through config files, or
+      through environment variables.
+  related-projects:
+    - Apprise API is a companion service endpoint supported by Apprise URLs.
+    - >
+      The project overlaps operationally with provider-specific CLIs and webhook senders
+      for Slack, Discord, Telegram, Gotify, ntfy, email, and SMS services.
+  sources:
+    - https://appriseit.com/
+    - https://github.com/caronc/apprise#readme
+    - https://github.com/caronc/apprise/blob/master/apprise/cli.py
+    - https://pypi.org/pypi/apprise/json
+  summary:
+    - >
+      Apprise is a Python notification library and CLI that sends messages to many
+      notification services through one URL syntax. It wraps services such as Discord,
+      Slack, Telegram, Gotify, email, SMS gateways, webhooks, and desktop notification
+      systems behind one command and API.
+  timeline:
+    - '2017: PyPI records the first Apprise 0.0.1 release.'
+    - '2022: PyPI records Apprise 1.0.0.'
+    - '2026: PyPI records active 1.x releases, including 1.11.0.'
+  usage:
+    - >
+      The most direct CLI usage is to pass one or more notification URLs and a message
+      body. More durable setups store URLs in Apprise config files, which the CLI
+      searches by default, or point to explicit config locations with `--config`.
+    - >
+      Apprise configuration files often contain provider tokens, webhook IDs, API keys,
+      or passwords as part of service URLs. The project does not document a separate
+      credentials file; secrets live in the notification URLs/configs users choose.
 tags:
   - automation
   - cli
   - notifications
+  - python
   - webhooks
 geiger:
   category: appliance
@@ -50,26 +130,33 @@ geiger:
 provenance:
   category-sources:
     - >
-      GitHub README says Apprise sends notifications to many notification services and
-      ships an apprise CLI; source_facts.description says command-line notifications.
+      Official README describes sending notifications to many online services and using
+      Apprise from CLI and developer API.
   display-name-sources:
-    - Official GitHub repository title and README use Apprise.
+    - Official README and PyPI project metadata use Apprise.
   docs-sources:
     - >
-      Official GitHub wiki says documentation moved to AppriseIt.com and lists current
-      Configuration, CLI guides, and Developer documentation links.
+      PyPI project_urls identify https://appriseit.com as documentation; official README
+      points to appriseit.com and documents CLI usage.
+  history-sources:
+    - https://appriseit.com/
+    - https://github.com/caronc/apprise#readme
+    - https://github.com/caronc/apprise/blob/master/apprise/cli.py
+    - https://pypi.org/pypi/apprise/json
   repo-sources:
     - >
-      source_facts.repo is empty; official GitHub wiki Source Repositories lists Apprise
-      core as https://github.com/caronc/apprise.
+      PyPI project_urls and official README identify https://github.com/caronc/apprise
+      as source.
   tags-sources:
     - >
-      GitHub README describes the apprise command-line tool and many notification
-      services including webhook/token URL examples.
+      Official README documents automation-friendly CLI usage, notification providers,
+      webhooks, and Python API.
 category-confidence: high
 category-path:
   - networking
+  - notifications
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

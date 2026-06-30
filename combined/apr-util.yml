@@ -7,6 +7,68 @@ docs:
   - https://apr.apache.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      APR-util's adoption follows APR and Apache HTTP Server culture: it is packaged
+      wherever native Apache modules and APR-linked software are built. The supplied
+      metadata records packages across Homebrew, Debian/Ubuntu, Fedora/dnf, Alpine/apk,
+      Arch/pacman, MacPorts, and openSUSE/zypper.
+    - >
+      Because it ships apu-1-config, APR-util is visible to build systems as a
+      traditional Unix development package. Downstream packages use that config helper
+      to discover compiler and linker flags instead of vendoring APR utility code.
+  package-nerd-significance:
+    - >
+      APR-util is package-manager glue for native Apache ecosystems. It is small, old,
+      and easy to overlook, but it is the kind of ABI-bearing library that determines
+      whether an Apache module build finds the same database, XML, crypto, and
+      portability interfaces on macOS, Linux, and BSD.
+    - >
+      The split between apr and apr-util is historically important to packagers: it
+      keeps core portability separate from utility dependencies, reducing unnecessary
+      linkage for packages that only need APR.
+  project-history:
+    - >
+      APR-util grew inside the Apache Portable Runtime project as the layer above the
+      core portability APIs. The APR homepage lists APR-util as a supported APR
+      subproject and describes it simply as a companion library to APR.
+    - >
+      The 1.6 branch remains the documented stable API line for APR-util. Apache's
+      current project page lists APR-util 1.6.3 as the recommended release and notes
+      that recent maintenance focused on third-party dependency handling, including
+      expat unbundling and builds against current libraries such as OpenSSL and MySQL.
+  related-projects:
+    - Apache Portable Runtime is the core runtime library that APR-util extends.
+    - >
+      Apache HTTP Server is the original Apache ecosystem consumer that made APR and
+      APR-util common native-development dependencies.
+  sources:
+    - https://apr.apache.org/
+    - https://apr.apache.org/docs/apr-util/1.6
+    - source_facts.package-manager
+  summary:
+    - >
+      APR-util is the companion utility library for the Apache Portable Runtime. It
+      collects higher-level support code around APR, including database, XML, crypto,
+      and other utility interfaces used by Apache-family C software.
+  timeline:
+    - >
+      2000s: APR-util becomes one of the supported subprojects under the Apache Portable
+      Runtime project.
+    - '2017: APR-util 1.6 branch documented as the stable API line.'
+    - >
+      2023: APR-util 1.6.3 released with dependency maintenance such as expat unbundling
+      and updated library builds.
+  usage:
+    - >
+      End users rarely invoke APR-util directly. Developers and package build scripts
+      use its headers, libraries, and apu-1-config helper when compiling Apache modules
+      or C programs that need APR's utility facilities.
+    - >
+      It is generally installed alongside APR itself. The packaging distinction matters
+      because APR is the portability substrate, while APR-util carries optional utility
+      integrations whose dependencies vary more by platform.
 category: developer-tools
 package-manager:
   apk: apr-util

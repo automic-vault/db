@@ -8,6 +8,76 @@ docs:
   - https://apr.apache.org/compiling_win32.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      APR first mattered because Apache HTTP Server needed portable native
+      infrastructure across Unix, Windows, and other supported systems. Apache later
+      advertised projects using APR outside HTTP Server, explicitly encouraging broader
+      reuse after several years of development.
+    - >
+      The supplied package metadata shows the result of that portability role: APR is
+      packaged across Homebrew, Debian/Ubuntu, Fedora/dnf, Alpine/apk, Arch/pacman,
+      MacPorts, Nix, and openSUSE/zypper. That spread is typical for a foundational C
+      library rather than an end-user CLI.
+    - >
+      APR's apr-1-config executable is part of its adoption story. It gives source
+      builds a stable way to ask an installed APR for include paths, compiler flags, and
+      linker flags, which is why it appears in so many package recipes.
+  package-nerd-significance:
+    - >
+      APR is one of those quiet packages that makes old-school portable C infrastructure
+      work. It carries ABI concerns, platform feature detection, and build-helper
+      behavior that package maintainers need to get exactly right or large chunks of
+      Apache-linked software fail to compile.
+    - >
+      It also marks a packaging boundary: APR is the low-level portability substrate,
+      APR-util adds optional higher-level integrations, and consumers can depend on one
+      or both depending on how much Apache runtime surface they need.
+  project-history:
+    - >
+      APR originated in the Apache HTTP Server world and became its own Apache project
+      around a general portability mission: provide predictable behavior across
+      operating systems so application code does not need piles of platform-specific
+      branches.
+    - >
+      The project retained a classic Apache development shape: source in Apache
+      Subversion, stable API manuals by branch, release tarballs, mailing-list
+      development, and a small set of companion subprojects such as APR-util and
+      APR-iconv.
+    - >
+      The current stable documentation line is APR 1.7. Apache's project page lists APR
+      1.7.6 as the recommended release in 2025 and describes 1.7 as an enhancement and
+      bugfix line documented through the project's CHANGES files.
+  related-projects:
+    - Apache HTTP Server was the original ecosystem driver for APR.
+    - APR-util is the companion utility library above core APR.
+    - APR-iconv is the related portable iconv implementation under the APR project.
+  sources:
+    - https://apr.apache.org/
+    - https://apr.apache.org/docs/apr/1.7
+    - source_facts.package-manager
+  summary:
+    - >
+      Apache Portable Runtime is a C portability library that gives Apache-family
+      software a consistent API over platform-specific operating-system services. It
+      abstracts files, sockets, processes, threads, memory pools, locking, and related
+      native facilities.
+  timeline:
+    - '1990s-2000s: APR emerges from Apache HTTP Server portability work.'
+    - >
+      2008: APR project website documents APR, APR-util, and APR-iconv as supported
+      subprojects.
+    - '2025: APR 1.7.6 listed by Apache as the recommended APR release.'
+  usage:
+    - >
+      Developers use APR by compiling against its headers and library, often discovered
+      through apr-1-config. Runtime users usually encounter it as an indirect dependency
+      of Apache HTTP Server, Subversion-era tooling, or Apache modules.
+    - >
+      APR's memory pool model and portability wrappers are particularly recognizable to
+      C programmers maintaining long-lived server software. They make it possible to
+      write one native code path that still behaves sensibly on Unix and Windows.
 category: developer-tools
 package-manager:
   apk: apr

@@ -4,8 +4,91 @@ repo: null
 docs:
   - https://apktool.org/docs/cli-parameters
   - https://apktool.org/
+  - https://apktool.org/wiki/the-basics/intro
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Apktool has broad package-manager adoption: the supplied metadata records
+      Homebrew, Chocolatey, Debian, MacPorts, Nix, Scoop, and Ubuntu packages. The
+      official site also links downloads, Maven artifacts, GitHub discussions, Stack
+      Overflow, and IRC, reflecting a tool with both distro packaging and a long-lived
+      user support footprint.
+    - >
+      GitHub metadata showed nearly 25k stars and thousands of forks at research time.
+      That scale is consistent with Apktool's role as a default dependency in
+      mobile-security, app localization, Android modding, and APK compatibility
+      workflows.
+  package-nerd-significance:
+    - >
+      Apktool is package-nerd significant because it is both a package and a package
+      unpacker: it lets users explode Android's signed ZIP-based application format into
+      resources, smali, framework references, and rebuild metadata. That makes it the
+      bridge between Android binary distribution and editable source-like trees.
+    - >
+      Its long packaging history also makes it a compatibility benchmark. When Android
+      resource formats, smali, aapt/aapt2, Java versions, or Linux distro policies
+      change, Apktool's releases often encode the fallout for reverse-engineering
+      workflows.
+  project-history:
+    - >
+      Apktool's current GitHub repository was created in March 2012, but the official
+      release blog lists releases back to 0.9.0 and 1.0.0 in 2010. The README says the
+      project is for reverse engineering third-party, closed, binary Android apps,
+      especially decoding resources to near-original form and rebuilding after
+      modifications.
+    - >
+      The official site preserves a long release line from the 0.9 and 1.x era through
+      2.x and into 3.x. The 2.x line became the maintenance branch, while main became
+      the 3.x branch. The project also moved its documentation site to Docusaurus-backed
+      pages and keeps release notes on apktool.org.
+    - >
+      Version 3.0.0 in 2026 was a major compatibility break. Official release notes
+      describe dropping aapt1 and 32-bit platform support, modernizing resource parsing,
+      changing output format details, replacing some old CLI names, and adopting a new
+      default resource-resolution model. Version 3.0.2 followed as a security and
+      performance patch.
+  related-projects:
+    - >
+      Apktool works in the Android reverse-engineering ecosystem alongside
+      smali/baksmali, aapt/aapt2, dex tooling, Android framework files, and APK
+      signing/build tools.
+  sources:
+    - https://api.github.com/repos/iBotPeaches/Apktool
+    - https://api.github.com/repos/iBotPeaches/Apktool/releases
+    - https://apktool.org/blog
+    - https://apktool.org/docs/cli-parameters
+    - https://apktool.org/wiki/the-basics/intro
+    - https://github.com/iBotPeaches/Apktool#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      Apktool is a long-running Java tool for decoding, modifying, and rebuilding
+      Android APK files. It is one of the standard utilities in Android reverse
+      engineering because it turns compiled resources, manifests, and smali code into a
+      project-like tree that can be inspected and rebuilt.
+  timeline:
+    - '2010: Official release blog lists Apktool 0.9.x and 1.0.0 releases.'
+    - '2012: Current GitHub repository was created.'
+    - '2015: Official blog records Apktool 2.0.0 and a Google Code shutdown migration note.'
+    - >
+      2026: Apktool 3.0.0 became the major 3.x branch with CLI and resource-processing
+      changes.
+    - >
+      2026: Apktool 3.0.2 shipped as a patch release for a security regression and
+      disassembly performance.
+  usage:
+    - >
+      The basic flow is apktool d file.apk to decode, edit the generated project-like
+      tree, and apktool b folder to rebuild. Official docs explain why simply unzipping
+      an APK leaves binary XML and compiled resource files that are not practical to
+      edit directly.
+    - >
+      The CLI exposes decode, build, install-framework, and clean-frameworks command
+      families. Framework files can be stored or read from a user-specified frame path,
+      but the official docs do not present that as a fixed config-file location, so no
+      config-file-location is recorded here.
 tags:
   - android
   - apk
@@ -13,6 +96,7 @@ tags:
   - cli
   - disassemble
   - reverse-engineering
+  - smali
 geiger:
   category: escape-surveillance-offensive
   color: red
@@ -24,27 +108,37 @@ geiger:
     - text:reverse engineering
 provenance:
   category-sources:
-    - >
-      source_facts.description: reverse engineering binary Android apps; official
-      homepage says tool for reverse engineering Android apk files
+    - Official README description
+    - Official wiki introduction
   display-name-sources:
-    - official homepage title and heading use Apktool
+    - Official README heading
+    - Official site title
   docs-sources:
     - >
-      official Apktool homepage links to v3.x Documentation; CLI Parameters page is
-      official documentation
+      Official Apktool site provides CLI docs and wiki introduction; README links to the
+      project page and docs.
+  history-sources:
+    - https://api.github.com/repos/iBotPeaches/Apktool
+    - https://api.github.com/repos/iBotPeaches/Apktool/releases
+    - https://apktool.org/blog
+    - https://apktool.org/docs/cli-parameters
+    - https://apktool.org/wiki/the-basics/intro
+    - https://github.com/iBotPeaches/Apktool#readme
+    - source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already set to https://github.com/iBotPeaches/Apktool; per
-      instruction repo returned as null
+      source_facts.repo already provides https://github.com/iBotPeaches/Apktool; prompt
+      requires repo null when source_facts.repo is present.
   tags-sources:
-    - >
-      source_facts.description; official homepage lists Disassemble, Assemble, and
-      Analyze functions
+    - GitHub repository topics
+    - Official CLI parameter docs
+    - Official README
 category-confidence: high
 category-path:
   - developer-tools
+  - android-reverse-engineering
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
