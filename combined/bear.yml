@@ -7,6 +7,72 @@ docs:
   - https://github.com/rizsotto/Bear#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Bear's adoption followed the spread of clang tooling, clangd, clang-tidy, and
+      editor integrations that expect compile_commands.json. The supplied package
+      metadata shows broad packaging across Homebrew, Debian, Ubuntu, Fedora, Alpine,
+      Arch, MacPorts, Nix, Winget, and openSUSE.
+    - >
+      The README warns that some package managers still ship the 2.4.x command-line
+      behavior, which is a useful package-history detail: Bear is widely packaged, but
+      users can encounter different major-version interfaces depending on distribution
+      lag.
+  package-nerd-significance:
+    - >
+      Bear is important because compile_commands.json became the lingua franca for C and
+      C++ tooling. Installing Bear can make old Makefile or custom builds visible to
+      clangd and static-analysis tools without rewriting the build system.
+    - >
+      For package nerds it is also a reminder that developer tools can be infrastructure
+      glue: a small CLI whose whole job is to translate messy local build behavior into
+      a stable JSON artifact other tools understand.
+  project-history:
+    - >
+      The official repository describes Bear as a tool for producing the JSON
+      compilation database used by Clang-based tools to understand compiler flags,
+      include paths, and other translation-unit settings.
+    - >
+      Bear exists for build systems that cannot emit a compilation database directly.
+      Its README now advises users to prefer native compilation-database export from
+      CMake, Meson, or Bazel when available, and to use Bear as the compatibility bridge
+      for other builds.
+    - >
+      The install documentation notes that Bear has been around for a while, is packaged
+      by many distributions, and is now implemented in Rust, with a preload library
+      still involved in compiler-call interception.
+  related-projects:
+    - Clang's JSON Compilation Database is the direct data format Bear produces.
+    - >
+      CMake, Meson, and Bazel are related because Bear's README names them as build
+      systems whose native compilation-database export should usually be preferred.
+  sources:
+    - https://clang.llvm.org/docs/JSONCompilationDatabase.html
+    - https://github.com/rizsotto/Bear#readme
+    - https://github.com/rizsotto/Bear/blob/master/INSTALL.md
+    - https://github.com/rizsotto/Bear/releases
+    - input.json source_facts.package-manager
+  summary:
+    - >
+      Bear generates compile_commands.json compilation databases for Clang tooling by
+      capturing compiler invocations during a build.
+  timeline:
+    - '2012: The official GitHub repository for Bear was created.'
+    - >
+      2022-2025: The GitHub releases show the 3.x series progressing through multiple
+      distribution-era releases.
+    - >
+      2026: The GitHub releases show the 4.x series, while the install docs describe the
+      current Rust implementation.
+  usage:
+    - >
+      Modern Bear usage is `bear -- <build-command>`. It writes compile_commands.json to
+      the current working directory after observing the build.
+    - >
+      The README calls out platform-specific limitations around interception, including
+      macOS System Integrity Protection and sandboxed builds such as Nix and Flatpak;
+      users are directed to the wiki for workarounds.
 category: developer-tools
 package-manager:
   apk: bear
