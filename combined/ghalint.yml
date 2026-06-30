@@ -7,6 +7,64 @@ docs:
   - https://github.com/suzuki-shunsuke/ghalint#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ghalint is a niche security tool rather than a general CI parser. Its adoption
+      path is package-manager friendly: the official install guide lists Homebrew,
+      Scoop, aqua, mise, GitHub Releases, and `go install`, while Homebrew exposes it as
+      a one-command formula. That distribution pattern fits teams that want a small CI
+      hardening check without installing a larger platform.
+  package-nerd-significance:
+    - >
+      For package maintainers, ghalint is notable because it packages CI supply-chain
+      advice as a fast local executable. It complements tools such as actionlint by
+      concentrating on security posture: minimum permissions, safe secret handling,
+      pinned action references, and checkout credential handling.
+  project-history:
+    - >
+      Shunsuke Suzuki published the first ghalint releases in January 2023. The README
+      describes the tool as a linter for GitHub Actions security best practices, and its
+      policy documents show the early focus: explicit job permissions, avoiding broad
+      read-all or write-all permissions, limiting inherited secrets, and pinning actions
+      to full-length commit SHAs.
+    - >
+      The project later documented a port to the lintnet module ecosystem, connecting
+      ghalint's original GitHub Actions rule set with a broader Jsonnet-powered linting
+      framework. That migration path suggests the project became both a standalone
+      binary and a policy corpus that could be reused by another linter.
+  related-projects:
+    - lintnet reuses the ghalint policy domain in a general-purpose Jsonnet linter.
+    - >
+      pinact is referenced by ghalint documentation as a helper for converting GitHub
+      Actions tags to full-length commit SHAs.
+  sources:
+    - https://formulae.brew.sh/formula/ghalint
+    - https://github.com/suzuki-shunsuke/ghalint
+    - https://github.com/suzuki-shunsuke/ghalint/blob/main/docs/install.md
+    - https://github.com/suzuki-shunsuke/ghalint/blob/main/docs/policies/001.md
+    - https://github.com/suzuki-shunsuke/ghalint/blob/main/docs/policies/008.md
+    - https://github.com/suzuki-shunsuke/ghalint/releases/tag/v0.1.0
+  summary:
+    - >
+      ghalint is a Go command-line linter for GitHub Actions workflow files and action
+      metadata. It turns a small set of CI security practices into repeatable checks
+      that can fail a build before a workflow grants broad permissions, exposes secrets
+      through environment variables, or depends on mutable third-party action
+      references.
+  timeline:
+    - '2023: v0.1.0 was published on GitHub Releases.'
+    - >
+      2023: Early policy docs covered job permissions, workflow secrets, inherited
+      secrets, and immutable action references.
+    - 'After 2023: The README documented a ghalint module for lintnet.'
+  usage:
+    - >
+      Practitioners run `ghalint run` from a repository root to inspect workflow files
+      under `.github/workflows`, or `ghalint run-action` for `action.yaml` and
+      `action.yml` files. A `ghalint.yaml` configuration file can disable selected
+      policies for named workflows, jobs, or actions when a repository has an
+      intentional exception.
 category: security
 package-manager:
   brew: ghalint
@@ -24,5 +82,13 @@ executables:
   - ghalint
 provenance:
   formula: ghalint
+  history-sources:
+    - https://formulae.brew.sh/formula/ghalint
+    - https://github.com/suzuki-shunsuke/ghalint
+    - https://github.com/suzuki-shunsuke/ghalint/blob/main/docs/install.md
+    - https://github.com/suzuki-shunsuke/ghalint/blob/main/docs/policies/001.md
+    - https://github.com/suzuki-shunsuke/ghalint/blob/main/docs/policies/008.md
+    - https://github.com/suzuki-shunsuke/ghalint/releases/tag/v0.1.0
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

@@ -10,6 +10,71 @@ config-file-location:
     - ~/.ghc/ghci.conf
     - ./.ghci
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GHC's adoption rests on its central place in the Haskell ecosystem: the official
+      site points to Hackage libraries and common tooling such as Haskell Language
+      Server, Cabal, Stack, and GHCup. A versioned formula such as `ghc@9.6` lets
+      maintainers keep older project and CI environments aligned with that compiler
+      branch.
+    - >
+      Homebrew exposes `ghc@9.6` separately from the general `ghc` formula. That matters
+      for users who need a branch that matches package bounds, generated interface
+      files, or a build matrix rather than whichever compiler branch the unversioned
+      formula installs.
+  package-nerd-significance:
+    - >
+      The formula captures an older stable compiler branch as a package-manager object.
+      That is useful because Haskell package compatibility is often branch-sensitive:
+      boot libraries, warnings, extensions, optimisation behavior, and ABI details can
+      all influence whether a package builds cleanly.
+  project-history:
+    - >
+      GHC began at the University of Glasgow near the beginning of the 1990s as an
+      academic research project funded by the UK government. Over time it became the
+      practical compiler and interactive environment that shaped Haskell implementation
+      work, compiler research, and day-to-day package development.
+    - >
+      The GHC 9.6 branch follows the stable-branch scheme documented by the user guide,
+      with even-numbered minor branches and patchlevel bug-fix releases. The branch's
+      documentation includes GHCi configuration files such as
+      `$XDG_CONFIG_HOME/ghc/ghci.conf`, `~/.ghc/ghci.conf`, and local `.ghci` files.
+  related-projects:
+    - Cabal and Stack use GHC as the compiler backend for package builds.
+    - Hackage package bounds make branch-specific GHC installation useful for maintainers.
+    - GHCup is another official installer path for selecting GHC versions.
+  sources:
+    - https://downloads.haskell.org/ghc/9.6.7/docs/users_guide/ghci.html
+    - https://downloads.haskell.org/ghc/9.6.7/docs/users_guide/intro.html
+    - https://formulae.brew.sh/formula/ghc@9.6
+    - https://gitlab.haskell.org/ghc/ghc
+    - https://www.aosabook.org/en/v2/ghc.html
+    - https://www.haskell.org/ghc/
+    - https://www.haskell.org/ghc/download_ghc_9_6_1.html
+  summary:
+    - >
+      The Homebrew `ghc@9.6` formula packages the GHC 9.6 branch of the Glasgow Haskell
+      Compiler. It is a version-track compiler package for projects that need the 9.6
+      generation of GHC, GHCi, boot libraries, package tools, and Haddock.
+  timeline:
+    - 'Early 1990s: GHC began as a Glasgow research project.'
+    - >
+      2007: The user guide documented GHC's even-numbered stable-branch versioning
+      policy starting with GHC 6.8.
+    - '2023: GHC 9.6.1 was released as the first listed 9.6 release on the GHC download page.'
+    - '2026 batch input: The Homebrew package record listed 9.6.7-suffixed executables.'
+  usage:
+    - >
+      Practitioners use `ghc@9.6` to compile and test projects that target GHC 9.6. The
+      package includes 9.6-suffixed executable names for the compiler, GHCi, package
+      database tool, Haddock, profiling helpers, and script runners, allowing scripts to
+      invoke the branch explicitly.
+    - >
+      Interactive users rely on GHCi for fast edit-and-test loops, custom prompt
+      behavior, imports, and local `.ghci` setup. Build tools generally call the
+      compiler underneath, but package maintainers still inspect GHCi, `ghc-pkg`,
+      profiling output, and Haddock output when diagnosing branch-specific issues.
 tags:
   - cli
   - compiler
@@ -31,6 +96,14 @@ provenance:
     - >
       Official GHC documentation link from homepage points to downloads.haskell.org;
       version-specific 9.6.7 User's Guide is hosted there.
+  history-sources:
+    - https://downloads.haskell.org/ghc/9.6.7/docs/users_guide/ghci.html
+    - https://downloads.haskell.org/ghc/9.6.7/docs/users_guide/intro.html
+    - https://formulae.brew.sh/formula/ghc@9.6
+    - https://gitlab.haskell.org/ghc/ghc
+    - https://www.aosabook.org/en/v2/ghc.html
+    - https://www.haskell.org/ghc/
+    - https://www.haskell.org/ghc/download_ghc_9_6_1.html
   repo-sources:
     - >
       source_facts.repo is empty; official GHC homepage links GHC development, bug
@@ -45,5 +118,6 @@ category-path:
   - compiler
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
