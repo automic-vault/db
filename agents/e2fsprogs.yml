@@ -5,6 +5,104 @@ docs:
   - https://e2fsprogs.sourceforge.net/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      e2fsprogs became infrastructure software because ext filesystems became default or
+      common Linux filesystems across distributions, installers, rescue environments,
+      embedded systems, and image-building pipelines. Its tools are packaged by
+      essentially every general-purpose Linux distribution and by cross-platform package
+      managers where users need to inspect Linux filesystems from non-Linux hosts.
+    - >
+      Release notes show its maintenance responding to distribution bug reports, kernel
+      feature additions, filesystem fuzzing, Coverity findings, and
+      very-large-filesystem performance. That history is part of why the package is
+      treated as a base-system dependency rather than an optional convenience.
+  package-nerd-significance:
+    - >
+      For package nerds, e2fsprogs is one of the rare packages that is simultaneously
+      mundane and load-bearing. It is a formula in Homebrew, a package in major Linux
+      distributions, a rescue-disk staple, a cross-build dependency, and a
+      version-sensitive companion to Linux kernel filesystem features.
+    - >
+      Its release notes are a map of Linux storage history: new kernel features land,
+      then user-space tools learn to create, repair, report, or safely ignore them.
+      Packaging the right e2fsprogs version matters because old user-space can
+      misunderstand newer filesystem feature bits.
+  project-history:
+    - >
+      The project has been maintained for decades by Theodore Ts'o and is distributed as
+      the second extended filesystem management programs. Official release notes in the
+      kernel.org repository show e2fsprogs 1.02 dated 1996-01-16, while the libext2fs
+      manual documents Theodore Ts'o's library work from 1997 onward.
+    - >
+      As ext filesystems evolved, e2fsprogs evolved with them. It began as tooling for
+      ext2, became core to ext3 journaled filesystem administration, and then tracked
+      ext4-era features such as extents, flex_bg, metadata checksums, bigalloc,
+      encryption, casefolding, fast commits, and orphan-file support.
+    - >
+      The project is both end-user tool suite and library substrate. The libext2fs
+      manual describes a user-level library for manipulating ext2 filesystems, and
+      related tools such as e2tools build on that library rather than implementing ext
+      filesystem parsing from scratch.
+  related-projects:
+    - >
+      Related projects include the Linux kernel ext2/ext3/ext4 drivers, e2tools,
+      fuse2fs, distribution initramfs/rescue tooling, filesystem image builders, and
+      package-manager formulas that expose the tools on non-Linux hosts.
+    - >
+      e2tools is a particularly close neighbor: its README states that it directly uses
+      the ext2fs library from e2fsprogs to read and write ext filesystem images without
+      mounting them.
+  sources:
+    - https://e2fsprogs.sourceforge.net/
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/README
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/doc/libext2fs.texinfo
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/doc/RelNotes/v1.02.txt
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/doc/RelNotes/v1.41.txt
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/doc/RelNotes/v1.42.txt
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/doc/RelNotes/v1.46.0.txt
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/doc/RelNotes/v1.47.0.txt
+    - https://raw.githubusercontent.com/e2tools/e2tools/master/README.md
+  summary:
+    - >
+      e2fsprogs is the canonical user-space toolkit for the Linux ext2, ext3, and ext4
+      filesystem family. It includes the programs administrators recognize by muscle
+      memory: `mke2fs` and `mkfs.ext*` to create filesystems, `e2fsck` and `fsck.ext*`
+      to check and repair them, `tune2fs`, `dumpe2fs`, `debugfs`, `resize2fs`,
+      `badblocks`, attribute tools, and supporting libraries such as libext2fs.
+  timeline:
+    - >
+      1996-01-16: e2fsprogs 1.02 release notes document early ext2 filesystem tool
+      maintenance.
+    - >
+      1997: libext2fs manual copyright begins, documenting a user-level library for
+      manipulating ext2 filesystems.
+    - >
+      2010: e2fsprogs 1.41 release notes show ext4-era support work around flex_bg, ext4
+      mount defaults, direct I/O in debugfs, discard-aware mke2fs, and large filesystem
+      handling.
+    - >
+      2015: e2fsprogs 1.42.13 includes security and robustness fixes, including
+      CVE-2015-1572 in libext2fs.
+    - >
+      2021: e2fsprogs 1.46.0 adds support for fast_commit, stable_inodes, encryption
+      plus casefolding, and fuse2fs improvements.
+    - >
+      2023: e2fsprogs 1.47.0 adds support for orphan_file and makes newer ext4 features
+      default through mke2fs configuration.
+  usage:
+    - >
+      Administrators and installers use e2fsprogs to create, check, repair, resize,
+      label, inspect, tune, and debug ext-family filesystems. Typical commands include
+      `mkfs.ext4`, `e2fsck`, `resize2fs`, `tune2fs`, `dumpe2fs`, `debugfs`, `e2image`,
+      `filefrag`, `chattr`, and `lsattr`.
+    - >
+      The toolkit is also used outside ordinary mounted filesystems: recovery workflows
+      run `e2fsck`, image builders run `mke2fs` against files, developers inspect
+      metadata with `debugfs` and `dumpe2fs`, and downstream tools use libext2fs to
+      manipulate disk images without going through the kernel mount path.
 tags:
   - cli
   - ext2
@@ -35,6 +133,17 @@ provenance:
     - >
       Official homepage is the best official documentation surface found and links
       release notes and source information: https://e2fsprogs.sourceforge.net/
+  history-sources:
+    - https://e2fsprogs.sourceforge.net/
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/README
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/doc/libext2fs.texinfo
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/doc/RelNotes/v1.02.txt
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/doc/RelNotes/v1.41.txt
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/doc/RelNotes/v1.42.txt
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/doc/RelNotes/v1.46.0.txt
+    - https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git/plain/doc/RelNotes/v1.47.0.txt
+    - https://raw.githubusercontent.com/e2tools/e2tools/master/README.md
   repo-sources:
     - >
       Official e2fsprogs homepage states latest development sources are maintained in
@@ -52,5 +161,6 @@ category-path:
   - ext
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
