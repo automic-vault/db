@@ -5,6 +5,82 @@ docs:
   - https://fastd.readthedocs.io/en/stable
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official README says binary packages are provided by many major Linux
+      distributions. The package-manager metadata for this Homebrew formula also shows
+      availability across Alpine, Debian, Fedora, Nix, Arch, Ubuntu, and Homebrew, which
+      fits fastd's role as a deployable networking daemon rather than an application
+      framework.
+    - >
+      fastd is particularly associated with community mesh and VPN deployments where
+      simple UDP traversal, peer configuration, and distribution packaging matter. The
+      v23 release notes explicitly discuss common Gluon wireless mesh firmware
+      deployments when explaining which configurations were unaffected by a
+      fast-reconnect amplification issue.
+  package-nerd-significance:
+    - >
+      fastd is interesting to package maintainers because it lives at the boundary of
+      networking, crypto libraries, init/service integration, capabilities, and
+      platform-specific TUN/TAP behavior. Small changes in dependencies or build options
+      affect what ciphers, MACs, status sockets, and offload paths are available.
+    - >
+      It is also a reminder that not every VPN package wants the same abstraction.
+      fastd's packaging matters to mesh-network communities because it is small,
+      scriptable, and available in many distro repositories.
+  project-history:
+    - >
+      The upstream README and documentation describe fastd as the Fast and Secure
+      Tunneling Daemon, supporting 1:1, 1:n, and meshed network topologies. It runs on
+      Linux, FreeBSD, OpenBSD, and macOS, with Android code present but not actively
+      maintained.
+    - >
+      The stable documentation tracks releases from v15 through v23. v15 introduced
+      Sphinx-based documentation, macOS support, UMAC authentication, status sockets,
+      and OpenWrt integration improvements. Later releases added and refined L2TP
+      offloading, security mitigations, build-system updates, and operational fixes.
+    - >
+      fastd's cryptographic documentation emphasizes composable methods, with
+      `salsa2012+umac` recommended for authenticated encryption and
+      `null+salsa2012+umac` for authenticated-only operation. This shows the project's
+      focus on fast software cryptography rather than simply wrapping generic TLS or
+      IPsec stacks.
+  related-projects:
+    - >
+      Gluon is referenced by fastd's release notes as a common wireless mesh firmware
+      deployment context.
+    - >
+      TUN/TAP drivers and libraries such as libsodium, NaCl, OpenSSL, json-c, and libmnl
+      appear in fastd's platform and feature surface.
+  sources:
+    - https://github.com/neocturne/fastd
+    - https://fastd.readthedocs.io/en/stable/
+    - https://fastd.readthedocs.io/en/stable/manual/config.html
+    - https://fastd.readthedocs.io/en/stable/manual/methods.html
+    - https://fastd.readthedocs.io/en/stable/releases/v15.html
+    - https://fastd.readthedocs.io/en/stable/releases/v23.html
+  summary:
+    - >
+      fastd is a small VPN daemon that tunnels IP packets and Ethernet frames over UDP.
+      It is designed for flexible topologies, modern software-friendly cryptography, and
+      lightweight deployment on Unix-like systems.
+  timeline:
+    - 'v15: Added Sphinx documentation, macOS support, UMAC methods, and status sockets.'
+    - 'v20: Continued release series documented under stable fastd docs.'
+    - 'v22: Added L2TP-style work later referenced by v23 security notes.'
+    - 'v23: Mitigated CVE-2025-24356 fast-reconnect amplification behavior.'
+  usage:
+    - >
+      A typical fastd deployment defines a daemon configuration with bind addresses,
+      methods, secret keys, peers or peer directories, MTU settings, and hook scripts.
+      Peers can be included from directories and reloaded on SIGHUP, which suits
+      mesh-style deployments with many peer definitions.
+    - >
+      Operators use fastd when they want a lightweight userspace VPN over UDP with
+      configurable cryptographic methods and TUN/TAP behavior. The daemon can be run as
+      part of routers, Linux servers, BSD hosts, or macOS test environments, with
+      distribution packages handling service integration.
 tags:
   - cli
   - daemon
@@ -30,6 +106,13 @@ provenance:
     - >
       Official fastd documentation is hosted on Read the Docs and references the
       neocturne/fastd repository.
+  history-sources:
+    - https://github.com/neocturne/fastd
+    - https://fastd.readthedocs.io/en/stable/
+    - https://fastd.readthedocs.io/en/stable/manual/config.html
+    - https://fastd.readthedocs.io/en/stable/manual/methods.html
+    - https://fastd.readthedocs.io/en/stable/releases/v15.html
+    - https://fastd.readthedocs.io/en/stable/releases/v23.html
   repo-sources:
     - source_facts.repo already has a value; per instructions repo is returned as null.
   tags-sources:
@@ -41,5 +124,6 @@ category-path:
   - vpn
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
