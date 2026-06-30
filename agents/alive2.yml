@@ -2,14 +2,91 @@ id: brew:alive2
 display-name: Alive2
 repo: null
 docs:
+  - https://alive2.llvm.org/ce
   - https://github.com/AliveToolkit/alive2
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Alive2 is used as an LLVM quality tool rather than a general application. The
+      README says the maintainers run translation validation across LLVM IR-level
+      transformation tests on LLVM main each day and publish results. The repository's
+      BugList lists many LLVM and Z3 issues found by Alive2.
+    - >
+      The project also has an online alive-tv instance, letting compiler developers try
+      translation validation without building the local toolchain.
+  package-nerd-significance:
+    - >
+      Alive2 is notable in package-manager catalogs because it packages research-grade
+      compiler verification as command-line tools. For LLVM-heavy users, installing
+      alive-tv is a practical way to test optimizer correctness without assembling the
+      whole research environment by hand.
+    - >
+      It also depends on the exact moving edge of LLVM, which makes it a good example of
+      a package whose value is tied to keeping versions and build flags aligned with
+      upstream compiler development.
+  project-history:
+    - >
+      The public Alive2 repository starts with an initial commit on 2018-06-09. Its
+      README describes libraries for Alive2 IR, symbolic execution, LLVM-to-Alive2 IR
+      conversion, refinement checking, and SMT abstraction, plus tools including an
+      Alive drop-in replacement, alive-tv, alive-exec, and clang/opt
+      translation-validation plugins.
+    - >
+      The project positions itself as the successor in spirit to Alive for LLVM
+      optimization reasoning, but with a broader toolkit around real LLVM IR and
+      translation validation. The README points to the PLDI 2021 Alive2 paper for the
+      technical introduction.
+    - >
+      Alive2 tracks LLVM closely: its README says the latest Alive2 is intended to build
+      against the latest LLVM main branch, and its later release tags use
+      LLVM-version-like labels such as v19.0, v20.0, and v21.0.
+  related-projects:
+    - 'LLVM: primary compiler IR and optimization target.'
+    - >
+      Z3: SMT solver dependency and one of the projects whose bugs are tracked in
+      Alive2's BugList.
+    - >
+      Alive: earlier optimization-verification tool referenced by Alive2's drop-in
+      replacement.
+  sources:
+    - >
+      Alive2 PLDI 2021 paper linked from README:
+      https://web.ist.utl.pt/nuno.lopes/pubs/alive2-pldi21.pdf
+    - Git history from https://github.com/AliveToolkit/alive2.git
+    - >
+      Official Alive2 BugList:
+      https://raw.githubusercontent.com/AliveToolkit/alive2/master/BugList.md
+    - >
+      Official Alive2 README:
+      https://raw.githubusercontent.com/AliveToolkit/alive2/master/README.md
+  summary:
+    - >
+      Alive2 is a toolkit for analyzing and verifying LLVM code and transformations,
+      centered on translation validation for compiler optimizations.
+  timeline:
+    - '2018: Public Git history begins with an initial commit.'
+    - '2020: README example documents an LLVM release/10.x optimizer bug found by alive-tv.'
+    - "2021: PLDI 2021 paper published as the project's technical introduction."
+    - '2024: v19.0 tag appears in the repository history.'
+    - '2025: v21.0 tag appears in the repository history.'
+  usage:
+    - >
+      Package users usually run alive-tv on source and target LLVM IR, wrap opt through
+      Alive2's translation-validation scripts, or compile through alivecc/alive++ to
+      validate IR-level transformations performed by clang. alive-exec is documented as
+      an experimental UB-precise LLVM function interpreter.
+    - >
+      The toolchain is intentionally low-level: it needs CMake, a C/C++ compiler, re2c,
+      Z3, and often a matching LLVM build with RTTI and exceptions enabled.
 tags:
   - cli
   - compiler
   - formal-methods
   - llvm
+  - smt
+  - translation-validation
   - verification
 geiger:
   category: tool
@@ -22,23 +99,39 @@ geiger:
     - text:server
 provenance:
   category-sources:
-    - official GitHub repository description
-    - 'source_facts.description: Automatic verification of LLVM optimizations'
-  display-name-sources:
-    - current_curation.display-name
-    - official GitHub repository AliveToolkit/alive2
-  docs-sources:
-    - official GitHub README is the primary documentation surface
-  repo-sources:
-    - source_facts.repo already set; per instruction repo returned as null
-  tags-sources:
-    - official GitHub repository description references LLVM optimization verification
+    - Official README describes LLVM transformation analysis and verification.
     - source_facts.description
+  display-name-sources:
+    - Official README heading.
+    - source_facts.name
+  docs-sources:
+    - 'Official Alive2 README: https://github.com/AliveToolkit/alive2'
+    - 'Official online alive-tv link from README: https://alive2.llvm.org/ce/'
+  history-sources:
+    - >
+      Alive2 PLDI 2021 paper linked from README:
+      https://web.ist.utl.pt/nuno.lopes/pubs/alive2-pldi21.pdf
+    - Git history from https://github.com/AliveToolkit/alive2.git
+    - >
+      Official Alive2 BugList:
+      https://raw.githubusercontent.com/AliveToolkit/alive2/master/BugList.md
+    - >
+      Official Alive2 README:
+      https://raw.githubusercontent.com/AliveToolkit/alive2/master/README.md
+  repo-sources:
+    - >
+      source_facts.repo already supplies https://github.com/AliveToolkit/alive2; prompt
+      requires repo null when source_facts.repo is present.
+  tags-sources:
+    - Official README libraries and tools list.
+    - source_facts.executables
 category-confidence: high
 category-path:
   - developer-tools
-  - compiler-verification
+  - formal-methods
+  - compiler-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

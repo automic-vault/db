@@ -10,9 +10,91 @@ config-file-location:
     - /usr/share/alsa/alsa.conf
     - /etc/asound.conf
     - ~/.asoundrc
+    - ~/.config/alsa/asoundrc
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The ALSA introduction notes that ALSA driver code was included in Linux 2.6, which
+      made the ALSA stack the default assumption for most Linux desktop, embedded, and
+      pro-audio packaging. As a result, alsa-lib became a dependency that package
+      maintainers encounter indirectly through audio applications, desktop environments,
+      media players, sound servers, MIDI tools, and compatibility layers.
+    - >
+      The library continues to be released as a separately versioned package. The ALSA
+      project news and git history show coordinated alsa-lib releases with related ALSA
+      components, including the 1.2.16 and 1.2.16.1 releases in June 2026.
+  package-nerd-significance:
+    - >
+      For package people, alsa-lib is plumbing with a very large reverse-dependency
+      shadow. It is small enough to look like a library package, but central enough that
+      ABI, plugin paths, default configuration, UCM data, and cross-distro path choices
+      can affect whole desktops and audio stacks.
+    - >
+      It also matters historically because it marks the Unix audio transition from OSS
+      compatibility toward the ALSA model that PulseAudio, JACK bridges, PipeWire
+      compatibility layers, and many direct audio applications have had to understand.
+  project-history:
+    - >
+      The ALSA project was founded by Jaroslav Kysela and grew around the goal of
+      replacing and extending the older Open Sound System model on Linux. Official ALSA
+      documentation describes ALSA as providing audio and MIDI functionality for Linux,
+      with modular drivers, SMP/thread-safe design, OSS compatibility, and a user-space
+      library named alsa-lib to simplify application programming.
+    - >
+      alsa-lib became one of the core split-out ALSA components alongside the kernel
+      driver code, alsa-utils, alsa-tools, and later configuration packages such as
+      alsa-ucm-conf. The official library reference credits Jaroslav Kysela, Abramo
+      Bagnara, Takashi Iwai, and Frank van de Pol as authors and describes the library
+      API as the preferred interface for application programmers rather than using the
+      kernel API directly.
+  related-projects:
+    - >
+      alsa-utils provides command-line tools such as aplay, arecord, alsamixer, and
+      alsactl that sit beside alsa-lib in most distributions.
+    - >
+      alsa-ucm-conf and alsa-topology-conf carry machine and DSP configuration data
+      consumed through alsa-lib interfaces.
+    - >
+      PipeWire, PulseAudio, JACK, media players, and many native Linux audio
+      applications depend on ALSA compatibility or direct ALSA access.
+  sources:
+    - https://git.alsa-project.org/?p=alsa-lib.git;a=summary
+    - https://raw.githubusercontent.com/alsa-project/alsa-lib/master/README.md
+    - https://raw.githubusercontent.com/alsa-project/alsa-lib/master/src/conf/alsa.conf
+    - https://www.alsa-project.org/alsa-doc/alsa-lib/
+    - https://www.alsa-project.org/wiki/Alsa_Team
+    - https://www.alsa-project.org/wiki/Introduction
+    - https://www.alsa-project.org/wiki/Main_Page
+  summary:
+    - >
+      alsa-lib is the user-space C library for the Advanced Linux Sound Architecture,
+      the Linux audio and MIDI stack normally abbreviated ALSA. It is the layer that
+      lets applications talk to the ALSA kernel API through a stable library API, while
+      adding higher-level helpers, plugin support, and configuration machinery that
+      would be awkward for each application to implement directly.
+  timeline:
+    - '2003: ALSA driver code is included in Linux 2.6.'
+    - >
+      2018: The alsa-project/alsa-lib GitHub repository is created as an official source
+      mirror/development surface.
+    - '2026-06-01: ALSA releases alsa-lib 1.2.16 with related ALSA components.'
+    - '2026-06-12: ALSA releases alsa-lib 1.2.16.1.'
+  usage:
+    - >
+      Developers use alsa-lib for PCM audio, mixer controls, sequencer, raw MIDI,
+      timers, topology, and use-case manager APIs. End users usually meet it through
+      configuration files rather than by invoking it directly: system defaults are
+      loaded through alsa.conf and per-machine or per-user overrides are commonly placed
+      in asound.conf or .asoundrc files.
+    - >
+      The source configuration file loads system and user configuration snippets from
+      locations such as /etc/asound.conf, ~/.asoundrc, and
+      $XDG_CONFIG_HOME/alsa/asoundrc, which explains why distribution packaging and
+      local audio troubleshooting often revolve around these paths.
 tags:
   - audio
+  - c
   - cli
   - library
   - linux
@@ -29,29 +111,37 @@ geiger:
     - text:audio,server
 provenance:
   category-sources:
-    - >
-      current_curation.category_path; official ALSA homepage says ALSA provides audio
-      and MIDI functionality.
+    - https://www.alsa-project.org/wiki/Introduction
+    - source_facts.description
   display-name-sources:
-    - >
-      source_facts.name; official ALSA GitHub organization pins alsa-lib as The Advanced
-      Linux Sound Architecture library.
+    - https://raw.githubusercontent.com/alsa-project/alsa-lib/master/README.md
+    - source_facts.name
   docs-sources:
-    - >
-      Official ALSA homepage links ALSA Library API; official Asoundrc page documents
-      ALSA config files and locations.
+    - https://raw.githubusercontent.com/alsa-project/alsa-lib/master/README.md
+    - https://raw.githubusercontent.com/alsa-project/alsa-lib/master/src/conf/alsa.conf
+    - https://www.alsa-project.org/alsa-doc/alsa-lib/
+  history-sources:
+    - https://git.alsa-project.org/?p=alsa-lib.git;a=summary
+    - https://raw.githubusercontent.com/alsa-project/alsa-lib/master/README.md
+    - https://raw.githubusercontent.com/alsa-project/alsa-lib/master/src/conf/alsa.conf
+    - https://www.alsa-project.org/alsa-doc/alsa-lib/
+    - https://www.alsa-project.org/wiki/Alsa_Team
+    - https://www.alsa-project.org/wiki/Introduction
+    - https://www.alsa-project.org/wiki/Main_Page
   repo-sources:
-    - >
-      Official ALSA homepage links the ALSA Project on GitHub; official GitHub
-      organization pins the alsa-lib repository.
+    - https://api.github.com/repos/alsa-project/alsa-lib
+    - https://raw.githubusercontent.com/alsa-project/alsa-lib/master/README.md
+    - https://www.alsa-project.org/wiki/Main_Page
   tags-sources:
-    - >
-      source_facts.description; official ALSA homepage says ALSA provides audio and MIDI
-      functionality and user-space library support.
+    - https://www.alsa-project.org/alsa-doc/alsa-lib/
+    - source_facts.description
 category-confidence: high
 category-path:
   - media
+  - audio
+  - linux-audio
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

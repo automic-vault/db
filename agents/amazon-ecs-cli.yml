@@ -2,6 +2,7 @@ id: brew:amazon-ecs-cli
 display-name: Amazon ECS CLI
 repo: null
 docs:
+  - https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_CLI.html
   - https://github.com/aws/amazon-ecs-cli#readme
 config-file-location:
   unix:
@@ -14,10 +15,85 @@ credentials-file-location:
     - ~/.ecs
   windows:
     - C:\Users\<username>\AppData\local\ecs
+history:
+  adoption-history:
+    - >
+      The ECS CLI fit a specific packaging niche: developers wanted a small binary that
+      translated familiar Docker Compose workflows into ECS resources before broader
+      opinionated deployment CLIs existed. Homebrew packaging made it especially
+      convenient for macOS and Linux developers working against ECS and Fargate.
+    - >
+      AWS later placed AWS Copilot at the top of the ECS CLI README, describing Copilot
+      as a generally available CLI for building, releasing, and operating container apps
+      on ECS and Fargate. The GitHub repository metadata now marks amazon-ecs-cli as
+      archived, which makes it a historical package for older ECS workflows rather than
+      the forward-looking AWS container CLI.
+  package-nerd-significance:
+    - >
+      Amazon ECS CLI is a classic cloud CLI lifecycle package: very useful during a
+      platform transition, then effectively superseded while still present in package
+      indexes for users with old automation.
+    - >
+      It is also a reminder that package-manager descriptions can outlive a tool's
+      strategic status. The binary still documents install links and configuration
+      behavior, but the upstream repository being archived changes how maintainers
+      should frame it.
+  project-history:
+    - >
+      The aws/amazon-ecs-cli repository was created in September 2015. Its README
+      describes a CLI for Amazon ECS that provides high-level commands for creating,
+      updating, and monitoring clusters and tasks from a local development environment,
+      as an alternative to using the AWS Management Console or lower-level AWS CLI
+      commands.
+    - >
+      The project tracked major ECS platform features through its changelog: named
+      profiles and Windows support in 1.0.0, Fargate support in 1.1.0, service
+      discovery, private registry credentials, Docker Compose v3 support, local
+      commands, FireLens, EFS, and AWS Graviton2 support by the final 1.21.0 release
+      line.
+  related-projects:
+    - AWS CLI provides the lower-level ECS API command surface.
+    - >
+      AWS Copilot CLI is the AWS-recommended successor-style developer CLI for container
+      applications on ECS and Fargate.
+    - Docker Compose and ecs-params.yml are central adjacent formats for ECS CLI workflows.
+  sources:
+    - https://api.github.com/repos/aws/amazon-ecs-cli
+    - https://api.github.com/repos/aws/amazon-ecs-cli/releases?per_page=5
+    - https://raw.githubusercontent.com/aws/amazon-ecs-cli/master/CHANGELOG.md
+    - https://raw.githubusercontent.com/aws/amazon-ecs-cli/master/README.md
+  summary:
+    - >
+      Amazon ECS CLI was AWS's higher-level command-line tool for Amazon Elastic
+      Container Service workflows, especially local development patterns that used
+      Docker Compose-style definitions to create, update, and inspect ECS clusters,
+      services, and tasks.
+  timeline:
+    - '2015-09-30: aws/amazon-ecs-cli repository is created.'
+    - '2017: v1.0.0 adds named ECS profiles, cluster configurations, and Windows support.'
+    - '2017: v1.1.0 adds AWS Fargate support.'
+    - '2020-07-07: v1.20.0 adds EFS support in compose up workflows.'
+    - '2020-12-21: v1.21.0 adds container dependencies and Graviton2 instance support.'
+    - '2025: GitHub metadata shows the repository archived.'
+  usage:
+    - >
+      Users configured AWS credentials, region, cluster name, ECS profiles, and cluster
+      configurations, then used commands such as ecs-cli configure, ecs-cli up, ecs-cli
+      compose service up, ecs-cli ps, and ecs-cli logs. The README documents
+      configuration storage in ~/.ecs on macOS/Linux and
+      C:\Users\<username>\AppData\local\ecs on Windows, with optional use of
+      ~/.aws/credentials through --aws-profile or AWS_PROFILE.
+    - >
+      The tool mattered most when a project already had docker-compose.yml and
+      ecs-params.yml files and wanted an incremental path to ECS tasks and services. For
+      new AWS workflows, the README's Copilot banner is the key adoption signal: AWS
+      redirected the developer-experience story to Copilot while leaving ECS CLI for
+      compatibility.
 tags:
   - aws
   - cli
   - containers
+  - docker-compose
   - ecs
   - fargate
 geiger:
@@ -31,27 +107,31 @@ geiger:
     - text:cluster
 provenance:
   category-sources:
-    - >
-      current_curation.category_path; official repository describes running applications
-      on ECS/Fargate and managing ECS resources.
+    - https://raw.githubusercontent.com/aws/amazon-ecs-cli/master/README.md
+    - source_facts.description
   display-name-sources:
-    - source_facts.name; official repository and AWS docs use Amazon ECS CLI.
+    - https://raw.githubusercontent.com/aws/amazon-ecs-cli/master/README.md
+    - source_facts.name
   docs-sources:
-    - >
-      Official repository README is the primary ECS CLI documentation surface and links
-      related AWS ECS CLI configuration docs.
+    - https://api.github.com/repos/aws/amazon-ecs-cli
+    - https://raw.githubusercontent.com/aws/amazon-ecs-cli/master/README.md
+  history-sources:
+    - https://api.github.com/repos/aws/amazon-ecs-cli
+    - https://api.github.com/repos/aws/amazon-ecs-cli/releases?per_page=5
+    - https://raw.githubusercontent.com/aws/amazon-ecs-cli/master/CHANGELOG.md
+    - https://raw.githubusercontent.com/aws/amazon-ecs-cli/master/README.md
   repo-sources:
-    - >
-      source_facts.repo already contains https://github.com/aws/amazon-ecs-cli, so repo
-      is returned as null per instruction.
+    - source_facts.repo already populated; prompt requires repo null
   tags-sources:
-    - >
-      source_facts.description; official repository describes ECS/Fargate, Docker
-      Compose format, ECR, clusters, and tasks.
+    - https://api.github.com/repos/aws/amazon-ecs-cli
+    - source_facts.description
 category-confidence: high
 category-path:
   - cloud-infrastructure
+  - aws
+  - containers
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

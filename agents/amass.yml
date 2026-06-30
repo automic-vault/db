@@ -14,10 +14,89 @@ credentials-file-location:
   unix:
     - ~/.config/amass/datasources.yaml
     - /etc/amass/datasources.yaml
+history:
+  adoption-history:
+    - >
+      Amass became a standard package in security distributions and package managers
+      because it automated a tedious recon workflow: combine passive sources, DNS
+      techniques, certificate transparency, web archives, routing data, and optional
+      active probing under one command. The official README lists Homebrew, prebuilt
+      release packages, Docker images, and source installation paths.
+    - >
+      The project's own README and REFERENCES file document adoption in talks,
+      trainings, and practitioner workflows, including DEF CON and Red Team Village
+      references, OWASP chapter material, bug bounty tutorials, and testimonials from
+      Accenture and Visma red-team users.
+  package-nerd-significance:
+    - >
+      Amass is a good example of a security CLI whose packaging is not just about the
+      binary. Useful installs need correct config paths, data-source credential
+      handling, shell ergonomics, and sometimes a database or persistent output
+      directory.
+    - >
+      It also shows how modern security tooling lands in general-purpose package
+      managers: it is a Go binary, but it has an unusually large operational surface
+      because its value depends on many external OSINT providers and frequently changing
+      integrations.
+  project-history:
+    - >
+      The GitHub repository was created in July 2018 and the README identifies the
+      project as an OWASP project maintained around network mapping of attack surfaces
+      and external asset discovery. The program copyright in the README attributes OWASP
+      Amass and contributions to Jeff Foley for 2017-2023, reflecting pre-OWASP or
+      pre-current-repository origins before the current repository history.
+    - >
+      Amass evolved from a subdomain-enumeration tool into a broader graph-oriented
+      external attack-surface mapper. Its official documentation now describes YAML
+      configuration for scan scope, data sources, transformations, engine APIs, graph
+      databases, and programmatic use as a Go library.
+  related-projects:
+    - OWASP is the umbrella project home and provides the public project page.
+    - >
+      Shodan, Censys, SecurityTrails, VirusTotal, DNSDB, Wayback, Common Crawl, GitHub,
+      GitLab, and many other data sources are integrations or data inputs rather than
+      sibling code projects.
+    - >
+      The Amass Go module and scripting/documentation surface support more advanced
+      integrations beyond simple CLI use.
+  sources:
+    - https://api.github.com/repos/owasp-amass/amass
+    - https://api.github.com/repos/owasp-amass/amass/releases?per_page=5
+    - https://owasp-amass.github.io/docs/configuration/
+    - https://owasp-amass.github.io/docs/configuration/data_sources/
+    - https://owasp.org/www-project-amass/
+    - https://raw.githubusercontent.com/owasp-amass/amass/master/README.md
+    - https://raw.githubusercontent.com/owasp-amass/amass/master/REFERENCES.md
+  summary:
+    - >
+      OWASP Amass is an attack-surface mapping and external asset discovery tool for
+      security teams, red teams, bug bounty hunters, and OSINT-heavy workflows. Its core
+      appeal is that it aggregates many open-source intelligence, DNS, certificate,
+      routing, scraping, archive, WHOIS, and API-backed data sources into one repeatable
+      CLI workflow.
+  timeline:
+    - '2017: README copyright range begins for Jeff Foley and OWASP Amass contributions.'
+    - '2018-07-10: Current owasp-amass/amass GitHub repository is created.'
+    - '2023-09-10: Amass v4.2.0 release is published.'
+    - '2025-08-03: Amass v5.0.0 release is published.'
+    - '2026-04-07: Amass v5.1.1 release is published.'
+  usage:
+    - >
+      Typical use is the amass CLI, especially enumeration against a domain, optionally
+      with configured API keys for premium or authenticated data sources. Configuration
+      is YAML-based: config.yaml controls scope and options, while datasources.yaml
+      stores data-source credentials such as API keys, usernames, passwords, and
+      secrets.
+    - >
+      The README also documents Docker usage with a mounted /.config/amass directory so
+      the graph database and output can persist across runs. That detail is important
+      for package users because Amass is not merely a stateless scanner: its value grows
+      when outputs, graph data, and source credentials are managed carefully.
 tags:
   - asset-discovery
   - attack-surface
   - cli
+  - dns
   - osint
   - reconnaissance
   - security
@@ -32,27 +111,36 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      current_curation.category_path; official OWASP page classifies Amass as a security
-      tool for attack surface mapping and asset discovery.
+    - https://owasp.org/www-project-amass/
+    - https://raw.githubusercontent.com/owasp-amass/amass/master/README.md
+    - source_facts.description
   display-name-sources:
-    - source_facts.homepage; official OWASP project page title is OWASP Amass.
+    - current_curation.display-name
+    - https://raw.githubusercontent.com/owasp-amass/amass/master/README.md
   docs-sources:
-    - >
-      Official OWASP project page links project repository; official Amass Docs cover
-      getting started, configuration, and data sources.
+    - https://owasp-amass.github.io/docs/configuration/
+    - https://owasp-amass.github.io/docs/configuration/data_sources/
+    - https://raw.githubusercontent.com/owasp-amass/amass/master/README.md
+  history-sources:
+    - https://api.github.com/repos/owasp-amass/amass
+    - https://api.github.com/repos/owasp-amass/amass/releases?per_page=5
+    - https://owasp-amass.github.io/docs/configuration/
+    - https://owasp-amass.github.io/docs/configuration/data_sources/
+    - https://owasp.org/www-project-amass/
+    - https://raw.githubusercontent.com/owasp-amass/amass/master/README.md
+    - https://raw.githubusercontent.com/owasp-amass/amass/master/REFERENCES.md
   repo-sources:
-    - >
-      source_facts.repo already contains https://github.com/owasp-amass/amass, so repo
-      is returned as null per instruction.
+    - source_facts.repo already populated; prompt requires repo null
   tags-sources:
-    - >
-      source_facts.description; official OWASP page describes attack surface management,
-      external asset discovery, OSINT, and reconnaissance.
+    - https://api.github.com/repos/owasp-amass/amass
+    - https://raw.githubusercontent.com/owasp-amass/amass/master/README.md
 category-confidence: high
 category-path:
   - security
+  - asset-discovery
+  - reconnaissance
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

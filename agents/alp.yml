@@ -5,6 +5,71 @@ docs:
   - https://github.com/tkuchiki/alp#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      alp is a focused operations tool rather than a broad observability platform. Its
+      adoption comes from developers and performance testers who want a quick CLI
+      profile of HTTP access logs, especially during load testing or application tuning.
+    - >
+      Official installation paths include GitHub release binaries, Homebrew on macOS,
+      and asdf through `asdf-alp`. That makes it easy to pin a profiler version in local
+      benchmark environments without introducing a full logging stack.
+  package-nerd-significance:
+    - >
+      alp is the sort of small Go CLI that package managers are good at: one binary,
+      clear terminal behavior, and direct value in incident or benchmark loops. It sits
+      between ad hoc `awk` pipelines and heavier log-analysis systems.
+    - >
+      The v0.4-to-v1 migration is useful package history because it changed the command
+      surface. Anyone packaging shell completions, examples, or old benchmark scripts
+      needs to know that the older one-command LTSV shape became a subcommand-based
+      multi-format CLI.
+  project-history:
+    - >
+      The official README describes alp simply as Access Log Profiler and documents
+      binary releases, Homebrew installation, asdf installation, and command-based
+      usage. The repository's v0.4.0-to-v1.0.0 migration document records a major
+      reshaping from an LTSV-focused profiler into a multi-format tool with subcommands.
+    - >
+      Version 1.0.0 added format-specific subcommands such as `ltsv`, `json`, and
+      `regexp`, later joined in the README by `pcap`, `diff`, and `count`. The v1
+      transition also consolidated sorting and output options, added filters, added
+      selectable output columns, and introduced position-file support so repeated
+      benchmark runs do not require truncating logs.
+  related-projects:
+    - LTSV is one of alp's first-class log formats.
+    - asdf-alp provides asdf-based version management for alp.
+    - Go libraries in the module include cobra, viper, go-ltsv, gopacket, and YAML packages.
+  sources:
+    - https://raw.githubusercontent.com/tkuchiki/alp/master/README.md
+    - >
+      https://raw.githubusercontent.com/tkuchiki/alp/master/docs/the_difference_between_v0_4_0_and_v1_0_0.md
+    - https://raw.githubusercontent.com/tkuchiki/alp/master/go.mod
+  summary:
+    - >
+      alp is an access log profiler. It reads web access logs and packet captures,
+      groups requests, and reports counts and timing statistics in terminal-friendly
+      formats.
+  timeline:
+    - 'v0.4.0: Documented as an Access Log Profiler for LTSV.'
+    - >
+      v1.0.0: Added subcommands and support for JSON and regexp formats, with
+      consolidated options and filters.
+    - >
+      Current: README documents LTSV, JSON, regexp, pcap, diff, count, Homebrew, asdf,
+      and binary release installation.
+  usage:
+    - >
+      Common usage is to feed alp an access log in LTSV, JSON, or regexp-parsed format
+      and sort/group the results by count, latency statistics, status, URI, method,
+      percentiles, or matching groups. It can output table, markdown, TSV, CSV, and HTML
+      formats.
+    - >
+      The README also documents `pcap` profiling for captured HTTP requests, `diff` for
+      comparing two profile results, and `count` for counting log entries. Many flags
+      are label/key/subexpression overrides, which lets alp adapt to site-specific log
+      formats without a separate parser.
 tags:
   - access-logs
   - cli
@@ -22,25 +87,33 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - current_curation.category_path; official README says alp is an access log profiler.
-  display-name-sources:
-    - source_facts.name; official repository title https://github.com/tkuchiki/alp.
-  docs-sources:
     - >
-      Official README is the primary documentation surface and includes installation,
-      usage, command help, and global options.
+      Official README describes alp as an access log profiler with LTSV, JSON, regexp,
+      pcap, diff, and count commands.
+  display-name-sources:
+    - Official README heading and executable use `alp`.
+  docs-sources:
+    - Official GitHub README is the primary documentation surface.
+  history-sources:
+    - https://raw.githubusercontent.com/tkuchiki/alp/master/README.md
+    - >
+      https://raw.githubusercontent.com/tkuchiki/alp/master/docs/the_difference_between_v0_4_0_and_v1_0_0.md
+    - https://raw.githubusercontent.com/tkuchiki/alp/master/go.mod
   repo-sources:
     - >
-      source_facts.repo already contains https://github.com/tkuchiki/alp, so repo is
-      returned as null per instruction.
+      source_facts.repo already provided https://github.com/tkuchiki/alp; per prompt,
+      repo is returned as null.
   tags-sources:
     - >
-      source_facts.description; official README documents profiling LTSV, JSON, regexp,
-      pcap, and access log formats.
+      Official README documents access log profiling, CLI usage, log formats, pcap
+      profiling, output formats, and sorting/filtering.
 category-confidence: high
 category-path:
   - developer-tools
+  - observability
+  - logs
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
