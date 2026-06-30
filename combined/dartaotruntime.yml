@@ -6,6 +6,56 @@ docs:
   - https://dart.dev/tools/dartaotruntime
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is niche compared with the full Dart SDK: most developers install `dart`,
+      while deployment or packaging workflows may prefer the smaller AOT runtime. Its
+      presence as a separate formula is useful for systems that only need to execute
+      precompiled snapshots.
+  package-nerd-significance:
+    - >
+      `dartaotruntime` is interesting because it exposes a packaging boundary inside the
+      Dart SDK. It lets distributions separate a runtime for AOT artifacts from the
+      larger compiler and package-manager toolchain, which matters for smaller images
+      and runtime-only deployments.
+  project-history:
+    - >
+      The tool belongs to the Dart SDK rather than a separate upstream project. Its
+      history follows Dart's shift toward ahead-of-time compilation targets, where code
+      can be compiled into a snapshot and then executed by a dedicated runtime command.
+    - >
+      Official Dart documentation presents `dartaotruntime` as the command-line runner
+      for AOT snapshots, paired with the `dart compile aot-snapshot` compiler mode.
+      Package managers that split it out are packaging a narrow execution tool from the
+      larger Dart SDK source tree.
+  related-projects:
+    - >
+      The tool is directly related to the Dart SDK, the `dart compile aot-snapshot`
+      command, and deployment workflows that package Dart snapshots rather than source
+      projects.
+  sources:
+    - https://dart.dev/tools/dartaotruntime
+    - https://dart.dev/tools/dart-compile
+    - https://dart.dev/tools/sdk
+    - https://github.com/dart-lang/sdk
+  summary:
+    - >
+      `dartaotruntime` is the Dart SDK tool for running AOT-compiled Dart snapshots. As
+      a package, it is the small runtime-side companion to `dart compile aot-snapshot`,
+      useful when a system wants to run compiled Dart artifacts without installing or
+      invoking the broader developer workflow.
+  timeline:
+    - 'Dart SDK era: AOT snapshot compilation became an official `dart compile` target.'
+    - >
+      Present: `dartaotruntime` is documented as the official command for running AOT
+      snapshots.
+  usage:
+    - >
+      The normal workflow is to compile Dart code with `dart compile aot-snapshot` and
+      run the resulting snapshot with `dartaotruntime`. It has no independent project
+      config or credential store; those concerns belong to Dart projects and pub, not
+      this runtime command.
 category: language-runtime
 package-manager:
   apk: dartaotruntime
@@ -23,5 +73,11 @@ executables:
   - dartaotruntime
 provenance:
   formula: dartaotruntime
+  history-sources:
+    - https://dart.dev/tools/dartaotruntime
+    - https://dart.dev/tools/dart-compile
+    - https://dart.dev/tools/sdk
+    - https://github.com/dart-lang/sdk
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium
