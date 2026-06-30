@@ -5,6 +5,74 @@ docs:
   - https://github.com/apple-oss-distributions/bsdmake/blob/main/make.1
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      bsdmake survives in package managers because not every makefile is written for GNU
+      make. The provided package facts show Homebrew and MacPorts packaging, which is
+      especially relevant on macOS where developers may need a BSD-flavored make as an
+      explicit command.
+    - >
+      Its adoption is mostly compatibility-driven: users install it when building older
+      BSD-derived software, ports, or makefiles that rely on BSD make features or system
+      makefile conventions.
+  package-nerd-significance:
+    - >
+      bsdmake matters because `make` is not one portable language in practice. Packaging
+      BSD make separately lets build recipes declare the dialect they need instead of
+      hoping the system `make` happens to match.
+    - >
+      For package maintainers, it is one of those old tools that prevents a surprising
+      amount of build breakage: boring, small, and valuable precisely because it
+      preserves historical semantics.
+  project-history:
+    - >
+      The Apple open-source manual page carries Regents of the University of California
+      copyright notices from 1990 and 1993 and an SCCS marker for Berkeley make. Its
+      HISTORY section says a `make` command appeared in PWB UNIX, placing BSD make in
+      the long Unix build-tool lineage.
+    - >
+      The manual documents behavior that distinguishes BSD make from a generic `make`:
+      it reads `sys.mk`, searches for `BSDmakefile`, `makefile`, and `Makefile`,
+      supports `.OBJDIR`, `mkdep`, BSD-style include paths under `/usr/share/mk`, and
+      exposes debugging and compatibility flags.
+  related-projects:
+    - GNU make is the dominant alternative make dialect and the main compatibility contrast.
+    - NetBSD make, FreeBSD make, and OpenBSD make are close relatives in the BSD make family.
+    - >
+      mkdep and `/usr/share/mk` are part of the BSD build-system environment documented
+      by the manual page.
+  sources:
+    - https://github.com/apple-oss-distributions/bsdmake
+    - https://raw.githubusercontent.com/apple-oss-distributions/bsdmake/main/make.1
+    - source_facts.package-manager
+  summary:
+    - >
+      bsdmake is Apple's packaged BSD make implementation, a descendant of the
+      Berkeley/PWB make tradition rather than GNU make. It is a compatibility package
+      for build systems and ports that expect BSD make semantics, makefile names,
+      variables, and system include behavior.
+  timeline:
+    - >
+      PWB UNIX era: The manual page's HISTORY section says a make command appeared in
+      PWB UNIX.
+    - >
+      1990-1993: Berkeley copyright notices in the Apple manual page reflect the BSD
+      lineage of this make implementation.
+    - '1995-06-13: The manual page includes a Berkeley SCCS marker for make.1 version 8.8.'
+    - >
+      2005-10-14: Apple's bsdmake manual page date records the documented command
+      behavior shipped in this distribution.
+    - '2026: Provided package facts show bsdmake packaged by Homebrew and MacPorts.'
+  usage:
+    - >
+      `bsdmake` maintains program dependencies from makefiles, with options to select
+      makefiles, include paths, system makefile directories, variables, compatibility
+      mode, and parallel jobs.
+    - >
+      The command reads the first available `BSDmakefile`, `makefile`, or `Makefile`,
+      and also reads `.depend` when available. Those defaults make it fit naturally into
+      BSD source trees and ports-style builds.
 tags:
   - bsd
   - build-system
@@ -28,6 +96,10 @@ provenance:
     - >
       Official apple-oss-distributions/bsdmake repository includes make.1 as the command
       manual.
+  history-sources:
+    - https://github.com/apple-oss-distributions/bsdmake
+    - https://raw.githubusercontent.com/apple-oss-distributions/bsdmake/main/make.1
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is already set to the official Apple open-source GitHub
@@ -42,5 +114,6 @@ category-path:
   - build-system
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -7,6 +7,78 @@ docs:
   - https://www.daemonology.net/papers/bsdiff.pdf
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      By the time version 4.2 was described on the official page, bsdiff was already in
+      the FreeBSD, NetBSD, and OpenBSD ports trees, DarwinPorts, Gentoo, and as a Python
+      extension module. The provided package facts show wider modern packaging across
+      Homebrew, Debian, Fedora/dnf, MacPorts, Nix, Ubuntu, and openSUSE/zypper.
+    - >
+      bsdiff also influenced the packaging and update world indirectly: binary delta
+      algorithms of this style are natural fits for software update systems, where
+      shaving patch size saves bandwidth and time.
+  package-nerd-significance:
+    - >
+      bsdiff is package-nerd famous because it is a small command with an outsized
+      effect on binary distribution. It gives maintainers a simple way to ship deltas
+      instead of whole files, and its paper made the algorithm understandable enough to
+      reimplement and adapt.
+    - >
+      It is also a classic example of a package whose upstream is not a modern forge
+      repository. Package managers preserve the tool through tarballs, patches, and
+      downstream maintenance even without a canonical GitHub-style source-control home.
+  project-history:
+    - >
+      The official page describes bsdiff and bspatch as tools for building and applying
+      binary patches. It explains that they use suffix sorting, specifically Larsson and
+      Sadakane's qsufsort, and exploit the way executable files change to make much
+      smaller patches than contemporary binary patch tools.
+    - >
+      The same page says the programs were originally named `bdiff` and `bpatch`, but
+      were renamed because many other programs used those names. It published version
+      4.3 as a tarball and identifies the BSDiff 4 algorithm with Percival's 2003 paper,
+      `Naive differences of executable code`.
+  related-projects:
+    - bspatch is the companion patch-application utility shipped with bsdiff.
+    - xdelta is the comparison tool named by the official page for binary delta compression.
+    - >
+      RTPatch is the commercial binary patch tool named by the official page as another
+      comparison point.
+    - >
+      FreeBSD Update is historically associated with Colin Percival's binary-update work
+      and the wider bsdiff ecosystem.
+  sources:
+    - https://www.daemonology.net/bsdiff
+    - https://www.daemonology.net/papers/bsdiff.pdf
+    - source_facts.package-manager
+  summary:
+    - >
+      bsdiff and bspatch are Colin Percival's binary diff and patch tools, best known
+      for producing small patches for executable files. The package is tiny, old, and
+      still important because binary delta updates remain a core packaging and updater
+      trick.
+  timeline:
+    - >
+      2003: Colin Percival describes the BSDiff 4 algorithm in `Naive differences of
+      executable code`.
+    - >
+      2000s: Version 4.2 is available in FreeBSD, NetBSD, OpenBSD ports, DarwinPorts,
+      Gentoo, and as a Python extension.
+    - '2005: Version 4.3 is published on the official daemonology.net bsdiff page.'
+    - >
+      2026: Provided package facts show bsdiff available across Homebrew, Debian,
+      Fedora/dnf, MacPorts, Nix, Ubuntu, and openSUSE/zypper.
+  usage:
+    - >
+      `bsdiff` compares an old file and a new file to produce a compact patch; `bspatch`
+      applies that patch to reconstruct the new file. The package is most useful for
+      compiled binaries and other files where line-oriented text diffs are ineffective.
+    - >
+      The official page documents its resource profile: bsdiff is memory-hungry and runs
+      in O((n+m) log n), while bspatch runs in O(n+m). That tradeoff is acceptable for
+      many release pipelines because patch creation happens once, while patch
+      application may happen many times.
 category: developer-tools
 package-manager:
   brew: bsdiff
