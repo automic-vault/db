@@ -11,6 +11,89 @@ config-file-location:
     - ~/.emscripten
     - $EM_CONFIG
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Emscripten became important because it turned existing native codebases into
+      web-deployable artifacts rather than forcing rewrites. The project documentation
+      points to large graphical and application ports, including Unity WebGL and Google
+      Earth, as examples of the kind of portable API support it targets.
+    - >
+      Its command-line shape made it familiar to Unix package users: `emcc` is presented
+      as something to run like `gcc` or `clang`, and companion tools such as `emcmake`
+      and `emconfigure` let existing C/C++ build systems cross-compile with limited
+      ceremony.
+  package-nerd-significance:
+    - >
+      Emscripten is one of the canonical examples of a package that is both a compiler
+      and a small ecosystem: it brings a sysroot, ports, compiler frontends, JS glue
+      generation, cache behavior, and version-sensitive ABI expectations. Its changelog
+      explicitly warns that ABI compatibility is not guaranteed across versions and that
+      rebuilds may be needed after upgrades.
+    - >
+      For maintainers, Emscripten is interesting because it sits at the crossing of LLVM
+      release behavior, browser platform changes, WebAssembly proposals, and ordinary
+      package-manager expectations. Keeping it packaged means tracking a fast-moving
+      compiler stack while preserving the simple user promise of `emcc hello.c -o
+      hello.js`.
+  project-history:
+    - >
+      The public GitHub repository dates to 2011, and the project grew around the idea
+      that LLVM IR could be lowered into browser-executable output. As WebAssembly
+      became the standard target, Emscripten's documented model shifted toward producing
+      a wasm module plus JavaScript loader code, while still retaining browser, Node.js,
+      and runtime integration layers.
+    - >
+      The Emscripten README ties the project closely to LLVM, Binaryen, Clang, OpenGL,
+      SDL2, and the broader portable-native-code ecosystem. Its license notes also
+      reflect the project's LLVM relationship, including the later switch to the LLVM
+      wasm backend.
+  related-projects:
+    - LLVM and Clang provide the compiler foundation used by Emscripten.
+    - Binaryen is part of the documented WebAssembly toolchain used by Emscripten.
+    - >
+      SDL2, OpenGL support, Unity WebGL, and Google Earth are cited by the project as
+      examples or beneficiaries of the porting model.
+    - Rust can integrate with Emscripten through the `wasm32-unknown-emscripten` target.
+  sources:
+    - https://github.com/emscripten-core/emscripten
+    - https://raw.githubusercontent.com/emscripten-core/emscripten/main/README.md
+    - https://emscripten.org/docs/compiling/WebAssembly.html
+    - https://raw.githubusercontent.com/emscripten-core/emscripten/main/ChangeLog.md
+    - https://api.github.com/repos/emscripten-core/emscripten
+  summary:
+    - >
+      Emscripten is the long-running LLVM-based toolchain that made C and C++ code
+      practical to ship into JavaScript and then WebAssembly environments. Its
+      README describes it as compiling C and C++ to WebAssembly using LLVM and Binaryen,
+      with output that runs on the web, in Node.js, and in standalone wasm runtimes.
+    - >
+      For package users, Emscripten is not just one compiler binary: it is a full
+      porting toolchain with `emcc`, `em++`, build-system wrappers, archive tools,
+      runtime helpers, ports, and a cache. Installing it from a package manager gives
+      developers a local system toolchain, while the project itself still recommends the
+      Emscripten SDK as the easiest way to get started.
+  timeline:
+    - '2011: Public GitHub repository created for Emscripten.'
+    - >
+      2010s: Emscripten became a common route for porting native C/C++ applications and
+      libraries to the web.
+    - >
+      WebAssembly era: The documented default model centers on producing wasm modules
+      with JavaScript loader code.
+    - >
+      2026: The 6.x release series continued active development, including toolchain,
+      browser-target, Node.js, and wasm feature changes.
+  usage:
+    - >
+      Typical use starts with compiling a C or C++ file through `emcc`, producing
+      JavaScript plus a WebAssembly module, or generating an HTML harness for browser
+      testing. Larger projects commonly enter through build wrappers such as `emcmake`,
+      `emconfigure`, and `emmake`.
+    - >
+      The toolchain matters beyond browsers because Emscripten documents output for
+      Node.js, Deno, Bun, and wasm runtimes. That makes it a package-manager fixture for
+      developers who need reproducible local builds of wasm artifacts from native code.
 category: developer-tools
 package-manager:
   brew: emscripten
@@ -59,5 +142,12 @@ executables:
   - wasm32-wasi-clang++
 provenance:
   formula: emscripten
+  history-sources:
+    - https://github.com/emscripten-core/emscripten
+    - https://raw.githubusercontent.com/emscripten-core/emscripten/main/README.md
+    - https://emscripten.org/docs/compiling/WebAssembly.html
+    - https://raw.githubusercontent.com/emscripten-core/emscripten/main/ChangeLog.md
+    - https://api.github.com/repos/emscripten-core/emscripten
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

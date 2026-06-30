@@ -9,6 +9,81 @@ config-file-location:
   unix:
     - .encfs6.xml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      EncFS found a place among Linux and Unix users who wanted encrypted directories
+      without repartitioning disks or managing block devices. Its design also fit backup
+      and sync workflows because encrypted filenames and encrypted file contents remain
+      visible as ordinary files to the underlying filesystem.
+    - >
+      The README is cautious about new deployments and points readers to newer
+      alternatives such as GoCryptFS or full-disk encryption. That caution is part of
+      EncFS's modern history: it remains important for existing data and compatibility,
+      but it is no longer the default recommendation for fresh encrypted storage.
+  package-nerd-significance:
+    - >
+      EncFS is package-nerd significant because it sits at the awkward intersection of
+      FUSE, crypto defaults, config-file compatibility, and old user data. The design
+      document tracks several historical config formats, from `.encfs3` through
+      `.encfs6.xml` and the newer v7 protobuf formats, which makes version behavior
+      matter.
+    - >
+      It is also a good example of a package that should not be summarized as simply
+      'encryption tool.' The README's own warning about newer alternatives and alpha
+      Rust status is operationally important for users deciding whether they are
+      mounting old data or starting something new.
+  project-history:
+    - >
+      The EncFS README says it was first released in 2003, when FUSE was still young and
+      kernel-module encrypted filesystems were harder to keep working across Linux
+      upgrades. The author describes writing it as a CFS replacement for personal use
+      and then releasing it as open source.
+    - >
+      The project later became mature but mostly dormant. As of the README's February
+      2026 status note, the old C++ implementation had been removed from the main line
+      and a Rust port was underway, with functional but alpha-status support and a
+      warning to keep backups.
+  related-projects:
+    - FUSE is the userspace filesystem layer EncFS depends on.
+    - >
+      CFS is cited by the author as the older encrypted filesystem EncFS replaced for
+      his own use.
+    - >
+      GoCryptFS is explicitly recommended by the README as a newer alternative for new
+      encrypted filesystems.
+    - >
+      Full-disk encryption is mentioned by the README as another preferred option when
+      possible.
+  sources:
+    - https://github.com/vgough/encfs
+    - https://raw.githubusercontent.com/vgough/encfs/master/README.md
+    - https://raw.githubusercontent.com/vgough/encfs/master/docs/DESIGN.md
+    - https://api.github.com/repos/vgough/encfs
+  summary:
+    - >
+      EncFS is an encrypted userspace filesystem built on FUSE. It stores encrypted
+      files in one directory while exposing plaintext through a mounted directory,
+      making it a familiar Unix tool for per-directory encryption rather than full-disk
+      encryption.
+  timeline:
+    - '2003: EncFS first released as an early FUSE encrypted filesystem.'
+    - '2014: Current public GitHub repository created.'
+    - 'Pre-2026: C++ EncFS became mature but mostly dormant.'
+    - >
+      2026: Rust port documented as functional but alpha, with new v7 config, Argon2id,
+      and AES-GCM-SIV work.
+  usage:
+    - >
+      The traditional workflow is to create or mount an encrypted root directory and a
+      plaintext mount point with `encfs encrypted-dir mount-dir`. The control file in
+      the encrypted directory identifies an existing filesystem; otherwise EncFS prompts
+      to create one.
+    - >
+      The design document explains that a volume key encrypts filenames and file
+      contents, while the user's password protects that volume key. `encfsctl` exists
+      for inspecting filesystems and changing the password without re-encrypting all
+      stored data.
 tags:
   - cli
   - encryption
@@ -35,6 +110,11 @@ provenance:
     - >
       source_facts.homepage is the official project site; official GitHub README
       provides usage documentation and links to DESIGN.md technical overview.
+  history-sources:
+    - https://github.com/vgough/encfs
+    - https://raw.githubusercontent.com/vgough/encfs/master/README.md
+    - https://raw.githubusercontent.com/vgough/encfs/master/docs/DESIGN.md
+    - https://api.github.com/repos/vgough/encfs
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/vgough/encfs, so repo is not
@@ -50,5 +130,6 @@ category-path:
   - filesystem-encryption
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

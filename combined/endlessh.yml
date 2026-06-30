@@ -8,6 +8,75 @@ docs:
 config-file-location:
   unix: /etc/endlessh/config
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Endlessh became a recognizable defensive toy-tool because it addresses a universal
+      server-owner annoyance: constant automated SSH probing. The launch article notes
+      discussion on Hacker News and Reddit and describes real deployments with many
+      trapped clients.
+    - >
+      Its adoption niche is operational rather than cryptographic. Users generally run
+      it on the public SSH port, move real SSH to another port, and tune delay, banner
+      length, client limit, logging, and bind family through command-line flags or
+      `/etc/endlessh/config`.
+  package-nerd-significance:
+    - >
+      Endlessh is package-nerd significant because it is tiny, dependency-light security
+      plumbing with a clear daemon shape. It is easy to package, easy to supervise, and
+      easy to understand from its man page, yet it changes the economics of commodity
+      SSH scanning.
+    - >
+      It is also a good example of a Unix package whose README is effectively the
+      operational model: one binary, one config file, no keys, no crypto, and behavior
+      controlled by conventional flags and signals.
+  project-history:
+    - >
+      The author introduced Endlessh publicly in March 2019 as a small C program that
+      exploits the SSH identification-banner phase before cryptographic negotiation.
+      Because the tarpit happens before key exchange, the README notes that Endlessh
+      needs no cryptographic libraries.
+    - >
+      The implementation was intentionally simple and portable: a single-threaded C
+      server using `poll()` to handle many delayed clients. The project blog describes
+      this as a resource-minimizing design, trading maximum platform-specific efficiency
+      for low memory use and broad Unix portability.
+  related-projects:
+    - >
+      OpenSSH is the operational counterpart users typically move away from the public
+      tarpit port.
+    - >
+      RFC 4253 is the SSH protocol behavior Endlessh relies on for pre-identification
+      banner lines.
+    - >
+      Other tarpits and asyncio-based tarpit sketches are discussed in the author's
+      introductory article.
+  sources:
+    - https://github.com/skeeto/endlessh
+    - https://raw.githubusercontent.com/skeeto/endlessh/master/README.md
+    - https://raw.githubusercontent.com/skeeto/endlessh/master/endlessh.1
+    - https://nullprogram.com/blog/2019/03/22/
+  summary:
+    - >
+      Endlessh is an SSH tarpit: it accepts SSH connections and slowly sends an endless,
+      random pre-authentication banner so automated clients remain tied up for a long
+      time. Its purpose is to move the real SSH daemon elsewhere and let noisy scanners
+      waste time on port 22.
+  timeline:
+    - "2019: Endlessh introduced publicly in the author's blog post."
+    - '2020: Man page date records January 29, 2020.'
+    - '2019-present: Project remains available as a small standalone C SSH tarpit.'
+  usage:
+    - >
+      The default command listens on port 2222, with a 10-second delay between banner
+      lines and a default maximum of 4096 clients. The README and man page document
+      flags for IPv4 or IPv6 binding, delay, config file, max line length, max clients,
+      port, syslog, and verbosity.
+    - >
+      A sample configuration file uses OpenSSH-like syntax with `Port`, `Delay`,
+      `MaxLineLength`, `MaxClients`, `LogLevel`, and `BindFamily`. Signals are also part
+      of normal operation: SIGTERM shuts down cleanly, SIGHUP reloads configuration, and
+      SIGUSR1 prints connection statistics.
 category: security
 package-manager:
   apk: endlessh
@@ -29,5 +98,11 @@ executables:
   - endlessh
 provenance:
   formula: endlessh
+  history-sources:
+    - https://github.com/skeeto/endlessh
+    - https://raw.githubusercontent.com/skeeto/endlessh/master/README.md
+    - https://raw.githubusercontent.com/skeeto/endlessh/master/endlessh.1
+    - https://nullprogram.com/blog/2019/03/22/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
