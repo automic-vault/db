@@ -6,7 +6,70 @@ docs:
 config-file-location:
   unix:
     - aqt/settings.ini
-credentials-file-location: null
+    - $AQT_CONFIG
+credentials-file-location:
+  linux:
+    - ~/.local/share/Qt/qtaccount.ini
+  macos:
+    - ~/Library/Application Support/Qt/qtaccount.ini
+  windows:
+    - '%APPDATA%\Qt\qtaccount.ini'
+history:
+  adoption-history:
+    - >
+      The input package metadata shows aqtinstall packaged for Homebrew, Chocolatey,
+      Nix, Scoop, and winget. The official GitHub API metadata also shows a four-digit
+      star count, which is strong adoption for a niche packaging utility.
+    - >
+      Its adoption pattern is practical rather than social: developers use it when
+      builds need a reproducible Qt install on Linux, macOS, or Windows without clicking
+      through the Maintenance Tool.
+  package-nerd-significance:
+    - >
+      aqtinstall is package-manager glue for an upstream ecosystem whose official
+      installer is large, stateful, and account-aware. It is interesting because it
+      turns Qt distribution metadata into a scriptable package acquisition layer while
+      still exposing enough knobs for mirrors, checksums, and CI authentication.
+  project-history:
+    - >
+      The official GitHub repository was created in March 2019 and its documentation is
+      published on Read the Docs. The docs describe a configuration file, command-line
+      options, examples, and a separate official-Qt-installer mode.
+    - >
+      The project evolved from downloading public Qt archives into a broader Qt
+      installer wrapper: current docs cover mirror handling, checksum behavior, archive
+      retention, official-installer authentication, and direct pass-through override
+      mode for Qt's own installer CLI.
+  related-projects:
+    - >
+      Related projects and systems include Qt, Qt Maintenance Tool, Qt online
+      repositories, Python packaging, 7-Zip, py7zr, and CI package caches.
+  sources:
+    - https://api.github.com/repos/miurahr/aqtinstall
+    - https://aqtinstall.readthedocs.io/en/latest
+    - https://aqtinstall.readthedocs.io/en/latest/configuration.html
+    - https://aqtinstall.readthedocs.io/en/latest/official.html
+    - source_facts.package-manager
+  summary:
+    - >
+      aqtinstall is a Python command-line installer for Qt packages, branded in its own
+      metadata as another unofficial Qt installer. Its `aqt` executable is used mostly
+      in CI and scripted developer environments where the official graphical Qt
+      installer is the wrong shape.
+  timeline:
+    - '2019: The official GitHub repository was created.'
+    - '2020: The project had reached a tagged 1.0 release series.'
+    - '2026: The repository and documentation remain active in the 3.x series.'
+  usage:
+    - >
+      Common use is `aqt install-qt` or the newer `aqt install-qt-official` family to
+      install a target, architecture, Qt version, and optional modules into a chosen
+      output directory.
+    - >
+      The configuration docs state that defaults live in `aqt/settings.ini`, with
+      `$AQT_CONFIG` or `--config` available for override. Official-installer mode looks
+      for `qtaccount.ini` in the per-OS Qt data directory or accepts
+      `QT_INSTALLER_JWT_TOKEN`.
 tags:
   - cli
   - development-tools
@@ -24,28 +87,33 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - 'current_curation.category_path: developer-tools'
-    - 'source_facts.description: Another unofficial Qt installer'
-  display-name-sources:
-    - 'Official documentation title: aqtinstall manual'
-    - 'source_facts.name: aqtinstall'
-  docs-sources:
-    - Official aqtinstall documentation is hosted at aqtinstall.readthedocs.io/en/latest
-  repo-sources:
-    - >
-      Official GitHub repository page identifies miurahr/aqtinstall and links to the
-      Read the Docs documentation
-  tags-sources:
-    - >
-      Official GitHub README describes aqt as an unofficial Qt CLI installer for
-      multiple platforms
+    - current_curation.category_path
+    - https://aqtinstall.readthedocs.io/en/latest
     - source_facts.description
+  display-name-sources:
+    - current_curation.display-name
+    - https://aqtinstall.readthedocs.io/en/latest
+  docs-sources:
+    - current_curation.docs
+    - https://aqtinstall.readthedocs.io/en/latest
+  history-sources:
+    - https://api.github.com/repos/miurahr/aqtinstall
+    - https://aqtinstall.readthedocs.io/en/latest
+    - https://aqtinstall.readthedocs.io/en/latest/configuration.html
+    - https://aqtinstall.readthedocs.io/en/latest/official.html
+    - source_facts.package-manager
+  repo-sources:
+    - current_curation.repo
+    - https://api.github.com/repos/miurahr/aqtinstall
+  tags-sources:
+    - current_curation.tags
+    - https://api.github.com/repos/miurahr/aqtinstall
+    - https://aqtinstall.readthedocs.io/en/latest
 category-confidence: high
 category-path:
   - developer-tools
-  - installer
-  - qt
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

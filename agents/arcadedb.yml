@@ -8,7 +8,74 @@ config-file-location:
     - $ARCADEDB_HOME/config/arcadedb-log.properties
 credentials-file-location:
   unix:
-    - $ARCADEDB_HOME/config/server-users.json
+    - $ARCADEDB_HOME/config/server-users.jsonl
+history:
+  adoption-history:
+    - >
+      ArcadeDB is distributed as downloadable releases, Maven artifacts, Docker images,
+      and a Homebrew formula. Its README highlights Docker, Kubernetes, Maven Central,
+      and custom distribution builds, while the Homebrew formula wraps the packaged
+      server and console binaries as `arcadedb-server` and `arcadedb-console`.
+    - >
+      GitHub metadata shows a modest but real open source footprint, with hundreds of
+      stars and forks by 2026. For package-manager users, its presence in Homebrew and
+      Scoop matters because it turns a JVM database server into a single-command local
+      install for experiments, migrations, and embedded/server testing.
+  package-nerd-significance:
+    - >
+      ArcadeDB is interesting as a package because it bundles several database
+      personalities into one server tarball, which is exactly the sort of tool that
+      benefits from Homebrew-style wrapper scripts and well-known config directories.
+    - >
+      Its release stream and custom package builder also make it a useful case study in
+      packaging optional Java modules without forcing every local installation to carry
+      every protocol and UI component.
+  project-history:
+    - >
+      The project was created by Luca Garulli, the founder of OrientDB, after SAP's
+      acquisition of OrientDB. The official README describes ArcadeDB as a new engine
+      written from scratch while reusing a heavily modified OrientDB SQL engine and some
+      utility classes, which makes its lineage unusually explicit for database package
+      nerds: it is not just another SQL wrapper, but a post-OrientDB attempt to keep
+      multi-model database ideas moving in an open source package.
+    - >
+      The public GitHub repository was created on 2021-08-16, and the first GitHub
+      release listed through the official releases API is 21.9.1, published on
+      2021-09-21. The README now describes Java 21 packages as current and notes that
+      Java 17 support is kept on a separate branch, reflecting the project's move with
+      modern JVM baselines.
+  related-projects:
+    - OrientDB is the direct historical reference point named by the ArcadeDB project.
+    - >
+      The README documents compatibility surfaces for Neo4j Cypher, Apache TinkerPop
+      Gremlin, MongoDB drivers, Redis drivers, PostgreSQL wire protocol, and HTTP/JSON
+      clients.
+  sources:
+    - https://api.github.com/repos/ArcadeData/arcadedb
+    - https://api.github.com/repos/ArcadeData/arcadedb/releases
+    - https://docs.arcadedb.com/arcadedb/index.html
+    - https://github.com/ArcadeData/arcadedb
+  summary:
+    - >
+      ArcadeDB is a Java multi-model database packaged for CLI/server use, combining
+      graph, document, key/value, search, time-series, vector, geospatial, and SQL-style
+      access in one server distribution.
+  timeline:
+    - '2021-08-16: GitHub repository created.'
+    - '2021-09-21: First GitHub release, 21.9.1.'
+    - '2024: README notes Java 21 compatibility from version 24.4.1 onward.'
+    - '2026-06-03: Latest official GitHub release observed for this batch, 26.6.1.'
+  usage:
+    - >
+      Typical local use is to start the server, open ArcadeDB Studio on port 2480, and
+      interact through SQL, Cypher, Gremlin, GraphQL, MongoDB-compatible,
+      Redis-compatible, PostgreSQL-wire, HTTP/JSON, or embedded APIs depending on the
+      workload.
+    - >
+      The packaged server reads logging configuration from
+      `config/arcadedb-log.properties`; users and server credentials are represented in
+      `config/server-users.jsonl`, with root password bootstrapping also supported
+      through the `arcadedb.server.rootPassword` JVM property.
 tags:
   - cli
   - database
@@ -33,31 +100,32 @@ geiger:
     - text:server
 provenance:
   category-sources:
-    - >
-      Official homepage describes ArcadeDB as an open-source multi-model graph database
-      supporting graph, document, key/value, search, vector, and time-series models:
-      https://arcadedb.com/
+    - https://github.com/ArcadeData/arcadedb
+    - source_facts.description
   display-name-sources:
-    - 'Official homepage and documentation use the product name ArcadeDB: https://arcadedb.com/'
+    - https://github.com/ArcadeData/arcadedb
+    - source_facts.name
   docs-sources:
-    - >
-      Official site links Documentation to the dedicated docs domain;
-      https://docs.arcadedb.com redirects to /arcadedb/index.html.
+    - https://docs.arcadedb.com/arcadedb/index.html
+    - https://github.com/ArcadeData/arcadedb
+  history-sources:
+    - https://api.github.com/repos/ArcadeData/arcadedb
+    - https://api.github.com/repos/ArcadeData/arcadedb/releases
+    - https://docs.arcadedb.com/arcadedb/index.html
+    - https://github.com/ArcadeData/arcadedb
   repo-sources:
     - >
-      source_facts.repo is already populated with
-      https://github.com/ArcadeData/arcadedb; per instruction, repo is returned as null
-      and not second-guessed.
+      source_facts.repo already set; prompt requires returning null repo without
+      second-guessing.
   tags-sources:
-    - >
-      Official homepage lists ArcadeDB as a multi-model database with graph, document,
-      key/value, full-text search, vector, and time-series support:
-      https://arcadedb.com/
+    - https://github.com/ArcadeData/arcadedb
+    - source_facts.description
 category-confidence: high
 category-path:
   - data
   - database
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
