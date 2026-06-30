@@ -8,6 +8,77 @@ config-file-location:
     - fabio.properties
     - /etc/fabio/fabio.properties
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      fabio's adoption came from teams that wanted service discovery to drive routing
+      directly. The README highlights production use at large sites, including Gumtree
+      Australia, and notes sustained high request volume since September 2015.
+    - >
+      The project also benefited from the HashiCorp ecosystem moment around Consul,
+      Nomad, and Vault. Its README links to a Kelsey Hightower HashiConf EU 2016 demo
+      involving Consul, Nomad, Vault, and fabio, which helped place it in the
+      service-discovery/load-balancing toolbox of that period.
+  package-nerd-significance:
+    - >
+      fabio is package-nerd interesting because it is a single Go binary that stood in
+      for a much larger reverse-proxy stack in Consul-centered deployments. Its
+      Homebrew, release-binary, Docker, and source-install paths made it easy to try
+      locally and then promote into infrastructure images.
+    - >
+      It is also a snapshot of a pre-service-mesh packaging era: install one binary,
+      point it at Consul, and get dynamic routing without Envoy, sidecars, or
+      Kubernetes-native ingress machinery.
+  project-history:
+    - >
+      fabio appeared in 2015 during the Consul-era wave of service-discovery tooling.
+      Its repository description calls it 'Consul Load-Balancing made simple', and the
+      README frames the design around registering services in Consul, adding health
+      checks, and letting fabio route traffic without a hand-written proxy
+      configuration.
+    - >
+      The project was founded by Frank Schroeder and was originally associated with eBay
+      Software Foundation copyright notices. Later copyright sections document
+      maintenance moving to Fabio Authors and Education Networks of America, while the
+      README still presents the project as maintained by The Fabio Authors.
+    - >
+      Over time, fabio expanded from the simple Consul HTTP router idea into a broader
+      edge proxy with dynamic reloading, TLS termination, TCP proxying, TCP+SNI modes,
+      HTTPS upstreams, web UI, Prometheus and other metrics backends, and integrations
+      with Consul, Vault, Amazon ELB, and Amazon API Gateway.
+  related-projects:
+    - Consul is the service registry that drives fabio routing.
+    - Vault, Amazon ELB, and Amazon API Gateway are documented integration points.
+    - Nomad appears in the same HashiCorp deployment ecosystem often demonstrated with fabio.
+  sources:
+    - https://api.github.com/repos/fabiolb/fabio
+    - https://github.com/fabiolb/fabio
+    - https://github.com/fabiolb/fabio/blob/master/README.md
+    - https://github.com/fabiolb/fabio/releases
+    - https://fabiolb.net/
+  summary:
+    - >
+      fabio is a fast, zero-configuration HTTP(S) and TCP router for services registered
+      in Consul.
+  timeline:
+    - '2015: The fabio repository is created and early 1.0 releases are published.'
+    - '2015: README-documented production traffic begins in September.'
+    - '2016: HashiConf EU demo places fabio alongside Consul, Nomad, and Vault.'
+    - >
+      2017: Copyright notes split pre- and post-April 2017 contributions around eBay
+      Software Foundation and Frank Schroeder.
+    - '2020: Copyright notes add Education Networks of America maintenance.'
+  usage:
+    - >
+      A normal fabio setup registers services and health checks in Consul, adds
+      `urlprefix-` tags that describe host/path or TCP routes, then starts fabio against
+      a Consul agent. fabio watches Consul and updates its routing table as services
+      appear, disappear, or change health.
+    - >
+      Users can run it without a config file for the default local Consul case, or
+      configure it with a properties file when they need custom registry, proxy, TLS,
+      metrics, or UI settings. That balance between zero-conf startup and explicit
+      production tuning is the core of its appeal.
 tags:
   - cli
   - http-router
@@ -33,6 +104,12 @@ provenance:
     - >
       source_facts.homepage is the official repository; its README is the best official
       documentation surface.
+  history-sources:
+    - https://api.github.com/repos/fabiolb/fabio
+    - https://github.com/fabiolb/fabio
+    - https://github.com/fabiolb/fabio/blob/master/README.md
+    - https://github.com/fabiolb/fabio/releases
+    - https://fabiolb.net/
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/fabiolb/fabio, so repo is
@@ -46,5 +123,6 @@ category-path:
   - load-balancer
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -6,6 +6,95 @@ docs:
   - https://www.fabfile.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Fabric's adoption was strongest when Python teams wanted deployment automation
+      without a full configuration-management system. A `fab deploy` command in a
+      repository could run shell commands, copy files, restart services, or coordinate
+      multiple hosts using ordinary Python.
+    - >
+      The long-lived 1.x line created a migration challenge of its own. The project kept
+      legacy documentation and eventually merged the `fabric3` fork back into the v1
+      branch in 2022 so users could port old Fabric 1 code to Python 3 before deciding
+      whether to move to Fabric 2+.
+    - >
+      Modern Fabric has a different adoption profile: it is less magic global state and
+      more explicit SSH library plus task runner integration. The official upgrade docs
+      even suggest that users who only used Fabric 1 for local tasks can sidegrade to
+      Invoke instead.
+  package-nerd-significance:
+    - >
+      Fabric is package-nerd significant because `brew install fabric` installs a Python
+      deployment classic whose command name, `fab`, was once shorthand for lightweight
+      SSH automation. It represents the era before containers and orchestrators absorbed
+      much deployment scripting.
+    - >
+      It is also a naming-collision case study. The Homebrew `fabric` formula is the
+      Python SSH tool, while `fabric-ai` and `fabric-installer` are unrelated packages
+      that happen to share the same display name in different ecosystems.
+  project-history:
+    - >
+      Fabric began as a Pythonic remote execution and deployment tool built around
+      `fabfile` tasks. Its current website describes Fabric as a high-level Python
+      library for executing shell commands remotely over SSH and returning useful Python
+      objects.
+    - >
+      The 1.x line became a common deployment-era tool for Python projects because it
+      let teams write Python functions as remote tasks and invoke them with the `fab`
+      command. Its legacy changelog shows the 1.0 series active in 2011, including task
+      execution, parallel execution, host and role handling, file transfer, sudo, and
+      other features associated with classic fabfiles.
+    - >
+      Fabric 2.0, released in May 2018, was a major rewrite. The official upgrade guide
+      calls modern Fabric a near-total reimplementation and reorganization: task
+      execution and local command behavior moved toward Invoke, while SSH behavior was
+      organized around explicit `Connection` and `Config` objects on top of Paramiko.
+    - >
+      The modern 3.x line continues that architecture. The current changelog explicitly
+      warns users that Fabric is largely a wrapper around Paramiko and Invoke, so
+      capabilities may improve when those dependencies improve.
+  related-projects:
+    - Paramiko provides Fabric's SSH protocol layer.
+    - >
+      Invoke provides subprocess execution and command-line task features used by modern
+      Fabric.
+    - >
+      Patchwork and Invocations are optional companion libraries mentioned by the
+      official docs.
+  sources:
+    - https://api.github.com/repos/fabric/fabric
+    - https://github.com/fabric/fabric
+    - https://www.fabfile.org/
+    - https://docs.fabfile.org/
+    - https://www.fabfile.org/changelog.html
+    - https://www.fabfile.org/changelog-v1.html
+    - https://www.fabfile.org/upgrading.html
+  summary:
+    - >
+      Fabric is the Python `fab` tool and library for running commands over SSH,
+      historically popular for deployment and remote administration.
+  timeline:
+    - '2009: The Fabric GitHub repository is created.'
+    - '2011: Fabric 1.0.x releases document the mature classic fabfile era.'
+    - '2018: Fabric 2.0.0 ships as a rewrite.'
+    - >
+      2022: Fabric 1.15.0 merges the fabric3 fork back into the v1 branch for Python 3
+      migration.
+    - >
+      2023: Fabric 3.0.0 drops Python versions older than 3.6 and continues the modern
+      architecture.
+    - '2026: Fabric 3.2.3 updates packaging metadata for Invoke compatibility.'
+  usage:
+    - >
+      In modern Fabric, users create `Connection` objects and call methods like `run`,
+      or define tasks that can be invoked by the `fab` CLI. The docs show single-host
+      commands, serial or grouped multi-host commands, Python functions targeted at
+      connections, file transfer, and integration with Invoke's task model.
+    - >
+      In legacy usage, users wrote fabfiles and called named tasks from the shell. In
+      modern usage, the same broad goal remains, but configuration, SSH auth, gateways,
+      command execution, and task composition are more explicit and object-oriented.
 tags:
   - cli
   - deployment
@@ -34,6 +123,14 @@ provenance:
   docs-sources:
     - Official Fabric docs navigation links to the API docs at docs.fabfile.org.
     - source_facts.homepage is the official Fabric documentation site.
+  history-sources:
+    - https://api.github.com/repos/fabric/fabric
+    - https://github.com/fabric/fabric
+    - https://www.fabfile.org/
+    - https://docs.fabfile.org/
+    - https://www.fabfile.org/changelog.html
+    - https://www.fabfile.org/changelog-v1.html
+    - https://www.fabfile.org/upgrading.html
   repo-sources:
     - >
       source_facts.repo is empty, so repo was determined from official Fabric installing
@@ -51,5 +148,6 @@ category-path:
   - ssh
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

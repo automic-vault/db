@@ -6,6 +6,91 @@ docs:
   - https://fight-flash-fraud.readthedocs.io/en/latest
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      F3 became the Unix-like answer to H2testw for users who needed to test flash media
+      outside Windows or wanted auditable source. Its docs explicitly cover Linux,
+      macOS, Windows/Cygwin, FreeBSD, Docker-based workflows, Homebrew, and MacPorts
+      installation paths.
+    - >
+      Package-manager adoption follows the practical need: F3 is the small CLI people
+      install before trusting cheap SD cards, USB sticks, camera cards, or marketplace
+      flash media. The input package facts list it across Homebrew, Debian, Ubuntu,
+      Fedora, Alpine, MacPorts, Nix, and openSUSE.
+  package-nerd-significance:
+    - >
+      F3 is a classic package-nerd utility because it turns a hardware scam into a
+      reproducible command-line test. It is small C code, works in scripts, has simple
+      executables, and answers a question package managers often face indirectly: can
+      this storage device actually be trusted?
+    - >
+      It also matters culturally as an open-source, cross-platform counterweight to
+      H2testw. The file format compatibility and staged tool evolution show a pragmatic
+      Unix approach: first reproduce the trusted test, then add direct-device probes and
+      repair helpers.
+  project-history:
+    - >
+      F3 began in 2010 after Michel Machado bought a 32 GB microSDHC card for an Android
+      phone and found it failed when filled. The official history says the project was
+      inspired by counterfeit-flash reports and by H2testw, whose algorithm was
+      documented but whose implementation was Windows-only and not open source.
+    - >
+      The original F3 implementation split the H2testw-style test into `f3write` and
+      `f3read`: one fills available space with test files, and the other validates the
+      data. The toolkit later grew Linux-only direct-device tools: `f3probe` to identify
+      fake drives and real sizes quickly, `f3fix` to create a usable partition matching
+      real capacity, and `f3brew` to help developers infer how fake drives behave.
+    - >
+      The changelog records a long maintenance line from version 1.0 in August 2010
+      through version 10.0 in April 2026, with platform support, extra tools,
+      portability work, and newer probing algorithms added over time.
+  related-projects:
+    - H2testw is the Windows tool and file-format reference that inspired F3.
+    - >
+      FakeFlashTest and related flash-test tools occupy the same counterfeit-storage
+      detection niche.
+    - Homebrew and MacPorts are documented install paths for macOS users.
+  sources:
+    - https://fight-flash-fraud.readthedocs.io/en/latest/
+    - https://fight-flash-fraud.readthedocs.io/en/latest/history.html
+    - https://fight-flash-fraud.readthedocs.io/en/latest/usage.html
+    - https://github.com/AltraMayor/f3
+    - https://github.com/AltraMayor/f3/blob/master/changelog
+    - https://api.github.com/repos/AltraMayor/f3
+  summary:
+    - >
+      F3, short for Fight Flash Fraud or Fight Fake Flash, is a GPLv3 flash-storage
+      testing toolkit that writes and verifies pseudorandom data to detect counterfeit
+      USB drives and memory cards.
+  timeline:
+    - >
+      2010: Project started after a fake 32 GB microSDHC card exposed the need for an
+      open-source H2testw-like tool.
+    - '2010: Version 1.0 initial release.'
+    - '2011: Version 2.0 adds macOS support.'
+    - "2014: Version 3.0 adds Windows/Cygwin support and adopts H2testw's file format."
+    - '2014: Version 4.0 adds FreeBSD support.'
+    - '2014: Version 5.0 adds experimental `f3probe` and `f3fix`.'
+    - '2015: Version 6.0 adds experimental `f3brew`.'
+    - '2017: Version 7.0 marks `f3probe`, `f3fix`, and `f3brew` stable for Linux.'
+    - '2025: Version 9.0 adds portability improvements and GitHub Actions testing.'
+    - '2026: Version 10.0 adds a new `f3probe` probing algorithm and moves the codebase to C17.'
+  usage:
+    - >
+      The conservative workflow is `f3write` on a mounted filesystem followed by
+      `f3read` on the same path. This fills free space with test files and verifies
+      whether the drive returns the same data, while also estimating write and read
+      speeds.
+    - >
+      `f3probe` is the faster destructive path for large media because it works directly
+      on an unmounted block device and writes only what is necessary to infer real
+      capacity. `f3fix` then uses probe output to create a partition that fits the
+      usable portion of a fake device.
+    - >
+      The docs repeatedly warn that testing suspect media can destroy data, especially
+      because fake devices may overwrite earlier sectors while pretending to have more
+      capacity.
 category: system
 package-manager:
   apk: f3
@@ -30,5 +115,13 @@ executables:
   - f3write
 provenance:
   formula: f3
+  history-sources:
+    - https://fight-flash-fraud.readthedocs.io/en/latest/
+    - https://fight-flash-fraud.readthedocs.io/en/latest/history.html
+    - https://fight-flash-fraud.readthedocs.io/en/latest/usage.html
+    - https://github.com/AltraMayor/f3
+    - https://github.com/AltraMayor/f3/blob/master/changelog
+    - https://api.github.com/repos/AltraMayor/f3
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
