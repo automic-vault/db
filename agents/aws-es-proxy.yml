@@ -7,12 +7,59 @@ config-file-location: null
 credentials-file-location:
   unix:
     - ~/.aws/credentials
+history:
+  adoption-history:
+    - >
+      The repository shows a small but real operator audience, with hundreds of GitHub
+      stars and forks and a release series through v1.5. Homebrew analytics showed 35
+      installs in 30 days, 73 in 90 days, and 344 in 365 days at the time of this batch,
+      which fits a specialized AWS Elasticsearch utility.
+  package-nerd-significance:
+    - >
+      The package is a good specimen of the pre-OpenSearch AWS utility era: a
+      single-binary Go helper, distributed by GitHub releases, Docker, and Homebrew,
+      solving one missing ergonomic piece around SigV4 signing.
+  project-history:
+    - >
+      The upstream README frames the project as a web server placed between a normal
+      HTTP client and Amazon Elasticsearch Service. Its implementation and packaging are
+      intentionally simple: single executable binaries for Linux, Mac, and Windows,
+      Docker usage, Homebrew installation, and a Go source build path.
+  related-projects:
+    - >
+      Amazon Elasticsearch Service / Amazon OpenSearch Service: the AWS-managed search
+      endpoint this proxy fronts.
+    - 'AWS Signature Version 4: the signing mechanism applied to proxied requests.'
+  sources:
+    - https://formulae.brew.sh/api/formula/aws-es-proxy.json
+    - https://github.com/abutaha/aws-es-proxy
+  summary:
+    - >
+      aws-es-proxy is a small Go HTTP proxy that signs browser, curl, and Kibana
+      requests with AWS Signature Version 4 before forwarding them to Amazon
+      Elasticsearch Service endpoints. It exists to make an IAM-protected
+      Elasticsearch/OpenSearch endpoint feel like a local unauthenticated HTTP service
+      during development and operations.
+  timeline:
+    - >
+      2016: README usage examples show the proxy's local-listener workflow and request
+      logging shape.
+    - '2023: GitHub lists v1.5 as the latest release.'
+    - '2026: Homebrew formula metadata packages aws-es-proxy from the v1.5 tag.'
+  usage:
+    - >
+      Users point the proxy at an Elasticsearch endpoint with `-endpoint` or the
+      `ENDPOINT` environment variable, then connect clients to the local listener,
+      defaulting to 127.0.0.1:9200. The README documents credential lookup through
+      `~/.aws/credentials`, environment variables, and IAM roles, plus optional verbose
+      logging and HTTP basic auth.
 tags:
   - aws
   - cli
   - elasticsearch
   - http
   - proxy
+  - sigv4
 geiger:
   category: tool
   color: blue
@@ -24,25 +71,30 @@ geiger:
     - text:http,client
 provenance:
   category-sources:
-    - >
-      Official README describes aws-es-proxy as a proxy between HTTP clients and Amazon
-      Elasticsearch Service.
+    - Official README describes a proxy between HTTP clients and Amazon Elasticsearch.
+    - source_facts.description
   display-name-sources:
-    - Official GitHub README heading uses aws-es-proxy.
+    - Official README heading
+    - source_facts.name
   docs-sources:
-    - Official GitHub README is the primary documentation surface for aws-es-proxy.
+    - 'Official GitHub README: https://github.com/abutaha/aws-es-proxy#readme'
+  history-sources:
+    - https://formulae.brew.sh/api/formula/aws-es-proxy.json
+    - https://github.com/abutaha/aws-es-proxy
   repo-sources:
     - >
-      source_facts.repo already provides https://github.com/abutaha/aws-es-proxy, so
-      repo is returned as null per prompt.
+      source_facts.repo is already populated with
+      https://github.com/abutaha/aws-es-proxy, so repo is null per prompt.
   tags-sources:
-    - >
-      Official README describes AWS Signature Version 4 signing, Amazon Elasticsearch,
-      HTTP clients, proxy behavior, and CLI flags.
+    - https://github.com/abutaha/aws-es-proxy#readme
+    - source_facts.description
 category-confidence: high
 category-path:
   - cloud-infrastructure
+  - aws
+  - proxy
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

@@ -7,12 +7,54 @@ config-file-location: null
 credentials-file-location:
   macos:
     - ~/.aws/credentials
+history:
+  adoption-history:
+    - >
+      GitHub lists v3.0.0 as the latest release dated September 22, 2015 and describes
+      the repository as succeeded by aws-vault. Homebrew analytics showed only 8
+      installs in 30 days, 10 in 90 days, and 56 in 365 days at the time of this batch,
+      consistent with a historical package kept around for existing users.
+  package-nerd-significance:
+    - >
+      aws-keychain is a compact example of the local-secret-storage lineage that led to
+      better-known tools such as aws-vault. It matters less as a current recommendation
+      and more as a package archaeology marker for how macOS AWS users avoided plaintext
+      credentials before first-class AWS SSO workflows.
+  project-history:
+    - >
+      The upstream README identifies the project as a 2014-2015 Paul Annesley
+      MIT-licensed tool. It was written for the Mac OS X Keychain era of local AWS
+      access-key management, before newer credential-process, SSO, and vault-style
+      workflows became the dominant recommendation.
+  related-projects:
+    - 'aws-vault: the successor recommended by the aws-keychain README.'
+  sources:
+    - https://formulae.brew.sh/api/formula/aws-keychain.json
+    - https://github.com/pda/aws-keychain
+  summary:
+    - >
+      aws-keychain is a macOS shell CLI for storing AWS IAM access keys in the macOS
+      Keychain and checking one selected key out into `~/.aws/credentials` or into a
+      command environment. Its README explicitly says it is no longer maintained and
+      recommends aws-vault instead.
+  timeline:
+    - '2014-2015: README copyright period for aws-keychain.'
+    - '2015: GitHub lists v3.0.0 as the latest release, with separate keychain file behavior.'
+    - '2026: Homebrew formula metadata still tracks the v3.0.0 source archive.'
+  usage:
+    - >
+      The command supports `add`, `ls`, `exec`, and `rm` operations for named IAM access
+      keys in Keychain. The README warns about shell history when adding keys, supports
+      interactive secret entry, and shows `aws-keychain exec personal aws s3 ls` as the
+      intended safe command-running workflow.
 tags:
   - aws
   - cli
   - credentials
   - iam
+  - macos
   - macos-keychain
+  - security
 geiger:
   category: appliance
   color: green
@@ -24,25 +66,30 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official README says aws-keychain runs commands requiring AWS credentials and
-      stores AWS IAM access keys in Mac OS X keychain.
+    - Official README describes macOS Keychain storage for AWS IAM access keys.
+    - source_facts.description
   display-name-sources:
-    - Official README heading and source_facts.name use aws-keychain.
+    - Official README heading
+    - source_facts.name
   docs-sources:
-    - Official GitHub README is the project documentation surface.
+    - 'Official GitHub README: https://github.com/pda/aws-keychain#readme'
+  history-sources:
+    - https://formulae.brew.sh/api/formula/aws-keychain.json
+    - https://github.com/pda/aws-keychain
   repo-sources:
-    - source_facts.repo already provided; prompt requires returning repo as null when present.
-  tags-sources:
     - >
-      Official README documents AWS IAM access keys, Mac OS X keychain storage, command
-      execution, and ~/.aws/credentials checkout.
+      source_facts.repo is already populated with https://github.com/pda/aws-keychain,
+      so repo is null per prompt.
+  tags-sources:
+    - https://github.com/pda/aws-keychain#readme
+    - source_facts.description
 category-confidence: high
 category-path:
-  - cloud-infrastructure
-  - aws
+  - security
   - credentials
+  - macos-keychain
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

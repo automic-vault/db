@@ -3,7 +3,7 @@ display-name: LocalStack AWS CLI
 homepage: https://www.localstack.cloud/
 repo: https://github.com/localstack/awscli-local
 docs:
-  - https://docs.localstack.cloud/aws/connecting/aws-cli
+  - https://docs.localstack.cloud/aws/integrations/aws-native-tools/aws-cli
   - https://github.com/localstack/awscli-local#readme
 config-file-location:
   unix: ~/.aws/config
@@ -11,6 +11,66 @@ config-file-location:
 credentials-file-location:
   unix: ~/.aws/credentials
   windows: '%USERPROFILE%\.aws\credentials'
+history:
+  adoption-history:
+    - >
+      The project is packaged on PyPI and Homebrew. GitHub repository metadata showed
+      around a thousand stars in June 2026, and Homebrew analytics showed hundreds of
+      30-day installs, reflecting LocalStack users who prefer a named wrapper over
+      manually managing endpoint flags.
+    - >
+      Its adoption follows LocalStack adoption: as developers write tests and local
+      integration workflows against emulated AWS services, `awslocal` becomes a
+      convenience command that keeps examples and scripts close to real AWS CLI usage.
+  package-nerd-significance:
+    - >
+      For package nerds, `awscli-local` is a model of a deliberately boring wrapper: a
+      small command that survives because it standardizes a repeated local-development
+      incantation. It also shows why wrapper packages keep existing even when an alias
+      is possible: packages travel through PyPI, Homebrew, CI images, and docs more
+      predictably than a private shell function.
+  project-history:
+    - >
+      The public GitHub repository and first PyPI upload both date to July 2017, early
+      in LocalStack's effort to make local AWS service emulation feel like regular AWS
+      tooling. The README changelog starts at v0.1 and tracks pragmatic wrapper fixes
+      such as endpoint handling, Windows support, AWS CLI v1/v2 compatibility, and
+      CloudFormation package workarounds.
+    - >
+      The package stayed intentionally small: the README says it can mostly be replaced
+      by a shell alias except for cases like CloudFormation packaging that require extra
+      endpoint handling.
+  related-projects:
+    - `localstack/localstack` is the emulator ecosystem that gives `awslocal` its purpose.
+    - >
+      The upstream README points out that an alias can replace the wrapper for simple
+      AWS CLI calls, but not every patched/endpoint-heavy workflow.
+  sources:
+    - https://docs.localstack.cloud/aws/integrations/aws-native-tools/aws-cli/
+    - https://formulae.brew.sh/api/formula/awscli-local.json
+    - https://github.com/localstack/awscli-local
+    - https://pypi.org/pypi/awscli-local/json
+    - https://raw.githubusercontent.com/localstack/awscli-local/master/README.md
+  summary:
+    - >
+      `awscli-local` provides the `awslocal` command, a thin wrapper around the AWS CLI
+      for use with LocalStack. Its central job is to remove repetitive
+      `--endpoint-url=http://localhost:4566` boilerplate while preserving the normal
+      `aws` command shape.
+  timeline:
+    - '2017-07: Public GitHub repository created.'
+    - '2017-07: awscli-local 0.1 uploaded to PyPI.'
+    - '2025-08: awscli-local 0.22.2 uploaded to PyPI.'
+    - '2026-06: Homebrew formula tracked 0.22.2.'
+  usage:
+    - >
+      The normal pattern is replacing `aws --endpoint-url=http://localhost:4566 kinesis
+      list-streams` with `awslocal kinesis list-streams`. The README documents
+      environment variables such as `AWS_ENDPOINT_URL`, `LOCALSTACK_HOST`, and
+      `USE_SSL`, plus shell completion registration for `awslocal` alongside `aws`.
+    - >
+      Because it wraps the AWS CLI, it inherits the AWS CLI config and credentials file
+      conventions even when LocalStack examples often use placeholder credentials.
 category: cloud-infrastructure
 package-manager:
   brew: awscli-local
@@ -18,8 +78,11 @@ package-manager-url: https://formulae.brew.sh/formula/awscli-local
 license: Apache-2.0
 tags:
   - aws
+  - aws-cli
   - cli
+  - local-development
   - localstack
+  - testing
 description: Thin wrapper around the aws command-line interface for use with LocalStack
 executables:
   - awslocal

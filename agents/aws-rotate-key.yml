@@ -2,6 +2,8 @@ id: brew:aws-rotate-key
 display-name: aws-rotate-key
 repo: null
 docs:
+  - https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html
+  - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
   - https://github.com/stefansundin/aws-rotate-key#readme
 config-file-location: null
 credentials-file-location:
@@ -9,11 +11,58 @@ credentials-file-location:
     - ~/.aws/credentials
   windows:
     - C:\Users\USERNAME\.aws\credentials
+history:
+  adoption-history:
+    - >
+      The README documents binaries from GitHub Releases, Homebrew installation on
+      macOS, a PPA for Ubuntu, and go install. That packaging mix reflects a utility
+      meant for individual operators and small automation scripts rather than a larger
+      platform.
+  package-nerd-significance:
+    - >
+      Its package-manager appeal is that it turns a fussy IAM/API sequence into one
+      binary with few moving parts. The downside for maintainers is that it edits
+      credentials directly, so provenance and version trust matter more than the code
+      size suggests.
+  project-history:
+    - >
+      The public repository begins in September 2016 with commits that create a new key,
+      replace the old key in the credentials file, inspect last-used metadata, and add
+      the README. Its purpose has remained narrow: automate a security best-practice
+      task that is easy to perform incorrectly by hand.
+  related-projects:
+    - >
+      AWS IAM access-key rotation guidance and AWS CLI shared credentials files are the
+      upstream AWS surfaces the tool automates.
+  sources:
+    - >
+      https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_RotateAccessKey
+    - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
+    - https://github.com/stefansundin/aws-rotate-key#readme
+    - official git history and tags from https://github.com/stefansundin/aws-rotate-key
+  summary:
+    - >
+      aws-rotate-key is a small Go CLI for rotating AWS IAM access keys stored in the
+      shared AWS credentials file.
+  timeline:
+    - '2016: Initial public commits implement key creation and credentials-file replacement.'
+    - '2016: v1.0.0 tag appears.'
+    - '2024: Current code uses AWS SDK for Go v2 modules in go.mod.'
+  usage:
+    - >
+      The tool reads AWS credentials from the credentials file, lists the IAM user's
+      access keys, explains the planned rotation steps, waits for confirmation unless
+      told otherwise, writes the new key pair back to the credentials file, and
+      deactivates or deletes the old key.
+    - >
+      It supports profile selection, an alternate authentication profile, MFA, automatic
+      yes-to-prompts, and deleting rather than deactivating the old key.
 tags:
   - access-keys
   - aws
   - cli
   - credentials
+  - iam
   - rotation
 geiger:
   category: appliance
@@ -26,23 +75,34 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official README says the tool rotates AWS access keys in a credentials file:
-      https://github.com/stefansundin/aws-rotate-key#readme
+    - official README cites AWS access-key rotation as a security best practice
+    - 'source_facts.description: Easily rotate your AWS access key'
   display-name-sources:
-    - 'Official README heading: https://github.com/stefansundin/aws-rotate-key#readme'
+    - 'official README heading: aws-rotate-key'
   docs-sources:
-    - 'Official GitHub README: https://github.com/stefansundin/aws-rotate-key#readme'
+    - >
+      official README links AWS IAM access-key rotation and AWS CLI credentials-file
+      documentation
+  history-sources:
+    - >
+      https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_RotateAccessKey
+    - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
+    - https://github.com/stefansundin/aws-rotate-key#readme
+    - official git history and tags from https://github.com/stefansundin/aws-rotate-key
   repo-sources:
-    - source_facts.repo is already populated; prompt requires returning repo as null.
+    - >
+      source_facts.repo is already https://github.com/stefansundin/aws-rotate-key;
+      prompt requires repo null when source_facts.repo is present
   tags-sources:
     - >
-      Official README usage documents AWS access key rotation, profiles, MFA, and
-      credential-file updates: https://github.com/stefansundin/aws-rotate-key#readme
+      official README documents AWS access keys, profiles, MFA, credentials file
+      replacement, and IAM permissions
 category-confidence: high
 category-path:
   - security
+  - credential-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

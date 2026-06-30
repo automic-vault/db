@@ -11,14 +11,87 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.aws/credentials
+    - ~/.aws/config
   windows:
-    - '%UserProfile%\.aws\credentials'
+    - '%USERPROFILE%\.aws\credentials'
+    - '%USERPROFILE%\.aws\config'
+history:
+  adoption-history:
+    - >
+      The authenticator became important in the early Amazon EKS and Kubernetes-on-AWS
+      ecosystem because it let kubectl authenticate through IAM rather than long-lived
+      Kubernetes client certificates. AWS blog posts show it used for EKS, kops, LDAP/AD
+      federation patterns, and self-managed Kubernetes clusters on AWS.
+    - >
+      The official GitHub page shows a large project footprint for this batch's peer
+      group, with roughly 2.3k stars, hundreds of forks, and more than 1,000 commits.
+      Homebrew analytics showed 3,013 installs in 30 days, 9,650 in 90 days, and 35,664
+      in 365 days at the time of this batch, making it the dominant package in this
+      batch by package-manager usage.
+  package-nerd-significance:
+    - >
+      For package nerds, aws-iam-authenticator is a canonical Kubernetes cloud-provider
+      sidecar CLI: a single binary that lives at the boundary of kubectl exec plugins,
+      AWS STS signing, kops, EKS, and Kubernetes SIG ownership. It is also a useful
+      marker of the transition from early Heptio/EKS bootstrap tooling to more
+      integrated Kubernetes authentication workflows.
+  project-history:
+    - >
+      The repository README says the initial work was driven by Heptio and that the
+      project receives community contributions while being maintained by Heptio and
+      Amazon EKS OSS Engineers. The tool arose from the need to avoid a separate
+      Kubernetes credential system for clusters whose administrators already manage AWS
+      IAM credentials.
+    - >
+      AWS's Open Source Blog described the 2018 community project as initially driven by
+      Heptio, used by the Amazon EKS open source team as a starting point for mapping
+      AWS IAM to Kubernetes RBAC, and donated to the Kubernetes Cloud Provider SIG. A
+      2019 AWS post described the renamed AWS IAM Authenticator and kops integration
+      after the earlier Heptio Authenticator work.
+  related-projects:
+    - 'Heptio Authenticator: the earlier name/history described by AWS blog posts.'
+    - 'Amazon EKS: a major adoption driver for IAM-backed Kubernetes authentication.'
+    - 'kops: Kubernetes-on-AWS cluster tooling with integration guidance for the authenticator.'
+  sources:
+    - https://aws.amazon.com/blogs/opensource/deploying-aws-iam-authenticator-kubernetes-kops/
+    - >
+      https://aws.amazon.com/blogs/opensource/integrating-ldap-ad-users-kubernetes-rbac-aws-iam-authenticator-project/
+    - https://formulae.brew.sh/api/formula/aws-iam-authenticator.json
+    - https://github.com/kubernetes-sigs/aws-iam-authenticator
+  summary:
+    - >
+      AWS IAM Authenticator for Kubernetes is a Kubernetes authentication bridge that
+      lets AWS IAM identities authenticate to Kubernetes clusters. It uses AWS STS
+      GetCallerIdentity-signed tokens on the client side and maps IAM users, roles, or
+      accounts to Kubernetes users and groups on the server side.
+  timeline:
+    - >
+      2018: AWS Open Source Blog describes aws-iam-authenticator as an initially
+      Heptio-driven community project used by the Amazon EKS open source team.
+    - >
+      2019: AWS posts updated kops deployment guidance for AWS IAM Authenticator after
+      the Heptio Authenticator donation to Cloud Provider SIG.
+    - '2026: Homebrew formula metadata packages aws-iam-authenticator v0.7.18.'
+  usage:
+    - >
+      Cluster administrators run the server as a DaemonSet or integrate it with kops,
+      configure the API server to use its token webhook kubeconfig, and define role/user
+      mappings through a mounted config file, an EKS-style ConfigMap, or
+      IAMIdentityMapping custom resources. Users then configure kubectl exec
+      authentication to call `aws-iam-authenticator token` for a cluster ID.
+    - >
+      The client token is based on a signed STS GetCallerIdentity request with the
+      cluster ID in the request context. The README documents AWS profile selection
+      through kubeconfig exec environment variables and maps roles/users/accounts to
+      Kubernetes usernames and groups for RBAC.
 tags:
   - authentication
   - aws
   - cli
+  - eks
   - iam
   - kubernetes
+  - rbac
   - sts
 geiger:
   category: infrastructure
@@ -31,27 +104,41 @@ geiger:
     - text:kubernetes
 provenance:
   category-sources:
-    - >
-      Official README describes a tool for using AWS IAM credentials to authenticate to
-      Kubernetes clusters.
+    - Official README describes Kubernetes authentication using AWS IAM credentials.
+    - source_facts.description
   display-name-sources:
-    - 'Official README title: AWS IAM Authenticator for Kubernetes.'
+    - Official README heading
+    - current_curation.display-name
   docs-sources:
     - >
-      Official GitHub README is the primary documentation surface and links to
-      docs/development.md.
-  repo-sources:
-    - source_facts.repo already provided; prompt requires returning repo as null when present.
-  tags-sources:
+      AWS SDKs and Tools reference for shared config/credentials paths:
+      https://docs.aws.amazon.com/sdkref/latest/guide/file-location.html
+    - 'Official GitHub README: https://github.com/kubernetes-sigs/aws-iam-authenticator#readme'
     - >
-      Official README documents AWS IAM, Kubernetes authentication, role/user mappings,
-      and STS GetCallerIdentity.
+      Official development docs:
+      https://github.com/kubernetes-sigs/aws-iam-authenticator/blob/master/docs/development.md
+  history-sources:
+    - https://aws.amazon.com/blogs/opensource/deploying-aws-iam-authenticator-kubernetes-kops/
+    - >
+      https://aws.amazon.com/blogs/opensource/integrating-ldap-ad-users-kubernetes-rbac-aws-iam-authenticator-project/
+    - https://formulae.brew.sh/api/formula/aws-iam-authenticator.json
+    - https://github.com/kubernetes-sigs/aws-iam-authenticator
+  repo-sources:
+    - >
+      source_facts.repo is already populated with
+      https://github.com/kubernetes-sigs/aws-iam-authenticator, so repo is null per
+      prompt.
+  tags-sources:
+    - AWS Open Source Blog posts on EKS/kops usage
+    - https://github.com/kubernetes-sigs/aws-iam-authenticator#readme
+    - source_facts.description
 category-confidence: high
 category-path:
   - cloud-infrastructure
-  - kubernetes
-  - authentication
+  - aws
+  - kubernetes-authentication
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

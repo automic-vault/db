@@ -4,6 +4,9 @@ homepage: https://aws-nuke.ekristen.dev
 repo: https://github.com/ekristen/aws-nuke
 docs:
   - https://aws-nuke.ekristen.dev/
+  - https://aws-nuke.ekristen.dev/cli-usage
+  - https://aws-nuke.ekristen.dev/config
+  - https://github.com/ekristen/aws-nuke#readme
 config-file-location:
   unix: config.yaml
 credentials-file-location:
@@ -13,6 +16,65 @@ credentials-file-location:
   windows:
     - C:\Users\USERNAME\.aws\config
     - C:\Users\USERNAME\.aws\credentials
+history:
+  adoption-history:
+    - >
+      aws-nuke became a recognizable tool in AWS-heavy development and test environments
+      because it automates the otherwise tedious process of finding and deleting many
+      resource types. Its own warning documentation emphasizes blocklists, explicit
+      account configuration, and central management of the config file because mistakes
+      can delete live infrastructure.
+    - >
+      The project is packaged through Homebrew and several other package managers in the
+      supplied facts, which fits its use as an operator CLI: teams want a pinned binary
+      available on developer laptops, CI jobs, and ephemeral cleanup machines.
+  package-nerd-significance:
+    - >
+      Package nerds care about aws-nuke because it is one of the rare packageable CLIs
+      whose whole purpose is irreversible infrastructure deletion. Its formula is not
+      just a convenience wrapper; distributing the right upstream and version matters
+      for supported AWS resource coverage and safety controls.
+  project-history:
+    - >
+      The repository history starts in June 2016 with commits adding deletion support
+      for EC2 instances, Auto Scaling groups, security groups, Route 53 records, and
+      VPCs. The current ekristen project documents itself as a full fork of the original
+      rebuy-de/aws-nuke project.
+    - >
+      The fork's README says the fork became necessary because the original maintainers
+      had limited time and contribution feedback cycles were slow. Version 3 rewrote the
+      tool around libnuke, a shared library intended to avoid maintaining duplicated
+      cleanup logic across cloud-specific nuke tools.
+  related-projects:
+    - rebuy-de/aws-nuke is the original project acknowledged by the current fork.
+    - ekristen/libnuke is the shared core library used by version 3.
+  sources:
+    - https://aws-nuke.ekristen.dev/auth/
+    - https://aws-nuke.ekristen.dev/cli-usage/
+    - https://aws-nuke.ekristen.dev/config/
+    - https://github.com/ekristen/aws-nuke#readme
+    - official git history and tags from https://github.com/ekristen/aws-nuke
+  summary:
+    - >
+      aws-nuke is a destructive AWS account cleanup tool for deleting resources across
+      an account. It is designed for controlled teardown workflows rather than routine
+      administration.
+  timeline:
+    - '2016: Initial aws-nuke commits add deletion support for core AWS resources.'
+    - '2017: v1.0 tag appears in the public git history.'
+    - '2018: v2.0.0 tag appears.'
+    - '2025: libnuke 1.x dependency work lands in the current fork.'
+    - '2026: v3.x tags show continued active releases.'
+  usage:
+    - >
+      Use centers on a YAML configuration file passed with --config or -c. The docs
+      describe the config as user supplied YAML loaded from the path specified by the
+      --config flag, with the CLI usage showing config.yaml as the default.
+    - >
+      For AWS authentication, the official docs describe static credential flags,
+      environment variables, and shared AWS config/credential files normally located at
+      ~/.aws/config and ~/.aws/credentials. The CLI can also use AWS profiles and
+      assume-role settings.
 category: cloud-infrastructure
 package-manager:
   brew: aws-nuke
@@ -28,6 +90,7 @@ tags:
   - aws
   - cleanup
   - cli
+  - destructive-operations
   - resources
 description: Nuke a whole AWS account and delete all its resources
 executables:

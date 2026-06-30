@@ -3,7 +3,9 @@ display-name: AWS Elastic Beanstalk CLI
 homepage: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html
 repo: https://github.com/aws/aws-elastic-beanstalk-cli
 docs:
+  - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-configuration.html
   - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html
+  - https://github.com/aws/aws-elastic-beanstalk-cli#readme
 config-file-location:
   unix: ./.elasticbeanstalk/config.yml
 credentials-file-location:
@@ -12,9 +14,89 @@ credentials-file-location:
     - ~/.aws/config
     - ~/.elasticbeanstalk/config
   windows:
-    - C:\Users\USERNAME\.aws\credentials
-    - C:\Users\USERNAME\.aws\config
-    - C:\Users\USERNAME\.elasticbeanstalk\config
+    - '%USERPROFILE%\.aws\credentials'
+    - '%USERPROFILE%\.aws\config'
+    - '%USERPROFILE%\.elasticbeanstalk\config'
+history:
+  adoption-history:
+    - >
+      The EB CLI became the Beanstalk-specific companion to general AWS CLI usage: AWS
+      documentation explicitly contrasts the lower-level AWS CLI sequence for creating
+      environments with the EB CLI's project-oriented single-command workflow. That made
+      `eb init`, `eb create`, `eb deploy`, and related commands standard muscle memory
+      for Beanstalk users.
+    - >
+      Homebrew analytics showed 316 installs in 30 days, 1,512 in 90 days, and 8,175 in
+      365 days at the time of this batch. Those figures are modest relative to the AWS
+      CLI, but healthy for a service-specific deployment tool whose main distribution
+      path also includes pip and AWS's setup scripts.
+  package-nerd-significance:
+    - >
+      For package-manager people, aws-elasticbeanstalk is a classic example of a cloud
+      vendor's service-specific CLI packaged outside the service's own installer story.
+      The Homebrew formula wraps the Python `awsebcli` distribution, while AWS still
+      recommends a separate setup-script repository for users who want an isolated
+      virtual environment and pinned dependencies.
+  project-history:
+    - >
+      Elastic Beanstalk itself was announced by AWS on January 19, 2011 as a managed
+      application deployment service that provisions capacity, load balancing, auto
+      scaling, and health monitoring around uploaded applications. The EB CLI grew
+      around that platform as the developer-friendly local workflow for Beanstalk
+      projects.
+    - >
+      The current EB CLI repository states that the CLI is now open source and hosted on
+      GitHub. Its README presents the project as the command-line interface for
+      deploying and managing Elastic Beanstalk applications and environments, with
+      integration with Git and contribution through issues and pull requests.
+    - >
+      The upstream changelog shows an actively maintained 3.x line. Recent entries
+      include Python dependency support work, region and bucket updates, IIS migration
+      helpers, remote execution work, Python 3.12 support, and security fixes for local
+      state deserialization and zip extraction.
+  related-projects:
+    - >
+      aws/aws-elastic-beanstalk-cli-setup: AWS's recommended setup-script installer
+      repository.
+    - 'AWS CLI Elastic Beanstalk commands: lower-level API access for the same service.'
+    - >
+      Elastic Beanstalk `.ebextensions`: application-source configuration files used by
+      the service.
+  sources:
+    - >
+      https://aws.amazon.com/about-aws/whats-new/2011/01/19/introducing-aws-elastic-beanstalk-beta/
+    - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-configuration.html
+    - https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html
+    - https://formulae.brew.sh/api/formula/aws-elasticbeanstalk.json
+    - https://github.com/aws/aws-elastic-beanstalk-cli
+    - https://raw.githubusercontent.com/aws/aws-elastic-beanstalk-cli/master/CHANGES.rst
+  summary:
+    - >
+      The AWS Elastic Beanstalk CLI, usually invoked as `eb`, is AWS's higher-level
+      command-line client for creating, deploying, updating, and monitoring Elastic
+      Beanstalk applications and environments. It sits above the lower-level AWS CLI
+      Elastic Beanstalk API commands and adds project-aware workflows, Git integration,
+      interactive initialization, environment management, and deployment packaging.
+  timeline:
+    - '2011: AWS announces Elastic Beanstalk beta.'
+    - '3.x: EB CLI is maintained as the open-source `aws/aws-elastic-beanstalk-cli` project.'
+    - >
+      2024: EB CLI 3.21.0 updates dependencies and declares support boundaries around
+      Python versions.
+    - >
+      2026: EB CLI 3.27.x changelog entries include AI log analysis, region updates, and
+      security fixes.
+  usage:
+    - >
+      Typical usage starts by installing the CLI, configuring a project directory, and
+      running commands such as `eb create` or `eb deploy`. AWS documentation says the EB
+      CLI can create environments with a single command after installation and
+      configuration.
+    - >
+      The CLI stores project settings in `.elasticbeanstalk/config.yml` and reads
+      credentials from command-line options, environment variables, shared AWS
+      credentials and config files, the legacy EB CLI config file, and EC2 instance
+      profile credentials, in that documented precedence order.
 category: cloud-infrastructure
 package-manager:
   brew: aws-elasticbeanstalk
@@ -27,10 +109,12 @@ package-manager-url: https://formulae.brew.sh/formula/aws-elasticbeanstalk
 license: Apache-2.0
 tags:
   - aws
+  - beanstalk
   - cli
   - deployment
   - elastic-beanstalk
   - paas
+  - python
 description: Client for Amazon Elastic Beanstalk web service
 executables:
   - eb

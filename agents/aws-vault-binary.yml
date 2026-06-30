@@ -10,40 +10,108 @@ config-file-location:
   windows:
     - '%USERPROFILE%\.aws\config'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      AWS Vault became one of the canonical AWS credential helpers in the macOS and Unix
+      developer tooling ecosystem. The original README listed installation through
+      direct releases, Homebrew, MacPorts, Chocolatey, Scoop, Arch, Gentoo, FreeBSD,
+      OpenSUSE, Nix, and asdf, which is unusually broad for a single-purpose credential
+      CLI.
+    - >
+      The 99designs repository metadata showed thousands of stars and hundreds of forks
+      in June 2026, and the v7.2.0 release assets had large download counts, especially
+      for Linux and Apple Silicon macOS binaries. Homebrew cask analytics still showed
+      active installs for the binary cask even after the original project became legacy.
+  package-nerd-significance:
+    - >
+      This cask is historically significant because it preserves the old signed macOS
+      binary channel after the main formula moved on. It also illustrates a common
+      packaging split: the same tool can exist as a source-built formula and as a binary
+      cask, with different upstreams and maintenance status over time.
+  project-history:
+    - >
+      The original `99designs/aws-vault` repository was created in August 2015, with
+      GitHub releases beginning at v1.0.0 in September 2015. The upstream README links
+      to a 99designs announcement post and describes the tool as complementary to the
+      AWS CLI, aware of profiles in `~/.aws/config`.
+    - >
+      By 2026 the original README marked the project abandoned and pointed users to the
+      active `ByteNess/aws-vault` fork. The cask, however, still references the
+      99designs repository and v7.2.0 macOS DMG artifact, so this record reflects the
+      legacy binary distribution rather than the newer Homebrew formula.
+  related-projects:
+    - `ByteNess/aws-vault` is the maintained fork named by the original upstream README.
+    - >
+      `aws-sso-cli` uses similar secure keyring ideas but focuses on IAM Identity Center
+      rather than long-term IAM access keys.
+  sources:
+    - https://formulae.brew.sh/api/cask/aws-vault-binary.json
+    - https://github.com/99designs/aws-vault
+    - https://raw.githubusercontent.com/99designs/aws-vault/master/README.md
+    - https://raw.githubusercontent.com/99designs/aws-vault/master/USAGE.md
+  summary:
+    - >
+      The `aws-vault-binary` cask packages the original 99designs AWS Vault macOS binary
+      distribution. AWS Vault stores long-term AWS IAM credentials in an
+      operating-system secure store and exposes short-lived STS credentials to commands,
+      shells, browser sessions, or local metadata-style endpoints.
+  timeline:
+    - '2015-08: Original 99designs/aws-vault repository created.'
+    - '2015-09: v1.0.0 GitHub release published.'
+    - '2023-03: v7.2.0 published by the 99designs repository.'
+    - '2025-05: ByteNess active fork created.'
+    - >
+      2026-06: Original README marked 99designs/aws-vault abandoned and pointed to
+      ByteNess/aws-vault.
+  usage:
+    - >
+      The classic workflow is `aws-vault add profile` to store long-term credentials in
+      the platform vault, then `aws-vault exec profile -- command` or `aws-vault login
+      profile` to obtain temporary AWS credentials or console access. The usage guide
+      also documents credential_process use, MFA session caching, SSO caching, and
+      metadata server modes.
+    - >
+      Because secrets live in the OS keychain or equivalent backend,
+      `~/.aws/credentials` is not the primary storage location for this package's
+      secrets.
 tags:
   - aws
   - cli
   - credentials
+  - keychain
+  - mfa
+  - sts
   - vault
 provenance:
   category-sources:
     - >
-      Official 99designs/aws-vault README describes securely storing and accessing AWS
-      credentials in development environments.
+      Official README describes secure storage and access of AWS credentials in
+      development environments.
   display-name-sources:
-    - Official 99designs/aws-vault README title is AWS Vault.
+    - Official README heading and Homebrew cask name are `AWS Vault`.
   docs-sources:
-    - >
-      Official 99designs/aws-vault README names USAGE.md as the config, usage, tips, and
-      tricks documentation.
-    - >
-      Official 99designs/aws-vault README says AWS Vault is aware of profiles and
-      configuration in ~/.aws/config.
-    - >
-      Official AWS SDKs and Tools reference documents default shared config paths for
-      Linux/macOS and Windows.
+    - Official 99designs README links to USAGE.md for config, usage, tips, and tricks.
+  history-sources:
+    - https://formulae.brew.sh/api/cask/aws-vault-binary.json
+    - https://github.com/99designs/aws-vault
+    - https://raw.githubusercontent.com/99designs/aws-vault/master/README.md
+    - https://raw.githubusercontent.com/99designs/aws-vault/master/USAGE.md
   repo-sources:
     - >
-      source_facts.repo already contains https://github.com/99designs/aws-vault; prompt
+      source_facts.repo already supplied https://github.com/99designs/aws-vault; prompt
       requires repo null when source_facts.repo is populated.
   tags-sources:
     - >
-      Official 99designs/aws-vault README describes an AWS credential CLI using vaulting
-      backends and temporary credentials.
+      Official README and repository topics describe AWS CLI credentials, keychain, MFA,
+      and temporary credentials.
 category-confidence: high
 category-path:
   - security
+  - aws
+  - credentials
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

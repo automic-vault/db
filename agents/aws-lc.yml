@@ -8,12 +8,72 @@ docs:
   - https://github.com/aws/aws-lc/blob/main/crypto/fipsmodule/FIPS.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      AWS-LC is aimed at infrastructure and language/runtime consumers that need an
+      OpenSSL-like API surface, tuned implementations, FIPS work, and CI coverage across
+      AWS-relevant platforms. Its Homebrew formula also exposes command-line utilities
+      such as bssl and c_rehash for developers who want the library toolchain locally.
+    - >
+      Package-manager adoption matters here because replacing or supplementing
+      OpenSSL-family libraries is operationally sensitive: downstream packages care
+      about ABI/API compatibility, FIPS status, CPU optimizations, and whether the
+      library is available through system package channels.
+  package-nerd-significance:
+    - >
+      For package maintainers, AWS-LC is interesting because it sits in the
+      BoringSSL/OpenSSL family but is packaged as an AWS-maintained crypto library with
+      formal verification references, FIPS artifacts, and active cross-platform CI. That
+      makes the formula more like infrastructure plumbing than a standalone app.
+  project-history:
+    - >
+      The project presents itself as maintained by the AWS Cryptography team and
+      explicitly traces its code lineage to Google's BoringSSL and OpenSSL. Its git
+      history preserves older imported upstream commits, but AWS-specific work appears
+      in 2020, with early tags such as v0.1-alpha and v0.1-beta in September 2020.
+    - >
+      AWS-LC's stated goal is to maintain a secure libcrypto compatible with software
+      and applications used at AWS, while also giving the AWS Cryptography team a public
+      home for open-source cryptographic contributions and enhancements.
+  related-projects:
+    - BoringSSL and OpenSSL are the stated code bases AWS-LC is based on.
+    - >
+      AWS-LC Formal Verification and s2n-bignum are referenced by the README for
+      verified cryptographic code paths.
+  sources:
+    - https://github.com/aws/aws-lc#readme
+    - https://github.com/aws/aws-lc/blob/main/BUILDING.md
+    - https://github.com/aws/aws-lc/blob/main/PORTING.md
+    - https://github.com/aws/aws-lc/blob/main/crypto/fipsmodule/FIPS.md
+    - official git history and tags from https://github.com/aws/aws-lc
+  summary:
+    - >
+      AWS-LC is Amazon's libcrypto/libssl distribution for AWS and customer use: a
+      general-purpose cryptographic library based on BoringSSL and OpenSSL, packaged as
+      a C/C++ library rather than an end-user command-line application.
+  timeline:
+    - '2020: AWS-specific AWS-LC commits and alpha/beta tags appear in the public repository.'
+    - '2021: v0.0.1 and FIPS-related tags appear.'
+    - '2022: v1.x releases continue alongside AWS-LC-FIPS tags.'
+    - '2026: v5.x tags show the project remains actively released.'
+  usage:
+    - >
+      Typical use is as a build dependency or embedded TLS/crypto provider. The README
+      points users to BUILDING.md for dependencies and build options, public headers for
+      API documentation, PORTING.md for OpenSSL migration, and FIPS.md for FIPS-specific
+      builds.
+    - >
+      AWS-LC includes portable C implementations plus optimized assembly for selected
+      x86 and Arm processors, and documents supported platforms including Linux, macOS,
+      Windows, Android, and iOS.
 tags:
   - aws
   - cli
   - cryptography
   - fips
   - library
+  - openssl-compatible
   - tls
 geiger:
   category: appliance
@@ -26,24 +86,34 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      Official README describes AWS-LC as a general-purpose cryptographic library
-      maintained by the AWS Cryptography team.
+    - official README describes AWS-LC as a general-purpose cryptographic library
+    - 'source_facts.description: General-purpose cryptographic library'
   display-name-sources:
-    - Official README names the project AWS-LC.
+    - 'official README title: AWS libcrypto (AWS-LC)'
   docs-sources:
-    - Official GitHub README links to BUILDING.md, PORTING.md, and crypto/fipsmodule/FIPS.md.
+    - >
+      official README links BUILDING.md, PORTING.md, and FIPS.md from
+      https://github.com/aws/aws-lc
+  history-sources:
+    - https://github.com/aws/aws-lc#readme
+    - https://github.com/aws/aws-lc/blob/main/BUILDING.md
+    - https://github.com/aws/aws-lc/blob/main/PORTING.md
+    - https://github.com/aws/aws-lc/blob/main/crypto/fipsmodule/FIPS.md
+    - official git history and tags from https://github.com/aws/aws-lc
   repo-sources:
-    - source_facts.repo already provided; prompt requires returning repo as null when present.
+    - >
+      source_facts.repo is already https://github.com/aws/aws-lc; prompt requires repo
+      null when source_facts.repo is present
   tags-sources:
     - >
-      Official README documents libcrypto/libssl, TLS/common applications, FIPS
-      information, and AWS Cryptography maintenance.
+      official README describes AWS-LC as AWS-maintained, OpenSSL/BoringSSL-based,
+      TLS/common-application cryptography with FIPS documentation
 category-confidence: high
 category-path:
   - security
   - cryptography
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

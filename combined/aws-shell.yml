@@ -4,7 +4,6 @@ homepage: https://github.com/awslabs/aws-shell
 repo: https://github.com/awslabs/aws-shell
 docs:
   - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
-  - https://docs.aws.amazon.com/cloud9/latest/user-guide/sample-aws-cli.html
   - https://github.com/awslabs/aws-shell#readme
 config-file-location:
   unix:
@@ -12,6 +11,59 @@ config-file-location:
     - ~/.aws/shell/awsshellrc
 credentials-file-location:
   unix: ~/.aws/credentials
+history:
+  adoption-history:
+    - >
+      aws-shell served users who wanted a richer REPL-like AWS CLI experience before
+      modern shell completion and IDE integrations were as common. Its Homebrew formula
+      reflects a developer-workstation tool: install it, run aws-shell, and type AWS CLI
+      commands without the aws prefix.
+    - >
+      Because it shares AWS CLI configuration and profiles, adoption did not require a
+      new credentials model. That made it easy to try, but also tied the tool's
+      usefulness to the AWS CLI command model and Python support matrix.
+  package-nerd-significance:
+    - >
+      For package maintainers, aws-shell is a snapshot of the Python AWS tooling era:
+      prompt-tooling convenience wrapped around AWS CLI models, packaged as a standalone
+      executable even though most of its value comes from AWS CLI/boto data underneath.
+  project-history:
+    - >
+      The awslabs repository begins in September 2015 with commits that turn the idea
+      into an installable Python package. The README brands it as an interactive
+      productivity booster for the AWS CLI.
+    - >
+      The project depends on the AWS CLI model and boto3-style service data to provide
+      command, option, and server-side resource completion. Its public release history
+      is modest; tags reached the 0.2.x line and later commits mainly keep compatibility
+      and dependencies moving.
+  related-projects:
+    - AWS CLI provides the underlying command model and shared configuration behavior.
+    - boto3 is used for server-side completion according to the README.
+  sources:
+    - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
+    - https://github.com/awslabs/aws-shell#readme
+    - official git history and tags from https://github.com/awslabs/aws-shell
+  summary:
+    - >
+      aws-shell is an interactive shell for the AWS CLI, adding completions, fuzzy
+      searching, inline documentation, profiles, command history, and persistent shell
+      preferences around normal AWS CLI commands.
+  timeline:
+    - '2015: Initial public aws-shell commits create an installable Python package.'
+    - '2015: Early 0.x tags appear.'
+    - '2020: Compatibility work lands for newer AWS CLI support.'
+    - '2024: Dependency maintenance continues in the repository.'
+  usage:
+    - >
+      The README says aws-shell accepts the same commands as the AWS CLI except without
+      the aws prefix, supports AWS CLI profiles, records command history in
+      ~/.aws/shell/history, and persists toolbar/keybinding preferences to
+      ~/.aws/shell/awsshellrc.
+    - >
+      Configuration and credentials come from the standard AWS CLI files and profile
+      behavior. Users can run configure inside the shell to populate access key, secret
+      key, region, and output format settings.
 category: cloud-infrastructure
 package-manager:
   brew: aws-shell
@@ -22,8 +74,8 @@ tags:
   - aws
   - aws-cli
   - cli
-  - cloud-management
-  - shell
+  - interactive-shell
+  - profiles
 description: Integrated shell for working with the AWS CLI
 executables:
   - aws-shell

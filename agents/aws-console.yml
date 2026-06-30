@@ -2,6 +2,7 @@ id: brew:aws-console
 display-name: aws-console
 repo: null
 docs:
+  - https://aws-cloudformation.github.io/rain
   - https://aws-cloudformation.github.io/rain/rain_console.html
 config-file-location:
   unix:
@@ -13,6 +14,52 @@ credentials-file-location:
     - ~/.aws/credentials
   windows:
     - '%USERPROFILE%\.aws\credentials'
+history:
+  adoption-history:
+    - >
+      As a standalone Homebrew formula, aws-console is a narrow convenience package
+      rather than the main Rain distribution. Homebrew analytics showed 64 installs in
+      30 days, 283 in 90 days, and 1,339 in 365 days at the time of this batch,
+      consistent with a niche operator workflow rather than a broad AWS CLI replacement.
+  package-nerd-significance:
+    - >
+      Package nerds care because it is a tiny subcommand exposed as its own Homebrew
+      package: a focused wrapper around AWS federation and browser login, riding on
+      Rain's CloudFormation-oriented release stream.
+  project-history:
+    - >
+      Rain is maintained under the aws-cloudformation GitHub organization as a Go
+      command-line tool for CloudFormation templates and stacks. Its command set covers
+      formatting, packaging, deployment, logging, stack sets, template generation, and a
+      `console` subcommand; the generated Rain documentation identifies `rain console`
+      as the command that logs in to the AWS console.
+  related-projects:
+    - 'rain: the parent AWS CloudFormation workflow CLI.'
+    - >
+      AWS CLI and AWS SDK shared config files: the profile and credential source used by
+      Rain's console workflow.
+  sources:
+    - https://aws-cloudformation.github.io/rain/rain_console.html
+    - https://formulae.brew.sh/api/formula/aws-console.json
+    - https://github.com/aws-cloudformation/rain
+  summary:
+    - >
+      aws-console is the Homebrew-packaged entry point for Rain's `console` command, a
+      small AWS-console launcher built into the AWS CloudFormation Rain CLI. It uses the
+      caller's current AWS credentials to generate an AWS Console sign-in URL and open
+      it in a browser, with options for profile, region, service home page, stack
+      selection, logout, and URL-only output.
+  timeline:
+    - >
+      2026: Rain's generated documentation lists `rain console` as the AWS console login
+      command.
+    - '2026: Homebrew formula metadata packages aws-console from Rain v1.24.4.'
+  usage:
+    - >
+      The command is for IAM role sessions, not IAM users. Its documentation says it
+      reads a profile from the AWS CLI configuration file, can target CloudFormation or
+      another AWS service home page, and can print the generated sign-in URL instead of
+      opening a browser.
 tags:
   - aws
   - aws-console
@@ -20,6 +67,7 @@ tags:
   - cli
   - cloudformation
   - credentials
+  - iam-role
 geiger:
   category: appliance
   color: green
@@ -31,35 +79,36 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official rain docs: https://aws-cloudformation.github.io/rain/ describes rain as a
-      command-line tool for AWS CloudFormation templates and stacks.
-    - source_facts.description says it launches the AWS console using AWS CLI credentials.
+    - Official Rain docs describe CloudFormation/AWS console workflow.
+    - source_facts.description
   display-name-sources:
-    - source_facts.executables lists aws-console.
-    - source_facts.name is aws-console.
+    - Homebrew formula name from source_facts.package-manager.brew
+    - source_facts.name
   docs-sources:
     - >
-      Official rain console docs:
-      https://aws-cloudformation.github.io/rain/rain_console.html describes logging in
-      to the AWS console with current credentials and the profile option.
-    - >
-      Official rain docs index: https://aws-cloudformation.github.io/rain/ lists rain
-      console as 'Login to the AWS console'.
+      AWS SDKs and Tools reference for shared config/credentials paths:
+      https://docs.aws.amazon.com/sdkref/latest/guide/file-location.html
+    - 'Official Rain command docs: https://aws-cloudformation.github.io/rain/rain_console.html'
+    - 'Official Rain docs index: https://aws-cloudformation.github.io/rain/'
+  history-sources:
+    - https://aws-cloudformation.github.io/rain/rain_console.html
+    - https://formulae.brew.sh/api/formula/aws-console.json
+    - https://github.com/aws-cloudformation/rain
   repo-sources:
     - >
-      source_facts.repo is already set to https://github.com/aws-cloudformation/rain, so
-      repo enrichment is intentionally returned as null per prompt.
+      source_facts.repo is already populated with
+      https://github.com/aws-cloudformation/rain, so repo is null per prompt.
   tags-sources:
-    - >
-      Official rain console docs:
-      https://aws-cloudformation.github.io/rain/rain_console.html documents AWS console
-      login, browser opening, profile, region, and service options.
-    - source_facts.executables lists aws-console.
+    - https://aws-cloudformation.github.io/rain/rain_console.html
+    - https://github.com/aws-cloudformation/rain
+    - source_facts.description
 category-confidence: high
 category-path:
   - cloud-infrastructure
+  - aws
+  - console-access
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

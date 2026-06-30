@@ -8,6 +8,58 @@ config-file-location:
   unix: ~/.aws/config
 credentials-file-location:
   unix: ~/.aws/credentials
+history:
+  adoption-history:
+    - >
+      The README points to PyPI and Docker Hub distribution paths, and the GitHub page
+      shows a Python project with a public release line through 0.0.38. Homebrew
+      analytics showed 73 installs in 30 days, 290 in 90 days, and 1,204 in 365 days at
+      the time of this batch, indicating a lingering audience among teams with older
+      Google SAML AWS login setups.
+  package-nerd-significance:
+    - >
+      The package is historically interesting because it bridges consumer-style browser
+      SSO and Unix CLI credential files. It also documents borrowing credential
+      injection ideas from aws-adfs and inspiration from keyme, which places it in the
+      family of pre-IAM-Identity-Center AWS federation helpers.
+  project-history:
+    - >
+      The CEVO Australia repository presents the tool as a way to acquire AWS temporary
+      credentials through Google Apps federation. Its README covers the Google SAML
+      identity-provider setup, the AWS service-provider identifiers needed by the
+      command, installation through pip or Docker, and command-line flags for region,
+      profile, role ARN, U2F, keyring use, and diagnostic output.
+  related-projects:
+    - >
+      google-aws-federator: a related CEVO tool mentioned by the README for assigning
+      users to AWS account roles.
+    - 'aws-adfs: acknowledged by the README as a source for credential injection behavior.'
+    - >
+      keyme: acknowledged by the README as inspiration for Google SAML authentication
+      flow handling.
+  sources:
+    - >
+      https://aws.amazon.com/blogs/security/how-to-set-up-federated-single-sign-on-to-aws-using-google-apps/
+    - https://formulae.brew.sh/api/formula/aws-google-auth.json
+    - https://github.com/cevoaustralia/aws-google-auth
+  summary:
+    - >
+      aws-google-auth is a Python command-line tool for acquiring temporary AWS STS
+      credentials using Google Apps / Google Workspace SAML SSO as the identity
+      provider. It targets organizations that wired Google SAML into AWS before newer
+      AWS-native SSO and IAM Identity Center workflows became common.
+  timeline:
+    - >
+      2015: AWS publishes official guidance for federated single sign-on to AWS using
+      Google Apps.
+    - '0.0.38: GitHub lists release 0.0.38 as the latest release.'
+    - '2026: Homebrew formula metadata packages aws-google-auth 0.0.38 from PyPI.'
+  usage:
+    - >
+      Users provide Google username, IdP ID, service-provider ID, AWS region, profile,
+      and optionally a role ARN. The tool prompts for password and MFA, assumes an AWS
+      role, and writes or reuses profile data; its README says profile credentials and
+      related IdP/SP details are stored through AWS profiles in the AWS config file.
 category: cloud-infrastructure
 package-manager:
   brew: aws-google-auth
@@ -19,6 +71,9 @@ tags:
   - cli
   - credentials
   - google-apps
+  - saml
+  - sso
+  - sts
 description: Acquire AWS credentials using Google Apps
 executables:
   - aws-google-auth

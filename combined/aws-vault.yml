@@ -9,6 +9,76 @@ config-file-location:
   unix: ~/.aws/config
   windows: '%USERPROFILE%\.aws\config'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      AWS Vault has broad package-manager reach: the original README listed Homebrew,
+      MacPorts, Chocolatey, Scoop, Arch, Gentoo, FreeBSD, OpenSUSE, Nix, and asdf, while
+      the ByteNess README keeps Homebrew, Chocolatey, and Nix as prominent install
+      paths. Homebrew analytics showed several thousand 30-day formula installs in June
+      2026.
+    - >
+      Its adoption is tied to security posture in developer AWS accounts: teams can
+      store persistent IAM keys in a local secure backend, require MFA, and hand
+      commands only short-lived STS credentials. That pattern made it useful for
+      Terraform, SDKs, CI-adjacent local scripts, and desktop apps that need AWS
+      credentials without placing static keys in environment variables.
+  package-nerd-significance:
+    - >
+      AWS Vault matters to package nerds because it is both a security tool and a
+      packaging case study: a mature, heavily packaged CLI moved from an abandoned
+      original upstream to an active fork while retaining the same command name and
+      ecosystem expectations. Homebrew formula metadata now points at ByteNess release
+      tags rather than the older 99designs releases.
+  project-history:
+    - >
+      The original project started at 99designs in 2015 and quickly established the
+      `aws-vault add` plus `aws-vault exec` workflow for keeping long-term AWS keys out
+      of plaintext shell environments. Its documentation made `~/.aws/config` the
+      coordination point while storing secrets in platform facilities such as macOS
+      Keychain, Windows Credential Manager, Secret Service, KWallet, pass, or encrypted
+      files.
+    - >
+      In May 2025, the ByteNess fork was created as an active continuation. By June 2026
+      the original 99designs README warned that the old project was abandoned, while the
+      ByteNess README called itself a maintained fork and documented newer backend
+      support such as Windows Hello, keyctl, Passage, and 1Password options.
+  related-projects:
+    - >
+      `99designs/aws-vault` is the original upstream and remains the source for the
+      legacy cask.
+    - >
+      `aws-sso-cli`, `aws-sso-util`, and `aws2-wrap` cover adjacent IAM Identity Center
+      workflows that became more important after AWS CLI v2.
+  sources:
+    - https://formulae.brew.sh/api/formula/aws-vault.json
+    - https://github.com/ByteNess/aws-vault
+    - https://raw.githubusercontent.com/99designs/aws-vault/master/README.md
+    - https://raw.githubusercontent.com/ByteNess/aws-vault/main/README.md
+    - https://raw.githubusercontent.com/ByteNess/aws-vault/main/USAGE.md
+  summary:
+    - >
+      AWS Vault is a long-running AWS credential helper that stores IAM credentials in a
+      secure backend and generates temporary credentials for local development. The
+      Homebrew formula now tracks the maintained ByteNess fork, whose README states that
+      it continues the abandoned 99designs project.
+  timeline:
+    - '2015-08: Original 99designs/aws-vault repository created.'
+    - '2015-09: v1.0.0 GitHub release published by 99designs/aws-vault.'
+    - '2023-03: 99designs/aws-vault v7.2.0 published.'
+    - '2025-05: ByteNess/aws-vault repository created as the maintained fork.'
+    - '2026-06: ByteNess v7.12.4 published; Homebrew formula tracked v7.12.4.'
+  usage:
+    - >
+      Common usage is `aws-vault add <profile>` followed by `aws-vault exec <profile> --
+      <command>`, `aws-vault login <profile>`, or `aws-vault export` through
+      `credential_process`. The usage guide describes executor mode,
+      master-credential-vault mode, MFA session cache mode, and caching of alternative
+      credential sources such as SSO and web identity.
+    - >
+      The maintained fork also documents backend selection and migration between
+      backends, which matters for users moving between macOS Keychain, Linux desktop
+      secret stores, 1Password, and encrypted-file fallback.
 category: security
 package-manager:
   brew: aws-vault
@@ -24,6 +94,9 @@ tags:
   - aws
   - cli
   - credentials
+  - keychain
+  - mfa
+  - sts
   - vault
 description: Securely store and access AWS credentials in development environments
 executables:

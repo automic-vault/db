@@ -2,7 +2,9 @@ id: brew:aws-sso-cli
 display-name: AWS SSO CLI
 repo: null
 docs:
+  - https://github.com/synfinatic/aws-sso-cli#readme
   - https://synfinatic.github.io/aws-sso-cli
+  - https://synfinatic.github.io/aws-sso-cli/latest/config
 config-file-location:
   unix:
     - ~/.config/aws-sso/config.yaml
@@ -14,6 +16,73 @@ credentials-file-location:
     - ~/.aws/sso/cache/<random>.json
     - ~/.aws/cli/cache/<random>.json
     - ~/.aws/credentials
+history:
+  adoption-history:
+    - >
+      Homebrew carries `aws-sso-cli` in homebrew-core, and the project documentation
+      names Homebrew as a first-class installation path. Its GitHub repository metadata
+      showed hundreds of stars and forks in June 2026, and Homebrew analytics showed
+      hundreds of 30-day installs, indicating use beyond a single organization without
+      making it a default AWS tool.
+    - >
+      Adoption has tracked the AWS IAM Identity Center transition: the README explicitly
+      notes that AWS SSO was renamed IAM Identity Center, while the underlying config
+      fields and APIs still use SSO terminology. That made the package useful during the
+      long period when project names, AWS docs, and API names did not all say the same
+      thing.
+  package-nerd-significance:
+    - >
+      For package maintainers, AWS SSO CLI is an example of a post-AWS-CLI-v2 helper
+      that did not just wrap `aws sso login`; it packaged a more opinionated identity
+      workflow as one cross-platform Go binary. The Homebrew formula tracks upstream
+      release tags, while upstream also publishes binary, RPM, and DEB artifacts.
+  project-history:
+    - >
+      The public repository was created in May 2021 and early GitHub releases began with
+      v1.0.0 in July 2021. It arrived after AWS CLI v2 added native SSO support, but
+      focused on organizations with many accounts and many IAM roles, where plain AWS
+      CLI profiles can become cumbersome.
+    - >
+      The project evolved around two package-nerd concerns: a single static Go binary
+      with official release artifacts, and a configuration model that could coexist with
+      standard AWS CLI profile files. The documentation notes a move to XDG-style state
+      under `~/.config/aws-sso` in v1.17.0 while keeping `~/.aws-sso` compatibility.
+  related-projects:
+    - >
+      The README compares AWS SSO CLI to `aws-vault`, noting overlap in secure
+      credential handling but a stronger focus on IAM Identity Center instead of
+      long-term API keys.
+    - >
+      `aws-sso-util` and `aws2-wrap` solve adjacent AWS SSO workflow gaps, especially
+      profile generation, credential_process integration, or tools that lagged native
+      SSO support.
+  sources:
+    - https://formulae.brew.sh/api/formula/aws-sso-cli.json
+    - https://github.com/synfinatic/aws-sso-cli
+    - https://raw.githubusercontent.com/synfinatic/aws-sso-cli/main/README.md
+    - https://raw.githubusercontent.com/synfinatic/aws-sso-cli/main/docs/config.md
+  summary:
+    - >
+      AWS SSO CLI is a Go command-line tool for AWS IAM Identity Center users who want a
+      more ergonomic and more security-focused alternative to the stock AWS CLI SSO
+      workflow. The project describes itself as a secure replacement for the `aws
+      configure sso` wizard, with role selection, interactive search, profile
+      generation, browser console helpers, and encrypted token storage.
+  timeline:
+    - '2021-05: Public GitHub repository created.'
+    - '2021-07: v1.0.0 prerelease published on GitHub.'
+    - '2021-10: v1.2.0 published as a non-prerelease GitHub release.'
+    - '2026-06: v2.3.1 published; Homebrew stable version tracked v2.3.1.'
+  usage:
+    - >
+      Typical use is `aws-sso` for guided setup, `aws-sso exec` or shell helpers to
+      export short-lived STS credentials, and generated entries in `~/.aws/config` for
+      tools that already understand AWS named profiles. The README emphasizes encrypted
+      storage for AWS SSO client secrets, access tokens, and CLI cache credentials.
+    - >
+      The tool is most relevant for developers who switch across many AWS accounts and
+      roles, especially when the AWS web console and CLI both need fast profile
+      switching.
 tags:
   - aws
   - cli
@@ -33,26 +102,34 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      Official README describes a secure replacement for aws configure sso focused on
-      AWS IAM Identity Center and AWS account role access.
+    - Official README describes AWS IAM Identity Center CLI/web-console credential workflows.
   display-name-sources:
-    - 'Official README title: AWS SSO CLI.'
+    - Official README heading is `AWS SSO CLI`.
   docs-sources:
-    - Official README links to https://synfinatic.github.io/aws-sso-cli/ as Documentation.
+    - Official configuration documentation is maintained in the upstream repository.
+    - >
+      Official project README links to https://synfinatic.github.io/aws-sso-cli/
+      documentation.
+  history-sources:
+    - https://formulae.brew.sh/api/formula/aws-sso-cli.json
+    - https://github.com/synfinatic/aws-sso-cli
+    - https://raw.githubusercontent.com/synfinatic/aws-sso-cli/main/README.md
+    - https://raw.githubusercontent.com/synfinatic/aws-sso-cli/main/docs/config.md
   repo-sources:
     - >
-      source_facts.repo already provides https://github.com/synfinatic/aws-sso-cli;
+      source_facts.repo already supplied https://github.com/synfinatic/aws-sso-cli;
       prompt requires repo null when source_facts.repo is populated.
   tags-sources:
     - >
-      Official README and docs mention AWS IAM Identity Center, SSO, STS token
-      credentials, keyring storage, and managing ~/.aws/config.
+      Official README and GitHub repository topics describe AWS, SSO, IAM, credentials,
+      keychain, and temporary-credentials usage.
 category-confidence: high
 category-path:
   - cloud-infrastructure
-  - aws-identity
+  - aws
+  - identity-center
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
