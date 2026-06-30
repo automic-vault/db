@@ -7,6 +7,67 @@ config-file-location:
   unix:
     - <repository-root>/.braids.json
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official documentation presents RubyGems installation with gem install braid,
+      while the input facts record Homebrew packaging. Its audience is narrower than Git
+      itself: teams that deliberately vendor source and need repeatable updates.
+    - >
+      Braid remained useful where teams preferred checked-in source copies over
+      package-manager references, especially when local patches or co-evolution with the
+      upstream library made binary package dependencies awkward.
+  package-nerd-significance:
+    - >
+      Braid is interesting because it sits at the boundary between dependency management
+      and version control. It preserves vendored source inside one repository while
+      adding just enough metadata to make updates reproducible.
+    - >
+      For package historians, it captures a pre-monorepo, pre-lockfile style of
+      dependency handling common in Ruby and web projects: when package registries
+      existed, but teams still wanted patched source in-tree.
+  project-history:
+    - >
+      The GitHub repository for Braid was created in February 2008. Its official site
+      frames the project around the old vendoring problem: projects often copied
+      third-party source into their tree, then struggled to update it or send local
+      changes upstream.
+    - >
+      Braid's solution is to keep metadata about the external repository, branch, tag,
+      revision, or subdirectory in .braids.json. That gives a plain Git repository
+      enough memory to update a vendored copy later without converting the vendored
+      directory into a nested repository.
+  related-projects:
+    - Git is the underlying version-control system Braid extends.
+    - RubyGems is the installation channel shown in Braid's official documentation.
+    - Manual vendoring by copying source trees is the workflow Braid was built to improve.
+  sources:
+    - https://api.github.com/repos/cristibalan/braid
+    - https://cristibalan.github.io/braid
+    - source_facts.package-manager
+  summary:
+    - >
+      Braid is a Ruby command-line tool for tracking vendored Git repositories inside
+      another Git repository. It records vendored mirrors in .braids.json and provides
+      commands to add, update, diff, and push changes back.
+  timeline:
+    - '2008-02: The Braid GitHub repository was created.'
+    - >
+      2022-01: The documentation described supported environments as Linux, macOS, and
+      Windows with recent Git and Ruby dependencies.
+    - >
+      2024: The GitHub repository still showed recent activity in official repository
+      metadata.
+  usage:
+    - >
+      Typical usage starts with braid add <repo> <path>, which vendors a remote Git
+      repository into a project path and updates .braids.json. Later, braid update pulls
+      upstream changes, braid diff emits local changes as a patch, and braid push can
+      send local changes back to a source branch.
+    - >
+      The documentation also covers pinning to branches, tags, or revisions and
+      selecting subdirectories from a remote repository, making Braid a lightweight
+      alternative to manual copy-and-patch vendoring.
 tags:
   - cli
   - git
@@ -31,6 +92,10 @@ provenance:
     - >
       Official GitHub Pages documentation https://cristibalan.github.io/braid/ describes
       usage and .braids.json configuration.
+  history-sources:
+    - https://api.github.com/repos/cristibalan/braid
+    - https://cristibalan.github.io/braid
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/cristibalan/braid; prompt
@@ -45,5 +110,6 @@ category-path:
   - version-control
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
