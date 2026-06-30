@@ -9,6 +9,87 @@ config-file-location:
     - /etc/resolv.conf
     - /etc/hosts
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      c-ares adoption started from libcurl's need for DNS lookups that could integrate
+      with event-driven network code. From there it spread into software that needs many
+      DNS queries in parallel or wants resolver behavior independent from a platform's
+      blocking libc calls.
+    - >
+      Its package-manager footprint is broad: Homebrew, Debian and Ubuntu development
+      packages, Fedora, Alpine, Arch, MacPorts, Nix, and openSUSE all package it. That
+      breadth reflects its status as a library dependency more than an end-user command,
+      although tools such as `adig` and `ahost` are installed with some packages.
+  package-nerd-significance:
+    - >
+      c-ares is one of those packages users may never invoke directly but build systems
+      constantly care about. It is a small C library whose ABI, headers, pkg-config
+      metadata, and security updates affect curl-like networking stacks across
+      distributions.
+    - >
+      For package nerds, it is also a clean example of a library fork becoming
+      infrastructure: born from a specific libcurl need, preserved for API/ABI
+      stability, and now maintained with modern supply-chain signals such as signed
+      releases and SLSA provenance.
+  project-history:
+    - >
+      The official `why` page explains that Daniel Stenberg looked for an asynchronous
+      DNS resolver for libcurl, found the older ares library, began expanding it, and
+      forked when the original author would not accept the needed changes. That fork
+      became c-ares.
+    - >
+      The project still acknowledges ares as the public API influence while noting that
+      the code no longer closely resembles the original. Its README now describes c-ares
+      as a modern DNS stub resolver written in C with asynchronous interfaces,
+      portability across Unix, Windows, mobile, and other systems, and active
+      maintenance after more than 20 years.
+    - >
+      Recent project materials emphasize security practice as much as asynchronous
+      lookup: safe parsers and builders, static and dynamic analysis, OSS-Fuzz coverage,
+      signed releases, and SLSA provenance for release artifacts.
+  related-projects:
+    - libcurl is the motivating user described by the official history page.
+    - ares is the older resolver library from which c-ares forked.
+    - >
+      ADNS, UDNS, FireDNS, Mozilla netlib, djbdns, and other resolver libraries are
+      discussed by the c-ares project as alternatives or contemporaries.
+  sources:
+    - https://c-ares.org/
+    - https://c-ares.org/why.html
+    - https://github.com/c-ares/c-ares/blob/main/README.md
+    - https://github.com/c-ares/c-ares/tags
+    - source_facts.package-manager
+  summary:
+    - >
+      c-ares is an MIT-licensed C library for asynchronous DNS resolution. It grew out
+      of Daniel Stenberg's search for a non-blocking resolver suitable for libcurl and
+      became a long-lived dependency for network software that cannot afford blocking
+      name lookups.
+  timeline:
+    - >
+      Early 2000s: Daniel Stenberg searches for an asynchronous DNS resolver for libcurl
+      and forks from ares to create c-ares.
+    - '2004: Early tags such as `c-ares-1_2_0` appear in the upstream repository history.'
+    - >
+      2010s: c-ares remains a common packaged dependency for asynchronous DNS in C
+      networking software.
+    - >
+      2024: The project site describes more than 20 years of active maintenance and
+      modern DNS RFC support.
+    - >
+      2025: The official site publishes c-ares 1.34.6 as a signed release with release
+      provenance.
+  usage:
+    - >
+      Developers link against c-ares to issue asynchronous DNS queries through
+      non-blocking sockets and integrate DNS work into event loops. The official docs
+      include initialization APIs such as `ares_init_options` and resolver configuration
+      behavior.
+    - >
+      On Unix-like systems c-ares reads resolver environment from standard system files
+      such as `/etc/resolv.conf` and `/etc/hosts`, matching the package's curated
+      config-file locations.
 tags:
   - async
   - c
@@ -36,6 +117,12 @@ provenance:
     - >
       https://c-ares.org/docs/ares_init_options.html documents default Unix resolver and
       hosts paths.
+  history-sources:
+    - https://c-ares.org/
+    - https://c-ares.org/why.html
+    - https://github.com/c-ares/c-ares/blob/main/README.md
+    - https://github.com/c-ares/c-ares/tags
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/c-ares/c-ares; prompt
@@ -49,5 +136,6 @@ category-path:
   - networking
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

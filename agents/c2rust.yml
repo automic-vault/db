@@ -6,6 +6,84 @@ docs:
   - https://github.com/immunant/c2rust#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      C2Rust is packaged both as a Rust crate installed with `cargo install --locked
+      c2rust` and through system package managers such as Homebrew and Alpine according
+      to source_facts. The README also documents direct Git installation for users
+      needing unreleased bug fixes.
+    - >
+      Adoption is mostly by developers facing migration or audit work rather than
+      everyday end users. Its requirement for LLVM/clang, compile_commands.json, and
+      close build-system integration places it in the serious-codebase-migration
+      category.
+  package-nerd-significance:
+    - >
+      C2Rust is significant because it packages one of the hard parts of language
+      migration as a CLI workflow: consume a C build database, produce Rust, run tests,
+      then iterate. It is not magic safe Rust generation; its value is making the first
+      migration step mechanical and reproducible.
+    - >
+      It also represents a Rust ecosystem pattern where package-manager installation is
+      only the entry point. Real use depends on compiler toolchains, build-system
+      metadata, test suites, and sometimes pinned nightly Rust components for advanced
+      refactoring tools.
+  project-history:
+    - >
+      The upstream Git history begins on 22 June 2017 with original C sources,
+      Corrode-generated Rust sources, and early source-rewriting work. The README
+      describes the project's goal as helping migrate C99-compliant code to Rust while
+      preserving behavior first.
+    - >
+      By the time of the README's RustConf 2018 reference, C2Rust had become a visible
+      example of pragmatic Rust adoption for existing C codebases. The project grew
+      beyond raw transpilation to include cross-checking translated code against the
+      original and a refactoring tool intended to reduce the manual work of turning
+      unsafe Rust into safer, more idiomatic Rust.
+  related-projects:
+    - >
+      Corrode: an earlier C-to-Rust translator referenced in C2Rust's initial upstream
+      history.
+    - >
+      LLVM and clang/libclangTooling: parser and compilation-database infrastructure
+      required by C2Rust.
+    - 'c2rust-refactor: sibling tool for transforming generated Rust after transpilation.'
+    - >
+      Compiler Explorer: the README links an online C2Rust translator integration using
+      the current master branch.
+  sources:
+    - https://c2rust.com/manual
+    - https://github.com/immunant/c2rust#readme
+    - https://github.com/immunant/c2rust/blob/master/docs/README-developers.md
+    - source_facts.package-manager
+  summary:
+    - >
+      C2Rust is a C99-to-Rust migration toolkit. Its core transpiler produces unsafe
+      Rust that closely mirrors the original C so functionality and tests can be
+      preserved before humans or refactoring tools gradually improve the Rust.
+  timeline:
+    - >
+      2017-06-22: Upstream Git history begins with original C sources and
+      Corrode-generated Rust sources.
+    - '2018: README points to a RustConf 2018 talk introducing C2Rust.'
+    - '2018-11-02: 0.8.1 tag appears.'
+    - '2020-10-20: 0.15.0 tag appears.'
+    - '2023-02-01: v0.17.0 tag appears.'
+    - '2024-08-30: v0.19.0 tag appears.'
+    - '2025-02-24: v0.20.0 tag appears.'
+    - '2026-02-10: v0.22.1 tag appears.'
+  usage:
+    - >
+      For non-trivial projects, C2Rust expects a `compile_commands.json` compilation
+      database so libclangTooling can see the same compiler arguments used by the
+      original C build. Users run `c2rust transpile path/to/compile_commands.json`,
+      optionally emitting Cargo build files or specifying binary entry points.
+    - >
+      The README also documents trivial source-file transpilation, cross-checking
+      translated code against the original, and `c2rust refactor` tooling for follow-up
+      transformations. Developers often need LLVM_CONFIG_PATH or related environment
+      variables when building against specific LLVM installs.
 tags:
   - c
   - c-to-rust
@@ -36,6 +114,11 @@ provenance:
     - >
       source_facts.repo is the official GitHub repository and current_curation.docs
       lists its README documentation at https://github.com/immunant/c2rust#readme.
+  history-sources:
+    - https://c2rust.com/manual
+    - https://github.com/immunant/c2rust#readme
+    - https://github.com/immunant/c2rust/blob/master/docs/README-developers.md
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already has https://github.com/immunant/c2rust; per instruction
@@ -49,5 +132,6 @@ category-path:
   - code-conversion
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
