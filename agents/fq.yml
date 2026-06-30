@@ -6,6 +6,63 @@ docs:
   - https://github.com/circonus-labs/fq#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Official documentation lists multiple client surfaces: the C client library, Java
+      client, Node.js package, Go client, and a submission-only HTTP /submit API. This
+      suggests fq was intended for service integration rather than only manual CLI use.
+  package-nerd-significance:
+    - >
+      fq is package-interesting because it is a C broker with many installed tools, a
+      custom binary protocol, optional HTTP superposition, and dependencies such as
+      libuuid, sqlite3, jlog, and optional libbcd. It sits in the same packaging
+      neighborhood as daemons and queue systems where build flags, service files,
+      runtime directories, and client libraries matter.
+  project-history:
+    - >
+      The GitHub history for the official repository goes back to 2012, and the project
+      later accumulated tagged releases including the 0.10, 0.11, 0.12, and 0.13 series.
+      The current repository is under circonus-labs and is described by GitHub as a fast
+      brokered C message queue that gets out of the way.
+    - >
+      The design is built around fqd as broker, exchanges, route programs, queues, and
+      paired TCP client connections. The README documents memory and disk queue types,
+      block/drop policies, public/private queues, persistent or transient queues, HTTP
+      status and submission endpoints, and a SQLite-backed fqd store for peer
+      configuration.
+  related-projects:
+    - >
+      The README names jlog as a required dependency and libbcd as an optional
+      crash-tracing dependency. It also points to C, Java, Node.js, and Go clients, plus
+      fqd as the broker process that clients and peers connect to.
+  sources:
+    - https://api.github.com/repos/circonus-labs/fq
+    - https://api.github.com/repos/circonus-labs/fq/commits?per_page=1&page=436
+    - https://api.github.com/repos/circonus-labs/fq/tags?per_page=30
+    - https://raw.githubusercontent.com/circonus-labs/fq/master/README.md
+    - https://raw.githubusercontent.com/circonus-labs/fq/master/docs/fq_protocol.md
+  summary:
+    - >
+      fq is a brokered publish-subscribe message queue written around the fqd daemon.
+      The official README describes it as performance-oriented and not designed, at
+      least at the time of that text, for very large numbers of connected clients.
+  timeline:
+    - '2012: Earliest commit visible through the official GitHub API.'
+    - '2017: v0.10.1 tag points to a January 2017 commit.'
+    - '2019: v0.11.0 and v0.12.0 tags point to 2019 commits.'
+    - '2020: v0.13.0 tag points to a January 2020 commit.'
+    - '2024: v0.13.12 tag points to a December 2024 commit.'
+    - >
+      2025: The official repository was still receiving updates, with GitHub reporting a
+      2025 push date.
+  usage:
+    - >
+      Operators run fqd as the broker, configure peers in its SQLite store, and connect
+      clients using queue names, exchange names, route strings, and route programs. The
+      protocol documentation specifies paired command/data TCP sockets, plain auth,
+      bind/unbind/status commands, heartbeat handling, peer mode, and the message frame
+      layout.
 tags:
   - broker
   - cli
@@ -33,6 +90,12 @@ provenance:
   docs-sources:
     - Official GitHub README documents terminology and usage concepts.
     - Official GitHub repository contains a docs directory.
+  history-sources:
+    - https://api.github.com/repos/circonus-labs/fq
+    - https://api.github.com/repos/circonus-labs/fq/commits?per_page=1&page=436
+    - https://api.github.com/repos/circonus-labs/fq/tags?per_page=30
+    - https://raw.githubusercontent.com/circonus-labs/fq/master/README.md
+    - https://raw.githubusercontent.com/circonus-labs/fq/master/docs/fq_protocol.md
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/circonus-labs/fq; per
@@ -47,5 +110,6 @@ category-path:
   - message-queues
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
