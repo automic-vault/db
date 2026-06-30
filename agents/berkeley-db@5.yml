@@ -10,6 +10,76 @@ config-file-location:
   unix:
     - <database-environment-home>/DB_CONFIG
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The @5 formula is mainly an adoption-preservation package. Projects that were
+      written, tested, or licensed around Berkeley DB 5 can keep building without being
+      forced onto the modern Oracle Berkeley DB line.
+    - >
+      Versioned formulas like berkeley-db@5 are common for C libraries with persistent
+      data formats: they let package managers satisfy old dependents while allowing the
+      default formula to move on.
+  package-nerd-significance:
+    - >
+      berkeley-db@5 is package-nerd significant because it makes dependency archaeology
+      explicit. The suffix is not cosmetic; it encodes an older major line, license
+      context, and compatibility contract.
+    - >
+      Its relationship to brew:berkeley-db should be recorded directly: berkeley-db is
+      the current unversioned Oracle line, while berkeley-db@5 is the pinned older
+      Berkeley DB 5 line retained for consumers that still need it.
+  project-history:
+    - >
+      Berkeley DB 5 belongs to the 11g Release 2 documentation generation, with Oracle
+      documentation for version 5.3 published in 2011. It follows the same
+      Sleepycat-to-Oracle lineage as the unversioned berkeley-db package but preserves
+      an older API and compatibility surface.
+    - >
+      The package curation lists the older Sleepycat license for this formula, while the
+      unversioned berkeley-db formula lists AGPL-3.0-only. That license distinction is
+      part of why package managers keep the major version visible.
+  related-projects:
+    - brew:berkeley-db is the current unversioned Oracle Berkeley DB formula.
+    - >
+      Older distribution package names such as db4 and db5 reflect the same need to
+      preserve Berkeley DB major-version compatibility.
+    - >
+      SQLite and LMDB are related embedded database alternatives, but they do not
+      replace Berkeley DB 5 for software tied to its API or database format.
+  sources:
+    - https://docs.oracle.com/cd/E17076_02/html/api_reference/C/BDB-C_APIReference.pdf
+    - https://docs.oracle.com/cd/E17076_02/html/installation/index.html
+    - https://docs.oracle.com/cd/E17076_02/html/programmer_reference/index.html
+    - https://www.oracle.com/corporate/pressrelease/oracle-buys-sleepycat-021406.html
+    - https://www.oracle.com/database/technologies/related/berkeleydb.html
+  summary:
+    - >
+      Berkeley DB 5 is the versioned Homebrew package for the older Oracle Berkeley DB
+      5.x line. It exists because Berkeley DB is not just an executable: it is an
+      embedded database ABI and file-format dependency, so downstream software can need
+      a specific major version.
+  timeline:
+    - '2006: Oracle acquired Sleepycat Software, the company behind Berkeley DB.'
+    - >
+      2011: Oracle published Berkeley DB 5.3 documentation in the 11g Release 2
+      documentation set.
+    - >
+      2018: Oracle Berkeley DB 18.1 documentation represents the later unversioned
+      package line.
+    - >
+      2020s: Homebrew keeps berkeley-db@5 as a versioned formula alongside the
+      unversioned berkeley-db package.
+  usage:
+    - >
+      Usage is the same embedded-database pattern as Berkeley DB generally: applications
+      link against the library and use command-line tools such as db_dump, db_load,
+      db_recover, db_upgrade, and db_verify for maintenance.
+    - >
+      For maintainers, the package is mostly about compatibility. Installing @5 can be
+      the difference between rebuilding a legacy package cleanly and accidentally
+      linking it to a newer Berkeley DB with different headers, libraries, or licensing
+      assumptions.
 tags:
   - berkeley-db
   - c-library
@@ -33,6 +103,12 @@ provenance:
       Oracle Berkeley DB Programmer's Reference Guide and C API Reference are for
       Berkeley DB 11g Release 2, library version 11.2.5.3.
     - source_facts.homepage is Oracle's official Berkeley DB product page.
+  history-sources:
+    - https://docs.oracle.com/cd/E17076_02/html/api_reference/C/BDB-C_APIReference.pdf
+    - https://docs.oracle.com/cd/E17076_02/html/installation/index.html
+    - https://docs.oracle.com/cd/E17076_02/html/programmer_reference/index.html
+    - https://www.oracle.com/corporate/pressrelease/oracle-buys-sleepycat-021406.html
+    - https://www.oracle.com/database/technologies/related/berkeleydb.html
   repo-sources:
     - >
       source_facts.repo is empty; Oracle Berkeley DB product and 11.2.5.3 documentation
@@ -51,5 +127,6 @@ category-path:
   - embedded-database
 display-name-confidence: medium
 docs-confidence: high
+history-confidence: high
 repo-confidence: medium
 tags-confidence: high

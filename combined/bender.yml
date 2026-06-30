@@ -9,6 +9,70 @@ config-file-location:
     - ./Bender.yml
     - ./Bender.local
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Bender's adoption sits in the open hardware and HDL ecosystem rather than general
+      software packaging. It is used to pin Git-based IP dependencies, handle local
+      overrides, and generate scripts for tools such as QuestaSim, VCS, Vivado, and
+      Verilator.
+    - >
+      The PULP Platform affiliation gives it a notable institutional context: it serves
+      the kind of multi-repository hardware IP workflow common in research and
+      silicon-development groups.
+  package-nerd-significance:
+    - >
+      Bender is package-nerd significant because hardware projects often have dependency
+      problems that look like software package management but with HDL-specific source
+      ordering, include directories, defines, and simulator targets. Bender packages
+      those concerns into a reproducible CLI.
+    - >
+      It is also an example of package management without a central registry:
+      dependencies can come from Git tags, revisions, or local paths, and
+      reproducibility is carried by the lockfile.
+  project-history:
+    - >
+      The official GitHub repository was created in May 2018 and is maintained by the
+      PULP Platform at ETH Zurich and the University of Bologna. The README positions
+      Bender as a tool that fits existing hardware flows instead of imposing a registry,
+      directory layout, or simulator.
+    - >
+      By the 0.24.0 release in January 2022, Bender had an established public release
+      stream; releases continued through the 0.32.0 release in June 2026. The project is
+      written and distributed as a developer CLI with crates.io, Homebrew, and Nix
+      packaging signals.
+  related-projects:
+    - The PULP Platform maintains Bender and uses it in the open hardware ecosystem.
+    - QuestaSim, VCS, Vivado, and Verilator are documented downstream tool targets.
+    - Cargo/crates.io is part of the distribution story for the Rust-based CLI.
+  sources:
+    - https://github.com/pulp-platform/bender
+    - https://github.com/pulp-platform/bender/releases
+    - https://pulp-platform.github.io/bender/
+    - source_facts.package-manager
+    - source_facts.repo
+  summary:
+    - >
+      Bender is PULP Platform's dependency manager for hardware design projects. It
+      manages HDL package dependencies from Git repositories and local paths, resolves
+      compatible versions, writes a `Bender.lock`, and emits ordered source sets for
+      downstream EDA tools.
+  timeline:
+    - '2018: GitHub repository created.'
+    - '2022: v0.24.0 release published.'
+    - '2024: v0.28.0 release published.'
+    - '2025: v0.29.0 release published.'
+    - '2026: v0.32.0 release published.'
+  usage:
+    - >
+      A typical workflow is to create or edit `Bender.yml`, run `bender update` to
+      resolve dependencies and write `Bender.lock`, optionally run `bender checkout`,
+      and generate simulator or synthesis tool inputs with `bender script`.
+    - >
+      `Bender.local` is used for local dependency overrides when developing hardware IP
+      in place. This makes Bender closer to Cargo or Bundler in spirit than to a
+      simulator wrapper, but specialized for HDL source ordering and EDA tool
+      integration.
 category: developer-tools
 package-manager:
   brew: bender

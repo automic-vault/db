@@ -10,6 +10,76 @@ config-file-location:
   windows:
     - <database-environment-home>\DB_CONFIG
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Berkeley DB's adoption pattern was unusual: many users never chose it directly,
+      but installed it because another package embedded it for local indexes, metadata
+      stores, mail/news databases, directory services, package metadata, or application
+      state.
+    - >
+      That indirect adoption made the package-manager story important. Distributions
+      historically carried multiple db, db4, db5, and berkeley-db variants because
+      applications could be tied to a specific ABI or database file format.
+  package-nerd-significance:
+    - >
+      Berkeley DB is package-nerd canon because it is tiny in concept but huge in
+      dependency consequences. A formula upgrade can affect ABI compatibility, license
+      acceptability, and whether old database files can be opened.
+    - >
+      The current brew:berkeley-db and versioned brew:berkeley-db@5 relationship is
+      exactly the sort of thing package historians care about: the unversioned formula
+      tracks the modern Oracle line, while @5 keeps an older major line alive for
+      dependents that cannot simply follow the latest library.
+  project-history:
+    - >
+      Berkeley DB originated in the BSD Unix world and became a general embedded
+      database library under Sleepycat Software. Oracle acquired Sleepycat in 2006, and
+      Oracle's current Berkeley DB pages and documentation now present the product as
+      Oracle Berkeley DB.
+    - >
+      The Homebrew berkeley-db package represents the current Oracle Berkeley DB line,
+      with docs for the 18.1 series. It exposes command-line maintenance tools such as
+      db_archive, db_checkpoint, db_dump, db_load, db_recover, db_upgrade, and db_verify
+      in addition to the library API.
+  related-projects:
+    - brew:berkeley-db@5 is the versioned Homebrew formula for the older Berkeley DB 5 line.
+    - >
+      SQLite is a related embedded database alternative, but with a relational SQL model
+      rather than Berkeley DB's key/value API.
+    - >
+      LMDB is a related embedded key/value store often discussed in the same package and
+      storage-engine context.
+  sources:
+    - https://docs.oracle.com/cd/E17076_02/html/programmer_reference/index.html
+    - https://docs.oracle.com/database/bdb181/html/index.html
+    - https://www.oracle.com/corporate/pressrelease/oracle-buys-sleepycat-021406.html
+    - https://www.oracle.com/database/technologies/related/berkeleydb.html
+  summary:
+    - >
+      Berkeley DB is the classic embedded key/value database library lineage now
+      distributed by Oracle. For package-manager users it is less a standalone server
+      than a C library plus administrative utilities whose major version, license, and
+      on-disk compatibility can matter to many dependent packages.
+  timeline:
+    - >
+      1990s: Berkeley DB grew out of BSD database code and became Sleepycat Software's
+      embedded database product.
+    - '2006: Oracle acquired Sleepycat Software, bringing Berkeley DB under Oracle.'
+    - '2011: Berkeley DB 5.3 documentation was published for the 11g Release 2 generation.'
+    - >
+      2018: Oracle Berkeley DB 18.1 documentation represents the later Oracle
+      version-numbering line used by the unversioned berkeley-db package.
+  usage:
+    - >
+      Developers link Berkeley DB into an application rather than run a database daemon.
+      Runtime state lives in application-controlled database environments, where
+      DB_CONFIG can tune caches, logging, locking, transactions, replication, and
+      recovery behavior.
+    - >
+      The bundled tools are operationally important: they let maintainers dump and
+      reload databases, recover environments, inspect logs and statistics, verify files,
+      and upgrade database formats when moving across versions.
 tags:
   - cli
   - database
@@ -39,6 +109,11 @@ provenance:
     - >
       Oracle Berkeley DB 18.1 documentation index lists getting started guides,
       reference guides, API references, security guide, and installation guide.
+  history-sources:
+    - https://docs.oracle.com/cd/E17076_02/html/programmer_reference/index.html
+    - https://docs.oracle.com/database/bdb181/html/index.html
+    - https://www.oracle.com/corporate/pressrelease/oracle-buys-sleepycat-021406.html
+    - https://www.oracle.com/database/technologies/related/berkeleydb.html
   repo-sources:
     - >
       Oracle Berkeley DB product and documentation pages provide official product and
@@ -53,5 +128,6 @@ category-path:
   - data
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: medium
 tags-confidence: high
