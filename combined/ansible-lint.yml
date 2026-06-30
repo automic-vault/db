@@ -1,10 +1,11 @@
 id: brew:ansible-lint
-display-name: ansible-lint
+display-name: Ansible-lint
 homepage: https://ansible-lint.readthedocs.io/
 repo: https://github.com/ansible/ansible-lint
 docs:
   - https://docs.ansible.com/projects/lint
   - https://docs.ansible.com/projects/lint/configuring
+  - https://docs.ansible.com/projects/lint/usage
 config-file-location:
   unix:
     - .ansible-lint
@@ -13,7 +14,80 @@ config-file-location:
     - .config/ansible-lint.yml
     - .config/ansible-lint.yaml
 credentials-file-location: null
-category: cloud-infrastructure
+history:
+  adoption-history:
+    - >
+      Ansible-lint became the default quality gate for Ansible content because it
+      encodes conventions that are hard to remember during playbook authoring: rule
+      profiles, syntax checks, risky module usage, task style, role/collection layout,
+      and compatibility concerns.
+    - >
+      Its adoption broadened when the repository added a GitHub Action workflow example
+      and editor integrations began surfacing lint feedback through the Ansible VS Code
+      extension and the Ansible Language Server. Red Hat documentation and blogs present
+      it as a way to improve automation functionality, reliability, readability, and
+      maintainability.
+  package-nerd-significance:
+    - >
+      For package managers, ansible-lint is one of the important Ansible leaf tools: it
+      is not the runtime automation engine, but many repositories treat it as mandatory
+      infrastructure for accepting changes. That makes version pinning and compatibility
+      with ansible-core unusually visible.
+    - >
+      It also exposes the tension in Ansible packaging after the split between the
+      Ansible community package, ansible-core, and collections. A linter must understand
+      all of those moving parts while still being installable as one CLI.
+  project-history:
+    - >
+      The project lives under the ansible GitHub organization and its README describes
+      it as a community-backed project that supports the last two major Ansible
+      versions. Official documentation covers configuration files, profiles, rule
+      behavior, usage, and CI integration.
+    - >
+      Ansible-lint has gone through several packaging and versioning eras. The PyPI
+      release history shows older 6.x releases, later 24.x calendar-style releases, and
+      current 26.x releases. Maintainer discussions document the pain around historical
+      versioning and the move toward a clearer release cadence.
+  related-projects:
+    - ansible-core supplies the execution and syntax behavior that ansible-lint must track.
+    - ansible-dev-tools bundles ansible-lint with other authoring tools.
+    - >
+      Ansible Language Server and the VS Code extension surface ansible-lint diagnostics
+      in editors.
+    - yamllint is commonly paired with ansible-lint for YAML-level checks.
+  sources:
+    - https://docs.ansible.com/projects/lint/configuring/
+    - https://docs.ansible.com/projects/lint/usage/
+    - https://github.com/ansible/ansible-lint
+    - https://github.com/ansible/ansible-lint/discussions/1626
+    - https://pypi.org/project/ansible-lint/
+    - https://www.redhat.com/en/blog/ansible-lint
+  summary:
+    - >
+      Ansible-lint is the standard linting and policy-checking tool for Ansible
+      playbooks, roles, and collections. It checks content for practices and behavior
+      that can be improved and is now part of the Ansible developer-tooling workflow.
+  timeline:
+    - >
+      2020: ansible-lint 5.0 upgrade guidance begins documenting changed installation
+      and dependency expectations.
+    - '2021: Maintainer discussion calls out versioning pain in the project.'
+    - >
+      2022: Ansible-lint v6.0.0 starts a release line that later grows large enough to
+      motivate calendar-style versioning.
+    - '2024: PyPI shows 24.x calendar-style ansible-lint releases.'
+    - '2026: GitHub releases and Homebrew package 26.x ansible-lint.'
+  usage:
+    - >
+      Users normally run `ansible-lint` from the root of a project or collection.
+      Configuration is loaded from `.ansible-lint`, `.ansible-lint.yml`,
+      `.ansible-lint.yaml`, `.config/ansible-lint.yml`, or `.config/ansible-lint.yaml`,
+      and scalar CLI options override configured values.
+    - >
+      In CI, teams commonly use ansible-lint as a pull-request gate or GitHub Action.
+      Locally, it is also part of editor feedback loops through VS Code and LSP clients,
+      often paired with ansible-core, yamllint, and collection dependency installation.
+category: developer-tools
 package-manager:
   apk: ansible-lint
   brew: ansible-lint
@@ -29,9 +103,12 @@ license: MIT AND GPL-3.0-or-later
 tags:
   - ansible
   - automation
+  - ci
   - cli
   - code-quality
+  - developer-tools
   - linter
+  - yaml
 description: Checks ansible playbooks for practices and behaviour
 executables:
   - ansible-lint

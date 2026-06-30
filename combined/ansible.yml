@@ -3,10 +3,133 @@ display-name: Ansible
 homepage: https://www.ansible.com/
 repo: https://github.com/ansible/ansible
 docs:
-  - https://www.ansible.com/
-config-file-location: null
+  - https://docs.ansible.com/projects/ansible/latest/index.html
+  - https://docs.ansible.com/projects/ansible/latest/reference_appendices/config.html
+  - >
+    https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html
+config-file-location:
+  unix:
+    - $ANSIBLE_CONFIG
+    - ./ansible.cfg
+    - ~/.ansible.cfg
+    - /etc/ansible/ansible.cfg
 credentials-file-location:
   unix: ~/.ansible/galaxy_token
+history:
+  adoption-history:
+    - >
+      Ansible's adoption came from a practical systems-administration sweet spot:
+      SSH-first orchestration, readable YAML playbooks, no managed-node daemon, and a
+      large module ecosystem. It spread through Linux distributions, Python packaging,
+      Homebrew, MacPorts, Nix, and enterprise Red Hat channels because it fits both
+      laptop-driven automation and CI/CD infrastructure workflows.
+    - >
+      The split into `ansible-core` plus collections made package selection more
+      nuanced. Many community users still install the `ansible` package because it
+      includes broad batteries: official docs say it offers the functionality that
+      existed in Ansible 2.9, with more than 85 collections containing thousands of
+      modules and plugins. Developers and minimalists often choose `ansible-core` and
+      install only the collections they need.
+    - >
+      As Ansible matured, adoption expanded beyond server configuration into network
+      automation, cloud provisioning, security, Windows administration, and platform
+      orchestration. Red Hat Ansible Automation Platform, Automation Hub, AWX, Galaxy,
+      and a large collection ecosystem grew around the core CLI model.
+  package-nerd-significance:
+    - >
+      Ansible is one of the canonical infrastructure CLIs in package-manager culture:
+      big enough to have versioned formulae, distro backports, Python package splits,
+      and plugin/collection dependency concerns, but still shaped like command-line
+      tools that can be scripted and vendored.
+    - >
+      The package is also a case study in ecosystem packaging after modularization.
+      `ansible-core` is the runtime center; `ansible` is the batteries-included
+      community package; collections carry much of the domain-specific surface area; and
+      tools like ansible-lint, ansible-creator, and ansible-language-server orbit the
+      authoring workflow.
+    - >
+      For users, the important packaging question is not just latest version but content
+      set: does the install include the collections your playbooks expect, what Python
+      versions are supported on control and target nodes, and which ansible-core line is
+      underneath?
+  project-history:
+    - >
+      Ansible was created as an agentless automation tool whose playbooks describe
+      desired work in YAML and whose default transport avoids installing an agent on
+      managed hosts. The current upstream source for the runtime is the ansible/ansible
+      repository, while official documentation distinguishes the Ansible community
+      package from `ansible-core`.
+    - >
+      Red Hat announced an agreement to acquire Ansible in October 2015, framing it as
+      an IT automation and DevOps platform that would complement Red Hat's management
+      portfolio. That acquisition moved Ansible from a startup-backed open source
+      project into Red Hat's broader automation product line while keeping the community
+      project active.
+    - >
+      The 2.10 era changed the packaging model. Official release documentation says the
+      Ansible community package uses new versioning starting with 2.10 and then 3.0.0,
+      while `ansible-core` continued the classic 2.x line. The community package
+      includes the language, runtime, and selected collections; `ansible-core` contains
+      the language, runtime, and builtin plugins.
+  related-projects:
+    - >
+      ansible-core is the runtime and language core that the `ansible` community package
+      depends on.
+    - >
+      Ansible Galaxy and Automation Hub distribute roles and collections used by
+      ansible-galaxy.
+    - >
+      AWX and Red Hat Ansible Automation Platform provide web UI, RBAC, scheduling,
+      inventory, and enterprise automation around the CLI model.
+    - >
+      ansible-lint, ansible-creator, ansible-navigator, molecule, and Ansible Language
+      Server are common companion tools for authoring and validating content.
+  sources:
+    - https://docs.ansible.com/projects/ansible/latest/index.html
+    - https://docs.ansible.com/projects/ansible/latest/reference_appendices/config.html
+    - >
+      https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html
+    - https://github.com/ansible/ansible
+    - https://pypi.org/project/ansible/
+    - >
+      https://www.redhat.com/en/about/press-releases/red-hat-acquire-it-automation-and-devops-leader-ansible
+  summary:
+    - >
+      Ansible is a radically simple IT automation system for configuration management,
+      application deployment, cloud provisioning, ad hoc task execution, network
+      automation, and orchestration. Its package history matters because the name
+      `ansible` shifted from the original all-in-one project to the modern community
+      package layered on `ansible-core` and collections.
+  timeline:
+    - '2013: PyPI release history shows Ansible 1.0.0 published in February 2013.'
+    - '2015: Red Hat announces it will acquire Ansible.'
+    - '2019: Ansible 2.9 is the last pre-collections-style all-in-one community release line.'
+    - >
+      2020: Ansible 2.10 introduces the community package model alongside
+      ansible-base/ansible-core.
+    - '2021: Ansible 3.0.0 continues the community-package line based on ansible-base 2.10.x.'
+    - >
+      2026: Official docs list Ansible 13.x as current latest and Ansible 14.0.0 as in
+      development.
+  usage:
+    - >
+      The Homebrew `ansible` formula installs the user-facing suite: `ansible`,
+      `ansible-playbook`, `ansible-galaxy`, `ansible-doc`, `ansible-inventory`,
+      `ansible-vault`, `ansible-config`, `ansible-console`, `ansible-pull`, and
+      testing/community helpers. The everyday loop is inventory plus playbooks, with ad
+      hoc commands for quick tasks and Galaxy for roles and collections.
+    - >
+      Configuration is resolved from `$ANSIBLE_CONFIG`, `ansible.cfg` in the current
+      directory, `~/.ansible.cfg`, then `/etc/ansible/ansible.cfg`; the first file found
+      wins. Galaxy credentials can be provided through command-line API-key options or
+      through the configured token path, whose default resolves from `ANSIBLE_HOME` to
+      `~/.ansible/galaxy_token`.
+    - >
+      Package users care about the distinction between `ansible --version` reporting an
+      ansible-core version and the installed Python package named `ansible` representing
+      the broader community package. That distinction explains why formula pinning,
+      package-manager naming, and docs version matching can feel surprisingly
+      non-obvious.
 category: cloud-infrastructure
 package-manager:
   apk: ansible
@@ -23,8 +146,13 @@ license: GPL-3.0-or-later
 tags:
   - automation
   - cli
+  - cloud
   - configuration-management
   - deployment
+  - devops
+  - infrastructure-as-code
+  - orchestration
+  - provisioning
 description: Automate deployment, configuration, and upgrading
 executables:
   - ansible

@@ -2,9 +2,81 @@ id: brew:amtterm
 display-name: amtterm
 repo: null
 docs:
-  - https://git.kraxel.org/cgit/amtterm/tree/README
+  - https://gitlab.com/kraxel/amtterm/-/blob/master/amtterm.1
+  - https://gitlab.com/kraxel/amtterm/-/blob/master/amttool.1
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      amtterm's adoption is specialized: it is useful to administrators and hardware
+      bring-up/debugging users who need out-of-band serial access to AMT-capable
+      machines. It is the sort of small system utility that persists because firmware
+      and remote-management workflows remain awkward without dedicated command-line
+      tools.
+    - >
+      The supplied package facts show packaging in Homebrew, Debian, Fedora/dnf, Nix,
+      Ubuntu, and zypper. That cross-distro footprint is a strong signal for a niche
+      tool: it solves a real operations problem even if most desktop users never need
+      it.
+  package-nerd-significance:
+    - >
+      amtterm is package-nerd material because it is tiny, hardware-adjacent, and
+      operationally important when needed. A package entry gives administrators a
+      reproducible way to install an AMT SOL client without rummaging through vendor
+      bundles.
+    - >
+      It also captures a compatibility boundary in systems tooling: the package remains
+      useful for serial-over-LAN, while some companion management functions are
+      constrained by Intel AMT protocol changes.
+  project-history:
+    - >
+      The upstream manpages carry 2007 and 2008 copyright dates, placing amtterm in the
+      first wave of Linux tooling around Intel Active Management Technology. The
+      author's official project page, published in 2011, describes the project as a SOL
+      terminal plus graphical version and management script.
+    - >
+      The current GitLab project was created in April 2022 and hosts the source,
+      manpages, Meson build, and release tarballs for versions 1.8 and newer. The GitLab
+      release list observed for this batch shows `amtterm-1.8-1` released in May 2026.
+  related-projects:
+    - 'Intel AMT: the firmware management technology amtterm targets.'
+    - 'gamt: graphical GTK front end shipped in the same project.'
+    - 'amttool: companion command for querying and controlling AMT systems.'
+    - >
+      wsmancli/OpenWSMAN: recommended direction for newer AMT management protocols
+      according to the amttool manpage.
+  sources:
+    - https://gitlab.com/api/v4/projects/kraxel%2Famtterm
+    - https://gitlab.com/api/v4/projects/kraxel%2Famtterm/releases
+    - https://gitlab.com/kraxel/amtterm
+    - https://gitlab.com/kraxel/amtterm/-/blob/master/amtterm.1
+    - https://gitlab.com/kraxel/amtterm/-/blob/master/amttool.1
+    - https://www.kraxel.org/blog/linux/amtterm/
+    - source_facts.package-manager
+  summary:
+    - >
+      amtterm is Gerd Hoffmann's command-line Serial-over-LAN client for Intel AMT
+      managed machines. The project also includes a GTK front end, an IDE redirection
+      tool, and `amttool`, a Perl script for querying and remotely controlling AMT
+      systems.
+  timeline:
+    - '2007: amtterm manpage copyright date; tool documented as an Intel AMT SOL client.'
+    - '2008: amttool manpage covers remote-control commands for AMT managed machines.'
+    - "2011: Author's amtterm project page published with resources and release tarball links."
+    - '2022: GitLab project created.'
+    - '2026: GitLab release `amtterm-1.8-1` published.'
+  usage:
+    - >
+      `amtterm` connects to the AMT SOL port of a host, defaulting to the standard SSL
+      AMT redirection port 16995. The manpage documents username and password options,
+      legacy non-SSL and legacy authentication flags, certificate checking, and
+      interactive password prompting.
+    - >
+      `amttool` complements the terminal by speaking SOAP to older Intel AMT systems for
+      information gathering and power/reset commands. Its manpage notes that newer AMT
+      versions removed support for the old SOAP protocol, making WS-Management tools
+      necessary on recent machines.
 tags:
   - amt
   - cli
@@ -23,22 +95,38 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - 'source_facts.description: Serial-over-LAN (sol) client for Intel AMT'
+    - https://gitlab.com/kraxel/amtterm/-/blob/master/amtterm.1
+    - https://www.kraxel.org/blog/linux/amtterm/
+    - source_facts.description
   display-name-sources:
-    - source_facts.executables include amtterm
+    - https://gitlab.com/kraxel/amtterm/-/blob/master/amtterm.1
     - source_facts.name
   docs-sources:
-    - current_curation.docs lists the upstream README
-    - source_facts.homepage is the maintainer page
+    - https://gitlab.com/kraxel/amtterm/-/blob/master/amtterm.1
+    - https://gitlab.com/kraxel/amtterm/-/blob/master/amttool.1
+    - https://www.kraxel.org/blog/linux/amtterm/
+  history-sources:
+    - https://gitlab.com/api/v4/projects/kraxel%2Famtterm
+    - https://gitlab.com/api/v4/projects/kraxel%2Famtterm/releases
+    - https://gitlab.com/kraxel/amtterm
+    - https://gitlab.com/kraxel/amtterm/-/blob/master/amtterm.1
+    - https://gitlab.com/kraxel/amtterm/-/blob/master/amttool.1
+    - https://www.kraxel.org/blog/linux/amtterm/
+    - source_facts.package-manager
   repo-sources:
-    - source_facts.repo already populated; per instruction repo returned as null
+    - >
+      source_facts.repo already supplied; prompt requires repo null when
+      source_facts.repo is present
   tags-sources:
+    - https://www.kraxel.org/blog/linux/amtterm/
     - source_facts.description
     - source_facts.executables
 category-confidence: high
 category-path:
   - networking
+  - remote-management
 display-name-confidence: high
-docs-confidence: medium
+docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

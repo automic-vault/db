@@ -1,17 +1,84 @@
 id: brew:ansible-language-server
-display-name: ansible-language-server
+display-name: Ansible Language Server
 repo: https://github.com/ansible/vscode-ansible
 docs:
-  - https://docs.ansible.com/projects/vscode-ansible
+  - https://docs.ansible.com/projects/vscode-ansible/als
   - https://docs.ansible.com/projects/vscode-ansible/configuration
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The project follows the wider editor shift toward Language Server Protocol
+      support: instead of every editor implementing Ansible-specific YAML behavior
+      independently, the server centralizes Ansible semantics and lets multiple editors
+      consume them.
+    - >
+      Homebrew packaging makes the NPM-published language server easy to install as a
+      standalone executable for editors such as Neovim or Emacs, where users often wire
+      language servers by path.
+  package-nerd-significance:
+    - >
+      This package is a nice example of a GUI-adjacent tool becoming a standalone CLI
+      dependency. Although born from editor integration, the language server is valuable
+      to package managers because LSP tooling expects real executables discoverable on
+      PATH.
+    - >
+      Its migration into the vscode-ansible repository is also notable: the source tree
+      is unified with the main extension, while the language server remains separately
+      releasable and packageable.
+  project-history:
+    - >
+      The separate ansible-language-server repository now states that the codebase is
+      included in the Ansible VS Code Extension repository. The active source repository
+      for the Homebrew formula is therefore ansible/vscode-ansible.
+    - >
+      The language server is documented as a reusable server rather than only a VS Code
+      internals package. Its docs say it is used by the Ansible extension for VS
+      Code/Codium, Vim/Neovim integrations, and Emacs LSP clients, and that releases are
+      published to npm.
+  related-projects:
+    - ansible/vscode-ansible contains the active codebase and VS Code extension.
+    - ansible-lint supplies linting behavior surfaced by editor integrations.
+    - >
+      yaml-language-server and editor LSP clients are adjacent pieces in typical Ansible
+      editor setups.
+  sources:
+    - https://docs.ansible.com/projects/vscode-ansible/als/
+    - https://github.com/ansible/ansible-language-server
+    - https://github.com/ansible/vscode-ansible
+    - https://github.com/ansible/vscode-ansible/issues/1134
+    - https://www.npmjs.com/package/@ansible/ansible-language-server
+  summary:
+    - >
+      Ansible Language Server is the LSP server used by editor integrations to provide
+      Ansible-aware syntax highlighting, validation, linting, completion, documentation
+      references, and navigation.
+  timeline:
+    - '2021: Early 1.x tags appear for the Ansible language-server/editor integration line.'
+    - >
+      2024: Maintainers decide to merge ansible-language-server back into the
+      vscode-ansible repository while keeping separate releases.
+    - '2024: The release line moves into calendar-style 24.x versions.'
+    - '2026: NPM and Homebrew carry 26.x releases of the standalone language server.'
+  usage:
+    - >
+      In practice, users rarely run the language server directly unless configuring an
+      editor. The server is launched by editor clients and uses the local Ansible
+      tooling stack to provide validation, linting, completion, and documentation lookup
+      for playbooks, roles, and collections.
+    - >
+      For VS Code users it is bundled into the Red Hat Ansible extension experience; for
+      terminal-editor users, the packaged `ansible-language-server` executable is the
+      useful artifact.
 tags:
   - ansible
   - cli
   - developer-tools
+  - editor
   - language-server
   - lsp
+  - npm
   - vscode
 geiger:
   category: appliance
@@ -25,26 +92,39 @@ geiger:
 provenance:
   category-sources:
     - >
-      source_facts.description: Language Server for Ansible Files; official VS Code docs
-      describe language server support.
+      Official docs describe a language server adding support for Ansible and used by
+      editor clients.
   display-name-sources:
-    - source_facts.name; official VS Code docs section is Ansible Language Server.
+    - Official docs page title.
   docs-sources:
     - >
-      Official Ansible VS Code docs state the extension uses ansible-language-server and
-      provide configuration docs.
+      Official Ansible VS Code Extension documentation has a dedicated Ansible Language
+      Server page and configuration page.
+  history-sources:
+    - https://docs.ansible.com/projects/vscode-ansible/als/
+    - https://github.com/ansible/ansible-language-server
+    - https://github.com/ansible/vscode-ansible
+    - https://github.com/ansible/vscode-ansible/issues/1134
+    - https://www.npmjs.com/package/@ansible/ansible-language-server
   repo-sources:
+    - Homebrew formula homepage is https://github.com/ansible/vscode-ansible.
     - >
-      Official vscode-ansible README says it uses ansible-language-server from
-      packages/ansible-language-server in the ansible/vscode-ansible repository.
+      Retired ansible-language-server repository says the codebase is now included in
+      https://github.com/ansible/vscode-ansible.
   tags-sources:
     - >
-      Official VS Code docs describe syntax highlighting, validation, linting,
-      autocomplete, documentation reference, and language server support.
+      GitHub README describes language server support, validation, linting, completion,
+      documentation reference, and go to definition.
+    - >
+      Official ALS docs list VS Code/Codium, Vim/Neovim, Emacs LSP clients, and NPM
+      publication.
 category-confidence: high
 category-path:
   - developer-tools
+  - language-server
+  - ansible
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

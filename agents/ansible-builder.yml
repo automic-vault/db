@@ -10,6 +10,77 @@ config-file-location:
     - execution-environment.yml
     - execution-environment.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ansible-builder became important with Ansible Automation Platform and
+      ansible-runner workflows, where playbooks need predictable Python, collection, and
+      system dependencies inside a container image. Package managers carry it because
+      users often prepare those images from developer workstations, CI jobs, or
+      automation-controller build pipelines.
+    - >
+      The Homebrew, Fedora, Nix, and openSUSE package entries reflect a cross-platform
+      operational audience: people who already install Ansible tooling from OS package
+      managers but need a dedicated CLI for execution environment images.
+  package-nerd-significance:
+    - >
+      ansible-builder is a packaging tool about packaging other automation dependencies.
+      It sits at the boundary between Python packaging, Ansible collections, OS
+      packages, and OCI container images, which makes it especially interesting to
+      package maintainers.
+    - >
+      It is also a good example of infrastructure tooling whose user-visible contract is
+      a YAML schema. The CLI matters, but the package's long-term compatibility is
+      mostly about what versions of the execution-environment schema it accepts.
+  project-history:
+    - >
+      The official repository was created in 2020 as Ansible moved more automation
+      runtime packaging into containerized execution environments. The README describes
+      ansible-builder as a tool that automates building execution environments using
+      schemas and tooling from Ansible collections and the user.
+    - >
+      The documented execution environment definition evolved into a versioned YAML
+      interface. Current docs describe `execution-environment.yml` or `.yaml` as the
+      default definition file and document dependencies, images, build arguments,
+      additional build files, and options such as `container_init` and `tags`.
+  related-projects:
+    - >
+      Ansible Automation Platform and AWX consume execution environment images built
+      with this workflow.
+    - ansible-runner is a related tool for running Ansible inside execution environments.
+    - >
+      Podman, Docker, Ansible Galaxy, and collection metadata are common adjacent tools
+      in ansible-builder workflows.
+  sources:
+    - https://ansible.readthedocs.io/projects/builder/en/latest/definition
+    - https://api.github.com/repos/ansible/ansible-builder
+    - https://api.github.com/repos/ansible/ansible-builder/releases
+    - https://docs.ansible.com/projects/builder/en/stable/
+    - https://raw.githubusercontent.com/ansible/ansible-builder/devel/README.md
+    - source_facts.package-manager
+  summary:
+    - >
+      ansible-builder is the official Ansible tool for building execution environment
+      container images. It turns an execution-environment definition file plus Ansible
+      collections, Python requirements, system packages, and build steps into a
+      reproducible image for automation controllers and command-line use.
+  timeline:
+    - '2020: The official ansible-builder repository is created.'
+    - '2021: 1.0.x releases establish the execution environment builder workflow.'
+    - '2022: 1.1 and 1.2 releases continue the first stable line.'
+    - '2023: 3.0.0 is released after beta and release-candidate builds.'
+    - '2026: The repository remains active under the Ansible GitHub organization.'
+  usage:
+    - >
+      The usual workflow is to write `execution-environment.yml`, list Ansible Galaxy
+      collections, Python requirements, bindep or RPM packages, and image settings, then
+      run `ansible-builder build` to produce a container image using a backend such as
+      Podman or Docker.
+    - >
+      For package metadata, the important config surface is the definition file rather
+      than a user dotfile. Credentials are not normally owned by ansible-builder itself;
+      registry logins, Galaxy credentials, and automation secrets live in the
+      surrounding container or Ansible tooling.
 tags:
   - ansible
   - cli
@@ -26,28 +97,37 @@ geiger:
     - text:container
 provenance:
   category-sources:
-    - official docs describe defining execution environments and container build context
-    - >
-      source_facts.description: CLI tool for building Ansible Execution Environments
-      (Containers)
+    - https://ansible.readthedocs.io/projects/builder/en/latest/definition
+    - https://raw.githubusercontent.com/ansible/ansible-builder/devel/README.md
+    - source_facts.description
   display-name-sources:
-    - official docs and GitHub repository use ansible-builder
+    - https://raw.githubusercontent.com/ansible/ansible-builder/devel/README.md
     - source_facts.name
   docs-sources:
-    - official Ansible Builder documentation
-    - official GitHub repository
+    - https://ansible.readthedocs.io/projects/builder/en/latest/definition
+    - https://docs.ansible.com/projects/builder/en/stable/
+    - https://github.com/ansible/ansible-builder
+  history-sources:
+    - https://ansible.readthedocs.io/projects/builder/en/latest/definition
+    - https://api.github.com/repos/ansible/ansible-builder
+    - https://api.github.com/repos/ansible/ansible-builder/releases
+    - https://docs.ansible.com/projects/builder/en/stable/
+    - https://raw.githubusercontent.com/ansible/ansible-builder/devel/README.md
+    - source_facts.package-manager
   repo-sources:
-    - >
-      official GitHub repository https://github.com/ansible/ansible-builder is titled
-      Ansible execution environment builder
-    - source_facts.repo is empty
+    - https://github.com/ansible/ansible-builder
+    - https://raw.githubusercontent.com/ansible/ansible-builder/devel/README.md
   tags-sources:
-    - official docs discuss execution environment definition files and container images
+    - https://ansible.readthedocs.io/projects/builder/en/latest/definition
     - source_facts.description
+    - source_facts.executables
 category-confidence: high
 category-path:
   - cloud-infrastructure
+  - configuration-management
+  - containers
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

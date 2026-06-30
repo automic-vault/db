@@ -1,42 +1,137 @@
 id: brew:ansible@12
-display-name: Ansible
+display-name: Ansible 12
 repo: https://github.com/ansible/ansible
 docs:
-  - https://docs.ansible.com/projects/ansible/latest/index.html
+  - https://docs.ansible.com/projects/ansible/latest/porting_guides/porting_guide_12.html
   - https://docs.ansible.com/projects/ansible/latest/reference_appendices/config.html
+  - >
+    https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html
 config-file-location:
   unix:
     - $ANSIBLE_CONFIG
     - ./ansible.cfg
     - ~/.ansible.cfg
     - /etc/ansible/ansible.cfg
-credentials-file-location: null
+credentials-file-location:
+  unix:
+    - ~/.ansible/galaxy_token
+history:
+  adoption-history:
+    - >
+      Versioned package-manager formulae exist because Ansible users often manage fleets
+      where playbook behavior and supported Python versions matter more than always
+      taking the latest major release. Pinning Ansible 12 gives Homebrew users a stable
+      major line while the unversioned `ansible` formula can move on.
+    - >
+      Ansible 12 sits in the broader community-package adoption model: users install a
+      curated set of collections plus ansible-core, while more minimal or
+      developer-focused installs can use ansible-core directly and manage collections
+      separately.
+  package-nerd-significance:
+    - >
+      The formula is package-manager glue around upstream release policy. It matters
+      because automation tools are unusually sensitive to major-version behavior:
+      templating, module defaults, collection versions, target Python support, and
+      deprecations can all affect real infrastructure.
+    - >
+      For Homebrew users, a versioned Ansible formula is the low-friction way to keep a
+      laptop or CI runner aligned with a fleet's tested automation baseline.
+  project-history:
+    - >
+      The versioned formula points to the same upstream project as `ansible`:
+      ansible/ansible and the Ansible community documentation. Its historical
+      significance is not a separate codebase, but a pinned major line of the community
+      package after the project adopted the post-2.10 split between `ansible` and
+      `ansible-core`.
+    - >
+      Official release maintenance docs list Ansible 12.x as a community package release
+      line with core version dependency 2.19. The Ansible 12 porting guide highlights
+      major changes, including templating-system work and Data Tagging, with
+      compatibility guidance for playbooks and roles.
+  related-projects:
+    - The unversioned `ansible` formula tracks the current Ansible community package.
+    - ansible-core 2.19 is the core dependency base for Ansible 12.
+    - >
+      Ansible 12 porting guide and changelog are the key upgrade references for playbook
+      maintainers.
+  sources:
+    - https://docs.ansible.com/projects/ansible/latest/porting_guides/porting_guide_12.html
+    - https://docs.ansible.com/projects/ansible/latest/reference_appendices/config.html
+    - >
+      https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html
+    - https://formulae.brew.sh/formula/ansible@12
+    - https://github.com/ansible/ansible
+  summary:
+    - >
+      Ansible 12 is the Homebrew versioned formula for the Ansible community package
+      12.x line. Official porting docs state that Ansible 12 is based on ansible-core
+      2.19, making this formula useful for users who need the 12.x collection set and
+      core behavior rather than the unversioned latest package.
+  timeline:
+    - >
+      2020: Ansible 2.10 introduces the community-package model that later versioned
+      formulae follow.
+    - '2025: Ansible 12.x release line targets ansible-core 2.19.'
+    - '2025: Ansible 12 porting guide documents templating and Data Tagging changes.'
+    - >
+      2026: Homebrew carries `ansible@12` as a versioned formula while newer
+      community-package lines continue.
+  usage:
+    - >
+      Users install `ansible@12` when they want the Ansible 12 community package and its
+      ansible-core 2.19 base. It exposes the same command family as the unversioned
+      Ansible package, including `ansible-playbook`, `ansible-galaxy`, `ansible-vault`,
+      `ansible-config`, and `ansible-doc`.
+    - >
+      Configuration and Galaxy token handling are the same as the main package: Ansible
+      searches `$ANSIBLE_CONFIG`, the current directory, the home directory, and
+      `/etc/ansible`; the Galaxy token path defaults through `ANSIBLE_HOME` to
+      `~/.ansible/galaxy_token`.
 tags:
+  - ansible
   - automation
   - cli
   - configuration-management
   - deployment
   - devops
+  - infrastructure-as-code
   - orchestration
+  - versioned-formula
 provenance:
   category-sources:
     - >
-      Official Ansible README describes configuration management, application
-      deployment, cloud provisioning, network automation, and orchestration.
+      Official Ansible documentation describes automation, configuration, deployment,
+      and orchestration use cases.
+    - source_facts.description
   display-name-sources:
-    - Official Ansible documentation and GitHub README use Ansible.
+    - Homebrew formula name ansible@12 and official Ansible 12 porting guide.
   docs-sources:
-    - Official Ansible community documentation index and configuration settings reference.
+    - >
+      Official Ansible 12 porting guide, configuration settings, and release/maintenance
+      documentation.
+  history-sources:
+    - https://docs.ansible.com/projects/ansible/latest/porting_guides/porting_guide_12.html
+    - https://docs.ansible.com/projects/ansible/latest/reference_appendices/config.html
+    - >
+      https://docs.ansible.com/projects/ansible/latest/reference_appendices/release_and_maintenance.html
+    - https://formulae.brew.sh/formula/ansible@12
+    - https://github.com/ansible/ansible
   repo-sources:
-    - Official Ansible GitHub repository README links docs.ansible.com and describes Ansible.
+    - >
+      Official Ansible docs and Homebrew formula identify the ansible/ansible upstream
+      repository.
   tags-sources:
     - >
-      Official Ansible README lists configuration management, deployment, cloud
-      provisioning, ad-hoc tasks, network automation, and orchestration.
+      Ansible 12 porting guide and release docs identify this as a versioned Ansible
+      community package line.
+    - source_facts.executables
 category-confidence: high
 category-path:
   - cloud-infrastructure
+  - automation
+  - configuration-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

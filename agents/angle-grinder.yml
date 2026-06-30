@@ -8,6 +8,71 @@ config-file-location:
     - .agrind-aliases/ in current working directory
     - parent directories
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README documents binary installation for Linux and macOS, source installation
+      with Cargo, and package-manager availability through Homebrew, MacPorts, and
+      FreeBSD packages. The Homebrew formula and other package-manager entries make it a
+      Unix-toolbox style log utility rather than a service-bound product.
+    - >
+      Its adoption is niche but clear: it serves operators and developers who want
+      terminal-native ad hoc analytics against log files, especially when centralized
+      observability tooling is unavailable, too heavy, or not worth setting up.
+  package-nerd-significance:
+    - >
+      angle-grinder sits in the package-manager sweet spot for small Rust CLIs: one
+      executable, useful without a daemon, fast enough to justify a native binary, and
+      attractive to users who live in pipes.
+    - >
+      It is also a good example of a package whose documentation surface is the README.
+      There is no separate docs site; the official repo is the authoritative manual,
+      release surface, and source.
+  project-history:
+    - >
+      The official repository was created in March 2018 and early GitHub releases show
+      rapid 0.x iteration during that same month. Its README frames the project as a
+      tool for cases where logs are available locally but a full analytics stack such as
+      Graphite, Honeycomb, Kibana, Sumo Logic, or Splunk is not.
+    - >
+      The tool implements a small functional query language over text, JSON, logfmt,
+      split fields, filters, and aggregate operators. The README emphasizes
+      high-throughput processing, with simple pipelines able to process millions of rows
+      per second.
+  related-projects:
+    - >
+      The README explicitly positions angle-grinder as a lightweight alternative when
+      data is not already in Graphite, Honeycomb, Kibana, Sumo Logic, or Splunk.
+    - >
+      It belongs near command-line text-processing and log tools such as awk, jq, grep,
+      and logfmt parsers, but adds streaming aggregates and a terminal UI.
+  sources:
+    - https://api.github.com/repos/rcoh/angle-grinder
+    - https://api.github.com/repos/rcoh/angle-grinder/releases
+    - https://raw.githubusercontent.com/rcoh/angle-grinder/master/README.md
+    - source_facts.package-manager
+  summary:
+    - >
+      angle-grinder is a Rust command-line log analysis tool whose executable, `agrind`,
+      brings query-pipeline style filtering, parsing, aggregation, and live terminal
+      rendering to plain log streams.
+  timeline:
+    - '2018: Official GitHub repository is created.'
+    - '2018: Early 0.x releases are published in March.'
+    - >
+      2018: README documents Homebrew, MacPorts, FreeBSD, Linux binary, and Cargo
+      installation paths.
+    - '2018: v0.9.0 adds `agrind --self-update` according to the README.'
+  usage:
+    - >
+      Common usage pipes logs into `agrind` and applies filters and operators such as
+      `json`, `logfmt`, `parse`, `where`, `count`, `sum`, `average`, percentile, and
+      sort. The README example `* | json | count by log_level` captures the usual flow:
+      parse structured logs, group them, and watch live results.
+    - >
+      Aliases can be loaded from `.agrind-aliases` in the working directory or parent
+      directories, which lets users keep reusable pipelines close to a project or log
+      format.
 tags:
   - analytics
   - cli
@@ -24,22 +89,31 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - official README says it parses, aggregates, and analyzes logs in the terminal
-    - 'source_facts.description: Slice and dice log files on the command-line'
+    - https://raw.githubusercontent.com/rcoh/angle-grinder/master/README.md
+    - source_facts.description
   display-name-sources:
-    - official GitHub README heading
+    - https://raw.githubusercontent.com/rcoh/angle-grinder/master/README.md
     - source_facts.name
   docs-sources:
-    - official GitHub README is the primary documentation surface
+    - https://github.com/rcoh/angle-grinder
+    - https://raw.githubusercontent.com/rcoh/angle-grinder/master/README.md
+  history-sources:
+    - https://api.github.com/repos/rcoh/angle-grinder
+    - https://api.github.com/repos/rcoh/angle-grinder/releases
+    - https://raw.githubusercontent.com/rcoh/angle-grinder/master/README.md
+    - source_facts.package-manager
   repo-sources:
-    - source_facts.repo already populated; per instruction repo returned as null
+    - source_facts.repo
   tags-sources:
-    - official README describes parsing, aggregation, and terminal UI for log data
+    - https://raw.githubusercontent.com/rcoh/angle-grinder/master/README.md
     - source_facts.description
+    - source_facts.executables
 category-confidence: high
 category-path:
   - developer-tools
+  - log-analysis
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
