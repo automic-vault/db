@@ -8,6 +8,56 @@ config-file-location:
   unix: ~/.aws/config
 credentials-file-location:
   unix: ~/.aws/credentials
+history:
+  adoption-history:
+    - >
+      The project grew beyond a single Python command-line tool through compatible
+      implementations in Java, Ruby, Scala, PHP, Node.js, Go, C#, Erlang, Rust, and
+      Kubernetes-related tooling listed by the upstream README. Later changelog entries
+      also added operational features such as tags, putall, keys, session handling, YAML
+      and dotenv-style output, and multiple-region KMS/DynamoDB support.
+  package-nerd-significance:
+    - >
+      For package maintainers, CredStash is notable as an AWS-backed secrets CLI that
+      keeps its runtime footprint small but relies on cloud-side primitives. Its
+      Homebrew formula exposes a Python security tool to macOS operators who may
+      otherwise install it from pip.
+  project-history:
+    - >
+      The README frames CredStash as a response to common ad hoc secret-handling
+      practices such as copying secrets files around a fleet or committing secrets to
+      source control. Its design uses KMS for key wrapping and master-key storage,
+      DynamoDB for encrypted credential records, and AWS IAM for access control.
+  related-projects:
+    - >
+      The README lists compatible CredStash implementations for Java, Ruby, Scala, PHP,
+      Node.js, Go, C#, Erlang, Rust, and Kubernetes.
+  sources:
+    - https://github.com/fugue/credstash#readme
+    - https://github.com/fugue/credstash/blob/master/changelog.md
+  summary:
+    - >
+      CredStash is a small command-line and Python-library tool for storing secrets with
+      AWS KMS and DynamoDB. It targets teams that want a simple credential store without
+      operating a larger dedicated secrets-management service.
+  timeline:
+    - >
+      2015-12: README documents an auto-versioning behavior change and migration path
+      for older unpadded integer versions
+    - '1.14.0: Added wildcard get, keys, putall, and pagination fixes'
+    - '1.15.0: Improved packaging and added credential comments'
+    - >
+      1.16.0: Added autoversion API support, DynamoDB table tagging,
+      environment-variable table selection, and custom DynamoDB/KMS sessions
+    - >
+      1.17.0: Added independent KMS-region selection for DynamoDB Global Tables-style
+      deployments
+  usage:
+    - >
+      The standard setup is to install credstash, create or choose a KMS key, ensure AWS
+      credentials are available to boto or botocore, and run credstash setup to create
+      the DynamoDB table. Users then put, get, list, delete, and bulk-fetch versioned
+      secrets from shell scripts or deployment workflows.
 category: security
 package-manager:
   brew: credstash
@@ -26,5 +76,9 @@ executables:
   - credstash.py
 provenance:
   formula: credstash
+  history-sources:
+    - https://github.com/fugue/credstash#readme
+    - https://github.com/fugue/credstash/blob/master/changelog.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
