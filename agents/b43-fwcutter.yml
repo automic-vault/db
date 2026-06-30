@@ -6,6 +6,80 @@ docs:
   - https://bues.ch/b43/fwcutter
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      b43-fwcutter became a distribution plumbing tool rather than an end-user glamour
+      tool. Linux Wireless documents distro-specific helpers in openSUSE, Ubuntu, and
+      Debian that wrapped or integrated the extraction process to reduce the manual
+      burden on users.
+    - >
+      The package metadata in this batch shows b43-fwcutter packaged by Homebrew,
+      Debian, Ubuntu, Fedora, Arch, Alpine, Nix, and openSUSE. That spread reflects the
+      same practical need across Linux distributions: installing free driver code was
+      not enough when firmware still had to be extracted separately.
+  package-nerd-significance:
+    - >
+      b43-fwcutter is a classic packaging edge-case artifact: tiny, unglamorous, and
+      historically necessary because driver, firmware, licensing, and distro policy did
+      not line up cleanly.
+    - >
+      It matters to package nerds because it shows how package managers sometimes ship
+      tools that do legal and operational boundary work rather than merely install
+      upstream software. The package is the bridge between free kernel drivers and
+      proprietary firmware blobs users had to obtain separately.
+  project-history:
+    - >
+      The Linux Wireless b43 documentation explains the historical problem directly:
+      Broadcom hardware requires firmware after reset, b43 expects that firmware under
+      the system firmware directory, and Broadcom did not publish firmware for most
+      cards. The b43 community therefore developed b43-fwcutter to extract the needed
+      firmware files from Broadcom Linux binary drivers.
+    - >
+      The official b43-fwcutter distribution directory shows early b43-fwcutter tarballs
+      from 2008, continuing through multiple releases and a 2026 b43-fwcutter-020
+      tarball. The source lives in Michael Buesch's b43-tools repository, alongside the
+      wider b43 maintenance tooling.
+  related-projects:
+    - >
+      b43 and b43legacy are the Linux Broadcom wireless drivers that consume the
+      extracted firmware.
+    - >
+      bcm43xx was the earlier Broadcom Linux wireless driver family referenced by Linux
+      Wireless documentation.
+    - >
+      Distribution helper packages such as Ubuntu's firmware-b43-installer and
+      openSUSE's install_bcm43xx_firmware wrapped the extraction workflow.
+  sources:
+    - https://bues.ch/b43/fwcutter/
+    - https://git.bues.ch/git/b43-tools.git
+    - https://wireless.docs.kernel.org/en/latest/en/users/drivers/b43.html
+    - https://wireless.docs.kernel.org/en/latest/en/users/drivers/b43/firmware.html
+    - input.json source_facts.package-manager
+  summary:
+    - >
+      b43-fwcutter is a small system utility for extracting firmware files for Linux's
+      b43 and b43legacy Broadcom wireless drivers from Broadcom-supplied binary driver
+      packages. It exists because many Broadcom devices need firmware uploaded after
+      reset, but distributions historically could not simply redistribute the extracted
+      firmware.
+  timeline:
+    - >
+      2008: b43-fwcutter tarballs 009 and 010 appear in the official fwcutter
+      distribution directory.
+    - '2014: b43-fwcutter-019 is published in the official distribution directory.'
+    - >
+      2026: b43-fwcutter-020 is published, showing the utility still maintained for
+      legacy Broadcom support.
+  usage:
+    - >
+      Users and distribution scripts run b43-fwcutter against supported Broadcom driver
+      archives, then install the extracted firmware where the Linux firmware loader can
+      find it, commonly under /lib/firmware/b43/ for b43.
+    - >
+      It is usually encountered while reviving older Broadcom 43xx wireless hardware,
+      especially on systems where the kernel driver is present but firmware
+      redistribution rules or packaging policy require a local extraction step.
 tags:
   - broadcom
   - cli
@@ -33,6 +107,12 @@ provenance:
     - >
       source_facts.homepage is the official Linux Wireless b43 documentation;
       bues.ch/b43/fwcutter is the official b43-fwcutter release area.
+  history-sources:
+    - https://bues.ch/b43/fwcutter/
+    - https://git.bues.ch/git/b43-tools.git
+    - https://wireless.docs.kernel.org/en/latest/en/users/drivers/b43.html
+    - https://wireless.docs.kernel.org/en/latest/en/users/drivers/b43/firmware.html
+    - input.json source_facts.package-manager
   repo-sources:
     - >
       Official Linux Wireless developer docs identify b43-tools at
@@ -49,5 +129,6 @@ category-path:
   - firmware
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

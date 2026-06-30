@@ -5,6 +5,82 @@ docs:
   - https://github.com/BLAKE3-team/BLAKE3#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official repository publishes prebuilt b3sum binaries for Linux, Windows, and
+      macOS and documents installation through Cargo. The package-manager metadata in
+      this batch shows b3sum packaged across Homebrew, Debian, Ubuntu, Fedora, Arch,
+      Alpine, Nix, Scoop, and openSUSE, which is broad adoption for a standalone
+      checksum utility.
+    - >
+      BLAKE3 has also moved beyond the single CLI: the official README points to a Rust
+      crate, a C implementation, test vectors, reference implementations, and a C2SP
+      specification. That makes b3sum the user-facing entry point for a wider portable
+      cryptographic primitive.
+  package-nerd-significance:
+    - >
+      For package people, b3sum is interesting because it is a modern checksum command
+      that still fits the tiny Unix filter shape. It packages a high-performance,
+      SIMD-aware, multithreaded hash into a single CLI that can be dropped into scripts
+      where older checksum commands used to live.
+    - >
+      Its presence across many package managers also tracks the way new cryptographic
+      primitives become operationally real: first as a spec and library, then as a small
+      command-line executable users can trust in automation.
+  project-history:
+    - >
+      BLAKE3 was designed by Jack O'Connor, Samuel Neves, Jean-Philippe Aumasson, and
+      Zooko Wilcox, with development sponsored by Electric Coin Company. The official
+      repository presents BLAKE3 as an optimized successor in the BLAKE family: it is
+      based on BLAKE2 and Bao's tree mode, and its design rationale is published in the
+      BLAKE3 paper.
+    - >
+      The b3sum binary sits beside the Rust crate and C implementation in the official
+      BLAKE3 repository. Its role is intentionally old-school: it prints BLAKE3 hashes
+      for files or standard input, but it also uses BLAKE3's parallel design to make
+      command-line hashing much faster than classic checksum commands on typical desktop
+      hardware.
+  related-projects:
+    - BLAKE2 is the immediate hash-function ancestor named by the BLAKE3 README.
+    - >
+      Bao provides the tree-mode lineage and verified-streaming ideas referenced by the
+      BLAKE3 project.
+    - >
+      Argon2 is explicitly recommended by the BLAKE3 project for password hashing, which
+      b3sum is not meant to solve.
+    - >
+      Classic checksum tools such as sha256sum and md5sum are the command-line
+      comparison point for b3sum.
+  sources:
+    - https://api.github.com/repos/BLAKE3-team/BLAKE3/releases
+    - https://c2sp.org/BLAKE3
+    - https://github.com/BLAKE3-team/BLAKE3
+    - https://github.com/BLAKE3-team/BLAKE3-specs/blob/master/blake3.pdf
+    - input.json source_facts.package-manager
+  summary:
+    - >
+      b3sum is the command-line utility distributed with the official BLAKE3
+      implementation. It gives Unix users a familiar checksum-tool interface for BLAKE3,
+      a cryptographic hash function designed to be fast, parallelizable, and usable as a
+      regular hash, MAC, KDF, PRF, and XOF.
+  timeline:
+    - >
+      2020: BLAKE3 is published with an official implementation, paper, Rust crate, C
+      implementation, and b3sum CLI.
+    - '2025: BLAKE3 1.8.x releases continue shipping through the official GitHub releases feed.'
+    - >
+      2026: BLAKE3 1.8.5 is published on GitHub, showing continued maintenance of the
+      implementation and CLI.
+  usage:
+    - >
+      b3sum is used like sha256sum or md5sum: pass files or standard input and receive
+      hexadecimal BLAKE3 digests. The official README highlights using it for quick
+      local benchmarks against SHA-256 as well as ordinary file hashing.
+    - >
+      Because BLAKE3 is explicitly not a password-hashing algorithm, b3sum belongs in
+      integrity checking, content addressing, deduplication, and build or artifact
+      workflows rather than password storage.
 tags:
   - blake3
   - checksum
@@ -31,6 +107,12 @@ provenance:
     - >
       Official BLAKE3 GitHub repository README documents BLAKE3 and the b3sum
       command-line utility.
+  history-sources:
+    - https://api.github.com/repos/BLAKE3-team/BLAKE3/releases
+    - https://c2sp.org/BLAKE3
+    - https://github.com/BLAKE3-team/BLAKE3
+    - https://github.com/BLAKE3-team/BLAKE3-specs/blob/master/blake3.pdf
+    - input.json source_facts.package-manager
   repo-sources:
     - source_facts.repo is already populated; prompt requires repo output null.
   tags-sources:
@@ -40,5 +122,6 @@ category-path:
   - security
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

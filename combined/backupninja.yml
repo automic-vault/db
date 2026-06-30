@@ -10,6 +10,68 @@ config-file-location:
     - /etc/backupninja.conf
     - /etc/backup.d/
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      backupninja has classic distribution-style adoption. The supplied package-manager
+      facts list Homebrew, Debian, Ubuntu, Fedora, and openSUSE packages, while the
+      changelog references Debian bug numbers across many releases. Its audience is
+      administrators who prefer auditable files and cron-like scheduling over a single
+      monolithic backup product.
+  package-nerd-significance:
+    - >
+      backupninja is package-nerd history in miniature: a small Debian-era shell tool
+      that survived by being boring, extensible, and distribution-friendly. It is useful
+      precisely because it delegates storage mechanics to packaged backup programs while
+      standardizing scheduling, reporting, handler discovery, and config layout.
+  project-history:
+    - >
+      The official changelog records an initial release on 2004-10-08. By late 2004 it
+      had moved to ini-style configuration, root-run handler scripts, a
+      /usr/share/backupninja library directory, scheduled actions, system-report
+      handlers, test mode, and /etc/backup.d permissions.
+    - >
+      The 2005 releases added much of the shape administrators still recognize: hourly
+      scheduling, numeric ordering fixes, duplicity and maildir handlers, subversion
+      hotbackup, LDAP support, vserver support, mysql configuration improvements, and
+      safer duplicity options.
+    - >
+      Later releases modernized the handler ecosystem rather than replacing the core
+      idea. The 2018 1.1.0 release added initial borgbackup support; the 2021 1.2.0
+      release introduced restic support, tests, a --version flag, and a Keep a Changelog
+      project format; the 2023 1.2.2 release added Prometheus metrics for backup status.
+  related-projects:
+    - >
+      The README lists rdiff-backup, duplicity, borgbackup, restic, mysqlhotcopy,
+      mysqldump, PostgreSQL backup handling, Subversion backup support, and arbitrary
+      shell scripts as backup action families. Its design is also adjacent to cron,
+      sysvinit-style ordering, and distribution packaging.
+  sources:
+    - https://0xacab.org/api/v4/projects/liberate%2Fbackupninja
+    - https://0xacab.org/liberate/backupninja/-/blob/master/README.md
+    - https://0xacab.org/liberate/backupninja/-/raw/master/CHANGELOG.md
+    - source_facts.package-manager
+  summary:
+    - >
+      backupninja is a long-running Unix backup coordinator that turns system backups
+      into ordered, scheduled configuration files under /etc/backup.d. Its value is
+      orchestration: it wraps tools such as rdiff-backup, duplicity, borg, restic,
+      database dumpers, and custom scripts behind one simple configuration style.
+  timeline:
+    - '2004: Initial release recorded in the official changelog.'
+    - '2004: 0.3 rewrote scripts in bash and switched to ini-style configuration.'
+    - '2005: 0.4.4 added duplicity, maildir, subversion hotbackup, and --run support.'
+    - '2005: 0.6 added LDAP and vserver support plus expanded duplicity options.'
+    - '2018: 1.1.0 added initial borgbackup support.'
+    - '2021: 1.2.0 introduced restic support, tests, --version, and Keep a Changelog format.'
+    - '2023: 1.2.2 added Prometheus metrics for backup status.'
+  usage:
+    - >
+      Users configure global behavior in /etc/backupninja.conf and drop per-action files
+      into /etc/backup.d. backupninja processes suffix-based handlers in alphabetical
+      order, supports scheduled when clauses, can test runs without performing backups,
+      and provides ninjahelper as a curses-based wizard for creating action
+      configuration files.
 category: system
 package-manager:
   brew: backupninja
