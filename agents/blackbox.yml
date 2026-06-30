@@ -9,6 +9,83 @@ config-file-location:
     - .blackbox
     - keyrings/live
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      BlackBox became popular enough to be packaged by Homebrew, MacPorts,
+      Debian/Ubuntu, Fedora, Alpine, Arch, pkgsrc, Nix, and shell plugin managers such
+      as Antigen and Zgenom. That breadth reflects how many infrastructure teams wanted
+      a simple Git-compatible way to ship encrypted Puppet, Ansible, certificate, or
+      API-key material before centralized secret stores became common.
+    - >
+      The README now opens with an abandonment notice and points users to alternatives.
+      That status is part of its history: BlackBox remains in package managers and old
+      automation, but upstream no longer presents it as a recommended new choice.
+  package-nerd-significance:
+    - >
+      BlackBox is package-nerd significant because it captures a specific era of
+      infrastructure packaging: secrets were often kept near Puppet or Ansible code, Git
+      was the collaboration substrate, and a pile of shell commands around GPG was
+      acceptable if it made deployments repeatable.
+    - >
+      It also shows the lifecycle problem of security tooling in package managers. A
+      widely packaged and still-installable CLI can become abandoned upstream, so
+      curation has to record both historical adoption and current maintenance warnings.
+    - >
+      Its command sprawl is notable: the Homebrew formula exposes many blackbox_*
+      executables rather than one subcommand-based binary, a style common in older Unix
+      toolkits and shell-script suites.
+  project-history:
+    - >
+      The repository was created in 2014 under StackExchange. The README says BlackBox
+      was originally written for Puppet and later worked with Git, Mercurial,
+      Subversion, Perforce, and even no-VCS cases when the .blackbox directory is
+      intact.
+    - >
+      BlackBox wraps GPG so teams do not have to memorize low-level encryption flags. It
+      stores encrypted copies of selected files in the repository, tracks authorized
+      administrators by public key, and provides commands to register files, edit
+      encrypted files, rotate admins, and decrypt files after deployment.
+  related-projects:
+    - >
+      The README names git-crypt as a competing project and includes an alternatives
+      section for newer choices.
+    - >
+      BlackBox overlaps with hiera-eyaml, Ansible Vault, git-crypt, Mozilla SOPS, and
+      cloud KMS-backed secret workflows, but its design is deliberately a small GPG
+      wrapper around files in VCS.
+  sources:
+    - https://github.com/StackExchange/blackbox#readme
+    - https://github.com/StackExchange/blackbox/releases
+    - source_facts.executables
+    - source_facts.package-manager
+  summary:
+    - >
+      StackExchange BlackBox is a shell-based secrets-management tool for keeping
+      selected files encrypted inside version-control repositories. It is historically
+      important as a pragmatic pre-cloud-KMS DevOps utility, though the upstream README
+      now marks the project abandoned and warns new users away.
+  timeline:
+    - '2014: StackExchange/blackbox repository is created.'
+    - >
+      2010s: BlackBox is used for GPG-encrypted secrets in Git, Mercurial, Subversion,
+      and Puppet-oriented workflows.
+    - >
+      2020s: BlackBox is packaged across Homebrew, MacPorts, Linux distributions, Nix,
+      and shell plugin managers.
+    - '2022: The current GitHub release history contains v1.20220610.'
+    - '2020s: Upstream README marks the project abandoned and recommends alternatives.'
+  usage:
+    - >
+      A repository is initialized with blackbox_initialize. Users add administrators
+      with blackbox_addadmin, register files with blackbox_register_new_file, edit
+      secrets with blackbox_edit or blackbox_edit_start/blackbox_edit_end, and deploy
+      plaintext copies with blackbox_postdeploy.
+    - >
+      BlackBox's metadata normally lives under .blackbox or $BLACKBOXDATA, with
+      keyrings/live used for enrolled public keys. The README emphasizes that it is a
+      simple GPG wrapper for a small number of files, not an enterprise encryption
+      platform.
 tags:
   - cli
   - encryption
@@ -31,6 +108,11 @@ provenance:
     - Official README heading uses BlackBox.
   docs-sources:
     - source_facts.homepage is the official StackExchange/blackbox repository README.
+  history-sources:
+    - https://github.com/StackExchange/blackbox#readme
+    - https://github.com/StackExchange/blackbox/releases
+    - source_facts.executables
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already has https://github.com/StackExchange/blackbox; prompt
@@ -44,5 +126,6 @@ category-path:
   - security
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

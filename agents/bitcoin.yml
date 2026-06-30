@@ -19,6 +19,120 @@ credentials-file-location:
     - ~/Library/Application Support/Bitcoin/.cookie
   windows:
     - '%LOCALAPPDATA%\Bitcoin\.cookie'
+history:
+  adoption-history:
+    - >
+      Bitcoin Core became the default implementation against which much of the Bitcoin
+      ecosystem measures consensus behavior, because full nodes independently validate
+      blocks and transactions. Its correctness and review process matter beyond ordinary
+      application packaging: a consensus bug can split money.
+    - >
+      The project has broad package-manager presence in this batch: Homebrew, Alpine,
+      Chocolatey, MacPorts, Nix, Arch, and openSUSE package some form of Bitcoin Core or
+      its daemon. Official binary releases remain central, but package managers are
+      important for operators who want reproducible installs, service integration, or
+      policy-controlled upgrades.
+    - >
+      The GitHub repository shows a large, active contributor base and continued
+      releases through Bitcoin Core 31.0 in 2026. The README explicitly notes that
+      testing and code review are the bottleneck and that the project is
+      security-critical.
+  package-nerd-significance:
+    - >
+      Bitcoin Core is one of the rare packages where packaging is inseparable from
+      protocol safety. Build flags, dependency versions, wallet database behavior,
+      runtime paths, and upgrade order can affect node operators managing real funds and
+      participating in a live consensus network.
+    - >
+      It is also a package-history landmark: a small open-source peer-to-peer client
+      became a globally significant infrastructure package with daemon, CLI, GUI, RPC
+      surface, reproducible-release culture, security advisories, and intense review
+      norms.
+    - >
+      For package nerds, its file layout is unusually educational. The official
+      filesystem document names the blocks, chainstate, indexes, wallet databases,
+      cookie authentication, generated config, and legacy migrations, making the package
+      a concrete map of how a decentralized network client persists state.
+  project-history:
+    - >
+      Bitcoin Core's About page describes it as the open-source project that maintains
+      and releases Bitcoin client software, and as a direct descendant of the original
+      client released by Satoshi Nakamoto after the Bitcoin whitepaper. The current
+      repository is the integration and staging tree for that software.
+    - >
+      The software evolved from a combined GUI wallet and peer-to-peer node into a suite
+      of command-line and GUI programs: `bitcoind` for daemonized full-node operation,
+      `bitcoin-cli` for RPC calls, `bitcoin-tx` for transaction construction,
+      `bitcoin-wallet` for wallet maintenance, and related utilities. The official
+      README emphasizes full validation of blocks and transactions.
+    - >
+      Major engineering milestones show the project adapting to scale and operational
+      risk. The 0.8.0 release moved block and transaction indices to LevelDB, changed
+      indexing defaults, added performance work for validation, and supported Bloom
+      filters for lightweight clients. Later releases added network privacy and
+      transport work, wallet changes, RPC evolution, and continuing platform support.
+  related-projects:
+    - >
+      Bitcoin Core GUI development is split into the bitcoin-core/gui repository while
+      the main bitcoin/bitcoin tree remains the integration tree.
+    - >
+      libsecp256k1 is maintained by the Bitcoin Core project for elliptic-curve
+      cryptography used by Bitcoin.
+    - BIPs document protocol proposals and changes that Bitcoin Core may implement.
+    - >
+      Alternative Bitcoin node implementations and wallet software interoperate with the
+      Bitcoin network but must match consensus behavior.
+    - >
+      LevelDB is an important storage dependency introduced for block and transaction
+      indices in the 0.8.0 era.
+  sources:
+    - https://api.github.com/repos/bitcoin/bitcoin
+    - https://api.github.com/repos/bitcoin/bitcoin/releases/latest
+    - https://bitcoincore.org/en/about/
+    - https://github.com/bitcoin/bitcoin
+    - https://raw.githubusercontent.com/bitcoin/bitcoin/master/README.md
+    - https://raw.githubusercontent.com/bitcoin/bitcoin/master/doc/files.md
+    - >
+      https://raw.githubusercontent.com/bitcoin/bitcoin/master/doc/release-notes/release-notes-0.8.0.md
+    - >
+      https://raw.githubusercontent.com/bitcoin/bitcoin/master/doc/release-notes/release-notes-22.0.md
+    - input.json source_facts.package-manager
+  summary:
+    - >
+      Bitcoin Core is the reference full-node implementation for the Bitcoin network. It
+      descends directly from Satoshi Nakamoto's original Bitcoin client and packages the
+      network node, wallet, RPC tools, transaction utilities, validation engine, and
+      supporting documentation used by operators, developers, exchanges, researchers,
+      and packagers.
+  timeline:
+    - '2008: The Bitcoin whitepaper is published.'
+    - '2009: Satoshi Nakamoto releases the original Bitcoin client.'
+    - '2010: The bitcoin/bitcoin GitHub repository is created as the public development tree.'
+    - >
+      2013: Bitcoin-Qt 0.8.0 adopts LevelDB for block and transaction indices and
+      improves validation performance.
+    - >
+      2021: Bitcoin Core 22.0 drops the leading 0.x versioning style and adds newer P2P
+      network features such as I2P service support.
+    - >
+      2026: Bitcoin Core 31.0 is published, showing continued active maintenance of the
+      reference implementation.
+  usage:
+    - >
+      Operators run `bitcoind` or `bitcoin-qt` to join the peer-to-peer network,
+      download blocks, validate consensus rules, maintain the UTXO set, relay
+      transactions, and optionally serve wallet or RPC workflows. `bitcoin-cli` is the
+      normal administrative interface for RPC calls.
+    - >
+      Developers and power users use `bitcoin-tx`, `bitcoin-util`, `bitcoin-wallet`,
+      regtest, signet, testnet, RPCs, and the documented data directory layout for
+      testing, transaction work, wallet maintenance, and integration. The data directory
+      contains chainstate, block files, indexes, wallets, `bitcoin.conf`, `.cookie`, and
+      other operational files.
+    - >
+      Packagers must care about platform support, bundled versus system libraries,
+      database migrations, wallet formats, service files, man pages, and the difference
+      between consensus-critical behavior and optional indexes or wallet features.
 tags:
   - bitcoin
   - blockchain
@@ -49,6 +163,18 @@ provenance:
       Official Bitcoin Core documentation index at https://bitcoincore.org/en/doc/;
       official repository documentation at
       https://github.com/bitcoin/bitcoin/tree/master/doc.
+  history-sources:
+    - https://api.github.com/repos/bitcoin/bitcoin
+    - https://api.github.com/repos/bitcoin/bitcoin/releases/latest
+    - https://bitcoincore.org/en/about/
+    - https://github.com/bitcoin/bitcoin
+    - https://raw.githubusercontent.com/bitcoin/bitcoin/master/README.md
+    - https://raw.githubusercontent.com/bitcoin/bitcoin/master/doc/files.md
+    - >
+      https://raw.githubusercontent.com/bitcoin/bitcoin/master/doc/release-notes/release-notes-0.8.0.md
+    - >
+      https://raw.githubusercontent.com/bitcoin/bitcoin/master/doc/release-notes/release-notes-22.0.md
+    - input.json source_facts.package-manager
   repo-sources:
     - >
       Official Bitcoin Core GitHub repository at https://github.com/bitcoin/bitcoin
@@ -63,5 +189,6 @@ category-path:
   - cryptocurrency
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

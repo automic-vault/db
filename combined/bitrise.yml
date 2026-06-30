@@ -10,6 +10,76 @@ config-file-location:
   unix: bitrise.yml
 credentials-file-location:
   unix: .bitrise.secrets.yml
+history:
+  adoption-history:
+    - >
+      Homebrew and Nix package entries in the input show adoption as a Unix developer
+      tool rather than only a downloadable vendor binary. The README also points to
+      Homebrew, Nix, GitHub releases, and community maintained packages.
+    - >
+      The CLI's adoption is tied to Bitrise's mobile CI ecosystem: it lets teams
+      validate CI changes without waiting for a remote build and gives local access to
+      the same workflow primitives used by hosted Bitrise.
+  package-nerd-significance:
+    - >
+      Bitrise CLI is a good example of a hosted CI service exposing its runner as a
+      packageable local binary. That makes the package more than a vendor helper: it is
+      the executable contract for a CI configuration format.
+    - >
+      It also sits in the mobile-devops corner of package-manager culture, where macOS
+      availability matters because iOS builds and signing workflows often start on
+      developer Macs before being reproduced in CI.
+  project-history:
+    - >
+      The public repository was created in 2015 and has long used Go as a portable
+      implementation language for local automation on macOS and Linux. Its tag history
+      starts before 1.0 and continues through the v2 series, with v2.40.7 published in
+      June 2026.
+    - >
+      Bitrise's own docs frame the CLI around bitrise.yml: users can download a
+      project's configuration from bitrise.io or create a bitrise.yml in the project
+      root, then run a named workflow locally.
+  related-projects:
+    - Bitrise CI is the hosted service whose builds are executed by the CLI runner.
+    - >
+      bitrise-io/bitrise-steplib is the default step library source referenced by
+      Bitrise configuration examples.
+    - >
+      Bitrise workflow recipes and sample apps provide reusable examples around
+      bitrise.yml workflows.
+  sources:
+    - https://docs.bitrise.io/en/bitrise-ci/bitrise-cli/managing-secrets-locally
+    - >
+      https://docs.bitrise.io/en/bitrise-ci/bitrise-cli/running-your-first-local-build-with-the-cli
+    - https://github.com/bitrise-io/bitrise#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      Bitrise CLI is the open source workflow runner behind Bitrise builds. The README
+      describes it as the component that executes steps defined in bitrise.yml on
+      Bitrise build machines and as a standalone tool for validating and running
+      workflows locally.
+    - >
+      For package users, the CLI matters because it turns a hosted mobile CI product
+      into a reproducible local command: brew install bitrise, run bitrise validate or
+      bitrise run, and debug the same YAML-driven workflow before pushing.
+  timeline:
+    - '2015: bitrise-io/bitrise repository created.'
+    - '2016: Early 0.9.x and 1.x tags appear in the public tag history.'
+    - >
+      2020s: README documents Homebrew and Nix installation paths alongside GitHub
+      release downloads.
+    - '2026: v2.40.7 release published on GitHub.'
+  usage:
+    - >
+      Common package-manager usage is to install the bitrise executable, keep
+      bitrise.yml in the project root, run bitrise validate while editing the file, and
+      run bitrise run workflow_name for local CI workflow execution.
+    - >
+      Secrets are intentionally split from the normal build config. Bitrise documents
+      local secret handling with .bitrise.secrets.yml, which is package-nerd-important
+      because it keeps the checked-in YAML portable while leaving local credentials
+      outside the main workflow file.
 category: developer-tools
 package-manager:
   brew: bitrise

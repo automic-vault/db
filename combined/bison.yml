@@ -7,6 +7,85 @@ docs:
   - https://www.gnu.org/software/bison
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Bison was adopted because it let free software projects build yacc-style parsers
+      without relying on proprietary Unix yacc implementations. Autoconf-era source
+      packages commonly checked for bison or yacc, and many distributions install Bison
+      as part of their developer-tool stack.
+    - >
+      The package metadata in this batch shows Bison available through Homebrew, Debian,
+      Ubuntu, Fedora, Arch, Alpine, MacPorts, Nix, Scoop, and openSUSE. That breadth
+      reflects its role as infrastructure: many users never invoke bison directly, but
+      their package builds do.
+  package-nerd-significance:
+    - >
+      Bison is package-nerd bedrock because it explains a surprisingly large class of
+      build failures: wrong Bison version, missing yacc compatibility, regenerated
+      parser files changing generated C, or release tarballs that assume maintainers
+      have GNU parser tools installed.
+    - >
+      It is also a living link between early Unix language tooling and modern
+      reproducible builds. A package can depend on it for one generated file, but that
+      file may define the grammar of a shell, language, configuration format, or SQL
+      dialect.
+  project-history:
+    - >
+      Bison began as a GNU replacement for yacc, the parser generator associated with
+      early Unix compiler construction. The GNU manual credits Robert Corbett's
+      public-domain parser generator as the starting point and Richard Stallman with
+      making it into Bison, with later development by GNU maintainers including Wilfred
+      Hansen, Tom Tromey, Akim Demaille, Paul Eggert, and others.
+    - >
+      The project kept yacc compatibility as a central design goal while adding GNU
+      extensions, better diagnostics, multiple parser skeletons, GLR parsing support,
+      internationalized diagnostics, and support for modern C and C++ parser workflows.
+      That combination made it both a historical compatibility tool and an actively
+      maintained compiler-construction utility.
+  related-projects:
+    - >
+      yacc is the historical Unix parser generator whose interface Bison intentionally
+      follows.
+    - Berkeley Yacc and byacc are alternative yacc-compatible parser generators.
+    - Flex and lex are the usual scanner-generator companions to Bison grammars.
+    - Autoconf and Automake often discover or invoke Bison in source-package build systems.
+  sources:
+    - https://git.savannah.gnu.org/git/bison.git
+    - https://www.gnu.org/software/bison
+    - https://www.gnu.org/software/bison/manual
+    - input.json source_facts.package-manager
+  summary:
+    - >
+      GNU Bison is GNU's parser generator: a source-compatible successor to the classic
+      Unix yacc workflow that reads a grammar and produces parser code. In
+      package-manager culture it is one of the canonical build-time tools that appears
+      quietly in dependency graphs for compilers, shells, interpreters, database tools,
+      and other software with real grammars.
+  timeline:
+    - '1970s: yacc establishes the parser-generator workflow in Unix compiler tooling.'
+    - >
+      1980s: GNU Bison is created as a free yacc-compatible parser generator based on
+      Robert Corbett's public-domain work and GNU development.
+    - '1990s-2000s: Bison becomes a routine dependency in Autotools-based free software builds.'
+    - >
+      2000s-2010s: Bison adds modern parser features such as stronger diagnostics, C++
+      support, and GLR parsing.
+    - >
+      2020s: Bison remains packaged across Unix-like distributions and Homebrew as a
+      core compiler-construction tool.
+  usage:
+    - >
+      Bison is usually run during a build or release process: a maintainer writes a
+      grammar file, Bison generates parser source, and the generated code is compiled
+      into the consuming program. It is also installed as yacc on some systems or used
+      through a yacc-compatible wrapper for software that expects the historical command
+      name.
+    - >
+      Its common neighbors are Flex or lex for tokenization, Autotools for build
+      orchestration, and compilers such as GCC or Clang for the generated parser code.
+      Packagers care about whether projects ship generated parsers in release tarballs
+      or require Bison at build time.
 category: developer-tools
 package-manager:
   apk: bison
