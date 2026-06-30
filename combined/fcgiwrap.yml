@@ -6,6 +6,70 @@ docs:
   - https://github.com/gnosek/fcgiwrap#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      fcgiwrap's adoption comes from a narrow but durable need: serving existing CGI
+      scripts behind FastCGI-only web-server configurations. The input metadata lists
+      packages across Homebrew, Debian, Ubuntu, Fedora, Arch, Alpine, MacPorts, Nix,
+      openSUSE, and others, which matches its role as infrastructure glue.
+    - >
+      The README recommends launchers such as spawn-fcgi and also notes optional systemd
+      support, showing the two common deployment eras for small FastCGI helper daemons.
+  package-nerd-significance:
+    - >
+      fcgiwrap is the tiny package that keeps old CGI scripts deployable in newer
+      web-server setups. It is not glamorous, but it is exactly the kind of bridge
+      package that prevents legacy admin panels, hooks, and small scripts from forcing a
+      web-server change.
+    - >
+      Its package-manager value is that it externalizes CGI support: install one small
+      daemon, point Nginx or another FastCGI-capable server at its socket, and avoid
+      embedding CGI execution in the web server itself.
+  project-history:
+    - >
+      The public GitHub repository was created in 2008 by Grzegorz Nosek. The README
+      presents fcgiwrap as a simple wrapper rather than a full application server: it
+      links against the FastCGI development library, runs CGI scripts, and handles
+      headers, environment variables, and stderr forwarding.
+    - >
+      Over time the repository gained service-manager integration such as systemd socket
+      activation files, reflecting the normal deployment style: a small persistent
+      FastCGI endpoint supervised by the operating system or launched through a helper.
+  related-projects:
+    - FastCGI/fcgi2 provides the protocol and library foundation.
+    - Nginx, spawn-fcgi, and systemd socket activation are common deployment companions.
+  sources:
+    - https://github.com/gnosek/fcgiwrap
+    - https://raw.githubusercontent.com/gnosek/fcgiwrap/master/README.rst
+    - https://raw.githubusercontent.com/gnosek/fcgiwrap/master/systemd/fcgiwrap.service
+    - https://raw.githubusercontent.com/gnosek/fcgiwrap/master/systemd/fcgiwrap.socket
+  summary:
+    - >
+      fcgiwrap is a small FastCGI wrapper for running traditional CGI scripts. Its
+      README describes it as lightweight, configuration-free, and intended to execute
+      CGI scripts while passing request state through FastCGI parameters.
+    - >
+      The tool is closely associated with Nginx deployments because Nginx does not
+      execute CGI programs directly; fcgiwrap supplies the missing CGI execution layer
+      while the web server talks FastCGI.
+  timeline:
+    - '2008: The public gnosek/fcgiwrap GitHub repository was created.'
+    - >
+      2008 onward: fcgiwrap was packaged as a lightweight CGI-over-FastCGI bridge for
+      Unix-like systems.
+    - >
+      Later releases: The repository included systemd socket activation units for
+      `/run/fcgiwrap.sock`.
+  usage:
+    - >
+      In direct mode, `SCRIPT_FILENAME` names the CGI program to execute. Otherwise,
+      fcgiwrap combines `DOCUMENT_ROOT` and `SCRIPT_NAME`, then splits the result into
+      the script path and `PATH_INFO`.
+    - >
+      Operators usually run it as a long-lived process or socket-activated service, then
+      configure a web server FastCGI location to pass CGI requests to the fcgiwrap
+      socket.
 category: networking
 package-manager:
   apk: fcgiwrap
@@ -31,5 +95,11 @@ executables:
   - fcgiwrap
 provenance:
   formula: fcgiwrap
+  history-sources:
+    - https://github.com/gnosek/fcgiwrap
+    - https://raw.githubusercontent.com/gnosek/fcgiwrap/master/README.rst
+    - https://raw.githubusercontent.com/gnosek/fcgiwrap/master/systemd/fcgiwrap.service
+    - https://raw.githubusercontent.com/gnosek/fcgiwrap/master/systemd/fcgiwrap.socket
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

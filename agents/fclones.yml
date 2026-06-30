@@ -5,6 +5,78 @@ docs:
   - https://github.com/pkolaczk/fclones#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The upstream README documents official installation through the Snap Store,
+      Homebrew on macOS and Linux, release artifacts attached to GitHub releases, and
+      cargo install. It also points to third-party Arch Linux, Alpine Linux, and NixOS
+      packages, which fits fclones into the package-manager ecosystem around Rust CLI
+      replacements for older Unix utilities.
+    - >
+      The supplied package metadata shows fclones present across Homebrew, MacPorts,
+      Nix, Arch, Alpine, Scoop, and openSUSE-style packaging, reflecting adoption beyond
+      a single operating system even though the README says it works best on Linux.
+  package-nerd-significance:
+    - >
+      fclones represents the Rust-era file-management CLI pattern: a familiar Unix
+      problem, packaged widely, with machine-readable output and careful performance
+      notes instead of a small single-purpose C utility.
+    - >
+      For package maintainers, it is notable because performance depends on platform
+      behavior. Linux gets the fullest optimization set, while Windows lacks reflink
+      support and non-Linux systems miss some low-level storage-ordering and page-cache
+      optimizations.
+  project-history:
+    - >
+      The public GitHub repository was created in June 2020, and its README describes
+      the project as the command-line fclones tool plus core libraries, with a separate
+      desktop frontend in fclones-gui. The early public tags start at 0.1.0 in June
+      2020, and later releases kept the same package identity while expanding the
+      duplicate-finding and deduplication workflow.
+    - >
+      The project was written in Rust with explicit attention to modern storage
+      behavior: parallel directory scanning, device-aware access strategy, path-prefix
+      compression for very large file sets, page-cache-friendly scanning on Linux,
+      multiple hash choices, and optional persistent hash caching.
+  related-projects:
+    - >
+      The README names fclones-gui as the desktop frontend for the same
+      duplicate-file-finding project.
+    - >
+      The output format can be made compatible with fdupes, placing fclones in the same
+      family as classic duplicate-file finders while adding Rust implementation and
+      modern storage optimizations.
+  sources:
+    - https://github.com/pkolaczk/fclones
+    - https://github.com/pkolaczk/fclones/blob/main/README.md
+    - https://api.github.com/repos/pkolaczk/fclones
+    - https://api.github.com/repos/pkolaczk/fclones/tags?per_page=100
+    - https://formulae.brew.sh/formula/fclones
+  summary:
+    - >
+      fclones is a Rust command-line duplicate-file finder and remover aimed at large
+      local filesystems, where speed, safe review before deletion, and scriptable output
+      matter.
+  timeline:
+    - '2020: Public repository created and early 0.1.x tags published.'
+    - >
+      2021: README examples show the 0.12-era workflow of grouping first, then linking
+      or removing duplicates.
+    - '2025: Version 0.35.0 tag published.'
+  usage:
+    - >
+      The normal workflow is deliberately two-stage: run `fclones group` to produce a
+      report, inspect or edit that report, then pipe it into `fclones remove`, `fclones
+      move`, `fclones link`, or `fclones dedupe`. The README emphasizes `--dry-run`,
+      JSON/CSV output, fdupes-compatible output, and integration with Unix tools such as
+      `find`.
+    - >
+      Package users tend to care about fclones when scanning very large photo, media,
+      backup, or build trees where naive duplicate finders are too slow or too
+      memory-hungry. Its ability to replace duplicates with hard links, symbolic links,
+      or filesystem reflinks makes it useful both for cleanup and for storage
+      deduplication experiments.
 tags:
   - cli
   - duplicate-files
@@ -31,6 +103,12 @@ provenance:
     - >
       Official GitHub README provides features, installation, usage, algorithm, tuning,
       and benchmarks.
+  history-sources:
+    - https://github.com/pkolaczk/fclones
+    - https://github.com/pkolaczk/fclones/blob/main/README.md
+    - https://api.github.com/repos/pkolaczk/fclones
+    - https://api.github.com/repos/pkolaczk/fclones/tags?per_page=100
+    - https://formulae.brew.sh/formula/fclones
   repo-sources:
     - source_facts.repo already provided; per instruction repo is returned as null.
   tags-sources:
@@ -44,5 +122,6 @@ category-path:
   - file-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
