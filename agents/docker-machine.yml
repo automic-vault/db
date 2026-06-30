@@ -9,6 +9,71 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.docker/machine/machines/*/*.pem
+history:
+  adoption-history:
+    - >
+      Docker Machine was widely adopted because it gave the Docker CLI a repeatable way
+      to target disposable local and cloud hosts before Docker Desktop, Docker contexts,
+      managed container platforms, and autoscaling CI runners became the dominant
+      workflows. Its driver-plugin model let vendors and community maintainers ship
+      provider support outside the core binary.
+    - >
+      The GitLab fork preserved Docker Machine for GitLab Runner's docker+machine
+      autoscaling executor. GitLab's documentation points users toward its newer
+      autoscaling solution, generally available from GitLab 17.1, and says the Docker
+      Machine fork will be supported only until GitLab 20.2 in May 2027.
+  package-nerd-significance:
+    - >
+      Docker Machine is package-nerd significant because it turned a messy
+      cross-provider bootstrap workflow into one installable CLI plus plugin binaries.
+      Its later life as a maintained GitLab fork is also instructive: package managers
+      can keep legacy automation alive long after the original upstream project leaves
+      the center of the ecosystem.
+  project-history:
+    - >
+      The original Docker Machine README describes a tool that creates servers, installs
+      Docker on them, and configures the Docker client to talk to those hosts. It
+      supported local VM drivers such as VirtualBox and cloud drivers such as
+      DigitalOcean, with an extension model for third-party driver plugins.
+    - >
+      The packaged Homebrew line follows GitLab's fork. GitLab states that the fork
+      exists to fix critical bugs for the GitLab Runner Docker Machine executor after
+      Docker deprecated Docker Machine on 2021-09-27. GitLab also states that it does
+      not plan new features, and that maintenance is limited to critical bug fixes, CI
+      execution reliability, and cost-impacting issues.
+  related-projects:
+    - >
+      Related projects include Docker Engine, boot2docker, Docker Desktop, Docker
+      contexts, GitLab Runner's docker+machine executor, Rancher Machine, and the family
+      of Docker Machine provider drivers.
+  sources:
+    - https://github.com/docker/machine#readme
+    - https://gitlab.com/gitlab-org/ci-cd/docker-machine
+    - https://docs.gitlab.com/runner/executors/docker_machine
+  summary:
+    - >
+      Docker Machine is the CLI that automated creation of Docker hosts on local
+      hypervisors, cloud providers, and private infrastructure. It belongs to the
+      pre-Docker-Desktop and pre-managed-Kubernetes period of Docker tooling, when
+      creating a VM, installing Docker Engine, and pointing the local docker client at
+      it were routine development and CI tasks.
+  timeline:
+    - >
+      Docker Machine era: The upstream project standardized docker-machine create, env,
+      ls, and driver plugins for Docker hosts.
+    - '2021-09-27: GitLab records Docker Machine as deprecated by Docker.'
+    - >
+      GitLab fork era: GitLab maintains a fork for critical fixes needed by the GitLab
+      Runner Docker Machine executor.
+    - "GitLab 17.1: GitLab's replacement autoscaling solution is generally available."
+    - 'May 2027: GitLab plans support for its Docker Machine fork until GitLab 20.2.'
+  usage:
+    - >
+      Typical usage is docker-machine create with a local or cloud driver,
+      docker-machine ls to inspect hosts, docker-machine env to export Docker client
+      environment variables, and docker-machine rm to remove a host. The tool also
+      stores per-machine TLS material under ~/.docker/machine so the client can securely
+      reach remote Docker daemons.
 tags:
   - cli
   - cloud-provisioning
@@ -37,6 +102,10 @@ provenance:
     - >
       Official GitLab documentation for installing and using the GitLab-maintained
       Docker Machine fork.
+  history-sources:
+    - https://github.com/docker/machine#readme
+    - https://gitlab.com/gitlab-org/ci-cd/docker-machine
+    - https://docs.gitlab.com/runner/executors/docker_machine
   repo-sources:
     - >
       source_facts.source-archive points to gitlab.com/gitlab-org/ci-cd/docker-machine;
@@ -51,5 +120,6 @@ category-path:
   - containers
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

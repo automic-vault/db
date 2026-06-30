@@ -6,6 +6,62 @@ docs:
   - https://github.com/nginx-proxy/docker-gen#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      docker-gen is best known through the nginx-proxy ecosystem. The README names
+      nginx-proxy/nginx-proxy as a trusted-build example of running docker-gen alongside
+      nginx, and the current repository lives under the nginx-proxy organization. Its
+      adoption followed a common Docker pattern: containers advertise intent through
+      metadata or environment variables, and a sidecar regenerates host or proxy
+      configuration.
+  package-nerd-significance:
+    - >
+      docker-gen matters because it captures a pre-orchestrator, Docker-native
+      automation style: dynamic infrastructure from container metadata before Compose,
+      Kubernetes ingress controllers, and service meshes became common. Package nerds
+      care because it is tiny, scriptable, and still explains a lot of nginx-proxy-era
+      container deployment patterns.
+  project-history:
+    - >
+      The upstream README defines docker-gen as a file generator that renders templates
+      using Docker container metadata. It documents early Docker-era use cases such as
+      nginx and haproxy reverse-proxy config generation, fluentd and logstash logging
+      files, logrotate files, and service-discovery scripts.
+    - >
+      The tag history starts in May 2014 with 0.1.0 and continues into current
+      nginx-proxy maintenance. The project evolved around the Docker event stream: it
+      can render once, watch for container starts and stops, filter containers and
+      events, send signals or restart commands after regeneration, and run either on the
+      host, bundled inside another container, or as a separate companion container.
+  related-projects:
+    - >
+      Related projects include nginx-proxy/nginx-proxy, nginxproxy/docker-gen container
+      images, nginx, haproxy, fluentd, logrotate, Docker Engine, Go text/template,
+      sprig, and earlier Docker service-discovery helpers such as docker-register.
+  sources:
+    - https://github.com/nginx-proxy/docker-gen#readme
+    - https://github.com/nginx-proxy/docker-gen/releases
+    - https://github.com/nginx-proxy/docker-gen/tags
+    - https://hub.docker.com/r/nginxproxy/docker-gen
+  summary:
+    - >
+      docker-gen is a Docker metadata templating tool. It watches containers and renders
+      Go templates into configuration files, commonly for reverse proxies, logging, log
+      rotation, and service-discovery glue.
+  timeline:
+    - '2014: 0.1.0 is tagged, placing docker-gen in the early Docker ecosystem.'
+    - '2015: 0.4.x and 0.5.x tags show continued rapid early releases.'
+    - '2016: 0.7.x tags continue the Docker sidecar/template workflow.'
+    - '2020s: the project is maintained under the nginx-proxy organization.'
+    - '2026: 0.16.x tags show ongoing maintenance.'
+  usage:
+    - >
+      Users provide a Go text/template file and an optional destination path. docker-gen
+      reads Docker metadata, renders the template, and can watch for container events to
+      regenerate output and notify a service with a signal or command. It also supports
+      config files with multiple template directives and Docker connection settings
+      through flags or Docker environment variables.
 category: developer-tools
 package-manager:
   brew: docker-gen
@@ -23,5 +79,11 @@ executables:
   - docker-gen
 provenance:
   formula: docker-gen
+  history-sources:
+    - https://github.com/nginx-proxy/docker-gen#readme
+    - https://github.com/nginx-proxy/docker-gen/releases
+    - https://github.com/nginx-proxy/docker-gen/tags
+    - https://hub.docker.com/r/nginxproxy/docker-gen
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

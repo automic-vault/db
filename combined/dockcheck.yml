@@ -9,6 +9,54 @@ config-file-location:
     - ./dockcheck.config
     - ~/.config/dockcheck.config
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Dockcheck's adoption is mostly self-hosting and homelab oriented: it is packaged
+      for Homebrew in this batch, but the upstream README still documents direct script
+      installation into a PATH directory and cron-style unattended checks. The README
+      also points Podman users to the podcheck fork, which is a useful signal that its
+      audience overlaps with container tinkerers who manage small fleets outside a full
+      orchestration platform.
+  package-nerd-significance:
+    - >
+      Dockcheck is package-nerd interesting because it sits between heavy automated
+      updaters and manual docker compose pull loops. It is a small shell tool built
+      around registry digests, regctl, jq, and Compose conventions, so packaging it
+      gives users a reproducible way to add conservative image-update checks to cron
+      jobs and home servers.
+  project-history:
+    - >
+      The maintainer's project writeup traces the idea to late 2022, when the original
+      goal was to determine whether container images had updates without pulling every
+      image first. The implementation settled on comparing local and remote image
+      digests with help from regclient/regctl, turning a home-server maintenance
+      annoyance into a reusable script.
+  related-projects:
+    - >
+      Dockcheck is adjacent to Watchtower-style container updaters, Docker Compose
+      maintenance scripts, regclient/regctl, and the podcheck fork for Podman users.
+  sources:
+    - https://github.com/mag37/dockcheck#readme
+    - https://mag37.org/posts/project_dockcheck/
+    - https://formulae.brew.sh/formula/dockcheck
+  summary:
+    - >
+      Dockcheck is a Bash CLI for checking and optionally applying Docker image updates.
+      Its README frames the tool around selective updates, include and exclude lists,
+      image backups, labels, notifications, pruning, and Compose-aware container
+      recreation.
+  timeline:
+    - '2022: Maintainer describes the original idea forming around Christmas 2022.'
+    - '2024: Maintainer publishes a project history post explaining the digest-based approach.'
+    - '2026: The batch input lists Homebrew distribution for dockcheck.'
+  usage:
+    - >
+      Common usage is to scan running or stopped containers for newer images, choose
+      which containers to update, pull the selected images, recreate containers or
+      Compose stacks, and optionally prune dangling images afterward. Configuration
+      lives in dockcheck.config beside the script or under ~/.config, and notifications
+      are driven by shell templates plus channel-specific environment variables.
 category: developer-tools
 package-manager:
   brew: dockcheck
@@ -25,5 +73,10 @@ executables:
   - dockcheck
 provenance:
   formula: dockcheck
+  history-sources:
+    - https://github.com/mag37/dockcheck#readme
+    - https://mag37.org/posts/project_dockcheck/
+    - https://formulae.brew.sh/formula/dockcheck
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

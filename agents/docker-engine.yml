@@ -9,6 +9,95 @@ config-file-location:
   windows:
     - '%programdata%\docker\config\daemon.json'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Docker Engine's adoption changed package-manager culture by making dockerd a
+      normal server-side dependency for development machines, CI builders, and Linux
+      hosts. The package is both an end-user tool and infrastructure substrate: Docker
+      Desktop bundles it for local development, Linux distributions package it for
+      servers, and many higher-level tools assume a Docker-compatible daemon or API.
+    - >
+      Its adoption also created a dependency constellation that package maintainers
+      track closely: Docker CLI, containerd, runc, BuildKit, RootlessKit, Compose,
+      credential helpers, storage drivers, network/firewall integrations, and daemon
+      configuration files all have to line up for a working install.
+  package-nerd-significance:
+    - >
+      Docker Engine is one of the packages that reshaped modern packaging: it made
+      container images a default build and delivery unit, made daemon/API version
+      compatibility part of everyday developer tooling, and turned low-level Linux
+      namespaces, cgroups, layered filesystems, registries, and OCI runtimes into
+      routine package-manager concerns.
+    - >
+      For package nerds, docker-engine is also a stress test for packaging policy. It
+      ships a privileged daemon, CLI integration, rootless helpers, networking and
+      firewall behavior, storage drivers, bundled static components, security updates,
+      and fast-moving upstream release notes. Few packages expose as many boundaries
+      between OS packaging, language tooling, cloud CI, and application deployment.
+  project-history:
+    - >
+      Docker Engine began as the open-source Docker daemon and API codebase and is now
+      built from the Moby Project. The Moby README describes Moby as an open-source
+      project created by Docker to accelerate containerization and as a modular toolkit
+      for assembling container-based systems, with Docker committed to using Moby as
+      upstream for Docker products.
+    - >
+      The Engine documentation describes Docker Engine as a client-server application
+      with dockerd, APIs, and the Docker CLI. Over time, the daemon has been refactored
+      toward a modular container stack that relies on related projects such as
+      containerd, runc, and BuildKit. The Moby roadmap explicitly calls out reducing
+      duplicated runtime code by relying more on containerd and replacing the legacy
+      builder with BuildKit.
+    - >
+      The release history spans from v0.1.0 in March 2013 to stable Docker Engine
+      release lines in the 2020s. Docker 1.0 arrived in June 2014, the 1.10 line in 2016
+      was a major early Engine generation, and modern release notes show Engine 29.x
+      continuing security, containerd, BuildKit, runc, rootless, storage, networking,
+      and API work.
+  related-projects:
+    - >
+      Related projects include Moby, Docker CLI, Docker Compose, Docker Desktop,
+      containerd, runc, BuildKit, RootlessKit, Docker Hub and registries, Docker
+      credential helpers, and Mirantis Container Runtime.
+  sources:
+    - https://docs.docker.com/engine/
+    - https://docs.docker.com/engine/daemon/
+    - https://docs.docker.com/get-started/docker-overview/
+    - https://github.com/moby/moby#readme
+    - https://github.com/moby/moby/blob/master/ROADMAP.md
+    - https://docs.docker.com/engine/release-notes/29/
+    - https://github.com/moby/moby/releases
+    - https://github.com/moby/moby/tags
+  summary:
+    - >
+      Docker Engine is Docker's open-source container runtime stack: the dockerd daemon,
+      Engine API, and the client-server machinery that builds, runs, networks, stores,
+      and manages containers, images, volumes, and related objects.
+  timeline:
+    - '2013: v0.1.0 is tagged in the Docker/Moby history.'
+    - '2014: Docker 1.0.0 is tagged.'
+    - '2016: Docker 1.10.0 is tagged in the early Engine release series.'
+    - >
+      2017: Docker 1.13.0 is tagged; the deprecated-features documentation records
+      several 1.13-era deprecations and removals.
+    - >
+      2025: the Moby README notes Docker v29 deprecates the old github.com/docker/docker
+      Go module path in favor of supported Moby modules.
+    - >
+      2026: Docker Engine 29.x release notes document ongoing security, containerd,
+      BuildKit, runc, networking, rootless, and packaging updates.
+  usage:
+    - >
+      Users usually interact with Docker Engine through the docker CLI, while programs
+      call the Engine API. The daemon manages images, containers, networks, and volumes,
+      stores daemon configuration in daemon.json on supported platforms, and persists
+      daemon data under platform-specific data directories such as /var/lib/docker on
+      Linux.
+    - >
+      Common package-level usage includes installing dockerd as a service, configuring
+      daemon.json for hosts, storage, logging, proxies, or rootless mode, and keeping
+      Engine aligned with containerd, runc, BuildKit, and Docker CLI versions.
 tags:
   - cli
   - containers
@@ -40,6 +129,15 @@ provenance:
     - >
       source_facts.homepage is Docker's official site; the official Docker Engine docs
       are under docs.docker.com/engine/.
+  history-sources:
+    - https://docs.docker.com/engine/
+    - https://docs.docker.com/engine/daemon/
+    - https://docs.docker.com/get-started/docker-overview/
+    - https://github.com/moby/moby#readme
+    - https://github.com/moby/moby/blob/master/ROADMAP.md
+    - https://docs.docker.com/engine/release-notes/29/
+    - https://github.com/moby/moby/releases
+    - https://github.com/moby/moby/tags
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/moby/moby, so
@@ -54,5 +152,6 @@ category-path:
   - runtime
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

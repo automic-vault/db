@@ -7,6 +7,61 @@ config-file-location:
   unix:
     - ~/.docker-ls.[yaml|json|toml|...]
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Its README documents distribution through GitHub releases, Homebrew, Gentoo,
+      NixOS, Arch AUR, Docker images, and Go source installation. That packaging spread
+      is the main adoption signal: docker-ls became a convenience utility for users who
+      wanted registry inspection from package managers instead of hand-written Registry
+      API calls.
+  package-nerd-significance:
+    - >
+      For package maintainers and registry operators, docker-ls sits in the practical
+      gap between the high-level docker CLI and the lower-level Registry API. It is
+      notable because it packages registry inventory, manifest inspection, digest
+      lookup, and deletion workflows into small executables that can be installed beside
+      Docker.
+  project-history:
+    - >
+      The project presents itself as two CLI tools, docker-ls and docker-rm, centered on
+      Docker registry browsing and tag manipulation. The README ties it to Docker
+      Distribution/v2 registries, token authentication, OAuth2 credentials from docker
+      login, basic auth, and Docker credential helpers, placing it in the ecosystem of
+      registry operations rather than container runtime management.
+  related-projects:
+    - >
+      Related projects include Docker Distribution, Docker Hub, Docker credential
+      helpers, the Docker CLI, and registry-cleanup scripts that operate directly
+      against the Registry HTTP API.
+  sources:
+    - https://github.com/mayflower/docker-ls#readme
+    - https://github.com/distribution/distribution
+    - https://docs.docker.com/registry/spec/auth/token/
+  summary:
+    - >
+      docker-ls is a small Go command-line toolkit for browsing Docker Registry HTTP API
+      v2 registries. Its package value is less about being a general Docker replacement
+      and more about exposing registry-level details, especially tag lists, manifests,
+      and sha256 content digests, that are useful when maintaining private registries or
+      cleaning up old image tags.
+  timeline:
+    - >
+      Docker Registry v2 era: The project targets only v2 registries and the Docker
+      Distribution API.
+    - >
+      Package-manager adoption: The README documents Homebrew, Gentoo, NixOS, and Arch
+      AUR installation paths.
+    - >
+      Credential integration: The tool documents reuse of Docker credential stores and
+      helpers for authenticated registries.
+  usage:
+    - >
+      Typical usage is listing repositories on a registry, listing tags for a
+      repository, inspecting a tag's manifest, dumping raw manifests, parsing manifest
+      history, and deleting tags through docker-rm. It can reuse credentials from docker
+      login, target a custom registry with --registry, and output YAML, JSON, or
+      configured templates.
 tags:
   - cli
   - containers
@@ -35,6 +90,10 @@ provenance:
     - >
       source_facts.homepage is the official GitHub repository; README is the best
       official documentation surface.
+  history-sources:
+    - https://github.com/mayflower/docker-ls#readme
+    - https://github.com/distribution/distribution
+    - https://docs.docker.com/registry/spec/auth/token/
   repo-sources:
     - >
       source_facts.repo is already populated with
@@ -50,5 +109,6 @@ category-path:
   - registry
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

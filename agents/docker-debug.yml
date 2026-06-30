@@ -5,6 +5,55 @@ docs:
   - https://github.com/zeromake/docker-debug#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Evidence for broad adoption is thin. The project documents Homebrew and
+      binary-release installation, but the upstream materials mostly frame it as a
+      focused utility for users who want Kubernetes-style ephemeral debugging against
+      plain Docker containers.
+  package-nerd-significance:
+    - >
+      docker-debug is interesting to package nerds because it packages an operations
+      pattern rather than a large platform: ship debug tools separately, keep runtime
+      images small, and use Linux namespaces to inspect a live workload. Its niche also
+      makes it a good example of the long tail of Docker-era helper CLIs in Homebrew.
+  project-history:
+    - >
+      The README presents docker-debug as inspired by kubectl-debug and aimed at
+      inspecting running Docker containers by joining PID, network, user, filesystem,
+      and IPC namespaces. It uses nicolaka/netshoot as the default debug image and
+      supports overriding behavior with flags or a local TOML config file.
+    - >
+      The changelog shows rapid development in 2019 around mounting filesystems and
+      volumes, adding a Homebrew install path, default config from environment, and
+      config version management. Later entries are sparse, with v0.7.4 in 2022
+      documenting Docker client-version work and volume path handling.
+  related-projects:
+    - >
+      The README names kubectl-debug as the inspiration, nicolaka/netshoot as the
+      default debug image, and Docker Engine API documentation as a reference.
+  sources:
+    - https://github.com/zeromake/docker-debug#readme
+    - https://github.com/zeromake/docker-debug/blob/master/CHANGELOG.md
+    - https://github.com/zeromake/docker-debug/releases
+  summary:
+    - >
+      docker-debug is a small troubleshooting CLI that starts a new debug container
+      joined to a running target container's namespaces, allowing tools to be supplied
+      from a separate image instead of being baked into the production image.
+  timeline:
+    - >
+      2019: early v0.2.x-v0.6.x changelog entries add Homebrew installation, mounted
+      filesystems, volume filesystem support, and config defaults.
+    - '2020: v0.7.x releases include config client-version and migration fixes.'
+    - '2022: v0.7.4 documents Docker client-version work and volume path support.'
+  usage:
+    - >
+      A typical invocation is docker-debug CONTAINER COMMAND. The tool creates a
+      separate debug container, joins the target container's namespaces, mounts the
+      target filesystem, runs the requested command, and then cleans up after the debug
+      container exits.
 tags:
   - attach
   - cli
@@ -31,6 +80,10 @@ provenance:
     - >
       source_facts.homepage is the official GitHub repository; README is the best
       official documentation surface.
+  history-sources:
+    - https://github.com/zeromake/docker-debug#readme
+    - https://github.com/zeromake/docker-debug/blob/master/CHANGELOG.md
+    - https://github.com/zeromake/docker-debug/releases
   repo-sources:
     - >
       source_facts.repo is already populated with
@@ -46,5 +99,6 @@ category-path:
   - debugging
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: medium
