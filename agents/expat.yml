@@ -6,6 +6,80 @@ docs:
   - https://libexpat.github.io/doc/api/latest
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The Expat homepage states that numerous applications, libraries, and hardware use
+      Expat, that bindings and third-party wrappers exist, and that Expat is packaged
+      everywhere. That breadth is the key adoption story: many users never invoke xmlwf
+      directly, but they depend on Expat through another program or language runtime.
+    - >
+      The repository README documents common build-system integration, including CMake
+      find_package usage. That is a sign of mature library adoption: Expat is not just
+      an executable in package managers, but a dependency with headers, link targets,
+      and ABI expectations.
+  package-nerd-significance:
+    - >
+      Expat is a dependency-package archetype: boring when healthy, urgent when
+      vulnerable. It is small enough to be embedded or vendored, but important enough
+      that a security update can ripple through Python, Linux distributions, language
+      package sets, and embedded builds.
+    - >
+      The package also demonstrates the difference between library identity and command
+      identity. Homebrew exposes xmlwf as the executable, while the real package value
+      is libexpat and its headers.
+  project-history:
+    - >
+      The official repository describes Expat as a C99 library for parsing XML 1.0,
+      started by James Clark in 1997. Its model is event-oriented: users register
+      handlers before parsing, and those handlers are called as document structures are
+      discovered.
+    - >
+      The project site frames Expat around streaming rather than building a full
+      in-memory document tree. That makes it useful for files too large to fit in
+      memory, and for applications where parser performance and flexible callbacks are
+      more important than a high-level DOM interface.
+  related-projects:
+    - >
+      CPython is a major downstream because Python includes pyexpat bindings and
+      coordinates bundled Expat updates.
+    - CMake's FindEXPAT module is an important integration path for C and C++ projects.
+    - >
+      Other XML parsers are related by role, but Expat's official documentation
+      emphasizes its streaming C API.
+  sources:
+    - https://github.com/libexpat/libexpat
+    - https://libexpat.github.io/
+    - https://libexpat.github.io/doc/
+    - https://libexpat.github.io/doc/api/latest/
+    - https://github.com/libexpat/libexpat/issues/1030
+    - https://github.com/libexpat/libexpat/issues/1214
+  summary:
+    - >
+      Expat is a fast streaming XML parser library written in C, with xmlwf as its
+      command-line well-formedness checker. It is package-manager-famous because XML
+      parsing became infrastructure, and Expat is small, MIT-licensed, embeddable, and
+      widely shipped.
+  timeline:
+    - '1997: James Clark started Expat.'
+    - '2.4.x: Security releases triggered broad downstream package updates.'
+    - >
+      2025: Expat 2.7.2 release coordination referenced Homebrew, CPython, NixOS, MSYS2,
+      Spack, Gentoo, and other downstreams.
+    - >
+      2026: Expat 2.8.x release coordination continued around security fixes and
+      downstream updates.
+  usage:
+    - >
+      Developers use libexpat when they want a C XML parser that calls
+      application-defined handlers for starts, ends, character data, and related XML
+      structures. The included xmlwf executable is used to check whether XML input is
+      well formed.
+    - >
+      Because XML parsers sit at input boundaries, Expat's package history is often
+      security-driven. The official GitHub issue tracker includes release coordination
+      that references downstream updates in CPython, Gentoo, Spack, Homebrew, NixOS,
+      MSYS2, and other packaging ecosystems when CVE fixes land.
 tags:
   - c-library
   - cli
@@ -31,6 +105,13 @@ provenance:
   docs-sources:
     - official Expat API documentation at libexpat.github.io/doc/api/latest
     - official Expat documentation index at libexpat.github.io/doc
+  history-sources:
+    - https://github.com/libexpat/libexpat
+    - https://libexpat.github.io/
+    - https://libexpat.github.io/doc/
+    - https://libexpat.github.io/doc/api/latest/
+    - https://github.com/libexpat/libexpat/issues/1030
+    - https://github.com/libexpat/libexpat/issues/1214
   repo-sources:
     - source_facts.repo already populated; per instruction repo returned as null
   tags-sources:
@@ -43,5 +124,6 @@ category-path:
   - xml
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

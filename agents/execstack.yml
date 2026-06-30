@@ -5,6 +5,57 @@ docs:
   - https://people.redhat.com/jakub/prelink
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      execstack became a packaging and security-maintenance utility rather than a
+      day-to-day application. It is most useful when a third-party ELF binary or shared
+      object has incorrect PT_GNU_STACK markings and a packager needs to verify or clear
+      them without rebuilding the original source.
+  package-nerd-significance:
+    - >
+      Package maintainers care about execstack because it sits at the boundary between
+      compiler metadata, linker policy, and runtime hardening. A single bad
+      executable-stack bit can change security posture, so a tiny utility remains useful
+      even after prelink itself stopped being fashionable.
+  project-history:
+    - >
+      The tool belongs to the early-2000s Linux transition away from assuming that
+      process stacks were executable. Jakub Jelinek's 2003 binutils work introduced
+      PT_GNU_STACK so compilers, assemblers, and linkers could describe whether an
+      executable stack was needed; execstack provided a post-link command-line way to
+      inspect and override that metadata.
+    - >
+      The upstream prelink archive shows prelink tarballs beginning in 2001 and
+      continuing through a 2013 snapshot. The execstack manual page was obtained from
+      the prelink-20130503 tarball and dates the utility's documentation to October
+      2003.
+  related-projects:
+    - >
+      execstack is tied to prelink, GNU binutils, GCC .note.GNU-stack metadata, and ELF
+      dynamic-linker hardening behavior.
+  sources:
+    - https://people.redhat.com/jakub/prelink/
+    - https://man7.org/linux/man-pages/man8/execstack.8.html
+    - https://sourceware.org/legacy-ml/binutils/2003-05/msg00741.html
+  summary:
+    - >
+      execstack is a small ELF hardening utility from the prelink project. It exists to
+      query, set, or clear the executable-stack requirement recorded in ELF program
+      headers.
+  timeline:
+    - '2001: The prelink archive begins publishing source snapshots.'
+    - '2003: PT_GNU_STACK support is proposed for binutils.'
+    - '2003: execstack documentation describes querying and changing PT_GNU_STACK markings.'
+    - >
+      2013: The prelink archive publishes a later source snapshot used by manual-page
+      renderers.
+  usage:
+    - >
+      The common workflow is intentionally narrow: run execstack -q to report whether
+      files require an executable stack, execstack -c to mark known-safe objects as not
+      requiring one, or execstack -s for the rare case where a binary really needs
+      executable stack support.
 tags:
   - binary-analysis
   - cli
@@ -31,6 +82,10 @@ provenance:
     - >
       source_facts.homepage points to the official Red Hat prelink archive; this is the
       best official documentation/download surface found for execstack.
+  history-sources:
+    - https://people.redhat.com/jakub/prelink/
+    - https://man7.org/linux/man-pages/man8/execstack.8.html
+    - https://sourceware.org/legacy-ml/binutils/2003-05/msg00741.html
   repo-sources:
     - >
       Official Red Hat prelink page provides release archives, but no official HTTP(S)
@@ -44,5 +99,6 @@ category-path:
   - binary-analysis
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: medium
 repo-confidence: medium
 tags-confidence: high

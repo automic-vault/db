@@ -7,6 +7,86 @@ docs:
   - https://www.exim.org/exim-html-current/doc/html/spec_html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      An Exim 3.20 overview from 2000 already described production use at sites handling
+      hundreds of thousands of messages per day. The current documentation points to
+      mailing lists for announcements, user support, development, and automated VCS
+      messages, plus independent mirror sites, which reflects the classic Unix
+      server-project adoption pattern: distro packages, local site policy, mailing-list
+      support, and careful upgrades.
+    - >
+      Exim gained popularity as a sendmail-compatible replacement without requiring
+      administrators to learn sendmail configuration. Its current manual says Exim
+      adopts the Sendmail command-line interface so it can replace /usr/lib/sendmail or
+      /usr/sbin/sendmail for message submission, while still producing Exim-specific
+      output for administrative commands such as queue listings.
+  package-nerd-significance:
+    - >
+      For package maintainers, Exim is a security-sensitive daemon with signed upstream
+      releases, build-time paths, runtime privilege rules, and distro-specific defaults.
+      The official manual notes that the runtime configuration filename is compiled in
+      through CONFIGURE_FILE, which explains why packaged Exim builds often differ in
+      configuration paths and default integration details.
+    - >
+      Exim is also historically interesting because major policy behavior changed over
+      time. The official DNSBL HOWTO notes that Exim 4.00 moved incoming-mail policy
+      checks to ACLs, making Exim 4 configuration materially different from Exim 3 for
+      common anti-abuse setups.
+  project-history:
+    - >
+      The current Exim specification describes Exim as an MTA for Unix and Unix-like
+      hosts, designed around permanently connected Internet systems but configurable for
+      intermittent links. Its own introduction explicitly places it in the Smail 3
+      lineage: many ideas and user interfaces came from Smail, while the Exim codebase
+      was new and later grew beyond that initial model.
+    - >
+      Exim's documentation and distribution model are also part of its history. The
+      project has long shipped a large reference specification, command-line man page,
+      filter language documentation, upgrade notes, and per-release change logs. Source
+      releases are published from exim.org, with signed tarballs and a separate public
+      Git repository for people who want to track the source tree directly.
+  related-projects:
+    - Smail 3 is the direct design predecessor named by Exim's own documentation.
+    - >
+      Sendmail is the compatibility target for Exim's message-submission command-line
+      interface.
+    - >
+      DNSBL services, TLS libraries, DBM libraries, and content scanners are common
+      integration points documented around Exim deployments.
+  sources:
+    - https://www.exim.org/
+    - https://www.exim.org/exim-html-current/doc/html/spec_html/ch-introduction.html
+    - https://www.exim.org/download.html
+    - >
+      https://www.exim.org/exim-html-current/doc/html/spec_html/ch-the_exim_runtime_configuration_file.html
+    - https://www.exim.org/howto/rbl.html
+    - https://www.exim.org/exim-html-3.20/doc/html/oview.html
+  summary:
+    - >
+      Exim is a Unix-oriented mail transfer agent from the University of Cambridge,
+      built for Internet-connected hosts and distributed under the GPL. It matters in
+      package-manager culture because it is one of the long-lived sendmail replacements
+      that administrators can install as a real MTA, a queueing mail system, and a
+      command-line-compatible submission tool.
+  timeline:
+    - '2000: Exim 3.20 overview documented production use at high-volume sites.'
+    - '4.00: Incoming mail policy checks moved to ACLs.'
+    - '4.73: Runtime configuration file permission rules were tightened.'
+    - '4.99.4: Current specification documents the modern Exim 4 series.'
+  usage:
+    - >
+      Exim is used to receive, queue, route, and deliver mail over SMTP and related
+      transports. Administrators care about its runtime configuration file, router and
+      transport model, ACLs, queue runner, logs, and privileged execution model because
+      those determine how mail policy, local delivery, forwarding, relaying, and
+      security boundaries behave on a server.
+    - >
+      The package exposes a cluster of operational tools around the main exim binary,
+      such as queue inspection, log grepping, database maintenance, and statistics
+      commands. That shape is why it appears in package managers as a service-oriented
+      package rather than a single-purpose CLI utility.
 category: networking
 package-manager:
   apk: exim
@@ -48,5 +128,14 @@ executables:
   - exiwhat
 provenance:
   formula: exim
+  history-sources:
+    - https://www.exim.org/
+    - https://www.exim.org/exim-html-current/doc/html/spec_html/ch-introduction.html
+    - https://www.exim.org/download.html
+    - >
+      https://www.exim.org/exim-html-current/doc/html/spec_html/ch-the_exim_runtime_configuration_file.html
+    - https://www.exim.org/howto/rbl.html
+    - https://www.exim.org/exim-html-3.20/doc/html/oview.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
