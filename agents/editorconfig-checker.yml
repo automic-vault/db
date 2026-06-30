@@ -7,6 +7,58 @@ config-file-location:
   unix:
     - .editorconfig-checker.json
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption has been mostly through automation and packaging rather than editor
+      plugins. The README explicitly documents GitHub Actions-compatible output, Code
+      Climate JSON output, GCC-style diagnostics, Docker execution, and package-manager
+      installs, which made it fit naturally into CI jobs and pre-commit-style checks.
+  package-nerd-significance:
+    - >
+      For package metadata, editorconfig-checker is interesting because it turns a
+      cross-editor convention into an installable, headless validation tool. It is a
+      natural dependency for distribution maintainers, CI images, and repositories that
+      want formatting contracts without adopting a language-specific formatter.
+  project-history:
+    - >
+      The public GitHub repository was created in 2017 and describes the tool as a
+      verifier for files against .editorconfig. Its README frames the project around the
+      gap left by language-specific linters: one EditorConfig-aware checker can cover
+      whitespace, line ending, final newline, indentation, maximum line length, and
+      charset rules across a mixed repository.
+    - >
+      The project is implemented as a standalone command-line tool and publishes
+      prebuilt release archives. By the 3.x series it also documented Go installation,
+      Docker use, Homebrew, Nix, Arch Linux packages, and language-specific wrappers for
+      JavaScript/TypeScript, Python, and PHP ecosystems.
+  related-projects:
+    - >
+      Related projects include EditorConfig itself, editorconfig-core-c, and the npm,
+      PyPI, and Composer wrappers listed by the checker README.
+  sources:
+    - https://github.com/editorconfig-checker/editorconfig-checker
+    - >
+      https://raw.githubusercontent.com/editorconfig-checker/editorconfig-checker/master/README.md
+    - https://api.github.com/repos/editorconfig-checker/editorconfig-checker
+    - https://github.com/editorconfig-checker/editorconfig-checker/releases/tag/v3.8.0
+  summary:
+    - >
+      editorconfig-checker is a small CI-friendly companion to EditorConfig: instead of
+      teaching an editor how to apply a project's .editorconfig file, it checks the
+      files in a tree and reports where they do not match the rules.
+  timeline:
+    - '2017: Public GitHub repository created.'
+    - '2026: v3.8.0 published with README installation examples and release artifacts.'
+  usage:
+    - >
+      The common usage is to run editorconfig-checker at a repository root. With no file
+      arguments it checks tracked text files, and with explicit file arguments it checks
+      just those paths while still honoring configured excludes.
+    - >
+      Configuration can be passed on the command line or read from
+      .editorconfig-checker.json, with .ecrc retained as a deprecated name. The tool
+      also has an init mode for creating a starting configuration.
 tags:
   - ci
   - cli
@@ -34,6 +86,12 @@ provenance:
     - >
       source_facts.homepage and source_facts.repo point to the official GitHub project;
       README is the official documentation surface.
+  history-sources:
+    - https://github.com/editorconfig-checker/editorconfig-checker
+    - >
+      https://raw.githubusercontent.com/editorconfig-checker/editorconfig-checker/master/README.md
+    - https://api.github.com/repos/editorconfig-checker/editorconfig-checker
+    - https://github.com/editorconfig-checker/editorconfig-checker/releases/tag/v3.8.0
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -46,5 +104,6 @@ category-path:
   - linting
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -7,6 +7,81 @@ config-file-location:
   unix:
     - .editorconfig
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      EditorConfig spread through both plugin ecosystems and native editor support. The
+      official site distinguishes editors that need plugins from editors where no plugin
+      is necessary, and it lists a wide range of IDEs, source hosts, and editors with
+      built-in or installable support.
+    - >
+      The format also became common in version-controlled source trees because it is
+      intentionally readable, language-neutral, and stored beside the project code. That
+      let teams encode indentation, line endings, final newline policy, charset, and
+      trimming rules without requiring everyone to use the same editor.
+  package-nerd-significance:
+    - >
+      EditorConfig is package-nerd-important because it is one of the few dotfile
+      formats that functions as shared social infrastructure across languages, editors,
+      IDEs, and source hosts. A tiny INI-like file reduces editor wars to a portable
+      contract.
+    - >
+      Its C core is also a good example of the Unix packaging pattern where a broader
+      standard ships as a small CLI and library, letting distributions package the
+      reference behavior while editor and tooling ecosystems build on top.
+  project-history:
+    - >
+      The EditorConfig site describes the project as both a file format and a collection
+      of editor plugins for maintaining consistent coding styles across editors and
+      IDEs. The site repository was created in 2011, and the C core repository followed
+      in 2012 as reusable parser and locator code for integrations.
+    - >
+      The editorconfig-core-c README explains why the C core exists: plugin authors can
+      share file location, INI parsing, and glob matching behavior instead of repeating
+      that logic in every editor integration. The command-line program accepts a
+      filename, searches for applicable .editorconfig files, and outputs the matching
+      properties.
+    - >
+      The formal specification later separated the format contract from individual
+      implementations, giving package maintainers and editor authors a stable target for
+      behavior such as section globbing, root=true search termination, supported
+      properties, and value parsing.
+  related-projects:
+    - >
+      Related official projects include the EditorConfig website, the formal spec,
+      editorconfig-core-c, editor plugins listed on editorconfig.org, and headless-tool
+      integrations for build systems.
+  sources:
+    - https://editorconfig.org/
+    - https://spec.editorconfig.org/
+    - https://docs.editorconfig.org/
+    - https://github.com/editorconfig/editorconfig-core-c
+    - https://raw.githubusercontent.com/editorconfig/editorconfig-core-c/master/README.md
+    - https://api.github.com/repos/editorconfig/editorconfig.github.com
+    - https://api.github.com/repos/editorconfig/editorconfig-core-c
+    - https://github.com/editorconfig/editorconfig-core-c/releases/tag/v0.12.11
+  summary:
+    - >
+      EditorConfig is a cross-editor coding-style convention built around one plain text
+      file named .editorconfig. Its package-manager identity is the command-line C core,
+      but its cultural footprint is broader: a file format, a formal spec, core parsers,
+      and editor integrations.
+  timeline:
+    - '2011: Official website repository created.'
+    - '2012: editorconfig-core-c repository created for the C core library and CLI.'
+    - >
+      2014: EditorConfig Core 0.11.0 adds brace expansion support, as noted in the
+      official file-format documentation.
+    - '2026: editorconfig-core-c v0.12.11 published.'
+  usage:
+    - >
+      Users place a .editorconfig file in a project directory. Plugins search from the
+      opened file upward, stop at filesystem root or a file with root=true, and apply
+      matching sections in order so closer files can override parent settings.
+    - >
+      The Homebrew package exposes the editorconfig CLI from editorconfig-core-c. That
+      makes the same convention useful outside editors, including scripts, plugin
+      development, and diagnostic checks.
 tags:
   - cli
   - coding-style
@@ -36,6 +111,15 @@ provenance:
     - >
       source_facts.homepage is the official EditorConfig site and primary documentation
       surface.
+  history-sources:
+    - https://editorconfig.org/
+    - https://spec.editorconfig.org/
+    - https://docs.editorconfig.org/
+    - https://github.com/editorconfig/editorconfig-core-c
+    - https://raw.githubusercontent.com/editorconfig/editorconfig-core-c/master/README.md
+    - https://api.github.com/repos/editorconfig/editorconfig.github.com
+    - https://api.github.com/repos/editorconfig/editorconfig-core-c
+    - https://github.com/editorconfig/editorconfig-core-c/releases/tag/v0.12.11
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -48,5 +132,6 @@ category-path:
   - configuration
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
