@@ -7,6 +7,91 @@ docs:
   - https://www.coker.com.au/bonnie++
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Bonnie++ became a standard Unix storage-benchmark package because it is simple,
+      scriptable, and old enough to have been used across multiple storage generations:
+      spinning disks, RAID arrays, SSDs, and NVMe devices. The input package metadata
+      lists Homebrew, Debian, Ubuntu, Fedora, Nix, Pacman, and zypper coverage, showing
+      broad distribution adoption.
+    - >
+      Its adoption is strongest among system administrators, filesystem developers, and
+      distribution users who need a packaged benchmark that can run on real filesystems
+      without a large harness. The related zcav tool is especially tied to older disk
+      behavior because it can expose zone-dependent throughput across a drive.
+  package-nerd-significance:
+    - >
+      Bonnie++ is package-nerd gold because it is one of the old, durable benchmark
+      utilities that distributions keep carrying long after newer benchmark suites
+      appear. It exposes how Unix packaging preserves small specialist tools that remain
+      useful because they are portable, scriptable, and familiar.
+    - >
+      It also represents a practical packaging challenge from the
+      pre-modern-build-system era: multiple helper executables, aging C++ code,
+      portability fixes for compilers and operating systems, and release tarballs
+      maintained from a personal upstream site rather than a public forge. That
+      combination makes it historically interesting to maintainers even when the
+      command-line surface is simple.
+  project-history:
+    - >
+      The original Bonnie was a small Unix filesystem benchmark by Tim Bray. Bonnie++
+      reused that lineage but expanded the test model: large-file database-like I/O,
+      small-file creation/read/delete workloads, CSV and HTML result tooling, and zcav
+      for measuring performance across disk zones.
+    - >
+      Russell Coker's official Bonnie++ page, copyright 2001, states that Bonnie++ is
+      based on Tim Bray's Bonnie and explains why it reports several measurements rather
+      than a single number. The same page tracks the classic 1.0x release line,
+      including portability fixes, direct I/O support, zcav improvements, and reporting
+      changes.
+    - >
+      Coker's later project page documents the 1.90 through 2.00a era. That stream added
+      threading, latency reporting, per-character I/O test changes, better CSV and HTML
+      handling, large directory fixes, GCC compatibility fixes, direct I/O,
+      NVMe-oriented random seek options, and an attempted 2.x rewrite away from the old
+      fork-based model.
+  related-projects:
+    - Bonnie by Tim Bray is the direct predecessor.
+    - zcav began as a separate package and is included as a disk-zone benchmark companion.
+    - >
+      Postal, another Russell Coker benchmark, is linked from the Bonnie++ page as a
+      mail-server benchmark and related hard-drive test.
+  sources:
+    - https://doc.coker.com.au/projects/bonnie
+    - https://www.coker.com.au/bonnie++
+    - source_facts.package-manager
+  summary:
+    - >
+      Bonnie++ is Russell Coker's filesystem and hard-drive benchmark suite, descended
+      from Tim Bray's original Bonnie benchmark. It measures several distinct storage
+      behaviors instead of reducing filesystem performance to one synthetic score.
+  timeline:
+    - >
+      2001: Russell Coker's Bonnie++ page is copyrighted and describes Bonnie++ as based
+      on Tim Bray's Bonnie.
+    - >
+      2002-era 1.03 releases: GCC 3.2 compatibility and zcav write support appear in the
+      classic release list.
+    - >
+      1.04: Release adds larger I/O tests, more file-creation test coverage, and Solaris
+      direct I/O support.
+    - '1.90a: The later release stream adds basic threading and changes CSV format.'
+    - '1.93: Adds a per-character I/O test program for linux-kernel mailing-list users.'
+    - '1.95: Adds direct I/O support and drops NT and OS/2 build support.'
+    - '1.98: Adds NVMe-oriented random seek controls and KiB/MiB/GiB reporting.'
+    - '2.00a: Starts a rewrite toward a threaded Bonnie++ 2.x design.'
+  usage:
+    - >
+      Bonnie++ is used to run repeatable filesystem tests that separate sequential I/O,
+      random seeks, metadata-heavy small-file operations, and reporting. Its output is
+      often captured as CSV and converted by companion tools such as bon_csv2html or
+      bon_csv2txt for comparison across machines and filesystems.
+    - >
+      The maintainer explicitly warns against a single overall score, which is part of
+      the tool's culture: users are expected to decide which metric matters for their
+      workload, such as maildir-like small files, database-like large files, or
+      disk-zone variation.
 category: system
 package-manager:
   brew: bonnie++

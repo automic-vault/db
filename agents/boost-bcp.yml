@@ -7,6 +7,94 @@ docs:
   - https://www.boost.org/tools/bcp
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      BCP is not a mainstream end-user command so much as a specialist tool for C++
+      packaging and vendoring. Its adoption follows Boost itself: wherever developers
+      wanted a subset of Boost without shipping the full tree, BCP provided an official
+      route.
+    - >
+      Homebrew's separate boost-bcp formula reflects package-manager recognition that
+      this utility is useful on its own, even when the complete Boost distribution is
+      available separately. That split is exactly the sort of detail package maintainers
+      care about: one executable from a giant upstream project, packaged for a narrow
+      but real workflow.
+  package-nerd-significance:
+    - >
+      Boost BCP is deeply package-nerd significant because it is an upstream-sanctioned
+      answer to vendoring before modern C++ dependency managers were common. It turns a
+      huge source distribution into a smaller redistributable tree while preserving
+      transitive headers, compiled-library source, build metadata, and license
+      accounting.
+    - >
+      It also exposes a tension every C++ package maintainer knows: header-only
+      libraries are not really dependency-free once portability macros, compiler
+      workarounds, and optional source libraries enter the graph. BCP's deliberately
+      conservative dependency expansion is a historical artifact of Boost's promise to
+      work across many compilers and platforms.
+  project-history:
+    - >
+      The boostorg/bcp Git history contains an initial commit adding the BCP utility in
+      June 2003, followed quickly by dependency-analysis fixes and the report mode. That
+      places BCP in the early era when Boost was becoming a large, modular C++ library
+      collection and users needed tooling to manage subsets.
+    - >
+      The official BCP documentation, copyrighted 2009 by John Maddock, describes the
+      core job that has remained stable: copy headers, library source, build files, and
+      transitive dependencies for a named Boost component or for dependencies discovered
+      by scanning user code. It can also generate HTML reports listing licenses,
+      copyright holders, and dependency reasons.
+    - >
+      BCP continued to be released with Boost version tags after Boost moved to the
+      modular GitHub organization. The tool's repository carries Boost release tags from
+      the 1.31 era onward, and its README points users to the canonical boost.org
+      documentation.
+  related-projects:
+    - Boost is the parent C++ library collection and release ecosystem.
+    - >
+      Boost.Build is related because BCP can copy build files and the build system for
+      selected libraries.
+    - >
+      Boost.Regex is a prominent documented example because BCP can copy its headers,
+      source, build data, and dependencies.
+    - >
+      boostdep is related as another Boost tool for dependency work in the modular
+      repository era.
+  sources:
+    - https://github.com/boostorg/bcp#readme
+    - https://github.com/boostorg/boost#readme
+    - https://raw.githubusercontent.com/boostorg/bcp/develop/doc/bcp.qbk
+    - https://www.boost.org/doc/libs/release/tools/bcp/doc/html/index.html
+    - source_facts.package-manager
+  summary:
+    - >
+      Boost BCP is the Boost project utility for extracting a usable subset of Boost and
+      its dependencies. It is aimed at Boost authors who distribute a library outside
+      Boost and at application developers who want to vendor only the Boost pieces they
+      need.
+  timeline:
+    - '2003-06-09: Initial Git history entry adds the BCP utility.'
+    - '2003-06-23: Dependency-analysis fixes and report mode are added.'
+    - '2004-02-04: boost-1.31.0 tag appears in the BCP repository history.'
+    - >
+      2009: Official QuickBook documentation records John Maddock copyright and BCP
+      usage model.
+    - >
+      2010s: Boost's modular GitHub organization makes BCP available as boostorg/bcp
+      while still releasing with Boost.
+    - '2024: Recent Boost release tags continue to include the BCP repository.'
+  usage:
+    - >
+      The documented examples include copying `boost/scoped_ptr.hpp` and dependencies,
+      copying Boost.Regex with source and build files, copying whole libraries, renaming
+      the Boost namespace for vendored builds, scanning non-Boost source files for Boost
+      includes, and generating HTML dependency/license reports.
+    - >
+      BCP intentionally follows broad dependency paths because a portable Boost subset
+      must often include headers for multiple compilers, platforms, and preprocessor
+      branches. The docs warn that dependency sets can look fat compared with what one
+      compiler happens to use.
 tags:
   - boost
   - cli
@@ -38,6 +126,12 @@ provenance:
     - >
       Official boostorg/bcp README links to full Boost documentation:
       https://github.com/boostorg/bcp#readme
+  history-sources:
+    - https://github.com/boostorg/bcp#readme
+    - https://github.com/boostorg/boost#readme
+    - https://raw.githubusercontent.com/boostorg/bcp/develop/doc/bcp.qbk
+    - https://www.boost.org/doc/libs/release/tools/bcp/doc/html/index.html
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already provides an official repository, so repo output is null
@@ -52,5 +146,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

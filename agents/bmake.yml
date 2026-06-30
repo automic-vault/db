@@ -10,6 +10,89 @@ config-file-location:
     - ./Makefile
     - /usr/share/mk/sys.mk
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      bmake's biggest adoption channel is pkgsrc. The official pkgsrc guide tells users
+      on systems other than NetBSD to use bmake after bootstrapping, and NetBSD's
+      package documentation says bmake is required for correct pkgsrc operation on
+      non-NetBSD systems.
+    - >
+      Because pkgsrc targets many Unix-like systems, bmake became a quiet portability
+      layer for package builds on Linux, macOS, Solaris/illumos, the BSDs, and other
+      platforms where /usr/bin/make is not NetBSD make.
+    - >
+      It is also packaged directly by Homebrew, MacPorts, Debian/Ubuntu, Fedora, Arch,
+      Alpine, openSUSE, and Nix, which makes it easy to test BSD makefiles without
+      installing a full pkgsrc tree.
+  package-nerd-significance:
+    - >
+      bmake is package-nerd-significant because it explains why portable packaging
+      systems do not all standardize on GNU make. pkgsrc needs one make dialect
+      everywhere, so it carries the make implementation with the packaging framework.
+    - >
+      It is also a reminder that make is not one language. Subtle differences in
+      conditionals, suffix rules, includes, variable expansion, and predefined .mk files
+      can decide whether a cross-platform package build is reproducible or mysterious.
+    - >
+      For Homebrew users, bmake is mostly a compatibility and archaeology tool: it lets
+      macOS users build or inspect software written for NetBSD/pkgsrc conventions
+      without repointing the system make.
+  project-history:
+    - >
+      NetBSD make descends from the BSD make family rather than GNU make. bmake packages
+      that implementation for other Unix-like systems, preserving the conditionals,
+      variable modifiers, include behavior, and .mk conventions expected by BSD
+      makefiles.
+    - >
+      The bmake documentation describes a portable build that tracks NetBSD make while
+      being installable as a separate command. The separate name matters because many
+      systems already reserve make for GNU make, vendor make, or another platform make.
+    - >
+      The tool is maintained by Simon J. Gerraty, who has long maintained the portable
+      bmake distribution and related mk files used to bring NetBSD-style builds to
+      non-NetBSD hosts.
+  related-projects:
+    - 'NetBSD make: the upstream make implementation bmake packages for portable use.'
+    - "pkgsrc: the NetBSD packages collection and bmake's most important adoption path."
+    - >
+      BSD make and FreeBSD make: related BSD make dialects with overlapping history but
+      different platform defaults.
+    - >
+      GNU make: the dominant make implementation on many Linux systems and the tool
+      bmake commonly coexists with.
+  sources:
+    - https://www.crufty.net/help/sjg/bmake.html
+    - https://www.crufty.net/help/sjg/bmake_1.htm
+    - https://www.netbsd.org/docs/pkgsrc/platforms.html
+    - https://www.netbsd.org/docs/software/packages.html
+    - https://www.pkgsrc.org/
+    - source_facts.package-manager
+  summary:
+    - >
+      bmake is Simon J. Gerraty's portable distribution of NetBSD make, packaged so
+      systems outside NetBSD can use the BSD make dialect and the /usr/share/mk-style
+      build framework.
+  timeline:
+    - '1990s: NetBSD continues the BSD make lineage as part of the base system.'
+    - >
+      1998: pkgsrc ships with NetBSD 1.3 and later becomes a major driver for portable
+      NetBSD make usage.
+    - >
+      2000s: bmake is distributed as a portable form of NetBSD make for non-NetBSD
+      pkgsrc and standalone builds.
+    - >
+      2010s-2020s: pkgsrc documentation continues to direct non-NetBSD users to the
+      bootstrapped bmake command.
+  usage:
+    - >
+      Typical direct use is simply bmake in a source tree whose Makefile expects BSD
+      make semantics. In pkgsrc workflows, users run bmake install, bmake clean, and
+      related package targets after bootstrap.
+    - >
+      bmake reads local makefile/Makefile inputs and system .mk includes such as sys.mk,
+      so it is both a build command and an interpreter for a particular makefile
+      language.
 tags:
   - build-system
   - cli
@@ -36,6 +119,13 @@ provenance:
     - >
       Official bmake page and linked bmake(1) manual on crufty.net document the project
       and command behavior.
+  history-sources:
+    - https://www.crufty.net/help/sjg/bmake.html
+    - https://www.crufty.net/help/sjg/bmake_1.htm
+    - https://www.netbsd.org/docs/pkgsrc/platforms.html
+    - https://www.netbsd.org/docs/software/packages.html
+    - https://www.pkgsrc.org/
+    - source_facts.package-manager
   repo-sources:
     - >
       Official bmake page provides release tarballs and calls the GitHub URL a NetBSD
@@ -48,5 +138,6 @@ category-path:
   - build-system
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: medium
 tags-confidence: high
