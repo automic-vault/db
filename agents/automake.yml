@@ -8,6 +8,80 @@ config-file-location:
     - Makefile.am
     - configure.ac
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Automake's adoption is tied to the spread of Autotools as the default build
+      machinery for GNU packages and many non-GNU Unix projects. The batch input lists
+      Automake in Homebrew, Debian/Ubuntu, Fedora, Arch, Alpine, MacPorts, Nix, and
+      openSUSE, reflecting how standard it is in development environments.
+    - >
+      For package managers, Automake is both a direct package and a build dependency.
+      Formulae and distro recipes often need specific automake/aclocal versions when
+      regenerating build files, especially for projects that ship old Autotools
+      metadata.
+  package-nerd-significance:
+    - >
+      Automake is historically important because it standardized a huge amount of
+      portable Unix build behavior into generated makefiles. Package nerds care because
+      Autotools failures often reduce to Automake version expectations, missing m4
+      macros, stale generated files, or distribution tarball rules.
+    - >
+      It is also a compatibility artifact: even projects migrating to Meson, CMake, or
+      language-native build systems may carry old Automake releases in package histories
+      and bootstrap scripts.
+  project-history:
+    - >
+      Automake was written to reduce the burden of maintaining large, portable
+      Makefile.in templates by hand. Its official manual history credits the early
+      project to Tom Tromey and describes Automake as part of the GNU build system
+      alongside Autoconf and Libtool.
+    - >
+      The Automake manual frames the package around Makefile.am files, configure.ac, GNU
+      Coding Standards conventions, and generated Makefile.in output. Over time it
+      absorbed a large catalog of conventions for recursive builds, installed programs,
+      libraries, tests, distribution tarballs, Texinfo, gettext, and portability checks.
+    - >
+      Because Automake generates files consumed by configure and make, it became a
+      maintainer-side tool in many projects: release tarballs often include generated
+      Makefile.in files so end users do not need Automake, while developers building
+      from VCS do.
+  related-projects:
+    - >
+      GNU Autoconf generates configure scripts that pair with Automake-generated
+      Makefile.in files.
+    - GNU Libtool handles portable library-building concerns commonly used with Automake.
+    - >
+      autoreconf orchestrates regeneration of Autotools files and often invokes aclocal
+      and automake.
+  sources:
+    - https://git.savannah.gnu.org/cgit/automake.git
+    - https://www.gnu.org/software/automake/
+    - https://www.gnu.org/software/automake/manual/automake.html
+    - source_facts.package-manager
+  summary:
+    - >
+      GNU Automake is one of the core GNU Autotools. It generates portable, GNU
+      Standards-oriented Makefile.in files from maintainer-written Makefile.am input,
+      sitting between Autoconf's configure scripts and make's build execution.
+  timeline:
+    - >
+      1990s: Automake emerges in the GNU build-system ecosystem to generate Makefile.in
+      files from Makefile.am.
+    - >
+      2000s: Automake becomes a normal dependency for maintainers building GNU and Unix
+      projects from source control.
+    - '2020s: Automake remains packaged broadly as part of standard developer-tool stacks.'
+  usage:
+    - >
+      Maintainers write Makefile.am files and a configure.ac script, run aclocal and
+      automake as part of the autoreconf/bootstrap flow, and ship or build from
+      generated Makefile.in files. Users normally encounter automake indirectly through
+      autoreconf, ./configure, and make.
+    - >
+      The official curation correctly treats Makefile.am and configure.ac as the
+      package's relevant configuration/build-input files; Automake has no credentials
+      file.
 tags:
   - autotools
   - build-system
@@ -25,28 +99,32 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      https://www.gnu.org/software/automake/ describes Automake as generating GNU Coding
-      Standards-compliant Makefile.in files.
+    - current_curation.category
+    - 'source_facts.description: Tool for generating GNU Standards-compliant Makefiles'
   display-name-sources:
-    - https://www.gnu.org/software/automake/ uses the GNU Automake project name.
+    - GNU Automake manual
+    - current_curation.display-name
   docs-sources:
-    - >
-      https://www.gnu.org/software/automake/ links the Automake manual in HTML; the
-      manual identifies GNU Automake and documents Makefile.am and configure.ac inputs.
+    - GNU Automake manual
+    - current_curation.docs
+  history-sources:
+    - https://git.savannah.gnu.org/cgit/automake.git
+    - https://www.gnu.org/software/automake/
+    - https://www.gnu.org/software/automake/manual/automake.html
+    - source_facts.package-manager
   repo-sources:
     - >
-      https://www.gnu.org/software/automake/ says Automake development sources are
-      fetched through git from Savannah and links the Automake source repository.
+      current_curation.repo identifies the official Savannah cgit repository;
+      source_facts.repo was empty so repo is returned.
   tags-sources:
-    - >
-      https://www.gnu.org/software/automake/manual/automake.html describes Automake as
-      an Autotools build tool that generates Makefile.in files from Makefile.am.
+    - GNU Automake manual
+    - current_curation.tags
+    - source_facts.description
 category-confidence: high
 category-path:
   - developer-tools
-  - build-system
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

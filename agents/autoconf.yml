@@ -1,12 +1,90 @@
 id: brew:autoconf
 display-name: GNU Autoconf
-repo: https://git.savannah.gnu.org/gitweb?p=autoconf.git
+repo: https://git.savannah.gnu.org/cgit/autoconf.git
 docs:
   - https://www.gnu.org/software/autoconf/manual
 config-file-location:
   unix:
     - configure.ac
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Autoconf spread through GNU and portable Unix software because it solved the
+      painful problem of discovering headers, functions, compilers, libraries,
+      filesystem quirks and platform behavior at build time. The manual notes that
+      generated configure scripts test individual features rather than relying on static
+      tables of operating-system variants.
+    - >
+      Its adoption history is also visible in package-manager coverage: the input facts
+      list Autoconf across Homebrew, Debian, Ubuntu, Fedora/dnf, Arch/pacman,
+      Alpine/apk, MacPorts, Nix and openSUSE/zypper. For decades, ./configure && make &&
+      make install has been a cultural baseline of Unix source distribution, and
+      Autoconf is the tool most associated with generating that first step.
+  package-nerd-significance:
+    - >
+      Autoconf matters to package nerds because it is both infrastructure and folklore.
+      It explains why so many source packages have configure.ac in git but ship a
+      generated configure script in release tarballs, and why package builds often patch
+      m4 macros or rerun autoreconf after applying downstream changes.
+    - >
+      It also embodies the portability contract between upstream tarballs and downstream
+      packagers: generated scripts should run with only a POSIX-like shell, while
+      maintainers absorb the complexity of M4, feature probes and macro compatibility.
+  project-history:
+    - >
+      The Autoconf manual's history chapter, written by original author David MacKenzie,
+      traces the project to June 1991, when MacKenzie was maintaining GNU utilities and
+      wrote a shell script to guess build settings for fileutils rather than forcing
+      users to choose many makefile -D options by hand.
+    - >
+      After adapting similar scripts for other GNU packages and receiving requests for a
+      generator, MacKenzie began turning the hand-maintained configure scripts into
+      Autoconf. The AUTHORS file credits MacKenzie as the original author with help from
+      François Pinard, Karl Berry, Richard Pixley, Ian Lance Taylor, Roland McGrath,
+      Noah Friedman and many others.
+    - >
+      Autoconf became a pillar of the broader GNU build system with Automake and
+      Libtool. Its generated configure scripts are intentionally independent of Autoconf
+      at run time, which made it especially attractive for source tarballs distributed
+      to users who might not have the full build toolchain installed.
+  related-projects:
+    - Autoconf is normally discussed with Automake, Libtool, Gnulib and the Autoconf Archive.
+    - >
+      The manual contrasts Autoconf's feature-test approach with table-driven configure
+      systems and hand-written configure scripts.
+  sources:
+    - https://ftp.gnu.org/gnu/autoconf/autoconf-2.72.tar.xz
+    - https://git.savannah.gnu.org/cgit/autoconf.git
+    - https://www.gnu.org/software/autoconf/manual
+  summary:
+    - >
+      GNU Autoconf is one of the central tools of the GNU build system: it generates
+      portable configure shell scripts from configure.ac input so source packages can
+      adapt themselves to Unix-like systems.
+  timeline:
+    - >
+      1991: David MacKenzie writes early configure scripts for GNU utilities and begins
+      the path toward Autoconf.
+    - >
+      1990s: Autoconf becomes part of the GNU build-system toolchain alongside Automake
+      and Libtool.
+    - >
+      2000: GNU Autoconf, Automake and Libtool is published, documenting the combined
+      build environment.
+    - >
+      2023: Autoconf 2.72 is released on 2023-12-22 with C23/Y2038-related updates and
+      modernized requirements.
+  usage:
+    - >
+      Package maintainers write configure.ac and run autoconf to produce a configure
+      script. Depending on the package, related files may include aclocal.m4, acsite.m4,
+      config.h.in, Makefile.in, config.status, config.cache and config.log.
+    - >
+      End users usually do not run autoconf directly; they run the generated configure
+      script from a release tarball. Developers and distribution maintainers use
+      autoreconf, autoheader, autoscan, autoupdate and autom4te when regenerating or
+      modernizing build machinery.
 tags:
   - autotools
   - build-system
@@ -24,26 +102,28 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official GNU Autoconf page describes it as M4 macros that produce configure
-      scripts for source packages.
+    - https://www.gnu.org/software/autoconf/manual
+    - source_facts.description
   display-name-sources:
-    - Official GNU page and manual identify the software as GNU Autoconf.
+    - current_curation.display-name
+    - https://www.gnu.org/software/autoconf/manual
   docs-sources:
-    - >
-      Official GNU Autoconf page points to https://www.gnu.org/software/autoconf/manual/
-      for documentation.
+    - Official GNU Autoconf manual
+  history-sources:
+    - https://ftp.gnu.org/gnu/autoconf/autoconf-2.72.tar.xz
+    - https://git.savannah.gnu.org/cgit/autoconf.git
+    - https://www.gnu.org/software/autoconf/manual
   repo-sources:
-    - Official GNU Autoconf page links to the web git tree for the latest development sources.
+    - Autoconf manual development section points to the Savannah cgit repository
+    - current_curation.repo
   tags-sources:
-    - >
-      Official GNU Autoconf page describes configure-script generation for UNIX-like
-      systems and related GNU build tools.
+    - https://www.gnu.org/software/autoconf/manual
+    - source_facts.description
 category-confidence: high
 category-path:
   - developer-tools
-  - build-system
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

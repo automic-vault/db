@@ -6,9 +6,78 @@ docs:
   - https://authoscope.readthedocs.io/en/latest
   - https://authoscope.readthedocs.io/en/latest/config.html
   - https://authoscope.readthedocs.io/en/latest/usage.html
+  - https://github.com/kpcyrd/authoscope#readme
 config-file-location:
   unix: ~/.config/authoscope.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Official installation docs mention Arch Linux packaging and Homebrew on macOS,
+      with source installation through Rust/Cargo. The Homebrew formula packages 0.8.1
+      from the official GitHub tag, and the input package-manager facts also list Nix
+      and pacman packaging.
+    - >
+      The project has a smaller, security-specialist footprint rather than broad
+      mainstream adoption. Its value comes from being packaged as a ready-made CLI for
+      authorized testing workflows that otherwise devolve into bespoke Python scripts.
+  package-nerd-significance:
+    - >
+      authoscope is package-nerd interesting because it is a security tool with a
+      language-runtime split: Rust for the engine, Lua for target-specific probes, and
+      OS packages for delivery.
+    - >
+      It also shows how naming history leaks into packaging. The old `badtouch` binary
+      remains visible in the Homebrew input executables, while the current project name
+      and docs are authoscope.
+  project-history:
+    - >
+      The upstream repository was created in March 2018. The README explicitly positions
+      authoscope against established tools such as Ncrack, Hydra, and Medusa, arguing
+      that custom web applications still force testers to write one-off scripts.
+    - >
+      The project originally shipped a `badtouch` binary; release notes for v0.8.0 in
+      May 2021 renamed the tool to `authoscope` while keeping the old binary
+      temporarily. Version 0.8.1 in March 2022 updated dependencies for OpenSSL 3 build
+      compatibility.
+  related-projects:
+    - >
+      The README compares authoscope with Ncrack, Hydra, and Medusa. Its scripting model
+      overlaps conceptually with one-off Python requests scripts, but provides a
+      packaged concurrent runtime.
+  sources:
+    - https://api.github.com/repos/kpcyrd/authoscope
+    - https://authoscope.readthedocs.io/en/latest/config.html
+    - https://authoscope.readthedocs.io/en/latest/usage.html
+    - https://formulae.brew.sh/api/formula/authoscope.json
+    - https://github.com/kpcyrd/authoscope#readme
+    - https://github.com/kpcyrd/authoscope/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      authoscope is a Rust security CLI for scriptable network authentication testing.
+      Its niche is custom-service credential testing: rather than hardcoding protocols
+      like older cracking tools, it embeds Lua scripts that define a `verify(user,
+      password)` function while the runtime handles concurrency, progress, and
+      reporting.
+  timeline:
+    - '2018: Public GitHub repository created.'
+    - >
+      2018: ReadTheDocs build metadata and repository metadata place the initial public
+      documentation era in 2018.
+    - '2021: v0.8.0 renamed `badtouch` to `authoscope`.'
+    - '2022: v0.8.1 updated dependencies for OpenSSL 3 build compatibility.'
+  usage:
+    - >
+      authoscope supports dictionary attacks, credential confirmation, username
+      enumeration, and one-shot script debugging. Scripts are written in Lua and can use
+      helper functions for HTTP sessions, HTML selection, sockets, LDAP, MySQL, hashing,
+      HMAC, encoding, sleeps, and external command execution.
+    - >
+      The documented config file is `~/.config/authoscope.toml`, used for defaults such
+      as a global user agent and file-descriptor limits. Credentials are normally
+      supplied as user/password lists, combo files, or command arguments rather than
+      being stored in a fixed credentials file.
 category: security
 package-manager:
   brew: authoscope

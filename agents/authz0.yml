@@ -4,14 +4,82 @@ repo: null
 docs:
   - https://authz0.hahwul.com/
   - https://authz0.hahwul.com/installation.html
-  - https://authz0.hahwul.com/usage.html
+  - https://authz0.hahwul.com/structure/template.html
+  - https://authz0.hahwul.com/usage
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Authz0 is distributed through Go install, Homebrew via the project's tap
+      instructions, Snapcraft, Docker, and a GitHub Action according to official docs
+      and the README. The Homebrew core formula packages 1.1.2 from the official GitHub
+      tag, while the input also records Nix packaging.
+    - >
+      The tool sits in the bug-bounty and application-security packaging lane: small
+      enough to install as a single CLI, but designed to consume artifacts from Burp,
+      ZAP, HAR exports, and YAML templates created during manual security testing.
+  package-nerd-significance:
+    - >
+      Authz0 is notable for packaging a common appsec workflow as a reproducible CLI:
+      collect URLs from ZAP/Burp/HAR, map roles to allowed and denied routes, and run
+      the same authorization checks again in CI or local testing.
+    - >
+      Its package history also shows the difference between upstream activity and
+      packaged stable versions: the repository is active, while the Homebrew stable
+      formula remains at the 2022 1.1.2 release.
+  project-history:
+    - >
+      The public repository was created in January 2022. The README describes the tool
+      as an automated authorization test tool that identifies unauthorized access using
+      URLs, roles, and credentials.
+    - >
+      Early releases moved quickly: v1.0.0 shipped in January 2022, v1.1.0 added
+      `setCred` plus imports from ZAP, HAR, and Burp history, and v1.1.2 followed in
+      March 2022. The repository has continued to receive activity even though Homebrew
+      currently tracks the older 1.1.2 release.
+  related-projects:
+    - >
+      Authz0 is designed to work around artifacts from OWASP ZAP, Burp Suite, HAR files,
+      Docker, GitHub Actions, and Go-based CLI installation.
+  sources:
+    - https://api.github.com/repos/hahwul/authz0
+    - https://authz0.hahwul.com/installation.html
+    - https://authz0.hahwul.com/structure/template.html
+    - https://authz0.hahwul.com/usage/
+    - https://authz0.hahwul.com/usage/setCred.html
+    - https://formulae.brew.sh/api/formula/authz0.json
+    - https://github.com/hahwul/authz0#readme
+    - https://github.com/hahwul/authz0/releases
+  summary:
+    - >
+      Authz0 is a Go CLI for automated authorization and access-control testing. It
+      models target URLs, roles, assertions, and credentials in YAML templates, then
+      scans for unauthorized access based on those role definitions.
+  timeline:
+    - '2022-01: Public GitHub repository created.'
+    - '2022-01: v1.0.0 released.'
+    - '2022-01: v1.1.0 added `setCred` and ZAP/HAR/Burp import flags.'
+    - '2022-03: v1.1.2 released.'
+    - '2022-05: GitHub Action release tag published.'
+  usage:
+    - >
+      A typical flow is `authz0 new` to generate a YAML template, `authz0 setUrl`,
+      `setRole`, and `setCred` to add test data, then `authz0 scan` to execute checks.
+      The docs show credential headers stored inside the user-supplied template file
+      rather than a fixed global credentials location.
+    - >
+      Because the template path is chosen by the user, there is no official fixed
+      config-file or credentials-file location to record. The official structure docs
+      document the YAML schema, not an application config path.
 tags:
   - access-control
   - authorization
+  - bug-bounty
   - cli
+  - go
   - security-scanner
+  - yaml
 geiger:
   category: appliance
   color: green
@@ -23,29 +91,36 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official Authz0 docs and README describe Authz0 as an automated authorization test
-      tool for unauthorized access based on URLs, roles, and credentials.
+    - https://github.com/hahwul/authz0#readme
+    - source_facts.description
   display-name-sources:
-    - Official Authz0 docs site and GitHub README use the display name Authz0.
+    - current_curation.display-name
+    - https://authz0.hahwul.com/
   docs-sources:
-    - >
-      Official Authz0 documentation site at authz0.hahwul.com links Welcome,
-      Installation, Usage, Structure, and Workflow pages; official GitHub README links
-      the same docs site.
+    - https://authz0.hahwul.com/installation.html
+    - https://authz0.hahwul.com/usage/
+    - source_facts.homepage
+  history-sources:
+    - https://api.github.com/repos/hahwul/authz0
+    - https://authz0.hahwul.com/installation.html
+    - https://authz0.hahwul.com/structure/template.html
+    - https://authz0.hahwul.com/usage/
+    - https://authz0.hahwul.com/usage/setCred.html
+    - https://formulae.brew.sh/api/formula/authz0.json
+    - https://github.com/hahwul/authz0#readme
+    - https://github.com/hahwul/authz0/releases
   repo-sources:
-    - >
-      source_facts.repo already contains https://github.com/hahwul/authz0; prompt
-      requires returning repo as null when source_facts.repo is populated.
+    - source_facts.repo is already populated; prompt requires returning repo as null.
   tags-sources:
-    - >
-      Official Authz0 docs and README describe authorization/access-control scanning,
-      YAML templates, roles, credentials, headers/cookies, and CLI commands.
+    - https://api.github.com/repos/hahwul/authz0
+    - https://github.com/hahwul/authz0#readme
+    - source_facts.description
 category-confidence: high
 category-path:
   - security
   - authorization-testing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
