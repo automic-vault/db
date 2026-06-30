@@ -776,7 +776,7 @@ def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[s
     history = normalize_history(item.get("history"))
     if item.get("history") not in (None, {}) and history is None:
         errors.append("history must be null or an object with supported string-list fields")
-    history_sources = normalize_sources(item.get("history_sources"))
+    history_sources = normalize_sources((history or {}).get("sources")) or normalize_sources(item.get("history_sources"))
     if history and history_sources:
         history = dict(history)
         history["sources"] = history_sources

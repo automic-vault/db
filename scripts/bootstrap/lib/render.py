@@ -165,9 +165,12 @@ def geiger_summary_for_package_id(package_id: Any) -> dict[str, Any] | None:
 
 def agent_record_from_json(result: dict[str, Any]) -> dict[str, Any]:
     history = result.get("history") if "history" in result else None
-    if isinstance(history, dict) and result.get("history_sources"):
+    history_sources = result.get("history_sources") or []
+    if isinstance(history, dict):
         history = dict(history)
-        history["sources"] = result.get("history_sources") or []
+        history_sources = history.get("sources") or history_sources
+        if history_sources:
+            history["sources"] = history_sources
     record = {
         "id": result["id"],
         "repo": result.get("repo") or None,
@@ -190,7 +193,7 @@ def agent_record_from_json(result: dict[str, Any]) -> dict[str, Any]:
             "category-sources": result.get("category_sources") or [],
             "tags-sources": result.get("tags_sources") or [],
             "display-name-sources": result.get("display_name_sources") or [],
-            "history-sources": result.get("history_sources") or [],
+            "history-sources": history_sources,
         },
     }
     geiger = geiger_summary_for_package_id(record["id"])

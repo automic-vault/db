@@ -348,6 +348,19 @@ class EnrichmentTests(unittest.TestCase):
         self.assertEqual(record["provenance"]["repo-sources"], ["GitHub"])
         self.assertEqual(record["provenance"]["history-sources"], ["Official README"])
 
+    def test_agent_record_preserves_history_source_urls(self):
+        record = agent_record_from_result(
+            sample_result(
+                history={
+                    **sample_result()["history"],
+                    "sources": ["https://github.com/sharkdp/bat#readme"],
+                },
+                history_sources=["Official README"],
+            )
+        )
+        self.assertEqual(record["history"]["sources"], ["https://github.com/sharkdp/bat#readme"])
+        self.assertEqual(record["provenance"]["history-sources"], ["https://github.com/sharkdp/bat#readme"])
+
     def test_agent_yaml_emits_top_level_location_nulls(self):
         text = yaml_text(
             agent_record_from_result(
