@@ -5,6 +5,66 @@ docs:
   - https://github.com/containers/fuse-overlayfs#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      fuse-overlayfs became part of the rootless-container storage story because many
+      kernels prevent unprivileged users from mounting kernel overlay filesystems. The
+      containers/storage manual documents `mount_program = "/usr/bin/fuse-overlayfs"` as
+      the custom mount helper used when rootless storage cannot use kernel defaults.
+    - >
+      The same containers/storage documentation names fuse-overlayfs in its `SEE ALSO`
+      section and in examples involving permission masks, showing that it is treated as
+      a normal component of the containers storage stack rather than a standalone
+      experiment.
+  package-nerd-significance:
+    - >
+      The package matters because it made overlay-style copy-on-write storage usable for
+      rootless container workflows before all target kernels could provide equivalent
+      unprivileged overlay support. It is a small package with outsized influence in
+      Podman and OCI tooling because storage-driver details determine whether rootless
+      containers feel native or second-class.
+  project-history:
+    - >
+      The project lives under the containers organization and is written in Rust. Its
+      README documents libfuse 3.2.1 or newer as a requirement and notes that use from a
+      user namespace, such as rootless Podman, requires a Linux kernel at least 4.18.0.
+  related-projects:
+    - >
+      fuse-overlayfs is closely related to containers/storage, which documents the
+      `mount_program` setting.
+    - >
+      It is also related to Podman rootless operation, which relies on the containers
+      configuration stack for user storage.
+  sources:
+    - https://github.com/containers/fuse-overlayfs
+    - https://github.com/containers/fuse-overlayfs/blob/main/README.md
+    - https://github.com/containers/podman/blob/main/docs/tutorials/rootless_tutorial.md
+    - https://github.com/containers/storage/blob/main/docs/containers-storage.conf.5.md
+  summary:
+    - >
+      fuse-overlayfs is a FUSE implementation of overlay-style filesystems for rootless
+      containers. The official README describes it as an implementation of overlay and
+      shiftfs in FUSE, with command-line options for lower, upper, work, merged, UID,
+      and GID mappings.
+  timeline:
+    - >
+      2017: containers/storage documentation originates the shared storage configuration
+      manual.
+    - 'v1.0.0: fuse-overlayfs reaches a stable tagged release line.'
+    - >
+      README snapshot: project documents rootless Podman and Linux kernel requirements
+      for user-namespace operation.
+  usage:
+    - >
+      Users can run fuse-overlayfs directly by passing overlay-style mount options such
+      as `lowerdir`, `upperdir`, `workdir`, and a merged directory. Container engines
+      more often invoke it indirectly through containers/storage configuration as a
+      `mount_program`.
+    - >
+      The project also distributes pre-built static binaries for multiple architectures
+      through GitHub Releases, which makes it practical on container hosts where the
+      binary is needed before normal package-manager integration is available.
 tags:
   - cli
   - containers
@@ -30,6 +90,11 @@ provenance:
     - source_facts.name
   docs-sources:
     - Official GitHub repository README is the primary documentation surface.
+  history-sources:
+    - https://github.com/containers/fuse-overlayfs
+    - https://github.com/containers/fuse-overlayfs/blob/main/README.md
+    - https://github.com/containers/podman/blob/main/docs/tutorials/rootless_tutorial.md
+    - https://github.com/containers/storage/blob/main/docs/containers-storage.conf.5.md
   repo-sources:
     - >
       source_facts.repo already provides an official repository URL; per instruction
@@ -44,5 +109,6 @@ category-path:
   - filesystems
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
