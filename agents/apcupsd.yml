@@ -7,6 +7,70 @@ config-file-location:
   unix:
     - /etc/apcupsd/apcupsd.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      apcupsd's adoption is strongest in server, NAS, homelab, and workstation
+      environments where APC UPS hardware is common and a lightweight local daemon is
+      preferable to a larger management suite.
+    - >
+      The supplied package data shows broad Unix-like packaging: Alpine, Homebrew,
+      Debian, Fedora/dnf, MacPorts, Nix, Arch/pacman, Ubuntu, and openSUSE/zypper. That
+      breadth is the package-history signal: administrators expect it to be available
+      from the native package manager on almost any Unix-like system.
+  package-nerd-significance:
+    - >
+      apcupsd is package-nerd significant because it represents the unglamorous layer
+      where packaging meets physical infrastructure. A good package has to install a
+      daemon, config file, service integration, helper commands, and documentation
+      without hiding the hardware-specific knobs.
+    - >
+      It also illustrates why old system packages remain valuable: power events are
+      rare, but when they happen the daemon must already be installed, configured, and
+      boringly reliable.
+  project-history:
+    - >
+      The apcupsd project dates to the long-running Unix tradition of hardware daemons:
+      small background services that translate a device protocol into system policy. Its
+      official manual documents operation with APC UPS hardware, configuration through
+      `apcupsd.conf`, status querying through `apcaccess`, and testing through
+      `apctest`.
+    - >
+      The project has historically lived on SourceForge, with source control exposed
+      through the official SourceForge project tree. That hosting history matches many
+      mature system utilities that predate GitHub-centered development.
+  related-projects:
+    - Network UPS Tools is the most common neighboring UPS-monitoring project.
+    - >
+      System service managers and shutdown tools are operationally adjacent because
+      apcupsd's main job is to react safely to power events.
+  sources:
+    - http://www.apcupsd.org/manual
+    - https://sourceforge.net/p/apcupsd/svn/HEAD/tree/
+    - source_facts.executables
+    - source_facts.package-manager
+  summary:
+    - >
+      apcupsd is a daemon and command-line toolset for monitoring and controlling APC
+      UPS devices. It is one of those infrastructure packages that quietly matters
+      because it can shut systems down cleanly when power fails.
+  timeline:
+    - '1990s: apcupsd emerges as a Unix daemon for APC UPS management.'
+    - >
+      2000s: SourceForge hosting and distribution packaging make apcupsd a standard
+      sysadmin utility.
+    - '2010s: Linux, BSD, and macOS package ecosystems continue shipping apcupsd.'
+    - '2020s: The package remains available across mainstream Unix-like package managers.'
+  usage:
+    - >
+      Typical usage is to configure `/etc/apcupsd/apcupsd.conf`, run the `apcupsd`
+      daemon, inspect UPS state with `apcaccess`, and test device communication with
+      `apctest`. Scripts and service managers then use the daemon's events to perform
+      clean shutdowns or notifications.
+    - >
+      The package is hardware-facing, so installation alone is not the whole story.
+      Correct cable/device selection, daemon privileges, and shutdown policy matter more
+      than application-level credentials.
 tags:
   - apc
   - cli
@@ -25,21 +89,22 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - Official apcupsd manual describes APC UPS control software.
-    - 'source_facts.description: Daemon for controlling APC UPSes'
+    - http://www.apcupsd.org/manual
+    - source_facts.description
   display-name-sources:
-    - 'Official project homepage: http://www.apcupsd.org'
-    - 'source_facts.name: apcupsd'
+    - current_curation.display-name
+    - http://www.apcupsd.org
   docs-sources:
-    - Official project manual at http://www.apcupsd.org/manual/
-    - current_curation.docs
+    - http://www.apcupsd.org/manual
+  history-sources:
+    - http://www.apcupsd.org/manual
+    - https://sourceforge.net/p/apcupsd/svn/HEAD/tree/
+    - source_facts.executables
+    - source_facts.package-manager
   repo-sources:
-    - current_curation.repo
-    - >
-      source_facts.repo is empty, so repo was determined from the official SourceForge
-      SVN browser for Apcupsd: https://sourceforge.net/p/apcupsd/svn/HEAD/tree/
+    - https://sourceforge.net/p/apcupsd/svn/HEAD/tree/
   tags-sources:
-    - Official apcupsd manual
+    - current_curation.tags
     - source_facts.description
     - source_facts.executables
 category-confidence: high
@@ -48,5 +113,6 @@ category-path:
   - power-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: medium
 tags-confidence: high

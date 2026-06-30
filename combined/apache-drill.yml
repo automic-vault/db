@@ -11,6 +11,78 @@ config-file-location:
     - $DRILL_HOME/conf/drill-override.conf
     - $DRILL_HOME/conf/drill-env.sh
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ASF's top-level project announcement described a community with contributors from
+      MapR, Hortonworks, Pentaho, Cisco, and others. Its adoption pitch was less about
+      replacing a warehouse and more about shortening the path from raw data to
+      exploratory SQL, especially where schemas were late-binding or data lived outside
+      a single database.
+    - >
+      Drill's package-manager appeal comes from that same shape: install a JVM-based
+      query layer, point storage plugins at local files, HDFS, S3, MongoDB, HBase, Hive,
+      Kafka, and similar systems, then query them from a shell or BI client without
+      running a separate ingestion pipeline first.
+  package-nerd-significance:
+    - >
+      Drill is interesting to package nerds because it ships as a large Java data system
+      but still offers a concrete CLI workflow: install it, run sqlline or
+      drill-embedded, and query local JSON, Parquet, CSV, or remote systems through
+      storage plugins. The package boundary matters because Java version, config
+      directory, launch scripts, and optional native clients can all affect the first
+      five minutes.
+    - >
+      It also represents the Hadoop-era style of packaging: a tarball-style distribution
+      with $DRILL_HOME, conf files, shell wrappers, and cluster-oriented defaults,
+      wrapped by Homebrew into something developers can run locally.
+  project-history:
+    - >
+      Drill was created in the Apache ecosystem as an implementation inspired by
+      Google's Dremel paper and entered the Apache Incubator in 2012. The project
+      graduated as an Apache top-level project in November 2014, with ASF materials
+      emphasizing both the Dremel lineage and the goal of letting analysts query large,
+      changing datasets directly.
+    - >
+      The 1.0 release followed in May 2015. By then Drill was positioned as a
+      self-service SQL layer for Hadoop, HBase, NoSQL, and files, with ordinary SQL
+      clients, JDBC/ODBC tooling, and the bundled sqlline shell acting as the day-to-day
+      interface.
+  related-projects:
+    - >
+      Google Dremel is the research system that inspired Drill's interactive,
+      nested-data SQL direction.
+    - >
+      Apache Calcite, Hadoop, Hive, HBase, Parquet, Kafka, MongoDB, and cloud object
+      stores are common neighboring technologies in Drill deployments.
+  sources:
+    - >
+      https://drill.apache.org/blog/2015/05/19/the-apache-software-foundation-announces-apache-drill-1.0/
+    - https://drill.apache.org/docs/start-up-options/
+    - https://incubator.apache.org/projects/drill.html
+    - https://news.apache.org/foundation/entry/the_apache_software_foundation_announces66
+  summary:
+    - >
+      Apache Drill is a distributed SQL query engine for self-describing data, aimed at
+      interactive analysis over Hadoop, NoSQL systems, cloud object stores, files, and
+      other semi-structured sources without forcing users to predefine schemas.
+  timeline:
+    - '2012: Drill enters the Apache Incubator.'
+    - '2014: Drill graduates as an Apache top-level project.'
+    - '2015: Apache Drill 1.0 is announced.'
+    - '2025: Apache Drill 1.22.0 appears in the official release notes index.'
+  usage:
+    - >
+      The Homebrew package exposes Drill launch and helper scripts such as
+      drill-embedded, drill-localhost, drillbit.sh, and sqlline. In practice, package
+      users tend to start with embedded or localhost mode for local file and
+      object-store exploration, then move configuration into drill-override.conf for
+      distributed or secured deployments.
+    - >
+      Drill configuration is split between the HOCON-style drill-override.conf and
+      environment overrides such as drill-env.sh. Apache's docs state that Drill loads
+      these from /etc/drill/conf when present, otherwise from $DRILL_HOME/conf, which
+      matches the Unix paths useful to package maintainers.
 category: data
 package-manager:
   brew: apache-drill

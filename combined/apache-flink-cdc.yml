@@ -6,6 +6,69 @@ docs:
   - https://nightlies.apache.org/flink/flink-cdc-docs-stable
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Flink CDC's adoption follows Flink's broader move from generic stream processing
+      into operational data integration. Its docs emphasize initial historical scans,
+      automatic handoff to change capture, schema evolution, full database sync, and
+      exactly-once processing, which are the operational details that make CDC pipelines
+      production-worthy.
+    - >
+      The project is younger than Flink itself, so its history is thinner, but its
+      packaging matters because it gives a standalone flink-cdc command for users who
+      want pipeline-style database replication without writing a full Flink application.
+  package-nerd-significance:
+    - >
+      For package maintainers, Flink CDC is a small command-line front door to a much
+      larger Java streaming stack. The interesting bit is not the binary size, but that
+      it packages a practical CDC workflow separately from the main flink CLI.
+    - >
+      It also captures a current packaging pattern in the Flink ecosystem: important
+      connectors and adjacent tools live as externalized Apache repositories with their
+      own release cadence, docs, and compatibility constraints.
+  project-history:
+    - >
+      Flink CDC began as a connector-oriented ecosystem around Apache Flink
+      change-data-capture jobs, then was donated into the Apache Flink project by
+      Ververica. Apache board records from 2024 describe the Flink community accepting
+      the codebase because CDC use cases with Flink SQL were popular among users.
+    - >
+      After the donation, Flink CDC became a Flink subproject with its own Apache
+      repository, documentation tree, and releases. The first Apache release called out
+      in ASF board records was cdc-3.1.0 on 2024-05-17.
+  related-projects:
+    - Apache Flink is the execution engine and community umbrella for Flink CDC.
+    - >
+      Debezium, Kafka, Apache Paimon, JDBC databases, MySQL, PostgreSQL, and data lake
+      sinks are common adjacent technologies in CDC pipelines.
+  sources:
+    - https://apache.org/foundation/records/minutes/2024/board_minutes_2024_03_20.txt
+    - https://github.com/apache/flink-cdc
+    - https://nightlies.apache.org/flink/flink-cdc-docs-stable/
+    - https://www.apache.org/foundation/records/minutes/2024/board_minutes_2024_06_19.txt
+  summary:
+    - >
+      Apache Flink CDC is a distributed data integration tool built on Apache Flink for
+      change data capture, full database synchronization, schema evolution, and
+      YAML-defined real-time or batch data movement.
+  timeline:
+    - "2024: Ververica's Flink CDC codebase is accepted into Apache Flink."
+    - >
+      2024: cdc-3.1.0 is released as the first Apache Flink CDC release noted in ASF
+      board records.
+    - '2026: Flink downloads list Apache Flink CDC as a separately released Flink component.'
+  usage:
+    - >
+      The Homebrew formula exposes the flink-cdc executable. Apache's docs present Flink
+      CDC as a YAML-driven tool: users describe sources, sinks, routing,
+      transformations, and schema evolution rules, then submit pipelines rather than
+      hand-coding the whole job.
+    - >
+      Common usage is database-to-database, database-to-lake, or database-to-stream
+      synchronization where a pipeline first scans historical tables and then keeps
+      reading log changes. The official docs also call out sub-second streaming
+      pipelines and exactly-once processing after failures.
 category: data
 package-manager:
   brew: apache-flink-cdc

@@ -8,6 +8,74 @@ config-file-location:
     - $FLINK_HOME/conf/config.yaml
     - $FLINK_HOME/conf/flink-conf.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Flink's early public adoption included production or exploratory use at
+      ResearchGate, Spotify, and Amadeus, according to ASF's top-level project
+      announcement. The broader 1.x era then became the default operational target for
+      years of streaming analytics, CDC, ETL, and event-driven jobs.
+    - >
+      The reason a versioned formula is useful is that stream-processing upgrades are
+      stateful. Jobs may depend on connector versions, serialized state, savepoint
+      compatibility, or cluster policies tied to a Flink 1.x release, so keeping the
+      older major line installable lowers the cost of maintenance work.
+  package-nerd-significance:
+    - >
+      This is exactly the sort of formula package nerds notice: the binary name is
+      unchanged, but the formula name encodes a major-line contract. That matters for
+      Java data systems because a minor-looking package upgrade can affect connectors,
+      savepoints, deployment scripts, and job behavior.
+    - >
+      The config-file story is also a packaging wrinkle: Flink 1.x straddles the old
+      key-value flink-conf.yaml world and the newer YAML 1.2 config.yaml world, while
+      Flink 2.x drops the old file.
+  project-history:
+    - >
+      The underlying project history is Apache Flink's: it originated in the
+      Stratosphere research project, entered the Apache Incubator in 2014, and graduated
+      as a top-level Apache project in December 2014. The 1.x line is historically
+      important because it is the line on which much of Flink's production adoption
+      accumulated.
+    - >
+      Flink 1.x carried the maturation of DataStream, Table API, SQL, checkpointing,
+      savepoints, Kubernetes and YARN deployment patterns, and the connector ecosystem.
+      For many package users, apache-flink@1 represents compatibility, not nostalgia.
+  related-projects:
+    - Apache Flink is the upstream project for the versioned formula.
+    - >
+      Flink CDC, externalized Flink connectors, Apache Kafka, Kubernetes, YARN, and
+      Apache Paimon are common adjacent technologies.
+  sources:
+    - https://incubator.apache.org/projects/flink.html
+    - https://news.apache.org/foundation/entry/the_apache_software_foundation_announces69
+    - https://nightlies.apache.org/flink/flink-docs-release-1.20/docs/deployment/config/
+    - source_facts.package-manager
+  summary:
+    - >
+      apache-flink@1 is the Homebrew versioned formula for the Apache Flink 1.x line,
+      preserving the long-lived stream and batch processing engine line for users whose
+      jobs, connectors, or state are not ready for the current major series.
+  timeline:
+    - '2009: Stratosphere research project begins.'
+    - '2014: Flink enters the Apache Incubator.'
+    - '2014: Flink graduates as an Apache top-level project.'
+    - '2019-2024: Flink 1.x becomes the dominant operational line for many deployments.'
+    - '2024: Flink 1.19 introduces config.yaml while retaining legacy flink-conf.yaml behavior.'
+    - >
+      2025: Flink 1.20 docs describe config.yaml and legacy flink-conf.yaml migration
+      behavior.
+  usage:
+    - >
+      The formula exposes the same flink command as the unversioned package, but points
+      users at the 1.x documentation. Apache's 1.20 docs say all configuration can be
+      set in the conf directory and document both config.yaml and the legacy
+      flink-conf.yaml behavior.
+    - >
+      For Flink 1.20, Apache docs say config.yaml became the default configuration file
+      starting in 1.19, while flink-conf.yaml remains usable when copied into conf and
+      is prioritized if detected. That is why both paths are useful for the versioned
+      package.
 tags:
   - apache
   - batch-processing
@@ -17,22 +85,33 @@ tags:
   - stream-processing
 provenance:
   category-sources:
-    - 'source_facts.description: Scalable batch and stream data processing.'
+    - Apache Flink homepage and README describe stateful stream and batch data processing.
+    - source_facts.description
   display-name-sources:
-    - current_curation.display-name; official Flink 1.20 docs title.
+    - Official site and repository use the display name Apache Flink.
   docs-sources:
-    - current_curation.docs; official Apache Flink 1.20 documentation.
-  repo-sources:
+    - Flink 1.20 configuration docs document config.yaml and legacy flink-conf.yaml behavior.
     - >
-      current_curation.repo; official Apache Flink project repository under
-      github.com/apache/flink.
+      Official Apache Flink 1.20 documentation:
+      https://nightlies.apache.org/flink/flink-docs-release-1.20
+  history-sources:
+    - https://incubator.apache.org/projects/flink.html
+    - https://news.apache.org/foundation/entry/the_apache_software_foundation_announces69
+    - https://nightlies.apache.org/flink/flink-docs-release-1.20/docs/deployment/config/
+    - source_facts.package-manager
+  repo-sources:
+    - 'Official Apache GitHub repository: https://github.com/apache/flink'
   tags-sources:
-    - source_facts.description; current_curation.tags.
+    - >
+      Apache Flink README and docs describe stream processing, batch processing,
+      distributed execution, and the flink CLI.
+    - source_facts.name indicates this is the versioned apache-flink@1 package.
 category-confidence: high
 category-path:
   - data
   - stream-processing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -2,10 +2,67 @@ id: brew:api-linter
 display-name: API Linter
 repo: null
 docs:
+  - https://github.com/googleapis/api-linter#readme
   - https://linter.aip.dev/
   - https://linter.aip.dev/configuration
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      api-linter is most naturally adopted by teams designing protobuf APIs in the
+      Google style. The README documents installation with Go and notes a
+      Google-internal released binary for internal source control users, while the batch
+      input shows Homebrew and Nix packaging for external command-line installation.
+  package-nerd-significance:
+    - >
+      For package-manager users, api-linter is a compact example of policy-as-CLI: it
+      packages a large body of API-design convention into a reproducible binary. It
+      matters to protobuf-heavy shops because it can be pinned, run in presubmit checks,
+      and upgraded deliberately when new lint rules land.
+  project-history:
+    - >
+      The public GitHub repository was created in 2019 under googleapis. The README and
+      official documentation frame the tool as a companion to Google's AIP guidance: it
+      can identify common mistakes in API surfaces, offer fixes where possible, and
+      document individual lint rules.
+    - >
+      The project explicitly does not follow strict semantic versioning. Its README
+      explains that new or corrected lint rules can be breaking for users because
+      previously clean files may begin reporting findings, so release numbers reflect
+      the linter's core interface rather than a pure compatibility promise.
+  related-projects:
+    - >
+      The linter is tied to API Improvement Proposals at aip.dev and to Protocol Buffers
+      API definitions. It is adjacent to protobuf compilers, buf-based linting
+      workflows, and API governance tooling.
+  sources:
+    - https://api.github.com/repos/googleapis/api-linter
+    - https://github.com/googleapis/api-linter#readme
+    - https://linter.aip.dev/
+    - https://linter.aip.dev/configuration
+    - input source_facts.package-manager
+  summary:
+    - >
+      Google API Linter is a Go command-line linter for APIs defined in protocol
+      buffers. It checks protobuf API surfaces against Google's API Improvement
+      Proposals, making Google's API design guidance enforceable in local development
+      and CI.
+  timeline:
+    - '2019: Public googleapis/api-linter repository created.'
+    - '2025: Version 2.0.0 released, marking a major core-interface version.'
+    - '2026: Versions 2.1, 2.2, and 2.3 continued rule and interface evolution.'
+  usage:
+    - >
+      The basic invocation is api-linter followed by one or more proto files. It
+      supports proto import paths, descriptor sets, rule listing, structured output
+      formats such as YAML, JSON, GitHub, and summary, and a set-exit-status flag for CI
+      enforcement.
+    - >
+      Configuration is supplied explicitly through the --config flag or inline proto
+      comments. The official configuration docs show JSON and YAML config examples that
+      enable or disable rules by included or excluded path, but they do not document a
+      default config-file path, so no config-file-location is recorded here.
 tags:
   - api
   - cli
@@ -23,32 +80,33 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official docs https://linter.aip.dev/: API Linter checks Google API standards for
-      protocol-buffer API surfaces
+    - official README describes checks for Google's API standards
     - 'source_facts.description: Linter for APIs defined in protocol buffers'
   display-name-sources:
-    - 'Official docs title: https://linter.aip.dev/'
+    - 'official docs title: Google API Linter'
   docs-sources:
     - >
-      Official configuration docs https://linter.aip.dev/configuration document --config
-      but no fixed config path
-    - >
-      Official docs homepage https://linter.aip.dev/ links Rule Documentation and
-      Configuration
+      official docs and README: https://linter.aip.dev/ and
+      https://github.com/googleapis/api-linter#readme
+  history-sources:
+    - https://api.github.com/repos/googleapis/api-linter
+    - https://github.com/googleapis/api-linter#readme
+    - https://linter.aip.dev/
+    - https://linter.aip.dev/configuration
+    - input source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already set to https://github.com/googleapis/api-linter; per
-      instruction repo returned null
+      source_facts.repo already provided; prompt requires repo null when
+      source_facts.repo is present
   tags-sources:
-    - Official docs https://linter.aip.dev/ describe protocol buffers and Google API standards
-    - source_facts.description
+    - official README mentions API standards, Protocol Buffers, lint rules, and CLI usage
 category-confidence: high
 category-path:
   - developer-tools
-  - api
   - linting
+  - api-design
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

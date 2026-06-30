@@ -4,8 +4,76 @@ repo: null
 docs:
   - https://github.com/fordfrog/apgdiff#readme
   - https://www.apgdiff.com/
+  - https://www.apgdiff.com/how_to_use_it.php
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official home page states that apgdiff was already being used by many
+      developers worldwide. The batch input shows it has also crossed into several
+      package-manager ecosystems, including Homebrew, Debian, Ubuntu, MacPorts, and Nix,
+      which is typical for small database utilities that remain useful in scripts long
+      after active feature development slows.
+  package-nerd-significance:
+    - >
+      apgdiff is the kind of small, stable package that package managers preserve
+      because it solves one specific operational problem without needing a server. It is
+      especially interesting to PostgreSQL users who want schema comparison in CI or
+      release scripts and are willing to inspect generated SQL rather than adopt a
+      larger migration framework.
+  project-history:
+    - >
+      The official site presents apgdiff as a free PostgreSQL database schema diff tool
+      and notes that it compares two database dump files to produce SQL statements
+      describing schema changes. The project predates its GitHub repository: the web
+      site lists 2010-era 2.x releases, and a 2012 news entry says the sources and issue
+      tracker moved to GitHub to make participation easier.
+    - >
+      The GitHub README describes the repository as mainly unmaintained, while still
+      accepting useful bug-fix pull requests. The changelog shows the package's long
+      tail of PostgreSQL compatibility work: version 2.0 rewrote the SQL parser, version
+      2.4 added schema-creation and Slony-trigger options, version 2.5 added
+      materialized views, extensions, foreign tables, grants, and ownership support,
+      version 2.6 added PostgreSQL 10 support, and version 2.7.0 added early support for
+      PostgreSQL 12-era syntax such as partitioning and identity columns.
+  related-projects:
+    - >
+      PostgreSQL schema dump tooling, database migration frameworks, and schema
+      comparison utilities are adjacent, but apgdiff remains focused on diffing two
+      PostgreSQL dump files and emitting DDL.
+  sources:
+    - https://api.github.com/repos/fordfrog/apgdiff
+    - https://github.com/fordfrog/apgdiff#readme
+    - https://www.apgdiff.com/
+    - input source_facts.package-manager
+  summary:
+    - >
+      Another PostgreSQL Diff Tool, usually packaged as apgdiff, is a Java command-line
+      utility for comparing PostgreSQL schema dumps and generating DDL needed to move an
+      old schema toward a new one. Its niche is intentionally narrow: it is for
+      schema-diffing PostgreSQL dump files, not for live database migration
+      orchestration.
+  timeline:
+    - '2010: Version 2.0 rewrote the SQL parser and expanded supported PostgreSQL DDL.'
+    - '2012: The project moved its sources and issue tracker to GitHub.'
+    - '2012: Version 2.4 shipped with trigger, schema, and parser fixes.'
+    - '2016: GitHub releases recorded 2.5.0 prereleases.'
+    - >
+      2018-2020: Changelog entries added PostgreSQL 10, Java 11 development, PostgreSQL
+      12-related syntax, partitioning, and identity-column support.
+  usage:
+    - >
+      Typical use is to dump two PostgreSQL schemas, run apgdiff against the old and new
+      dumps, and review or apply the generated DDL. The official site emphasizes
+      command-line use from batches and web applications, and the project README points
+      users to GitHub issues for bugs.
+    - >
+      Package users care about PostgreSQL version support because apgdiff parses SQL
+      dump syntax. Its changelog is therefore practically part of the compatibility
+      contract: support for materialized views, unlogged tables, extensions, foreign
+      tables, sequences, triggers, rules, grants, views, and newer CREATE syntax
+      determines whether a given schema dump can be diffed safely.
 tags:
   - cli
   - database
@@ -24,29 +92,33 @@ geiger:
     - text:sql
 provenance:
   category-sources:
-    - >
-      Official homepage and GitHub README describe apgdiff as a PostgreSQL schema
-      diff/comparison tool.
+    - official homepage describes PostgreSQL database schema diffing
     - 'source_facts.description: Another PostgreSQL diff tool'
   display-name-sources:
-    - 'Official GitHub README title: Another PostgreSQL Diff Tool (aka apgdiff)'
-    - 'Official homepage title: Another PostgreSQL Diff Tool (apgdiff)'
+    - official homepage title and README heading use Another PostgreSQL Diff Tool
   docs-sources:
-    - Official GitHub README links to the project website for more information.
-    - 'Official homepage: https://www.apgdiff.com/'
+    - >
+      official homepage navigation and README: https://www.apgdiff.com/ and
+      https://github.com/fordfrog/apgdiff#readme
+  history-sources:
+    - https://api.github.com/repos/fordfrog/apgdiff
+    - https://github.com/fordfrog/apgdiff#readme
+    - https://www.apgdiff.com/
+    - input source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already supplied as https://github.com/fordfrog/apgdiff; per
-      instructions repo was not redetermined.
+      source_facts.repo already provided; prompt requires repo null when
+      source_facts.repo is present
   tags-sources:
-    - Official homepage and GitHub README
-    - source_facts.description
-    - source_facts.executables
+    - official homepage and README describe PostgreSQL schema diff usage
+    - source_facts.executables and source_facts.description
 category-confidence: high
 category-path:
   - data
   - database
+  - schema-diff
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
