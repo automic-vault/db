@@ -12,6 +12,71 @@ config-file-location:
     - /etc/assh.yml
     - ~/.ssh/config
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      assh sits in the package-manager culture of personal infrastructure tools: the
+      supplied Homebrew facts also list MacPorts and Nix packaging. Its README and
+      project page emphasize integration with standard SSH consumers rather than a new
+      client, which made it useful to developers and operators who wanted one enriched
+      configuration layer to affect many existing commands.
+  package-nerd-significance:
+    - >
+      For package nerds, assh is an example of a small Unix-style wrapper with outsized
+      workflow impact: it compiles declarative YAML into OpenSSH-native config, keeps
+      compatibility with existing SSH tooling, and exposes enough introspection output
+      to make SSH inventories scriptable. Its config-path defaults are also important
+      because installing the package can affect a user's core ~/.ssh/config workflow.
+  project-history:
+    - >
+      The public GitHub repository dates to 2011 and the official project page describes
+      the rename from Advanced SSH Config to assh. The README frames the tool as a
+      transparent wrapper around SSH: lib-ssh uses assh as a ProxyCommand, so the
+      generated behavior works through normal ssh, scp, rsync, git, and desktop tools
+      that rely on SSH rather than through a separate protocol stack.
+    - >
+      The project grew around pain points in large SSH estates: gateway chaining,
+      dynamic hostnames, inherited host templates, generated known-host entries, and
+      automatic regeneration of ~/.ssh/config. Its README also notes that OpenSSH 7.3
+      later gained native Include support, which is useful context for package
+      maintainers because some early assh value moved into the base OpenSSH feature set
+      while assh kept broader YAML/gateway/template behavior.
+  related-projects:
+    - >
+      OpenSSH provides the ssh client, ~/.ssh/config, and ProxyCommand behavior that
+      assh generates around.
+    - Graphviz is used by assh for host graph output.
+    - >
+      Other SSH inventory and config-management tools overlap with assh's
+      generated-configuration use case, but assh's official docs emphasize staying
+      compatible with ssh, scp, rsync, git, and lib-ssh consumers.
+  sources:
+    - https://api.github.com/repos/moul/assh
+    - https://github.com/moul/assh#readme
+    - https://v1.manfred.life/assh
+    - source_facts.package-manager
+  summary:
+    - >
+      assh is a Go-based SSH configuration helper formerly known as Advanced SSH Config.
+      Its niche is not replacing OpenSSH, but generating and wrapping OpenSSH
+      configuration so regular SSH-dependent tools can use richer host aliases,
+      regex-like matching, gateways, includes, templates, Graphviz output, JSON output,
+      and YAML configuration.
+  timeline:
+    - '2011: moul/assh repository created on GitHub.'
+    - >
+      2016: OpenSSH 7.3 added native Include support, later noted in assh's README as
+      overlapping with one assh configuration feature.
+    - >
+      2026: GitHub repository metadata showed continued activity and the README still
+      documented assh as an SSH wrapper/config generator.
+  usage:
+    - >
+      Typical use starts with ~/.ssh/assh.yml, optional split files under
+      ~/.ssh/assh.d/*.yml, and generated ~/.ssh/config output. Package users mostly care
+      about the executable because it can build or refresh OpenSSH config, graph the
+      host topology, manage sockets, and let normal ssh invocations resolve aliases and
+      gateway chains.
 category: networking
 package-manager:
   brew: assh

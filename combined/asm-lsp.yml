@@ -8,7 +8,61 @@ config-file-location:
   unix:
     - ./.asm-lsp.toml
     - ~/.config/asm-lsp/.asm-lsp.toml
+    - compile_commands.json
+    - compile_flags.txt
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      asm-lsp is packaged for Rust users through cargo and for system package users
+      through Homebrew and Nix according to the input package facts. GitHub metadata
+      shows several hundred stars, which is meaningful for a specialized editor backend
+      for assembly.
+  package-nerd-significance:
+    - >
+      asm-lsp matters to package nerds because it turns a historically editor-specific
+      assembly tooling problem into a single reusable server binary. It is also a good
+      example of a modern Rust CLI that becomes useful only when package managers,
+      editor integrations, and per-project config all line up.
+  project-history:
+    - >
+      The GitHub repository was created in July 2020, in the period when editors
+      increasingly standardized on Language Server Protocol integrations. The project
+      applies that model to assembly source, where hover help, completions, diagnostics,
+      and references are useful but historically fragmented by assembler dialect.
+    - >
+      The README documents a configuration-centered design: project-local
+      `.asm-lsp.toml` files override global config under `~/.config/asm-lsp/`, and
+      `compile_commands.json` or `compile_flags.txt` can extend diagnostics and
+      include-path behavior.
+  related-projects:
+    - >
+      The README cites upstream documentation sources including binutils GAS docs, NASM
+      docs, Microsoft MASM docs, cc65 ca65 docs, Arm documentation, Microchip AVR
+      documentation, and the asm-dude Visual Studio extension.
+  sources:
+    - https://api.github.com/repos/bergercookie/asm-lsp
+    - https://api.github.com/repos/bergercookie/asm-lsp/releases
+    - https://formulae.brew.sh/api/formula/asm-lsp.json
+    - https://github.com/bergercookie/asm-lsp#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      asm-lsp is a Rust language server for assembly code. Its README says it supports
+      NASM, GAS, Go assembly, MASM, ca65, AVR, FASM, and several instruction-set
+      families including x86, ARM, RISC-V, z80, AVR, and 6502.
+  timeline:
+    - '2020: GitHub repository created.'
+    - '2024: v0.8.0 and v0.9.0 GitHub releases published.'
+    - '2025: v0.10.x releases published.'
+    - '2026: Homebrew API lists stable version 0.10.1.'
+  usage:
+    - >
+      Users install it with cargo, GitHub release binaries, or a package manager, then
+      configure an editor LSP client to launch `asm-lsp` for assembly filetypes.
+      Projects can add `.asm-lsp.toml`, or generate one interactively with `asm-lsp
+      gen-config`, to select assembler dialects, instruction sets, diagnostics, and
+      compiler settings.
 category: developer-tools
 package-manager:
   brew: asm-lsp
@@ -23,6 +77,7 @@ tags:
   - language-server
   - lsp
   - nasm
+  - rust
 description: Language server for NASM/GAS/GO Assembly
 executables:
   - asm-lsp

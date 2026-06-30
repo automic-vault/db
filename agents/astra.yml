@@ -11,6 +11,64 @@ credentials-file-location:
   unix:
     - $XDG_CONFIG_HOME/astra/.astrarc
     - ~/.astrarc
+history:
+  adoption-history:
+    - >
+      Astra CLI adoption is tied to DataStax Astra itself rather than to a
+      general-purpose database client market. The official README documents install
+      scripts and Homebrew as supported paths, while the supplied package facts also
+      list a winget package. Its package-manager role is to make cloud database
+      operations scriptable on developer machines and CI systems.
+  package-nerd-significance:
+    - >
+      For package nerds, astra is a vendor cloud CLI with explicit state paths and
+      credential behavior. The v1 move to XDG_CONFIG_HOME/astra/.astrarc or ~/.astrarc
+      matters because package upgrades can change where tokens live, how scripts
+      authenticate, and whether users should upgrade through the CLI itself or through
+      their package manager.
+  project-history:
+    - >
+      The datastax/astra-cli repository was created in 2022. The current README
+      describes the 1.0.0 beta generation of the CLI and points readers to the v0.x
+      branch for the previous version, marking a significant rewrite or compatibility
+      break in the tool's history.
+    - >
+      The 1.x README emphasizes cross-platform Linux, macOS, and Windows support,
+      official install scripts, Homebrew installation, direct releases, an astra upgrade
+      command, and a more interactive terminal experience with colors, spinners,
+      prompts, completions, stricter validation, and XDG-aware paths.
+  related-projects:
+    - DataStax Astra is the managed database platform operated by the CLI.
+    - >
+      Apache Cassandra and related Astra DB tooling are adjacent to the CLI's
+      database-management use cases.
+    - >
+      Homebrew and winget provide package-manager installation routes alongside
+      DataStax's official install scripts.
+  sources:
+    - https://api.github.com/repos/datastax/astra-cli
+    - https://docs.datastax.com/en/astra-cli
+    - https://github.com/datastax/astra-cli#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      astra is the command-line interface for DataStax Astra. It gives developers
+      terminal access to Astra database and platform operations, including authenticated
+      commands, setup, configuration profiles, output formatting, upgrades, and
+      environment-aware automation.
+  timeline:
+    - '2022: datastax/astra-cli repository created on GitHub.'
+    - "2020s: v0.x CLI existed before the current README's 1.0.0 beta generation."
+    - >
+      2020s: v1.x README documents Linux, macOS, and Windows support plus XDG-aware
+      configuration.
+    - '2026: GitHub tags and repository metadata showed active v1-era releases.'
+  usage:
+    - >
+      Users typically run astra setup to create or update credentials in a central
+      .astrarc file, then use astra config subcommands and resource commands such as
+      astra db list. The CLI can also avoid the credentials file by accepting --token
+      and --env, and it supports JSON or CSV output for scripting.
 tags:
   - cli
   - database
@@ -26,19 +84,35 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
+    - current_curation.category
+    - official README describes terminal operation of DataStax Astra
     - source_facts.description
   display-name-sources:
+    - official README heading
     - source_facts.name
   docs-sources:
+    - current_curation.docs
+    - official README links to DataStax Astra CLI docs
     - source_facts.homepage
+  history-sources:
+    - https://api.github.com/repos/datastax/astra-cli
+    - https://docs.datastax.com/en/astra-cli
+    - https://github.com/datastax/astra-cli#readme
+    - source_facts.package-manager
   repo-sources:
-    - source_facts.repo present; returned null per instruction
+    - >
+      source_facts.repo already provides https://github.com/datastax/astra-cli; prompt
+      requires repo null when supplied
   tags-sources:
-    - source_facts.description
+    - >
+      official README describes Astra CLI, database commands, config profiles, and
+      DataStax Astra operation
+    - source_facts.executables
 category-confidence: high
 category-path:
   - data
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

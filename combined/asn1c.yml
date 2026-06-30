@@ -3,11 +3,95 @@ display-name: asn1c
 homepage: https://lionet.info/asn1c/blog
 repo: https://github.com/vlm/asn1c
 docs:
-  - https://github.com/vlm/asn1c
+  - https://github.com/vlm/asn1c#readme
   - https://github.com/vlm/asn1c/blob/master/FAQ
   - https://github.com/vlm/asn1c/blob/master/doc/asn1c-usage.pdf
+  - https://lionet.info/asn1c/blog
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The Homebrew input records asn1c in several Unix package ecosystems, including
+      Homebrew, Debian, MacPorts, Nix, Ubuntu, and zypper. That breadth matches the
+      upstream portability work visible in the ChangeLog, including C89/C99, MinGW,
+      macOS, autoreconf, and generated-file permission fixes.
+    - >
+      The upstream README describes ASN.1 formats as widely used in HTTPS certificates,
+      mobile-network control data, and intelligent transportation systems. For package
+      users, asn1c tends to appear as a build-time or protocol-development dependency
+      rather than an end-user application.
+  package-nerd-significance:
+    - >
+      asn1c is one of those packages that matters because it sits at the boundary
+      between formal telecom/security standards and C build systems. It is a small CLI
+      in the package manager, but it can generate substantial source trees that become
+      part of another project's ABI, memory-safety surface, and wire-format
+      compatibility.
+    - >
+      Package maintainers care about asn1c versions because changes in generated code,
+      codec support, and skeleton behavior can affect downstream protocol parsers. The
+      ChangeLog's security notes for generated output make it more than a compiler
+      binary: upgrades can change the safety of code already emitted into dependent
+      projects.
+  project-history:
+    - >
+      The project grew around the long-lived lionet.info ASN.1 compiler site and the
+      vlm/asn1c source repository. The upstream documentation emphasizes code generation
+      for native C structures, serializers, and deserializers, while the ChangeLog shows
+      a 0.9 series active through at least the mid-2000s and 2010s with portability
+      fixes, PER work, examples, OER support, and security fixes in generated code and
+      tooling.
+    - >
+      asn1c's history is closely tied to real protocol work. Official examples and
+      ChangeLog entries mention X.509, LDAP, 3GPP RRC, MEGACO/H.248.1, GSM TAP3, LTE
+      RRC, IEEE 1609.2, and SAE J2735, which explains why the package persists in Unix
+      package managers despite ASN.1 being a niche compiler domain.
+  related-projects:
+    - >
+      asn1c is related to ASN.1 specifications and transfer syntax tooling rather than
+      to a single peer package. Its upstream README points readers to ASN.1 standards
+      material and examples involving X.509, mobile networking, and transportation
+      protocols.
+  sources:
+    - https://github.com/vlm/asn1c#readme
+    - https://github.com/vlm/asn1c/blob/master/ChangeLog
+    - https://lionet.info/asn1c/blog/
+    - input.source_facts.package-manager
+  summary:
+    - >
+      asn1c is Lev Walkin's ASN.1-to-C compiler, packaged as a command-line tool that
+      turns ASN.1 module specifications into C and C++-compatible C code for BER, DER,
+      OER, PER, XER, and related ASN.1 transfer syntaxes. Its upstream README frames it
+      as a practical compiler for protocol implementers rather than a complete
+      implementation of the entire ASN.1 standards family.
+  timeline:
+    - >
+      2005: 0.9.11 through 0.9.19 ChangeLog entries show active compiler, XER,
+      circular-reference, and generated-code fixes.
+    - >
+      2006: 0.9.20 starts experimental PER implementation; 0.9.21 adds a first PER
+      encoder and telecom examples.
+    - '2008: 0.9.22 expands PER support and adds an OMA ULP decoder example.'
+    - >
+      2014: 0.9.26 and 0.9.27 focus on documentation, defaults, portability, and debug
+      behavior.
+    - '2017: 0.9.28 records portability fixes and verification around a reported CVE.'
+    - >
+      0.9.29: Adds Information Object Set driven generation, OER support, LTE RRC, IEEE
+      1609.2, SAE J2735 examples, and LibFuzzer-based tests.
+  usage:
+    - >
+      The core usage is `asn1c module.asn1`, with multiple ASN.1 modules passed together
+      when specifications have interdependencies. By default, the compiler emits
+      multiple `.c` and `.h` files for ASN.1 types; `-P` prints generated output, while
+      `-E` and `-EF` expose parser and semantic-fixer stages for debugging a
+      specification.
+    - >
+      The generated C support code is used to encode and decode protocol data in
+      BER/DER, OER, PER, and XER families. The bundled helper tools `enber` and `unber`
+      support BER-oriented inspection workflows, and the `crfc2asn1.pl` script extracts
+      ASN.1 modules from RFC text.
 category: developer-tools
 package-manager:
   brew: asn1c
@@ -24,6 +108,7 @@ tags:
   - cli
   - code-generation
   - compiler
+  - serialization
 description: Compile ASN.1 specifications into C source code
 executables:
   - asn1c

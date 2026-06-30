@@ -7,12 +7,82 @@ docs:
   - https://potassco.org/aspcud
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The Homebrew input records aspcud in apk, Homebrew, Debian, MacPorts, Nix, and
+      Ubuntu. That adoption follows from its role in package-management research and
+      CUDF/Mancoosi workflows rather than general interactive use.
+    - >
+      Because aspcud consumes CUDF and emits CUDF, it can be slotted behind package
+      managers or benchmark harnesses that speak the common upgradeability-description
+      format. The README points to Mancoosi CUDF specifications, criteria, and problem
+      instances as the surrounding ecosystem.
+  package-nerd-significance:
+    - >
+      aspcud is package-manager machinery made visible as a Unix package. It matters to
+      distribution people because it isolates dependency solving from the front-end
+      package manager and tests solver behavior against CUDF problem sets.
+    - >
+      It also shows the crossover between declarative logic programming and package
+      management: package installability and upgrade criteria become ASP facts and
+      optimization problems rather than imperative resolver code.
+  project-history:
+    - >
+      The official README describes two pieces: `cudf2lp`, which translates a CUDF
+      specification into facts, and the small `aspcud` program, which invokes the
+      required ASP grounder and solver and prints the result in CUDF format. The project
+      is part of the Potassco ecosystem and depends on `clasp` and `gringo` or related
+      Potassco solver tools.
+    - >
+      The project ChangeLog records aspcud 1.8.0 as the first official release. Version
+      1.9.0 added package-solver criteria support, installation targets, a Debian
+      manpage, stream reading, macOS build support, MinGW compilation, and replaced a
+      bash/Python wrapper with a small C program. Later 1.9.x releases moved the project
+      to GitHub, switched to the MIT license, adopted Boost program options, and
+      eventually refactored the application to C++.
+  related-projects:
+    - Potassco `clasp` and `clingo` are required solver/grounder components in the README.
+    - >
+      Mancoosi CUDF specifications, criteria, and benchmark instances are the format and
+      workload context for aspcud.
+  sources:
+    - https://github.com/potassco/aspcud#readme
+    - https://github.com/potassco/aspcud/blob/master/CHANGES.md
+    - input.source_facts.package-manager
+  summary:
+    - >
+      aspcud is a package dependency solver for CUDF package problems, using answer set
+      programming to translate package constraints into facts and solve them through
+      Potassco tooling. It is a specialized but important package-manager component: a
+      solver binary intended to be called by higher-level package tools.
+  timeline:
+    - '1.8.0: First official release.'
+    - >
+      1.9.0: Adds selectors and criteria support, Debian manpage, install target, macOS
+      build support, MinGW compilation, stream reading, and a small C driver.
+    - '1.9.1: Adjusts encodings for gringo 4.5 compatibility and updates the manpage.'
+    - >
+      1.9.3: Moves to GitHub, switches to MIT license, adopts Boost program options, and
+      updates CMake requirements.
+    - '1.9.4: Refactors the aspcud application to C++ for maintenance.'
+    - '1.9.5-1.9.6: Updates dependencies and Boost compatibility.'
+  usage:
+    - >
+      The canonical command is `aspcud problem.cudf solution.cudf <criteria>`. A user
+      supplies a CUDF problem and optimization criteria, while aspcud coordinates
+      conversion, grounding, solving, and CUDF-format output.
+    - >
+      The README notes that either `misc2012.lp` or `specification.lp` encodings can be
+      selected with `-e`; the former typically handles harder problems, while the latter
+      can be faster on simpler instances.
 tags:
   - asp
   - cli
   - cudf
   - dependency-solver
   - package-management
+  - potassco
 geiger:
   category: appliance
   color: green
@@ -24,31 +94,34 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official README at https://github.com/potassco/aspcud describes aspcud as a solver
-      for package problems in CUDF format.
-    - source_facts.description says it is a package dependency solver.
+    - https://github.com/potassco/aspcud#readme
+    - source_facts.description
   display-name-sources:
-    - Official repository title is potassco/aspcud and README heading is Aspcud.
-    - source_facts.name is aspcud.
+    - https://github.com/potassco/aspcud#readme
+    - source_facts.name
   docs-sources:
-    - Official README links installation instructions and documents aspcud usage.
-    - source_facts.homepage is https://potassco.org/aspcud.
+    - current_curation.docs
+    - https://github.com/potassco/aspcud#readme
+    - source_facts.homepage
+  history-sources:
+    - https://github.com/potassco/aspcud#readme
+    - https://github.com/potassco/aspcud/blob/master/CHANGES.md
+    - input.source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already has https://github.com/potassco/aspcud, so repo is
-      returned as null per instruction.
+      source_facts.repo is already populated; prompt instructs returning repo as null in
+      that case.
   tags-sources:
-    - >
-      Official README describes solving package problems in CUDF format using ASP and
-      the aspcud binary.
-    - source_facts.description identifies it as a package dependency solver.
+    - https://github.com/potassco/aspcud#readme
+    - source_facts.description
+    - source_facts.executables
 category-confidence: high
 category-path:
   - system
   - package-management
-  - solver
+  - dependency-solver
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
