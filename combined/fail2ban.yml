@@ -14,6 +14,88 @@ config-file-location:
     - /etc/fail2ban/filter.d/*.conf
     - /etc/fail2ban/action.d/*.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Fail2Ban became part of the standard Linux server-security toolbox because it
+      matched the common shape of internet-facing Unix services: SSH, mail, web, and
+      database daemons emitting failed-authentication logs. The project README says it
+      is likely already packaged for a user's Linux distribution, and the supplied
+      package-manager facts show broad availability across Alpine, Debian, Fedora/DNF,
+      Homebrew, MacPorts, Nix, Arch, Ubuntu, and openSUSE.
+    - >
+      Its adoption has been helped by configuration conventions that distributions can
+      ship and administrators can override. Stock jails, filters, actions, and path
+      files let package maintainers encode distribution-specific log locations while
+      users keep local policy in `/etc/fail2ban`, especially `jail.local` and `jail.d`
+      snippets.
+  package-nerd-significance:
+    - >
+      Fail2Ban is significant in package-manager culture because it is both ordinary and
+      sharp-edged: a tiny install command can place a privileged daemon, distro-specific
+      defaults, init/systemd integration, and firewall actions on a host. Packagers must
+      get paths, service units, Python dependencies, and default actions right or
+      administrators either get no protection or accidental lockouts.
+    - >
+      It is also a classic example of a package whose value comes from accumulated
+      operational knowledge. The code is important, but the long tail of maintained
+      filters for OpenSSH, Apache, nginx, Postfix, Dovecot, Exim, and many other
+      services is why administrators keep installing it.
+  project-history:
+    - >
+      The official changelog records Fail2Ban releases back to 0.1.0 in October 2004.
+      Early 0.x releases moved quickly through alpha, beta, and stable lines, with 0.6.0
+      stable in 2005, the 0.7 branch in 2006, and 0.8.0 stable in 2007. The README still
+      credits Cyril Jaquier as original author and describes the project as
+      community-driven for years.
+    - >
+      The 0.9 series, beginning in 2014, marked the modern service-management era by
+      adding a systemd journal backend. The 0.10 line followed with IPv6 work, including
+      an alpha labeled for IPv6 support in 2016 and a 0.10.0 release in 2017. Later
+      releases continued to refine journald, iptables, nftables, firewalld, pf, and
+      service-specific filters.
+    - >
+      The 1.x line arrived with 1.0.1 and 1.0.2 releases in 2022 and 1.1.0 in 2024.
+      These releases focused less on changing the basic model and more on compatibility,
+      security, and operational maintenance: Python version support, CVE fixes, systemd
+      backend stability, IPv6 auto-detection, newer service log formats, and additional
+      filters and actions.
+  related-projects:
+    - OpenSSH, iptables, nftables, firewalld, pf, systemd-journald, DenyHosts, sshguard
+  sources:
+    - https://github.com/fail2ban/fail2ban
+    - https://raw.githubusercontent.com/fail2ban/fail2ban/master/README.md
+    - https://raw.githubusercontent.com/fail2ban/fail2ban/master/ChangeLog
+    - https://fail2ban.readthedocs.io/
+    - https://github.com/fail2ban/fail2ban/wiki/How-to-install-fail2ban-packages
+  summary:
+    - >
+      Fail2Ban is a long-running Python daemon and command-line toolkit for reacting to
+      hostile log patterns by banning hosts through firewall actions. Its core appeal
+      has stayed stable since the early releases: watch authentication and service logs,
+      count repeated failures, and temporarily block the offending address.
+  timeline:
+    - '2004: Fail2Ban 0.1.0 alpha released.'
+    - '2005: 0.6.0 stable release published.'
+    - '2007: 0.8.0 stable release published.'
+    - '2014: 0.9.0 beta added systemd journal backend.'
+    - '2016: 0.10.0 alpha introduced IPv6-support work.'
+    - '2017: 0.10.0 released.'
+    - '2020: 0.11.2 released.'
+    - '2022: 1.0.1 and 1.0.2 released with compatibility and security fixes.'
+    - '2024: 1.1.0 released with newer Python support and further backend/filter updates.'
+  usage:
+    - >
+      A typical Fail2Ban deployment installs the daemon, enables selected jails such as
+      `sshd`, and lets `fail2ban-server` monitor logs while administrators use
+      `fail2ban-client` for status, reloads, and manual control. The README explicitly
+      warns users to interact through `fail2ban-client` rather than calling the server
+      directly.
+    - >
+      The package also matters to operators because `fail2ban-regex` gives a local way
+      to test filters against log samples before enabling bans. That workflow, plus
+      filter and action directories, made Fail2Ban not just a daemon but a small
+      domain-specific toolkit for converting service logs into firewall state.
 category: security
 package-manager:
   apk: fail2ban
@@ -43,5 +125,12 @@ executables:
   - fail2ban-testcases
 provenance:
   formula: fail2ban
+  history-sources:
+    - https://github.com/fail2ban/fail2ban
+    - https://raw.githubusercontent.com/fail2ban/fail2ban/master/README.md
+    - https://raw.githubusercontent.com/fail2ban/fail2ban/master/ChangeLog
+    - https://fail2ban.readthedocs.io/
+    - https://github.com/fail2ban/fail2ban/wiki/How-to-install-fail2ban-packages
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

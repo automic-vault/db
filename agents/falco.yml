@@ -5,6 +5,61 @@ docs:
   - https://github.com/ysugimoto/falco#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Official install paths include downloadable GitHub release binaries, Homebrew, and
+      `go install`, which places the tool in the normal package-manager and Go-toolchain
+      channels used by Fastly VCL maintainers. The README also documents GitHub Actions
+      usage through a separate falco-github-action, showing CI linting as a first-class
+      workflow.
+  package-nerd-significance:
+    - >
+      For package-manager users, this falco is a good example of a niche operational CLI
+      whose package name collides with a much larger security project. Its significance
+      is in bringing CDN configuration validation, formatting, simulation, and tests
+      into local shells and CI rather than leaving mistakes to remote Fastly activation.
+  project-history:
+    - >
+      The project was created in July 2021 to make Fastly custom VCL development less
+      dependent on slow remote deployment validation. Its README frames the core problem
+      as a deployment loop where service versions are cloned, custom VCL is uploaded,
+      and syntax errors are discovered only when Fastly validates activation.
+    - >
+      The implementation grew from local parsing and linting into a broader developer
+      workflow: formatting, statistics, a VCL interpreter-backed local simulator, a
+      debugger, unit testing written in VCL, a console, and Terraform plan support for
+      the Fastly provider.
+  related-projects:
+    - Fastly custom VCL is the primary target environment.
+    - The README documents Terraform plan support for the Fastly Terraform provider.
+    - The README links a GitHub Action for CI linting.
+  sources:
+    - https://github.com/ysugimoto/falco
+    - https://raw.githubusercontent.com/ysugimoto/falco/main/README.md
+    - https://api.github.com/repos/ysugimoto/falco
+    - https://api.github.com/repos/ysugimoto/falco/releases?per_page=100
+  summary:
+    - >
+      falco is a Fastly VCL developer tool, parser, linter, formatter, local simulator,
+      debugger, and test runner. It is unrelated to the Falco cloud-native security
+      project; the Homebrew formula points to ysugimoto/falco, whose README describes it
+      as a Fastly VCL tool.
+  timeline:
+    - '2021: Repository created for a Fastly-focused VCL developer tool.'
+    - '2021: v0.1.0 released on GitHub.'
+    - '2025: v2.0.0 released.'
+    - '2026: v2.3.0 released.'
+  usage:
+    - >
+      The default workflow is `falco lint`, often run with include paths and verbose
+      output against a main VCL file before deployment. Other subcommands cover `fmt`,
+      `simulate`, `test`, `console`, `stats`, and `terraform`, making the CLI useful
+      both interactively and in automated checks.
+    - >
+      The tool is intentionally Fastly-specific. The README says it targets Fastly VCL
+      2.x and does not try to track newer generic Varnish syntax, because Fastly adds
+      its own builtins, predefined variables, and compatibility constraints.
 tags:
   - cli
   - fastly
@@ -29,6 +84,11 @@ provenance:
     - >
       source_facts.homepage is the official GitHub repository; README is the best
       official documentation surface available.
+  history-sources:
+    - https://github.com/ysugimoto/falco
+    - https://raw.githubusercontent.com/ysugimoto/falco/main/README.md
+    - https://api.github.com/repos/ysugimoto/falco
+    - https://api.github.com/repos/ysugimoto/falco/releases?per_page=100
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -41,5 +101,6 @@ category-path:
   - linting
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

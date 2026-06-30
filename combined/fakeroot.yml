@@ -7,6 +7,91 @@ docs:
   - https://salsa.debian.org/clint/fakeroot/-/blob/master/README
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      fakeroot was specifically written to enable users to create Debian packages
+      without root privileges. The manpage documents dpkg-buildpackage -rfakeroot and
+      debuild -rfakeroot as normal workflows, and notes that debuild defaults to
+      fakeroot in modern usage.
+    - >
+      Its adoption spread beyond Debian because the problem is generic to Unix
+      packaging: package builds often need archive metadata to say root:root even though
+      the build user should not be root. The package-manager list in the input shows
+      fakeroot packaged across APK, Homebrew, Debian, Fedora/DNF, MacPorts, Nix,
+      Arch/pacman, Ubuntu, and openSUSE/zypper ecosystems.
+  package-nerd-significance:
+    - >
+      fakeroot matters because it helped make unprivileged package builds routine.
+      Before tools like fakeroot, a packager either needed real root privileges to
+      create files with root ownership before archiving, or had to construct archive
+      metadata directly.
+    - >
+      It is also an instructive Unix packaging artifact: small, sharp, LD_PRELOAD-based,
+      explicitly non-setuid, and honest about its limitations. Distribution maintainers
+      care about it because subtle libc, stat, xattr, and architecture changes can
+      affect whether huge portions of a packaging ecosystem build reproducibly without
+      privilege.
+  project-history:
+    - >
+      fakeroot entered Debian in June 1997 as a tool by Joost Witteveen. Early changelog
+      entries show it rapidly gaining wrappers for chown, chmod, stat, mkdir, rename,
+      and related calls, plus IPC handling and tests needed to make dpkg-buildpackage
+      -rfakeroot reliable.
+    - >
+      The manpage explains the central implementation: fakeroot replaces selected
+      file-manipulation library functions with wrappers loaded through LD_PRELOAD, while
+      the faked daemon preserves the fake ownership and permission view. The design
+      intentionally avoids wrapping some calls such as open() because too many libc
+      interactions would create fragile loops and portability problems.
+    - >
+      Over time fakeroot became maintained as a Debian project package, with authors and
+      contributors including Joost Witteveen, Clint Adams, Timo Savola, Regis Duchesne,
+      Mikhail Gusarov, J.H.M. Dassen for the manual page, and Kyle J. McKay for OS X
+      support. The current Salsa repository tracks ongoing fixes for libc, architecture,
+      translation, xattr, time64, and cross-build behavior.
+  related-projects:
+    - >
+      fakeroot is tightly connected to faked, dpkg-buildpackage, debuild, deb archives,
+      and Debian packaging policy. The manpage also contrasts its intentionally limited
+      wrappers with libtricks-style broader interception.
+  sources:
+    - https://manpages.debian.org/bookworm/fakeroot/fakeroot.1.en
+    - https://salsa.debian.org/clint/fakeroot
+    - https://salsa.debian.org/api/v4/projects/clint%2Ffakeroot
+    - >
+      https://salsa.debian.org/api/v4/projects/clint%2Ffakeroot/repository/files/README/raw?ref=main
+    - >
+      https://salsa.debian.org/api/v4/projects/clint%2Ffakeroot/repository/files/AUTHORS/raw?ref=main
+    - https://tracker.debian.org/media/packages/f/fakeroot/changelog-1.38.1-1
+  summary:
+    - >
+      fakeroot runs a command in an environment where file manipulation appears to
+      happen with root privileges, without granting real root access. It is a core
+      packaging utility because archives can be built with root-looking ownership,
+      permissions, and device metadata by unprivileged users.
+  timeline:
+    - '1997-06: Initial Debian changelog entry for fakeroot 0.0-0.'
+    - >
+      1997-07: Changelog states dpkg-buildpackage -rfakeroot works reliably and the
+      package was built as non-root.
+    - '1997-08: A manpage and additional wrappers/tests are added.'
+    - '2014: Debian manpage revision documents the modern fakeroot command behavior.'
+    - '2018: The Debian Salsa repository is created.'
+    - >
+      2026: fakeroot 1.38.1-1 is uploaded to Debian unstable with xattr and unknown-file
+      handling fixes.
+  usage:
+    - >
+      Typical use wraps only the packaging or archive-creation phase, not the configure
+      or binary build phase. The manpage warns that configure-style probes can get
+      confused when fakeroot changes apparent system behavior, and recommends letting
+      Debian build targets call fakeroot at the correct stage.
+    - >
+      fakeroot is also useful for tar, ar, .deb, backup, and restore workflows that need
+      root-looking ownership or device information in an archive. Its -s and -i options
+      can save and reload a fakeroot environment, with documented caveats about touching
+      files outside the saved fake view.
 category: system
 package-manager:
   apk: fakeroot
@@ -33,5 +118,15 @@ executables:
   - fakeroot
 provenance:
   formula: fakeroot
+  history-sources:
+    - https://manpages.debian.org/bookworm/fakeroot/fakeroot.1.en
+    - https://salsa.debian.org/clint/fakeroot
+    - https://salsa.debian.org/api/v4/projects/clint%2Ffakeroot
+    - >
+      https://salsa.debian.org/api/v4/projects/clint%2Ffakeroot/repository/files/README/raw?ref=main
+    - >
+      https://salsa.debian.org/api/v4/projects/clint%2Ffakeroot/repository/files/AUTHORS/raw?ref=main
+    - https://tracker.debian.org/media/packages/f/fakeroot/changelog-1.38.1-1
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
