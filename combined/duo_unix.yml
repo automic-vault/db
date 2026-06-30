@@ -16,6 +16,81 @@ credentials-file-location:
     - /etc/security/pam_duo.conf
     - /etc/duo/login_duo.conf
     - /etc/security/login_duo.conf
+history:
+  adoption-history:
+    - >
+      Duo Unix adoption follows Duo's enterprise MFA adoption path: administrators add a
+      Duo Unix integration in the Duo Admin Panel, deploy packages or stable tarballs,
+      configure SSH or sudo, and place integration credentials in `/etc/duo` or
+      `/etc/security` config files.
+    - >
+      Package metadata shows distribution through Homebrew, Alpine, Debian/Ubuntu
+      development packages, Fedora, and Nix. That breadth matters because PAM
+      integrations are usually installed by OS package managers on servers rather than
+      vendored into applications.
+  package-nerd-significance:
+    - >
+      Duo Unix is package-nerd significant because it lives at a high-risk boundary: a
+      small C package, config files with secrets, PAM modules, and remote MFA API calls
+      can affect whether administrators can log into their own machines.
+    - >
+      Its packaging history illustrates why security integrations stay conservative:
+      upstream points production users at stable tarballs/packages, while the GitHub
+      repo remains the development surface. For package managers, correct file placement
+      and clear upgrade behavior matter as much as the executable.
+  project-history:
+    - >
+      The public Duo Unix repository was created in 2011 and is maintained by Duo
+      Security. The README describes it as Duo two-factor authentication for Unix
+      systems, with the repository intended for development or cutting-edge versions
+      while stable release tarballs and packages are recommended for production
+      deployments.
+    - >
+      The project is written mainly in C and uses traditional Unix build machinery:
+      bootstrap, configure, make, and make install. Its docs and README center on the
+      practical security integration points: PAM, login wrappers, OpenSSL-backed TLS,
+      and config files containing Duo integration keys and API host information.
+  related-projects:
+    - >
+      Duo Security's Unix integration and Admin Panel are the operational counterpart to
+      the open-source Unix package.
+    - >
+      OpenPAM/Linux-PAM, OpenSSH, sudo, and OpenSSL are adjacent infrastructure because
+      Duo Unix plugs into PAM-protected login flows and uses the system OpenSSL library
+      for TLS.
+  sources:
+    - >
+      https://raw.githubusercontent.com/duosecurity/duo_unix/master/README.md documents
+      purpose, PAM and standalone modes, production packaging guidance, build steps,
+      config files, Duo Admin Panel setup, and TLS support.
+    - https://duo.com/docs/duounix documents official Duo Unix deployment guidance.
+    - >
+      https://api.github.com/repos/duosecurity/duo_unix documents repository creation,
+      language, activity, and public metadata.
+    - >
+      https://api.github.com/repos/duosecurity/duo_unix/releases documents recent
+      release tags.
+  summary:
+    - >
+      Duo Unix is Duo Security's Unix integration for adding Duo two-factor
+      authentication to SSH, sudo, and other PAM-protected services. It packages two
+      important surfaces: the `pam_duo` PAM module and the `login_duo` standalone login
+      wrapper.
+  timeline:
+    - '2011: The public duosecurity/duo_unix repository is created.'
+    - '2025: Duo Unix 2.1.0 and 2.2.x releases are published on GitHub.'
+    - >
+      2026: The repository remains active with updates and package-manager distribution
+      across multiple Unix-like systems.
+  usage:
+    - >
+      Typical usage is to install Duo Unix with PAM support, create a Unix integration
+      in the Duo Admin Panel, put the integration key, secret key, and API hostname into
+      `pam_duo.conf` or `login_duo.conf`, and then wire `pam_duo` into the PAM stack for
+      SSH or sudo.
+    - >
+      `login_duo` can also protect command execution without PAM. The README shows a
+      test invocation that runs a command only after successful Duo authentication.
 category: security
 package-manager:
   apk: duo_unix
@@ -39,5 +114,18 @@ executables:
   - login_duo
 provenance:
   formula: duo_unix
+  history-sources:
+    - >
+      https://raw.githubusercontent.com/duosecurity/duo_unix/master/README.md documents
+      purpose, PAM and standalone modes, production packaging guidance, build steps,
+      config files, Duo Admin Panel setup, and TLS support.
+    - https://duo.com/docs/duounix documents official Duo Unix deployment guidance.
+    - >
+      https://api.github.com/repos/duosecurity/duo_unix documents repository creation,
+      language, activity, and public metadata.
+    - >
+      https://api.github.com/repos/duosecurity/duo_unix/releases documents recent
+      release tags.
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
