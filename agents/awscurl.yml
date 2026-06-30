@@ -7,6 +7,67 @@ config-file-location: null
 credentials-file-location:
   unix:
     - ~/.aws/credentials
+history:
+  adoption-history:
+    - >
+      awscurl found a niche among AWS users who need to debug or script signed requests
+      outside the full AWS CLI command model. The README explicitly points to PyPI,
+      Homebrew, Docker Hub, GitHub Container Registry, AWS documentation, and Q&A usage
+      as adoption surfaces.
+    - >
+      Its adoption is narrower than AWS CLI but sticky: it solves the awkward middle
+      ground where plain curl is not authenticated and a generated `aws SERVICE
+      OPERATION` command is too high-level.
+  package-nerd-significance:
+    - >
+      awscurl is package-nerd catnip because it is a tiny bridge between two
+      command-line cultures: ubiquitous curl-style HTTP tooling and AWS' SigV4
+      authentication machinery. It packages a fiddly authentication algorithm as one
+      executable, which is exactly the sort of thing users want from Homebrew.
+    - >
+      It also demonstrates how AWS-adjacent tools often live outside AWS itself but
+      still rely on official AWS credential conventions.
+  project-history:
+    - >
+      The `okigan/awscurl` repository was created in October 2015. Its README frames the
+      project around a small Unix-tool idea: keep the shape of curl, but automate AWS
+      request signing so users can call AWS APIs without manually building canonical
+      requests and authorization headers.
+    - >
+      Release history shows the project remained active beyond its early Python package
+      life, adding Homebrew packaging around the 0.20 release in January 2020, SSO
+      profile and redirect support in 2021, Docker images, and continued 0.x releases
+      through 2026.
+  related-projects:
+    - AWS CLI provides higher-level generated AWS service commands.
+    - curl provides the familiar HTTP command-line interaction model.
+    - aws-sigv4-proxy and other SigV4 helpers solve adjacent signed-request problems.
+  sources:
+    - https://api.github.com/repos/okigan/awscurl
+    - https://api.github.com/repos/okigan/awscurl/releases?per_page=100
+    - https://github.com/okigan/awscurl
+    - https://raw.githubusercontent.com/okigan/awscurl/master/README.md
+  summary:
+    - >
+      awscurl is a curl-like command-line tool that signs HTTP requests with AWS
+      Signature Version 4. It is useful when an AWS service or API Gateway endpoint
+      needs raw HTTP probing but still requires AWS authentication.
+  timeline:
+    - '2015: Public GitHub repository `okigan/awscurl` created.'
+    - '2018: v0.13 release prepared.'
+    - '2020: v0.20 release adds macOS Homebrew package-manager support.'
+    - '2021: v0.22 release adds SSO profile and redirect support.'
+    - '2026: v0.44 release published.'
+  usage:
+    - >
+      Typical usage supplies a service name, region/profile or explicit credentials, and
+      a URL: for example S3, EC2 query APIs, or API Gateway `execute-api` endpoints. If
+      access keys are not passed by flag or environment, awscurl attempts to use
+      credentials from `~/.aws/credentials`.
+    - >
+      The tool exposes curl-like flags for methods, data, headers, redirects, output
+      files, and TLS behavior, while adding AWS-specific options such as `--service`,
+      `--region`, and `--profile`.
 tags:
   - aws
   - aws-signature
@@ -33,6 +94,11 @@ provenance:
     - >
       Official GitHub repository README is the primary documentation surface and
       includes installation, examples, options, and credential behavior.
+  history-sources:
+    - https://api.github.com/repos/okigan/awscurl
+    - https://api.github.com/repos/okigan/awscurl/releases?per_page=100
+    - https://github.com/okigan/awscurl
+    - https://raw.githubusercontent.com/okigan/awscurl/master/README.md
   repo-sources:
     - >
       source_facts.homepage is the official GitHub repository URL; the GitHub page
@@ -48,5 +114,6 @@ category-path:
   - aws
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

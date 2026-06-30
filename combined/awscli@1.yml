@@ -11,6 +11,73 @@ config-file-location:
 credentials-file-location:
   unix: ~/.aws/credentials
   windows: '%USERPROFILE%\.aws\credentials'
+history:
+  adoption-history:
+    - >
+      v1 spread through Python packaging and operating-system package managers because
+      it was easy to install into development machines, servers, and CI images. Many
+      long-running scripts, docs, and wrapper tools still assume v1-era behavior, which
+      is why package managers expose a versioned package rather than only replacing it
+      with v2.
+    - >
+      AWS announced that CLI v1 enters maintenance mode on February 1, 2026, and reaches
+      end-of-support on July 31, 2027. That lifecycle makes `awscli@1` useful as a
+      compatibility package, not the forward-looking default.
+  package-nerd-significance:
+    - >
+      The formula is a clean example of package-manager major-version coexistence. The
+      executable name is still `aws`, but the package name advertises that the user is
+      opting into a legacy major line with a published support clock.
+    - >
+      For package nerds, the interesting bit is not novelty but preservation: keeping
+      old automation reproducible while the vendor's main installation path moves on.
+  project-history:
+    - >
+      The v1 line began in the same `aws/aws-cli` repository as the main CLI. The
+      repository was created in 2012 and the 1.0.0 release tag was cut in September
+      2013, establishing the `aws` executable, service subcommands, shared config and
+      credentials files, and a generated interface over AWS service models.
+    - >
+      AWS CLI v1 remained the default AWS CLI for years and continued to receive release
+      tags after v2 became available. By late 2025, the repository was still cutting 1.x
+      release tags, but AWS' official lifecycle announcement moved the line into a
+      legacy role.
+  related-projects:
+    - AWS CLI v2 is the successor major line packaged by Homebrew as `awscli`.
+    - >
+      Botocore and Boto3 are the Python AWS SDK pieces most closely associated with the
+      v1 ecosystem.
+    - AWSume, awscurl, and awslogs consume the same shared AWS credential/profile conventions.
+  sources:
+    - https://api.github.com/repos/aws/aws-cli
+    - >
+      https://api.github.com/repos/aws/aws-cli/git/tags/7dc8d4f613a5b0d6d0fe80977bbcb13662bf6b55
+    - >
+      https://api.github.com/repos/aws/aws-cli/git/tags/b824720aa0c766c39ee2c6039f25e9425ddf4498
+    - https://aws.amazon.com/blogs/developer/cli-v1-maintenance-mode-announcement/
+    - https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-files.html
+    - https://github.com/aws/aws-cli
+  summary:
+    - >
+      AWS CLI v1 is the original major line of Amazon's official AWS command-line
+      interface. In Homebrew it is packaged as `awscli@1` so users can keep the older
+      Python-oriented CLI behavior while the main `awscli` formula follows AWS CLI v2.
+  timeline:
+    - '2012: Public GitHub repository `aws/aws-cli` created.'
+    - '2013: AWS CLI 1.0.0 tag cut.'
+    - '2020: AWS CLI v2 2.0.0 tag cut, creating the long-term v1/v2 split.'
+    - '2025: AWS CLI 1.44.0 tag cut, showing ongoing v1 releases before maintenance mode.'
+    - '2026: AWS CLI v1 scheduled to enter maintenance mode on February 1.'
+    - '2027: AWS CLI v1 scheduled to reach end-of-support on July 31.'
+  usage:
+    - >
+      AWS CLI v1 is used like the modern CLI: `aws configure`, `aws --profile NAME`, and
+      service subcommands such as `aws s3` and `aws sts`. It reads the same shared
+      config and credentials files documented by AWS, normally `~/.aws/config` and
+      `~/.aws/credentials` on Unix-like systems.
+    - >
+      The practical reason to install `awscli@1` is compatibility: pinning scripts,
+      environments, or plugins that have not yet been moved to AWS CLI v2.
 category: cloud-infrastructure
 package-manager:
   brew: awscli@1

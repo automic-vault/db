@@ -12,6 +12,74 @@ credentials-file-location:
   windows:
     - C:\Users\Administrator.ROOT\.config\azurehound\key.pem
     - C:\Users\Administrator.ROOT\.config\azurehound\cert.pem
+history:
+  adoption-history:
+    - >
+      Adoption follows BloodHound's security-operator audience rather than general Azure
+      administration. The input package facts list Homebrew and Nix packages, which is
+      typical for offensive-security and assessment tooling that needs reproducible
+      workstation installs.
+    - >
+      The README shows Azure CLI token reuse via `az account get-access-token`, making
+      it convenient for operators who already authenticate with Microsoft's Azure CLI
+      and want to export graph data without a separate browser flow.
+  package-nerd-significance:
+    - >
+      For package nerds, AzureHound is a compact Go security CLI with release binaries
+      and a rolling-release channel. It is notable less for broad package coverage than
+      for being a high-signal dependency in BloodHound workflows where exact versioning
+      and tenant-data compatibility matter.
+    - >
+      It also illustrates a common packaging boundary in security tools: the package can
+      install a binary, but the meaningful output is sensitive tenant graph data that
+      belongs outside package-manager state.
+  project-history:
+    - >
+      AzureHound comes from the BloodHound/SpecterOps ecosystem, extending BloodHound
+      collection beyond traditional Active Directory graph data into Azure tenant data.
+      The official README identifies it as the BloodHound data collector for Microsoft
+      Azure and the official tool for collecting Azure data for BloodHound Community
+      Edition and BloodHound Enterprise.
+    - >
+      The public repository provides Go source, release binaries, a rolling release tied
+      to the main branch, and command help for listing tenant data or running a
+      collection service.
+  related-projects:
+    - >
+      BloodHound Community Edition and BloodHound Enterprise consume the data AzureHound
+      collects.
+    - Azure CLI can provide Microsoft Graph access tokens reused by AzureHound.
+    - SharpHound is the related BloodHound collector for Active Directory environments.
+  sources:
+    - SpecterOps BloodHound AzureHound docs
+    - SpecterOps/AzureHound README and releases
+    - source_facts.package-manager
+  summary:
+    - >
+      AzureHound is SpecterOps' Microsoft Azure data collector for BloodHound. It
+      gathers Azure and Microsoft Entra ID relationship data so BloodHound users can
+      reason about identity attack paths in cloud and hybrid environments.
+  timeline:
+    - >
+      2022: The AzureHound repository exposes a rolling release for binaries built from
+      the main branch.
+    - >
+      2020s: SpecterOps documents AzureHound as the Azure collector for BloodHound
+      Community Edition and Enterprise.
+    - >
+      2020s: Homebrew and Nix package entries make AzureHound easy to install on
+      assessment workstations.
+  usage:
+    - >
+      Common usage is `azurehound list` with username/password, tenant, JWT, or refresh
+      token options, optionally writing JSON output for BloodHound ingestion.
+      `azurehound configure` and `azurehound start` support service-style collection for
+      BloodHound Enterprise.
+    - >
+      The command exposes a `--config` flag with a default config path under the user's
+      config directory. Credential material is supplied through flags, tokens,
+      certificates, or config rather than a separately documented universal credentials
+      file.
 category: security
 package-manager:
   brew: azurehound

@@ -10,6 +10,89 @@ docs:
   - https://learn.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      AzCopy is distributed as an official Microsoft/Azure binary and is also packaged
+      through common workstation channels. The batch input lists Homebrew, Chocolatey,
+      Pacman, Scoop, and WinGet packaging, which matches its role as both a developer
+      workstation tool and an automation tool for Windows, macOS, and Linux
+      environments.
+    - >
+      The release cadence is active: the GitHub releases API shows v10.32.x releases in
+      2026, and the official changelog records ongoing feature work, dependency updates,
+      performance fixes, and authentication changes. That continued churn matters
+      because storage services, auth flows, and transfer scale requirements keep
+      changing.
+  package-nerd-significance:
+    - >
+      AzCopy is package-nerd significant because it is a single-purpose official cloud
+      binary with real operational weight. It is commonly installed outside SDKs, used
+      by scripts directly, and expected to behave consistently across shells and
+      operating systems.
+    - >
+      It is also a good example of why package managers keep cloud CLIs current: auth
+      libraries, service API versions, retry behavior, and filesystem edge cases can
+      make old binaries fail in ways that look like storage problems.
+  project-history:
+    - >
+      The Azure/azure-storage-azcopy repository was created in December 2017 for the
+      Go-based AzCopy v10 line. The first listed GitHub release is the v10.0.0 preview
+      from August 2018, followed by a v10.1.0 general availability release in April
+      2019.
+    - >
+      The official README defines AzCopy v10 as a command-line utility for copying data
+      to and from containers and file shares in Azure Storage accounts, optimized for
+      performance and throughput. It documents copy, sync, login, logout, jobs, remove,
+      list, make, bench, load, and environment-inspection commands.
+    - >
+      Over time the v10 line expanded beyond simple local-to-blob copies. The README
+      documents support for Blob Storage, Azure Files SMB and NFS, Azure Data Lake
+      Storage Gen2, service-to-service copies, AWS S3 to Azure Blob transfers, and
+      Google Cloud Storage to Azure Blob transfers.
+  related-projects:
+    - >
+      AzCopy is related to Azure Storage, Azure Data Lake Storage Gen2, Azure Files,
+      Microsoft Entra ID authentication, Amazon S3 migration paths, and Google Cloud
+      Storage migration paths as documented in the official README and Microsoft Learn
+      articles.
+  sources:
+    - >
+      GitHub releases API lists v10.0.0 preview on 2018-08-31, v10.1.0 GA on 2019-04-23,
+      and v10.32.x releases in 2026.
+    - 'GitHub repository metadata: created_at 2017-12-19.'
+    - Microsoft Learn documents AzCopy configuration through environment variables.
+    - >
+      Official README documents scope, command set, transfer directions, and supported
+      cloud sources.
+    - Official changelog documents ongoing v10 development and operational fixes.
+    - >
+      input.source_facts.package-manager lists Homebrew, Chocolatey, Pacman, Scoop, and
+      WinGet packaging.
+  summary:
+    - >
+      AzCopy v10 is Microsoft's command-line utility for high-throughput data movement
+      to, from, and between Azure Storage services. In package-manager terms, it is the
+      Azure storage transfer binary: the thing installed on laptops, build agents,
+      migration hosts, and Cloud Shell sessions when data has to move reliably.
+  timeline:
+    - '2017: Azure/azure-storage-azcopy repository created.'
+    - '2018: AzCopy v10.0.0 preview release published.'
+    - '2019: AzCopy v10.1.0 GA release published.'
+    - '2024: v10.26 and v10.27 releases continue the active v10 line.'
+    - '2026: v10.32.x releases published.'
+  usage:
+    - >
+      Users primarily run `azcopy copy` for one-time transfers, `azcopy sync` for
+      incremental replication, and `azcopy jobs` to inspect or resume prior work.
+      Authentication can use Microsoft Entra ID login, SAS tokens, shared keys, service
+      principals, or managed identity patterns depending on the transfer direction and
+      storage service.
+    - >
+      Operational users also tune AzCopy through environment variables such as
+      `AZCOPY_CONCURRENCY_VALUE`, `AZCOPY_LOG_LOCATION`, and `AZCOPY_JOB_PLAN_LOCATION`.
+      Microsoft documents these as configuration settings rather than as a single user
+      config file.
 category: cloud-infrastructure
 package-manager:
   brew: azcopy

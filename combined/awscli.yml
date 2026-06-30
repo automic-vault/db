@@ -11,6 +11,87 @@ config-file-location:
 credentials-file-location:
   unix: ~/.aws/credentials
   windows: '%USERPROFILE%\.aws\credentials'
+history:
+  adoption-history:
+    - >
+      The AWS CLI became infrastructure plumbing because it is the AWS-native
+      denominator shared by developers, CI jobs, shell scripts, and operational
+      runbooks. Its adoption tracks both AWS service growth and package-manager culture:
+      Homebrew, Linux distro packages, Chocolatey, Scoop, Nix, and vendor installers all
+      expose an `aws` command that users expect to be available on fresh machines.
+    - >
+      AWS announced a v1 maintenance transition in 2024: v1 enters maintenance mode on
+      February 1, 2026, reaches end-of-support on July 31, 2027, and users are directed
+      toward v2 for ongoing feature work. That split is why package collections commonly
+      carry both `awscli` and an explicit v1 package.
+  package-nerd-significance:
+    - >
+      AWS CLI is a packaging stress test: it has high release velocity, a large
+      generated command surface, platform-specific installers, shell completion, and a
+      v1/v2 compatibility split. Package maintainers care about it because many
+      downstream tools assume the `aws` executable exists, while users care about
+      whether their package manager delivers v2, legacy v1, or both.
+    - >
+      It is also one of the clearest examples of cloud vendors turning APIs into
+      package-manager-distributed command-line infrastructure. Installing `awscli` is
+      often the first step in bootstrapping an AWS workstation or CI image.
+  project-history:
+    - >
+      The public `aws/aws-cli` repository was created in November 2012 and the 1.0.0 tag
+      was cut in September 2013. Version 1 established the familiar Python-based command
+      structure, shared AWS config and credentials files, profiles, output formats, and
+      generated service commands that made AWS automation feel like a regular Unix tool.
+    - >
+      AWS CLI v2 was previewed publicly with the `2.0.0dev0` tag in November 2018 and
+      tagged 2.0.0 in February 2020. The v2 package became the preferred install target
+      for the main AWS CLI docs and Homebrew formula, while v1 continued as a
+      compatibility line for workflows pinned to the Python package ecosystem or older
+      behavior.
+  related-projects:
+    - AWS CLI v1 is the legacy major line packaged by Homebrew as `awscli@1`.
+    - >
+      AWS SDK for Python (Boto3/Botocore) supplies the Python AWS client and model
+      ecosystem that underpins much of the v1-era command generation.
+    - >
+      awscurl, awslogs, and AWSume are companion command-line tools that reuse AWS
+      credentials, profiles, or service semantics.
+  sources:
+    - https://api.github.com/repos/aws/aws-cli
+    - >
+      https://api.github.com/repos/aws/aws-cli/git/tags/b824720aa0c766c39ee2c6039f25e9425ddf4498
+    - >
+      https://api.github.com/repos/aws/aws-cli/git/tags/ec5534a7194f2def0b80dcf9291ab1d78fcf11d7
+    - >
+      https://api.github.com/repos/aws/aws-cli/git/tags/ed249f078fc585d3ed4878bb2535697622091b4a
+    - https://aws.amazon.com/blogs/developer/cli-v1-maintenance-mode-announcement/
+    - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
+    - https://github.com/aws/aws-cli
+  summary:
+    - >
+      AWS CLI is Amazon Web Services' official command-line interface, packaging AWS
+      service APIs behind a single `aws` executable for shell use, automation, and
+      repeatable cloud operations. For package-manager users, the modern `awscli`
+      formula tracks AWS CLI v2, while the legacy v1 line is packaged separately as
+      `awscli@1`.
+  timeline:
+    - '2012: Public GitHub repository `aws/aws-cli` created.'
+    - '2013: AWS CLI 1.0.0 tag cut.'
+    - '2018: AWS CLI v2 developer preview tag `2.0.0dev0` published.'
+    - '2020: AWS CLI v2 2.0.0 tag cut.'
+    - '2026: AWS CLI v1 scheduled to enter maintenance mode on February 1.'
+    - '2027: AWS CLI v1 scheduled to reach end-of-support on July 31.'
+  usage:
+    - >
+      Common usage is interactive and scripted: configure credentials with `aws
+      configure`, select profiles with `--profile` or `AWS_PROFILE`, call service
+      subcommands such as `aws s3`, `aws ec2`, and `aws sts`, and pipe JSON output
+      through tools like `jq`. The shared config file normally lives at `~/.aws/config`,
+      while long-lived credentials and session material normally live at
+      `~/.aws/credentials`.
+    - >
+      The CLI also serves as an authentication substrate for other tools in this batch.
+      awscurl, awslogs, and AWSume all either read the same shared files or help
+      produce/export credentials used by the AWS CLI and SDK credential chain.
 category: cloud-infrastructure
 package-manager:
   brew: awscli

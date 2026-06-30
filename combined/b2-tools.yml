@@ -8,6 +8,69 @@ docs:
 config-file-location: null
 credentials-file-location:
   unix: ~/.b2_account_info
+history:
+  adoption-history:
+    - >
+      B2 users adopted the CLI because object storage needs scriptable upload, download,
+      sync, lifecycle, and key-management workflows. Backblaze's official docs recommend
+      Homebrew as the quickest setup path for Mac users, while the input package facts
+      also list apk and Scoop packages.
+    - >
+      The tool is common in backup scripts and CI jobs because B2 is frequently used as
+      low-cost object storage. Its versioned command aliases are especially
+      package-nerdy: they let a package ship a newer implementation while preserving an
+      older command contract for scripts.
+  package-nerd-significance:
+    - >
+      For package nerds, `b2-tools` is a neat collision between package name, executable
+      name, and API-versioned command names: Homebrew installs `b2-tools`, users run
+      `b2`, and scripts may choose `b2v4` for compatibility.
+    - >
+      It is also a Python CLI with official binary and Docker distribution, so packaging
+      choices affect startup time, dependencies, credential cache placement, and whether
+      users get the newest API surface or a stable alias.
+  project-history:
+    - >
+      Backblaze maintains the tool in the Backblaze/B2_Command_Line_Tool repository and
+      publishes it as a Python package, standalone binaries, Docker image, and Homebrew
+      package. The README describes it as command-line access to all capabilities of the
+      B2 service.
+    - >
+      The CLI has evolved across API-versioned command surfaces. The README documents
+      the current guidance: use `b2` for the latest stable interactive interface, and
+      use version-bound commands such as `b2v4` for long-running scripts that need
+      stable behavior.
+  related-projects:
+    - Backblaze B2 Cloud Storage is the object-storage service managed by the CLI.
+    - The B2 Native API and S3-compatible API are related service interfaces.
+    - Backblaze's Docker image packages the same CLI for container workflows.
+  sources:
+    - Backblaze official cloud storage command-line tools docs
+    - Backblaze/B2_Command_Line_Tool README and releases
+    - source_facts.package-manager
+  summary:
+    - >
+      B2 Command Line Tool is Backblaze's official `b2` CLI for B2 Cloud Storage. It
+      gives shell access to account, bucket, file, key, replication, listing, removal,
+      and sync operations.
+  timeline:
+    - '2020: Backblaze/B2_Command_Line_Tool GitHub Releases include the 2.x release line.'
+    - >
+      2020s: The README documents Homebrew, PyPI, standalone binaries, Docker, and
+      source installs.
+    - >
+      2020s: Version-bound commands such as `b2v3` and `b2v4` become part of the CLI
+      compatibility model.
+  usage:
+    - >
+      Typical usage starts with account authorization, then commands such as `b2 bucket
+      list`, `b2 file upload`, `b2 ls`, `b2 sync`, and `b2 key create`. The official
+      README and Backblaze docs state that `B2_ACCOUNT_INFO` selects the SQLite cache
+      file for authentication information and that the default is `~/.b2_account_info`.
+    - >
+      For containers, the README shows either passing `B2_APPLICATION_KEY` and
+      `B2_APPLICATION_KEY_ID` each run or persisting authorization state in a mounted
+      volume.
 category: cloud-infrastructure
 package-manager:
   apk: b2-tools

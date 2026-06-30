@@ -10,6 +10,69 @@ config-file-location:
     - azure.yaml
     - .azure/<environment-name>/.env
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      `azd` adoption is tied to Azure sample templates, app modernization demos, and
+      teams that want fewer hand-written provisioning commands. The input package facts
+      list Homebrew, Chocolatey, Scoop, and winget packages, showing the tool is aimed
+      at developer workstations as much as CI.
+    - >
+      Because `azd` is newer than Azure CLI, package-manager adoption is narrower, but
+      the command is important in Azure docs and samples where a repository can become
+      deployable with `azd init` and `azd up`.
+  package-nerd-significance:
+    - >
+      For package nerds, `azure-dev` is interesting because the Homebrew formula name
+      differs from the command name `azd`, and Microsoft's README now points macOS users
+      at a trusted Azure tap/cask flow while package-manager metadata also records
+      community-distribution paths.
+    - >
+      It is also a good example of a cloud CLI whose real payload is conventions: the
+      executable is small compared with the project template ecosystem, generated
+      environment files, and CI/CD hooks it orchestrates.
+  project-history:
+    - >
+      The Azure/azure-dev repository's public release stream starts with
+      `azure-dev-cli_0.1.0-beta.1` in July 2022. Its README describes a
+      developer-centric CLI meant to take code to cloud quickly, with recommended Azure
+      practices and template-driven workflows built in.
+    - >
+      The tool grew around the `azure.yaml` project file and per-environment
+      `.azure/<environment-name>/.env` files. Microsoft Learn documents `azure.yaml` as
+      the configuration file for azd projects and explains that environment variables
+      are stored in environment-specific `.env` files under `.azure`.
+  related-projects:
+    - Azure CLI (`az`) remains the lower-level Azure resource-management CLI.
+    - Bicep and Terraform are supported infrastructure providers in `azure.yaml`.
+    - >
+      Azure sample template repositories provide many of the practical starting points
+      for `azd`.
+  sources:
+    - Azure/azure-dev README and GitHub Releases
+    - Microsoft Learn Azure Developer CLI docs
+    - source_facts.package-manager
+  summary:
+    - >
+      Azure Developer CLI, invoked as `azd`, is Microsoft's project-oriented Azure
+      application CLI. Where `az` manages Azure resources directly, `azd` packages
+      repeatable app workflows such as init, provision, deploy, pipeline setup, and
+      environment management around `azure.yaml` templates.
+  timeline:
+    - '2022: The Azure/azure-dev release stream begins with `azure-dev-cli_0.1.0-beta.1`.'
+    - >
+      2020s: Microsoft Learn documents `azure.yaml` and azd environments as the durable
+      project configuration model.
+    - '2020s: Packages appear for Homebrew, Chocolatey, Scoop, and winget.'
+  usage:
+    - >
+      Common commands are `azd init`, `azd up`, `azd provision`, `azd deploy`, and `azd
+      env set`. The official schema docs describe `azure.yaml` as the file that tells
+      the CLI about services, infrastructure, resources, hooks, and deployment behavior.
+    - >
+      `azd` does not document a separate long-lived credential file for the CLI itself;
+      it leans on Azure authentication flows and stores project/environment
+      configuration in the project tree.
 tags:
   - azure
   - cli
@@ -54,6 +117,10 @@ provenance:
       Microsoft Learn azure.yaml schema:
       https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/azd-schema
       documents the azd project configuration file.
+  history-sources:
+    - Azure/azure-dev README and GitHub Releases
+    - Microsoft Learn Azure Developer CLI docs
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/Azure/azure-dev; prompt
@@ -74,5 +141,6 @@ category-path:
   - developer-cli
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

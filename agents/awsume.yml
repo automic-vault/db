@@ -14,6 +14,80 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.aws/credentials
+history:
+  adoption-history:
+    - >
+      AWSume's adoption is mostly among developers and operators managing many AWS
+      accounts or roles. That is a common agency, consulting, and platform-team problem:
+      the standard AWS shared profile format is flexible, but repeatedly calling STS and
+      exporting temporary credentials is tedious.
+    - >
+      The official docs recommend pipx or pip rather than Homebrew, while the Homebrew
+      formula still exists for users who prefer system package managers. That split is
+      worth noting: package-manager availability is convenient, but the project itself
+      treats Python packaging as the official install path.
+  package-nerd-significance:
+    - >
+      AWSume is important for package nerds because it highlights a packaging wrinkle:
+      some command-line tools are not just executables, they must integrate with the
+      parent shell. The install is only half the story; aliases, shell wrappers, and
+      PATH behavior determine whether it actually works.
+    - >
+      It also belongs to the larger AWS credential-helper family: focused tools that do
+      not replace AWS CLI but make AWS CLI, SDKs, and arbitrary subprocesses easier to
+      use safely with temporary credentials.
+  project-history:
+    - >
+      The `trek10inc/awsume` repository was created in March 2016. Its official
+      documentation describes AWSume as a utility for retrieving and exporting AWS
+      credentials from AWS shared config and credentials files, including profiles that
+      require MFA or assume-role calls.
+    - >
+      By the v4 era, the docs emphasized shell integration: on Unix-like systems AWSume
+      needs to be sourced or aliased because a child process cannot update a parent
+      shell's environment. The project also grew plugin and extra-feature support,
+      including SAML, fuzzy matching, console helpers, auto-refresh, role chaining, and
+      credential export back into AWS profile files.
+  related-projects:
+    - >
+      AWS CLI and AWS SDKs consume the environment variables and shared credentials
+      AWSume manages.
+    - >
+      AWS STS AssumeRole and GetSessionToken are the AWS API operations behind many
+      AWSume workflows.
+    - awsume-console-plugin and other AWSume extras extend the core credential workflow.
+  sources:
+    - https://api.github.com/repos/trek10inc/awsume
+    - https://awsu.me/
+    - https://awsu.me/general/aws-file-configuration.html
+    - https://awsu.me/general/config.html
+    - https://awsu.me/general/overview.html
+    - https://awsu.me/general/quickstart.html
+    - https://github.com/trek10inc/awsume
+  summary:
+    - >
+      AWSume is a command-line utility for assuming AWS IAM roles and exporting the
+      resulting credentials into the user's shell environment. It is built around a
+      daily AWS workflow: move between profiles, MFA-backed sessions, and role chains
+      without hand-editing environment variables.
+  timeline:
+    - '2016: Public GitHub repository `trek10inc/awsume` created.'
+    - '2019: v4.0.0-era tag/commit appears in the repository history.'
+    - '2020: v4.5.0 release commit recorded.'
+    - >
+      2024: Official docs mention 4.5.x credential_process support and 4.4.x
+      role-chaining improvements.
+  usage:
+    - >
+      A normal workflow is `awsume <profile_name>` after shell alias setup. AWSume reads
+      `~/.aws/config` and `~/.aws/credentials`, handles MFA or role assumption when
+      needed, then sets variables such as `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`,
+      `AWS_SESSION_TOKEN`, `AWS_PROFILE`, and region variables.
+    - >
+      AWSume stores its own configuration at `~/.awsume/config.yaml` by default, or
+      `${XDG_CONFIG_HOME}/awsume/config.yaml` when XDG config is set. It also caches
+      MFA-authenticated credentials under `~/.awsume/cache/` according to the official
+      overview.
 tags:
   - aws
   - cli
@@ -41,6 +115,14 @@ provenance:
     - >
       Official AWSume docs site provides overview, config, and AWS shared file
       configuration pages.
+  history-sources:
+    - https://api.github.com/repos/trek10inc/awsume
+    - https://awsu.me/
+    - https://awsu.me/general/aws-file-configuration.html
+    - https://awsu.me/general/config.html
+    - https://awsu.me/general/overview.html
+    - https://awsu.me/general/quickstart.html
+    - https://github.com/trek10inc/awsume
   repo-sources:
     - source_facts.repo is already populated; prompt requires returning repo as null.
   tags-sources:
@@ -52,5 +134,6 @@ category-path:
   - cloud-infrastructure
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

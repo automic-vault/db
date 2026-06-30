@@ -11,6 +11,79 @@ docs:
 config-file-location:
   unix: ~/.aztfexport/config.json
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official README documents several install paths: GitHub releases, `go
+      install`, WinGet, Homebrew for Linux/macOS, Microsoft package repositories for dnf
+      and apt, and AUR. The batch input also lists Homebrew, Nix, Scoop, and WinGet,
+      which reflects its audience across Terraform-heavy local development, Windows
+      admin desktops, and Linux automation environments.
+  package-nerd-significance:
+    - >
+      Aztfexport is important to package nerds because it packages a messy import
+      workflow into a repeatable CLI while still depending on a real Terraform binary.
+      That makes versioning and distribution matter: the user is coordinating the Azure
+      CLI/auth environment, Terraform, provider behavior, and this exporter.
+    - >
+      It is also a good example of a cloud-vendor tool that grew around
+      community-adjacent components. Microsoft owns the CLI, but the README openly names
+      `aztft` and `tfadd` as the engines behind provider-type detection and HCL
+      generation.
+  project-history:
+    - >
+      The Azure/aztfexport repository was created in August 2021, with v0.0.1 published
+      the same month. The official README states the goal directly: export supported
+      Azure resources into Terraform state and generate corresponding Terraform
+      configuration so that `terraform plan` shows no diff against remote state.
+    - >
+      The tool's implementation history is closely tied to the Terraform Azure
+      ecosystem. The README says it supports both the Terraform AzureRM provider and
+      Azure AzAPI provider, uses `aztft` to identify Terraform resource types from Azure
+      resource IDs, runs `terraform import` under the hood, and then uses `tfadd` to
+      generate Terraform HCL from state.
+    - >
+      The release stream moved quickly through early 0.x releases in 2021 and 2022,
+      reached v0.12.0 in May 2023, and continued through v0.19.0 in January 2026.
+      Microsoft Learn now hosts scenario-oriented Azure Export for Terraform
+      documentation alongside the GitHub README.
+  related-projects:
+    - >
+      The README explicitly relates Azure Export for Terraform to Terraform, the
+      Terraform AzureRM provider, the Terraform AzAPI provider, aztft, and tfadd.
+  sources:
+    - GitHub releases API lists v0.0.1 on 2021-08-28 and v0.19.0 on 2026-01-27.
+    - 'GitHub repository metadata: created_at 2021-08-14.'
+    - >
+      Microsoft Learn provides official Azure Export for Terraform overview and advanced
+      scenario docs.
+    - >
+      Official README documents goal, providers, Terraform import workflow,
+      dependencies, install paths, config file, and limitations.
+    - input.source_facts.package-manager lists Homebrew, Nix, Scoop, and WinGet packaging.
+  summary:
+    - >
+      Azure Export for Terraform, packaged as `aztfexport`, is Microsoft's CLI for
+      bringing existing Azure resources under Terraform management. It addresses the
+      awkward middle state many cloud teams reach: infrastructure exists in Azure,
+      Terraform is the desired control plane, and manually writing imports plus HCL for
+      every resource is error-prone work.
+  timeline:
+    - '2021: Azure/aztfexport repository created.'
+    - '2021: v0.0.1 release published.'
+    - '2022: v0.8.0 release published.'
+    - '2023: v0.12.0 and v0.14.0 releases published.'
+    - '2026: v0.19.0 release published.'
+  usage:
+    - >
+      Users run `aztfexport` against Azure resources or resource groups to produce
+      Terraform state and configuration, with Terraform itself required on PATH. The
+      generated HCL is explicitly scoped: it is meant to be consistent with remote state
+      and suitable for management, not guaranteed to be a complete reproducible design
+      for the infrastructure.
+    - >
+      The tool creates `~/.aztfexport/config.json` for settings managed by `aztfexport
+      config`, including an installation id and telemetry opt-out setting.
 category: cloud-infrastructure
 package-manager:
   brew: aztfexport
