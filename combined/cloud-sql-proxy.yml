@@ -8,6 +8,75 @@ docs:
   - https://github.com/GoogleCloudPlatform/cloud-sql-proxy#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Official docs distribute platform-specific binaries through Google storage,
+      document `go install`, and point to GitHub releases. The input package-manager
+      facts show Homebrew and Scoop packaging, reflecting common workstation
+      installation patterns.
+    - >
+      The README positions language-specific Cloud SQL connectors for Go, Java, Python,
+      and Node.js as alternatives when users prefer in-process connectivity, so the
+      proxy sits beside a broader connector ecosystem rather than replacing it.
+  package-nerd-significance:
+    - >
+      For package nerds, Cloud SQL Auth Proxy is a classic cloud vendor CLI where binary
+      naming, major-version migration, install channel, and authentication defaults all
+      matter. The v1-to-v2 executable rename is exactly the sort of detail package
+      formulas and scripts must track.
+    - >
+      It is also significant because the same package has to serve developer laptops, CI
+      jobs, VM agents, and container images while remaining aligned with Google Cloud
+      IAM and Cloud SQL behavior.
+  project-history:
+    - >
+      The GoogleCloudPlatform/cloud-sql-proxy repository was created in 2015 and remains
+      the official upstream for the Cloud SQL Auth Proxy. The README describes it as a
+      utility for secure Cloud SQL connections with IAM authorization and TLS 1.3
+      encryption, avoiding manual certificate management.
+    - >
+      The v2 migration guide documents a major CLI evolution from the old
+      `cloud_sql_proxy` executable to `cloud-sql-proxy`, with more explicit flags,
+      environment-variable support, a new container image name, and changed connection
+      behavior.
+  related-projects:
+    - >
+      Cloud SQL Go, Java, Python, and Node.js connectors are official related projects
+      named by the README.
+    - >
+      Google Cloud SDK and Application Default Credentials provide the usual
+      authentication environment.
+    - >
+      The older v1 Cloud SQL proxy behavior is documented through the upstream migration
+      guide.
+  sources:
+    - https://github.com/GoogleCloudPlatform/cloud-sql-proxy#readme
+    - https://github.com/GoogleCloudPlatform/cloud-sql-proxy/blob/main/migration-guide.md
+    - https://docs.cloud.google.com/sql/docs/postgres/sql-proxy
+  summary:
+    - >
+      Cloud SQL Auth Proxy is Google's CLI for making secure local or sidecar
+      connections to Cloud SQL instances. It is historically important because it
+      packages Google Cloud database connectivity, IAM authorization, and TLS handling
+      into a standalone executable used across local development, VMs, containers, and
+      Kubernetes-style deployments.
+  timeline:
+    - '2015: GoogleCloudPlatform/cloud-sql-proxy GitHub repository metadata was created.'
+    - >
+      v2: Migration guide documents the rename from cloud_sql_proxy to cloud-sql-proxy
+      and the new container image name.
+    - 'v2.17.1: README records signed Windows binaries starting with this version.'
+  usage:
+    - >
+      Users run the proxy with one or more Cloud SQL instance connection names,
+      optionally choosing TCP ports, Unix sockets, private IP behavior, IAM database
+      authentication, metrics, health checks, service-account impersonation, or a
+      credentials-file flag.
+    - >
+      The proxy obtains credentials through Google Application Default Credentials by
+      default, and can also take an OAuth token or service-account key file path
+      supplied by the user.
 category: cloud-infrastructure
 package-manager:
   brew: cloud-sql-proxy

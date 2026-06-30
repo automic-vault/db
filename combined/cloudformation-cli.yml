@@ -10,6 +10,78 @@ docs:
 config-file-location:
   unix: ~/.cfn-cli/typeConfiguration.json
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Unlike general-purpose AWS CLIs, CloudFormation CLI is adopted mostly by provider
+      authors, platform teams, and vendors that need first-class CloudFormation resource
+      types. Homebrew packaging gives macOS users a simple install path, but the package
+      is inherently narrower than awscli or cdk.
+    - >
+      Its adoption is tied to the CloudFormation Registry ecosystem: as organizations
+      add private or third-party resource types, the cfn/cfn-cli package becomes part of
+      build pipelines for extension development and contract testing.
+  package-nerd-significance:
+    - >
+      cloudformation-cli is package-nerd significant because it exposes AWS's
+      extension-development workflow as a Python CLI in Homebrew. It is not a
+      high-volume shell utility, but it is the canonical local tool for a specialized
+      infrastructure-as-code authoring loop.
+    - >
+      The formula also illustrates a common cloud-tooling packaging pattern: a narrow
+      vendor CLI with a small user base but high importance for the teams that need
+      reproducible IaC extension builds.
+  project-history:
+    - >
+      AWS created the cloudformation-cli repository in 2018 and released early public
+      versions in 2019 as CloudFormation's extension model became public. The official
+      AWS docs position the CLI as the tool used to model, develop, test, and submit
+      resource providers for CloudFormation.
+    - >
+      The project sits in the aws-cloudformation GitHub organization alongside language
+      plugins and related extension tooling, reflecting a design where the core CLI
+      coordinates schemas, handlers, contract tests, and registry publication.
+  related-projects:
+    - >
+      AWS CloudFormation Registry is the service surface where generated providers and
+      modules are registered.
+    - >
+      Language plugins such as cloudformation-cli-python-plugin and other
+      aws-cloudformation tooling extend the provider-development workflow.
+    - >
+      AWS CDK, SAM, cfn-lint, and CloudFormation Guard are adjacent IaC tools, but they
+      solve different authoring, deployment, validation, or policy problems.
+  sources:
+    - >
+      https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/what-is-cloudformation-cli.html
+    - https://github.com/aws-cloudformation/cloudformation-cli
+  summary:
+    - >
+      AWS CloudFormation CLI is the provider development toolkit for authoring, testing,
+      and registering CloudFormation resource providers and modules. It matters less as
+      an everyday deploy CLI and more as the toolchain behind CloudFormation Registry
+      extension development.
+  timeline:
+    - '2018: Official cloudformation-cli GitHub repository was created.'
+    - >
+      2019: Early public v0.1.x releases were published as CloudFormation extension
+      tooling emerged.
+    - >
+      2019: AWS documented the CloudFormation CLI and Registry workflow for provider
+      development.
+    - >
+      2020s: The CLI continued as the toolkit behind CloudFormation resource provider
+      and module development.
+  usage:
+    - >
+      Developers use cfn init, generate, test, submit, and related commands to create a
+      provider project, run contract tests, and register or update a resource type or
+      module in CloudFormation.
+    - >
+      typeConfiguration.json under ~/.cfn-cli is used by the toolkit for type
+      configuration during contract testing and development workflows. AWS credentials
+      normally come from the broader AWS SDK/CLI credential chain rather than a
+      CloudFormation CLI-specific credential file.
 category: cloud-infrastructure
 package-manager:
   brew: cloudformation-cli

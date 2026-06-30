@@ -6,6 +6,64 @@ docs:
   - https://kubernetes-sigs.github.io/cloud-provider-kind
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Official installation paths include `go install`, building from source, Docker,
+      and community-supported Homebrew packaging. The README explicitly says
+      package-manager builds are community supported and not produced by the
+      maintainers.
+    - >
+      The project gained visible Kubernetes community attention through a KubeCon EU
+      2024 talk linked from the README, which is meaningful adoption evidence for a
+      Kubernetes SIG utility.
+  package-nerd-significance:
+    - >
+      For package maintainers, cloud-provider-kind is interesting because upstream
+      treats Homebrew as a community package while Go install and container images
+      remain closer to the project. That split matters for users who expect Kubernetes
+      SIG artifacts to be canonical.
+    - >
+      It is also a small but useful example of packaging local Kubernetes infrastructure
+      behavior as a single CLI.
+  project-history:
+    - >
+      The kubernetes-sigs/cloud-provider-kind repository was created in 2023 to fill a
+      specific gap in kind-based testing: kind is useful for cheap local Kubernetes
+      clusters, but does not itself provide all behavior that depends on cloud
+      providers, especially LoadBalancer services.
+    - >
+      The README documents the provider as a local controller that watches kind clusters
+      and LoadBalancer Services, then creates corresponding containers to expose those
+      Services. It also added a published controller-manager image starting with v0.4.0.
+  related-projects:
+    - kind is the local Kubernetes cluster tool that cloud-provider-kind extends.
+    - Kubernetes Gateway API is supported by cloud-provider-kind.
+    - >
+      Kubernetes cloud-provider implementations are the broader family of projects whose
+      behavior this tool emulates locally.
+  sources:
+    - https://github.com/kubernetes-sigs/cloud-provider-kind#readme
+    - https://kubernetes-sigs.github.io/cloud-provider-kind
+    - https://kind.sigs.k8s.io/
+  summary:
+    - >
+      cloud-provider-kind is a Kubernetes SIGs project that gives kind clusters a local
+      cloud-provider-style LoadBalancer experience. It is newer and narrower than kind
+      itself, but its official docs provide enough source-backed context for package
+      history.
+  timeline:
+    - '2023: kubernetes-sigs/cloud-provider-kind GitHub repository metadata was created.'
+    - 'v0.4.0: The README records availability of the registry.k8s.io controller-manager image.'
+    - '2024: The README links a KubeCon EU talk about load balancing on kind.'
+  usage:
+    - >
+      Users create a kind cluster, run `cloud-provider-kind` in a terminal, and then
+      create LoadBalancer Services or Gateway API resources that the provider exposes
+      through local containers.
+    - >
+      The provider also supports Gateway API behavior and a registry override
+      environment variable for mirroring its proxy image.
 tags:
   - cli
   - gateway-api
@@ -33,6 +91,10 @@ provenance:
       Official Kubernetes SIGs cloud-provider-kind documentation is published at
       kubernetes-sigs.github.io with the official GitHub README as the repository docs
       surface.
+  history-sources:
+    - https://github.com/kubernetes-sigs/cloud-provider-kind#readme
+    - https://kubernetes-sigs.github.io/cloud-provider-kind
+    - https://kind.sigs.k8s.io/
   repo-sources:
     - >
       source_facts.repo is https://github.com/kubernetes-sigs/cloud-provider-kind;
@@ -46,5 +108,6 @@ category-path:
   - cloud-infrastructure
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

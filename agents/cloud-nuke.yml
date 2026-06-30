@@ -13,6 +13,72 @@ credentials-file-location:
   windows:
     - '%UserProfile%\.aws\credentials'
     - '%UserProfile%\.aws\config'
+history:
+  adoption-history:
+    - >
+      Official installation docs point users to GitHub release binaries and explicitly
+      list Homebrew for macOS and Linux plus winget for Windows. The input
+      package-manager facts also record Nix, Scoop, and winget identifiers, so adoption
+      is package-manager centric even though upstream cautions that package-manager
+      builds may lag releases.
+    - >
+      The CLI is significant in infrastructure shops because it turns account cleanup
+      into a repeatable command with filters, dry-run, region selection, resource-type
+      selection, and config-driven targeting.
+  package-nerd-significance:
+    - >
+      cloud-nuke is a good example of a high-blast-radius CLI where package freshness,
+      binary provenance, and default behavior matter. Upstream warns users to compare
+      package-manager versions with GitHub releases.
+    - >
+      For Homebrew and cross-platform package indexes, it is notable because it packages
+      operational cloud deletion behavior as a one-command executable rather than a
+      library.
+  project-history:
+    - >
+      The gruntwork-io/cloud-nuke repository was created in 2017 and is maintained by
+      Gruntwork. The README frames the tool as a way to remove leftover resources, clean
+      test accounts, and delete defaults such as default VPCs and permissive security
+      group rules.
+    - >
+      The tool evolved from AWS-focused cleanup into a CLI with inspect, dry-run,
+      filtering, config-file, and GCP commands. The README also documents telemetry
+      added as of v0.29.0, showing a maintained packaged CLI rather than a one-off
+      script.
+  related-projects:
+    - >
+      Gruntwork's broader infrastructure tooling ecosystem is the upstream context for
+      cloud-nuke.
+    - >
+      AWS CLI credential files and GCP project credentials are operational dependencies
+      for the supported cloud providers.
+    - >
+      Cloud clean-up and account janitor tools occupy the same niche, but cloud-nuke is
+      the package in this batch with explicit package-manager distribution.
+  sources:
+    - https://github.com/gruntwork-io/cloud-nuke#readme
+    - https://github.com/gruntwork-io/cloud-nuke/blob/master/docs/cli-usage.md
+    - https://github.com/gruntwork-io/cloud-nuke/blob/master/docs/configuration.md
+  summary:
+    - >
+      cloud-nuke is Gruntwork's destructive cleanup CLI for deleting cloud resources,
+      mainly used around test accounts, ephemeral infrastructure, and default AWS
+      resource cleanup. Its history is source-backed enough to treat it as a real
+      package-manager tool rather than just a GitHub utility.
+  timeline:
+    - '2017: gruntwork-io/cloud-nuke GitHub repository metadata was created.'
+    - 'v0.29.0: Upstream README records the addition of telemetry.'
+    - 'Current docs: Official install instructions list release binaries, Homebrew, and winget.'
+  usage:
+    - >
+      Common use is `cloud-nuke aws` for deletion, `cloud-nuke inspect-aws` for
+      inspection, `cloud-nuke defaults-aws` for default VPC and security group cleanup,
+      and `cloud-nuke gcp` for GCP deletion. The official docs emphasize dry-run and
+      filtering because the default delete path is intentionally dangerous.
+    - >
+      Credentials come from standard AWS CLI credential mechanisms for AWS usage, and
+      the tool accepts command flags plus an optional user-supplied config file path for
+      granular filtering.
 tags:
   - aws
   - cli
@@ -39,6 +105,10 @@ provenance:
       Official gruntwork-io/cloud-nuke docs provide CLI usage and config documentation;
       cloud-nuke README says AWS credentials are required; official AWS SDK/CLI docs
       define shared credentials and config file locations.
+  history-sources:
+    - https://github.com/gruntwork-io/cloud-nuke#readme
+    - https://github.com/gruntwork-io/cloud-nuke/blob/master/docs/cli-usage.md
+    - https://github.com/gruntwork-io/cloud-nuke/blob/master/docs/configuration.md
   repo-sources:
     - >
       source_facts.repo is https://github.com/gruntwork-io/cloud-nuke; prompt instructs
@@ -50,5 +120,6 @@ category-path:
   - cloud-infrastructure
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

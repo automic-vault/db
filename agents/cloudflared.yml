@@ -17,6 +17,77 @@ credentials-file-location:
     - $XDG_CONFIG_HOME/cloudflared/*.json
     - ~/.config/cloudflared/cert.pem
     - ~/.config/cloudflared/*.json
+history:
+  adoption-history:
+    - >
+      cloudflared has unusually broad package-manager coverage for a vendor network
+      daemon. The batch package metadata lists apk, Homebrew, Chocolatey, MacPorts, Nix,
+      pacman, Scoop, winget, and zypper, reflecting demand across Linux servers, macOS
+      developer machines, and Windows desktops.
+    - >
+      Cloudflare's documentation and release cadence make cloudflared a common
+      dependency in homelab, self-hosting, Kubernetes, CI, and enterprise Zero Trust
+      deployments where operators want a reverse tunnel without exposing origin services
+      directly.
+  package-nerd-significance:
+    - >
+      cloudflared is a good example of a cloud vendor shipping a cross-platform
+      networking daemon through mainstream package managers instead of only tarballs or
+      curl-piped installers. Formula maintainers care about service integration, binary
+      update speed, and config/credential paths because it is often run unattended.
+    - >
+      Its packaging surface is broader than many cloud CLIs because it serves both
+      developers and infrastructure operators: the same package can be used
+      interactively on a laptop or as a long-running connector on a server.
+  project-history:
+    - >
+      The official cloudflared repository was created in 2017, matching the period when
+      Cloudflare was turning Argo Tunnel into a packaged client. Cloudflare now
+      documents Cloudflare Tunnel as a connector that lets origins and private networks
+      reach Cloudflare without opening inbound firewall ports.
+    - >
+      The tool's role expanded from origin tunneling for web apps into a general Zero
+      Trust connector: it can run as a service, authenticate tunnels with credential
+      files, and support remotely managed tunnels through Cloudflare's dashboard and
+      API.
+  related-projects:
+    - Cloudflare Tunnel is the product surface that cloudflared implements as a connector.
+    - >
+      Cloudflare Access and Zero Trust policies commonly sit in front of applications
+      exposed through cloudflared.
+    - >
+      Wrangler overlaps in the Cloudflare CLI ecosystem but is focused on Workers
+      development rather than tunnel operations.
+  sources:
+    - https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
+    - >
+      https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/local-management/configuration-file/
+    - https://github.com/cloudflare/cloudflared
+  summary:
+    - >
+      cloudflared is Cloudflare's Tunnel client, the daemon/CLI that establishes
+      outbound-only connections from private infrastructure to Cloudflare's network. It
+      grew out of the Argo Tunnel product line and became a central piece of Cloudflare
+      One and Zero Trust access patterns.
+  timeline:
+    - '2017: Official cloudflared GitHub repository was created.'
+    - '2020: Public GitHub releases for cloudflared were available in the 2020.6.x line.'
+    - >
+      2022: Cloudflare Tunnel became part of the broader Cloudflare One connector
+      documentation and product surface.
+    - >
+      2026: cloudflared continued a date-versioned release cadence, including 2026.6.x
+      releases.
+  usage:
+    - >
+      Operators use cloudflared to create, run, and supervise Cloudflare Tunnel
+      connectors. Typical workflows include logging in, creating a tunnel, writing
+      config.yml, storing a tunnel credentials JSON file, and running cloudflared as a
+      foreground process or system service.
+    - >
+      The same executable also covers DNS-over-HTTPS proxying and other Cloudflare
+      network utility tasks, but the Homebrew package is primarily significant as the
+      Cloudflare Tunnel client.
 tags:
   - cli
   - cloudflare
@@ -45,6 +116,11 @@ provenance:
     - >
       source_facts.homepage is official Cloudflare Tunnel docs; official GitHub README
       says extensive docs are in Cloudflare Docs.
+  history-sources:
+    - https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
+    - >
+      https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/local-management/configuration-file/
+    - https://github.com/cloudflare/cloudflared
   repo-sources:
     - >
       source_facts.repo already supplies https://github.com/cloudflare/cloudflared; per
@@ -60,5 +136,6 @@ category-path:
   - zero-trust
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
