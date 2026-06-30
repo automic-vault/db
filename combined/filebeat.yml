@@ -10,6 +10,92 @@ config-file-location:
   unix: '{path.config}/filebeat.yml'
 credentials-file-location:
   unix: '{path.config}/filebeat.keystore'
+history:
+  adoption-history:
+    - >
+      Filebeat adoption tracks Elastic Stack adoption: it became the default lightweight
+      answer for users who wanted to avoid running a heavier Logstash instance on every
+      host while still centralizing log files.
+    - >
+      Its packaging footprint across Homebrew, Chocolatey, and Nix, together with
+      Elastic's own packages and documentation, reflects cross-platform use by
+      developers, operators, and observability teams.
+    - >
+      Elastic's current docs place Filebeat inside the broader Beats and Elastic Agent
+      story: existing Filebeat deployments remain supported, but greenfield Elastic
+      collection is increasingly guided toward Fleet-managed integrations.
+  package-nerd-significance:
+    - >
+      Filebeat is a classic example of a package-manager-friendly observability agent:
+      one executable, one YAML config, a daemon/service mode, and enough defaults for
+      automated installation.
+    - >
+      It also illustrates how upstream package structure matters. The formula installs a
+      single Beat, but the source lives in Elastic's monorepo alongside Metricbeat,
+      Heartbeat, Auditbeat, Winlogbeat, and libbeat.
+  project-history:
+    - >
+      The Beats repository began in 2014 as the home of lightweight shippers for
+      Elasticsearch and Logstash. Early public tags were Packetbeat-focused, and the
+      shared libbeat framework became the substrate for later Beats, including Filebeat.
+    - >
+      Filebeat emerged as the file-log member of that family. Elastic's documentation
+      describes its runtime model as inputs discovering log data, harvesters reading
+      individual files, libbeat aggregating events, and configured outputs forwarding
+      them to Elasticsearch or Logstash.
+    - >
+      By the 5.x era, Filebeat was established enough for Elastic to document modules,
+      which bundle input configuration, ingest pipelines, and dashboards for common log
+      sources. Modern Elastic documentation still supports Filebeat modules, while
+      recommending newer Elastic Agent integrations for streamlined data collection.
+  related-projects:
+    - >
+      Filebeat is part of Elastic Beats and shares libbeat infrastructure with
+      Metricbeat, Heartbeat, Auditbeat, Packetbeat, and Winlogbeat.
+    - >
+      It commonly appears with Elasticsearch, Logstash, Kibana, Elastic Agent, and Fleet
+      integrations.
+  sources:
+    - https://github.com/elastic/beats
+    - https://github.com/elastic/beats/releases/tag/v0.1.0
+    - https://github.com/elastic/beats/releases/tag/v5.0.0
+    - https://github.com/elastic/beats/releases/tag/v8.0.0
+    - https://github.com/elastic/beats/releases/tag/v9.0.0
+    - https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-overview.html
+    - https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-modules.html
+    - https://www.elastic.co/guide/en/beats/filebeat/current/configuration-path.html
+    - https://www.elastic.co/guide/en/beats/filebeat/current/keystore.html
+  summary:
+    - >
+      Filebeat is Elastic's lightweight log shipper in the Beats family: a small agent
+      installed near application and system logs, harvesting files and forwarding events
+      to Elasticsearch or Logstash.
+    - >
+      In package-manager terms, Filebeat matters because it turned log shipping into a
+      standard single-purpose daemon: install the formula or package, edit filebeat.yml,
+      enable modules or inputs, and wire it to an Elastic Stack endpoint.
+  timeline:
+    - '2014: Elastic Beats repository created and early Packetbeat releases published.'
+    - '2015: Beats 1.0 release candidates published from the shared repository.'
+    - '2016: Beats 5.0.0 release line shipped as Elastic Stack 5-era Beats matured.'
+    - '2017: Filebeat modules documented for Elasticsearch 5.2 or later.'
+    - '2022: Beats 8.0.0 release line published.'
+    - '2025: Beats 9.0.0 release line published.'
+  usage:
+    - >
+      Typical usage starts with filebeat.yml, where users configure inputs or modules,
+      output credentials, and path settings. Filebeat then runs as a foreground command
+      during testing or as a service on servers.
+    - >
+      Operators care about path.config, path.data, and the Filebeat keystore because
+      those paths determine where configuration, registry state, logs, and stored
+      secrets live. The keystore lets credentials be referenced from configuration
+      without writing the raw secret in filebeat.yml.
+    - >
+      For package users, the everyday workflow is small but operationally important:
+      install Filebeat, point it at logs, verify output connectivity, and let it
+      continuously tail files with registry state so restarts do not resend the whole
+      world.
 category: data
 package-manager:
   brew: filebeat
@@ -29,5 +115,16 @@ executables:
   - filebeat
 provenance:
   formula: filebeat
+  history-sources:
+    - https://github.com/elastic/beats
+    - https://github.com/elastic/beats/releases/tag/v0.1.0
+    - https://github.com/elastic/beats/releases/tag/v5.0.0
+    - https://github.com/elastic/beats/releases/tag/v8.0.0
+    - https://github.com/elastic/beats/releases/tag/v9.0.0
+    - https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-overview.html
+    - https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-modules.html
+    - https://www.elastic.co/guide/en/beats/filebeat/current/configuration-path.html
+    - https://www.elastic.co/guide/en/beats/filebeat/current/keystore.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

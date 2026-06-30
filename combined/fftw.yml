@@ -6,6 +6,87 @@ docs:
   - https://www.fftw.org/doc
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      FFTW is distributed by mainstream Unix package managers, including Homebrew,
+      Debian/Ubuntu, Fedora, Arch, MacPorts, Nix, and Alpine according to the package
+      facts in this batch. Its availability in both operating-system packages and source
+      builds reflects its role as a common dependency for scientific, signal-processing,
+      audio, imaging, and simulation software.
+    - >
+      The project also maintains benchFFT results and positions FFTW against other
+      public FFT implementations and vendor libraries. That benchmark culture helped
+      make FFTW a default comparison point for package maintainers deciding whether a
+      package should use a system FFT library or a bundled implementation.
+  package-nerd-significance:
+    - >
+      FFTW matters to package nerds because it sits at the intersection of ABI policy,
+      CPU feature selection, license policy, and performance tuning. Distribution
+      maintainers must choose which SIMD variants to enable, whether to build thread and
+      MPI variants, and how to expose the GPL library to downstream packages.
+    - >
+      It is also a canonical example of a library whose best behavior depends on
+      installation choices and local hardware. The upstream release notes even warn
+      distribution maintainers that enabling every SIMD option can increase planning
+      time for little general-purpose benefit.
+  project-history:
+    - >
+      FFTW was developed at MIT by Matteo Frigo and Steven G. Johnson. The official site
+      frames its goal as a portable free FFT library that can compete with vendor-tuned
+      codes while remaining usable across architectures without application changes.
+    - >
+      The early public release line began with FFTW 1.0 in March 1997. The 1998 ICASSP
+      paper described FFTW as an adaptive software architecture for FFTs, and the 1999
+      PLDI paper described the codelet generator behind its fast generated kernels.
+    - >
+      FFTW 3.0 arrived in April 2003 with an API incompatible with FFTW 2.x, trading
+      compatibility for performance and generality. The current manual documents the 3.x
+      planner model: create a plan once, reuse it for repeated transforms, and
+      optionally save planning knowledge as wisdom.
+    - >
+      The FFTW3 design paper appeared in Proceedings of the IEEE in 2005 and remains the
+      preferred general reference named by the project. Later 3.3 releases added modern
+      CPU and parallel features, including AVX, ARM Neon, MPI, Fortran 2003 interfaces,
+      AVX2, AVX512, VSX, SVE, LoongArch SIMD, and additional cycle counters.
+  related-projects:
+    - >
+      FFTW is commonly compared with vendor FFT libraries and public FFT implementations
+      through benchFFT. It is also related to downstream numerical packages that choose
+      between bundled FFT code and a system FFTW dependency.
+  sources:
+    - https://www.fftw.org/
+    - https://www.fftw.org/doc/Introduction.html
+    - https://www.fftw.org/release-notes.html
+    - https://www.fftw.org/fftw-paper-ieee.pdf
+    - https://github.com/FFTW/fftw3
+    - https://formulae.brew.sh/formula/fftw
+  summary:
+    - >
+      FFTW, the Fastest Fourier Transform in the West, is a C library for discrete
+      Fourier transforms of complex, real, multidimensional, and special symmetric data.
+      It is one of the classic free-software numerical libraries because it combines a
+      stable C API with runtime planning that adapts transform algorithms to the host
+      machine.
+  timeline:
+    - '1997: FFTW 1.0 released.'
+    - '1998: FFTW 2.0 released and the ICASSP adaptive-architecture paper published.'
+    - "1999: PLDI paper described FFTW's FFT compiler and codelet generator."
+    - '2003: FFTW 3.0 released with an incompatible, more general API.'
+    - '2005: FFTW3 design and implementation paper published in Proceedings of the IEEE.'
+    - '2011: FFTW 3.3 added AVX, MPI distributed-memory transforms, and a Fortran 2003 API.'
+    - '2026: FFTW 3.3.11 added SVE, LoongArch SIMD, and new cycle-counter support.'
+  usage:
+    - >
+      Library users link against FFTW and create plans for one-dimensional,
+      multidimensional, real, complex, DCT/DST, or Hartley transforms. The manual
+      describes basic, advanced, and guru interfaces, with the basic interface intended
+      for most users and guru interfaces for custom layouts and strides.
+    - >
+      The Homebrew package also installs command-line utilities such as `fftw-wisdom`,
+      `fftw-wisdom-to-conf`, and precision-specific wisdom helpers. These are
+      package-visible tools around FFTW's planning cache rather than the main reason
+      most software depends on the library.
 category: science
 package-manager:
   apk: fftw
@@ -33,5 +114,13 @@ executables:
   - fftwl-wisdom
 provenance:
   formula: fftw
+  history-sources:
+    - https://www.fftw.org/
+    - https://www.fftw.org/doc/Introduction.html
+    - https://www.fftw.org/release-notes.html
+    - https://www.fftw.org/fftw-paper-ieee.pdf
+    - https://github.com/FFTW/fftw3
+    - https://formulae.brew.sh/formula/fftw
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
