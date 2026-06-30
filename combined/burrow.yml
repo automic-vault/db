@@ -10,6 +10,74 @@ config-file-location:
     - ./burrow.toml
     - /etc/burrow/burrow.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Burrow was adopted quickly by other companies after LinkedIn's release, according
+      to LinkedIn's 2018 follow-up post. The input metadata records packages for
+      Homebrew, Debian, and Ubuntu, and the GitHub project remains a common reference
+      point for Kafka consumer-lag monitoring.
+  package-nerd-significance:
+    - >
+      Burrow is important to package nerds because it captures a very specific
+      operational lesson from large Kafka deployments: good monitoring packages often
+      encode domain-specific judgment, not just metrics collection. It also illustrates
+      the Go-era pattern of distributing infrastructure daemons as relatively
+      easy-to-package single binaries with TOML config.
+  project-history:
+    - >
+      LinkedIn announced Burrow on June 12, 2015 as an open-source project from its Data
+      Infrastructure SRE team. The launch post explained that standard Kafka lag metrics
+      were not enough for wildcard consumers, mirror makers, and large consumer groups
+      because partition-level lag and fixed thresholds produced noisy or incomplete
+      alerts.
+    - >
+      The initial open-source design monitored Kafka-committed offsets, exposed consumer
+      state over HTTP, and reduced many per-partition signals into an OK, warning, or
+      error status. The repository changelog records 0.1.0 as the initial release on
+      October 7, 2015, 0.1.1 in May 2016 with Zookeeper and Storm offset checking, and
+      later 1.x releases that tracked newer Kafka and Go ecosystems.
+    - >
+      LinkedIn revisited Burrow in May 2018 for Burrow 1.1, describing a rewrite that
+      added tests, modularized components, improved topic-deletion handling, moved
+      configuration toward Viper-supported formats such as TOML and JSON, and made the
+      project easier to maintain and embed.
+  related-projects:
+    - >
+      Burrow is related to Apache Kafka, Kafka MirrorMaker, ZooKeeper, Storm, Sarama,
+      Viper, Prometheus exporters, and Kafka management or monitoring tools such as
+      Kafka Manager/CMAK and broker-level metrics systems.
+  sources:
+    - >
+      https://engineering.linkedin.com/apache-kafka/burrow-kafka-consumer-monitoring-reinvented
+    - https://github.com/linkedin/Burrow
+    - https://raw.githubusercontent.com/linkedin/Burrow/master/CHANGELOG.md
+    - https://raw.githubusercontent.com/linkedin/Burrow/master/README.md
+    - https://www.linkedin.com/blog/engineering/open-source/revisiting-burrow-burrow-1-1-
+    - source_facts.package-manager
+  summary:
+    - >
+      Burrow is LinkedIn's Kafka consumer-lag monitoring service. Its core contribution
+      is evaluating consumer health over a sliding window of committed offsets instead
+      of alerting on fixed lag thresholds, which reduces false positives for large Kafka
+      estates.
+  timeline:
+    - >
+      2015-06-12: LinkedIn announced Burrow as an open-source Kafka consumer monitoring
+      project.
+    - '2015-10-07: Burrow 0.1.0 initial release recorded in the changelog.'
+    - '2016-05-01: Burrow 0.1.1 added Zookeeper and Storm offset checking.'
+    - >
+      2018-05-15: LinkedIn announced Burrow 1.1 and described the rewrite and
+      modularization work.
+    - '2022-2026: 1.x releases continued to update Go, dependencies, and Kafka compatibility.'
+  usage:
+    - >
+      Operators run Burrow with a configuration directory, often mounted at
+      `/etc/burrow`, then query HTTP endpoints for Kafka cluster, consumer group,
+      broker, and status information. Burrow can also notify via email or HTTP
+      integrations, making it suitable for alert pipelines that want health states
+      rather than raw lag counters.
 category: data
 package-manager:
   brew: burrow

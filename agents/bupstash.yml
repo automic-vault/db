@@ -8,6 +8,68 @@ docs:
   - https://bupstash.io/doc/man/bupstash.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Bupstash gained enough command-line backup interest to be packaged across several
+      ecosystems; the input metadata records apk, Homebrew, MacPorts, Nix, and Arch
+      packages. Its adoption is narrower than older tools such as bup or Borg, but it
+      has a clear niche among users who want encrypted deduplication without operating a
+      large backup service.
+  package-nerd-significance:
+    - >
+      Bupstash is significant because it shows the post-Borg/Restic generation of backup
+      tooling: single-binary CLI distribution, strong default encryption, SSH-friendly
+      self-hosting, and deduplication that still works with encrypted data. Its
+      key-separation model is especially attractive for package nerds thinking about
+      ransomware-resistant unattended backups.
+  project-history:
+    - >
+      The public repository was created in August 2020, and Andrew Chambers introduced
+      Bupstash publicly in November 2020. The README and website describe a beta-stage
+      tool designed for efficient deduplication, strong privacy, offline decryption
+      keys, encrypted tag search, slow-network performance, restricted remote access
+      controls, and low memory use.
+    - >
+      The technical overview explains the implementation model: arbitrary data streams
+      are chunked, deduplicated, encrypted client side, stored locally or remotely, and
+      indexed with encrypted metadata. The design uses keyed hashes for addressing
+      chunks, a rolling hash for split points, libsodium cryptography, hash trees for
+      large streams, and client-side metadata sync for queries.
+  related-projects:
+    - >
+      Bupstash is related to bup by name and backup focus, and to Borg, Restic, Attic,
+      Tarsnap, Duplicity, and rdiff-backup as part of the wider deduplicating and
+      encrypted backup-tool family.
+  sources:
+    - https://acha.ninja/blog/introducing_bupstash/
+    - https://bupstash.io/
+    - https://bupstash.io/doc/guides/Getting%20Started.html
+    - https://bupstash.io/doc/man/bupstash.html
+    - https://github.com/andrewchambers/bupstash
+    - >
+      https://raw.githubusercontent.com/andrewchambers/bupstash/master/doc/technical_overview.md
+    - source_facts.package-manager
+  summary:
+    - >
+      Bupstash is a Rust backup tool focused on encrypted, deduplicated, incremental
+      backups with client-side encryption and remote repositories over SSH. It occupies
+      the same practical space as modern deduplicating backup CLIs but makes encrypted
+      metadata, queryable tags, and offline decryption keys central features.
+  timeline:
+    - '2020-08: Public GitHub repository created.'
+    - '2020-11-20: Introductory Bupstash blog post published.'
+    - >
+      2021: Project documentation covered garbage collection, encrypted metadata, and
+      operational guides.
+    - '2026: Homebrew metadata lists Bupstash as a packaged encrypted-backup CLI.'
+  usage:
+    - >
+      Typical usage starts by initializing a repository, creating a key file, setting
+      `BUPSTASH_REPOSITORY` and `BUPSTASH_KEY`, then using commands such as `put`,
+      `list`, `get`, `diff`, `restore`, `rm`, and `gc`. Bupstash can store file trees,
+      tar streams, and command output, and its `put` command benefits from avoiding
+      already-sent file content.
 tags:
   - backup
   - cli
@@ -32,6 +94,15 @@ provenance:
   docs-sources:
     - Official bupstash README links the project website, quickstart guide, and man pages.
     - Official bupstash getting started guide documents repository setup and key generation.
+  history-sources:
+    - https://acha.ninja/blog/introducing_bupstash/
+    - https://bupstash.io/
+    - https://bupstash.io/doc/guides/Getting%20Started.html
+    - https://bupstash.io/doc/man/bupstash.html
+    - https://github.com/andrewchambers/bupstash
+    - >
+      https://raw.githubusercontent.com/andrewchambers/bupstash/master/doc/technical_overview.md
+    - source_facts.package-manager
   repo-sources:
     - source_facts.repo is already populated; batch rules require returning repo as null.
   tags-sources:
@@ -44,5 +115,6 @@ category-path:
   - backup
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
