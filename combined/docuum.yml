@@ -6,6 +6,50 @@ docs:
   - https://github.com/stepchowfun/docuum#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Docuum has specialist adoption among Docker-heavy environments. The official
+      README says it is used by Netflix on production Kubernetes nodes and by Airbnb on
+      a large CI worker fleet. It is also distributed via Homebrew, Cargo, release
+      binaries, and a Docker container.
+  package-nerd-significance:
+    - >
+      Docuum is interesting because it packages one missing Docker operational
+      primitive: LRU image cache behavior. It complements Docker's own prune command and
+      BuildKit cache garbage collection rather than replacing either.
+  project-history:
+    - >
+      The GitHub repository was created in January 2020. The README explains the
+      motivation as a limitation of Docker's built-in `docker image prune --all --filter
+      until=...`, which uses image creation time rather than last usage time.
+  related-projects:
+    - >
+      Docuum is related to Docker Engine, Docker Compose, BuildKit garbage collection,
+      launchd, systemd, NSSM, and the author's Toast project, all of which are
+      referenced in the README.
+  sources:
+    - https://github.com/stepchowfun/docuum
+    - https://raw.githubusercontent.com/stepchowfun/docuum/main/README.md
+    - https://api.github.com/repos/stepchowfun/docuum
+    - https://formulae.brew.sh/api/formula/docuum.json
+  summary:
+    - >
+      Docuum is a Rust command-line daemon for least-recently-used eviction of Docker
+      images. Its purpose is narrow and operational: keep Docker image disk usage below
+      a threshold without deleting images merely because they are old.
+  timeline:
+    - '2020: GitHub repository created.'
+    - '2020s: README documents LRU image eviction based on Docker events and local state.'
+    - >
+      2026: Homebrew packages stable release 0.27.0 and includes a launchd-style service
+      definition.
+  usage:
+    - >
+      Users run `docuum --threshold '10 GB'` manually or as a daemon under launchd,
+      systemd, or NSSM. Docuum listens to `docker system events`, keeps local usage
+      timestamp state, and evicts images when total Docker image disk usage exceeds the
+      configured threshold.
 category: system
 package-manager:
   apk: docuum
@@ -24,5 +68,11 @@ executables:
   - docuum
 provenance:
   formula: docuum
+  history-sources:
+    - https://github.com/stepchowfun/docuum
+    - https://raw.githubusercontent.com/stepchowfun/docuum/main/README.md
+    - https://api.github.com/repos/stepchowfun/docuum
+    - https://formulae.brew.sh/api/formula/docuum.json
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -5,6 +5,67 @@ docs:
   - https://github.com/jwilder/dockerize#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      dockerize became widely referenced because it solved practical Compose-era race
+      conditions and legacy-app containerization problems without requiring application
+      changes. The README links a Docker Compose issue discussion about why waiting for
+      service readiness was outside Compose's own scope.
+    - >
+      Its adoption path spans direct release downloads, a `jwilder/dockerize` Docker
+      base image, Alpine packaging, MacPorts, and Homebrew. The Homebrew formula API
+      reported stable version 0.13.0, 115 installs in the previous 30 days, and 1,630
+      installs in the previous year as of June 30, 2026.
+  package-nerd-significance:
+    - >
+      dockerize is significant because it captures a whole genre of container entrypoint
+      shell scripts in a reusable package. It is boring in the best package-manager
+      sense: one small executable that makes old apps behave like cloud-native
+      containers at startup.
+  project-history:
+    - >
+      The GitHub repository was created in October 2014, the same day as Wilder's blog
+      post 'A Simple Way To Dockerize Applications.' That early Docker era often
+      required shell glue to turn environment variables into config files, wait for
+      linked services, and redirect file-based logs into Docker's logging model.
+    - >
+      dockerize formalized that glue into one static-style utility. Its first GitHub
+      release, v0.0.1, appeared in October 2014; v0.1.0 followed in January 2016; and
+      v0.13.0 was published in June 2026 with current release artifacts for Linux,
+      Alpine, and macOS architectures.
+  related-projects:
+    - >
+      dockerize is historically related to Docker, Docker Compose, Go `text/template`,
+      and container entrypoint/wait-for-it style helper scripts.
+    - >
+      It complements rather than replaces orchestration health checks: its main value is
+      inside container startup for applications that cannot natively read environment
+      variables, wait on dependencies, or log to stdout.
+  sources:
+    - https://github.com/jwilder/dockerize#readme
+    - https://api.github.com/repos/jwilder/dockerize
+    - https://jasonwilder.com/blog/2014/10/13/a-simple-way-to-dockerize-applications/
+    - https://github.com/jwilder/dockerize/releases/tag/v0.0.1
+    - https://github.com/jwilder/dockerize/releases/tag/v0.13.0
+    - https://formulae.brew.sh/api/formula/dockerize.json
+  summary:
+    - >
+      dockerize is Jason Wilder's container-startup helper for templating config files
+      from environment variables, waiting for dependent services, and tailing
+      application logs to stdout or stderr.
+  timeline:
+    - '2014: Repository created, introductory blog post published, and v0.0.1 released.'
+    - '2016: v0.1.0 release published.'
+    - '2025: 0.9.x releases show continued maintenance.'
+    - '2026: v0.13.0 released and Homebrew reports stable 0.13.0.'
+  usage:
+    - >
+      Typical usage wraps an application command with `dockerize`, adding `-template`
+      mappings for generated config files, `-wait` URLs for TCP/HTTP/file/unix readiness
+      checks, `-timeout` for fail-fast startup, and `-stdout` or `-stderr` log-tail
+      targets. Templates use Go's `text/template` with environment access through
+      `.Env`.
 tags:
   - application-startup
   - cli
@@ -29,6 +90,13 @@ provenance:
     - source_facts.name and official GitHub repository name are dockerize.
   docs-sources:
     - Official GitHub README is the project documentation surface.
+  history-sources:
+    - https://github.com/jwilder/dockerize#readme
+    - https://api.github.com/repos/jwilder/dockerize
+    - https://jasonwilder.com/blog/2014/10/13/a-simple-way-to-dockerize-applications/
+    - https://github.com/jwilder/dockerize/releases/tag/v0.0.1
+    - https://github.com/jwilder/dockerize/releases/tag/v0.13.0
+    - https://formulae.brew.sh/api/formula/dockerize.json
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/jwilder/dockerize; per
@@ -43,5 +111,6 @@ category-path:
   - containers
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
