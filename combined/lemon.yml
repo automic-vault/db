@@ -6,6 +6,57 @@ docs:
   - https://www.hwaci.com/sw/lemon
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Its most important adoption path is SQLite itself. SQLite uses Lemon to generate
+      the main SQL parser from parse.y, and also uses it for FTS5 query-pattern parsing
+      from fts5parse.y.
+    - >
+      Outside SQLite, Lemon is attractive to C projects that want a compact parser
+      generator with generated parsers that avoid yacc's global-state style.
+  package-nerd-significance:
+    - >
+      Lemon is a package-nerd favorite because it is a small, old-school build-time tool
+      hidden inside one of the most widely deployed C projects. Installing it as a
+      separate package gives developers access to SQLite's parser generator without
+      vendoring the SQLite source tree.
+  project-history:
+    - >
+      The project is documented by Hwaci and SQLite as a small code-generation utility
+      rather than a standalone source repository. SQLite documents Lemon as a set of
+      files kept inside the SQLite source tree, including lemon.c for the generator,
+      lempar.c for the parser template, and lemon.html for detailed documentation.
+    - >
+      Lemon evolved as a tool shaped by SQLite's own parser needs. SQLite's Lemon page
+      notes that keeping the generator inside the SQLite project allowed the tool to
+      gain SQLite-specific features, such as fallback tokens for SQL keywords and
+      changes aimed at efficient parser generation.
+  related-projects:
+    - SQLite is the parent project and primary user.
+    - >
+      yacc and GNU Bison are the older parser-generator family Lemon is commonly
+      compared with.
+  sources:
+    - https://sqlite.org/lemon.html
+    - https://www.hwaci.com/sw/lemon/
+  summary:
+    - >
+      Lemon is an LALR(1) parser generator in the SQLite orbit: a yacc-like tool for
+      generating C parsers, but with a deliberately different grammar format and a
+      reentrant, thread-safe parser model.
+  timeline:
+    - >
+      2000s: Lemon became part of the SQLite source tree as the generator for SQLite's
+      SQL parser.
+    - >
+      2022: SQLite's Lemon documentation described Lemon as having no standalone source
+      repository and being maintained as files inside the SQLite tree.
+  usage:
+    - >
+      Users write a context-free grammar and run lemon to emit C parser code. Compared
+      with yacc and bison, Lemon uses different grammar syntax, expects the tokenizer to
+      call the parser, and emphasizes reentrant and thread-safe generated parsers.
 category: developer-tools
 package-manager:
   brew: lemon
@@ -28,5 +79,9 @@ executables:
   - lemon
 provenance:
   formula: lemon
+  history-sources:
+    - https://sqlite.org/lemon.html
+    - https://www.hwaci.com/sw/lemon/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
