@@ -9,6 +9,89 @@ config-file-location:
     - ~/.openmpi/mca-params.conf
     - $prefix/etc/openmpi-mca-params.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Open MPI grew into one of the standard MPI choices for Linux, macOS, BSD, and HPC
+      software stacks because it provided a permissively licensed implementation with
+      active involvement from academic labs, vendors, and users. The project's own FAQ
+      emphasizes third-party components and commercial or closed-source plugin
+      compatibility as intentional collaboration mechanisms.
+    - >
+      Package managers expose Open MPI not only as a library but as a toolchain surface:
+      Homebrew installs compiler wrappers such as mpicc and mpicxx alongside launch
+      commands such as mpirun and mpiexec. That packaging model reflects how developers
+      encounter MPI in practice: by compiling code through wrappers that inject the
+      right headers, libraries, and runtime settings.
+  package-nerd-significance:
+    - >
+      Open MPI is package-nerd interesting because a formula is not just shipping a
+      library: it ships a parallel-programming ABI, compiler wrappers, launchers,
+      runtime daemons, Fortran/C/C++ surfaces, and configuration files. Small packaging
+      changes can affect build reproducibility, linked MPI ABI compatibility, and
+      runtime behavior across many scientific applications.
+    - >
+      Its history also explains why it has many moving parts. The project's component
+      model and merger lineage were a deliberate answer to duplicated MPI implementation
+      work, so packagers inherit a system designed to absorb many platforms and hardware
+      transports behind one familiar MPI interface.
+  project-history:
+    - >
+      The project was formed as a consolidation of earlier MPI implementations rather
+      than as a small single-codebase fork. The Open MPI documentation names LAM/MPI,
+      LA-MPI, and FT-MPI as the three prior implementations merged into Open MPI, with
+      the University of Stuttgart team joining through FT-MPI work in late 2004; the
+      project FAQ also describes PACX-MPI contributions as part of the initial
+      technology base.
+    - >
+      That origin shaped the project's design goals: a clean new implementation, peer
+      review, vendor and researcher participation, and a component architecture that
+      lets network, scheduler, and platform support evolve without forcing every
+      downstream user to fork the whole MPI stack.
+  related-projects:
+    - LAM/MPI, LA-MPI, FT-MPI, and PACX-MPI are the important historical parents of Open MPI.
+    - >
+      The MPI Forum is the standards body whose MPI specifications define the
+      programming model Open MPI implements.
+  sources:
+    - https://docs.open-mpi.org/en/main/history.html
+    - https://formulae.brew.sh/formula/open-mpi
+    - https://github.com/open-mpi/ompi
+    - https://www.mpi-forum.org/docs/
+    - https://www.open-mpi.org/faq/?category=general
+  summary:
+    - >
+      Open MPI is a production-grade, open-source implementation of the Message Passing
+      Interface specification used for parallel and distributed computing. It matters
+      because MPI remains one of the basic portability layers for HPC applications, and
+      Open MPI packages the compiler wrappers, launchers, runtime services, and
+      transport components that make MPI jobs practical on clusters and workstations.
+  timeline:
+    - >
+      1994: MPI-1.0 was published by the MPI Forum, establishing the standard API family
+      that Open MPI implements.
+    - >
+      Late 2004: the University of Stuttgart team became effectively part of the Open
+      MPI effort through FT-MPI work, according to Open MPI's history page.
+    - >
+      After version 1.0: the project expanded beyond the founding implementation teams
+      to broader contributor participation, according to the Open MPI FAQ.
+    - >
+      2026-06-13: the Open MPI FAQ page used for this enrichment was last modified by
+      the project.
+  usage:
+    - >
+      Developers use Open MPI to build MPI programs with wrapper compilers, launch
+      multi-process jobs, inspect runtime configuration with ompi_info, and integrate
+      jobs with cluster networking and process managers. Operators care about the
+      runtime's transport and component selection because MPI performance depends
+      heavily on the fabric, scheduler, host layout, and collective-communication
+      choices.
+    - >
+      On a laptop or CI machine Open MPI is often used to test parallel code paths at
+      small process counts. On clusters it becomes part of the site software stack,
+      where application teams expect stable mpirun/mpiexec behavior and admins tune the
+      runtime for the interconnect and batch system.
 category: developer-tools
 package-manager:
   brew: open-mpi
@@ -47,5 +130,12 @@ executables:
   - prun
 provenance:
   formula: open-mpi
+  history-sources:
+    - https://docs.open-mpi.org/en/main/history.html
+    - https://formulae.brew.sh/formula/open-mpi
+    - https://github.com/open-mpi/ompi
+    - https://www.mpi-forum.org/docs/
+    - https://www.open-mpi.org/faq/?category=general
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

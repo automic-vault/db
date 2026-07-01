@@ -9,6 +9,63 @@ config-file-location:
     - ~/.ssh/config
     - ~/.gnupg/onlykey
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      onlykey-agent is available from PyPI and Homebrew, and Homebrew's formula exposes
+      its native dependencies on GnuPG, hidapi, libusb, libsodium, and Python. Its
+      audience is narrower than general FIDO/U2F tooling because it specifically serves
+      OnlyKey users who want SSH-agent and gpg-agent style integration.
+  package-nerd-significance:
+    - >
+      The package is interesting because it turns a hardware-security product into
+      normal Unix developer plumbing. The package exposes multiple executables, slots
+      into SSH_AUTH_SOCK and GNUPGHOME conventions, and depends on USB/HID and
+      cryptographic libraries rather than inventing a separate workflow.
+  project-history:
+    - >
+      The project is maintained by CryptoTrust/trustcrypto and described upstream as an
+      SSH agent for OnlyKey. PyPI's release history starts with 0.0.2 on March 11, 2018,
+      reaches 1.0.0 on November 14, 2019, and lists 1.1.15 on July 21, 2023.
+    - >
+      OnlyKey's documentation positions the agent as a way to keep SSH and OpenPGP
+      private keys off the computer while still using ordinary SSH and GnuPG workflows.
+      The agent uses OnlyKey button presses or challenge codes to authorize signing and
+      decrypt operations.
+  related-projects:
+    - >
+      Related projects and technologies include OnlyKey firmware and desktop software,
+      OpenSSH, GnuPG, pass, gopass, hidapi, libusb, and hardware-backed SSH/GPG agents.
+  sources:
+    - https://crp.to/2021/08/27/a-more-seamless-openpgp-and-ssh-experience-with-onlykey/
+    - https://docs.onlykey.io/onlykey-agent/
+    - https://formulae.brew.sh/formula/onlykey-agent
+    - https://github.com/trustcrypto/onlykey-agent
+    - https://pypi.org/project/onlykey-agent/
+  summary:
+    - >
+      onlykey-agent is middleware that lets an OnlyKey hardware token act as an SSH and
+      GPG agent. It bridges standard developer/admin workflows such as SSH login, Git
+      over SSH, GPG signing, and password-store decryption to keys generated or stored
+      on the hardware device.
+  timeline:
+    - '2018-03-11: PyPI lists onlykey-agent 0.0.2.'
+    - '2019-11-14: PyPI lists onlykey-agent 1.0.0.'
+    - >
+      2021-08-27: CryptoTrust published guidance for using OnlyKey with OpenPGP and SSH
+      workflows.
+    - '2023-07-21: PyPI lists onlykey-agent 1.1.15.'
+  usage:
+    - >
+      For SSH, users generate or expose a public key with onlykey-agent, add it to
+      authorized_keys or a Git hosting account, and run commands inside an agent-backed
+      shell or command wrapper. For GPG, users initialize a dedicated GNUPGHOME such as
+      ~/.gnupg/onlykey and use onlykey-gpg for signing, encryption, and Git commit/tag
+      signing.
+    - >
+      The documentation distinguishes derived keys from stored keys. Derived keys are
+      generated from identity@host-style inputs, while stored keys use key material
+      loaded into OnlyKey slots, including ECC and RSA slots for SSH/GPG operations.
 tags:
   - authentication
   - cli
@@ -41,6 +98,12 @@ provenance:
     - >
       Official GitHub README links to the OnlyKey Agent documentation; docs.onlykey.io
       provides SSH/GPG quickstart, install, and advanced options.
+  history-sources:
+    - https://crp.to/2021/08/27/a-more-seamless-openpgp-and-ssh-experience-with-onlykey/
+    - https://docs.onlykey.io/onlykey-agent/
+    - https://formulae.brew.sh/formula/onlykey-agent
+    - https://github.com/trustcrypto/onlykey-agent
+    - https://pypi.org/project/onlykey-agent/
   repo-sources:
     - >
       source_facts.repo is empty; official GitHub repository
@@ -58,5 +121,6 @@ category-path:
   - hardware-keys
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
