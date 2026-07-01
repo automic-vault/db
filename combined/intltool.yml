@@ -6,6 +6,80 @@ docs:
   - https://freedesktop.org/wiki/Software/intltool
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      intltool became common because desktop projects needed translations in metadata
+      and UI description files, not only in C or header sources. Its presence in package
+      managers such as Homebrew and traditional Linux distributions reflects its status
+      as a build-time dependency carried forward for older autotools projects.
+    - >
+      As gettext absorbed more file-format support, adoption shifted from new use toward
+      compatibility. GNOME's migration guide is explicitly written for removing intltool
+      from build chains and replacing its macros, generated files, and desktop/XML merge
+      rules with direct gettext rules.
+  package-nerd-significance:
+    - >
+      intltool is package-nerd archaeology: a small dependency that explains why many
+      older GNOME and freedesktop tarballs have m4 macros, .in files, and translation
+      merge steps that look unlike modern gettext-only projects. Knowing why it existed
+      helps maintainers decide whether to patch it in, keep it as a build dependency, or
+      migrate it away.
+  project-history:
+    - >
+      The freedesktop project page presents intltool as a centralizing layer around GNU
+      gettext-compatible PO files. Older distribution references and the project page
+      point to Launchpad and older GNOME FTP downloads, which matches its role as a
+      long-lived GNOME/freedesktop build dependency rather than an application-facing
+      tool.
+    - >
+      The tool's later history is tied to deprecation by capability growth in GNU
+      gettext. GNOME's migration guide says intltool was invented to bridge the gap
+      between what gettext supported and what modern GNOME application files needed, and
+      that gettext support for formats such as GtkBuilder XML, .desktop files, GSettings
+      schemas, AppData, and ITS-backed XML made intltool increasingly unnecessary.
+  related-projects:
+    - >
+      GNU gettext is the translation system intltool wraps and eventually yields to for
+      many use cases.
+    - >
+      itstool is called out by GNOME as the fallback path for XML formats not covered by
+      gettext's native handling.
+    - >
+      GNOME and freedesktop desktop application build systems are the ecosystem where
+      intltool mattered most.
+  sources:
+    - https://code.launchpad.net/intltool
+    - https://formulae.brew.sh/formula/intltool
+    - https://freedesktop.org/wiki/Software/intltool/
+    - https://wiki.gnome.org/MigratingFromIntltoolToGettext
+  summary:
+    - >
+      intltool is a gettext-adjacent internationalization tool collection for
+      extracting, collecting, and merging translations for desktop-era data formats such
+      as XML, Glade, .desktop, .server, and OAF files. Its niche was not a new
+      translation catalog format, but the build-system glue that let GNOME and
+      freedesktop-style projects keep using PO files while translating non-C source
+      assets.
+  timeline:
+    - >
+      GNOME/freedesktop era: intltool is used to bridge gettext PO files with
+      translatable XML, Glade, .desktop, .server, and OAF files.
+    - >
+      2010-2015: gettext gains support for several file types that intltool had commonly
+      handled.
+    - >
+      2016: GNOME publishes migration guidance for moving intltool-using projects to
+      pure gettext.
+    - >
+      2021: The freedesktop intltool page points users to Launchpad for downloads and
+      bugs, with older versions on GNOME FTP.
+  usage:
+    - >
+      Package builders usually encounter intltool through commands such as intltoolize,
+      intltool-extract, intltool-merge, intltool-update, and intltool-prepare. The
+      important operational detail is that it participates in the source tree's
+      translation build flow rather than acting as an end-user localization editor.
 category: developer-tools
 package-manager:
   apk: intltool
@@ -35,5 +109,11 @@ executables:
   - intltoolize
 provenance:
   formula: intltool
+  history-sources:
+    - https://code.launchpad.net/intltool
+    - https://formulae.brew.sh/formula/intltool
+    - https://freedesktop.org/wiki/Software/intltool/
+    - https://wiki.gnome.org/MigratingFromIntltoolToGettext
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
