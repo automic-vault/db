@@ -6,6 +6,59 @@ docs:
   - https://github.com/basecamp/kamal-proxy#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption follows Kamal adoption: teams using Kamal for single-server or
+      small-fleet Docker deployments need a predictable way to switch traffic after a
+      new container passes health checks. Homebrew and Nix packaging make the proxy
+      available outside Kamal's own install path for operators who manage tools through
+      system package managers.
+  package-nerd-significance:
+    - >
+      Kamal Proxy is package-interesting because it is a subcomponent split out of a
+      deployment system but useful enough to package as its own executable. It also
+      reflects the 2020s return of simpler self-hosting tools: SSH, Docker, one proxy,
+      and explicit release handoff instead of a full orchestrator.
+  project-history:
+    - >
+      The repository was created on 2024-03-21. Its README describes the proxy as part
+      of Kamal's deployment experience, but also as usable standalone or in other
+      deployment tooling.
+    - >
+      Kamal itself is Basecamp's container deployment tool, originally built for Rails
+      apps but documented as usable for any Docker-containerized web app. Kamal Proxy
+      became the dedicated routing piece in that ecosystem, replacing ad hoc proxy
+      handoff logic with a small Go service and CLI.
+  related-projects:
+    - Kamal is the parent deployment tool that uses Kamal Proxy for request switching.
+    - >
+      It sits in the same operational space as reverse proxies and load balancers used
+      for blue-green or rolling web deployments, but with a narrower Kamal-oriented
+      interface.
+  sources:
+    - https://api.github.com/repos/basecamp/kamal-proxy
+    - https://github.com/basecamp/kamal
+    - https://github.com/basecamp/kamal-proxy
+    - https://github.com/basecamp/kamal-proxy/tags
+    - https://github.com/basecamp/kamal/releases
+    - https://kamal-deploy.org/
+  summary:
+    - >
+      Kamal Proxy is a small HTTP proxy from Basecamp for coordinating zero-downtime
+      deployments behind Kamal. It exists to handle health checks, traffic switching,
+      draining, host-based routing, path-based routing, and TLS features without
+      requiring application code to participate in the deployment handoff.
+  timeline:
+    - '2024: basecamp/kamal-proxy repository created.'
+    - '2024: v0.1.0 and later tags appeared in the repository.'
+    - '2026: Kamal release notes required kamal-proxy v0.9.2 for Kamal v2.11.0 deployments.'
+  usage:
+    - >
+      The README documents `kamal-proxy run` for starting the proxy and `kamal-proxy
+      deploy` for registering a target service. Deployments wait for a new target to
+      become healthy, route new traffic there, and drain traffic from the old target
+      before returning.
 category: developer-tools
 package-manager:
   brew: kamal-proxy
@@ -24,5 +77,13 @@ executables:
   - kamal-proxy
 provenance:
   formula: kamal-proxy
+  history-sources:
+    - https://api.github.com/repos/basecamp/kamal-proxy
+    - https://github.com/basecamp/kamal
+    - https://github.com/basecamp/kamal-proxy
+    - https://github.com/basecamp/kamal-proxy/tags
+    - https://github.com/basecamp/kamal/releases
+    - https://kamal-deploy.org/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

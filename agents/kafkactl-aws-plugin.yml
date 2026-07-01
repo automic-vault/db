@@ -12,6 +12,56 @@ config-file-location:
   windows:
     - '%APPDATA%\kafkactl\config.yml'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The AWS plugin is a niche package tied to kafkactl users who need cloud-provider
+      authentication behavior rather than a standalone Kafka administration audience.
+      Homebrew and winget packaging make the plugin installable beside kafkactl in
+      workstation setups.
+  package-nerd-significance:
+    - >
+      This package is interesting because it packages an extension point rather than the
+      main CLI. It shows how modern CLIs split cloud-provider authentication into
+      separately versioned helper binaries that package managers can track
+      independently.
+  project-history:
+    - >
+      Device Insight's main kafkactl repository was created in December 2018 as a
+      command-line tool for managing Apache Kafka. The separate kafkactl-plugins
+      repository was created in March 2024 to house provider-specific plugin binaries,
+      including AWS and Azure plugins.
+    - >
+      The kafkactl documentation explains the plugin model as a way to cope with
+      specifics of Kafka-compatible clusters from cloud providers such as AWS and Azure.
+      The plugin repository's first v1.0.0 release was published on March 12, 2024.
+  related-projects:
+    - >
+      Related projects include kafkactl, Apache Kafka, Amazon MSK, AWS IAM/OAuth
+      authentication flows, and the sibling kafkactl Azure plugin.
+  sources:
+    - https://api.github.com/repos/deviceinsight/kafkactl
+    - https://api.github.com/repos/deviceinsight/kafkactl-plugins
+    - https://deviceinsight.github.io/kafkactl
+    - https://formulae.brew.sh/formula/kafkactl-aws-plugin
+    - https://github.com/deviceinsight/kafkactl
+    - https://github.com/deviceinsight/kafkactl-plugins
+    - https://github.com/deviceinsight/kafkactl-plugins/blob/main/aws/README.adoc
+    - https://github.com/deviceinsight/kafkactl-plugins/releases
+  summary:
+    - >
+      kafkactl-aws-plugin is a provider-specific companion binary for kafkactl. Its
+      purpose is narrow: let kafkactl use AWS-oriented OAuth token-provider behavior
+      when talking to Kafka-compatible clusters.
+  timeline:
+    - '2018-12: kafkactl repository created.'
+    - '2024-03: kafkactl-plugins repository created.'
+    - '2024-03-12: kafkactl-plugins v1.0.0 released.'
+  usage:
+    - >
+      The plugin is used through kafkactl's tokenProvider plugin configuration. Users
+      install the binary, place it on the configured plugin path, and let kafkactl
+      invoke it while establishing authenticated Kafka client sessions.
 tags:
   - aws
   - cli
@@ -42,6 +92,15 @@ provenance:
       Official repository README for the AWS plugin contains installation,
       configuration, and options
     - source_facts.homepage points to official kafkactl command documentation
+  history-sources:
+    - https://api.github.com/repos/deviceinsight/kafkactl
+    - https://api.github.com/repos/deviceinsight/kafkactl-plugins
+    - https://deviceinsight.github.io/kafkactl
+    - https://formulae.brew.sh/formula/kafkactl-aws-plugin
+    - https://github.com/deviceinsight/kafkactl
+    - https://github.com/deviceinsight/kafkactl-plugins
+    - https://github.com/deviceinsight/kafkactl-plugins/blob/main/aws/README.adoc
+    - https://github.com/deviceinsight/kafkactl-plugins/releases
   repo-sources:
     - >
       source_facts.repo is already populated with
@@ -58,5 +117,6 @@ category-path:
   - kafka
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
