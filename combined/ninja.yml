@@ -6,6 +6,75 @@ docs:
   - https://ninja-build.org/manual
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Ninja's adoption is unusually strong for such a small tool because it sits at the
+      bottom of many developer workflows. Developers may never hand-write `build.ninja`,
+      but they install Ninja because CMake, Meson, GN, or language build systems
+      generate it and expect a fast executor.
+    - >
+      On 2026-07-01, Homebrew listed Ninja 1.13.2 with 545,459 installs over 365 days
+      and 352,367 installs-on-request. That install volume is a package-manager
+      reflection of Ninja's role as a build substrate rather than a tool people
+      necessarily think about directly.
+  package-nerd-significance:
+    - >
+      Ninja is one of the canonical examples of doing less and winning: no
+      general-purpose project language, no rich conditionals, no policy layer, just a
+      fast executor. Its package significance is huge because it became the common
+      backend for CMake/Meson/GN-era native builds across macOS, Linux, Windows, and
+      cross-platform CI.
+  project-history:
+    - >
+      Evan Martin wrote Ninja while working on Google Chrome. In his Performance of Open
+      Source Software chapter, he says he started Ninja in 2010 as an experiment to make
+      Chrome builds faster, especially the front of the build where the tool loads build
+      files and starts the first compile. This led to the design that made `.ninja`
+      files simple, generated, and quick to parse.
+    - >
+      The project became public and then broadened beyond Chrome. The same history says
+      Ninja gradually replaced other build systems used by Chrome, CMake gained a Ninja
+      generator, and projects such as LLVM and ReactOS used it through CMake. The Ninja
+      homepage later summarized the tool as an assembler-like build system used by
+      Google Chrome, parts of Android, LLVM, and many CMake-backed projects.
+  related-projects:
+    - CMake
+    - GN
+    - GYP
+    - Meson
+    - LLVM
+    - Chromium
+  sources:
+    - https://aosabook.org/en/posa/ninja.html
+    - https://formulae.brew.sh/formula/ninja
+    - https://ninja-build.org/
+    - https://ninja-build.org/manual
+  summary:
+    - >
+      Ninja is a small, low-level build system optimized for fast incremental builds.
+      Its central idea is deliberately narrow: higher-level tools such as GN, GYP,
+      CMake, Meson, or custom generators decide the project model, and Ninja executes
+      the already-lowered build graph quickly.
+  timeline:
+    - "{'date': '2010', 'event': 'Evan Martin started Ninja while working on Google Chrome.'}"
+    - >
+      {'date': '2010s', 'event': 'Ninja spread from Chrome to CMake-backed projects
+      including LLVM and ReactOS.'}
+    - "{'date': '2025-07-10', 'event': 'Ninja homepage listed v1.13.1 as released.'}"
+    - "{'date': '2026-07-01', 'event': 'Homebrew formula listed stable Ninja 1.13.2.'}"
+  usage:
+    - >
+      The normal package-nerd workflow is `cmake -G Ninja -S . -B build` or a Meson/GN
+      equivalent, followed by `ninja -C build`. By default, `ninja` looks for
+      `build.ninja` in the current directory and builds all out-of-date targets; flags
+      such as `-C` and `-j` intentionally resemble Make, although Ninja already runs
+      jobs in parallel by default.
+    - >
+      Ninja build files are plain text and debuggable, but the project explicitly does
+      not optimize for hand authoring. This makes the package easy to reason about in
+      dependency graphs: if a formula or language package depends on Ninja, it usually
+      means some higher-level generator will emit the actual build plan.
 category: developer-tools
 package-manager:
   brew: ninja
@@ -29,5 +98,11 @@ executables:
   - ninja
 provenance:
   formula: ninja
+  history-sources:
+    - https://aosabook.org/en/posa/ninja.html
+    - https://formulae.brew.sh/formula/ninja
+    - https://ninja-build.org/
+    - https://ninja-build.org/manual
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
