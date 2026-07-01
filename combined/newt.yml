@@ -6,6 +6,80 @@ docs:
   - https://pagure.io/newt
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Newt's adoption came through operating-system tooling rather than developer
+      fashion. It is packaged by Linux distributions and BSD ports because installers,
+      scripts, and legacy admin tools need a small text UI stack. Debian and related
+      systems also preserve whiptail compatibility for scripts that expect dialog-like
+      behavior.
+    - >
+      Homebrew analytics reported 247 installs in 30 days, 920 in 90 days, and 3,858 in
+      365 days for the formula when queried on July 1, 2026. For macOS, this is usually
+      dependency or script compatibility usage rather than developers choosing newt for
+      a new greenfield TUI.
+  package-nerd-significance:
+    - >
+      Newt is infrastructure glue: old, unglamorous, and still packaged because deleting
+      it breaks installers and shell scripts. In av.db it is important mainly because
+      the executable surface is whiptail and the library is likely a transitive
+      dependency.
+  project-history:
+    - >
+      Newt is old Unix/Linux installer plumbing. The upstream README carries Red Hat
+      copyright from 1996 through 2016 and describes the library as a color text-mode
+      widget toolkit based on S-Lang. The long 0.52.x changelog is mostly maintenance:
+      Python binding updates, whiptail layout fixes, translations, compiler fixes,
+      memory-safety fixes, pkg-config support, macOS build fixes, and distribution patch
+      integration.
+    - >
+      Whiptail's man page frames the user-facing command: it lets shell scripts present
+      yes/no, menu, input, message, checklist, radiolist, gauge, password, and other
+      dialog boxes. That makes newt less visible than ncurses or dialog, but very sticky
+      in installers, rescue flows, and scripts that inherited whiptail behavior.
+  related-projects:
+    - S-Lang
+    - whiptail
+    - dialog
+    - snack Python bindings
+    - Red Hat installer tooling
+  sources:
+    - https://formulae.brew.sh/api/formula/newt.json
+    - https://github.com/mlichvar/newt
+    - https://raw.githubusercontent.com/mlichvar/newt/master/CHANGES
+    - https://raw.githubusercontent.com/mlichvar/newt/master/README
+    - https://raw.githubusercontent.com/mlichvar/newt/master/whiptail.1
+    - https://www.freshports.org/devel/newt/
+  summary:
+    - >
+      Newt is a Red Hat-origin text-mode widget library built on S-Lang. It provides
+      stacked windows, entry widgets, checkboxes, radio buttons, labels, text fields,
+      scrollbars, and related primitives for terminal user interfaces. The Homebrew
+      package also exposes whiptail, the shell-friendly dialog-box command built on top
+      of newt.
+  timeline:
+    - >
+      1996: Upstream README copyright begins with Red Hat, marking the project's early
+      Linux distribution roots.
+    - '2007-01-31: whiptail man page version line documented Whiptail 0.52.5.'
+    - '2009: Newt 0.52.11 fixed CVE-2009-2905 according to the changelog.'
+    - '2025: 0.52.25 was the stable version reported by Homebrew on July 1, 2026.'
+    - >
+      2026-07-01: Homebrew formula version observed as 0.52.25, with 3,858 formula
+      installs over the preceding 365-day analytics window.
+  usage:
+    - >
+      Package nerds usually encounter newt indirectly: a dependency needs libnewt, or an
+      installer script invokes whiptail. Direct users write C against libnewt, Python
+      against snack bindings where available, or shell scripts against whiptail when
+      they want dialog boxes without depending on a full GUI.
+    - >
+      The practical caution is compatibility. whiptail resembles dialog but is not
+      identical, and scripts often rely on exact option support, output file
+      descriptors, menu formatting, and terminal behavior. That is why small changelog
+      entries about automatic width, unicode, --notags, --noitem, gauges, and resizing
+      matter.
 category: developer-tools
 package-manager:
   apk: newt
@@ -29,5 +103,13 @@ executables:
   - whiptail
 provenance:
   formula: newt
+  history-sources:
+    - https://formulae.brew.sh/api/formula/newt.json
+    - https://github.com/mlichvar/newt
+    - https://raw.githubusercontent.com/mlichvar/newt/master/CHANGES
+    - https://raw.githubusercontent.com/mlichvar/newt/master/README
+    - https://raw.githubusercontent.com/mlichvar/newt/master/whiptail.1
+    - https://www.freshports.org/devel/newt/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -6,6 +6,56 @@ docs:
   - https://www.lysator.liu.se/~nisse/nettle/nettle.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The versioned formula's adoption is intentionally smaller than unversioned nettle.
+      Homebrew analytics generated on 2026-07-01 reported 225 installs over 365 days and
+      27 installs-on-request, compared with hundreds of thousands of dependency-driven
+      installs for unversioned nettle. That pattern suggests compatibility pinning
+      rather than broad direct use.
+  project-history:
+    - >
+      The upstream project history is the same as Nettle: Niels Moller's low-level C
+      cryptographic library, announced as a GNU package on June 30, 2009 after the
+      Nettle 2.0 release. The 2.0 release split libnettle and libhogweed, and the manual
+      documents the library's no-I/O, no-allocation, no-algorithm-selection philosophy.
+    - >
+      The point of the @3 formula is compatibility. Upstream tags show Nettle 3.10 on
+      June 16, 2024, Nettle 3.10.1 on December 30, 2024, and Nettle 3.10.2 on June 26,
+      2025. Homebrew's nettle@3 formula uses stable 3.10.2 from the GNU mirror and
+      depends on GMP, while the unversioned nettle formula has moved to 4.0.
+  sources:
+    - https://formulae.brew.sh/api/formula/nettle@3.json
+    - https://git.lysator.liu.se/nettle/nettle/-/tags
+    - https://lists.gnu.org/archive/html/info-gnu/2009-07/msg00000.html
+    - https://www.lysator.liu.se/~nisse/nettle/
+    - https://www.lysator.liu.se/~nisse/nettle/nettle.html
+  summary:
+    - >
+      nettle@3 is Homebrew's versioned formula for the Nettle 3.x ABI line. It is not a
+      separate upstream project; it packages Nettle 3.10.2 for consumers that still need
+      the pre-4.0 library line.
+  timeline:
+    - '2009-06-30: Nettle was announced as a GNU package after the 2.0 release.'
+    - '2024-06-16: Upstream tagged Nettle 3.10.'
+    - '2024-12-30: Upstream tagged Nettle 3.10.1.'
+    - '2025-06-26: Upstream tagged Nettle 3.10.2.'
+    - >
+      2026-07-01: Homebrew API reported nettle@3 stable version 3.10.2 and 225 installs
+      over 365 days.
+  usage:
+    - >
+      Developers use nettle@3 when a build expects the Nettle 3.x ABI or has not yet
+      been validated against Nettle 4.x. The exposed commands are the same family as
+      Nettle's normal tools, including nettle-hash, nettle-pbkdf2, pkcs1-conv,
+      sexp-conv, and nettle-lfib-stream, but the package value is the library version
+      line.
+    - >
+      For package maintainers, nettle@3 is the safety valve during an ABI transition:
+      keep old dependents building while the main formula advances. The low
+      install-on-request count is a feature, not a failure, because versioned formulae
+      should disappear from direct user workflows once dependents migrate.
 category: security
 package-manager:
   apk: nettle
@@ -43,5 +93,12 @@ executables:
   - sexp-conv
 provenance:
   formula: nettle@3
+  history-sources:
+    - https://formulae.brew.sh/api/formula/nettle@3.json
+    - https://git.lysator.liu.se/nettle/nettle/-/tags
+    - https://lists.gnu.org/archive/html/info-gnu/2009-07/msg00000.html
+    - https://www.lysator.liu.se/~nisse/nettle/
+    - https://www.lysator.liu.se/~nisse/nettle/nettle.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

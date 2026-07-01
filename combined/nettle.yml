@@ -6,6 +6,77 @@ docs:
   - https://www.lysator.liu.se/~nisse/nettle/nettle.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Nettle's ecosystem role is much larger than its command-line tools suggest. The
+      GnuTLS manual says its cryptographic library layer supports libnettle, and notes
+      that older GnuTLS versions used libgcrypt before switching to nettle mainly for
+      performance and secondarily because it was simpler to use.
+    - >
+      Package-manager adoption is broad: the av.db input records Nettle across Homebrew,
+      Alpine, Debian/Ubuntu via libhogweed, Fedora, MacPorts, Nix, Arch, and openSUSE.
+      Homebrew analytics generated on 2026-07-01 reported 780,093 nettle installs over
+      365 days, but only 8,600 installs-on-request, which is classic library behavior:
+      most installs arrive as dependencies.
+  package-nerd-significance:
+    - >
+      Nettle is a package nerd's dependency graph landmark. It is small enough to audit
+      as a C library, old enough to have stable ABI expectations, and important enough
+      that a major version line matters to large formula rebuilds. The
+      libnettle/libhogweed split is also a clean example of packaging ABI boundaries
+      following real dependency boundaries.
+  project-history:
+    - >
+      The Nettle manual says the library is meant to fit many contexts, including
+      object-oriented language toolkits, applications such as LSH or GnuPG, and even
+      kernel space. It explains the core design by saying Nettle does the low-level
+      crypto work and avoids algorithm selection, memory allocation, and I/O so
+      higher-level toolkits can build their own interfaces on top.
+    - >
+      Niels Moller's June 30, 2009 GNU announcement says Nettle 2.0 had been released on
+      June 8, 2009 and that Nettle had become a GNU package. The same announcement
+      highlights the 2.0 ABI break that split the library into libnettle for symmetric
+      algorithms and libhogweed for public-key algorithms that depend on GMP.
+    - >
+      The upstream GitLab tags show the later 3.x and 4.x release cadence: 3.10 on June
+      16, 2024, 3.10.2 on June 26, 2025, and 4.0 on February 4, 2026. Homebrew's nettle
+      formula tracked stable 4.0 from the GNU mirror and depends on GMP.
+  sources:
+    - https://formulae.brew.sh/api/formula/nettle.json
+    - https://git.lysator.liu.se/nettle/nettle/-/tags
+    - https://lists.gnu.org/archive/html/info-gnu/2009-07/msg00000.html
+    - https://www.gnutls.org/manual/html_node/Cryptographic-Backend.html
+    - https://www.lysator.liu.se/~nisse/nettle/
+    - https://www.lysator.liu.se/~nisse/nettle/nettle.html
+  summary:
+    - >
+      Nettle is a low-level C cryptographic library by Niels Moller. Its design goal is
+      deliberately narrow: provide reusable primitive implementations and simple
+      interfaces while leaving algorithm selection, memory allocation, I/O, and
+      higher-level protocol policy to callers.
+  timeline:
+    - >
+      2001: The manual-history sources identify Nettle as originally written by Niels
+      Moller in the early 2000s.
+    - '2009-06-08: Nettle 2.0 was released.'
+    - '2009-06-30: Nettle was announced as a GNU package.'
+    - '2024-06-16: Upstream tagged Nettle 3.10.'
+    - '2025-06-26: Upstream tagged Nettle 3.10.2.'
+    - '2026-02-04: Upstream tagged Nettle 4.0.'
+    - '2026-07-01: Homebrew API reported stable version 4.0 and 780,093 installs over 365 days.'
+  usage:
+    - >
+      Application developers include headers such as nettle/sha2.h and link with
+      -lnettle for symmetric/hash code, or use libhogweed for public-key functionality
+      that depends on GMP. The manual's SHA256 example demonstrates the intended
+      low-level style: explicit context structs, caller-managed buffers, explicit
+      lengths, and no hidden allocation.
+    - >
+      End users usually meet Nettle through dependent software rather than by typing its
+      bundled commands. The Homebrew formula exposes tools such as nettle-hash,
+      nettle-pbkdf2, pkcs1-conv, sexp-conv, and nettle-lfib-stream, but its practical
+      importance is as a crypto backend for TLS/security stacks and other packages.
 category: security
 package-manager:
   apk: nettle
@@ -35,5 +106,13 @@ executables:
   - sexp-conv
 provenance:
   formula: nettle
+  history-sources:
+    - https://formulae.brew.sh/api/formula/nettle.json
+    - https://git.lysator.liu.se/nettle/nettle/-/tags
+    - https://lists.gnu.org/archive/html/info-gnu/2009-07/msg00000.html
+    - https://www.gnutls.org/manual/html_node/Cryptographic-Backend.html
+    - https://www.lysator.liu.se/~nisse/nettle/
+    - https://www.lysator.liu.se/~nisse/nettle/nettle.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
