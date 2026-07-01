@@ -15,6 +15,77 @@ config-file-location:
     - build.gradle
     - build.gradle.kts
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Gradle major-version adoption is usually tied to project wrappers, Android Gradle
+      Plugin compatibility, Java compatibility, plugin compatibility, and CI fleet
+      behavior. A Homebrew `gradle@7` package helps developers run or inspect older 7.x
+      builds without changing the unversioned Gradle formula.
+    - >
+      Because many repositories use the Gradle Wrapper, the formula is most useful for
+      manual CLI work, bootstrapping, local compatibility checks, and environments where
+      an installed Gradle command is still expected.
+  package-nerd-significance:
+    - >
+      The package matters because build tools are compatibility-sensitive. Keeping a
+      `gradle@7` formula lets package managers express the difference between 'the
+      Gradle project' and 'the Gradle 7 runtime line' without pretending the older line
+      is a fork.
+    - >
+      This is useful when testing plugin compatibility, Android builds, enterprise
+      builds, reproducible CI images, or wrapper migration work.
+  project-history:
+    - >
+      Gradle 7.0 was a major release in the upstream Gradle project. Official release
+      notes highlight Java 16 support, native support for Apple Silicon when used with
+      an ARM JDK, experimental version catalogs, and other build-performance and
+      usability changes.
+    - >
+      The broader Gradle 7 line sits after the Gradle 6 dependency-metadata era and
+      before Gradle 8's configuration-cache changes. For package users, that makes it a
+      compatibility line for builds that adopted 7.x behavior but are not ready for the
+      breaking changes and stricter defaults of the next major line.
+  related-projects:
+    - Gradle Build Tool is the upstream project.
+    - Gradle Wrapper is the usual per-project version pinning mechanism.
+    - >
+      Android Gradle Plugin, Gradle Profiler, Develocity, and Gradle Build Scan are
+      related ecosystem tools.
+  sources:
+    - https://blog.gradle.org/gradles-evolution-a-conversation-with-adam-murdoch
+    - https://docs.gradle.org/7.0/release-notes.html
+    - https://docs.gradle.org/7.6.6/release-notes.html
+    - https://docs.gradle.org/7.6.6/userguide/userguide.html
+    - https://docs.gradle.org/current/userguide/gradle_basics.html
+    - https://formulae.brew.sh/formula/gradle@7
+    - https://github.com/gradle/gradle
+    - https://gradle.org/releases/
+  summary:
+    - >
+      Gradle 7 is the Homebrew version-track package for projects that need the Gradle 7
+      major line. It is not a separate upstream project; its history is Gradle Build
+      Tool history plus the packaging need to keep a stable major version available.
+  timeline:
+    - >
+      2012: Gradle 1.0 established the project as a major build-tool release with
+      rebuilt dependency resolution.
+    - >
+      2021: Gradle 7.0 release notes documented Java 16 support, Apple Silicon support,
+      and experimental version catalogs.
+    - >
+      Gradle 7 line: Homebrew exposes a version-track package for users who need that
+      major line.
+  usage:
+    - >
+      Usage is the same Gradle CLI and build-script model: run tasks, inspect dependency
+      resolution, invoke wrapper-related commands, or execute builds that expect the
+      Gradle 7 runtime. Project files remain `settings.gradle(.kts)`,
+      `build.gradle(.kts)`, and Gradle properties files.
+    - >
+      The versioned docs in the input point to Gradle 7.6.6 DSL, release notes, and user
+      guide pages, which are appropriate documentation surfaces for a package pinned to
+      the 7.x line.
 tags:
   - build-automation
   - build-tool
@@ -34,6 +105,15 @@ provenance:
   docs-sources:
     - official Gradle User Manual and DSL reference for Gradle 7.6.6
     - official Gradle documentation site docs.gradle.org
+  history-sources:
+    - https://blog.gradle.org/gradles-evolution-a-conversation-with-adam-murdoch
+    - https://docs.gradle.org/7.0/release-notes.html
+    - https://docs.gradle.org/7.6.6/release-notes.html
+    - https://docs.gradle.org/7.6.6/userguide/userguide.html
+    - https://docs.gradle.org/current/userguide/gradle_basics.html
+    - https://formulae.brew.sh/formula/gradle@7
+    - https://github.com/gradle/gradle
+    - https://gradle.org/releases/
   repo-sources:
     - official GitHub repository gradle/gradle
     - official Gradle site links to GitHub repository
@@ -48,5 +128,6 @@ category-path:
   - build-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

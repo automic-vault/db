@@ -7,6 +7,129 @@ config-file-location:
   unix:
     - META-INF/native-image/<groupId>/<artifactId>/reachability-metadata.json
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GraalVM adoption in the Java ecosystem has been tied to two overlapping use cases:
+      using the Graal compiler as an optimizing JIT, and using Native Image to build
+      standalone executables with fast startup and lower resource use. The latter became
+      especially visible in cloud-native Java, where container startup time and memory
+      footprint are package-level concerns.
+    - >
+      Oracle's 2023 licensing change made Oracle GraalVM for JDK 17, JDK 20, and
+      following releases available under the GraalVM Free Terms and Conditions,
+      including commercial production use subject to the license terms. That reduced a
+      practical adoption barrier for teams that needed Oracle-provided builds rather
+      than only community builds.
+    - >
+      Oracle later described a shift in Java-runtime strategy: GraalVM technologies were
+      aligned with the Java release cadence after years of research, the Graal JIT
+      informed Oracle JDK work, and Native Image work informed OpenJDK Project Leyden.
+      For package users, that means GraalVM sits at the intersection of a shipping JDK
+      distribution and upstream Java platform experiments.
+  package-nerd-significance:
+    - >
+      GraalVM is package-nerd bait because it blurs boundaries between compiler, JDK,
+      language runtime, and build artifact. Installing it can change Java bytecode
+      execution, native executable generation, container image size, startup behavior,
+      and dependency metadata requirements.
+    - >
+      Its release and licensing history also affects distribution policy. Packagers need
+      to distinguish GraalVM Community Edition licensing from Oracle GraalVM licensing,
+      match builds to JDK baselines, and expose tooling in a way that works with
+      `JAVA_HOME`, Gradle, Maven, CI runners, and architecture-specific native
+      toolchains.
+    - >
+      For Homebrew users, `brew install graalvm` is a practical way to obtain a
+      specialized Java toolchain while keeping the installation visible to scripts and
+      package-manager audits.
+  project-history:
+    - >
+      Oracle Labs describes GraalVM as a runtime for Java and JVM languages, JavaScript,
+      Python, WebAssembly, and other languages that can run standalone or embedded in
+      OpenJDK, Oracle JDK, Oracle Database, and MySQL. The project grew from Oracle Labs
+      compiler and VM research led around the Graal dynamic compiler and the Truffle
+      self-optimizing runtime system.
+    - >
+      GraalVM's public pre-production line used 1.0 release candidates in 2018. Those
+      releases show the package becoming more than a compiler experiment: artifacts
+      moved toward the `org.graalvm` coordinates, Native Image pieces were published to
+      Maven Central, and the distribution carried language runtimes, SDK APIs, tools,
+      and the Substrate VM implementation behind Native Image.
+    - >
+      The source repository `oracle/graal` brings together the compiler, SDK,
+      SubstrateVM, Truffle, language runtimes and related tools. That monorepo shape is
+      part of the project's identity: GraalVM is not only a JDK build, but also a
+      platform for language implementers and ahead-of-time compilation research.
+  related-projects:
+    - OpenJDK is the Java platform baseline that GraalVM builds on and tracks.
+    - Truffle is the language implementation framework used by GraalVM language runtimes.
+    - SubstrateVM is the Native Image implementation area in the Graal repository.
+    - >
+      GraalJS, GraalPy, GraalWasm, Espresso, Sulong, Native Build Tools, and the GraalVM
+      reachability metadata repository are adjacent GraalVM ecosystem projects.
+    - >
+      Project Leyden is related through ahead-of-time Java work that Oracle says was
+      informed by Native Image.
+  sources:
+    - https://blogs.oracle.com/cloud-infrastructure/graalvm-free-license
+    - https://blogs.oracle.com/java/detaching-graalvm-from-the-java-ecosystem-train
+    - https://github.com/oracle/graal
+    - https://labs.oracle.com/pls/apex/f?p=94065:12:14871764882481:47
+    - https://raw.githubusercontent.com/oracle/graal/master/README.md
+    - https://www.graalvm.org/latest/reference-manual/native-image/
+    - https://www.graalvm.org/release-calendar/
+    - https://www.graalvm.org/release-notes/release-candidates/
+  summary:
+    - >
+      GraalVM is Oracle Labs' high-performance JDK and language-runtime project built
+      around the Graal compiler, the Truffle language implementation framework, and
+      Native Image ahead-of-time compilation. In package-manager terms it is a JDK
+      distribution with extra runtime and native-compilation tooling, so installing it
+      is closer to selecting a Java toolchain than installing a single application.
+    - >
+      The Homebrew package is significant because it gives macOS and Unix-like
+      developers a normal package-manager route to `native-image` and the GraalVM JDK.
+      That matters for build scripts, CI jobs, Java microservices, and framework
+      ecosystems that test against or produce GraalVM Native Image binaries.
+  timeline:
+    - >
+      2018: GraalVM 1.0 release candidates documented polyglot runtimes, Maven
+      artifacts, Native Image work, and SDK/API changes.
+    - >
+      2018-10: GraalVM 1.0-RC8 documented Native Image Maven integration and Maven
+      Central publication of Substrate VM components.
+    - >
+      2019: GraalVM moved from the 1.0 release-candidate era into production-oriented
+      release lines.
+    - >
+      2022: Oracle Labs announced alignment of GraalVM technology development with Java
+      release cadence.
+    - >
+      2023: Oracle announced the GraalVM Free Terms and Conditions for Oracle GraalVM
+      releases beginning with JDK 17 and JDK 20.
+    - >
+      2026: GraalVM release-calendar documentation describes monthly feature releases
+      from the 25.1 line with quarterly CPU updates.
+  usage:
+    - >
+      Developers use GraalVM as a Java Development Kit in IDEs and build tools, then opt
+      into Native Image through the `native-image` command or build plugins. The Native
+      Image docs describe compiling Java code ahead of time into a native executable
+      that includes only reachable application, library, runtime, and statically linked
+      JDK code for a target operating system and architecture.
+    - >
+      Typical command-line and package-manager usage revolves around setting
+      `JAVA_HOME`, ensuring a local C toolchain is available, and running Maven or
+      Gradle Native Image plugins. The Homebrew package exposes the JDK and tools such
+      as `native-image` and `native-image-configure`, making it convenient for
+      repeatable local builds.
+    - >
+      The package also has a metadata angle: Native Image needs reachability metadata
+      for dynamic Java features such as reflection, resources, and service loading. The
+      curated path
+      `META-INF/native-image/<groupId>/<artifactId>/reachability-metadata.json` reflects
+      that package-ecosystem convention.
 tags:
   - aot
   - cli
@@ -39,6 +162,15 @@ provenance:
       Official GraalVM site hosts the latest documentation at
       https://www.graalvm.org/latest/docs/.
     - Official repository README directs users to the GraalVM website for documentation.
+  history-sources:
+    - https://blogs.oracle.com/cloud-infrastructure/graalvm-free-license
+    - https://blogs.oracle.com/java/detaching-graalvm-from-the-java-ecosystem-train
+    - https://github.com/oracle/graal
+    - https://labs.oracle.com/pls/apex/f?p=94065:12:14871764882481:47
+    - https://raw.githubusercontent.com/oracle/graal/master/README.md
+    - https://www.graalvm.org/latest/reference-manual/native-image/
+    - https://www.graalvm.org/release-calendar/
+    - https://www.graalvm.org/release-notes/release-candidates/
   repo-sources:
     - >
       source_facts.repo already has https://github.com/oracle/graal; per instructions
@@ -55,5 +187,6 @@ category-path:
   - virtual-machine
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

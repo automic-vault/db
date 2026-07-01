@@ -7,6 +7,93 @@ docs:
   - https://gpsd.gitlab.io/gpsd/index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The gpsd website describes the daemon as widely deployed in mobile embedded
+      systems and names uses in Android phone location services, drones, robot
+      submarines, driverless cars, aircraft, marine navigation systems, and military
+      vehicles.
+    - >
+      Its adoption pattern is package-manager friendly: distributions can install gpsd,
+      udev integration, client tools, and libraries once, then many applications can
+      consume position data without each application speaking serial protocols directly.
+    - >
+      The project history records several forks, including GPSdrive's variant, ngpsd,
+      and tgpsd, then notes that gpsd became large and visible enough to absorb most
+      potential fork pressure.
+  package-nerd-significance:
+    - >
+      gpsd is one of the canonical examples of a daemon package that turns messy
+      hardware protocols into a stable local service API. For packagers, the interesting
+      parts are not just the daemon but the client tools, udev/hotplug rules, Python/C
+      bindings, manpages, and optional protocol support.
+    - >
+      It also has an unusually explicit project history, including migrations from older
+      forges to GitLab, a Subversion-to-git switch in 2010, and an autotools-to-scons
+      switch in 2011.
+  project-history:
+    - >
+      The gpsd project history says Remco Treffkorn started the project in 1995. Derrick
+      Brashear and Russ Nelson were among the early maintainers, and the original
+      architecture remained useful enough that it attracted little attention until
+      proprietary receiver support strained it.
+    - >
+      Eric S. Raymond began working on gpsd in August 2004 after encountering a problem
+      with a BU-303 USB GPS. The project history describes a substantial refactor, added
+      documentation, new features, and libgps as the prototype for gpsd 2.0.
+    - >
+      In early 2005 gpsd was reshaped around packet sniffing, autobauding, and a daemon
+      layer over device drivers. The project history identifies SiRF as the first
+      non-NMEA device family supported by that redesign.
+    - >
+      By the end of 2006, gpsd supported several vendor binary protocols along with NMEA
+      and Zodiac, had a larger suite of GPS test tools, a regression-test framework,
+      multi-device support, and hotplug autoconfiguration.
+  related-projects:
+    - >
+      Kismet, GpsDrive, Navit, Viking, GeoClue, OpenCPN, and Firefox/Mozilla are listed
+      by the gpsd site among applications or systems using gpsd.
+    - >
+      NMEA 0183, AIS, SiRF, Garmin, u-blox, RTCM, NTP, and PPS are recurring protocols
+      or integrations in gpsd documentation.
+    - Gypsy is named by the gpsd history as a later competing project.
+  sources:
+    - https://gitlab.com/gpsd/gpsd
+    - https://gpsd.gitlab.io/gpsd/gpsd.html
+    - https://gpsd.gitlab.io/gpsd/history.html
+    - https://gpsd.gitlab.io/gpsd/index.html
+  summary:
+    - >
+      gpsd is a Unix-oriented service daemon that listens to GPS, GNSS, DGPS, and AIS
+      receivers and republishes their data over a local network socket so multiple
+      clients can share one device.
+  timeline:
+    - '1995: Remco Treffkorn starts gpsd.'
+    - '1999-2002: EarthMate proprietary-format work strains the original architecture.'
+    - '2004: Eric S. Raymond refactors the project and moves it toward gpsd 2.0.'
+    - '2005: Packet sniffing, autobauding, and non-NMEA driver architecture appear.'
+    - >
+      2006: Vendor binary protocols, test tools, regression tests, multi-device support,
+      and hotplug autoconfiguration are in place.
+    - '2009: GPSD command protocol is redesigned and AIS receiver support is added.'
+    - '2010: Project moves from Subversion to git.'
+    - '2011: Build system changes from autotools to scons; gpsd 3.0 ships.'
+    - '2019: Repository, bug tracker, and web content move to GitLab.'
+  usage:
+    - >
+      Users commonly run `gpsd` as a daemon attached to a serial, USB, or Bluetooth
+      receiver. The daemon listens on TCP port 2947 by default and serves clients such
+      as `cgps`, `gpspipe`, mapping tools, time synchronization setups, and application
+      libraries.
+    - >
+      The official manpage emphasizes that gpsd hides receiver differences, discovers
+      speed and protocol, supports NMEA and many binary protocols, and lets multiple
+      clients avoid contention for one serial device.
+    - >
+      gpsd is also part of timekeeping workflows: its tools and documentation cover
+      NTP/shared-memory integration and PPS diagnostics for hosts using GPS as a time
+      source.
 category: networking
 package-manager:
   apk: gpsd
@@ -47,5 +134,11 @@ executables:
   - ppscheck
 provenance:
   formula: gpsd
+  history-sources:
+    - https://gitlab.com/gpsd/gpsd
+    - https://gpsd.gitlab.io/gpsd/gpsd.html
+    - https://gpsd.gitlab.io/gpsd/history.html
+    - https://gpsd.gitlab.io/gpsd/index.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

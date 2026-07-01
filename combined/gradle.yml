@@ -19,6 +19,124 @@ config-file-location:
     - .\settings.gradle(.kts)
     - .\build.gradle(.kts)
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Gradle spread through JVM projects because it offered programmable build logic
+      while still providing conventions through plugins. Android adoption made Gradle
+      part of a massive mobile build ecosystem: Android Studio projects expose Gradle
+      wrapper files, settings files, top-level and module-level build files, and Gradle
+      properties as standard project artifacts.
+    - >
+      The wrapper changed package-manager expectations. A developer may install `gradle`
+      with Homebrew to bootstrap or run ad hoc builds, but many repositories prefer
+      `./gradlew` so the checked-in wrapper properties select the project Gradle
+      version. This made Gradle unusually friendly to mixed-version repositories and CI
+      environments.
+    - >
+      Gradle also became a platform for build-performance tooling. Official docs and
+      adjacent Gradle products emphasize build scans, daemon reuse, build cache,
+      configuration cache, and profiling workflows, reflecting a culture where the build
+      tool is both dependency resolver and performance-critical infrastructure.
+  package-nerd-significance:
+    - >
+      Gradle is significant to package nerds because it is itself a package manager,
+      dependency resolver, task scheduler, and project metadata interpreter. A Gradle
+      installation can decide which artifacts are fetched, how versions are aligned,
+      when tasks are up to date, and which generated outputs are reproducible.
+    - >
+      It also forces distribution questions: should a system package provide one Gradle
+      CLI, should a project use the wrapper, how should checksums and distribution URLs
+      be audited, and how should old major versions remain available when enterprise or
+      Android builds cannot immediately migrate?
+    - >
+      For Homebrew, the unversioned `gradle` formula serves users who want a general CLI
+      installation, while versioned formulae such as `gradle@7` and `gradle@8` serve
+      projects pinned to a major line.
+  project-history:
+    - >
+      Gradle's own documentation describes builds as projects and tasks configured by
+      build scripts written in Groovy or Kotlin. The project structure convention
+      centers on `settings.gradle(.kts)`, `build.gradle(.kts)`, and the wrapper scripts
+      `gradlew` and `gradlew.bat`.
+    - >
+      Gradle 1.0, released on June 12, 2012 according to the official release index, was
+      framed by its release notes as a major step for Gradle and build tools. That
+      release replaced Ivy-based dependency resolution with a Gradle dependency engine,
+      improved dependency caching, added daemon performance work, expanded Java quality
+      plugins, and emphasized enterprise-scale builds.
+    - >
+      Gradle's official evolution article summarizes the major-version arc: 2.0 improved
+      performance, memory efficiency, dependency management, and incremental build
+      support; 3.0 enabled the daemon by default and improved IDE/Kotlin DSL support;
+      4.0 made build cache production-ready for Java and Groovy compilation; 5.0 made
+      Kotlin DSL production-ready and added Java 11 support; 6.0 introduced enhanced
+      dependency management metadata; 7.0 focused on incremental builds, dependency
+      verification, and Java 16 support; 8.0 emphasized configuration-cache behavior and
+      parallelism.
+  related-projects:
+    - >
+      Apache Ant, Apache Maven, Ivy, Make, SCons, and Bazel are adjacent build and
+      dependency-management tools.
+    - Android Gradle Plugin and Android Studio are major downstream Gradle ecosystem pieces.
+    - >
+      Develocity, Gradle Build Scan, Gradle Profiler, and Gradle Plugin Portal are
+      closely related Gradle ecosystem services or tools.
+    - Groovy and Kotlin are central to Gradle's build-script DSL story.
+  sources:
+    - https://blog.gradle.org/gradles-evolution-a-conversation-with-adam-murdoch
+    - https://docs.gradle.org/1.0/release-notes.html
+    - https://docs.gradle.org/7.0/release-notes.html
+    - https://docs.gradle.org/8.0/release-notes.html
+    - https://docs.gradle.org/current/userguide/gradle_basics.html
+    - https://docs.gradle.org/current/userguide/userguide.html
+    - https://github.com/gradle/gradle
+    - https://gradle.org/releases/
+  summary:
+    - >
+      Gradle is an open-source build automation tool for multi-language software
+      projects, especially JVM and Android builds. Its package-manager identity is the
+      `gradle` CLI, but most projects actually standardize on the Gradle Wrapper so a
+      repository can declare the Gradle distribution it expects.
+    - >
+      Gradle became important because it combined ideas from earlier build tools with a
+      programmable Groovy and later Kotlin DSL, task graph execution, dependency
+      management, plugins, daemons, caching, and integration with IDEs and CI.
+  timeline:
+    - '2009: The official release index lists Gradle 0.8.'
+    - >
+      2012: Gradle 1.0 released with rebuilt dependency resolution, improved dependency
+      cache, daemon performance work, quality plugins, and Tooling API emphasis.
+    - >
+      2014: Gradle 2.0 improved performance, memory efficiency, dependency management,
+      and incremental build support.
+    - '2016: Gradle 3.0 enabled the daemon by default and improved IDE/Kotlin DSL support.'
+    - '2017: Gradle 4.0 made build cache production-ready for Java and Groovy compilation.'
+    - '2018: Gradle 5.0 made Kotlin DSL production-ready and supported Java 11.'
+    - '2019: Gradle 6.0 introduced enhanced dependency management with a new metadata format.'
+    - >
+      2021: Gradle 7.0 added Java 16 support, Apple Silicon support, and experimental
+      version catalogs.
+    - >
+      2023: Gradle 8.0 expanded configuration-cache execution behavior and Java
+      toolchain configuration.
+  usage:
+    - >
+      At the command line, developers run tasks such as `gradle build`, `gradle test`,
+      or `gradle clean build`, but Gradle documentation recommends the wrapper for most
+      existing projects. Build scripts define tasks, plugins, dependencies,
+      repositories, and project conventions.
+    - >
+      The common files are package-ecosystem signals: `settings.gradle` or
+      `settings.gradle.kts` defines root and subprojects; `build.gradle` or
+      `build.gradle.kts` defines build logic; `gradle.properties` configures Gradle or
+      project properties; and files under the Gradle user home configure user-wide
+      behavior such as init scripts.
+    - >
+      Gradle's DSL and plugin system make it a host for ecosystems rather than only a
+      command runner. Java, Groovy, Kotlin, Scala, Android, C/C++, JavaScript, and
+      Kotlin Multiplatform projects all appear in the official documentation as
+      supported languages or frameworks.
 category: developer-tools
 package-manager:
   apk: gradle
@@ -46,5 +164,15 @@ executables:
   - gradle
 provenance:
   formula: gradle
+  history-sources:
+    - https://blog.gradle.org/gradles-evolution-a-conversation-with-adam-murdoch
+    - https://docs.gradle.org/1.0/release-notes.html
+    - https://docs.gradle.org/7.0/release-notes.html
+    - https://docs.gradle.org/8.0/release-notes.html
+    - https://docs.gradle.org/current/userguide/gradle_basics.html
+    - https://docs.gradle.org/current/userguide/userguide.html
+    - https://github.com/gradle/gradle
+    - https://gradle.org/releases/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
