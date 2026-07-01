@@ -7,6 +7,83 @@ docs:
   - https://www.gtk.org/docs/architecture/glib
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GLib's adoption followed GTK and GNOME but spread beyond graphical applications
+      because it offered portable C building blocks without requiring a GUI. Projects
+      use it for event loops, data containers, structured error handling, Unicode and
+      string helpers, command-line option parsing, tests, and cross-platform runtime
+      glue.
+    - >
+      The library is a dependency root in Linux desktop stacks: installing GTK, GNOME
+      services, GStreamer components, and many C libraries often brings GLib along. Its
+      ABI stability and regular release train make it one of the packages that
+      distribution maintainers track carefully during desktop, toolchain, and security
+      updates.
+  package-nerd-significance:
+    - >
+      GLib is package-manager infrastructure by gravity: it is small enough to be a
+      library dependency but central enough that ABI, introspection data, and helper
+      binaries affect large parts of a desktop stack. Packagers care about its Meson
+      build, gir data, schema/resource tools, and tight relationship with GTK release
+      cycles.
+    - >
+      Because GLib abstracts platform details while staying in C, it also acts as a
+      compatibility layer between Unix-like systems, Windows ports, language bindings,
+      and higher-level GNOME libraries.
+  project-history:
+    - >
+      GLib emerged as the shared utility layer beneath GTK-era C applications, and
+      GNOME's release archive shows stable 1.2 releases in 1999 before the 2.0 line
+      began in 2002. The 2.x API family established the long-lived GLib, GObject,
+      GModule, and GIO split documented by GTK and GNOME.
+    - >
+      Over time, GLib expanded from basic C convenience routines into a broad
+      application substrate. GObject supplied an object and type system for C, GModule
+      abstracted dynamic loading, and GIO added higher-level APIs for streaming I/O,
+      files, D-Bus, networking, resources, settings, and application integration.
+    - >
+      The project moved its source and issue workflow to GNOME's GitLab, while release
+      archives remained available from GNOME download infrastructure. Its documentation
+      moved to gi-docgen-generated API pages under docs.gtk.org, reflecting GLib's role
+      as an introspection-friendly base library for language bindings.
+  related-projects:
+    - >
+      GLib underpins GTK and GNOME, and is closely related to GObject, GModule, GIO,
+      GdkPixbuf, Pango, GStreamer, D-Bus, Meson, and GObject Introspection.
+  sources:
+    - https://docs.gtk.org/glib/
+    - https://download.gnome.org/sources/glib/
+    - https://gitlab.gnome.org/GNOME/glib
+    - https://www.gtk.org/docs/architecture/glib
+  summary:
+    - >
+      GLib is the low-level C foundation used by GTK and GNOME, providing portable data
+      structures, strings, file utilities, process helpers, main-loop primitives,
+      dynamic modules, object typing, I/O, IPC, networking, settings, and system
+      integration APIs.
+  timeline:
+    - '1999: GLib 1.2.0 release archive published by GNOME.'
+    - '2002: GLib 2.0.0 release archive published by GNOME.'
+    - >
+      2010s: GIO, D-Bus, settings, resources, and introspection workflows made GLib a
+      broader application framework base.
+    - >
+      2020s: gi-docgen API references and GitLab-hosted development became the normal
+      documentation and contribution path.
+  usage:
+    - >
+      Practitioners use GLib through headers such as `glib.h` and pkg-config modules
+      such as `glib-2.0`. Application code commonly uses `GList`, `GHashTable`,
+      `GError`, `GMainLoop`, `GOptionContext`, `GKeyFile`, and automatic cleanup helpers
+      to write portable C with fewer platform-specific branches.
+    - >
+      The Homebrew package also exposes developer utilities such as
+      `glib-compile-resources`, `glib-compile-schemas`, `gdbus`, `gio`, `gsettings`,
+      `glib-genmarshal`, and `glib-mkenums`. These tools generate resources, schemas,
+      marshalling code, enum metadata, and D-Bus helpers used by GTK and GNOME-style
+      applications.
 category: developer-tools
 package-manager:
   apk: glib
@@ -45,5 +122,11 @@ executables:
   - gtester-report
 provenance:
   formula: glib
+  history-sources:
+    - https://docs.gtk.org/glib/
+    - https://download.gnome.org/sources/glib/
+    - https://gitlab.gnome.org/GNOME/glib
+    - https://www.gtk.org/docs/architecture/glib
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
