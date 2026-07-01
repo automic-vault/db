@@ -5,6 +5,57 @@ docs:
   - https://gitlab.freedesktop.org/xorg/lib/libxcvt
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      libxcvt's adoption is tied to the modularization of X.Org and Xwayland. By moving
+      cvt generation outside the server tree, display stacks and packages that needed
+      modeline generation could depend on a small library/tool package rather than
+      carrying or installing more of Xorg server.
+  package-nerd-significance:
+    - >
+      libxcvt is interesting because it is a clean extraction package: a small piece of
+      historically server-owned X.Org code moved into a library so packagers could stop
+      dragging around a bigger component for one timing algorithm.
+  project-history:
+    - >
+      libxcvt was split out of Xorg server code in 2021. Olivier Fourdan's 2021-03-26
+      X.Org development RFC explained that the CVT modeline generator existed inside the
+      Xorg server, was also used by the cvt utility, and had been copied into Xwayland;
+      the proposed library removed that duplication and made the generator available as
+      a standalone project.
+    - >
+      The first release announcement, libxcvt 0.1.0 in July 2021, described it as the
+      VESA CVT standard timing modelines generator extracted from the Xserver. Later
+      X.Org announcements describe both the library and a standalone cvt tool copied
+      from the Xorg implementation as a direct replacement for the version formerly
+      provided by the Xorg server.
+  related-projects:
+    - >
+      Related projects include Xorg server, Xwayland, xrandr, Mutter, and the wider
+      X.Org modular library set.
+  sources:
+    - https://gitlab.freedesktop.org/xorg/lib/libxcvt
+    - https://groups.google.com/g/xorg-devel/c/HYx2sO2AAmI
+    - https://lists.freedesktop.org/archives/xorg/2021-July/060727.html
+    - https://lists.x.org/archives/xorg-announce/2024-December/003571.html
+  summary:
+    - >
+      libxcvt is the standalone X.Org library and cvt command for generating VESA
+      Coordinated Video Timing modelines.
+  timeline:
+    - >
+      2021-03-26: X.Org development RFC proposed moving the standalone libxcvt project
+      into the xorg/lib namespace.
+    - '2021-07: libxcvt 0.1.0 announced as the first release extracted from Xserver.'
+    - '2022-07: libxcvt 0.1.2 announced on X.Org mailing lists.'
+    - '2024-12-14: libxcvt 0.1.3 announced with fixes and CI/static-analysis updates.'
+  usage:
+    - >
+      Users call cvt to calculate modelines for a requested resolution and refresh rate,
+      while system components can link the library to generate the same timings
+      programmatically. It is a narrow package, but it sits in the practical path for
+      custom monitor modes and X11/Xwayland build-time needs.
 tags:
   - cli
   - display-timing
@@ -34,6 +85,11 @@ provenance:
     - >
       Official freedesktop.org GitLab project is the best official documentation surface
       found for libxcvt.
+  history-sources:
+    - https://gitlab.freedesktop.org/xorg/lib/libxcvt
+    - https://groups.google.com/g/xorg-devel/c/HYx2sO2AAmI
+    - https://lists.freedesktop.org/archives/xorg/2021-July/060727.html
+    - https://lists.x.org/archives/xorg-announce/2024-December/003571.html
   repo-sources:
     - >
       Official X.Org project source is hosted in the freedesktop.org GitLab xorg/lib
@@ -49,5 +105,6 @@ category-path:
   - display
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

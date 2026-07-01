@@ -7,6 +7,72 @@ docs:
   - https://github.com/Netflix/vmaf/blob/master/resource/doc/python.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      VMAF became part of practical codec evaluation because Netflix used it for
+      production encoding decisions, Dynamic Optimizer workflows, and A/B
+      experimentation around video quality. The GitHub README also documents FFmpeg
+      support through configure --enable-libvmaf and AOM common test-condition usage,
+      which made the library a package-manager staple for video-toolchain builds.
+  package-nerd-significance:
+    - >
+      For package nerds, libvmaf is the quality-metric dependency that turns FFmpeg from
+      a transcoder into a measurable codec lab. Its presence in package managers signals
+      a mature media stack: SIMD-heavy native code, model files, Python tooling, and a
+      bridge between academic video-quality research and production streaming workflows.
+  project-history:
+    - >
+      Netflix developed VMAF to better predict viewer-perceived streaming video quality
+      than simple signal metrics such as PSNR. Netflix's own reference list traces VMAF
+      through earlier academic work on fusion-based video quality assessment and notes
+      that the project was open-sourced on GitHub in June 2016.
+    - >
+      The first public implementation combined a C feature-extraction core with Python
+      control code for experimentation. By October 2018 Netflix described the addition
+      of a standalone executable, AVX acceleration in December 2016, frame-level
+      multithreading in June 2018, and the packaging of the implementation as libvmaf
+      with help from the FFmpeg community.
+  related-projects:
+    - >
+      VMAF is closely related to FFmpeg, AOM codec test conditions, Netflix's Dynamic
+      Optimizer work, CAMBI for banding detection, and traditional objective metrics
+      such as PSNR, SSIM, MS-SSIM, and PSNR-HVS that are also exposed by the package.
+  sources:
+    - https://github.com/Netflix/vmaf
+    - https://github.com/Netflix/vmaf/blob/master/resource/doc/references.md
+    - https://netflixtechblog.com/vmaf-the-journey-continues-44b51ee9ed12
+    - >
+      https://research.netflix.com/publication/toward-a-better-quality-metric-for-the-video-community
+  summary:
+    - >
+      VMAF, packaged by Homebrew as libvmaf, is Netflix's open-source implementation of
+      Video Multi-Method Assessment Fusion, a perceptual video-quality metric for
+      comparing encoded video against a reference. The package matters because it turns
+      a research metric into a command-line tool, C library, Python tooling, and
+      FFmpeg-integrated workflow used by video engineers rather than only by
+      researchers.
+  timeline:
+    - >
+      2014-2015: Academic work on fusion-based and ensemble-learning video quality
+      metrics appears in the VMAF reference list.
+    - '2016-06: Netflix open-sources VMAF on GitHub.'
+    - "2016-12: Netflix adds AVX optimization to VMAF's convolution work."
+    - >
+      2018-06: Frame-level multithreading and frame skipping make practical
+      high-resolution runs faster.
+    - >
+      2018-10-25: Netflix describes libvmaf packaging and FFmpeg filter adoption in a
+      VMAF project update.
+    - '2020-12-03: libvmaf v2.0.0 is released with a new optimized implementation and API.'
+    - '2023-12-07: libvmaf v3.0.0 removes APIs deprecated in v2.0.0.'
+    - '2026-06: Netflix announces VMAF model v1 documentation and model-selection guidance.'
+  usage:
+    - >
+      Package users install libvmaf to run the vmaf command, link the C library into
+      quality-analysis tools, train or test models with the Python layer, or enable
+      FFmpeg's libvmaf filter. It is especially useful when comparing encoders,
+      bitrates, resolutions, or codec changes on a perceptual scale.
 tags:
   - cli
   - library
@@ -35,6 +101,12 @@ provenance:
     - >
       source_facts.repo is the official Netflix VMAF GitHub repository; its resource/doc
       directory contains official documentation.
+  history-sources:
+    - https://github.com/Netflix/vmaf
+    - https://github.com/Netflix/vmaf/blob/master/resource/doc/references.md
+    - https://netflixtechblog.com/vmaf-the-journey-continues-44b51ee9ed12
+    - >
+      https://research.netflix.com/publication/toward-a-better-quality-metric-for-the-video-community
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -48,5 +120,6 @@ category-path:
   - quality-analysis
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
