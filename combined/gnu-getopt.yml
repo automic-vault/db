@@ -6,6 +6,58 @@ docs:
   - https://github.com/util-linux/util-linux/blob/master/misc-utils/getopt.1.adoc
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      As part of util-linux, enhanced `getopt` is part of the broad Linux userland
+      toolbox. On macOS, Homebrew packages it as `gnu-getopt` and marks it keg-only
+      because macOS provides BSD `getopt`; on Linux, the formula also avoids conflict
+      with the full util-linux package. That packaging split is the main reason the
+      Homebrew package name differs from the upstream project name.
+  package-nerd-significance:
+    - >
+      The package matters because option parsing is a portability trap in shell scripts.
+      Installing `gnu-getopt` gives macOS and other non-GNU environments the util-linux
+      behavior many Linux-oriented scripts expect, while Homebrew's keg-only status
+      prevents accidental replacement of the system utility.
+  project-history:
+    - >
+      The upstream project is util-linux, described by its README as a collection of
+      Linux utilities. util-linux carried the name util-linux-ng from 2006 through 2010,
+      then continued under the util-linux name with kernel.org as the primary source
+      location and GitHub as a backup web interface.
+    - >
+      The util-linux NEWS file records `getopt` updates in the 2.11 and 2.13 development
+      era, including replacement with getopt 1.1.3 by Frodo Looijaard and an update to
+      1.1.4. The man page identifies the command as the enhanced `getopt`, focused on
+      parsing command options for shell procedures.
+  related-projects:
+    - GNU `getopt(3)` supplies the parsing behavior used by util-linux `getopt(1)`.
+    - BSD `getopt` is the system utility that Homebrew avoids shadowing on macOS.
+    - util-linux is the upstream userland utility collection that contains the command.
+  sources:
+    - https://raw.githubusercontent.com/Homebrew/homebrew-core/master/Formula/g/gnu-getopt.rb
+    - https://raw.githubusercontent.com/util-linux/util-linux/master/NEWS
+    - https://raw.githubusercontent.com/util-linux/util-linux/master/README
+    - https://raw.githubusercontent.com/util-linux/util-linux/master/misc-utils/getopt.1.adoc
+  summary:
+    - >
+      `gnu-getopt` packages util-linux's enhanced `getopt(1)` command, a shell-facing
+      option parser that uses GNU `getopt(3)` behavior and is commonly installed
+      separately where the base system ships a less capable `getopt`.
+  timeline:
+    - >
+      2001-era util-linux 2.11z: NEWS records replacement with getopt 1.1.3 by Frodo
+      Looijaard.
+    - '2007: util-linux-ng 2.13-pre6 NEWS records update to getopt 1.1.4.'
+    - '2006-2010: util-linux project used the util-linux-ng name.'
+    - '2026: util-linux README described kernel.org as primary repository and GitHub as backup.'
+  usage:
+    - >
+      Practitioners use `getopt` in shell scripts to normalize short and long options,
+      detect invalid arguments, preserve whitespace through shell quoting, and test
+      whether the enhanced implementation is present. The `-T` probe is explicitly
+      documented for distinguishing this implementation from older `getopt(1)` variants.
 category: developer-tools
 package-manager:
   brew: gnu-getopt
@@ -24,5 +76,11 @@ executables:
   - getopt
 provenance:
   formula: gnu-getopt
+  history-sources:
+    - https://raw.githubusercontent.com/Homebrew/homebrew-core/master/Formula/g/gnu-getopt.rb
+    - https://raw.githubusercontent.com/util-linux/util-linux/master/NEWS
+    - https://raw.githubusercontent.com/util-linux/util-linux/master/README
+    - https://raw.githubusercontent.com/util-linux/util-linux/master/misc-utils/getopt.1.adoc
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
