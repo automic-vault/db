@@ -7,6 +7,92 @@ docs:
   - https://docs.headscale.org/usage/getting-started
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Headscale adoption is tied to the self-hosted networking community and to users
+      who like Tailscale clients but want to operate their own control plane. The
+      repository's popularity and package spread across Homebrew, Nix, Alpine, Fedora,
+      Arch, and openSUSE ecosystems show that it became a standard item in self-hosting
+      package sets.
+    - >
+      The separate Homebrew headscale-cli packaging reflects a practical operator split:
+      servers run on Linux or containers, while administrative workstations may be macOS
+      laptops that only need the client binary.
+  package-nerd-significance:
+    - >
+      headscale-cli is a package-nerd favorite because it separates admin tooling from
+      daemon deployment. The Homebrew package lets a macOS or Linux workstation manage a
+      Headscale server while the server itself might be installed from a distro package,
+      container image, NixOS module, or source build.
+    - >
+      It is also a good example of packaging around a monorepo executable: the upstream
+      project ships one binary, while package managers can expose a CLI-only formula to
+      avoid pulling users into a server service lifecycle they did not ask for.
+  project-history:
+    - >
+      Headscale's repository was created in June 2020, after Tailscale popularized
+      WireGuard-based private overlay networks with a proprietary coordination server.
+      The upstream README states the design goal plainly: implement a self-hosted, open
+      source alternative to the Tailscale control server for self-hosters, hobbyists,
+      personal networks, and small open source organizations.
+    - >
+      The CLI is part of the same Go codebase as the server. It manages users, nodes,
+      pre-auth keys, routes, DNS, policies, API keys, and other control-plane state. The
+      remote CLI path became important when operators wanted to administer a server from
+      another machine rather than SSHing into the host.
+    - >
+      Headscale 0.13.0 added API key support and remote control of headscale via CLI.
+      The remote CLI documentation requires a server version of 0.13.0 or newer, TLS, an
+      API key, and environment variables for the CLI address and key.
+  related-projects:
+    - >
+      Tailscale is the upstream client ecosystem and proprietary hosted control server
+      that Headscale reimplements for self-hosting.
+    - WireGuard is the encrypted tunnel technology used by Tailscale clients.
+    - >
+      DERP, MagicDNS, ACLs, routes, and OIDC are related Tailscale/Headscale
+      control-plane concepts managed through Headscale.
+    - >
+      NixOS modules, container images, and Linux distro packages are common deployment
+      companions for the server while headscale-cli is used from an admin workstation.
+  sources:
+    - https://api.github.com/repos/juanfont/headscale
+    - https://api.github.com/repos/juanfont/headscale/releases?per_page=100
+    - https://docs.headscale.org/ref/remote-cli/
+    - https://docs.headscale.org/usage/getting-started/
+    - https://github.com/juanfont/headscale
+    - https://headscale.net/stable/about/features/
+    - https://raw.githubusercontent.com/juanfont/headscale/main/CHANGELOG.md
+    - https://raw.githubusercontent.com/juanfont/headscale/main/README.md
+  summary:
+    - >
+      headscale-cli is the packaged command-line client for Headscale, an open source,
+      self-hosted implementation of the Tailscale control server. The package exists for
+      operators who want the `headscale` executable on a workstation without installing
+      the full server formula.
+  timeline:
+    - '2020-06: Headscale repository created.'
+    - '2022-02: 0.13.0 added API key support and remote CLI control.'
+    - '2022-02: Remote CLI documentation described same-version client and server requirements.'
+    - >
+      2023-02: Headscale was presented at FOSDEM as an integration-testing driven
+      reimplementation of Tailscale.
+    - >
+      2026-02: 0.28.0 continued compatibility work around tags, API shape, and Tailscale
+      semantics.
+    - '2026-06: 0.29.0 documented further Tailscale ACL compatibility improvements.'
+  usage:
+    - >
+      Local usage starts with built-in help and server-side actions such as creating
+      users, registering nodes, and generating pre-auth keys. Remote usage creates an
+      API key on the server, installs the same-version headscale binary on the
+      workstation, sets HEADSCALE_CLI_ADDRESS and HEADSCALE_CLI_API_KEY, and then runs
+      commands such as `headscale nodes list` against the remote instance.
+    - >
+      The CLI is also part of automated Headscale operations: scripts can create users,
+      manage registration keys, list or expire nodes, and inspect routes without
+      touching the database directly.
 category: networking
 package-manager:
   apk: headscale
@@ -28,5 +114,15 @@ executables:
   - headscale
 provenance:
   formula: headscale-cli
+  history-sources:
+    - https://api.github.com/repos/juanfont/headscale
+    - https://api.github.com/repos/juanfont/headscale/releases?per_page=100
+    - https://docs.headscale.org/ref/remote-cli/
+    - https://docs.headscale.org/usage/getting-started/
+    - https://github.com/juanfont/headscale
+    - https://headscale.net/stable/about/features/
+    - https://raw.githubusercontent.com/juanfont/headscale/main/CHANGELOG.md
+    - https://raw.githubusercontent.com/juanfont/headscale/main/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

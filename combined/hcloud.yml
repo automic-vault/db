@@ -10,6 +10,96 @@ config-file-location:
   unix: ~/.config/hcloud/cli.toml
 credentials-file-location:
   unix: ~/.config/hcloud/cli.toml
+history:
+  adoption-history:
+    - >
+      hcloud adoption follows Hetzner Cloud's appeal to developers and small
+      infrastructure teams that want direct control from shell scripts, CI jobs, and
+      local terminals. The package-manager footprint in the batch input spans Alpine,
+      Homebrew, Fedora, MacPorts, Nix, Arch, Scoop, WinGet, and openSUSE naming, which
+      reflects broad demand for a native client outside the web console.
+    - >
+      The companion setup-hcloud GitHub Action shows a second adoption path: CI
+      workflows install the CLI and pass HCLOUD_TOKEN to run resource commands during
+      deployment. That made hcloud part of the same toolchain family as Terraform
+      providers and cloud CLIs for other vendors, but with Hetzner-specific API coverage
+      and output conventions.
+  package-nerd-significance:
+    - >
+      hcloud is the kind of cloud CLI package maintainers like: a single Go binary with
+      completions, man-page-style generated docs, release artifacts for multiple
+      operating systems and architectures, and no daemon. The package is also
+      operationally sensitive because it may read long-lived API tokens from its config
+      file, so package quality and upgrade predictability matter.
+    - >
+      For Homebrew users, the significance is practical: hcloud gives macOS and Linux
+      shells first-class access to Hetzner Cloud resources without waiting for a
+      language SDK or a Terraform run. Its existence as an official CLI also gives other
+      tools a stable executable to call.
+  project-history:
+    - >
+      Hetzner created the Go API client and CLI repositories in November 2017, then
+      published the hcloud v1.0.0 release in January 2018. The CLI sits directly on the
+      public Hetzner Cloud API, whose documentation describes HTTPS/JSON operations for
+      cloud services and resources.
+    - >
+      The project evolved from a compact server-management CLI into the main terminal
+      surface for Hetzner Cloud. Its manual documents global options, context selection,
+      endpoint overrides, debug output, and resource subcommands, while the setup guide
+      documents binary, Go, Debian, RPM, Homebrew, Windows package, and Docker
+      installation paths.
+    - >
+      The configuration model grew around contexts: a named context stores an API token
+      and preferences, while flags and environment variables can override config-file
+      values. The documented default Unix config file is ~/.config/hcloud/cli.toml, and
+      the token can also be supplied through HCLOUD_TOKEN for automation.
+  related-projects:
+    - hetznercloud/hcloud-go is the official Go library for the same API family.
+    - hetznercloud/setup-hcloud installs the CLI in GitHub Actions workflows.
+    - The Hetzner Cloud API documentation is the service contract behind the CLI.
+    - >
+      Terraform and OpenTofu hcloud providers occupy the declarative
+      infrastructure-administration role adjacent to hcloud's imperative shell workflow.
+  sources:
+    - https://api.github.com/repos/hetznercloud/cli
+    - https://api.github.com/repos/hetznercloud/cli/releases
+    - https://docs.hetzner.cloud/reference/cloud
+    - https://github.com/hetznercloud/cli
+    - https://github.com/hetznercloud/cli/blob/main/docs/reference/manual/hcloud.md
+    - https://github.com/hetznercloud/cli/blob/main/docs/reference/manual/hcloud_config.md
+    - https://github.com/hetznercloud/cli/blob/main/docs/tutorials/setup-hcloud-cli.md
+    - https://github.com/hetznercloud/hcloud-go
+    - https://github.com/hetznercloud/setup-hcloud
+  summary:
+    - >
+      hcloud is Hetzner Cloud's official command-line client. It wraps the Hetzner Cloud
+      API in a scriptable CLI for servers, images, SSH keys, networks, firewalls, load
+      balancers, volumes, primary IPs, locations, storage boxes, DNS zones, and related
+      cloud resources.
+  timeline:
+    - '2017: Hetzner Cloud CLI and Go API repositories created.'
+    - '2018: hcloud v1.0.0 release published.'
+    - '2018: Early 1.x releases established the public CLI distribution channel.'
+    - '2020: v1.21.0 tag appeared in the continuing 1.x series.'
+    - >
+      2024: CLI configuration-system design work documented the
+      ~/.config/hcloud/cli.toml model later reflected in generated manuals.
+    - >
+      2025: Storage Boxes support moved from experimental status to general availability
+      in the CLI release stream.
+  usage:
+    - >
+      A first-time user installs the binary, creates a context with hcloud context
+      create, enters a project API token, and verifies access with a read-only command
+      such as hcloud datacenter list. After that, commands such as hcloud server, hcloud
+      firewall, hcloud network, hcloud ssh-key, and hcloud volume become shell-friendly
+      API operations.
+    - >
+      The config command documents the precedence order as flags, environment variables,
+      context configuration, global configuration, and default values. That order is
+      important for packaging and automation because the same installed CLI can be used
+      interactively through cli.toml or non-interactively through HCLOUD_TOKEN and
+      HCLOUD_CONTEXT.
 category: cloud-infrastructure
 package-manager:
   apk: hcloud
@@ -34,5 +124,16 @@ executables:
   - hcloud
 provenance:
   formula: hcloud
+  history-sources:
+    - https://api.github.com/repos/hetznercloud/cli
+    - https://api.github.com/repos/hetznercloud/cli/releases
+    - https://docs.hetzner.cloud/reference/cloud
+    - https://github.com/hetznercloud/cli
+    - https://github.com/hetznercloud/cli/blob/main/docs/reference/manual/hcloud.md
+    - https://github.com/hetznercloud/cli/blob/main/docs/reference/manual/hcloud_config.md
+    - https://github.com/hetznercloud/cli/blob/main/docs/tutorials/setup-hcloud-cli.md
+    - https://github.com/hetznercloud/hcloud-go
+    - https://github.com/hetznercloud/setup-hcloud
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

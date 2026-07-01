@@ -7,6 +7,92 @@ docs:
   - https://github.com/ZerBea/hcxtools/tree/master/man
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The package spread through security-oriented Linux distributions and general
+      package managers because it solves a specific interoperability problem: turning
+      packet captures into forms that established cracking and auditing tools can read.
+      The batch input records Homebrew, Debian, Fedora, Nix, Arch, and Ubuntu packaging,
+      but upstream itself warns that operating systems outside its Linux target are
+      unsupported.
+    - >
+      Its audience is narrower than a general network utility. Upstream expects
+      knowledge of radio technology, 802.11 protocol behavior, key derivation, Linux
+      drivers, capture filters, and related tooling. That technical bar shaped adoption
+      among wireless-security practitioners and package users who already know the
+      Hashcat/JtR workflow.
+  package-nerd-significance:
+    - >
+      hcxtools is package-nerd significant because it sits at a brittle boundary between
+      kernel Wi-Fi capture behavior, pcapng file semantics, WPA handshake
+      interpretation, and Hashcat/JtR hash formats. Small changes in any layer can make
+      a packaged version too old for a user's capture workflow.
+    - >
+      The suite is also notable as a source-built C toolkit with many small executables
+      rather than one command. Packaging therefore exposes a toolbox: hcxpcapngtool for
+      conversion, hcxhashtool for filtering, hcxhash2cap for reverse conversion,
+      hcxpottool for pot files, whoismac for OUI data, and more.
+  project-history:
+    - >
+      The GitHub repository was created in April 2017. Its scope settled around the
+      conversion and post-processing side of WPA/WPA2 auditing: hcxpcapngtool converts
+      capture files, hcxhashtool filters hash files, hcxpmktool verifies PSKs or PMKs,
+      hcxpottool handles pot files, and related tools handle wordlist candidates, vendor
+      lookup, and upload workflows.
+    - >
+      The toolkit is closely paired with ZerBea's hcxdumptool, which performs packet
+      capture and layer-2 WPA protocol tests. The documented workflow is hcxdumptool to
+      hcxpcapngtool to hcxhashtool, optionally to hcxpsktool or hcxeiutool, and then to
+      Hashcat or John the Ripper.
+    - >
+      hcxtools evolved with Hashcat's WPA formats. The README emphasizes Hashcat mode
+      22000/22001 over older 2500/2501 and 16800/16801 formats, while the changelog
+      records later work on FT-PSK PMKID and EAPOL conversion for mode 37100 and ongoing
+      handling of EAPOL length limits.
+  related-projects:
+    - hcxdumptool captures the wireless packets that hcxtools converts and filters.
+    - Hashcat consumes the WPA/WPA2 hash formats that hcxtools prepares.
+    - John the Ripper is the other major password-auditing tool named in the README.
+    - >
+      wpa-sec is an upload target documented by the toolkit for testing captured
+      material against common weak-key data.
+  sources:
+    - https://api.github.com/repos/ZerBea/hcxdumptool
+    - https://api.github.com/repos/ZerBea/hcxtools
+    - https://api.github.com/repos/ZerBea/hcxtools/releases
+    - https://github.com/ZerBea/hcxdumptool
+    - https://github.com/ZerBea/hcxtools
+    - https://github.com/ZerBea/hcxtools/blob/master/changelog
+    - https://github.com/hashcat/hashcat
+  summary:
+    - >
+      hcxtools is a Linux-focused suite for converting Wi-Fi capture files into hash
+      formats consumed by Hashcat and John the Ripper. The upstream description frames
+      it as an analysis toolkit for finding weak points in one's own wireless networks
+      rather than as a password-cracking engine.
+  timeline:
+    - '2017: hcxtools repository created.'
+    - '2019: 5.x releases published through GitHub releases.'
+    - '2020: 6.0.0 and 6.1.x releases published.'
+    - '2021: 6.2.x releases published.'
+    - >
+      2024: README simplified distribution-specific compile instructions and pointed
+      users back to their distribution dependency names.
+    - '2025: 7.0.0 added support for relayed EAPOL messages.'
+    - '2026: changelog recorded FT-PSK PMKID and EAPOL conversion work for Hashcat mode 37100.'
+  usage:
+    - >
+      hcxtools does not capture traffic, crack hashes, attack WEP or WPS, or decrypt
+      encrypted traffic. Instead, it converts, filters, verifies, and prepares
+      artifacts: pcapng/pcap/cap input, PMKID and EAPOL hash lines, pot files,
+      ESSID-derived candidate lists, vendor OUI lookups, and wpa-sec upload workflows.
+    - >
+      The upstream README is explicit that output files may be appended to, that dump
+      files should not be merged in ways that destroy custom block hash assignments, and
+      that nonce-error correction is not performed by the tools. These details are why
+      package users often care about exact upstream versions matching hcxdumptool and
+      Hashcat behavior.
 category: security
 package-manager:
   brew: hcxtools
@@ -37,5 +123,14 @@ executables:
   - wlancap2wpasec
 provenance:
   formula: hcxtools
+  history-sources:
+    - https://api.github.com/repos/ZerBea/hcxdumptool
+    - https://api.github.com/repos/ZerBea/hcxtools
+    - https://api.github.com/repos/ZerBea/hcxtools/releases
+    - https://github.com/ZerBea/hcxdumptool
+    - https://github.com/ZerBea/hcxtools
+    - https://github.com/ZerBea/hcxtools/blob/master/changelog
+    - https://github.com/hashcat/hashcat
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

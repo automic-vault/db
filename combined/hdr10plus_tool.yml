@@ -6,6 +6,84 @@ docs:
   - https://github.com/quietvoid/hdr10plus_tool#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is mostly visible in video-encoding and home-media packaging contexts
+      rather than broad platform documentation. Package-manager metadata in the batch
+      shows the tool packaged for Homebrew, Nix, Alpine, and Arch-derived ecosystems,
+      which fits a niche CLI used by people automating HDR video workflows.
+    - >
+      The project lives near other HEVC/HDR command-line tooling: users commonly combine
+      it with ffmpeg bitstream extraction and x265 HDR10+ JSON workflows, both of which
+      are reflected in the upstream README examples and sample-file notes.
+  package-nerd-significance:
+    - >
+      hdr10plus_tool is small but useful in package-manager culture because it exposes a
+      specialized media metadata operation as a single CLI with no GUI assumptions. It
+      is the kind of formula that makes Homebrew, Nix, Alpine, and Pacman valuable to
+      video hobbyists: a hard-to-build Rust utility becomes one command away and fits
+      neatly into ffmpeg pipelines.
+    - >
+      Its history also shows a familiar package evolution: a parser becomes a tool once
+      users need round-tripping, validation, and inspection. That shift explains why the
+      package name matters even though the executable remains narrow.
+  project-history:
+    - >
+      The GitHub repository was created in January 2019 and its first public release,
+      0.1.0, was named HDR10+ Parser. The README records the name change directly: the
+      tool was previously hdr10plus_parser, then became hdr10plus_tool after it outgrew
+      parsing alone.
+    - >
+      Early releases in 2019 focused on correctness around HDR10+ metadata parsing, JSON
+      generation, ffmpeg-piped input, and compatibility with Samsung tooling and
+      MediaInfo. Later README-documented commands broadened the project into
+      bidirectional metadata handling: extract metadata from HEVC or MKV inputs, inject
+      JSON metadata into HEVC bitstreams, remove HDR10+ SEI messages, plot brightness
+      metadata, and edit frame metadata.
+  related-projects:
+    - ffmpeg is commonly used to demux or pipe HEVC bitstreams into hdr10plus_tool.
+    - >
+      x265 appears in the upstream README as the source of sample HDR10+ metadata used
+      for tests.
+    - >
+      MediaInfo appears in release notes as an interoperability target for HDR10+
+      profile detection.
+    - >
+      HDR-Multi-Tool-Gui and similar media GUIs often wrap CLI tools in this family, but
+      hdr10plus_tool itself remains the scriptable core.
+  sources:
+    - https://api.github.com/repos/quietvoid/hdr10plus_tool
+    - https://api.github.com/repos/quietvoid/hdr10plus_tool/releases?per_page=100
+    - https://github.com/quietvoid/hdr10plus_tool
+    - https://raw.githubusercontent.com/quietvoid/hdr10plus_tool/master/README.md
+  summary:
+    - >
+      hdr10plus_tool is a Rust command-line utility for working with HDR10+ dynamic
+      metadata in HEVC video streams. The project began as hdr10plus_parser and evolved
+      from metadata extraction and verification into a broader toolkit for extracting,
+      injecting, removing, plotting, and editing HDR10+ metadata.
+  timeline:
+    - '2019-01: Repository created and 0.1.0 released as HDR10+ Parser.'
+    - '2019-01: 0.2.1 added a verify option for checking embedded metadata.'
+    - '2019-01: 0.2.2 added piped input support using ffmpeg.'
+    - '2019-11: 0.2.5 improved JSON generation and MediaInfo-related compatibility.'
+    - >
+      2020-01: 0.2.6 added regression tests while fixing parsing of MaxScl and Average
+      MaxRGB values.
+    - '2026-01: 1.3.2 added support for multiple SEI messages and a remove subcommand.'
+  usage:
+    - >
+      The common workflow is to extract HDR10+ metadata from an HEVC bitstream or MKV
+      file into JSON, inspect or transform that JSON, and optionally inject it back into
+      an encoded HEVC stream. The tool also supports verification-only parsing, metadata
+      removal, brightness plotting to PNG, and frame-level edit operations described by
+      JSON edit instructions.
+    - >
+      For package users, the value is that it turns a specialized video metadata
+      operation into a scriptable executable. The README examples show stdin pipelines
+      from ffmpeg, which is why the package matters to shell-heavy encoding pipelines
+      and reproducible media-processing recipes.
 category: media
 package-manager:
   apk: hdr10plus-tool
@@ -25,5 +103,11 @@ executables:
   - hdr10plus_tool
 provenance:
   formula: hdr10plus_tool
+  history-sources:
+    - https://api.github.com/repos/quietvoid/hdr10plus_tool
+    - https://api.github.com/repos/quietvoid/hdr10plus_tool/releases?per_page=100
+    - https://github.com/quietvoid/hdr10plus_tool
+    - https://raw.githubusercontent.com/quietvoid/hdr10plus_tool/master/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

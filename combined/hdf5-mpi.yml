@@ -7,6 +7,82 @@ docs:
   - https://www.hdfgroup.org/solutions/hdf5
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The MPI-enabled package exists because HPC users often need the same HDF5 data
+      model but with collective access from multiple processes. Upstream installation
+      guidance for Parallel HDF5 calls out MPI compilers with MPI-IO support and
+      POSIX-compliant parallel file systems, which maps directly to cluster module and
+      package-manager variants.
+    - >
+      For Homebrew and Nix users, hdf5-mpi separates the parallel build from the default
+      serial package so dependent software can link against the expected ABI and
+      compiler wrappers. The package role is about build configuration and dependency
+      selection, not a separate upstream project.
+  package-nerd-significance:
+    - >
+      hdf5-mpi is a classic package-manager split: same upstream, different feature
+      matrix. It matters because mixing serial HDF5, MPI HDF5, C, Fortran, C++,
+      thread-safety, filters, and compiler wrappers can break downstream builds in
+      subtle ways.
+    - >
+      Package users care about this variant when building scientific Python, Julia,
+      Fortran, C, and C++ software against cluster MPI stacks. The package is less about
+      command-line novelty and more about getting the right library compiled with the
+      right parallel I/O assumptions.
+  project-history:
+    - >
+      HDF began at NCSA in 1987 as an architecture-independent scientific data library
+      and file format. By 1996, HDF's maintainers considered the older line insufficient
+      for larger data volumes and newer computing systems, and in 1998 HDF5 was
+      implemented as the more scalable successor to HDF4.
+    - >
+      Parallel HDF5 was designed around compatibility with serial HDF5 files, a single
+      shared file image across processes, and a portable standard parallel I/O
+      interface. The HDF Group documentation says the initial target was MPI programming
+      rather than shared-memory programming, matching the MPI-enabled package role.
+  related-projects:
+    - HDF5 is the upstream library and file format project.
+    - MPI and MPI-IO provide the parallel programming and I/O substrate for Parallel HDF5.
+    - >
+      h5py and HDF5.jl are examples of higher-level ecosystems that distinguish serial
+      and MPI-enabled HDF5 builds.
+    - >
+      netCDF is a neighboring scientific-data ecosystem commonly tested with HDF5 by
+      upstream integration workflows.
+  sources:
+    - https://formulae.brew.sh/formula/hdf5-mpi
+    - https://github.com/HDFGroup/hdf5
+    - https://github.com/HDFGroup/hdf5/blob/develop/docs/README_HPC.md
+    - https://support.hdfgroup.org/documentation/hdf5/latest/_intro_par_h_d_f5.html
+    - https://www.hdfgroup.org/2015/03/04/hdf-group/
+    - https://www.hdfgroup.org/about-us/
+    - https://www.hdfgroup.org/solutions/hdf5/
+  summary:
+    - >
+      hdf5-mpi is the MPI-enabled packaging role for the HDF5 library and tools. It
+      shares HDF5's project history, but it matters to users who need Parallel HDF5
+      builds linked with MPI and MPI-IO support rather than only serial HDF5 libraries.
+  timeline:
+    - '1987: NCSA began work on the original architecture-independent HDF technology.'
+    - '1998: HDF5 was implemented as a more scalable successor to HDF4.'
+    - '1998: Parallel HDF5 design work targeted MPI programming and portable parallel I/O.'
+    - '2006: The HDF Group began operating as a separate nonprofit steward.'
+    - '2020: The official HDF5 source repository was created on GitHub.'
+    - >
+      2026: Batch input records Homebrew and Nix packaging for the MPI-enabled package
+      variant.
+  usage:
+    - >
+      Parallel HDF5 is used by MPI applications that need many processes to create,
+      open, read, write, and close HDF5 files while preserving serial-file
+      compatibility. Upstream CMake guidance enables this path with
+      HDF5_ENABLE_PARALLEL=ON and MPI compilers such as mpicc or mpif90.
+    - >
+      The package exposes MPI-aware compiler wrappers and tools recorded in the batch
+      input, including h5pcc, h5pfc, h5perf, and ph5diff. Those names signal to build
+      systems and users that this package is for parallel HDF5 development and testing.
 category: data
 package-manager:
   brew: hdf5-mpi
@@ -28,5 +104,14 @@ executables:
   - ph5diff
 provenance:
   formula: hdf5-mpi
+  history-sources:
+    - https://formulae.brew.sh/formula/hdf5-mpi
+    - https://github.com/HDFGroup/hdf5
+    - https://github.com/HDFGroup/hdf5/blob/develop/docs/README_HPC.md
+    - https://support.hdfgroup.org/documentation/hdf5/latest/_intro_par_h_d_f5.html
+    - https://www.hdfgroup.org/2015/03/04/hdf-group/
+    - https://www.hdfgroup.org/about-us/
+    - https://www.hdfgroup.org/solutions/hdf5/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

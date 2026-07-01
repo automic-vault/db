@@ -16,6 +16,109 @@ credentials-file-location:
     - /var/lib/heartbeat/heartbeat.keystore
   unix:
     - '{path.data}/heartbeat.keystore'
+history:
+  adoption-history:
+    - >
+      Heartbeat adoption followed Elastic Stack operators who wanted uptime data in the
+      same Elasticsearch and Kibana environment as logs, metrics, packet data, and APM
+      traces. The launch article emphasizes combining Heartbeat with Metricbeat,
+      Filebeat, and APM to triage outages from one operational data store.
+    - >
+      The official product page positions Heartbeat for testing services from inside or
+      outside a network, pinging ICMP, TCP, and HTTP targets, using TLS, authentication,
+      proxies, and dynamically loaded monitor definitions. That made it useful for
+      infrastructure teams already standardized on Elastic ingestion and dashboards.
+    - >
+      Elastic later moved many ingestion workflows toward Elastic Agent and Synthetic
+      Monitoring, but the traditional Heartbeat binary and heartbeat.yml workflow remain
+      documented for lightweight TCP, HTTP, and ICMP monitors configured by operators.
+  package-nerd-significance:
+    - >
+      Heartbeat is package-significant because it is an observability agent: admins
+      expect it to install cleanly, run as a service, read config from predictable
+      paths, and keep secrets in a keystore. Those operational details are as important
+      as the executable itself.
+    - >
+      In package-manager terms, it is also part of the Elastic Beats era, when small
+      single-purpose shippers were packaged independently. Installing only Heartbeat
+      gave an operator uptime probes without deploying the whole Elastic Agent stack or
+      writing custom monitoring scripts.
+  project-history:
+    - >
+      Heartbeat belongs to Elastic Beats, a family of lightweight Go data shippers for
+      Elasticsearch and Logstash. The Beats repository was created in 2014, and
+      Heartbeat later joined Filebeat, Metricbeat, Packetbeat, Winlogbeat, and related
+      Beats as the service-availability member of that family.
+    - >
+      Elastic's November 2018 announcement says Heartbeat was introduced in beta in
+      January 2017 and reached general availability with Elastic Stack 6.5. The same
+      post presents Heartbeat as a lightweight shipper designed for uptime monitoring,
+      configured by a list of URLs or endpoints to check and report to Elasticsearch.
+    - >
+      The Heartbeat reference describes the core model: install a lightweight daemon on
+      a remote server, define monitors, schedule checks, and send events about whether
+      services are reachable. Over time, Heartbeat became tied to Kibana's Uptime
+      experience and later to Elastic's broader observability and synthetic-monitoring
+      story.
+  related-projects:
+    - >
+      Filebeat, Metricbeat, Packetbeat, Winlogbeat, Auditbeat, and Functionbeat are
+      sibling Beats in the Elastic repository.
+    - >
+      Elasticsearch stores Heartbeat events, while Kibana provides dashboards, Uptime
+      views, alerting, and visualization.
+    - Logstash can be used as an output path between Beats and Elasticsearch.
+    - >
+      Elastic Agent and Synthetic Monitoring are related successors or broader
+      deployment models for many use cases.
+    - Metricbeat and APM are often combined with Heartbeat data during outage triage.
+  sources:
+    - https://api.github.com/repos/elastic/beats
+    - https://github.com/elastic/beats
+    - https://raw.githubusercontent.com/elastic/beats/master/CHANGELOG.asciidoc
+    - https://raw.githubusercontent.com/elastic/beats/master/heartbeat/README.md
+    - https://raw.githubusercontent.com/elastic/beats/master/heartbeat/docs/overview.asciidoc
+    - https://www.elastic.co/beats/heartbeat
+    - https://www.elastic.co/blog/elastic-uptime-monitoring-solution-released
+    - https://www.elastic.co/blog/uptime-monitoring-with-heartbeat-and-the-elastic-stack
+    - https://www.elastic.co/docs/reference/beats/heartbeat
+    - https://www.elastic.co/docs/reference/beats/heartbeat/configuration-heartbeat-options
+    - https://www.elastic.co/docs/reference/beats/heartbeat/configuring-howto-heartbeat
+  summary:
+    - >
+      Elastic Heartbeat is a lightweight Beat for uptime monitoring. It runs active
+      probes against HTTP, TCP, and ICMP targets and ships availability and
+      response-time events into the Elastic Stack.
+  timeline:
+    - '2014-02: Elastic Beats repository created.'
+    - "2017-01: Heartbeat introduced in beta according to Elastic's GA announcement."
+    - '2018-11: Elastic Stack 6.5 announced Heartbeat general availability.'
+    - '2018-11: Elastic Uptime solution launched based on Heartbeat.'
+    - >
+      2019: Beats changelog entries show Heartbeat-specific uptime and SSL metadata
+      fixes in the 6.8 series.
+    - >
+      2021: Beats changelog entries show Heartbeat synthetics and browser-monitoring
+      work in the 7.x series.
+    - >
+      2024: Elastic docs preserve the Heartbeat reference alongside migration guidance
+      to Elastic Agent.
+  usage:
+    - >
+      Operators configure `heartbeat.yml` with monitor entries, each declaring a type
+      such as icmp, tcp, or http, a set of hosts or URLs, and a schedule. Heartbeat
+      periodically probes each target and sends events to Elasticsearch or another
+      configured output.
+    - >
+      Common workflows include checking whether a website returns an expected status
+      code or body, verifying that a TCP service accepts a connection or payload
+      exchange, confirming host reachability by ICMP, loading dashboards, and alerting
+      on availability or latency changes in Kibana.
+    - >
+      The command-line package also includes setup and test commands shared by Beats,
+      plus keystore support for secrets. The batch's curated config and credentials
+      paths reflect Elastic's documented directory layout conventions for heartbeat.yml
+      and heartbeat.keystore.
 tags:
   - cli
   - elastic-stack
@@ -40,6 +143,18 @@ provenance:
     - source_facts.name is heartbeat; Elastic official docs use the Heartbeat product name.
   docs-sources:
     - Official Elastic Heartbeat documentation and command reference.
+  history-sources:
+    - https://api.github.com/repos/elastic/beats
+    - https://github.com/elastic/beats
+    - https://raw.githubusercontent.com/elastic/beats/master/CHANGELOG.asciidoc
+    - https://raw.githubusercontent.com/elastic/beats/master/heartbeat/README.md
+    - https://raw.githubusercontent.com/elastic/beats/master/heartbeat/docs/overview.asciidoc
+    - https://www.elastic.co/beats/heartbeat
+    - https://www.elastic.co/blog/elastic-uptime-monitoring-solution-released
+    - https://www.elastic.co/blog/uptime-monitoring-with-heartbeat-and-the-elastic-stack
+    - https://www.elastic.co/docs/reference/beats/heartbeat
+    - https://www.elastic.co/docs/reference/beats/heartbeat/configuration-heartbeat-options
+    - https://www.elastic.co/docs/reference/beats/heartbeat/configuring-howto-heartbeat
   repo-sources:
     - >
       source_facts.repo already provided as https://github.com/elastic/beats; not
@@ -55,5 +170,6 @@ category-path:
   - uptime
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

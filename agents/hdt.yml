@@ -6,6 +6,104 @@ docs:
   - https://www.rdfhdt.org/what-is-hdt
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      HDT adoption grew around Linked Data distribution, where the pain point is not
+      just storing RDF but moving and querying huge dumps. The RDF HDT site lists use
+      cases such as sharing RDF data on the Web, mirroring SPARQL endpoints, data
+      analysis, visualization, embedded devices, and federated querying.
+    - >
+      The project's datasets page shows HDT used to distribute large public knowledge
+      graphs, including DBpedia, Freebase, YAGO, WordNet, DBLP, and multiple Wikidata
+      dumps. That page also notes collections with billions of triples, including
+      LOD-a-lot, demonstrating HDT's role as an interchange format for people who need
+      local, compressed, indexed RDF snapshots.
+    - >
+      The implementation family includes C++ tools, Java libraries, Jena integration, a
+      GUI, an online conversion service, and HDT-backed dataset publishing. The Homebrew
+      `hdt` formula packages the Unix CLI side of that ecosystem for local conversion
+      and inspection.
+  package-nerd-significance:
+    - >
+      For package maintainers, hdt is a classic data-tool package: a research format
+      turned into a practical CLI. It pulls in native C/C++ build tooling, RDF parser
+      dependencies such as Serd, and compression support, then exposes a small set of
+      executables that slot into data-publishing pipelines.
+    - >
+      The package matters because RDF dump users often want repeatable local workflows
+      rather than a bespoke triplestore setup. Installing hdt gives them the
+      compact-file workflow directly: convert, inspect, query, and ship a single indexed
+      artifact.
+  project-history:
+    - >
+      HDT emerged from Semantic Web research on publishing and exchanging very large RDF
+      graphs without the verbosity of textual RDF serializations. The W3C Member
+      Submission dated 30 March 2011 describes HDT as a binary RDF format organized
+      around a header, a dictionary of terms, and compressed triples.
+    - >
+      The RDF HDT project presents the format as both a data structure and
+      serialization: the dictionary replaces repeated RDF terms with identifiers, the
+      triples component stores graph structure compactly, and the header carries
+      metadata about the dataset. The format was later described in publications from
+      ISWC 2010, WWW 2012, ESWC 2012, and a 2013 Web Semantics journal article listed by
+      the project.
+    - >
+      The hdt-cpp repository is the C++ implementation and tool suite. Its README
+      describes tools such as rdf2hdt for creating HDT from RDF, hdt2rdf for exporting
+      RDF, hdtSearch for triple-pattern queries, hdtInfo for headers, and replaceHeader
+      for metadata maintenance. GitHub release history shows a post-Google-Code release
+      in 2015, which reflects a migration from earlier hosting into the GitHub-centered
+      packaging era.
+  related-projects:
+    - hdt-java provides Java libraries around the same HDT format.
+    - Jena integration and Fuseki support connect HDT files to SPARQL tooling.
+    - >
+      LOD-a-lot and LOD Laundromat are related large-scale Linked Open Data distribution
+      efforts that make HDT attractive.
+    - >
+      DBpedia, Wikidata, YAGO, Freebase, WordNet, and DBLP appear as datasets
+      distributed or mirrored in HDT form.
+  sources:
+    - https://api.github.com/repos/rdfhdt/hdt-cpp
+    - https://api.github.com/repos/rdfhdt/hdt-cpp/releases?per_page=100
+    - https://github.com/rdfhdt/hdt-cpp
+    - https://raw.githubusercontent.com/rdfhdt/hdt-cpp/master/README.md
+    - https://www.rdfhdt.org/datasets/
+    - https://www.rdfhdt.org/publications/
+    - https://www.rdfhdt.org/what-is-hdt/
+    - https://www.w3.org/submissions/2011/SUBM-HDT-20110330/
+  summary:
+    - >
+      HDT, short for Header, Dictionary, Triples, is a compact binary representation for
+      RDF datasets. The Homebrew package builds the C++ library and command-line tools
+      that create, inspect, query, and convert HDT files.
+  timeline:
+    - >
+      2010: HDT was presented in ISWC slide material on compact representation of large
+      RDF datasets.
+    - '2011-03: W3C published the HDT Member Submission.'
+    - >
+      2012: HDT work appeared at ESWC and WWW venues on exchanging and consuming huge
+      RDF data.
+    - >
+      2013: The project lists the Web Semantics article Binary RDF Representation for
+      Publication and Exchange (HDT).
+    - '2014-04: The hdt-cpp GitHub repository was created.'
+    - '2015-12: hdt-cpp v1.1.1 was published as a post-Google-Code release.'
+    - '2017-09: hdt-cpp v1.2.0 was released.'
+    - '2019-01: hdt-cpp v1.3.3 added bug fixes and 64-bit support.'
+  usage:
+    - >
+      Typical command-line usage starts with converting an RDF serialization to an HDT
+      file using rdf2hdt. A user can then query it interactively with hdtSearch, export
+      it back with hdt2rdf, inspect metadata with hdtInfo, or replace header information
+      without rebuilding the whole dataset.
+    - >
+      HDT is read-optimized. Its project site emphasizes that an HDT file is already
+      indexed and can be searched or browsed without prior decompression, which is why
+      it is attractive for large dumps that would otherwise require a database import
+      before the first useful query.
 tags:
   - cli
   - compression
@@ -33,6 +131,15 @@ provenance:
     - source_facts.name and current_curation.display-name both provide hdt.
   docs-sources:
     - Official RDF HDT site provides the HDT overview and C++ library manual for hdt-cpp.
+  history-sources:
+    - https://api.github.com/repos/rdfhdt/hdt-cpp
+    - https://api.github.com/repos/rdfhdt/hdt-cpp/releases?per_page=100
+    - https://github.com/rdfhdt/hdt-cpp
+    - https://raw.githubusercontent.com/rdfhdt/hdt-cpp/master/README.md
+    - https://www.rdfhdt.org/datasets/
+    - https://www.rdfhdt.org/publications/
+    - https://www.rdfhdt.org/what-is-hdt/
+    - https://www.w3.org/submissions/2011/SUBM-HDT-20110330/
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/rdfhdt/hdt-cpp, so repo is
@@ -48,5 +155,6 @@ category-path:
   - compression
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
