@@ -9,6 +9,68 @@ config-file-location:
   unix:
     - kustomization.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Kustomize crossed from standalone Kubernetes SIG CLI project into kubectl when the
+      v2.0.3 build flow was added to kubectl v1.14 in 2019. The embedded version stayed
+      frozen through kubectl v1.20, then moved to v4.0.5 in kubectl v1.21 and continued
+      being tracked in Kubernetes release notes.
+    - >
+      A 2024 Kubernetes Enhancement Proposal proposed deprecating and removing Kustomize
+      from kubectl, partly to let the two tools develop separately and reduce kubectl
+      dependency weight. The same KEP records that after SIG Architecture discussion on
+      October 17, 2024, the removal proposal was not pursued because widespread
+      community adoption made removal disruptive.
+  package-nerd-significance:
+    - >
+      Kustomize is one of the most important Kubernetes packaging tools because it
+      occupies a middle ground between raw manifests and full templating systems such as
+      Helm. For package maintainers, it matters because it preserves upstream YAML as
+      patchable source material, supports overlays cleanly, and exists both as a
+      standalone binary and as a kubectl-integrated workflow.
+  project-history:
+    - >
+      Kustomize was created to customize Kubernetes resource YAML without mutating the
+      base files and without introducing a general-purpose templating language. The
+      README compares it to `make`, because desired transformations are declared in a
+      file, and to `sed`, because the output is edited text.
+    - >
+      The project's core model is the `kustomization.yaml` file. Users declare
+      resources, generators, patches, labels, name transformations, bases, and overlays,
+      then run `kustomize build` to emit deployable YAML. That model made it attractive
+      to GitOps and package-management workflows where plain YAML remains reviewable.
+  related-projects:
+    - >
+      Kustomize is related to kubectl, Kubernetes SIG CLI, Helm, GitOps controllers,
+      Kubernetes manifests, Krew plugins, and configuration-management tools that
+      transform YAML before applying it to clusters.
+  sources:
+    - https://github.com/kubernetes-sigs/kustomize
+    - >
+      https://github.com/kubernetes/enhancements/blob/master/keps/sig-cli/4706-deprecate-and-remove-kustomize/README.md
+    - https://kubectl.docs.kubernetes.io/references/kustomize/
+    - https://kubernetes.io/blog/2019/03/25/kubernetes-1-14-release-announcement/
+  summary:
+    - >
+      Kustomize is the Kubernetes SIG CLI tool for template-free customization of raw
+      YAML manifests. It became especially significant after the `kustomize build` flow
+      was embedded into kubectl v1.14.
+  timeline:
+    - >
+      2018: Kustomize matured as a Kubernetes YAML customization tool under Kubernetes
+      SIG CLI.
+    - '2019: kubectl v1.14 added the Kustomize v2.0.3 build flow.'
+    - '2021: kubectl v1.21 updated the embedded Kustomize version to v4.0.5.'
+    - >
+      2024: A Kubernetes Enhancement Proposal to remove Kustomize from kubectl was not
+      pursued after discussion because of widespread adoption.
+  usage:
+    - >
+      Users keep a base directory of Kubernetes YAML plus a `kustomization.yaml`, then
+      create environment-specific overlays such as development, staging, and production.
+      `kustomize build` emits the rendered YAML, commonly piped to `kubectl apply -f -`
+      or used by GitOps controllers.
 tags:
   - cli
   - configuration
@@ -35,6 +97,12 @@ provenance:
     - >
       official kustomize site links documentation; Kubernetes SIGs repository README
       contains general documentation and examples
+  history-sources:
+    - https://github.com/kubernetes-sigs/kustomize
+    - >
+      https://github.com/kubernetes/enhancements/blob/master/keps/sig-cli/4706-deprecate-and-remove-kustomize/README.md
+    - https://kubectl.docs.kubernetes.io/references/kustomize/
+    - https://kubernetes.io/blog/2019/03/25/kubernetes-1-14-release-announcement/
   repo-sources:
     - >
       source_facts.repo already provided as
@@ -49,5 +117,6 @@ category-path:
   - kubernetes-configuration
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
