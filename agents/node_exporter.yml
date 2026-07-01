@@ -5,6 +5,75 @@ docs:
   - https://github.com/prometheus/node_exporter#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      By 2026-07-01, GitHub metadata reported 13562 stars and 2672 forks for
+      `prometheus/node_exporter`. Homebrew's formula API reported stable version 1.11.1
+      and 5544 installs over 365 days. That Homebrew number is only a small slice of
+      usage because production deployments often use distro packages, containers,
+      configuration management, or upstream release tarballs.
+    - >
+      The Prometheus documentation treats Node Exporter as the standard path for Linux
+      host metrics and walks through downloading a release, running the binary, scraping
+      `localhost:9100`, and checking metrics with the `node_` prefix. Grafana and
+      Prometheus ecosystem docs commonly use it as the base host telemetry example.
+  package-nerd-significance:
+    - >
+      This is not related to Node.js despite the name. In Prometheus vocabulary, a node
+      is a machine. That naming collision is worth encoding because package search and
+      enrichment can otherwise confuse JavaScript tooling with host observability
+      tooling.
+  project-history:
+    - >
+      The GitHub repository was created on 2013-04-18 under the Prometheus organization.
+      The README describes it as a Go exporter for hardware and OS metrics exposed by
+      *NIX kernels, with pluggable collectors and a separate recommendation to use
+      `windows_exporter` for Windows machines.
+    - >
+      The project evolved by growing a large collector surface while keeping some
+      expensive or high-cardinality collectors disabled by default. The README documents
+      default collectors such as cpu, diskstats, filesystem, loadavg, meminfo, netdev,
+      textfile, uname, vmstat, and many others, plus opt-in collectors such as systemd,
+      perf, processes, tcpstat, wifi, and zoneinfo.
+  related-projects:
+    - Prometheus
+    - Grafana
+    - windows_exporter
+    - prometheus-community/node-exporter-textfile-collector-scripts
+  sources:
+    - https://api.github.com/repos/prometheus/node_exporter
+    - https://formulae.brew.sh/api/formula/node_exporter.json
+    - https://github.com/prometheus/node_exporter
+    - https://github.com/prometheus/node_exporter/releases
+    - https://prometheus.io/docs/guides/node-exporter/
+    - https://raw.githubusercontent.com/prometheus/node_exporter/master/README.md
+  summary:
+    - >
+      `node_exporter` is Prometheus's Unix host-metrics exporter. It is one of the
+      canonical Prometheus deployment pieces: install it on a machine, expose `/metrics`
+      on port 9100, and let Prometheus scrape CPU, memory, filesystem, network, kernel,
+      and other machine-level metrics.
+  timeline:
+    - '2013-04-18: GitHub repository `prometheus/node_exporter` was created.'
+    - '2024-07-14: v1.8.2 release metadata appeared in GitHub releases.'
+    - '2025-10-24: v1.10.0 was released.'
+    - >
+      2026-04-07: v1.11.1 was released and Homebrew reported it as the stable formula
+      version on 2026-07-01.
+  usage:
+    - >
+      The practical pattern is boring and important: run one `node_exporter` per host,
+      expose port 9100 to Prometheus, and tune collectors only when needed. In
+      containers, the README warns that the exporter is designed to monitor the host
+      system, so Docker deployments bind-mount the host root filesystem, use host
+      networking and PID namespace, and set `--path.rootfs=/host`.
+    - >
+      Package nerds care about collector flags. Default collectors cover the normal node
+      dashboard path; opt-in collectors need testing because scrape duration, timeout,
+      and sample cardinality can jump. The textfile collector is the escape hatch for
+      local scripts and cron jobs: write Prometheus-format files to a configured
+      directory and let node_exporter expose them with the rest of the host metrics.
 tags:
   - cli
   - exporter
@@ -32,6 +101,13 @@ provenance:
     - source_facts.repo is prometheus/node_exporter
   docs-sources:
     - Official prometheus/node_exporter README is the primary documentation surface
+  history-sources:
+    - https://api.github.com/repos/prometheus/node_exporter
+    - https://formulae.brew.sh/api/formula/node_exporter.json
+    - https://github.com/prometheus/node_exporter
+    - https://github.com/prometheus/node_exporter/releases
+    - https://prometheus.io/docs/guides/node-exporter/
+    - https://raw.githubusercontent.com/prometheus/node_exporter/master/README.md
   repo-sources:
     - source_facts.repo already provided in input; per instructions repo returned as null
   tags-sources:
@@ -43,5 +119,6 @@ category-path:
   - monitoring
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

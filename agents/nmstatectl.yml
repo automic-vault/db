@@ -7,6 +7,72 @@ docs:
   - https://nmstate.io/user/quick_guide.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Nmstate's adoption story is strongest in enterprise Linux. Red Hat documents it in
+      RHEL networking guides as a declarative network manager API with atomic and
+      transactional operations, partial editing, and plugin support. Fedora
+      documentation and articles also present it as an Infrastructure-as-Code-friendly
+      approach to host networking.
+    - >
+      The ecosystem extends beyond the CLI. The upstream README lists Rust, Python, Go,
+      and C bindings, and the nmstate organization also maintains Kubernetes-oriented
+      declarative node-networking work. That makes nmstatectl both a standalone admin
+      command and a diagnostic/manual entry point into a larger network-state stack.
+  package-nerd-significance:
+    - >
+      nmstatectl is significant because it turns Linux host networking into data. That
+      makes it fit config management, CI validation, RHEL system roles, and
+      Kubernetes-node workflows better than one-off command transcripts.
+  project-history:
+    - >
+      Nmstate grew around the idea that host networking should be described as desired
+      state rather than a series of imperative commands. The official project describes
+      a predefined schema where both current state and desired state conform to the same
+      model, with NetworkManager as the main southbound provider.
+    - >
+      The nmstatectl tool exists for users who want to try or operate Nmstate without
+      writing directly against libnmstate. It exposes show, edit, apply, rollback, and
+      commit workflows using YAML or JSON state files.
+  related-projects:
+    - NetworkManager
+    - libnmstate
+    - RHEL network system role
+    - kubernetes-nmstate
+  sources:
+    - >
+      https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/assembly_introduction-to-nmstate_configuring-and-managing-networking
+    - https://fedoramagazine.org/nmstate-a-declarative-networking-config-tool/
+    - https://github.com/nmstate/kubernetes-nmstate
+    - https://github.com/nmstate/nmstate
+    - https://nmstate.io/
+    - https://nmstate.io/cli_guide.html
+  summary:
+    - >
+      nmstatectl is the command-line front end to Nmstate, a declarative API and library
+      for describing and applying Linux host network state.
+  timeline:
+    - >
+      {'event': "The upstream README installation note names Fedora 29+ as a supported
+      package target, anchoring Nmstate's early Linux distribution integration.",
+      'year': '2018'}
+    - >
+      {'date': '2021-08-09', 'event': 'Fedora Magazine published a practical
+      introduction to Nmstate as a declarative networking configuration tool.'}
+  usage:
+    - >
+      Practical nmstatectl use starts with nmstatectl show to inspect YAML state, then
+      nmstatectl apply state.yaml to converge the system toward a desired configuration.
+      Operators use it for Ethernet, bonds, bridges, VLANs, routes, DNS, and similar
+      host-network declarations where a checked-in YAML file is clearer than a sequence
+      of nmcli commands.
+    - >
+      The rollback behavior is a major package-nerd detail: by default, if the applied
+      state does not verify against the desired state, nmstatectl rolls back. For risky
+      remote-network changes, the manual transaction flow with apply --no-commit,
+      commit, and rollback gives administrators a guardrail against locking themselves
+      out.
 tags:
   - cli
   - declarative
@@ -35,6 +101,14 @@ provenance:
     - Official guide links the API document for network state format and definition.
     - Official nmstatectl user guide is dedicated CLI documentation.
     - Official quick start covers using nmstatectl and libnmstate.
+  history-sources:
+    - >
+      https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/assembly_introduction-to-nmstate_configuring-and-managing-networking
+    - https://fedoramagazine.org/nmstate-a-declarative-networking-config-tool/
+    - https://github.com/nmstate/kubernetes-nmstate
+    - https://github.com/nmstate/nmstate
+    - https://nmstate.io/
+    - https://nmstate.io/cli_guide.html
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/nmstate/nmstate; per
@@ -48,5 +122,6 @@ category-path:
   - configuration
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

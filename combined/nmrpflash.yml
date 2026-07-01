@@ -6,6 +6,70 @@ docs:
   - https://github.com/jclehner/nmrpflash#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is concentrated in router recovery and OpenWrt/DD-WRT-style communities.
+      The README lists many tested Netgear models and warns about image format
+      compatibility, which matches how users actually find the tool: after a failed
+      flash, vendor firmware problem, or router that only exposes the bootloader
+      recovery path.
+    - >
+      Debian source packaging and the Homebrew formula make the tool easier to install
+      on ordinary admin laptops. Homebrew is especially practical because the upstream
+      README recommends it on Linux and macOS while warning that some distro packages
+      may lag.
+  package-nerd-significance:
+    - >
+      nmrpflash is not a broad networking platform; it is a focused hardware-rescue
+      package. Its significance is that it wraps a vendor recovery protocol in a
+      reproducible open-source command, making debricking less dependent on opaque
+      vendor GUIs or Windows-only tools.
+  project-history:
+    - >
+      The project was introduced to the OpenWrt community on February 10, 2016 as an
+      unbrick utility for Netgear routers using the NMRP protocol. The first public
+      discussion already framed the tool around recovery rather than general firmware
+      management, with the author asking other Netgear owners to test additional models.
+    - >
+      The upstream README describes nmrpflash as a cross-platform C utility for Linux,
+      macOS, Windows, the BSDs, and other POSIX-like systems. Later releases and
+      packaging turned it from a forum-linked recovery helper into a packaged command
+      available through Homebrew and Debian-derived systems.
+  related-projects:
+    - OpenWrt
+    - Netgear NMRP
+    - Npcap
+    - TFTP
+  sources:
+    - https://formulae.brew.sh/formula/nmrpflash
+    - https://forum.archive.openwrt.org/viewtopic.php?id=62656
+    - https://github.com/jclehner/nmrpflash
+    - https://sources.debian.org/src/nmrpflash/0.9.14-16-ge95526d-4/README.md
+  summary:
+    - >
+      nmrpflash is a small recovery utility for flashing firmware to Netgear devices
+      through Netgear's NMRP recovery protocol.
+  timeline:
+    - >
+      {'date': '2016-02-10', 'event': 'The author announced nmrpflash on the OpenWrt
+      forum archive as a Netgear NMRP unbrick utility.'}
+    - >
+      {'date': '2026-03-05', 'event': 'The GitHub repository page listed nmrpflash
+      0.9.27 as the latest release.'}
+  usage:
+    - >
+      The common workflow is direct and timing-sensitive: download the correct Netgear
+      firmware image, connect the router by Ethernet, list local interfaces with
+      nmrpflash -L, start nmrpflash with -i and -f, then power on the router when the
+      tool is waiting. Successful sessions advertise an NMRP server, receive a
+      configuration request, upload firmware by TFTP, wait for the device to finish, and
+      tell the user to reboot.
+    - >
+      Package nerds keep it around because it is one of those rare tools that can turn
+      an otherwise dead consumer router into working hardware. The sharp edges are part
+      of the job: firewall rules, static IPs, Npcap on Windows, NMRP timing,
+      model-specific image formats, and long flash-write waits.
 category: networking
 package-manager:
   brew: nmrpflash
@@ -25,5 +89,11 @@ executables:
   - nmrpflash
 provenance:
   formula: nmrpflash
+  history-sources:
+    - https://formulae.brew.sh/formula/nmrpflash
+    - https://forum.archive.openwrt.org/viewtopic.php?id=62656
+    - https://github.com/jclehner/nmrpflash
+    - https://sources.debian.org/src/nmrpflash/0.9.14-16-ge95526d-4/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

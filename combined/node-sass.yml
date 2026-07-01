@@ -6,6 +6,72 @@ docs:
   - https://sass-lang.com/documentation
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Node Sass mattered because it made Sass common outside the original Ruby
+      ecosystem, especially in JavaScript build pipelines that wanted a fast native
+      compiler. Its retirement was not just a package rename: it marked the JavaScript
+      ecosystem's shift from LibSass bindings to Dart Sass as the maintained reference
+      implementation.
+    - >
+      Homebrew Formulae lists node-sass 1.101.0, linked to Dart Sass, with 3,447
+      installs over 365 days and 3,259 installs on request. That residual use mostly
+      represents people installing a familiar package name to get the maintained `sass`
+      compiler rather than adopting the old Node Sass binding.
+  package-nerd-significance:
+    - >
+      This formula is a naming fossil. It preserves the ecosystem memory of Node Sass
+      while delivering Dart Sass, and it is useful precisely because build tools,
+      READMEs, and muscle memory often say `node-sass` even after the maintained
+      compiler moved on.
+  project-history:
+    - >
+      The historical `node-sass` npm package was a Node.js wrapper around LibSass. The
+      Sass team wrote on 26 October 2020 that LibSass and packages built on top of it,
+      including Node Sass, were deprecated because LibSass lacked enough maintainer
+      bandwidth to keep up with Sass and CSS language changes.
+    - >
+      Dart Sass 1.0.0 was released on 26 March 2018. The Sass team described that
+      release as the first stable Dart Sass release, published to GitHub, npm,
+      Chocolatey, Homebrew, and pub, with compatibility with the Sass spec test suite
+      and broad compatibility with the Node Sass API.
+    - >
+      On 24 July 2024 the Sass team declared Node Sass end-of-life, marked the npm
+      package deprecated, archived its GitHub repository, and recommended migration to
+      Dart Sass. The same post notes that there is no longer an officially supported way
+      to use LibSass from Node.js.
+  related-projects:
+    - Dart Sass
+    - LibSass
+    - Ruby Sass
+    - sass npm package
+    - sass-embedded
+  sources:
+    - https://formulae.brew.sh/formula/node-sass
+    - https://github.com/sass/dart-sass
+    - https://sass-lang.com/blog/dart-sass-100-is-released/
+    - https://sass-lang.com/blog/libsass-is-deprecated/
+    - https://sass-lang.com/blog/node-sass-is-end-of-life/
+    - https://www.npmjs.com/package/sass
+  summary:
+    - >
+      The Homebrew formula named node-sass now points at Dart Sass rather than the
+      retired `node-sass` LibSass wrapper. Homebrew describes the formula as a
+      JavaScript implementation of a Sass compiler and links it to `sass/dart-sass`,
+      with the `sass` executable as the practical package surface.
+  usage:
+    - >
+      For new work, package nerds treat this as Dart Sass: run `sass input.scss
+      output.css`, use watch/build scripts, or depend on the JavaScript API from the
+      `sass` package. The Dart Sass README shows `npm install -g sass` for a global
+      executable and `npm install --save-dev sass` for project use, then
+      `require('sass')` and `sass.compile(...)` from Node.
+    - >
+      For legacy migrations, the Sass team's short path is to replace `node-sass` in
+      `package.json` with `sass`. Most old `render()` and `renderSync()` callers
+      continue through Dart Sass's legacy JavaScript API, but new code should use the
+      newer compile API because the legacy API is deprecated for Dart Sass 2.0.0.
 category: developer-tools
 package-manager:
   brew: node-sass
@@ -27,5 +93,13 @@ executables:
   - sass
 provenance:
   formula: node-sass
+  history-sources:
+    - https://formulae.brew.sh/formula/node-sass
+    - https://github.com/sass/dart-sass
+    - https://sass-lang.com/blog/dart-sass-100-is-released/
+    - https://sass-lang.com/blog/libsass-is-deprecated/
+    - https://sass-lang.com/blog/node-sass-is-end-of-life/
+    - https://www.npmjs.com/package/sass
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
