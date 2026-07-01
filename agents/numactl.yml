@@ -5,6 +5,76 @@ docs:
   - https://github.com/numactl/numactl#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      numactl became part of the normal Linux performance and systems toolbox because
+      multi-socket and large-memory machines make memory locality observable. Linux
+      man-pages document it as the command for running processes with specific NUMA
+      scheduling or memory placement policy, inherited by child processes, and for
+      setting persistent policy on shared memory segments or files.
+    - >
+      Distribution adoption is broad. The av.db source record maps numactl/libnuma
+      packages across Alpine, Debian, Fedora, Nix, Arch, Ubuntu, and openSUSE; Homebrew
+      packages it for Linux bottles and showed stable 2.0.19 with 28,653 installs over
+      the visible 365-day analytics window on July 1, 2026.
+  package-nerd-significance:
+    - >
+      numactl is a small package with outsized systems significance. It exposes Linux
+      NUMA policy to shell users and gives C/C++ programs libnuma, making it one of the
+      common bridges between kernel memory policy and practical performance tuning.
+  project-history:
+    - >
+      numactl grew out of early Linux 2.6 NUMA policy work. LWN published Andi Kleen's
+      January 2004 announcement of a Linux 2.6 NUMA policy API implementation consisting
+      of kernel policy API support, libnuma for applications, the `numactl` user-space
+      policy tool, and test programs.
+    - >
+      The current GitHub README keeps the same project definition: simple NUMA policy
+      support, with a `numactl` program to run other programs under a specific NUMA
+      policy and a libnuma shared library for applications. The README also states that
+      the libnuma binary interface is intended to stay binary compatible, with
+      incompatible changes using new symbol versions.
+  related-projects:
+    - Linux kernel NUMA policy
+    - libnuma
+    - numastat
+    - taskset
+    - hwloc
+  sources:
+    - https://formulae.brew.sh/formula/numactl
+    - https://github.com/numactl/numactl
+    - https://github.com/numactl/numactl/blob/master/numactl.c
+    - https://lwn.net/Articles/67005/
+    - https://man7.org/linux/man-pages/man3/numa.3.html
+    - https://man7.org/linux/man-pages/man8/numactl.8.html
+  summary:
+    - >
+      numactl is the standard Linux user-space tool and companion library package for
+      controlling NUMA scheduling and memory placement policy. It includes the `numactl`
+      command, libnuma, and utilities such as `numastat` and `memhog`.
+  timeline:
+    - >
+      2004-01: LWN carried Andi Kleen's announcement of libnuma/numactl and the Linux
+      2.6 NUMA policy API implementation.
+    - >
+      2003-2005: numactl source headers credit Andi Kleen/SuSE Labs work on command-line
+      NUMA policy control.
+    - '2026-07-01: Homebrew formula showed stable 2.0.19 and Linux-only bottle support.'
+  usage:
+    - >
+      Typical practical commands include `numactl --hardware` to inspect NUMA topology,
+      `numactl --cpunodebind` or `--physcpubind` to bind CPU execution, `--membind` or
+      `--preferred` to steer memory allocation, and `--interleave` to distribute pages
+      across nodes. `numastat` is used to inspect allocation behavior after a workload
+      runs.
+    - >
+      Package nerds and performance engineers use numactl when benchmarking databases,
+      JVMs, scientific workloads, ML training/inference processes, or any
+      memory-bandwidth-sensitive service where scheduler placement and page locality can
+      change results. The lazy but correct rule is to measure: pinning can help
+      controlled benchmarks and production isolation, but bad bindings can make
+      performance worse.
 tags:
   - cli
   - linux
@@ -29,6 +99,13 @@ provenance:
     - >
       Official GitHub repository is the upstream source and README is the best official
       documentation surface found.
+  history-sources:
+    - https://formulae.brew.sh/formula/numactl
+    - https://github.com/numactl/numactl
+    - https://github.com/numactl/numactl/blob/master/numactl.c
+    - https://lwn.net/Articles/67005/
+    - https://man7.org/linux/man-pages/man3/numa.3.html
+    - https://man7.org/linux/man-pages/man8/numactl.8.html
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/numactl/numactl, so repo is
@@ -44,5 +121,6 @@ category-path:
   - numa
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

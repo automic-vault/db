@@ -9,6 +9,71 @@ config-file-location:
 credentials-file-location:
   unix:
     - /etc/ntp.keys
+history:
+  adoption-history:
+    - >
+      NTP became foundational Internet infrastructure because clocks affect logs,
+      authentication, distributed systems, filesystems, Kerberos, TLS validation,
+      monitoring, and incident response. The package is less a trendy CLI than a
+      long-lived system service that operating systems either ship directly or replace
+      with compatible descendants such as chrony, systemd-timesyncd, OpenNTPD, or
+      NTPsec.
+    - >
+      The Homebrew package remains useful for admins who specifically need the
+      reference-style tools such as `ntpd`, `ntpq`, `ntpdate`, `sntp`, and `ntptime` on
+      macOS or in reproducible package environments.
+  package-nerd-significance:
+    - >
+      NTP is package history as infrastructure history. It is one of the quiet protocols
+      that made distributed computing less chaotic, and the brew formula packages the
+      traditional toolchain rather than a newer reimplementation.
+  project-history:
+    - >
+      NTP predates most packages in this database. The NTP FAQ says the first NTP
+      implementation started around 1980, after earlier Internet clock-service work, and
+      that the name Network Time Protocol first appeared in RFC 958 in September 1985.
+      David L. Mills authored RFC 958.
+    - >
+      The FAQ traces the protocol through RFC 1059 for NTP version 1 in 1988, RFC 1119
+      for version 2 with symmetric-key authentication, RFC 1305 for version 3 in 1992,
+      and later NTPv4 work. It also notes that `xntp`, written by Dennis Fergusson at
+      the University of Toronto, evolved into the public software distribution.
+  related-projects:
+    - xntp
+    - NTPsec
+    - OpenNTPD
+    - chrony
+    - systemd-timesyncd
+  sources:
+    - https://formulae.brew.sh/formula/ntp
+    - https://www.ntp.org/ntpfaq/NTP-s-def-hist/
+    - https://www.rfc-editor.org/info/rfc1059
+    - https://www.rfc-editor.org/info/rfc1119
+    - https://www.rfc-editor.org/info/rfc1305
+    - https://www.rfc-editor.org/info/rfc5905
+    - https://www.rfc-editor.org/info/rfc958
+  summary:
+    - >
+      The NTP package is the classic Network Time Protocol distribution: daemon, query
+      tools, key generation, SNTP utilities, leap-file updater, and compatibility
+      commands for operating a network-synchronized system clock.
+  timeline:
+    - 'Around 1980: first NTP implementation, per the NTP FAQ.'
+    - '1985-09: RFC 958, Network Time Protocol, published by David L. Mills.'
+    - '1988: RFC 1059 specified NTP version 1.'
+    - '1989: RFC 1119 specified NTP version 2.'
+    - '1992: RFC 1305 specified NTP version 3.'
+    - '2010-06: RFC 5905 specified NTP version 4.'
+  usage:
+    - >
+      Package users configure servers and peers in `/etc/ntp.conf`, run `ntpd` as a
+      daemon, inspect associations with `ntpq`, generate or manage keys with
+      `ntp-keygen`, perform one-shot synchronization with `ntpdate` or `sntp`, and
+      maintain leap-second data with `update-leap`.
+    - >
+      The practical split is operational: small systems often only need client
+      synchronization, while infrastructure operators care about strata, upstream server
+      selection, authentication, drift behavior, and monitoring offset/jitter over time.
 tags:
   - cli
   - daemon
@@ -37,6 +102,14 @@ provenance:
     - >
       Official NTP documentation page https://www.ntp.org/documentation/ lists release
       documentation and reference materials.
+  history-sources:
+    - https://formulae.brew.sh/formula/ntp
+    - https://www.ntp.org/ntpfaq/NTP-s-def-hist/
+    - https://www.rfc-editor.org/info/rfc1059
+    - https://www.rfc-editor.org/info/rfc1119
+    - https://www.rfc-editor.org/info/rfc1305
+    - https://www.rfc-editor.org/info/rfc5905
+    - https://www.rfc-editor.org/info/rfc958
   repo-sources:
     - >
       Official NTP site links its open source reference implementation to bk.ntp.org;
@@ -52,5 +125,6 @@ category-path:
   - time-synchronization
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -12,6 +12,71 @@ config-file-location:
     - /usr/local/ups/etc/upsmon.conf
 credentials-file-location:
   unix: /usr/local/ups/etc/upsd.users
+history:
+  adoption-history:
+    - >
+      NUT grew from one APC-focused monitor into a cross-vendor power-device layer. The
+      official site said on July 1, 2026 that at least 197 manufacturers and 1,431
+      device models were known compatible. Its user manual says NUT is pre-packaged for
+      many operating systems, embedded in storage, automation, and virtualization
+      appliances, and often shipped as companion software by UPS vendors.
+  package-nerd-significance:
+    - >
+      NUT is operational plumbing: boring until power fails, then essential. It is
+      packaging-heavy because it touches USB, serial, SNMP, Modbus, OpenSSL,
+      init/service managers, CGI clients, Python/Perl/C/C++ client libraries, device
+      rules, and OS-specific paths. RFC 9271, published in August 2022, documents the
+      UPS management protocol used by the NUT ecosystem and reinforces that the project
+      is more than a single Unix daemon.
+  project-history:
+    - >
+      The official NUT release notes trace the project back to Russell Kroll's 1996 APC
+      Smart-UPS experiments, including cron-driven status reports and early protocol
+      tests. Smart UPS Tools 0.10 was publicly released on March 10, 1998; a June 5,
+      1999 rewrite separated drivers, server, and clients; and the project renamed
+      itself Network UPS Tools with 0.42.0 on October 31, 1999 to reflect multi-vendor
+      support and avoid APC trademark proximity.
+  related-projects:
+    - apcupsd
+    - PowerChute
+    - WMNut
+    - PyNUTClient
+    - libupsclient
+    - libnutclient
+  sources:
+    - https://api.github.com/repos/networkupstools/nut/releases?per_page=100
+    - https://formulae.brew.sh/formula/nut
+    - https://github.com/networkupstools/nut
+    - https://networkupstools.org/
+    - https://networkupstools.org/docs/developer-guide.chunked/net-protocol.html
+    - https://networkupstools.org/docs/release-notes.chunked/Project_History.html
+    - https://networkupstools.org/docs/user-manual.chunked/ar01s02.html
+    - https://www.rfc-editor.org/rfc/rfc9271.html
+  summary:
+    - >
+      Network UPS Tools, packaged as `nut`, is the standard open-source toolkit for
+      monitoring and controlling UPSes, PDUs, automatic transfer switches, power
+      supplies, and related power devices through a common protocol and
+      driver/client/server architecture.
+  timeline:
+    - '1996: Russell Kroll begins APC Smart-UPS monitoring experiments.'
+    - '1998-03-10: Smart UPS Tools 0.10 is publicly released.'
+    - '1999-06-05: Version 0.40.0 introduces a redesigned driver/server/client architecture.'
+    - '1999-10-31: Version 0.42.0 adopts the Network UPS Tools name.'
+    - '2002-05: IANA assigns TCP port 3493 and NUT switches from the old port 3305.'
+    - '2002-08-19: NUT 1.0.0 is released.'
+    - '2004-03-23: NUT 2.0.0 arrives with the newer protocol and naming model.'
+    - '2022-08: RFC 9271 publishes the UPS management protocol.'
+    - '2026-04-03: GitHub release v2.8.5 is published.'
+  usage:
+    - >
+      A normal deployment has device-specific drivers feeding `upsd`, clients such as
+      `upsc` querying status, and `upsmon` coordinating graceful shutdown before battery
+      exhaustion. Package users care about config files such as `ups.conf`, driver
+      startup through `upsdrvctl`, network access control, port 3493, and matching the
+      driver to the exact UPS/PDU hardware. Larger deployments use the network model so
+      multiple hosts powered by one UPS can observe the same state and shut down
+      together.
 category: system
 package-manager:
   apk: nut
@@ -108,5 +173,15 @@ executables:
   - victronups
 provenance:
   formula: nut
+  history-sources:
+    - https://api.github.com/repos/networkupstools/nut/releases?per_page=100
+    - https://formulae.brew.sh/formula/nut
+    - https://github.com/networkupstools/nut
+    - https://networkupstools.org/
+    - https://networkupstools.org/docs/developer-guide.chunked/net-protocol.html
+    - https://networkupstools.org/docs/release-notes.chunked/Project_History.html
+    - https://networkupstools.org/docs/user-manual.chunked/ar01s02.html
+    - https://www.rfc-editor.org/rfc/rfc9271.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
