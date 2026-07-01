@@ -7,6 +7,100 @@ docs:
   - https://graphite.sil.org/graphite_techAbout.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Graphite's adoption path ran through applications that needed high-quality
+      complex-script rendering. SIL's application list identifies OpenOffice,
+      LibreOffice, Firefox, XeTeX, FieldWorks, Paratext, Bloom, Pale Moon, and Godot as
+      Graphite-supporting applications, with several of the newer integrations using
+      Graphite2.
+    - >
+      LibreOffice 3.4 and later and Firefox 11 and later are the key adoption milestones
+      for Graphite2 because they moved Graphite support into widely packaged desktop
+      software. Firefox documentation also notes Graphite support across Mac OS X,
+      Linux, Windows, and Android, with CSS feature control for Graphite-enabled fonts.
+    - >
+      Because text shaping is infrastructure, Graphite2 adoption is mostly invisible to
+      end users. Its package-manager footprint matters most to maintainers building
+      office suites, browsers, font tools, and TeX-adjacent stacks with correct optional
+      support for complex scripts.
+  package-nerd-significance:
+    - >
+      Graphite2 is one of those deceptively small libraries that keeps a large stack
+      honest. Removing or misbuilding it can silently degrade minority-script support in
+      software that otherwise appears unrelated to font engineering.
+    - >
+      It is also a neat packaging example of a second-generation engine replacing an
+      older implementation: SilGraphite remains historically important, but Graphite2 is
+      the speed-and-robustness path adopted by major applications.
+    - >
+      For dependency graph readers, Graphite2 often appears near HarfBuzz, FreeType,
+      ICU, LibreOffice, and browser builds: not glamorous, but central to
+      internationalized text rendering.
+  project-history:
+    - >
+      SIL developed Graphite because its field work encountered orthographies and
+      complex script behavior that mainstream text-rendering systems did not always
+      handle. The official documentation says the original need came from supporting
+      lesser-known languages on Windows, then expanding to Linux and Mac.
+    - >
+      The original engine, SilGraphite, began implementation in 2000. Graphite2 began
+      implementation in 2010 as a rework of that engine, with a faster, more robust
+      design and an API better matched to text-layout engines that prefer to receive
+      glyph and positioning information rather than have the font engine draw directly.
+    - >
+      The Graphite system is more than a library: it includes Graphite Description
+      Language, a compiler that adds Graphite tables to TrueType fonts, and a rendering
+      engine. Graphite2 is the engine package most distributions expose for application
+      integration.
+  related-projects:
+    - SilGraphite is the original Graphite engine and is described by SIL as deprecated.
+    - LibreOffice and Firefox are major Graphite2 consumers named by SIL documentation.
+    - >
+      OpenType and Apple Advanced Typography are adjacent smart-font technologies
+      discussed in Graphite's documentation.
+    - HarfBuzz and FreeType are common neighbors in modern text-rendering dependency stacks.
+  sources:
+    - https://github.com/silnrsi/graphite
+    - https://github.com/silnrsi/graphite/releases
+    - https://graphite.sil.org/
+    - https://graphite.sil.org/graphite_aboutWhy
+    - https://graphite.sil.org/graphite_apps
+    - https://graphite.sil.org/graphite_devApp
+    - https://graphite.sil.org/graphite_firefox
+    - https://graphite.sil.org/graphite_techAbout
+  summary:
+    - >
+      Graphite2 is the second-generation rendering engine for SIL International's
+      Graphite smart-font system. Graphite lets TrueType fonts carry extra rule tables
+      so applications can render complex writing systems, especially those used by
+      minority-language communities.
+    - >
+      As a package, Graphite2 is small but consequential: many users never invoke
+      `gr2fonttest` directly, yet the library sits underneath typography stacks in
+      applications such as LibreOffice and Firefox that need support for
+      Graphite-enabled fonts.
+  timeline:
+    - '2000: Initial SilGraphite engine implementation began.'
+    - '2010: Graphite2 implementation began as a rework of the original engine.'
+    - '2011: LibreOffice 3.4 and later used the Graphite2 engine.'
+    - '2012: Firefox 11 and later supported Graphite using Graphite2.'
+    - '2020: Graphite2 1.3.14 shipped with bug fixes and no API change.'
+    - '2026: Graphite2 1.3.15 release notes show ongoing build and maintenance fixes.'
+  usage:
+    - >
+      Direct CLI usage is mostly diagnostic through tools such as `gr2fonttest`. The
+      main use is as a C/C++ rendering library linked into applications that already
+      have a text-layout pipeline.
+    - >
+      A Graphite-enabled workflow starts with a TrueType font and a GDL program,
+      compiles extra Graphite tables into the font, then lets the Graphite2 engine
+      return glyph and positioning information to the host application.
+    - >
+      There is no ordinary user configuration or credential file for Graphite2 as
+      packaged by Homebrew; behavior is driven by application integration and the
+      Graphite tables embedded in fonts.
 tags:
   - cli
   - font-rendering
@@ -38,6 +132,15 @@ provenance:
     - >
       Official Graphite site provides the project overview, technical overview, and
       Graphite2 application development/API documentation.
+  history-sources:
+    - https://github.com/silnrsi/graphite
+    - https://github.com/silnrsi/graphite/releases
+    - https://graphite.sil.org/
+    - https://graphite.sil.org/graphite_aboutWhy
+    - https://graphite.sil.org/graphite_apps
+    - https://graphite.sil.org/graphite_devApp
+    - https://graphite.sil.org/graphite_firefox
+    - https://graphite.sil.org/graphite_techAbout
   repo-sources:
     - >
       source_facts.repo already has https://github.com/silnrsi/graphite, so repo is
@@ -53,5 +156,6 @@ category-path:
   - fonts
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -6,6 +6,113 @@ docs:
   - https://the-guild.dev/graphql/inspector/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GraphQL Inspector gained traction where GraphQL schemas are versioned in Git and
+      teams want pull requests to show API impact. The GitHub Action documentation
+      describes checks that compare pull-request schema changes against a branch and
+      annotate changes in code review.
+    - >
+      The continuous-integration documentation emphasizes schema diffing as the common
+      case and breaks features into installable commands and loaders for `.graphql`
+      files, code files, JSON introspection, Git, GitHub, and GraphQL endpoints. This
+      made the tool fit both monorepo and service-oriented workflows.
+    - >
+      Its adoption also benefited from The Guild ecosystem. GraphQL CLI 4.1 named
+      GraphQL Inspector alongside GraphQL Code Generator as a recommended workflow for
+      production GraphQL applications, placing Inspector in a larger toolchain rather
+      than as a one-off checker.
+  package-nerd-significance:
+    - >
+      GraphQL Inspector is a canonical example of GraphQL's schema-as-contract packaging
+      problem. The package is not about serving requests; it is about preventing
+      downstream clients from being surprised by schema changes.
+    - >
+      Its split package layout is also package-nerd bait: core library, CLI, CI variant,
+      action bundle, command packages, and loader packages all map neatly to different
+      install sizes and automation targets.
+    - >
+      For Homebrew users, it packages a JavaScript GraphQL CI tool as a system-level
+      executable, which is handy for teams that prefer reproducible shell tooling
+      outside per-project `node_modules`.
+  project-history:
+    - >
+      The Guild introduced GraphQL Inspector as part of its broader GraphQL tool stack
+      after building Angular Apollo, GraphQL Code Generator, and GraphQL Modules. The
+      introductory article described it as a tool for keeping a GraphQL API and its
+      clients well developed, with schema comparison, schema coverage, operation
+      validation, and GitHub integration.
+    - >
+      The GitHub README and documentation kept the same core pitch: compare two schemas,
+      explain each change as breaking, non-breaking, or dangerous, validate documents
+      and fragments, and find similar or duplicated types. The project later moved under
+      the graphql-hive GitHub organization while remaining part of The Guild's GraphQL
+      tool family.
+    - >
+      Over time GraphQL Inspector split functionality into packages such as core, cli,
+      action, diff-command, validate-command, coverage-command, and loaders. That
+      packaging model mirrors the tool's purpose: users can install the CLI for all
+      features, the CI-focused packages for smaller automation, or the core API to build
+      custom tooling.
+  related-projects:
+    - >
+      GraphQL Hive is the adjacent schema registry and monitoring project promoted in
+      the GraphQL Inspector README.
+    - >
+      GraphQL Code Generator often appears in the same workflow because one tool checks
+      schema changes while the other generates typed client or server artifacts.
+    - >
+      GraphQL CLI integrated Inspector features and helped position it as part of a
+      broader GraphQL developer workflow.
+    - >
+      Ruby's GraphQL Schema Comparator is named in the README as a source from which
+      part of the library was ported.
+  sources:
+    - https://github.com/graphql-hive/graphql-inspector
+    - https://github.com/graphql-hive/graphql-inspector/releases
+    - https://medium.com/the-guild/graphql-inspector-481c1a5ef616
+    - https://the-guild.dev/graphql/hive/blog/whats-new-in-graphql-cli-4.1.0
+    - https://the-guild.dev/graphql/inspector/docs
+    - https://the-guild.dev/graphql/inspector/docs/installation
+    - https://the-guild.dev/graphql/inspector/docs/products/action
+    - https://the-guild.dev/graphql/inspector/docs/products/ci
+  summary:
+    - >
+      GraphQL Inspector is a suite of schema-management tools for GraphQL APIs. It
+      compares schemas, classifies schema changes, validates operations and fragments,
+      reports coverage, finds duplicate or similar types, and exposes those capabilities
+      through a CLI, GitHub Action, and programmatic API.
+    - >
+      Its package identity is strongly tied to CI: it turns GraphQL schema evolution
+      into something package users can check before merge, rather than discovering
+      broken operations at runtime.
+  timeline:
+    - >
+      2019: The Guild introduced GraphQL Inspector with schema comparison, coverage,
+      validation, and GitHub integration.
+    - >
+      2020: The Guild published additional GraphQL Inspector guidance around remote
+      control, environments, CI, schema notifications, and upcoming features.
+    - >
+      2020: GraphQL CLI 4.1 included GraphQL Inspector as part of recommended GraphQL
+      development workflows.
+    - >
+      2020s: The project evolved into a multi-package tool with CLI, CI, Action,
+      loaders, and core API packages.
+  usage:
+    - >
+      The CLI is installed as `@graphql-inspector/cli` with the `graphql` peer
+      dependency and run as `graphql-inspector`. Common commands include `diff`,
+      `validate`, `coverage`, `similar`, `introspect`, and `serve`.
+    - >
+      CI users often run `graphql-inspector diff` between a schema in Git and the schema
+      produced by a branch. The GitHub Action variant can annotate changes and fail a
+      pull request on breaking changes unless the workflow configuration allows them.
+    - >
+      Programmatic users import functions such as `diff`, `validate`, and `coverage`
+      from `@graphql-inspector/core`, which makes the tool useful inside custom release
+      gates, dashboards, and registry-like workflows.
 category: developer-tools
 package-manager:
   brew: graphql-inspector
@@ -22,5 +129,15 @@ executables:
   - graphql-inspector
 provenance:
   formula: graphql-inspector
+  history-sources:
+    - https://github.com/graphql-hive/graphql-inspector
+    - https://github.com/graphql-hive/graphql-inspector/releases
+    - https://medium.com/the-guild/graphql-inspector-481c1a5ef616
+    - https://the-guild.dev/graphql/hive/blog/whats-new-in-graphql-cli-4.1.0
+    - https://the-guild.dev/graphql/inspector/docs
+    - https://the-guild.dev/graphql/inspector/docs/installation
+    - https://the-guild.dev/graphql/inspector/docs/products/action
+    - https://the-guild.dev/graphql/inspector/docs/products/ci
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
