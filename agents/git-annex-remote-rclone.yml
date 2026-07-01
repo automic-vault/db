@@ -9,6 +9,59 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.rclone.conf
+history:
+  adoption-history:
+    - >
+      Its adoption is niche but useful inside the git-annex ecosystem. The tool packages
+      a single integration point for providers such as Google Drive, S3-compatible
+      storage, Dropbox, OneDrive, Backblaze B2, Swift, and other rclone targets, so
+      package managers can ship one git-annex add-on instead of many provider-specific
+      remotes.
+  package-nerd-significance:
+    - >
+      For package maintainers, git-annex-remote-rclone is a bridge package: it is tiny,
+      depends on behavior from both git-annex and rclone, and needs compatibility
+      testing whenever rclone output or git-annex special-remote behavior changes.
+  project-history:
+    - >
+      The project appeared in 2016 as a small wrapper around rclone rather than a new
+      storage backend. Early releases dealt with repository layout choices for object
+      placement; version 0.1 used the older frankencase layout, version 0.2 added
+      multiple layout support, and version 0.4 raised compatibility with rclone 1.33
+      after a data-loss warning for older versions.
+    - >
+      Maintenance later moved from Daniel Dent's personal namespace to a contributor
+      organization while retaining the same narrow purpose: expose rclone destinations
+      through git-annex's external special remote protocol.
+  related-projects:
+    - >
+      git-annex provides the special remote protocol, rclone provides the cloud-storage
+      transports, and git-annex's built-in rclone special remote documents the same
+      family of use cases.
+  sources:
+    - https://api.github.com/repos/git-annex-remote-rclone/git-annex-remote-rclone
+    - https://formulae.brew.sh/formula/git-annex-remote-rclone
+    - https://git-annex.branchable.com/special_remotes/rclone/
+    - https://github.com/git-annex-remote-rclone/git-annex-remote-rclone
+    - https://github.com/git-annex-remote-rclone/git-annex-remote-rclone/releases
+  summary:
+    - >
+      git-annex-remote-rclone is a Python external special remote for git-annex that
+      delegates storage operations to rclone, letting annexed content live on cloud and
+      object-storage services supported by rclone.
+  timeline:
+    - '2016: Repository created and v0.1 published with the original frankencase layout.'
+    - '2016: v0.2 added multiple repository layout support.'
+    - '2016: v0.4 added support for rclone 1.33 after a data-loss warning for earlier releases.'
+    - '2023: v0.8 reduced command noise while keeping the same integration role.'
+  usage:
+    - >
+      Practitioners configure an rclone remote, create or enable a git-annex repository,
+      then run git annex initremote with type=external, externaltype=rclone, a target
+      name, a prefix, encryption settings, chunk size, and an rclone layout.
+      Password-protected rclone configs are passed through environment variables or a
+      password command, while credentials remain in the rclone configuration rather than
+      in git-annex.
 tags:
   - cli
   - cloud-storage
@@ -38,6 +91,12 @@ provenance:
       Official GitHub repository README includes Usage instructions for configuring
       rclone, creating a git-annex repository, choosing layout, and initializing the
       special remote.
+  history-sources:
+    - https://api.github.com/repos/git-annex-remote-rclone/git-annex-remote-rclone
+    - https://formulae.brew.sh/formula/git-annex-remote-rclone
+    - https://git-annex.branchable.com/special_remotes/rclone/
+    - https://github.com/git-annex-remote-rclone/git-annex-remote-rclone
+    - https://github.com/git-annex-remote-rclone/git-annex-remote-rclone/releases
   repo-sources:
     - >
       source_facts.repo is already populated as
@@ -53,5 +112,6 @@ category-path:
   - cloud-storage
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
