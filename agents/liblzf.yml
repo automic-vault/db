@@ -5,6 +5,57 @@ docs:
   - https://oldhome.schmorp.de/marc/liblzf.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      liblzf's adoption is mostly embedded and quiet. Redis source code includes lzf.h
+      in its RDB persistence code as the LZF compression library, which made the
+      algorithm familiar to people inspecting Redis dump files even when they never
+      installed the standalone liblzf package.
+  package-nerd-significance:
+    - >
+      liblzf matters to package nerds because it is a classic tiny-C-library package:
+      old, compact, permissively licensed, easy to vendor, and still visible through
+      larger systems that adopted its file-format behavior.
+  project-history:
+    - >
+      The project page describes LibLZF as consisting of two .c files and two .h files,
+      designed to be dropped into other programs. The same page emphasizes speed,
+      portability, and a BSD-type license as reasons to use it in applications.
+    - >
+      The public header copyright range is 2000-2008 for Marc Alexander Lehmann, which
+      supports liblzf's origin as an early-2000s C library. The NetBSD lzf(1) manual
+      records that the lzf command first appeared with version 0.1 of Marc Lehmann's LZF
+      library and was rewritten for version 2.0.
+  related-projects:
+    - Redis uses LZF compression code in RDB persistence.
+    - >
+      The lzf-rs Rust project and Compress::LZF Perl module are examples of later
+      language bindings or rewrites around the same small LZF format.
+  sources:
+    - https://download.redis.io/redis-stable/src/lzf.h
+    - https://download.redis.io/redis-stable/src/rdb.c
+    - https://github.com/nemequ/liblzf/blob/master/lzf.h
+    - https://man.netbsd.org/NetBSD-7.0/lzf.1
+    - https://oldhome.schmorp.de/marc/liblzf.html
+  summary:
+    - >
+      liblzf is Marc Lehmann's very small portable-C compression library built around
+      the LZF algorithm. Its niche is fast, easy-to-embed compression rather than
+      maximum compression ratio.
+  timeline:
+    - '2000: Public source headers begin their copyright range.'
+    - '2008: Public source headers end the original copyright range at 2008.'
+    - '2014: NetBSD 7.0 manual documented the lzf command as appearing in NetBSD 7.0.'
+    - >
+      2026: Homebrew batch metadata listed liblzf alongside Debian, Fedora, Nix, Arch,
+      Ubuntu, and Alpine packages.
+  usage:
+    - >
+      Developers embed the small C files directly or link the packaged library, while
+      the lzf command provides a gzip-like utility interface. Build-time knobs such as
+      HLOG, VERY_FAST, ULTRA_FAST, and CHECK_INPUT let embedders trade compression
+      quality, speed, memory, and input validation.
 tags:
   - c
   - cli
@@ -31,6 +82,12 @@ provenance:
     - >
       source_facts.homepage is the official upstream liblzf page and best official
       documentation surface found.
+  history-sources:
+    - https://download.redis.io/redis-stable/src/lzf.h
+    - https://download.redis.io/redis-stable/src/rdb.c
+    - https://github.com/nemequ/liblzf/blob/master/lzf.h
+    - https://man.netbsd.org/NetBSD-7.0/lzf.1
+    - https://oldhome.schmorp.de/marc/liblzf.html
   repo-sources:
     - Official liblzf page links to the author's Schmorpforge/CVS source browser for liblzf.
   tags-sources:
@@ -42,5 +99,6 @@ category-path:
   - compression
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: medium
 repo-confidence: medium
 tags-confidence: high

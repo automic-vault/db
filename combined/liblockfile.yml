@@ -7,6 +7,56 @@ docs:
   - https://packages.debian.org/source/trixie/liblockfile
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      liblockfile has a long Debian packaging history and remains represented as Debian
+      source package liblockfile, producing liblockfile-bin, liblockfile-dev, and
+      liblockfile1. Its practical audience is mail tools, shell scripts, and legacy Unix
+      software that need interoperable dot-locking rather than newer advisory-lock APIs.
+  package-nerd-significance:
+    - >
+      liblockfile is interesting because it packages an old but still sharp Unix
+      portability problem: locking mail spools safely across local and NFS filesystems.
+      It is small, unglamorous infrastructure that explains why some packages still ship
+      helpers for mail-era filesystem semantics.
+  project-history:
+    - >
+      The upstream README describes liblockfile as an implementation of functions found
+      in -lmail on SysV systems, extended with functions to create, manage, and remove
+      generic lockfiles. Its locking algorithm uses a temporary file and link(2) to
+      create lockfiles atomically, including workarounds for NFS server behavior.
+    - >
+      The dotlockfile utility is documented as a command-line tool to create, test,
+      touch, and remove lockfiles. Its name comes from the traditional mailbox
+      convention of appending .lock to the mailbox path.
+  related-projects:
+    - The README names procmail, exim, and mutt as compatible NFS-safe lockfile users.
+    - Debian packaging is maintained separately at the liblockfile-debian repository.
+  sources:
+    - https://api.github.com/repos/miquels/liblockfile
+    - https://github.com/miquels/liblockfile
+    - https://packages.debian.org/source/trixie/liblockfile
+    - https://raw.githubusercontent.com/miquels/liblockfile/master/Changelog
+    - https://raw.githubusercontent.com/miquels/liblockfile/master/dotlockfile.1
+  summary:
+    - >
+      liblockfile is a small Unix system library and utility package for creating
+      NFS-safe lockfiles, especially the dot-lock files traditionally used to protect
+      mailboxes in /var/mail.
+  timeline:
+    - >
+      2011: Changelog entry for liblockfile 1.09 recorded Debian bug fixes and
+      cross-build cleanup.
+    - '2016: Upstream GitHub repository created on November 22, 2016.'
+    - '2017: dotlockfile manual page dated January 10, 2017.'
+    - '2019: liblockfile 1.16 simplified permission checking and quiet-mode behavior.'
+    - '2021: liblockfile 1.17 added dotlockfile -P and -i options.'
+  usage:
+    - >
+      The library is used by programs that need NFS-safe lock creation. The dotlockfile
+      command is used directly in scripts or as the setgid mail helper that lets
+      mailbox-locking programs avoid carrying setgid mail themselves.
 category: system
 package-manager:
   apk: liblockfile
@@ -31,5 +81,12 @@ executables:
   - dotlockfile
 provenance:
   formula: liblockfile
+  history-sources:
+    - https://api.github.com/repos/miquels/liblockfile
+    - https://github.com/miquels/liblockfile
+    - https://packages.debian.org/source/trixie/liblockfile
+    - https://raw.githubusercontent.com/miquels/liblockfile/master/Changelog
+    - https://raw.githubusercontent.com/miquels/liblockfile/master/dotlockfile.1
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

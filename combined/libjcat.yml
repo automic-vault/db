@@ -7,6 +7,67 @@ docs:
   - https://github.com/hughsie/libjcat#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      libjcat matters mostly because of fwupd and the Linux Vendor Firmware Service
+      ecosystem. fwupd documentation explains that LVFS adds a .jcat file to uploaded
+      firmware archives so original firmware and metadata are not modified while
+      checksums and detached signatures remain verifiable.
+    - >
+      Homebrew, Debian, Fedora, Arch, Nix, Alpine, Ubuntu, and openSUSE package it,
+      which reflects its role as a small shared dependency for firmware and
+      software-integrity tooling rather than as an end-user application.
+  package-nerd-significance:
+    - >
+      For package maintainers, libjcat is interesting because it packages a Windows-like
+      catalog-signature idea in a Unix-friendly library with introspection bindings and
+      a tiny CLI. It is one of those dependencies that looks obscure until a firmware
+      update path needs detached integrity metadata that survives archive repacking.
+  project-history:
+    - >
+      Richard Hughes published libjcat as a standalone project in 2020, splitting a
+      catalog-signature concern that matters to firmware distribution into a reusable
+      library. The README describes the format as equivalent in purpose to Microsoft
+      Windows catalog files, but represented as gzipped JSON divided into JcatFile,
+      JcatItem, and JcatBlob objects.
+    - >
+      The project grew around firmware-update workflows. Its examples show firmware
+      payloads and metainfo XML carried as catalog items, then signed or verified with
+      local self-signing keys, explicit public keys, or imported detached signatures.
+  related-projects:
+    - >
+      fwupd and LVFS are the most visible related projects because they use Jcat files
+      for firmware metadata and payload signature handling. GnuTLS certtool, GPG,
+      PKCS#7, and AppStream-style firmware metadata sit around the same workflow.
+  sources:
+    - https://formulae.brew.sh/formula/libjcat
+    - https://github.com/fwupd/fwupd/blob/main/docs/only-trusted.md
+    - https://github.com/hughsie/libjcat
+    - https://github.com/hughsie/libjcat/releases
+  summary:
+    - >
+      libjcat is a small GObject-oriented library and command-line tool for reading and
+      writing gzip-compressed JSON catalog files. Its niche is software-integrity
+      metadata: a Jcat file can collect checksums and detached signatures for the files
+      in an archive, with support for SHA checksums, GPG signatures, and PKCS#7
+      signatures.
+  timeline:
+    - '2020-03-23: libjcat 0.1.0 release commit.'
+    - >
+      2020: README examples document firmware.bin and firmware.metainfo.xml as typical
+      Jcat archive items.
+    - '2022-03-22: libjcat 0.1.11 release commit.'
+    - >
+      2023-12-15: README examples document signing the checksum target for large
+      payloads, noting the feature requires JCat 2.0.0 or newer.
+  usage:
+    - >
+      Users usually meet libjcat through jcat-tool, which can create a catalog, add
+      checksums, sign payloads, import detached signatures, export signature blobs, and
+      verify a catalog against a public certificate. Version 2.0.0 added support for
+      signing the checksum of a large payload instead of loading the whole payload for
+      signature verification.
 category: security
 package-manager:
   apk: libjcat
@@ -33,5 +94,11 @@ executables:
   - jcat-tool
 provenance:
   formula: libjcat
+  history-sources:
+    - https://formulae.brew.sh/formula/libjcat
+    - https://github.com/fwupd/fwupd/blob/main/docs/only-trusted.md
+    - https://github.com/hughsie/libjcat
+    - https://github.com/hughsie/libjcat/releases
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

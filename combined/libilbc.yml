@@ -6,6 +6,67 @@ docs:
   - https://github.com/TimothyGu/libilbc#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is mainly through distribution packaging and projects that need the iLBC
+      codec without a full WebRTC dependency. The README explicitly targets packagers,
+      and Homebrew, Nix, and Arch package metadata all carry the package under the
+      libilbc name.
+  package-nerd-significance:
+    - >
+      For package maintainers, libilbc is a classic extraction package: it keeps a
+      small, ABI-versioned codec library available without forcing each downstream to
+      track WebRTC internals. The 2020 CMake-only release also made the package easier
+      to integrate into cross-platform build systems.
+  project-history:
+    - >
+      The underlying iLBC codec was specified for the IETF in RFC 3951, published in
+      December 2004, with RFC 3952 defining the RTP payload format for carrying iLBC
+      speech. The libilbc repository packages WebRTC's implementation as a distributable
+      library rather than requiring consumers to vendor a WebRTC source subtree.
+    - >
+      Timothy Gu took over maintainership for the standalone package in the 2.0.0
+      release dated November 17, 2014, updated the bundled WebRTC source, cleaned the
+      Autotools files, and added CMake support. Version 3.0.0 on December 18, 2020
+      updated again to WebRTC source r32829, removed Autotools, made CMake the build
+      system, and introduced the installed ilbc_test utility.
+  related-projects:
+    - >
+      Related projects include WebRTC, which supplies the codec implementation packaged
+      here; the IETF iLBC RFCs that define the codec and RTP payload; and downstream
+      multimedia or telephony packages that prefer a small standalone codec library.
+  sources:
+    - https://datatracker.ietf.org/doc/html/rfc3952
+    - https://datatracker.ietf.org/doc/rfc3951/
+    - https://github.com/TimothyGu/libilbc
+    - https://github.com/TimothyGu/libilbc/releases
+    - https://raw.githubusercontent.com/TimothyGu/libilbc/main/NEWS.md
+    - https://raw.githubusercontent.com/TimothyGu/libilbc/main/README.md
+  summary:
+    - >
+      libilbc is a packaging-focused standalone copy of the Internet Low Bit Rate Codec
+      implementation from the WebRTC project. Its package value is that it turns a codec
+      otherwise embedded in a much larger communications stack into a small system
+      library and test utility.
+  timeline:
+    - >
+      2004-12: RFC 3951 specified iLBC as an experimental Internet codec, and RFC 3952
+      specified its RTP payload format.
+    - >
+      2014-11-17: libilbc 2.0.0 moved under Timothy Gu's maintainership and refreshed
+      the WebRTC source snapshot.
+    - '2014-12-14: libilbc 2.0.2 fixed release-tarball and shared-library packaging details.'
+    - >
+      2020-12-18: libilbc 3.0.0 updated to WebRTC source r32829 and made CMake the only
+      build system.
+    - '2020-12-31: libilbc 3.0.4 fixed a Chromium issue and upstreamed local patches to WebRTC.'
+  usage:
+    - >
+      Typical use is linking against the C library for iLBC encode and decode support or
+      running ilbc_test against raw 8 kHz mono PCM samples. The codec remains relevant
+      where narrowband speech compatibility and packet-loss behavior matter more than
+      modern wideband audio quality.
 category: media
 package-manager:
   brew: libilbc
@@ -26,5 +87,13 @@ executables:
   - ilbc_test
 provenance:
   formula: libilbc
+  history-sources:
+    - https://datatracker.ietf.org/doc/html/rfc3952
+    - https://datatracker.ietf.org/doc/rfc3951/
+    - https://github.com/TimothyGu/libilbc
+    - https://github.com/TimothyGu/libilbc/releases
+    - https://raw.githubusercontent.com/TimothyGu/libilbc/main/NEWS.md
+    - https://raw.githubusercontent.com/TimothyGu/libilbc/main/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
