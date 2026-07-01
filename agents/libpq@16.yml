@@ -18,6 +18,71 @@ credentials-file-location:
     - ~/.pgpass
   windows:
     - '%APPDATA%\postgresql\pgpass.conf'
+history:
+  adoption-history:
+    - >
+      Versioned libpq formulae are adopted by users who need to align client tooling
+      with a supported server major version. PostgreSQL's versioning policy gives each
+      major version five years of support from its initial release; for PostgreSQL 16,
+      the policy table lists 2023-09-14 as first release and 2028-11-09 as final
+      release.
+    - >
+      Homebrew's `libpq@16` formula page records the package as keg-only and lists a
+      deprecation date of 2028-11-09 and disable date of 2029-11-09. That matches the
+      package-manager pattern of retaining older client libraries while their upstream
+      major line remains operationally important.
+  package-nerd-significance:
+    - >
+      For package nerds, `libpq@16` is a clean example of major-version coexistence. The
+      formula lets Homebrew keep a supported but older PostgreSQL client ABI and
+      toolchain available without making it the default `libpq` package.
+    - >
+      The keg-only status is the important operational detail: it lets users opt into a
+      versioned client path deliberately, avoiding accidental shadowing while still
+      supporting projects that have not moved to a newer PostgreSQL major.
+  project-history:
+    - >
+      The upstream history is PostgreSQL's history: a Berkeley POSTGRES lineage
+      beginning in 1986, a Postgres95 SQL transition in 1994, and the PostgreSQL project
+      name from 1996. libpq remained the C client API across that evolution, giving
+      application code a stable route into the server protocol.
+    - >
+      PostgreSQL 16 was released on 2023-09-14. The release announcement highlighted
+      query parallelism, bulk data loading, logical replication, SQL/JSON additions,
+      `pg_stat_io`, access-control improvements, and libpq load-balancing support.
+  related-projects:
+    - >
+      PostgreSQL 16 server, PostgreSQL client utilities, the unversioned Homebrew
+      `libpq` formula, `libpq@17`, language bindings that compile against libpq, and
+      migration or backup tools that shell out to PostgreSQL client programs are the
+      main related pieces.
+  sources:
+    - https://formulae.brew.sh/formula/libpq@16
+    - https://www.postgresql.org/about/news/postgresql-16-released-2715/
+    - https://www.postgresql.org/docs/16/app-psql.html
+    - https://www.postgresql.org/docs/16/libpq.html
+    - https://www.postgresql.org/docs/current/history.html
+    - https://www.postgresql.org/support/versioning/
+  summary:
+    - >
+      libpq@16 is Homebrew's PostgreSQL 16 client-library formula: the libpq C API and
+      accompanying client tools pinned to the PostgreSQL 16 major line. It exists for
+      developers and automation that need PostgreSQL 16-era client behavior, headers, or
+      utilities while newer PostgreSQL majors continue to move.
+  timeline:
+    - '1986: Berkeley POSTGRES implementation began.'
+    - '1994: Postgres95 added SQL support and `psql`.'
+    - '1996: PostgreSQL became the project name.'
+    - '2023-09-14: PostgreSQL 16 was released.'
+    - >
+      2028-11-09: PostgreSQL's versioning table lists the final release date for
+      PostgreSQL 16.
+  usage:
+    - >
+      Typical use is installing `libpq@16` when a build, extension, CI image, migration
+      script, or backup workflow expects PostgreSQL 16 client headers or tools. It is
+      especially useful when `pg_dump`, `pg_restore`, `psql`, or `pg_config` need to
+      come from the 16.x line rather than an unversioned formula.
 tags:
   - c-api
   - cli
@@ -33,6 +98,13 @@ provenance:
     - >
       source_facts.homepage is the official PostgreSQL 16 libpq documentation;
       PostgreSQL 16 docs also include psql.
+  history-sources:
+    - https://formulae.brew.sh/formula/libpq@16
+    - https://www.postgresql.org/about/news/postgresql-16-released-2715/
+    - https://www.postgresql.org/docs/16/app-psql.html
+    - https://www.postgresql.org/docs/16/libpq.html
+    - https://www.postgresql.org/docs/current/history.html
+    - https://www.postgresql.org/support/versioning/
   repo-sources:
     - >
       Official PostgreSQL Gitweb summary says postgresql.git is the main PostgreSQL git
@@ -44,5 +116,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

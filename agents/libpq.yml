@@ -17,6 +17,82 @@ credentials-file-location:
     - ~/.pgpass
   windows:
     - '%APPDATA%\postgresql\pgpass.conf'
+history:
+  adoption-history:
+    - >
+      libpq's adoption follows PostgreSQL's adoption: applications, drivers, migration
+      tools, backup tools, and admin scripts need a PostgreSQL client layer even when
+      the database server runs elsewhere. PostgreSQL's 2023 project announcement
+      described the system as benefiting from more than 25 years of open source
+      development and a global community of users, contributors, companies, and
+      organizations.
+    - >
+      Homebrew's `libpq` formula packages the client side as a keg-only formula. That
+      matters on developer workstations because it avoids colliding with a full
+      `postgresql` formula while still making `psql`, `pg_dump`, `pg_restore`,
+      `pg_config`, and the C library available to builds and scripts.
+  package-nerd-significance:
+    - >
+      libpq is package-nerd significant because it is a dependency edge disguised as a
+      database client. Many packages need PostgreSQL client headers and link libraries,
+      but users often do not want a local database server; a separate formula keeps that
+      dependency smaller and less invasive.
+    - >
+      It also exposes PostgreSQL's major-version reality to package managers: client
+      utilities can speak across versions, but dump, restore, upgrade, and
+      extension-building workflows often care about exact major lines. That is why
+      versioned formulae such as `libpq@16` and `libpq@17` are useful beside the
+      unversioned formula.
+  project-history:
+    - >
+      PostgreSQL descends from the Berkeley POSTGRES project, whose implementation began
+      in 1986. The Postgres95 transition in 1994 replaced POSTQUEL with SQL and
+      introduced `psql`; the PostgreSQL name arrived in 1996 to connect the POSTGRES
+      heritage with SQL support.
+    - >
+      The PostgreSQL manual notes that the `libpq` name came from PostQUEL. As
+      PostgreSQL matured into a long-lived open source database, libpq became the
+      canonical C API for client programs and a shared substrate for other language
+      bindings and command-line clients.
+  related-projects:
+    - >
+      PostgreSQL server, `psql`, ECPG, PostgreSQL client utilities, language drivers
+      that use libpq, and Homebrew's versioned `libpq@16` and `libpq@17` formulae are
+      the closest related projects.
+  sources:
+    - https://formulae.brew.sh/formula/libpq
+    - https://www.postgresql.org/about/news/postgresql-16-released-2715/
+    - https://www.postgresql.org/about/press/presskit17/
+    - https://www.postgresql.org/docs/current/history.html
+    - https://www.postgresql.org/docs/current/libpq.html
+    - https://www.postgresql.org/support/versioning/
+  summary:
+    - >
+      libpq is PostgreSQL's C client library: the small, stable-looking surface that
+      lets C programs connect to PostgreSQL servers, submit queries, and read results.
+      It also underlies several other PostgreSQL client interfaces, so packaging it
+      separately gives developers the client headers, shared library, and familiar tools
+      without requiring a Homebrew PostgreSQL server installation.
+  timeline:
+    - >
+      1986: Implementation of the Berkeley POSTGRES project began at the University of
+      California at Berkeley.
+    - >
+      1994: Postgres95 added an SQL interpreter and `psql`, replacing POSTQUEL and the
+      older monitor program.
+    - '1996: The project adopted the PostgreSQL name and reset version numbering to 6.0.'
+    - >
+      2023-09-14: PostgreSQL 16 was released, including libpq load-balancing support
+      among its client-side changes.
+    - >
+      2024-09-26: PostgreSQL 17 was released with new client and administration
+      utilities including `pg_createsubscriber` and `pg_combinebackup`.
+  usage:
+    - >
+      Typical package-manager use is installing libpq so native extensions, database
+      drivers, and command-line workflows can compile or run against PostgreSQL.
+      Developers use `pg_config` to find build flags, `psql` for interactive sessions,
+      and the dump/restore utilities for movement between PostgreSQL instances.
 tags:
   - c-api
   - cli
@@ -43,6 +119,13 @@ provenance:
     - >
       source_facts.homepage points to the official PostgreSQL libpq documentation;
       official docs page is dedicated to libpq.
+  history-sources:
+    - https://formulae.brew.sh/formula/libpq
+    - https://www.postgresql.org/about/news/postgresql-16-released-2715/
+    - https://www.postgresql.org/about/press/presskit17/
+    - https://www.postgresql.org/docs/current/history.html
+    - https://www.postgresql.org/docs/current/libpq.html
+    - https://www.postgresql.org/support/versioning/
   repo-sources:
     - >
       source_facts.repo is empty; official PostgreSQL documentation says to clone the
@@ -58,5 +141,6 @@ category-path:
   - client-library
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

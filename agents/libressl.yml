@@ -9,6 +9,67 @@ config-file-location:
   unix:
     - /etc/ssl/openssl.cnf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      LibreSSL was adopted first as part of OpenBSD and then as a portable package for
+      Linux, BSDs, macOS, Windows, and other systems. Its wider package-manager life has
+      been shaped by a trade-off: users wanted a cleaned-up OpenSSL-compatible stack,
+      but many large ecosystems remained tied to OpenSSL ABI/API expectations.
+    - >
+      For Unix distributions and Homebrew, LibreSSL became a useful alternate TLS
+      implementation and a source of the libtls API, while also serving as a practical
+      stress test for software that claimed OpenSSL portability but depended on
+      OpenSSL-specific behavior.
+  package-nerd-significance:
+    - >
+      LibreSSL is package-nerd significant because it is a security fork with real
+      downstream consequences. It forces maintainers to separate OpenSSL-the-API from
+      OpenSSL-the-implementation, exposes accidental ABI assumptions, and gives package
+      managers a second TLS stack whose release cadence is tied to OpenBSD rather than
+      the OpenSSL project.
+  project-history:
+    - >
+      The official site describes LibreSSL as forked from OpenSSL in 2014, with primary
+      development inside the OpenBSD source tree and regular portable repackaging for
+      other operating systems. The portable repository states the fork point as OpenSSL
+      1.0.1g and explains that the GitHub project contains the build scaffold and
+      compatibility layer for building OpenBSD's LibreSSL code outside OpenBSD.
+    - >
+      The project goals are deliberately conservative: modernize the OpenSSL codebase,
+      apply code review and frequent releases, remove obsolete or broken features and
+      operating-system support, and encourage safer programming interfaces. The portable
+      README also makes clear that LibreSSL is not ABI-compatible with OpenSSL and that
+      API compatibility is limited by the projects' different priorities.
+  related-projects:
+    - >
+      Related projects include OpenSSL, OpenBSD's libcrypto/libssl/libtls trees,
+      BoringSSL, AWS-LC, wolfSSL, mbedTLS, and downstream software such as OpenSSH and
+      curl that depend on TLS libraries.
+  sources:
+    - https://github.com/libressl/portable
+    - https://www.libressl.org/
+    - https://www.libressl.org/goals.html
+    - https://www.libressl.org/releases.html
+  summary:
+    - >
+      LibreSSL is the OpenBSD project's fork of the OpenSSL TLS and crypto stack,
+      started in 2014 with goals of modernization, auditability, security, and
+      OpenBSD-style development practice. It ships libcrypto, libssl, libtls, and
+      command-line utilities such as openssl and ocspcheck.
+  timeline:
+    - '2014: LibreSSL forked from OpenSSL.'
+    - '2014-07-11: LibreSSL 2.0.0 released, based on an OpenBSD 5.6 development snapshot.'
+    - '2014-08-08: LibreSSL 2.0.5 tied to OpenBSD 5.6 release.'
+    - '2015-09-23: LibreSSL 2.3.0 released.'
+    - '2024-10-14: LibreSSL 4.0.0 released.'
+    - '2026-05-25: LibreSSL 4.3.2 released.'
+  usage:
+    - >
+      Packaged LibreSSL is used either by linking applications to libcrypto, libssl, or
+      libtls, or through command-line tools such as openssl and ocspcheck. The release
+      process tracks OpenBSD development: stable portable branches are derived from
+      OpenBSD releases and receive security updates for a defined support window.
 tags:
   - cli
   - cryptography
@@ -40,6 +101,11 @@ provenance:
     - Official portable repository README contains build and usage documentation.
     - Official project homepage is the primary documentation and project overview surface.
     - Official releases page documents supported portable releases.
+  history-sources:
+    - https://github.com/libressl/portable
+    - https://www.libressl.org/
+    - https://www.libressl.org/goals.html
+    - https://www.libressl.org/releases.html
   repo-sources:
     - >
       Official portable repository README identifies github.com/libressl/portable as the
@@ -55,5 +121,6 @@ category-path:
   - tls
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

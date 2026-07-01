@@ -18,6 +18,72 @@ credentials-file-location:
     - ~/.pgpass
   windows:
     - '%APPDATA%\postgresql\pgpass.conf'
+history:
+  adoption-history:
+    - >
+      The PostgreSQL versioning policy gives each major version five years of support
+      from first release. For PostgreSQL 17, the policy table lists 2024-09-26 as first
+      release and 2029-11-08 as final release, which creates a long window where
+      version-pinned client packages remain useful.
+    - >
+      Homebrew publishes `libpq@17` as a keg-only formula beside the unversioned `libpq`
+      and `libpq@16`. This lets users keep PostgreSQL 17 client binaries available for
+      applications, CI, and operational scripts that have standardized on the 17.x
+      toolchain.
+  package-nerd-significance:
+    - >
+      `libpq@17` matters because database clients are not just leaf applications; they
+      are build inputs, migration tools, and production-adjacent utilities. Keeping a
+      versioned keg lets package managers serve that dependency without forcing all
+      users onto a single PostgreSQL major.
+    - >
+      The formula also captures the packaging compromise around PostgreSQL's annual
+      major releases: users need supported older client lines for years, but package
+      managers need a clean default. Versioned, keg-only formulae are the small
+      mechanism that makes both true.
+  project-history:
+    - >
+      PostgreSQL grew from the Berkeley POSTGRES research system that began
+      implementation in 1986. Postgres95 added SQL support and `psql` in 1994, and the
+      PostgreSQL name was chosen in 1996 to reflect the link between POSTGRES and SQL
+      capability.
+    - >
+      PostgreSQL 17 was released on 2024-09-26. The press kit highlighted vacuum memory
+      improvements, storage and high-concurrency performance work, bulk loading and
+      export speedups, SQL/JSON `JSON_TABLE`, logical replication improvements, and new
+      administrative utilities such as `pg_createsubscriber`.
+  related-projects:
+    - >
+      PostgreSQL 17 server, PostgreSQL client utilities, the unversioned Homebrew
+      `libpq` formula, `libpq@16`, libpq-based language drivers, and database migration
+      or backup tooling are the main related projects.
+  sources:
+    - https://formulae.brew.sh/formula/libpq@17
+    - https://www.postgresql.org/about/press/presskit17/
+    - https://www.postgresql.org/docs/17/app-psql.html
+    - https://www.postgresql.org/docs/17/libpq.html
+    - https://www.postgresql.org/docs/current/history.html
+    - https://www.postgresql.org/support/versioning/
+  summary:
+    - >
+      libpq@17 is Homebrew's PostgreSQL 17 client-library formula: libpq and the
+      PostgreSQL client tools pinned to the 17 major line. Its role is to keep
+      PostgreSQL 17 client development and operations reproducible while newer major
+      versions can be installed separately.
+  timeline:
+    - '1986: Berkeley POSTGRES implementation began.'
+    - '1994: Postgres95 added SQL support and `psql`.'
+    - '1996: PostgreSQL became the project name.'
+    - '2024-09-26: PostgreSQL 17 was released.'
+    - >
+      2029-11-08: PostgreSQL's versioning table lists the final release date for
+      PostgreSQL 17.
+  usage:
+    - >
+      Typical use is selecting PostgreSQL 17's `psql`, `pg_dump`, `pg_restore`,
+      `pg_config`, and libpq headers for builds or operational scripts. The versioned
+      formula is useful when application infrastructure has standardized on PostgreSQL
+      17 but a workstation or build host also carries another PostgreSQL major.
 tags:
   - c-api
   - cli
@@ -33,6 +99,13 @@ provenance:
     - >
       source_facts.homepage is the official PostgreSQL 17 libpq documentation;
       PostgreSQL 17 docs also include psql.
+  history-sources:
+    - https://formulae.brew.sh/formula/libpq@17
+    - https://www.postgresql.org/about/press/presskit17/
+    - https://www.postgresql.org/docs/17/app-psql.html
+    - https://www.postgresql.org/docs/17/libpq.html
+    - https://www.postgresql.org/docs/current/history.html
+    - https://www.postgresql.org/support/versioning/
   repo-sources:
     - >
       Official PostgreSQL Gitweb summary says postgresql.git is the main PostgreSQL git
@@ -44,5 +117,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

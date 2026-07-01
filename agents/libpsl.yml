@@ -5,6 +5,76 @@ docs:
   - https://rockdaboot.github.io/libpsl
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      libpsl's adoption comes from web-client and network-client needs: software must
+      avoid supercookies, reject overbroad certificate or domain assumptions, and group
+      sites by registrable domain. The Public Suffix List page names browsers, Qt,
+      crawler libraries, certificate-authority workflows, and security tooling as users
+      of PSL data.
+    - >
+      Package managers carry libpsl because many lower-level network tools need PSL
+      behavior without embedding their own parser. Homebrew, Debian-family systems,
+      Fedora, MacPorts, Nix, Arch, Alpine, and openSUSE all appear in the package
+      metadata for this batch.
+  package-nerd-significance:
+    - >
+      libpsl is package-nerd significant because it is tiny infrastructure with security
+      consequences. A stale or missing PSL layer can allow cookie scoping mistakes or
+      bad domain-boundary assumptions, while a shared library lets distributions update
+      the logic and data path centrally.
+    - >
+      Its build and packaging details are also unusually nerdy: the README separates
+      libpsl releases from PSL data updates, supports both autotools and Meson, and uses
+      DAFSA compression to shrink lookup data for fast native access.
+  project-history:
+    - >
+      The library was created by Tim Ruehsen from libmget cookie code on 2014-03-19,
+      according to the source changelog, and the public GitHub repository was created on
+      2014-03-20. The README describes libpsl as a C library that handles the Public
+      Suffix List with built-in PSL data, file-loaded PSL data, DAFSA compression,
+      thread safety, and IDNA support.
+    - >
+      The Public Suffix List itself is a cross-vendor initiative maintained by Mozilla
+      volunteers and registry submissions. libpsl packages that ecosystem for C
+      consumers rather than trying to define suffix policy itself.
+  related-projects:
+    - >
+      The Public Suffix List, Mozilla's PSL maintenance process, Chromium's DAFSA code,
+      GNU Wget/libmget history, curl-like clients, browsers, crawler libraries, and
+      certificate-authority tooling are the related ecosystem.
+  sources:
+    - https://api.github.com/repos/rockdaboot/libpsl
+    - https://api.github.com/repos/rockdaboot/libpsl/releases
+    - https://formulae.brew.sh/formula/libpsl
+    - https://github.com/publicsuffix/list
+    - https://github.com/rockdaboot/libpsl
+    - https://publicsuffix.org/learn/
+    - https://raw.githubusercontent.com/rockdaboot/libpsl/master/README.md
+    - https://raw.githubusercontent.com/rockdaboot/libpsl/master/src/psl.c
+  summary:
+    - >
+      libpsl is a C library for working with the Public Suffix List, the shared list
+      used to decide where registrable domain boundaries sit. It gives native programs a
+      fast way to answer questions that matter for cookies, certificates, domain
+      display, and site grouping.
+  timeline:
+    - >
+      2014-03-19: Source changelog says Tim Ruehsen created the library from libmget
+      cookie code.
+    - '2014-03-20: The public GitHub repository was created.'
+    - '2016-01-02: Release 0.12.0 appears in GitHub release metadata.'
+    - '2019-04-16: Release 0.21.0 was published.'
+    - >
+      2026-06-24: Release 0.22.0 included portability, build, Windows, Apple ICU, and
+      tarball-build improvements.
+  usage:
+    - >
+      Developers use libpsl through the C API to test whether a domain is a public
+      suffix, verify cookie-domain acceptability, find public or private domain
+      portions, or load updated PSL data. The package also ships the `psl` command and
+      `psl-make-dafsa` for command-line inspection and compressed list generation.
 tags:
   - c-library
   - cli
@@ -33,6 +103,15 @@ provenance:
     - >
       Official libpsl reference manual is published at rockdaboot.github.io/libpsl and
       provides API documentation.
+  history-sources:
+    - https://api.github.com/repos/rockdaboot/libpsl
+    - https://api.github.com/repos/rockdaboot/libpsl/releases
+    - https://formulae.brew.sh/formula/libpsl
+    - https://github.com/publicsuffix/list
+    - https://github.com/rockdaboot/libpsl
+    - https://publicsuffix.org/learn/
+    - https://raw.githubusercontent.com/rockdaboot/libpsl/master/README.md
+    - https://raw.githubusercontent.com/rockdaboot/libpsl/master/src/psl.c
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/rockdaboot/libpsl, so repo
@@ -48,5 +127,6 @@ category-path:
   - domain-parsing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
