@@ -10,6 +10,61 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.influxdbv2/configs
+history:
+  adoption-history:
+    - >
+      The CLI remained central to InfluxDB v2 operations after the split because the
+      docs use it for setup, writing data, querying data, profile management, and
+      automation. The input metadata shows a dedicated Homebrew formula and winget
+      package, separate from the InfluxDB server package.
+  package-nerd-significance:
+    - >
+      influxdb-cli is a neat packaging case study: a CLI split out of a database server
+      because cloud APIs, platform support, and release cadence needed a smaller
+      artifact. Package managers expose that boundary directly by shipping influxdb-cli
+      apart from influxdb.
+  project-history:
+    - >
+      InfluxDB v2 originally shipped the influx CLI alongside the server. InfluxData
+      release notes announced that beginning with InfluxDB 2.1 the CLI would no longer
+      be packaged with the server release, and future CLI versions would come from the
+      influxdata/influx-cli repository.
+    - >
+      The influx-cli README explains the split plainly: decoupling made it easier to
+      track InfluxDB Cloud API changes, ship CLI-only fixes faster, and build releases
+      for more platforms than the server could support. That turned influx from a
+      server-adjacent binary into a separately versioned package.
+  related-projects:
+    - >
+      InfluxDB v2 is the server line this CLI manages. InfluxDB Cloud drove part of the
+      decoupling rationale. Flux, InfluxQL compatibility, OpenAPI-generated clients, and
+      the InfluxData downloads portal are closely related to the CLI's workflows and
+      distribution.
+  sources:
+    - https://docs.influxdata.com/influxdb/v2/reference/release-notes/influx-cli/
+    - https://docs.influxdata.com/influxdb/v2/reference/release-notes/influxdb/
+    - https://docs.influxdata.com/influxdb/v2/tools/influx-cli/
+    - https://github.com/influxdata/influx-cli
+  summary:
+    - >
+      InfluxDB CLI is the separately packaged influx command for managing InfluxDB v2
+      resources. It handles setup, config profiles, organizations, buckets,
+      authorizations, tasks, templates, backups, restores, writes, queries, and related
+      administrative workflows.
+  timeline:
+    - >
+      2020: InfluxDB 2.0 GA shipped with v2 API, Flux, setup, backup, and restore CLI
+      workflows.
+    - '2021: InfluxDB 2.1 packaging notes announced the CLI/server split.'
+    - '2021: influx CLI v2.1.0 documented as the first release from influxdata/influx-cli.'
+    - '2026: influx CLI v2.8.0 release notes documented continued standalone maintenance.'
+  usage:
+    - >
+      Users run influx setup to initialize a v2 instance, manage config profiles stored
+      under ~/.influxdbv2/configs, create buckets and organizations, manage auth tokens,
+      write line protocol, run Flux queries, and automate backup or restore operations.
+      The separate package is especially useful on admin workstations that need to
+      control remote InfluxDB servers without installing the server.
 tags:
   - bucket-management
   - cli
@@ -39,6 +94,11 @@ provenance:
     - >
       Official InfluxData documentation provides CLI reference pages for InfluxDB v2 and
       InfluxDB Cloud.
+  history-sources:
+    - https://docs.influxdata.com/influxdb/v2/reference/release-notes/influx-cli/
+    - https://docs.influxdata.com/influxdb/v2/reference/release-notes/influxdb/
+    - https://docs.influxdata.com/influxdb/v2/tools/influx-cli/
+    - https://github.com/influxdata/influx-cli
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -53,5 +113,6 @@ category-path:
   - time-series
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

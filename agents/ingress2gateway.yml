@@ -6,6 +6,76 @@ docs:
   - https://github.com/kubernetes-sigs/ingress2gateway#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ingress2gateway's adoption follows Kubernetes Gateway API adoption. Teams that
+      accumulated Ingress resources and controller-specific annotations use it to
+      inventory and translate routing configuration while learning which fields and
+      annotations cannot be expressed directly.
+    - >
+      Package-manager distribution through Homebrew, Nix, Winget, and zypper makes the
+      tool convenient for migration workstations, platform-engineering scripts, and CI
+      checks that inspect manifests without embedding the converter in an application.
+  package-nerd-significance:
+    - >
+      ingress2gateway is significant as a transition package: it exists because
+      Kubernetes networking moved from a widely deployed older API to a richer successor
+      API, and the ecosystem needed a CLI bridge.
+    - >
+      It also turns messy controller-specific annotation culture into explicit provider
+      modules, making package installation a way to audit how portable an ingress estate
+      really is.
+  project-history:
+    - >
+      The project sits inside kubernetes-sigs and is managed by the Gateway API SIG
+      Network subproject. Its README defines a focused migration scope: read Ingress
+      resources and provider-specific CRDs, convert them into an intermediate
+      representation, and emit Gateway API resources.
+    - >
+      The changelog records an initial release candidate followed by an official 0.1.0
+      release, then a steady expansion of providers and conversion behavior. Later
+      releases added APISIX, Istio, GCE, Cilium, NGINX, Traefik, notifications, kyaml
+      output, provider storage, and an emitter framework.
+  related-projects:
+    - >
+      Related projects include Kubernetes Gateway API, Kubernetes Ingress,
+      ingress-nginx, NGINX Ingress Controller, GKE Gateway, Envoy Gateway, kgateway,
+      agentgateway, APISIX, Cilium, Istio, Kong, and Traefik.
+  sources:
+    - https://gateway-api.sigs.k8s.io/
+    - https://github.com/kubernetes-sigs/ingress2gateway
+    - https://github.com/kubernetes-sigs/ingress2gateway/blob/main/CHANGELOG.md
+    - https://github.com/kubernetes-sigs/ingress2gateway/issues/4
+    - https://github.com/kubernetes-sigs/ingress2gateway/releases
+  summary:
+    - >
+      ingress2gateway is a Kubernetes SIG Network tool for translating Kubernetes
+      Ingress and provider-specific resources into Gateway API resources.
+  timeline:
+    - >
+      2022: Early project discussion asked for documentation of how Ingress fields and
+      annotations would be interpreted.
+    - '2023: Version 0.1.0-rc1 was tagged as the initial release candidate.'
+    - >
+      2024: Version 0.2.0 added providers including Istio and APISIX and moved ingress
+      fetching into provider storage.
+    - >
+      2026: Version 1.0.0 added an emitter framework, expanded ingress-nginx annotation
+      support, and upgraded Gateway API support to v1.5.
+    - >
+      2026: Version 1.1.0 added Traefik provider support and more provider-specific
+      translations.
+  usage:
+    - >
+      The primary command reads resources from a cluster through kubeconfig or from
+      YAML/JSON input files, then prints Gateway API YAML, JSON, or kyaml to stdout.
+      Users choose providers such as ingress-nginx, GCE, Istio, Kong, NGINX, Traefik,
+      APISIX, Cilium, or OpenAPI.
+    - >
+      It does not own credentials files; Kubernetes access follows normal kubeconfig
+      behavior. Its warnings and notifications are part of the migration workflow
+      because unsupported annotations and lossy conversions are often the real work.
 tags:
   - cli
   - gateway-api
@@ -36,6 +106,12 @@ provenance:
     - >
       Official GitHub repository contains a docs directory and links docs/emitters.md
       from the README.
+  history-sources:
+    - https://gateway-api.sigs.k8s.io/
+    - https://github.com/kubernetes-sigs/ingress2gateway
+    - https://github.com/kubernetes-sigs/ingress2gateway/blob/main/CHANGELOG.md
+    - https://github.com/kubernetes-sigs/ingress2gateway/issues/4
+    - https://github.com/kubernetes-sigs/ingress2gateway/releases
   repo-sources:
     - >
       source_facts.repo already contains
@@ -51,5 +127,6 @@ category-path:
   - kubernetes
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
