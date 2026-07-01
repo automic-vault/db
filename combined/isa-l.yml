@@ -7,6 +7,73 @@ docs:
   - https://github.com/intel/isa-l#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ISA-L spread through storage systems because erasure coding and checksum
+      throughput are central to distributed filesystems, object stores, backup systems,
+      and data pipelines. The input metadata shows packaging across Homebrew, Alpine,
+      Fedora, Nix, Arch, and openSUSE, with some distributions exposing the user-facing
+      tool as igzip.
+    - >
+      The package is also visible in higher-level systems: Hadoop documentation
+      describes HDFS erasure coding as able to leverage Intel ISA-L for accelerated
+      encoding and decoding calculations.
+  package-nerd-significance:
+    - >
+      ISA-L is package-nerd material because it packages CPU-specific assembly and
+      runtime dispatch behind ordinary distribution names. Maintainers care about NASM
+      versions, architecture coverage, ABI expectations, and whether consumers get the
+      accelerated path or silently fall back to slower code.
+    - >
+      It also demonstrates a common packaging split: the real value is a library used
+      indirectly by storage software, while the obvious executable in a package database
+      is a compression utility.
+  project-history:
+    - >
+      The public intel/isa-l repository was created in 2016, but the project represents
+      Intel's earlier storage-acceleration work around data protection, compression, and
+      integrity primitives. The official API PDF notes the first open release of the
+      erasure-code unit and documents `igzip` as a user program for compression and
+      decompression.
+    - >
+      ISA-L evolved as a performance library closely tied to processor instruction sets.
+      Its release notes and wiki track additions for CPU features, CRC and erasure-code
+      performance, build-system changes, and architecture support such as PowerPC fixes
+      and riscv64 feature detection.
+  related-projects:
+    - >
+      ISA-L is related to zlib-compatible compression tools, Reed-Solomon erasure-code
+      libraries, RAID implementations, Hadoop HDFS erasure coding, Ceph erasure-code
+      plugins, and Intel's ISA-L Crypto sibling project.
+  sources:
+    - https://github.com/intel/isa-l
+    - https://formulae.brew.sh/formula/isa-l
+    - https://github.com/intel/isa-l/wiki
+    - https://github.com/intel/isa-l#readme
+    - https://github.com/intel/isa-l/tags
+    - https://github.com/intel/isa-l/releases
+  summary:
+    - >
+      Intel ISA-L, the Intelligent Storage Acceleration Library, is a collection of
+      optimized low-level routines for storage software. The upstream README describes
+      erasure coding, CRC, RAID parity, deflate-compatible compression, and
+      inflate-compatible decompression, while the Homebrew package exposes the `igzip`
+      command-line tool from that library.
+  timeline:
+    - '2016: Public intel/isa-l GitHub repository created.'
+    - >
+      2019: Release notes document CRC and erasure-code performance work in the
+      v2.27-v2.29 era.
+    - '2020: v2.30 appears in the upstream release wiki.'
+    - '2024: v2.31 release notes document API and platform maintenance.'
+    - '2026: v2.32 release notes add CMake work and initial riscv64 support.'
+  usage:
+    - >
+      Library users link against ISA-L for Reed-Solomon erasure coding, CRC functions,
+      RAID parity, and deflate/inflate routines. Package users often encounter it
+      through `igzip`, which gives a command-line entry point into ISA-L's fast
+      deflate-compatible compression path.
 category: system
 package-manager:
   apk: isa-l
@@ -30,5 +97,13 @@ executables:
   - igzip
 provenance:
   formula: isa-l
+  history-sources:
+    - https://github.com/intel/isa-l
+    - https://formulae.brew.sh/formula/isa-l
+    - https://github.com/intel/isa-l/wiki
+    - https://github.com/intel/isa-l#readme
+    - https://github.com/intel/isa-l/tags
+    - https://github.com/intel/isa-l/releases
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
