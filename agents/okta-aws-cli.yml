@@ -10,6 +10,101 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.aws/credentials
+history:
+  adoption-history:
+    - >
+      The tool addresses a long-standing enterprise operations problem: developers need
+      AWS CLI access through federated identity without long-lived AWS access keys.
+      Okta's own admin documentation tells administrators to get `okta-aws-cli` from
+      GitHub or package managers such as Homebrew or Chocolatey when configuring Okta as
+      the IdP for AWS CLI.
+    - >
+      Homebrew usage is comparatively strong in this batch. The formula API generated on
+      2026-07-01 reported 5,821 installs over 365 days and 5,730 installs-on-request
+      over the same period, reflecting the tool's practical role in developer
+      workstation setup.
+  package-nerd-significance:
+    - >
+      okta-aws-cli is a packaging marker for enterprise identity workflows moving into
+      developer package managers. A Homebrew formula for this tool is not just a
+      convenience CLI; it becomes part of how companies standardize short-lived cloud
+      credentials on laptops.
+    - >
+      The package is also a useful metadata case because it wraps several standards and
+      services in one executable: OIDC, SAML, Okta Identity Engine, AWS IAM identity
+      providers, AWS STS, credentials files, environment variables, and process
+      credentials.
+  project-history:
+    - >
+      The repository was created on 2022-07-07 as a Go CLI for using Okta as the
+      identity provider for AWS CLI operations. The README describes three primary
+      commands: `web` for human/device authorization, `m2m` for headless
+      machine-to-machine authorization, and `direct` for direct authorization with
+      out-of-band MFA.
+    - >
+      The 2.0.0 GA release on 2024-01-25 reorganized the CLI around subcommands, renamed
+      environment variables under the `OKTA_AWSCLI_` prefix, added JSON
+      process-credential output, added an `--exec` mode for running a follow-on command
+      with credentials in the environment, and added support for collecting roles across
+      AWS federation apps.
+    - >
+      Subsequent 2.x releases improved multi-profile and multi-app support, non-admin
+      user flows, role and IdP selection, credential formatting, cached-token handling,
+      Chocolatey publishing, and security details such as moving a web SSO token out of
+      the URL query parameter and into a POST body.
+  related-projects:
+    - >
+      The package is closely related to Okta AWS Account Federation, Okta OIDC Native
+      Applications, AWS IAM identity providers, AWS STS `AssumeRoleWithSAML`, AWS STS
+      `AssumeRoleWithWebIdentity`, and AWS SDK/CLI process credentials.
+  sources:
+    - https://api.github.com/repos/okta/okta-aws-cli
+    - https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html
+    - https://formulae.brew.sh/api/formula/okta-aws-cli.json
+    - https://github.com/okta/okta-aws-cli
+    - >
+      https://help.okta.com/oie/en-us/content/topics/deploymentguides/aws/aws-configure-cli.htm
+    - https://raw.githubusercontent.com/okta/okta-aws-cli/master/CHANGELOG.md
+    - https://raw.githubusercontent.com/okta/okta-aws-cli/master/README.md
+  summary:
+    - >
+      okta-aws-cli is Okta's command-line bridge between Okta identity and AWS CLI
+      credentials. It authenticates through Okta, exchanges identity assertions with AWS
+      STS, and emits temporary IAM credentials for AWS CLI, SDK, process-credential, or
+      credentials-file workflows.
+  timeline:
+    - '2022-07-07: the `okta/okta-aws-cli` repository was created.'
+    - >
+      2024-01-25: version 2.0.0 reached GA with subcommands, process credentials,
+      environment variable renames, and role/profile collection features.
+    - >
+      2024-07-03: version 2.2.0 improved non-admin user support with the
+      `okta.users.read.self` grant.
+    - >
+      2025-01-31: version 2.4.0 reduced the scope needed for multiple apps and improved
+      m2m/session handling.
+    - >
+      2025-05-20: version 2.5.0 added the `direct` command for out-of-band MFA password
+      grant authorization.
+    - "2026-07-01: Homebrew's formula API reported stable version 2.6.0."
+  usage:
+    - >
+      In the human `web` flow, a user runs `okta-aws-cli web`, completes browser/device
+      authorization through Okta, and receives AWS `Access Key ID`, `Secret Access Key`,
+      and `Session Token` output. The tool can emit shell environment exports, write or
+      overwrite AWS credentials-file profiles, or return JSON process credentials.
+    - >
+      The README explains the SAML-backed path: an Okta OIDC Native Application is
+      paired with an Okta AWS Federation integration app, the AWS federation app is
+      paired with an AWS IAM identity provider, and the CLI presents a SAML assertion to
+      AWS STS with `AssumeRoleWithSAML`. AWS STS returns temporary credentials; AWS
+      documentation says those credentials consist of an access key ID, secret access
+      key, and security token.
+    - >
+      For automation, the `m2m` command uses an Okta API service application and private
+      key, then presents an access token to AWS STS using `AssumeRoleWithWebIdentity`.
+      The README warns that private-key handling needs state-of-the-art secrets
+      management and that `m2m` is not intended for human use.
 tags:
   - aws
   - cli
@@ -37,6 +132,15 @@ provenance:
   docs-sources:
     - official GitHub README documents commands, configuration, and authentication flows
     - official repository doc directory contains additional project documentation
+  history-sources:
+    - https://api.github.com/repos/okta/okta-aws-cli
+    - https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html
+    - https://formulae.brew.sh/api/formula/okta-aws-cli.json
+    - https://github.com/okta/okta-aws-cli
+    - >
+      https://help.okta.com/oie/en-us/content/topics/deploymentguides/aws/aws-configure-cli.htm
+    - https://raw.githubusercontent.com/okta/okta-aws-cli/master/CHANGELOG.md
+    - https://raw.githubusercontent.com/okta/okta-aws-cli/master/README.md
   repo-sources:
     - >
       source_facts.repo already provided as https://github.com/okta/okta-aws-cli; per
@@ -51,5 +155,6 @@ category-path:
   - identity
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

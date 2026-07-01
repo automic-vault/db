@@ -6,6 +6,88 @@ docs:
   - https://github.com/ibara/oksh/blob/master/oksh.1
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      oksh's adoption is mostly among users and distributors who want OpenBSD ksh
+      outside OpenBSD. The README lists support across OpenBSD, the BSDs, macOS, glibc
+      and musl Linux, Cygwin, Android via Termux, AIX, IBM i PASE, Solaris, Illumos,
+      WSL, Haiku, SerenityOS, MSYS2, QNX, and more. It also records many tested C
+      compilers, from clang and gcc to pcc, cparser, tcc, CompCert, chibicc, and other
+      niche compilers.
+    - >
+      Package-manager coverage is broad for a small shell. The input metadata includes
+      apk, Homebrew, dnf, MacPorts, and Nix. Homebrew's 2026-07-01 formula API reported
+      121 installs over 365 days, and the upstream README links package status via
+      Repology.
+  package-nerd-significance:
+    - >
+      oksh is significant because it is a living portability layer around a base-system
+      shell. It gives package managers a way to ship OpenBSD ksh semantics on platforms
+      where `/bin/ksh` may be missing, old, or from a different lineage.
+    - >
+      Its licensing is also package-nerd-friendly but nontrivial: the main Korn shell
+      files are public domain, while portability files are BSD or ISC licensed. Homebrew
+      reflects that as `LicenseRef-Homebrew-public-domain AND BSD-3-Clause AND ISC`.
+  project-history:
+    - >
+      The deeper lineage starts with pdksh. OpenBSD's `bin/ksh` README says pdksh was a
+      mostly complete AT&T ksh look-alike, maintained by Michael Rendell after earlier
+      maintainers Simon J. Gerraty, John R. MacMillan, and Eric Gisin. The CONTRIBUTORS
+      file records Gisin creating pdksh from Charles Forsyth's public-domain V7 shell
+      with pieces from the BRL shell around 1987 to 1989.
+    - >
+      oksh turns OpenBSD's maintained ksh into a portable project. Its repository was
+      created on 2015-01-06, and the README states that it is not an official OpenBSD
+      project. The stated reason is simple and opinionated: all operating systems
+      deserve a good shell.
+    - >
+      The project is intentionally conservative about behavior. The README asks
+      contributors to send behavior changes upstream to OpenBSD tech@ first, and says
+      oksh will sync with upstream OpenBSD code once a patch is accepted there.
+      Portability changes are welcome in oksh; shell semantics belong upstream.
+  related-projects:
+    - >
+      oksh is directly related to OpenBSD ksh and pdksh. It also sits near other
+      ksh-family ports such as loksh and mksh, but oksh's packaging identity is the
+      portable, self-contained OpenBSD ksh line.
+  sources:
+    - https://api.github.com/repos/ibara/oksh
+    - https://formulae.brew.sh/api/formula/oksh.json
+    - https://github.com/ibara/oksh
+    - https://github.com/ibara/oksh/releases/tag/oksh-7.9
+    - https://raw.githubusercontent.com/ibara/oksh/main/README.md
+    - https://raw.githubusercontent.com/openbsd/src/master/bin/ksh/CONTRIBUTORS
+    - https://raw.githubusercontent.com/openbsd/src/master/bin/ksh/LEGAL
+    - https://raw.githubusercontent.com/openbsd/src/master/bin/ksh/README
+  summary:
+    - >
+      oksh is a portable version of OpenBSD `ksh(1)`, itself descended from the Public
+      Domain Korn Shell. It packages the OpenBSD ksh experience for systems outside
+      OpenBSD while trying to stay self-contained and portable across operating systems
+      and C compilers.
+  timeline:
+    - >
+      1987-1989: Eric Gisin created pdksh using Charles Forsyth's public-domain V7 shell
+      as a base and parts of the BRL shell.
+    - >
+      1994-07: Michael Rendell took over pdksh maintenance, according to OpenBSD's
+      CONTRIBUTORS file.
+    - "1999-07: OpenBSD's ksh README was last updated for pdksh 5.2.14."
+    - '2015-01-06: the `ibara/oksh` repository was created.'
+    - '2026-06-10: oksh-7.9 was published on GitHub.'
+    - "2026-07-01: Homebrew's formula API reported stable version 7.9."
+  usage:
+    - >
+      Users install oksh when they want the OpenBSD ksh command language and interactive
+      shell on a non-OpenBSD system. It can act as an interactive login shell or as a
+      script interpreter for ksh-style scripts, while retaining the OpenBSD/pdksh flavor
+      rather than tracking AT&T ksh93.
+    - >
+      Builders use the provided `configure` script and POSIX Makefile path. The README
+      documents native builds, out-of-tree builds, cross compilation with `--no-thanks`,
+      optional ncurses support for screen-clearing routines, and a design goal of
+      remaining self-contained.
 tags:
   - cli
   - ksh
@@ -32,6 +114,15 @@ provenance:
   docs-sources:
     - official GitHub README provides project overview
     - official repository includes oksh.1 manual page as command documentation
+  history-sources:
+    - https://api.github.com/repos/ibara/oksh
+    - https://formulae.brew.sh/api/formula/oksh.json
+    - https://github.com/ibara/oksh
+    - https://github.com/ibara/oksh/releases/tag/oksh-7.9
+    - https://raw.githubusercontent.com/ibara/oksh/main/README.md
+    - https://raw.githubusercontent.com/openbsd/src/master/bin/ksh/CONTRIBUTORS
+    - https://raw.githubusercontent.com/openbsd/src/master/bin/ksh/LEGAL
+    - https://raw.githubusercontent.com/openbsd/src/master/bin/ksh/README
   repo-sources:
     - >
       source_facts.repo already provided as https://github.com/ibara/oksh; per
@@ -46,5 +137,6 @@ category-path:
   - shell
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -10,6 +10,91 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.ohdear/config.json
+history:
+  adoption-history:
+    - >
+      Oh Dear CLI's adoption is tied to Oh Dear customers and the PHP/Laravel ecosystem
+      rather than broad general-purpose CLI usage. The official docs describe it as the
+      CLI for every Oh Dear API endpoint, and Homebrew's 2026-07-01 formula API reported
+      281 installs over 365 days.
+    - >
+      The binary rename in v4 shows the project moving from a community or companion
+      tool into the service's official command-line interface. Owen Voke's 2023 v4
+      write-up describes the rename and notes a Homebrew symlink for backward
+      compatibility.
+  package-nerd-significance:
+    - >
+      For package nerds, Oh Dear CLI is a tidy example of a SaaS product CLI that
+      changed shape over time: hand-written Laravel Zero commands, official binary
+      naming, PHAR distribution, then OpenAPI-generated command coverage. Its package
+      metadata preserves that evolution through Packagist, Homebrew, and the changelog.
+    - >
+      It also demonstrates the practical packaging effect of CLI naming. Homebrew
+      exposes both `ohdear` and `ohdear-cli`, while the upstream project treats `ohdear`
+      as the official executable after v4.
+  project-history:
+    - >
+      The package began as a Laravel Zero based PHP CLI. Its repository was created on
+      2018-02-16, and the project changelog records a 1.0.0 entry on 2018-01-18.
+      Packagist records the early package under the `ohdearapp/ohdear-cli` name with the
+      `ohdear-cli` binary and a Laravel Zero 5.6-era dependency set.
+    - >
+      The tool evolved alongside the Oh Dear API. The 2.x releases in December 2020 and
+      January 2021 added commands for status pages, performance records, maintenance
+      periods, mixed content, broken links, certificate health, checks, uptime,
+      downtime, and cron checks. The 3.x line moved to Laravel Zero 9, dropped PHP 7,
+      and added DNS history, application health, Docker image support, and Lighthouse
+      reports.
+    - >
+      Version 4.0.0, released on 2023-05-25, renamed the binary from `ohdear-cli` to
+      `ohdear` because the package had become the official CLI. Version 5.0.0, released
+      on 2026-02-23, rewrote the tool around `spatie/laravel-openapi-cli`, replaced more
+      than 30 manually written command classes with OpenAPI-generated commands, changed
+      authentication to `ohdear login` with `~/.ohdear/config.json`, and added an
+      `install-skill` command for AI coding assistants.
+  related-projects:
+    - >
+      The CLI is part of the Oh Dear tool family alongside the Oh Dear PHP SDK, Laravel
+      Nova tooling, API documentation, and AI-agent skill support. Its implementation is
+      also tied to Laravel Zero and Spatie's OpenAPI CLI generator.
+  sources:
+    - https://formulae.brew.sh/api/formula/ohdear-cli.json
+    - https://github.com/ohdearapp/ohdear-cli
+    - https://ohdear.app/docs/tools-and-sdks/our-cli-tool
+    - https://raw.githubusercontent.com/ohdearapp/ohdear-cli/main/CHANGELOG.md
+    - https://raw.githubusercontent.com/ohdearapp/ohdear-cli/main/README.md
+    - https://repo.packagist.org/p2/ohdearapp/ohdear-cli.json
+    - https://voke.dev/blog/whats-new-in-ohdear-cli-4
+  summary:
+    - >
+      Oh Dear CLI is the official terminal client for Oh Dear's website monitoring
+      service. It lets operators manage monitors, checks, status pages, maintenance
+      periods, Lighthouse reports, cron checks, tags, and account information from a
+      shell.
+  timeline:
+    - '2018-01-18: the changelog records the first release.'
+    - '2018-02-16: the GitHub repository was created.'
+    - >
+      2020-12-08: version 2.0.0 added many service-management commands and rewrote the
+      tool with Laravel Zero 8.
+    - >
+      2022-03-15: version 3.0.0 moved to Laravel Zero 9, added DNS history commands, and
+      dropped PHP 7.
+    - '2023-05-25: version 4.0.0 renamed the executable from `ohdear-cli` to `ohdear`.'
+    - '2026-02-23: version 5.0.0 rewrote command generation around the Oh Dear OpenAPI spec.'
+    - '2026-03-23: Packagist published v5.2.1.'
+  usage:
+    - >
+      Operators authenticate with `ohdear login`, store the API token in
+      `~/.ohdear/config.json`, and run commands such as `list-monitors`, `get-uptime`,
+      `list-broken-links`, `get-certificate-health`, `start-maintenance`,
+      `create-status-page-update`, `list-cron-checks`, and Lighthouse report commands.
+      Commands default to human-readable output and can emit JSON with `--json`.
+    - >
+      The v5 OpenAPI generation model is important operationally: new Oh Dear API
+      endpoints can become CLI commands without hand-maintaining one command class per
+      endpoint. The CLI also exposes `clear-cache` for cached OpenAPI specs and
+      `install-skill` for AI agent integration.
 tags:
   - api-client
   - cli
@@ -37,6 +122,14 @@ provenance:
   docs-sources:
     - official GitHub README provides install, authentication, and usage documentation
     - official Oh Dear docs page covers the CLI skill and CLI commands
+  history-sources:
+    - https://formulae.brew.sh/api/formula/ohdear-cli.json
+    - https://github.com/ohdearapp/ohdear-cli
+    - https://ohdear.app/docs/tools-and-sdks/our-cli-tool
+    - https://raw.githubusercontent.com/ohdearapp/ohdear-cli/main/CHANGELOG.md
+    - https://raw.githubusercontent.com/ohdearapp/ohdear-cli/main/README.md
+    - https://repo.packagist.org/p2/ohdearapp/ohdear-cli.json
+    - https://voke.dev/blog/whats-new-in-ohdear-cli-4
   repo-sources:
     - >
       source_facts.repo already provided as https://github.com/ohdearapp/ohdear-cli; per
@@ -51,5 +144,6 @@ category-path:
   - monitoring
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
