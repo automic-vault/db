@@ -5,6 +5,32 @@ docs:
   - https://www.jabberwocky.com/software/paperkey
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Paperkey is David Shaw's OpenPGP key-archiving tool, with upstream copyright dates
+    beginning in 2007. It addresses a specific operational-security problem from the
+    GnuPG/OpenPGP world: long-term recovery of a private key when digital backup media
+    fail, without forcing the user to print and retype an entire secret-key packet.
+  - >
+    The core observation is that an OpenPGP secret key contains public-key material and
+    metadata in addition to the secret bytes. Paperkey extracts just the secret parts
+    into a compact printable representation; restoration combines those bytes with an
+    existing public key to reconstruct the secret key. The README gives the canonical
+    workflow of exporting a secret key through `paperkey` to a text file or printer,
+    then restoring with `--pubring`, `--secrets`, and `--output`.
+  - >
+    Its ecosystem role is deliberately conservative. Paperkey does not add encryption or
+    change passphrase semantics; if the original secret key was passphrase-protected,
+    the paper backup represents the same encrypted secret material. That made it
+    attractive as a last-resort backup component for OpenPGP users who already publish
+    or escrow public keys elsewhere and want a human-readable recovery path that can
+    outlive disks, USB drives, and optical media.
+  - >
+    Distribution across Homebrew, Debian, Ubuntu, Fedora, Arch, Alpine, MacPorts, Nix,
+    and openSUSE reflects that Paperkey is small but operationally useful security
+    plumbing. It is normally used rarely, during backup drills and disaster-recovery
+    preparation, but its value depends on exactly that boring repeatability: print,
+    store, and verify restoration before the archive is needed.
 tags:
   - archiving
   - cli
@@ -33,6 +59,12 @@ provenance:
     - >
       Official Paperkey page provides usage examples and says full option documentation
       is in the man page; it is the best official documentation surface found.
+  history-sources:
+    - https://www.jabberwocky.com/software/paperkey/
+    - https://github.com/dmshaw/paperkey
+    - https://api.github.com/repos/dmshaw/paperkey
+    - https://wiki.archlinux.org/title/Paperkey
+    - https://formulae.brew.sh/formula/paperkey
   repo-sources:
     - >
       GitHub repository title is dmshaw/paperkey and describes printing an OpenPGP key
@@ -52,5 +84,6 @@ category-path:
   - key-backup
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
