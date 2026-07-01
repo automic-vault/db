@@ -7,6 +7,71 @@ docs:
   - https://www.azul.com/products/components/jhiccup
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      jHiccup spread among JVM performance engineers because it measures latency
+      symptoms from the application's point of view rather than only reporting
+      garbage-collector events. Azul's product page and Prime documentation keep it
+      available as an open-source component and describe its use in evaluating JVM
+      runtime pauses.
+    - >
+      Its package-manager footprint is narrower than general-purpose CLIs, but Homebrew
+      and Nix packaging make sense: the audience is specialized, and the tool is most
+      useful when an engineer can install it quickly on a machine under test.
+  package-nerd-significance:
+    - >
+      For package nerds, jHiccup is a good example of a tiny diagnostic package with a
+      highly specific audience. It packages an expert performance concept into
+      command-line tools, a Java agent, and log-processing utilities rather than a full
+      monitoring platform.
+    - >
+      It is also historically tied to HdrHistogram and the Java low-latency community,
+      where percentile distributions and pause visibility matter more than average
+      throughput.
+  project-history:
+    - >
+      The public repository was created in 2013 and the README identifies the author as
+      Gil Tene of Azul Systems. The first tagged line visible in the repository is
+      jHiccup 1.3.5 from November 2013, and the 2.0.x line reached 2.0.10 in 2018.
+    - >
+      The tool reflects Azul's long-running focus on Java pause behavior. It can run as
+      a Java agent, attach to an already running process, or wrap an existing Java
+      command, making it practical for production-like measurements without rewriting
+      the application under test.
+  related-projects:
+    - HdrHistogram is the histogram format and library used by jHiccup logs.
+    - >
+      HistogramLogAnalyzer and HdrHistogramVisualizer are named by the README as tools
+      for analyzing or plotting histogram logs.
+    - Azul Prime documentation uses jHiccup as part of JVM pause evaluation workflows.
+  sources:
+    - https://api.github.com/repos/giltene/jHiccup
+    - https://docs.azul.com/prime/jHiccup
+    - https://github.com/giltene/jHiccup
+    - https://raw.githubusercontent.com/giltene/jHiccup/master/README.md
+    - https://www.azul.com/products/components/jhiccup/
+  summary:
+    - >
+      jHiccup is Gil Tene's Java latency-observation tool for measuring platform pauses,
+      including JVM stalls and operating-system or hardware scheduling noise. It records
+      the delays a Java application experiences when it is not continuously runnable.
+  timeline:
+    - '2013: The public jHiccup repository was created and jHiccup 1.3.5 was tagged.'
+    - '2018: jHiccup 2.0.10 was tagged.'
+    - >
+      2021: The README was updated with a Works with OpenJDK badge, reflecting continued
+      compatibility signaling.
+  usage:
+    - >
+      jHiccup starts a thread that sleeps at a small interval and records wake-up delays
+      beyond the expected sleep time. It writes histogram logs that can be processed by
+      jHiccupLogProcessor or viewed with HdrHistogram-based tools.
+    - >
+      Common use cases include comparing JVM pause behavior, separating
+      application-visible stalls from operating-system noise, attaching a control
+      process for baseline idle hiccups, and producing charts for latency
+      investigations.
 category: developer-tools
 package-manager:
   brew: jhiccup
@@ -27,5 +92,12 @@ executables:
   - jHiccupPlotter
 provenance:
   formula: jhiccup
+  history-sources:
+    - https://api.github.com/repos/giltene/jHiccup
+    - https://docs.azul.com/prime/jHiccup
+    - https://github.com/giltene/jHiccup
+    - https://raw.githubusercontent.com/giltene/jHiccup/master/README.md
+    - https://www.azul.com/products/components/jhiccup/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -6,6 +6,69 @@ docs:
   - https://github.com/omniti-labs/jlog/blob/master/CONCEPTS.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README documents installation via FreeBSD's `databases/jlog` port and Homebrew
+      on macOS, while the input package metadata records Homebrew packaging. Its
+      adoption story is narrower than general-purpose queues because it is a library and
+      CLI toolkit for systems that need local durability rather than a networked broker.
+  package-nerd-significance:
+    - >
+      JLog is package-nerdy because it is small, old-school C infrastructure: not a
+      fashionable distributed queue, but a durable local primitive with command-line
+      tools such as `jlogctl` and `jlogtail`. It matters in package indexes as a compact
+      building block for logging and asynchronous notification systems.
+  project-history:
+    - >
+      The project comes from OmniTI Labs and the README lists Wez Furlong, Alec
+      Peterson, George Schlossnagle, Theo Schlossnagle, and Alexey Toptygin as the team.
+      The changelog begins with a 1.0 initial release on 2009-05-13, placing JLog in the
+      older generation of C infrastructure libraries built for reliable log and event
+      pipelines.
+    - >
+      JLog evolved through operational fixes and API additions rather than broad feature
+      expansion. The 2.x line added Darwin support, `jlogtail`, repair APIs, Java and
+      PHP support, bulk reads, precommit-buffer performance work, and later
+      filesystem-focused fixes around `mmap`, compression, and short writes.
+  related-projects:
+    - >
+      JLog sits near local durable queues, log buffers, and broker-adjacent
+      infrastructure rather than general log viewers. Its README contrasts the low-level
+      local queue with the network service an implementor would build around it for
+      remote consumption.
+  sources:
+    - https://github.com/omniti-labs/jlog#readme
+    - https://github.com/omniti-labs/jlog/blob/master/CONCEPTS.md
+  summary:
+    - >
+      JLog is a pure-C durable message queue whose name expands to journaled log. It
+      gives publishers and multiple subscribers a low-level on-disk log abstraction,
+      with segment files retained until subscribers have consumed and checkpointed them.
+  timeline:
+    - '2009: Version 1.0 is released.'
+    - '2011: Version 1.2 fixes interrupted `fstat()` handling and an uninitialized variable.'
+    - '2013: Version 1.2.2 adds PHP and Java JNI support.'
+    - '2015: Version 2.0.0 adds Darwin support, `jlogtail`, cleanup APIs, and robustness work.'
+    - '2016: Version 2.2.1 adds a precommit buffer and lockless writes using `pwritev`.'
+    - '2017: Version 2.3.0 adds the bulk-read API.'
+    - >
+      2020: Version 2.5.0 reworks `jlogctl` around subcommands and adds repair/metastore
+      reconstruction.
+    - >
+      2024: Version 2.6.0 adds an option to switch message reads from `mmap` to `pread`
+      and fixes compression and short-write issues.
+  usage:
+    - >
+      JLog is used when an application needs to write records locally and let one or
+      more subscribers consume them later. The README's sample scenario is log shipping:
+      server A writes to a JLog if server B is down, so A keeps operating and B can
+      later consume messages.
+    - >
+      The concepts document explains the core model: a JLog is a directory containing
+      control files and segment files; writers append messages; subscribers keep unique
+      names and checkpoint progress; segment files are removed after all subscribers
+      have moved past them.
 tags:
   - c
   - cli
@@ -33,6 +96,9 @@ provenance:
     - source_facts.name is jlog.
   docs-sources:
     - Official GitHub repository exposes README and CONCEPTS.md as project documentation.
+  history-sources:
+    - https://github.com/omniti-labs/jlog#readme
+    - https://github.com/omniti-labs/jlog/blob/master/CONCEPTS.md
   repo-sources:
     - source_facts.repo is already populated, so repo was intentionally not re-determined.
   tags-sources:
@@ -48,5 +114,6 @@ category-path:
   - message-queue
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
