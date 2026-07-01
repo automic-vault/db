@@ -7,6 +7,67 @@ docs:
   - https://github.com/ocaml/ocamlfind#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Camlcity's project page describes Findlib as the de-facto standard for OCaml
+      library management after years of development, with free OCaml software depending
+      on it and distributions such as GODI and Debian ensuring libraries ship META
+      files. opam later became the primary source-based package manager for OCaml, but
+      ocamlfind remained the compatibility layer many build systems and packages use to
+      locate installed libraries inside a switch.
+  package-nerd-significance:
+    - >
+      Findlib matters because it separated OCaml library identity from ad hoc include
+      paths. A package database of META files gave distro packagers, opam packages, and
+      build tools a shared vocabulary before Dune became dominant, and many older OCaml
+      packages still expose findlib names that differ from their opam package names.
+  project-history:
+    - >
+      Findlib was created by Gerd Stolpmann and dates back to the Objective Caml era;
+      the upstream README records copyright years beginning in 1999, and a Caml-list
+      announcement records findlib 1.0 as a compatibility-preserving major release that
+      required OCaml 3.07. The project page describes the package as a convention for
+      storing libraries plus a META file format, with ocamlfind as the tool that
+      interprets those files.
+  related-projects:
+    - >
+      opam manages source packages and compiler switches; findlib manages installed
+      library discovery within those environments. Dune can generate and consume package
+      metadata, but ocamlfind remains the historical bridge between installed OCaml
+      libraries and compiler invocations.
+  sources:
+    - https://github.com/ocaml/ocamlfind
+    - https://github.com/ocaml/ocamlfind/blob/master/doc/README.xml
+    - https://groups.google.com/g/fa.caml/c/SB0v54-klb4
+    - https://man.archlinux.org/man/ocamlfind.1.en
+    - https://opam.ocaml.org/packages/ocamlfind/
+    - https://projects.camlcity.org/projects/findlib.html
+  summary:
+    - >
+      ocaml-findlib provides findlib and the ocamlfind command, the long-standing
+      library discovery and compiler-driver layer for OCaml libraries. Its core idea is
+      small but ecosystem-shaping: libraries install META files that describe versions,
+      compiler options, archives, dependencies, and predicates, and ocamlfind turns
+      those descriptions into compiler and linker flags.
+  timeline:
+    - >
+      1999: The upstream README's copyright range begins, placing Findlib's origin in
+      the late Objective Caml period.
+    - >
+      2004: The findlib 1.0 announcement described a large but backward-compatible
+      release and added package subpackages.
+    - >
+      2010s: Findlib became the de-facto OCaml library-management convention documented
+      by Camlcity and used by distributions.
+    - '2025-02-05: opam published ocamlfind 1.9.8 with build-related fixes.'
+  usage:
+    - >
+      Developers invoke ocamlfind as a wrapper around ocamlc, ocamlopt, ocamldep, and
+      related tools, passing package selections such as -package and -linkpkg. Build
+      systems use the same mechanism to query installed packages and translate
+      package-level dependencies into the include paths, archives, C stubs, linker
+      options, and runtime DLL paths expected by the compiler.
 category: developer-tools
 package-manager:
   apk: ocaml-findlib
@@ -29,5 +90,13 @@ executables:
   - ocamlfind
 provenance:
   formula: ocaml-findlib
+  history-sources:
+    - https://github.com/ocaml/ocamlfind
+    - https://github.com/ocaml/ocamlfind/blob/master/doc/README.xml
+    - https://groups.google.com/g/fa.caml/c/SB0v54-klb4
+    - https://man.archlinux.org/man/ocamlfind.1.en
+    - https://opam.ocaml.org/packages/ocamlfind/
+    - https://projects.camlcity.org/projects/findlib.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

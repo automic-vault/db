@@ -5,6 +5,80 @@ docs:
   - https://gitlab.com/yawning/obfs4/-/blob/master/README.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Tor's bridge-operator documentation tells volunteers how to set up an obfs4 bridge
+      for censored users and links platform-specific deployment guides across Linux
+      distributions, BSD systems, Windows, and Docker. The same Tor page notes that the
+      obfs4 project was renamed to lyrebird for source-building guidance, reflecting a
+      handoff in anti-censorship transport maintenance while the `obfs4proxy` package
+      name persists in distributions.
+    - >
+      Debian packages obfs4proxy in the net section and describes it as compliant with
+      the Tor pluggable transports specification, containing both client and bridge
+      functionality in one program. Homebrew core packaged version 0.0.14 and recorded
+      532 installs over 365 days in the 2026-07-01 formula JSON.
+  package-nerd-significance:
+    - >
+      obfs4proxy is significant because it is not just another proxy binary; it is
+      distribution-packaged anti-censorship infrastructure. Package managers make it
+      easy for bridge operators and users to deploy the exact helper process Tor
+      expects, while preserving a small single-executable interface around fairly
+      specialized cryptographic and transport behavior.
+  project-history:
+    - >
+      The upstream README describes obfs4 as a "look-like nothing" obfuscation protocol
+      that borrows concepts from Philipp Winter's ScrambleSuit while changing the
+      handshake design. The protocol uses the Tor Project's ntor handshake with public
+      keys obfuscated through Elligator 2, and the link layer uses NaCl secret boxes
+      based on Poly1305 and XSalsa20.
+    - >
+      The GitLab project record was created on 2019-01-16, but the protocol and proxy
+      have older Tor ecosystem roots; Debian packaging and historical discussions
+      predate that GitLab creation date. The executable kept compatibility paths for
+      obfs2 and obfs3 client/server modes and ScrambleSuit client mode to ease migration
+      while obfs4 became the main focus.
+  related-projects:
+    - >
+      obfs4proxy belongs to Tor's pluggable-transport family and is related to older
+      transports obfs2, obfs3, and ScrambleSuit, plus later Tor anti-censorship
+      transports such as WebTunnel and Snowflake. The upstream project page and Tor
+      bridge guide connect the historical obfs4 name with the lyrebird source project
+      name used in newer Tor documentation.
+  sources:
+    - https://community.torproject.org/relay/setup/bridge/
+    - https://formulae.brew.sh/api/formula/obfs4proxy.json
+    - https://gitlab.com/api/v4/projects/yawning%2Fobfs4
+    - https://gitlab.com/yawning/obfs4
+    - https://packages.debian.org/unstable/net/obfs4proxy
+    - https://spec.torproject.org/pt-spec/index.html
+  summary:
+    - >
+      obfs4proxy is the executable from Yawning Angel's obfs4 project, a Go
+      implementation of the obfs4 Tor pluggable transport. Its job is to transform Tor
+      traffic between a censored client and a bridge so that network observers see
+      obfuscated traffic rather than a recognizable Tor connection.
+  timeline:
+    - '2019-01-16: the GitLab project record for yawning/obfs4 was created.'
+    - >
+      2026-07-01: Homebrew core formula metadata listed stable version 0.0.14 and the
+      `obfs4proxy` executable.
+    - >
+      2026-07-01: Debian sid package metadata listed obfs4proxy 0.0.14-2 variants across
+      multiple architectures.
+  usage:
+    - >
+      Operators run obfs4proxy from Tor configuration using `ServerTransportPlugin obfs4
+      exec ...` on bridges and `ClientTransportPlugin obfs4 exec ...` on clients. The
+      upstream README also documents generated bridge parameters in Tor's
+      pluggable-transport state directory and suggests using Linux capabilities when a
+      bridge needs to bind low-numbered ports without running as root.
+    - >
+      The Tor pluggable transport specification explains the broader architecture that
+      obfs4proxy implements: Tor launches modular subprocesses that transform traffic
+      for censorship circumvention. In practice, obfs4proxy is the subprocess that
+      speaks the obfs4 transport while Tor handles relay and bridge behavior around it.
 tags:
   - censorship-circumvention
   - cli
@@ -38,6 +112,13 @@ provenance:
     - >
       Official GitLab README documents protocol purpose, dependencies, installation, and
       Tor configuration examples.
+  history-sources:
+    - https://community.torproject.org/relay/setup/bridge/
+    - https://formulae.brew.sh/api/formula/obfs4proxy.json
+    - https://gitlab.com/api/v4/projects/yawning%2Fobfs4
+    - https://gitlab.com/yawning/obfs4
+    - https://packages.debian.org/unstable/net/obfs4proxy
+    - https://spec.torproject.org/pt-spec/index.html
   repo-sources:
     - >
       source_facts.repo already has https://gitlab.com/yawning/obfs4; per instruction
@@ -54,5 +135,6 @@ category-path:
   - privacy
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
