@@ -8,6 +8,87 @@ config-file-location:
     - .gitattributes
     - .git-crypt/
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      git-crypt became a common answer for repositories that are mostly public or
+      shareable but contain a small number of encrypted secrets. Its README and project
+      page stress graceful degradation: contributors without the key can clone and
+      commit, but cannot read encrypted file contents.
+    - >
+      Package-manager adoption is broad for a niche security tool, with packages across
+      Homebrew, Debian and Ubuntu, Fedora-family distributions, MacPorts, Nix,
+      Arch-family repositories, Scoop, and others in the input metadata. That breadth
+      reflects stable CLI demand rather than a large framework ecosystem.
+  package-nerd-significance:
+    - >
+      git-crypt is significant because it turns Git's filter machinery into a
+      packaging-friendly secrets workflow without requiring a service, a custom remote,
+      or a separate encrypted repository. That simplicity made it attractive to
+      developers who wanted secrets-in-repo ergonomics with ordinary Git hosting.
+    - >
+      It also has the classic maintainer tradeoffs of a security CLI: OpenSSL
+      compatibility, GPG behavior, Git filter semantics, deterministic encryption
+      constraints, and clear documentation of what is not protected.
+  project-history:
+    - >
+      The Git history starts in July 2012, and the first release, 0.1, followed in
+      November 2012. The author's project page explains the motivation: protecting
+      secret material in a configuration-management repository while still letting other
+      people inspect and contribute to the non-secret parts.
+    - >
+      Version 0.4 in 2014 was a major workflow release: it added optional GPG support,
+      stored the symmetric key inside `.git`, added multiple-key support, introduced
+      `git-crypt status`, and began experimental Windows support. Version 0.5 in 2015
+      added the man page and improved lock and unlock performance with newer Git
+      versions.
+    - >
+      Later releases were maintenance-oriented. Version 0.6 in 2017 added OpenSSL 1.1
+      support, switched to C++11, honored Git configuration such as `gpg.program`, and
+      added `git-crypt.repoStateDir`. Version 0.7 in 2022 addressed macOS argument-list
+      issues, and version 0.8 in 2025 adjusted OpenSSL support and avoided problematic
+      short GPG key IDs.
+  related-projects:
+    - >
+      git-remote-gcrypt is named in the README as a better fit for encrypting an entire
+      repository.
+    - GnuPG is used by git-crypt's multi-user sharing mode.
+    - >
+      Git attributes and Git filter drivers are the Git mechanisms that make transparent
+      encryption and decryption work.
+  sources:
+    - https://github.com/AGWA/git-crypt documents repository usage and source history.
+    - >
+      https://github.com/AGWA/git-crypt/blob/master/NEWS.md documents release
+      progression from 0.1 through 0.8.
+    - >
+      https://www.agwa.name/projects/git-crypt documents the author, motivation, usage
+      model, dependencies, limitations, and project resources.
+  summary:
+    - >
+      git-crypt is Andrew Ayer's transparent encryption tool for selected files in a Git
+      repository. It uses Git filters so protected files are encrypted in commits and
+      decrypted in a working tree after the repository is unlocked.
+  timeline:
+    - '2012: Development begins in Git, followed by the 0.1 release.'
+    - >
+      2014: Version 0.4 adds optional GPG support, multiple-key support, status
+      reporting, and experimental Windows support.
+    - '2015: Version 0.5 adds a man page and improves lock and unlock performance.'
+    - '2017: Version 0.6 adds OpenSSL 1.1 support and switches to C++11.'
+    - '2022: Version 0.7 fixes macOS and argument-handling issues.'
+    - '2025: Version 0.8 adjusts OpenSSL support and avoids short GPG key IDs.'
+  usage:
+    - >
+      Users initialize a repository with `git-crypt init`, mark protected paths in
+      `.gitattributes` with `filter=git-crypt diff=git-crypt`, and unlock after cloning
+      with either GPG keys or an exported symmetric key.
+    - >
+      Practitioners use it for secrets that belong beside source or infrastructure code,
+      such as private keys, passwords, API credentials, or environment-specific files.
+      The documentation is explicit about limits: file names, commit messages, symlink
+      targets, and other metadata are not encrypted, and access revocation is not solved
+      for old history.
 tags:
   - cli
   - encryption
@@ -34,6 +115,14 @@ provenance:
     - >
       Official GitHub README is the primary documentation surface and links back to the
       official AGWA project page.
+  history-sources:
+    - https://github.com/AGWA/git-crypt documents repository usage and source history.
+    - >
+      https://github.com/AGWA/git-crypt/blob/master/NEWS.md documents release
+      progression from 0.1 through 0.8.
+    - >
+      https://www.agwa.name/projects/git-crypt documents the author, motivation, usage
+      model, dependencies, limitations, and project resources.
   repo-sources:
     - >
       source_facts.repo is empty; source_facts.homepage is the official AGWA project
@@ -48,5 +137,6 @@ category-path:
   - encryption
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
