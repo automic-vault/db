@@ -9,6 +9,61 @@ config-file-location:
   unix: ./config.yaml
 credentials-file-location:
   unix: ./.runner
+history:
+  adoption-history:
+    - >
+      Adoption follows Gitea Actions itself: administrators enable Actions on a Gitea
+      instance, create or obtain runner registration tokens, and attach one or more
+      runner processes to supply build capacity. Packaging in Homebrew, Alpine, Arch,
+      and WinGet makes the runner fit the same self-hosted deployment culture as Gitea.
+  package-nerd-significance:
+    - >
+      For package-manager users, Gitea Runner is the small binary that turns a packaged
+      Gitea server from code hosting into a self-contained CI system. It matters because
+      it avoids a separate hosted CI dependency while keeping the workflow syntax close
+      to GitHub Actions.
+  project-history:
+    - >
+      The runner codebase descends from the act-runner effort around Gitea Actions. The
+      official repository's Git history begins in 2019 with support for GitHub
+      Actions-style execution, while the Gitea-runner release stream begins with v0.0.1
+      in 2023 and reaches the renamed Gitea Runner 1.x and 2.x series in 2026.
+    - >
+      The project evolved from a companion binary for early Actions support into a
+      documented part of the Gitea platform. Its README and Gitea documentation describe
+      binary, container, Docker-in-Docker, rootless Docker-in-Docker, cache server,
+      label, and post-task-script modes, reflecting the operational concerns of running
+      CI workers for many repositories.
+  related-projects:
+    - >
+      Gitea Runner is closely tied to Gitea, Gitea Actions, workflow files in
+      repositories, and the nektos/act ecosystem that influenced local execution of
+      GitHub Actions workflows.
+  sources:
+    - https://blog.gitea.com/release-of-runner-2.0.0
+    - https://docs.gitea.com/usage/actions/act-runner
+    - https://gitea.com/gitea/runner
+  summary:
+    - >
+      Gitea Runner is the official runner for Gitea Actions, the workflow automation
+      system used by Gitea installations. It gives self-hosted Gitea sites a worker
+      process that can register with an instance, accept jobs, and execute GitHub
+      Actions-style workflows through Docker or host execution labels.
+  timeline:
+    - '2019: Runner repository history begins with GitHub Actions-style execution work.'
+    - '2023: v0.0.1 appears in the runner release stream.'
+    - '2026: v1.0.0 and v2.0.0 mark the renamed Gitea Runner series.'
+  usage:
+    - >
+      Practitioners use Gitea Runner by generating or supplying a YAML config,
+      registering the runner with a Gitea instance URL and token, then running the
+      daemon. Container deployments often mount the Docker socket or run
+      Docker-in-Docker images so workflow jobs can execute inside job containers.
+    - >
+      Labels are central to day-to-day use: a label such as an Ubuntu image or a host
+      execution label controls which workflows can target the runner and how jobs are
+      launched. Operators also configure cache behavior, ephemeral runners, registration
+      state, and cleanup scripts when they need repeatable CI nodes.
 category: developer-tools
 package-manager:
   apk: gitea-runner
@@ -29,5 +84,10 @@ executables:
   - gitea-runner
 provenance:
   formula: gitea-runner
+  history-sources:
+    - https://blog.gitea.com/release-of-runner-2.0.0
+    - https://docs.gitea.com/usage/actions/act-runner
+    - https://gitea.com/gitea/runner
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

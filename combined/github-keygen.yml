@@ -8,6 +8,61 @@ config-file-location:
   unix: ~/.ssh/config
 credentials-file-location:
   unix: ~/.ssh/id_<github-account>@github
+history:
+  adoption-history:
+    - >
+      Adoption appears niche and security-oriented. The tool serves users who want
+      repeatable GitHub SSH setup, multiple GitHub accounts, per-machine keys, host
+      aliases, strict host checking, and conservative handling of an existing SSH
+      config.
+  package-nerd-significance:
+    - >
+      Its package value is in codifying a careful SSH setup that many developers
+      otherwise perform by hand. That makes it a tiny but opinionated tool for users who
+      maintain several GitHub identities or machines and prefer generated config over
+      checklist-driven setup.
+  project-history:
+    - >
+      The repository history begins with an initial release in May 2011. Its
+      author-maintained README frames the tool as a one-shot wizard rather than a
+      long-running daemon or library: users clone it, run it for a GitHub account,
+      inspect the generated SSH configuration, and can remove the tool afterward.
+    - >
+      The changelog shows the project tracking practical SSH and GitHub changes over
+      time: stronger cipher choices in the 1.020 series, OpenSSH roaming mitigation in
+      1.101, generated-config versioning in 1.200, GitHub key comparison in 1.300,
+      larger and then Ed25519 default keys in later releases, and post-quantum
+      key-exchange list updates in 1.401.
+  related-projects:
+    - >
+      github-keygen relates to OpenSSH, GitHub SSH authentication, Git for Windows, and
+      GitHub's SSH key-management workflow.
+  sources:
+    - https://github.com/dolmen/github-keygen
+    - https://github.com/dolmen/github-keygen/commits/release
+    - https://github.com/dolmen/github-keygen/releases
+  summary:
+    - >
+      github-keygen is a small Perl utility by Olivier Mengue for bootstrapping and
+      maintaining OpenSSH configuration for GitHub. It creates a dedicated GitHub SSH
+      key, writes a dedicated SSH config section, and installs GitHub host fingerprints
+      in a separate known-hosts file.
+  timeline:
+    - '2011: Initial release appears in the repository history.'
+    - '2012: v1.000 begins the tagged release stream.'
+    - '2016: v1.101 adds OpenSSH roaming vulnerability mitigation.'
+    - '2022: v1.306 changes default key size and removes older GitHub host-key algorithms.'
+    - '2025: v1.400 switches new keys to Ed25519 by default.'
+  usage:
+    - >
+      Practitioners run github-keygen with a GitHub username to generate or update SSH
+      files under ~/.ssh. The generated setup gives GitHub its own key, known_hosts
+      file, public-key-only authentication, strict host checking, and account-specific
+      host aliases for Git remotes.
+    - >
+      The README emphasizes local auditability: the script is readable Perl, writes
+      configuration files rather than a resident service, and can check GitHub public
+      endpoints to verify registered keys unless the offline flag is used.
 category: developer-tools
 package-manager:
   brew: github-keygen
@@ -25,5 +80,10 @@ executables:
   - github-keygen
 provenance:
   formula: github-keygen
+  history-sources:
+    - https://github.com/dolmen/github-keygen
+    - https://github.com/dolmen/github-keygen/commits/release
+    - https://github.com/dolmen/github-keygen/releases
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium
