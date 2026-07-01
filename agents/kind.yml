@@ -7,6 +7,78 @@ config-file-location:
   unix:
     - config.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      kind became one of the default tools for Kubernetes contributors, CI jobs,
+      controller developers, and local cluster users who need fast disposable clusters.
+      Its value is especially clear for tests that need real Kubernetes APIs without
+      provisioning a managed cluster.
+    - >
+      The package-manager metadata in this batch lists kind across Homebrew, Chocolatey,
+      Debian, Fedora, MacPorts, Nix, Scoop, winget, Alpine, and openSUSE. That broad
+      packaging spread reflects kind's role as a cross-platform Kubernetes developer
+      utility.
+  package-nerd-significance:
+    - >
+      kind is package-nerd significant because it compressed an entire Kubernetes test
+      cluster into a small CLI plus container images. That made Kubernetes integration
+      tests scriptable on laptops and CI runners without a VM manager or cloud account.
+    - >
+      It also sits at an interesting packaging boundary: the CLI is just one binary, but
+      useful operation depends on Docker, podman, or nerdctl, kubeadm behavior,
+      Kubernetes image versions, containerd changes, and pinned node-image digests.
+  project-history:
+    - >
+      The kind design documents describe a suite of Go packages, a command-line
+      interface, and node/base images for running local Kubernetes clusters cheaply and
+      reproducibly. The initial design targeted Kubernetes testing, integration with
+      kubetest, and clusters that could be replicated by any developer without cloud
+      infrastructure.
+    - >
+      kind's implementation model is intentionally Kubernetes-native: node containers
+      run the Kubernetes components, and clusters are bootstrapped with kubeadm. The
+      public docs emphasize multi-node and high-availability clusters, building
+      Kubernetes release builds from source, support for Linux, macOS, and Windows, and
+      conformance certification.
+  related-projects:
+    - Kubernetes is the upstream system kind runs and tests.
+    - kubeadm is the bootstrap tool kind uses inside node images.
+    - Docker, podman, and nerdctl are supported container runtimes for local nodes.
+    - kubetest is named in the design and README as an integration target.
+  sources:
+    - https://github.com/kubernetes-sigs/kind
+    - https://github.com/kubernetes-sigs/kind/releases
+    - https://kind.sigs.k8s.io/
+    - https://kind.sigs.k8s.io/docs/design/initial
+    - https://kind.sigs.k8s.io/docs/user/quick-start/
+  summary:
+    - >
+      kind, short for Kubernetes IN Docker, is a Kubernetes SIGs tool for running local
+      Kubernetes clusters where each node is a Docker container. It was designed
+      primarily for testing Kubernetes itself, but it also became a standard
+      local-development and CI tool.
+  timeline:
+    - >
+      Design: The initial kind design defined Kubernetes-in-Docker clusters as
+      Docker-container nodes for local Kubernetes testing.
+    - >
+      2020: Public interest and adoption grew as local Kubernetes-in-Docker workflows
+      became common for development and CI.
+    - >
+      2026: kind v0.32.0 release notes described Kubernetes 1.36.1 defaults, kubeadm
+      v1beta4 support, containerd config v4 support, and Envoy replacing HAProxy for
+      multi-control-plane load balancing.
+  usage:
+    - >
+      The common workflow is to install the kind binary, run kind create cluster, test
+      against the generated kubeconfig, and delete the cluster afterward. More advanced
+      users provide config.yaml files for multi-node clusters, port mappings, custom
+      node images, local registries, and CI-specific settings.
+    - >
+      kind is also used to build and test Kubernetes node images. Its release notes
+      publish node-image digests and warn users to pin images by digest for
+      reproducibility.
 tags:
   - cli
   - docker
@@ -33,6 +105,12 @@ provenance:
     - >
       source_facts.homepage is the official kind site; /docs is its official
       documentation section.
+  history-sources:
+    - https://github.com/kubernetes-sigs/kind
+    - https://github.com/kubernetes-sigs/kind/releases
+    - https://kind.sigs.k8s.io/
+    - https://kind.sigs.k8s.io/docs/design/initial
+    - https://kind.sigs.k8s.io/docs/user/quick-start/
   repo-sources:
     - >
       source_facts.repo already provides the official repository, so repo is returned as
@@ -45,5 +123,6 @@ category-path:
   - kubernetes
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -9,6 +9,74 @@ config-file-location:
     - /etc/request-key.d/*.conf
     - /etc/key.dns_resolver.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      keyutils is packaged broadly because it is glue for Linux authentication,
+      filesystem, DNS, and crypto-adjacent workflows rather than an optional
+      application. The batch metadata records packages in Alpine, Homebrew, Debian,
+      Fedora, Nix, Arch, Ubuntu, and openSUSE/Zypper ecosystems.
+    - >
+      The Linux kernel documentation describes keyrings as a kernel service for caching
+      cryptographic keys, authentication tokens, cross-domain user mappings, and related
+      data for filesystems and kernel services. keyutils is the standard user-space
+      companion for inspecting and operating on that facility.
+  package-nerd-significance:
+    - >
+      keyutils is a classic small package with outsized system importance: it exposes
+      kernel ABI surfaces, ships a shared library and manual pages, and changes as the
+      Linux key subsystem adds capabilities. It is the kind of package that may be
+      invisible on a workstation until Kerberos, encrypted filesystems, DNS resolver
+      keys, module signing, or request-key upcalls need it.
+  project-history:
+    - >
+      David Howells created the keyutils package in July 2005, shortly after the Linux
+      key-management facility became a user-visible subsystem. The package grew from
+      command-line control utilities into a split utility, runtime-library, and
+      development-header package with manual pages and request-key integration.
+    - >
+      The keyutils spec changelog shows a long maintenance arc tied to kernel
+      capabilities: version 1.0 in November 2005 renamed the library/header to keyutils
+      and introduced library symbol versioning; version 1.3 in February 2010 exposed
+      security-context and parent-session-keyring operations; version 1.5 in March 2011
+      added KEYCTL_REJECT, KEYCTL_INSTANTIATE_IOV, DNS lookup generalization, and more
+      keyctl commands; version 1.6 in November 2018 added public-key operations that
+      required Linux 4.20.
+  related-projects:
+    - >
+      The Linux kernel key retention service is the kernel-side subsystem. Linux
+      man-pages documents many of the system-call interfaces, while request-key and
+      key.dns_resolver are user-space helpers shipped in keyutils.
+  sources:
+    - https://formulae.brew.sh/formula/keyutils
+    - https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/keyutils.git/plain/README
+    - >
+      https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/keyutils.git/plain/keyutils.spec
+    - https://www.kernel.org/doc/html/latest/security/keys/core.html
+  summary:
+    - >
+      keyutils is the user-space utility and library package for the Linux kernel key
+      retention service. It provides tools such as keyctl, request-key, and
+      key.dns_resolver, plus libkeyutils for programs that need to call the kernel
+      key-management interfaces.
+  timeline:
+    - '2005-07-12: keyutils package creation.'
+    - >
+      2005-11-28: version 1.0 renamed the library and header to keyutils and added
+      symbol versioning.
+    - >
+      2011-03-10: version 1.5 added newer keyctl functionality including KEYCTL_REJECT
+      and KEYCTL_INSTANTIATE_IOV.
+    - '2018-11-13: version 1.6 added public-key operations requiring Linux 4.20.'
+    - >
+      2020-07-07: version 1.6.3 adjusted key change notifications to use
+      pipe2(O_NOTIFICATION_PIPE).
+  usage:
+    - >
+      Administrators and system services use keyctl to add, link, search, read,
+      invalidate, and manage keys and keyrings. request-key is invoked by the
+      kernel-side request-key callback path when a key must be instantiated in user
+      space, and key.dns_resolver supports DNS-related upcalls.
 tags:
   - cli
   - kernel
@@ -38,6 +106,12 @@ provenance:
     - >
       Official kernel.org source tree provides README documentation; no separate
       dedicated docs domain was identified.
+  history-sources:
+    - https://formulae.brew.sh/formula/keyutils
+    - https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/keyutils.git/plain/README
+    - >
+      https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/keyutils.git/plain/keyutils.spec
+    - https://www.kernel.org/doc/html/latest/security/keys/core.html
   repo-sources:
     - >
       source_facts.repo is empty; source_facts.homepage and source_facts.source-archive
@@ -53,5 +127,6 @@ category-path:
   - key-management
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
