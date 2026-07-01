@@ -8,6 +8,78 @@ docs:
 config-file-location: null
 credentials-file-location:
   unix: ~/.mcp-auth
+history:
+  adoption-history:
+    - >
+      mcp-remote gained adoption as a one-line `npx` adapter in client configuration
+      files. GitHub metadata showed more than a thousand stars and hundreds of forks by
+      July 2026, and tags indicated continued 0.1.x package iteration.
+    - >
+      Its usage is closely tied to the adoption curve for remote MCP servers. As hosted
+      MCP services appeared before every client had native remote OAuth support,
+      mcp-remote gave users a package-level compatibility layer that could be installed
+      or executed on demand.
+  package-nerd-significance:
+    - >
+      mcp-remote is a textbook bridge package: it exists because the protocol moved
+      faster than client feature support. Package managers matter here because users can
+      patch a capability gap with one command in an MCP client config instead of
+      replacing the host application.
+    - >
+      The credential cache and OAuth behavior also make it more than a thin transport
+      pipe. For package maintainers and users, it codifies a reusable auth-and-transport
+      shim around remote MCP services while the ecosystem converges on native
+      implementations.
+  project-history:
+    - >
+      The repository was created in March 2025, after the MCP authorization
+      specification introduced a secure model for remote MCP servers. The README calls
+      the project a working proof of concept and explains the gap it fills: many clients
+      could launch local stdio servers, while remote HTTP/SSE servers and OAuth flows
+      were not yet uniformly supported.
+    - >
+      The project evolved around practical client configuration examples for Claude
+      Desktop, Cursor, Windsurf, and similar tools. Later README sections document
+      transport strategies, custom headers, static OAuth metadata, proxy environment
+      support, debug logs, and client-mode troubleshooting.
+  related-projects:
+    - >
+      sparfenyuk/mcp-proxy provides a broader MCP transport bridge without the same
+      OAuth-centered positioning.
+    - >
+      modelcontextprotocol/inspector can test MCP servers and includes
+      transport/debugging tooling.
+    - >
+      The MCP authorization specification is the upstream protocol feature that
+      motivated the project.
+  sources:
+    - https://api.github.com/repos/geelen/mcp-remote
+    - https://api.github.com/repos/geelen/mcp-remote/tags
+    - https://github.com/geelen/mcp-remote
+    - https://github.com/geelen/mcp-remote#readme
+    - https://modelcontextprotocol.io/specification/2025-03-26/basic/authorization
+  summary:
+    - >
+      mcp-remote is a TypeScript CLI that lets stdio-only MCP clients connect to remote
+      MCP servers, including servers that require OAuth. Its README explicitly frames it
+      as a temporary bridge until popular clients support remote authorized MCP servers
+      directly.
+  timeline:
+    - '2025: GitHub repository created for geelen/mcp-remote.'
+    - '2025: README documents MCP authorization support and stdio-to-remote bridging.'
+    - '2025: Client configuration examples cover Claude Desktop, Cursor, and Windsurf.'
+    - '2026: 0.1.x tags and repository activity continue as remote MCP adoption grows.'
+  usage:
+    - >
+      Typical use places `npx mcp-remote https://remote.mcp.server/sse` in the `command`
+      and `args` section of an MCP client configuration. The README documents flags for
+      headers, resource isolation, HTTP allowances, transport order, OAuth callback
+      port, ignored tools, and proxy environment variables.
+    - >
+      The tool stores credential information in `~/.mcp-auth` unless
+      `MCP_REMOTE_CONFIG_DIR` points elsewhere. The README also documents a
+      `mcp-remote-client` mode for running an authorization flow from the command line
+      when troubleshooting stale credentials or token refresh problems.
 category: developer-tools
 package-manager:
   brew: mcp-remote
@@ -26,5 +98,12 @@ executables:
   - mcp-remote-client
 provenance:
   formula: mcp-remote
+  history-sources:
+    - https://api.github.com/repos/geelen/mcp-remote
+    - https://api.github.com/repos/geelen/mcp-remote/tags
+    - https://github.com/geelen/mcp-remote
+    - https://github.com/geelen/mcp-remote#readme
+    - https://modelcontextprotocol.io/specification/2025-03-26/basic/authorization
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

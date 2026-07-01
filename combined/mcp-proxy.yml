@@ -7,6 +7,75 @@ docs:
   - https://github.com/sparfenyuk/mcp-proxy#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The project is packaged on PyPI, can be installed with uv or pipx, and is also
+      available through Homebrew and Nix according to the input package facts. That mix
+      made it convenient for both Python tool users and package-manager users who wanted
+      a stable `mcp-proxy` command.
+    - >
+      GitHub metadata showed thousands of stars and hundreds of forks by July 2026, and
+      the release feed showed continued 0.x releases into 2026. That adoption pattern
+      matches its niche: a small command-line compatibility tool that becomes widely
+      referenced while clients catch up with newer MCP transports.
+  package-nerd-significance:
+    - >
+      mcp-proxy matters to package users because it turns transport support into a
+      package-manager-installable shim. Instead of waiting for every MCP client to
+      support every transport, users can install one CLI and keep existing server
+      packages unchanged.
+    - >
+      It is also a good example of the MCP ecosystem's early packaging style: small,
+      single-purpose CLIs distributed through language-native channels first, then
+      wrapped by system package managers once they become common glue in user
+      configurations.
+  project-history:
+    - >
+      The public repository was created in December 2024, early in the wave of small
+      utilities that filled gaps between rapidly changing MCP client and server
+      transport support. Its README defines two core modes: stdio to SSE/Streamable HTTP
+      and SSE to stdio.
+    - >
+      As MCP moved beyond purely local stdio servers, mcp-proxy became a practical
+      compatibility layer rather than a general-purpose network proxy. The README is
+      careful to frame it as a transport switcher for MCP clients and servers, with
+      command-line options for headers, OAuth client credentials, CORS, named servers,
+      and environment passing.
+  related-projects:
+    - >
+      modelcontextprotocol/inspector includes its own MCP proxy component for the
+      Inspector UI.
+    - >
+      geelen/mcp-remote focuses on remote MCP servers with OAuth support for stdio-only
+      clients.
+    - MCP clients such as Claude Desktop are common consumers of mcp-proxy configurations.
+  sources:
+    - https://api.github.com/repos/sparfenyuk/mcp-proxy
+    - https://api.github.com/repos/sparfenyuk/mcp-proxy/releases
+    - https://github.com/sparfenyuk/mcp-proxy
+    - https://github.com/sparfenyuk/mcp-proxy#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      mcp-proxy is a Python CLI bridge for switching between MCP transports. It connects
+      stdio-only MCP clients to remote SSE or Streamable HTTP servers, and can also
+      expose a local stdio server over an HTTP-facing MCP transport.
+  timeline:
+    - '2024: GitHub repository created for sparfenyuk/mcp-proxy.'
+    - '2025: README documents stdio, SSE, and Streamable HTTP transport bridging.'
+    - '2025: Named server configuration and JSON config support documented.'
+    - '2026: v0.12.0 release published, with active 0.x release cadence continuing.'
+  usage:
+    - >
+      In stdio-to-remote mode, users place `mcp-proxy` in an MCP client configuration
+      and pass the remote SSE endpoint or Streamable HTTP endpoint as an argument. The
+      README documents optional authorization headers and an `API_ACCESS_TOKEN`
+      environment variable for bearer-token scenarios.
+    - >
+      In remote-to-stdio mode, users run `mcp-proxy` with a local MCP server command and
+      a listening port, optionally defining named servers in JSON. This lets remote
+      clients reach local stdio MCP servers at URL paths such as `/servers/<name>/`.
 category: networking
 package-manager:
   brew: mcp-proxy
@@ -27,5 +96,12 @@ executables:
   - mcp-reverse-proxy
 provenance:
   formula: mcp-proxy
+  history-sources:
+    - https://api.github.com/repos/sparfenyuk/mcp-proxy
+    - https://api.github.com/repos/sparfenyuk/mcp-proxy/releases
+    - https://github.com/sparfenyuk/mcp-proxy
+    - https://github.com/sparfenyuk/mcp-proxy#readme
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
