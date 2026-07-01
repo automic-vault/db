@@ -9,6 +9,61 @@ credentials-file-location:
     - $KUBECONFIG
     - ~/.kube/config
     - $GOOGLE_APPLICATION_CREDENTIALS
+history:
+  adoption-history:
+    - >
+      Shopify used krane with its open-source Shipit deployment application, which made
+      the tool visible as part of Shopify's Kubernetes deployment story. Packaging
+      through RubyGems and Homebrew made it usable both as a Ruby library/tool and as a
+      standalone CLI in developer and CI environments.
+  package-nerd-significance:
+    - >
+      krane is a useful packaging example because it is a Ruby-origin Kubernetes tool
+      that installs like a CLI but delegates core state changes to kubectl and
+      kubeconfig. Its history also shows a clean package rename from a descriptive old
+      name to a shorter executable and namespace.
+  project-history:
+    - >
+      The project began publicly as Shopify's kubernetes-deploy tooling; the GitHub
+      repository was created on 2017-01-17. Its README explains that krane wraps kubectl
+      apply rather than replacing Kubernetes primitives, with rollout watching, failure
+      diagnostics, predeploy phases, EJSON secret handling, render, run, restart, and
+      global-deploy commands.
+    - >
+      The 1.0 migration guide documents the rename from kubernetes-deploy to krane at
+      version 1.0.0. That release redesigned the CLI, renamed the Ruby namespace, moved
+      metrics to the krane prefix, and split behavior such as rendering and global
+      resources into clearer commands.
+  related-projects:
+    - >
+      kubectl is the deployment primitive krane uses underneath. Shopify Shipit is the
+      related deployment application named in the README. EJSON is related through
+      krane's encrypted Kubernetes secret workflow.
+  sources:
+    - https://github.com/Shopify/ejson
+    - https://github.com/Shopify/krane
+    - https://github.com/Shopify/krane/blob/main/1.0-Upgrade.md
+    - https://github.com/Shopify/krane/releases/tag/v3.4.1
+    - https://github.com/Shopify/shipit-engine#kubernetes
+  summary:
+    - >
+      krane is Shopify's Kubernetes deployment CLI with rollout verification. It
+      occupies the space between raw kubectl apply and heavier deployment systems by
+      giving CI/CD jobs a clearer pass/fail answer and debug context.
+  timeline:
+    - '2017-01-17: The Shopify krane repository was created.'
+    - '2019-11-18: Version 1.0.0 committed the rename from kubernetes-deploy to krane.'
+    - '2024-01-29: Version v3.4.1 was published on GitHub.'
+  usage:
+    - >
+      A typical krane deploy command targets an application namespace and Kubernetes
+      context, using kubeconfig credentials from $KUBECONFIG or ~/.kube/config. For
+      Google Cloud authentication, the README documents $GOOGLE_APPLICATION_CREDENTIALS
+      as an additional credentials source.
+    - >
+      krane is commonly used where a deploy job needs to apply manifests, wait for
+      workload rollout, print actionable failure information, and optionally run one-off
+      tasks or render templates before deploy.
 tags:
   - cli
   - deployment
@@ -38,6 +93,12 @@ provenance:
     - >
       source_facts.homepage is the official GitHub repository; its README contains
       installation, usage, and configuration documentation.
+  history-sources:
+    - https://github.com/Shopify/ejson
+    - https://github.com/Shopify/krane
+    - https://github.com/Shopify/krane/blob/main/1.0-Upgrade.md
+    - https://github.com/Shopify/krane/releases/tag/v3.4.1
+    - https://github.com/Shopify/shipit-engine#kubernetes
   repo-sources:
     - Official GitHub repository is Shopify/krane.
     - >
@@ -55,5 +116,6 @@ category-path:
   - deployment
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

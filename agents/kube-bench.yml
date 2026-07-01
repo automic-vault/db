@@ -11,6 +11,76 @@ credentials-file-location:
   unix:
     - $KUBECONFIG
     - ~/.kube/config
+history:
+  adoption-history:
+    - >
+      kube-bench became one of the standard open source ways to run CIS checks against
+      Kubernetes. Its README documents multiple execution modes, including running
+      directly on a host, running inside a pod or job, and using Docker images, while
+      package managers such as Homebrew and Nix made the binary available for local
+      installation.
+    - >
+      Aqua later connected the same benchmark-checking idea to Trivy and Trivy Operator.
+      The kube-bench README states that both Trivy CLI and Trivy Operator support CIS
+      Kubernetes Benchmark scanning, and Aqua's Starboard/Trivy-era material shows
+      kube-bench checks being pulled into broader cloud-native security workflows.
+  package-nerd-significance:
+    - >
+      For package nerds, kube-bench is the rare CLI where packaging, data files, and
+      compliance semantics are inseparable. Shipping the right binary is not enough; the
+      package also needs the benchmark configuration tree that maps security-control
+      documents to concrete filesystem, API, and process checks.
+  project-history:
+    - >
+      The aquasecurity/kube-bench repository was created on 2017-06-19, during the
+      period when Kubernetes security hardening was moving from ad hoc guidance into
+      repeatable benchmark checks. The README states that kube-bench implements the CIS
+      Kubernetes Benchmark as closely as possible and asks users to distinguish tool
+      bugs from benchmark issues.
+    - >
+      The project architecture deliberately keeps test definitions in YAML files so they
+      can change as benchmark specifications evolve. That design let kube-bench follow
+      new Kubernetes versions, managed-service variants, OpenShift profiles,
+      k3s/RKE/RKE2 profiles, and STIG/hardening-guide sources without rewriting the
+      executable for every control set.
+  related-projects:
+    - >
+      kube-bench is related to the CIS Kubernetes Benchmark, CIS Workbench, Aqua Trivy,
+      Trivy Operator, Starboard Operator, Kubernetes hardening guides, managed
+      Kubernetes service benchmarks, and OpenShift security baselines.
+  sources:
+    - https://api.github.com/repos/aquasecurity/kube-bench
+    - https://github.com/aquasecurity/kube-bench
+    - https://github.com/aquasecurity/kube-bench/discussions/1307
+    - https://github.com/aquasecurity/kube-bench/discussions/1432
+    - https://raw.githubusercontent.com/aquasecurity/kube-bench/main/README.md
+    - https://raw.githubusercontent.com/aquasecurity/kube-bench/main/docs/platforms.md
+    - https://www.aquasec.com/blog/automate-kubernetes-compliance/
+    - https://www.cisecurity.org/benchmark/kubernetes/
+  summary:
+    - >
+      kube-bench is Aqua Security's Kubernetes compliance checker for the CIS Kubernetes
+      Benchmark. It turns benchmark controls into executable YAML-configured tests and
+      reports whether a cluster is deployed according to documented security
+      recommendations.
+  timeline:
+    - '2017-06-19: aquasecurity/kube-bench repository created on GitHub.'
+    - >
+      2022-10-16: kube-bench v0.6.10 announcement listed EKS Benchmark v1.1.0 and k3s
+      CIS-1.6 support.
+    - >
+      2023-04-29: Aqua announced Kubernetes CIS benchmark scanning availability in Trivy
+      in a kube-bench GitHub discussion.
+    - >
+      2025-2026: kube-bench docs mapped CIS Kubernetes Benchmark configs through 1.12,
+      plus GKE, EKS, AKS, ACK, OpenShift, k3s, RKE, RKE2, TKGI, and STIG profiles.
+  usage:
+    - >
+      kube-bench can run as a Kubernetes Job and inspect logs for results, but
+      host-level checks require access to process namespaces and host configuration
+      directories. By default it chooses a test set based on the Kubernetes version,
+      while the documented platform matrix maps CIS, STIG, and hardening-guide sources
+      to kube-bench config names.
 tags:
   - cis-benchmark
   - cli
@@ -38,6 +108,15 @@ provenance:
     - >
       Official repository contains a docs directory and README links to documentation
       for running kube-bench.
+  history-sources:
+    - https://api.github.com/repos/aquasecurity/kube-bench
+    - https://github.com/aquasecurity/kube-bench
+    - https://github.com/aquasecurity/kube-bench/discussions/1307
+    - https://github.com/aquasecurity/kube-bench/discussions/1432
+    - https://raw.githubusercontent.com/aquasecurity/kube-bench/main/README.md
+    - https://raw.githubusercontent.com/aquasecurity/kube-bench/main/docs/platforms.md
+    - https://www.aquasec.com/blog/automate-kubernetes-compliance/
+    - https://www.cisecurity.org/benchmark/kubernetes/
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/aquasecurity/kube-bench, so
@@ -53,5 +132,6 @@ category-path:
   - compliance
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

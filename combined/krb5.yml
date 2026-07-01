@@ -10,6 +10,85 @@ credentials-file-location:
   unix:
     - /tmp/krb5cc_%{uid}
     - /etc/krb5.keytab
+history:
+  adoption-history:
+    - >
+      Kerberos spread from MIT academic infrastructure into Unix, enterprise, and vendor
+      authentication systems because it provided single sign-on semantics without
+      sending reusable passwords to each service. MIT's site states that Kerberos is
+      available in many commercial products as well as free source form.
+    - >
+      Package-manager adoption is unusually broad because krb5 is not just an end-user
+      utility: development headers, client commands such as kinit and klist, KDC/admin
+      daemons, GSS-API libraries, keytab utilities, and service integrations all depend
+      on it.
+  package-nerd-significance:
+    - >
+      krb5 is the kind of package that reveals the difference between an executable and
+      an infrastructure component. Installing it may provide dozens of commands, shared
+      libraries, config-file semantics, daemon behavior, protocol wire compatibility,
+      and ABI/API commitments used by unrelated packages.
+    - >
+      It is also a long-lived example of protocol packaging: the package has to track
+      IETF standards, MIT release engineering, vendor interoperability, and security
+      defaults such as DES, Triple-DES, RC4, PKINIT, PAC, and GSS-API changes over
+      decades.
+  project-history:
+    - >
+      Kerberos was designed and implemented at MIT's Project Athena to solve
+      open-network authentication problems for distributed workstations and services.
+      MIT's overview describes it as a network authentication protocol using secret-key
+      cryptography so clients and servers can prove identities over insecure networks.
+    - >
+      The historical MIT dialogue about Kerberos was originally written in February 1988
+      and later updated with a Kerberos V5 afterword. Kerberos V5 was standardized by
+      RFC 1510 and then clarified and superseded by RFC 4120 in July 2005.
+    - >
+      MIT continues to publish krb5 source releases, documentation, user tools,
+      administrator tools, GSS-API support, protocol documentation, and release notes.
+      The public GitHub repository is described as a mirror of the MIT krb5 repository,
+      while MIT's own web pages remain the authoritative release and documentation
+      surface.
+  related-projects:
+    - >
+      Related standards and APIs include RFC 4120 Kerberos V5 and GSS-API integrations.
+      Related implementations and deployments include vendor Kerberos products and
+      operating-system authentication stacks that consume MIT krb5 libraries or
+      interoperate with the protocol.
+  sources:
+    - https://github.com/krb5/krb5
+    - https://web.mit.edu/kerberos/
+    - https://web.mit.edu/kerberos/dialogue.html
+    - https://web.mit.edu/kerberos/historical.html
+    - https://web.mit.edu/kerberos/krb5-1.22/
+    - https://web.mit.edu/kerberos/krb5-latest/doc
+    - https://www.rfc-editor.org/rfc/rfc4120
+  summary:
+    - >
+      MIT Kerberos is the reference implementation of the Kerberos network
+      authentication protocol. Among packages in this batch, krb5 has the deepest
+      systems history: it is both a protocol suite and a user/admin toolchain whose
+      commands, libraries, config files, credential caches, and keytabs became standard
+      Unix security plumbing.
+  timeline:
+    - >
+      1988: Bill Bryant wrote MIT's Kerberos design dialogue, reflecting the Project
+      Athena authentication model.
+    - '1996: MIT krb5 1.0-era releases entered the historical release archive.'
+    - '2005-07: RFC 4120 specified Kerberos V5 and obsoleted RFC 1510.'
+    - '2012-05-12: The public GitHub mirror repository was created.'
+    - '2026-01-29: MIT released krb5-1.22.2.'
+  usage:
+    - >
+      The CLI workflow centers on acquiring tickets with kinit, inspecting credential
+      caches with klist, destroying tickets with kdestroy, changing passwords with
+      kpasswd, and administering principals and keytabs with kadmin and ktutil. System
+      operation uses /etc/krb5.conf for realm and library configuration, credential
+      caches such as /tmp/krb5cc_%{uid}, and keytabs such as /etc/krb5.keytab.
+    - >
+      For package maintainers, krb5 is a security-sensitive dependency that touches
+      command-line tools, libraries, daemons, PAM or GSS-API consumers, protocol
+      compatibility, encryption-type deprecations, and CVE-driven patch releases.
 category: security
 package-manager:
   apk: krb5
@@ -65,5 +144,14 @@ executables:
   - uuserver
 provenance:
   formula: krb5
+  history-sources:
+    - https://github.com/krb5/krb5
+    - https://web.mit.edu/kerberos/
+    - https://web.mit.edu/kerberos/dialogue.html
+    - https://web.mit.edu/kerberos/historical.html
+    - https://web.mit.edu/kerberos/krb5-1.22/
+    - https://web.mit.edu/kerberos/krb5-latest/doc
+    - https://www.rfc-editor.org/rfc/rfc4120
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
