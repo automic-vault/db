@@ -6,6 +6,74 @@ docs:
   - https://lld.llvm.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      lld became important to LLVM users because it offers a linker that tracks LLVM
+      object formats, LTO behavior, diagnostics, and cross-platform build needs.
+      Toolchains and build systems can select it with compiler flags such as
+      -fuse-ld=lld, which makes it useful for projects that want a faster or more
+      LLVM-native alternative to platform linkers.
+    - >
+      Packaging a retained LLVM 20 linker line matters because compiler stacks often
+      move as coordinated major versions. Keeping lld@20 installable lets build farms,
+      language runtimes, and downstream projects pin a linker that matches LLVM 20-era
+      clang, libraries, and ABI expectations while newer LLVM lines continue moving.
+  package-nerd-significance:
+    - >
+      Versioned toolchain formulae are compatibility anchors. They trade default
+      freshness for reproducibility, allowing package maintainers to keep older major
+      compiler and linker lines around without blocking the unversioned formula from
+      advancing.
+    - >
+      lld@20 is especially nerd-relevant because linkers are a hidden but critical part
+      of compiler reproducibility: changing the linker can change symbol resolution,
+      diagnostics, platform quirks, and binary layout even when source code and compiler
+      flags stay fixed.
+  project-history:
+    - >
+      The lld project grew out of LLVM's goal of providing modular compiler and
+      toolchain components. Its documentation describes separate target-format linkers
+      under the lld umbrella, with the ELF port documented as the primary port and
+      PE/COFF, Mach-O, and WebAssembly support following their own platform conventions.
+    - >
+      LLVM 20.1.0 was published in March 2025 as part of the regular monorepo release
+      process for LLVM and its subprojects, including lld. The Homebrew lld@20 formula
+      follows the 20.1.x source tarball line and builds lld standalone against llvm@20.
+  related-projects:
+    - >
+      LLVM provides the monorepo and release train for lld, clang, libc++, MLIR, and
+      related toolchain components.
+    - >
+      The unversioned Homebrew lld formula tracks a newer LLVM line, while llvm@20
+      supplies the matching LLVM dependency for lld@20.
+  sources:
+    - https://formulae.brew.sh/formula/lld@20
+    - https://github.com/Homebrew/homebrew-core/blob/master/Formula/l/lld@20.rb
+    - https://github.com/llvm/llvm-project/releases/tag/llvmorg-20.1.0
+    - https://lld.llvm.org/
+    - https://releases.llvm.org/20.1.0/docs/ReleaseNotes.html
+  summary:
+    - >
+      lld@20 packages the LLVM project's linker from the LLVM 20 release line. lld is a
+      family of linkers for ELF, PE/COFF, Mach-O, and WebAssembly targets, built inside
+      the broader LLVM toolchain rather than as a separate standalone ecosystem.
+  timeline:
+    - '2025-03-04: LLVM 20.1.0 release record published on GitHub.'
+    - >
+      2025: LLVM 20 release documentation described the LLVM 20.1.0 compiler
+      infrastructure release.
+    - >
+      2026-07-01: Homebrew's lld@20 formula source referenced llvm-project 20.1.8 and
+      declared keg_only :versioned_formula.
+  usage:
+    - >
+      Homebrew installs lld@20 as a versioned formula rather than the unversioned lld
+      formula. Users normally call tools such as ld.lld, ld64.lld, lld-link, or wasm-ld
+      directly or arrange for a compiler driver to find them on PATH.
+    - >
+      Because the formula is tied to llvm@20, it is most useful when a project is
+      intentionally testing or building against the LLVM 20 toolchain line.
 category: developer-tools
 package-manager:
   apk: lld20
@@ -34,5 +102,12 @@ executables:
   - wasm-ld
 provenance:
   formula: lld@20
+  history-sources:
+    - https://formulae.brew.sh/formula/lld@20
+    - https://github.com/Homebrew/homebrew-core/blob/master/Formula/l/lld@20.rb
+    - https://github.com/llvm/llvm-project/releases/tag/llvmorg-20.1.0
+    - https://lld.llvm.org/
+    - https://releases.llvm.org/20.1.0/docs/ReleaseNotes.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

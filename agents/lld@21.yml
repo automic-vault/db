@@ -5,6 +5,70 @@ docs:
   - https://lld.llvm.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      lld's adoption follows LLVM's broader adoption in compilers, language runtimes,
+      browsers, operating systems, and build systems. It is commonly selected where
+      projects want a linker aligned with LLVM LTO and diagnostics or a single linker
+      family across multiple target formats.
+    - >
+      The lld@21 Homebrew formula keeps the LLVM 21 linker line available as a
+      separately installable package. That is useful for projects that validate against
+      a specific LLVM major release, for CI images that pin toolchain versions, and for
+      downstream packages that need time before moving to a newer major release.
+  package-nerd-significance:
+    - >
+      lld@21 shows how Homebrew handles fast-moving compiler infrastructure: keep the
+      main formula advancing, but preserve major-version formulae for reproducible
+      builds and compatibility windows.
+    - >
+      For package maintainers, the separate lld@21 line reduces accidental linker churn.
+      That matters because linker behavior can affect binary compatibility, symbol
+      ordering, archive handling, and platform-specific output details.
+  project-history:
+    - >
+      lld is developed in the LLVM monorepo alongside clang, libc++, MLIR, and other
+      compiler infrastructure projects. Its documentation presents lld as a set of
+      linkers sharing LLVM project infrastructure while targeting the major executable
+      and object formats used by Unix, Windows, macOS, and WebAssembly.
+    - >
+      LLVM 21.1.0 was announced on August 26, 2025. The announcement says the release
+      included LLVM subprojects such as clang, lld, libc++, and MLIR, and was composed
+      of about six months of work since LLVM 20.1.0.
+  related-projects:
+    - LLVM supplies the release train and monorepo for lld.
+    - >
+      llvm@21 is the matching Homebrew LLVM dependency; the unversioned lld formula
+      tracks a newer LLVM line.
+  sources:
+    - https://discourse.llvm.org/t/llvm-21-1-0-released/88066
+    - https://formulae.brew.sh/formula/lld@21
+    - https://github.com/Homebrew/homebrew-core/blob/master/Formula/l/lld@21.rb
+    - https://github.com/llvm/llvm-project/releases/tag/llvmorg-21.1.0
+    - https://lld.llvm.org/
+    - https://releases.llvm.org/21.1.0/docs/ReleaseNotes.html
+  summary:
+    - >
+      lld@21 packages the LLVM project's linker from the LLVM 21 release line. It
+      represents a retained major-version toolchain package for users who need LLVM
+      21-era lld behavior instead of the unversioned lld formula.
+  timeline:
+    - '2025-08-26: LLVM 21.1.0 release record published on GitHub.'
+    - >
+      2025-08-26: LLVM Discourse announcement described LLVM 21.1.0 as including lld and
+      other LLVM subprojects.
+    - >
+      2026-07-01: Homebrew's lld@21 formula source referenced llvm-project 21.1.8,
+      depended on llvm@21, and declared keg_only :versioned_formula.
+  usage:
+    - >
+      The formula builds lld standalone from an LLVM 21.1.x source tarball and depends
+      on llvm@21. Typical entry points include ld.lld for ELF-style linking, ld64.lld
+      for Mach-O, lld-link for COFF/Windows-style linking, and wasm-ld for WebAssembly.
+    - >
+      Because it is a versioned formula, lld@21 is a deliberate opt-in package for
+      pinned toolchains rather than the general Homebrew lld default.
 tags:
   - cli
   - compiler-toolchain
@@ -19,6 +83,13 @@ provenance:
     - source_facts.name is lld@21.
   docs-sources:
     - source_facts.homepage is the official lld documentation site.
+  history-sources:
+    - https://discourse.llvm.org/t/llvm-21-1-0-released/88066
+    - https://formulae.brew.sh/formula/lld@21
+    - https://github.com/Homebrew/homebrew-core/blob/master/Formula/l/lld@21.rb
+    - https://github.com/llvm/llvm-project/releases/tag/llvmorg-21.1.0
+    - https://lld.llvm.org/
+    - https://releases.llvm.org/21.1.0/docs/ReleaseNotes.html
   repo-sources:
     - >
       source_facts.repo is already populated; prompt requires repo=null without
@@ -30,5 +101,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

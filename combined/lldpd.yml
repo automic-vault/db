@@ -10,6 +10,70 @@ config-file-location:
     - /etc/default/lldpd
     - /etc/sysconfig/lldpd
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      lldpd fits the operational niche where servers, appliances, lab machines, and
+      network-attached Unix systems need to advertise and inspect their Layer 2
+      neighbors without relying on a switch-vendor agent. Its support for CDP, FDP,
+      SONMP, and EDP helped it coexist with older proprietary discovery environments
+      while LLDP became the vendor-neutral default.
+  package-nerd-significance:
+    - >
+      lldpd is the kind of infrastructure package that quietly saves debugging time:
+      after installation, a host can explain what it is connected to at Layer 2. For
+      package nerds, it is also a compact example of a daemon packaged with privilege
+      separation, service integration, SNMP hooks, protocol compatibility, and
+      OS-specific network plumbing.
+  project-history:
+    - >
+      The project is maintained as a daemon, lldpd, plus command-line clients such as
+      lldpcli and lldpctl. The upstream README describes support for receiving and
+      sending LLDP frames, an SNMP subagent for net-snmp, partial LLDP-MED support, and
+      operation on FreeBSD, GNU/Linux, macOS, NetBSD, OpenBSD, and Solaris.
+    - >
+      The public GitHub release history includes lldpd 0.7.8 on May 28, 2014 and the
+      NEWS file records the 1.0.0 series before later 1.0.x maintenance releases. Later
+      entries show steady maintenance around network interface handling, security
+      hardening, protocol parsing, and platform support.
+  related-projects:
+    - IEEE 802.1AB defines the LLDP standard that lldpd implements.
+    - >
+      CDP, FDP, EDP, and SONMP are vendor discovery protocols that lldpd can
+      interoperate with.
+    - net-snmp is related through lldpd's AgentX/SNMP subagent support.
+  sources:
+    - https://github.com/lldpd/lldpd
+    - https://github.com/lldpd/lldpd/blob/master/NEWS
+    - https://github.com/lldpd/lldpd/releases/tag/0.7.8
+    - https://github.com/lldpd/lldpd/releases/tag/1.0.22
+    - https://lldpd.github.io/
+    - https://lldpd.github.io/usage.html
+    - https://standards.ieee.org/standard/802_1AB-2016.html
+  summary:
+    - >
+      lldpd is an ISC-licensed LLDP daemon for Unix-like systems. It implements IEEE
+      802.1AB Link Layer Discovery Protocol and also speaks several older vendor
+      discovery protocols, making it a practical bridge between standards-based and
+      legacy network-neighbor discovery.
+  timeline:
+    - >
+      2005: IEEE published the 802.1AB standard for station and media access control
+      connectivity discovery.
+    - '2014-05-28: lldpd 0.7.8 appeared in GitHub releases.'
+    - >
+      2026-05-14: lldpd 1.0.22 appeared in GitHub releases with security and protocol
+      parsing fixes.
+  usage:
+    - >
+      In normal use, lldpd runs as a daemon that sends and receives discovery
+      advertisements, while lldpcli queries and configures the daemon. Operators use it
+      to identify switch ports, chassis IDs, VLAN hints, management addresses,
+      capabilities, and neighboring devices directly from a host.
+    - >
+      Its package-manager value is strongest on Unix-like systems where a small daemon
+      can make server-to-switch topology visible without installing a full
+      network-management stack.
 category: networking
 package-manager:
   apk: lldpd
@@ -36,5 +100,14 @@ executables:
   - lldpd
 provenance:
   formula: lldpd
+  history-sources:
+    - https://github.com/lldpd/lldpd
+    - https://github.com/lldpd/lldpd/blob/master/NEWS
+    - https://github.com/lldpd/lldpd/releases/tag/0.7.8
+    - https://github.com/lldpd/lldpd/releases/tag/1.0.22
+    - https://lldpd.github.io/
+    - https://lldpd.github.io/usage.html
+    - https://standards.ieee.org/standard/802_1AB-2016.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -5,6 +5,74 @@ docs:
   - https://lld.llvm.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      lld adoption followed clang and LLVM adoption: developers could select it through
+      compiler-driver flags such as -fuse-ld=lld instead of replacing /usr/bin/ld
+      directly.
+    - >
+      It became especially attractive for large C/C++ builds, cross-compilation,
+      WebAssembly, Windows COFF/PDB workflows, and LTO-heavy builds where linker speed
+      and LLVM integration matter.
+  package-nerd-significance:
+    - >
+      lld is a core systems package because a linker affects every compiled binary
+      produced through a toolchain. Small packaging choices around version matching,
+      bottle compatibility, and dependency edges can ripple into large build farms.
+    - >
+      Homebrew packaging lld as its own formula, rather than only as part of llvm,
+      reflects the Unix tradition of swapping toolchain components one piece at a time.
+  project-history:
+    - >
+      lld developed as part of the broader LLVM toolchain. The official documentation
+      describes it as a drop-in replacement for system linkers that runs much faster
+      than traditional linkers and is useful for toolchain developers.
+    - >
+      The lld documentation emphasizes several design choices that matter to compiler
+      users: GNU-compatible command-line behavior for ELF, cross-linking support for all
+      built targets, embeddability through lld::lldMain, default LTO support with clang,
+      and a smaller codebase than GNU gold in the 2017 comparison.
+    - >
+      The LLVM monorepo model means lld is released with LLVM rather than as a fully
+      separate upstream project. Homebrew's lld formula builds the lld subproject from
+      llvm-project release tarballs while depending on the matching LLVM package.
+  related-projects:
+    - >
+      lld is part of llvm-project alongside LLVM, Clang, compiler-rt, libc++, MLIR, and
+      other toolchain subprojects.
+    - >
+      It is related to GNU ld, GNU gold, mold, platform linkers such as Apple's ld64,
+      and WebAssembly toolchains that use wasm-ld.
+  sources:
+    - https://api.github.com/repos/llvm/llvm-project
+    - https://formulae.brew.sh/formula/lld
+    - https://github.com/llvm/llvm-project
+    - https://lld.llvm.org/
+    - https://raw.githubusercontent.com/Homebrew/homebrew-core/master/Formula/l/lld.rb
+    - https://releases.llvm.org/19.1.0/docs/ReleaseNotes.html
+  summary:
+    - >
+      lld is the LLVM Project's linker. It packages the LLVM approach to modular
+      compiler infrastructure into the final link step, offering fast drop-in linkers
+      for ELF, COFF, Mach-O, and WebAssembly workflows.
+  timeline:
+    - >
+      2017: lld documentation compared lld/ELF with GNU gold and emphasized link-time
+      performance and code-size differences.
+    - '2024: LLVM 19.1.0 release notes were published for the LLVM 19 release line.'
+    - >
+      2026: Homebrew formula metadata recorded lld built from llvm-project 22.1.8
+      release sources.
+  usage:
+    - >
+      The package installs linkers such as ld.lld, ld64.lld, lld-link, and wasm-ld. Unix
+      users often reach it through clang's -fuse-ld=lld option, while Windows-style
+      builds use lld-link and WebAssembly builds use wasm-ld.
+    - >
+      For package-manager users, installing lld separately from a full compiler bundle
+      can make it easier to test linker behavior, speed up builds, or build toolchains
+      that intentionally mix compiler and linker components.
 tags:
   - cli
   - compiler-toolchain
@@ -27,6 +95,13 @@ provenance:
     - source_facts.name is lld; source_facts.homepage is the official lld.llvm.org site.
   docs-sources:
     - source_facts.homepage is the official LLVM lld documentation site.
+  history-sources:
+    - https://api.github.com/repos/llvm/llvm-project
+    - https://formulae.brew.sh/formula/lld
+    - https://github.com/llvm/llvm-project
+    - https://lld.llvm.org/
+    - https://raw.githubusercontent.com/Homebrew/homebrew-core/master/Formula/l/lld.rb
+    - https://releases.llvm.org/19.1.0/docs/ReleaseNotes.html
   repo-sources:
     - source_facts.repo already has a value, so repo is returned as null per instruction.
   tags-sources:
@@ -40,5 +115,6 @@ category-path:
   - linker
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -6,6 +6,70 @@ docs:
   - https://lld.llvm.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Versioned LLVM packages exist because compiler toolchains are
+      compatibility-sensitive. A project may need LLVM 19 semantics, plugin ABI
+      behavior, sanitizer behavior, or linker behavior even after the unversioned lld
+      formula has moved to a newer LLVM major version.
+    - >
+      Homebrew marks lld@19 as keg-only and as a versioned formula, so it can coexist
+      with unversioned lld without silently replacing the user's default linker
+      commands.
+  package-nerd-significance:
+    - >
+      Versioned toolchain formulae are package-manager infrastructure, not just old
+      binaries. They buy time for downstreams that need stable major-version lines while
+      the rolling formula follows newer LLVM releases.
+    - >
+      lld@19 also illustrates why keg-only matters: two versions of a linker can be
+      installed at once, but only one should be the default command unless a user or
+      build script asks for the older one.
+  project-history:
+    - >
+      Upstream lld is the LLVM Project linker, documented as a fast drop-in linker for
+      system linkers with support for ELF, COFF, Mach-O, and WebAssembly. LLVM releases
+      lld as part of the llvm-project source tree rather than as an independent source
+      archive.
+    - >
+      LLVM 19.1.0 release documentation was published in September 2024, and Homebrew's
+      lld@19 formula uses llvm-project 19.1.7 release sources. The formula depends on
+      llvm@19, keeping the linker aligned with the matching LLVM libraries and headers.
+  related-projects:
+    - lld@19 is tied to llvm@19 and the broader LLVM 19 toolchain line.
+    - >
+      It is related to the unversioned Homebrew lld formula, newer LLVM major formulae,
+      and build systems that select linkers through clang -fuse-ld=lld, PATH, or
+      explicit linker variables.
+  sources:
+    - https://formulae.brew.sh/formula/lld@19
+    - https://github.com/llvm/llvm-project
+    - https://github.com/llvm/llvm-project/releases/tag/llvmorg-19.1.7
+    - https://lld.llvm.org/
+    - https://raw.githubusercontent.com/Homebrew/homebrew-core/master/Formula/l/lld@19.rb
+    - https://releases.llvm.org/19.1.0/docs/ReleaseNotes.html
+  summary:
+    - >
+      lld@19 is Homebrew's versioned LLVM linker formula for the LLVM 19 line. Its
+      upstream history is the same LLVM lld history as brew:lld, but its package-manager
+      meaning is different: it preserves an older major toolchain line for builds that
+      cannot move in lockstep with newer LLVM releases.
+  timeline:
+    - '2024: LLVM 19.1.0 release notes documented the LLVM 19 release line.'
+    - "2025: LLVM 19.1.7 became the patch release used by Homebrew's lld@19 source URL."
+    - >
+      2026: Homebrew formula metadata recorded lld@19 as stable 19.1.7, keg-only, and
+      dependent on llvm@19.
+  usage:
+    - >
+      Users install lld@19 when a build recipe, compiler stack, or reproducibility
+      requirement calls for the LLVM 19 linker specifically. The installed tools are the
+      familiar lld family: ld.lld, ld64.lld, lld-link, and wasm-ld.
+    - >
+      Because lld is usually selected through compiler-driver flags, versioned
+      installations let build systems point PATH or explicit tool variables at the older
+      linker without changing every package on the machine.
 category: developer-tools
 package-manager:
   brew: lld@19
@@ -33,5 +97,13 @@ executables:
   - wasm-ld
 provenance:
   formula: lld@19
+  history-sources:
+    - https://formulae.brew.sh/formula/lld@19
+    - https://github.com/llvm/llvm-project
+    - https://github.com/llvm/llvm-project/releases/tag/llvmorg-19.1.7
+    - https://lld.llvm.org/
+    - https://raw.githubusercontent.com/Homebrew/homebrew-core/master/Formula/l/lld@19.rb
+    - https://releases.llvm.org/19.1.0/docs/ReleaseNotes.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
