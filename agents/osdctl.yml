@@ -9,6 +9,76 @@ config-file-location:
     - ~/.config/osdctl
     - ~/.osdctl.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Public adoption evidence is mainly internal-platform shaped: osdctl lives under
+      the openshift GitHub organization, is installed from an OpenShift Online SRE tools
+      Homebrew tap in the README, and its command set is full of Red Hat/OpenShift
+      service-operation concepts. Homebrew core also packages it as a CLI tool for
+      managed OpenShift clusters.
+    - >
+      The release stream shows active operational packaging, with v0.59.0, v0.60.0, and
+      v0.61.0 publishing Darwin and Linux tarballs plus checksum files. That pattern
+      fits an SRE tool expected to be installed on operator workstations and automation
+      hosts.
+  package-nerd-significance:
+    - >
+      osdctl is significant as an example of a large operational CLI whose package
+      boundary is shaped by SRE workflows rather than by one public API. It collects
+      many small runbook actions into one installable binary, which explains both its
+      breadth and its frequent release cadence.
+    - >
+      For package metadata, it is also a good reminder that some Homebrew formulas are
+      not consumer developer tools; they are distribution channels for specialized
+      operations software used by a specific platform team.
+  project-history:
+    - >
+      GitHub records openshift/osdctl as created on 2020-06-03. The README describes a
+      build-and-release workflow using Go, make, GoReleaser, GitHub releases, a Homebrew
+      tap, and generated command documentation after releases.
+    - >
+      The command examples show the package expanding from AWS account custom-resource
+      operations into a broader managed-cluster operations toolbox: account
+      reset/status/list, IAM credential rotation, Hive ClusterDeployment inspection,
+      cluster break-glass access, Dynatrace log gathering, service-log posting, OCM
+      environment management, RHOBS commands, and evidence collection.
+  related-projects:
+    - >
+      aws-account-operator is explicitly called out in the README as an early supported
+      focus. osdctl also interacts with OpenShift Dedicated, OCM, Hive, Backplane,
+      RHOBS, Dynatrace, and OpenShift/Kubernetes cluster APIs through its command set.
+  sources:
+    - https://api.github.com/repos/openshift/osdctl
+    - https://api.github.com/repos/openshift/osdctl/releases
+    - >
+      https://docs.redhat.com/en/documentation/openshift_dedicated/4/html-single/cli_tools/index
+    - https://formulae.brew.sh/formula/osdctl
+    - https://github.com/openshift/aws-account-operator
+    - https://github.com/openshift/osdctl
+    - https://raw.githubusercontent.com/openshift/osdctl/master/README.md
+  summary:
+    - >
+      osdctl is a Go CLI toolbox for OpenShift Dedicated and related managed OpenShift
+      operations. The README frames it as a tool to reduce SRE toil, originally centered
+      on AWS and aws-account-operator workflows and later expanded into cluster,
+      account, service-log, RHOBS, environment, evidence, and troubleshooting commands.
+  timeline:
+    - '2020-06-03: GitHub repository created.'
+    - '2026-05-18: v0.59.0 release published with multi-platform osdctl artifacts.'
+    - '2026-06-01: v0.60.0 release published.'
+    - '2026-06-26: v0.61.0 release published with Darwin and Linux tarballs plus sha256sum.txt.'
+  usage:
+    - >
+      SREs use osdctl to inspect and mutate account resources, generate AWS console
+      URLs, rotate secrets, display operator metrics, manage multiple cluster login
+      environments, perform break-glass access and cleanup, post service logs, query
+      organizations, run etcd health checks, and collect evidence for feature testing.
+    - >
+      The tool creates or reads configuration under ~/.config/osdctl and ~/.osdctl.yaml.
+      Its env subcommands help operators maintain separate KUBECONFIG and OCM_CONFIG
+      contexts for different clusters, which is a practical workflow detail for
+      managed-cluster support.
 tags:
   - cli
   - cloud-operations
@@ -37,6 +107,15 @@ provenance:
     - >
       Official openshift/osdctl GitHub repository provides the README and a docs
       directory; no separate dedicated documentation domain was identified.
+  history-sources:
+    - https://api.github.com/repos/openshift/osdctl
+    - https://api.github.com/repos/openshift/osdctl/releases
+    - >
+      https://docs.redhat.com/en/documentation/openshift_dedicated/4/html-single/cli_tools/index
+    - https://formulae.brew.sh/formula/osdctl
+    - https://github.com/openshift/aws-account-operator
+    - https://github.com/openshift/osdctl
+    - https://raw.githubusercontent.com/openshift/osdctl/master/README.md
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/openshift/osdctl;
@@ -52,5 +131,6 @@ category-path:
   - openshift
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

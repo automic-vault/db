@@ -5,6 +5,67 @@ docs:
   - https://github.com/reconquest/orgalorg#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Public adoption evidence is narrower than for larger infrastructure tools, but the
+      GitHub repository has hundreds of stars and Homebrew packaging. The issue tracker
+      shows operator-style feature requests around ssh-agent forwarding, SSH config
+      support, and proxying, which matches its system-administration audience.
+  package-nerd-significance:
+    - >
+      orgalorg is package-nerd-useful as a compact example of the pre-Kubernetes and
+      bare-metal fleet-ops tool family: a single binary, no config file requirement, SSH
+      as the transport, and package-manager distribution through Homebrew.
+    - >
+      Its main historical value is not broad ecosystem dominance but the operational
+      design tradeoff: avoid a configuration management framework when a parallel SSH
+      runner plus file upload and locking is enough.
+  project-history:
+    - >
+      The reconquest/orgalorg repository was created on 2016-02-15. The README positions
+      it as a small operations tool for fleets where the operator wants a command-line
+      host list, parallel execution, and file transfer without writing an Ansible
+      playbook or opening many terminal windows.
+    - >
+      The package's documented design uses SSH and tar rather than a custom transfer
+      protocol. In sync mode it acquires a global cluster lock, streams files to
+      temporary run directories, and then starts synchronization or follow-up commands
+      on target nodes.
+  related-projects:
+    - >
+      The README compares orgalorg with Ansible, clusterssh/cssh, pssh, dsh, gsh, and
+      pdsh. It also depends conceptually on SSH, ssh-agent or Pageant, tar-style
+      streaming, sudo, and flock-style locking on target systems.
+  sources:
+    - https://api.github.com/repos/reconquest/orgalorg
+    - https://formulae.brew.sh/formula/orgalorg
+    - https://github.com/reconquest/orgalorg
+    - https://github.com/reconquest/orgalorg/issues
+  summary:
+    - >
+      orgalorg is a Go CLI for running SSH commands and uploading or synchronizing files
+      across many hosts in parallel. It sits in the same operator niche as pssh,
+      clusterssh, dsh, and parts of Ansible, but its README emphasizes zero
+      configuration, native SSH, streaming tar uploads, global cluster locking, and
+      batch-mode output.
+  timeline:
+    - '2016-02-15: reconquest/orgalorg repository created on GitHub.'
+    - >
+      2016: public discussions and GitHub issues show use and feature requests around
+      parallel SSH behavior.
+    - '2024-12-12: GitHub API metadata records repository activity on the default branch.'
+  usage:
+    - >
+      Documented examples include running uptime on multiple hosts, piping hosts from
+      stdin, tailing logs in parallel, copying SSH public keys, synchronizing nginx
+      configuration and reloading the service, running shell scripts, installing
+      packages on nodes, and taking a global maintenance lock.
+    - >
+      The tool is deliberately command-oriented rather than declarative. Its
+      alternatives section says Ansible is for complex DSL-based scenarios, while
+      orgalorg is aimed at parallel commands, file synchronization, realtime output, and
+      SSH-like argument semantics.
 tags:
   - cli
   - file-sync
@@ -35,6 +96,11 @@ provenance:
       Official repository README is the primary documentation surface for usage,
       features, examples, and sync protocol:
       https://github.com/reconquest/orgalorg#readme
+  history-sources:
+    - https://api.github.com/repos/reconquest/orgalorg
+    - https://formulae.brew.sh/formula/orgalorg
+    - https://github.com/reconquest/orgalorg
+    - https://github.com/reconquest/orgalorg/issues
   repo-sources:
     - >
       source_facts.repo already supplies https://github.com/reconquest/orgalorg, so repo
@@ -49,5 +115,6 @@ category-path:
   - remote-administration
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

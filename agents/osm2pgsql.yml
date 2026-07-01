@@ -6,6 +6,98 @@ docs:
   - https://osm2pgsql.org/doc
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      osm2pgsql became deeply embedded because it solved the hard practical problem of
+      keeping PostgreSQL/PostGIS databases synchronized with OSM data at rendering
+      scale. The project history explicitly ties it to the OpenStreetMap tile toolchain
+      and to Nominatim, the geocoder powering search on openstreetmap.org and many other
+      map sites.
+    - >
+      The GitHub repository passed 1,000 stars in 2021 according to the project's own
+      history page. The Homebrew formula and package-manager metadata show distribution
+      through Homebrew, Debian, Fedora, MacPorts, Nix, Arch, Ubuntu, and openSUSE-family
+      packaging.
+  package-nerd-significance:
+    - >
+      osm2pgsql is package-nerd gold because it sits at the junction of C++, libosmium,
+      Lua/LuaJIT, PostgreSQL, PostGIS, and large public datasets. Small version changes
+      can affect import speed, schema output, multipolygon behavior, replication
+      workflows, and downstream projects such as Nominatim or map renderers.
+    - >
+      Its history also mirrors the OpenStreetMap ecosystem's scaling story: from early
+      XML imports, through minutely updates and 64-bit IDs, into flexible Lua-defined
+      outputs and JSONB-backed middle storage.
+  project-history:
+    - >
+      The osm2pgsql project began in 2006, started by Jon Burgess and written in C,
+      making it nearly as old as OpenStreetMap itself. In 2007, after OSM moved to API
+      0.5 and added relations, osm2pgsql gained multipolygon relation support and
+      multiple projection support.
+    - >
+      In 2008, osm2pgsql added support for OSM change files. From 2009, the main
+      OpenStreetMap map was regenerated from minutely changes using a toolchain that
+      imported data with osm2pgsql into PostgreSQL/PostGIS and rendered tiles with
+      Mapnik.
+    - >
+      The project kept following OSM's growth. In 2011, it switched to 64-bit IDs as the
+      OSM node count passed one billion, and Kai Krueger took over maintainership from
+      Jon Burgess. In 2012, the flat-file persistent node cache for slim mode reduced
+      disk usage and improved import/update performance.
+    - >
+      A long modernization arc followed: parsing moved to libosmium in 2015, geometry
+      generation moved to libosmium in 2017, LuaJIT support arrived in 2018, version 1.0
+      in 2019 removed old-style multipolygon processing, and the flex output introduced
+      in 2020 made custom output-table design a first-class workflow.
+    - >
+      The 2022 experimental `osm2pgsql-gen` command brought generalization into the
+      project. In 2023, a JSONB-based middle database format made it possible to store
+      all OSM data including tags, attributes, and relation-member information. In 2024,
+      Nominatim switched to flex output, the old gazetteer output was removed, and
+      osm2pgsql 2.0 shipped.
+  related-projects:
+    - >
+      PostgreSQL and PostGIS are the target database stack. Mapnik is historically tied
+      to the OSM tile-rendering toolchain. Nominatim uses osm2pgsql-derived import paths
+      for geocoding data. libosmium underpins OSM parsing and geometry handling in
+      modern osm2pgsql.
+  sources:
+    - https://api.github.com/repos/osm2pgsql-dev/osm2pgsql
+    - https://formulae.brew.sh/formula/osm2pgsql
+    - https://osm2pgsql.org/about/
+    - https://osm2pgsql.org/about/history/
+    - https://osm2pgsql.org/doc/manual.html
+  summary:
+    - >
+      osm2pgsql is one of the central OpenStreetMap data-ingestion tools. It imports OSM
+      data into PostgreSQL/PostGIS, where renderers, geocoders, analysis jobs, and
+      custom SQL pipelines can work with planet-scale map data.
+  timeline:
+    - '2006: Jon Burgess starts osm2pgsql in C.'
+    - '2007: relation, multipolygon, and projection support expand after OSM API 0.5.'
+    - '2008-2009: change-file support enables minutely-update rendering workflows.'
+    - '2009: Nominatim begins using osm2pgsql with special gazetteer output.'
+    - '2011: 64-bit IDs land, and Kai Krueger becomes maintainer.'
+    - >
+      2012: the flat-file persistent node cache improves slim-mode import and update
+      performance.
+    - '2015-2017: libosmium takes over parsing and geometry generation.'
+    - '2019-2020: version 1.0 and flex output modernize the processing pipeline.'
+    - >
+      2022-2024: generalization, JSONB middle storage, Nominatim's flex-output
+      migration, and osm2pgsql 2.0 reshape the project.
+  usage:
+    - >
+      The manual describes osm2pgsql as a specialized ETL tool for OSM data. Users
+      usually feed it regional extracts or planet files, tune memory and disk behavior,
+      choose pgsql or flex output, and then connect downstream software for rendering,
+      serving, geocoding, or analysis.
+    - >
+      The manual also warns that whole-planet imports can run for hours or days and
+      recommends trial runs on small extracts. That operational reality is part of
+      osm2pgsql's identity: it is not just a converter, but a tool whose schema, cache,
+      update, and style choices determine the shape and cost of an OSM database.
 tags:
   - cli
   - etl
@@ -38,6 +130,12 @@ provenance:
     - >
       Official osm2pgsql.org documentation page links installation instructions, manual
       v2, tutorials, man pages, FAQ, and releases.
+  history-sources:
+    - https://api.github.com/repos/osm2pgsql-dev/osm2pgsql
+    - https://formulae.brew.sh/formula/osm2pgsql
+    - https://osm2pgsql.org/about/
+    - https://osm2pgsql.org/about/history/
+    - https://osm2pgsql.org/doc/manual.html
   repo-sources:
     - >
       source_facts.repo is already populated with
@@ -54,5 +152,6 @@ category-path:
   - geospatial
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
