@@ -6,6 +6,77 @@ docs:
   - https://github.com/include-what-you-use/include-what-you-use#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      IWYU spread through C++ build culture because include hygiene directly affects
+      compile time, rebuild fan-out, and refactoring safety. The official documentation
+      explicitly frames the tool around large codebases, where transitive includes make
+      it hard to remove dependencies safely.
+    - >
+      Package-manager metadata in this batch lists Homebrew, Alpine, Fedora, MacPorts,
+      Nix, and openSUSE packaging. That is a good fit for a compiler-adjacent developer
+      tool: users install a binary matching their Clang generation and wire it into
+      compilation databases, CMake workflows, CI, or local cleanup scripts.
+  package-nerd-significance:
+    - >
+      For package nerds, IWYU is significant because it turns a style rule into a
+      compiler-backed CLI. It also illustrates a packaging challenge common to LLVM
+      ecosystem tools: the useful binary has to stay aligned with Clang internals and
+      therefore tends to move in lockstep with compiler releases.
+    - >
+      It matters beyond neatness. Header dependency cleanup can shorten builds, reduce
+      needless rebuilds, and make C++ packages less fragile when upstream headers
+      change.
+  project-history:
+    - >
+      The project site announced a very-alpha 0.1 release in February 2011 and described
+      an open-source release-early approach after Google-internal origins. Early
+      releases tracked specific LLVM and Clang versions because IWYU depends heavily on
+      Clang internals.
+    - >
+      The release notes show a steady pattern: each IWYU release follows an LLVM/Clang
+      line, updates mappings, and improves analysis of C, C++, templates,
+      standard-library headers, and platform-specific headers. Version 0.5 in December
+      2015 marked migration to GitHub, updated documentation, improved testing
+      infrastructure, and added Boost and Qt mappings.
+  related-projects:
+    - LLVM and Clang are the compiler infrastructure IWYU builds on.
+    - fix_includes.py and iwyu_tool.py are companion tools shipped by the project.
+    - >
+      CMake compilation databases, clang-tidy, and C++ include-order or
+      dependency-cleanup workflows are adjacent developer-tooling surfaces.
+  sources:
+    - https://api.github.com/repos/include-what-you-use/include-what-you-use/releases
+    - https://formulae.brew.sh/formula/include-what-you-use
+    - https://github.com/include-what-you-use/include-what-you-use
+    - https://github.com/include-what-you-use/include-what-you-use/blob/master/docs/WhyIWYU.md
+    - https://include-what-you-use.org/
+  summary:
+    - >
+      Include What You Use, often abbreviated IWYU, is a Clang-based C and C++ include
+      analyzer. It tells developers which headers a source file should include directly
+      and which includes can be removed or replaced with forward declarations.
+  timeline:
+    - '2011: IWYU 0.1 announced as a very-alpha open-source release.'
+    - '2011: Clang 2.9 and 3.0 compatible tarballs published.'
+    - >
+      2014: Clang 3.4 and 3.5 compatible releases published; rudimentary C support added
+      in the 3.5-era release.
+    - '2015: IWYU 0.5 migrated to GitHub and added Boost and Qt mappings.'
+    - >
+      2019: Release notes stated that binary releases would no longer be produced and
+      pointed users to maintained packages.
+    - '2026: IWYU 0.26 released for LLVM and Clang 22.'
+  usage:
+    - >
+      IWYU is usually run against source files with the same compilation information
+      used by Clang. The companion iwyu_tool.py works with compilation databases, and
+      fix_includes.py can apply suggested include edits.
+    - >
+      Its output is used during dependency cleanup, code-review preparation, CI checks,
+      and large refactors where accidental reliance on another file's transitive include
+      would otherwise hide missing direct dependencies.
 tags:
   - c
   - clang
@@ -36,6 +107,12 @@ provenance:
     - >
       Official homepage at include-what-you-use.org links Docs; official GitHub README
       says more in-depth documentation is in docs.
+  history-sources:
+    - https://api.github.com/repos/include-what-you-use/include-what-you-use/releases
+    - https://formulae.brew.sh/formula/include-what-you-use
+    - https://github.com/include-what-you-use/include-what-you-use
+    - https://github.com/include-what-you-use/include-what-you-use/blob/master/docs/WhyIWYU.md
+    - https://include-what-you-use.org/
   repo-sources:
     - >
       source_facts.repo is empty; official homepage links Source, and the official
@@ -51,5 +128,6 @@ category-path:
   - cpp
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

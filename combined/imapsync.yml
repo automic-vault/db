@@ -8,6 +8,95 @@ docs:
   - https://imapsync.lamiral.info/README
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      imapsync moved from a bespoke migration script into a long-running public tool
+      with a distinctive funding model. The README says it is free, open, and public
+      under the NOLIMIT Public License, while the author sells builds and support as a
+      way to maintain the tool over decades.
+    - >
+      The installation docs cover Unix, Windows, macOS, Docker, Debian, FreeBSD, Arch
+      Linux, CPanel, AWS EC2, and an online UI. That breadth reflects adoption by
+      individual users, hosting providers, consultants, and administrators doing bulk
+      migrations rather than only local backups.
+    - >
+      Homebrew formula metadata lists imapsync as a bottled package for macOS and Linux.
+      That packaging matters because imapsync has a deep Perl dependency surface;
+      package managers turn it from a migration project into a single installable
+      command.
+  package-nerd-significance:
+    - >
+      For package nerds, imapsync is significant because it packages a messy real-world
+      protocol job into a repeatable CLI. IMAP servers disagree, provider policies
+      change, Gmail labels behave unlike folders, and credentials migrate from passwords
+      to OAuth; imapsync's long option list is a fossil record of those edge cases.
+    - >
+      It is also a useful example of an open tool that is commercially sustained without
+      disappearing from package managers. The package remains scriptable and inspectable
+      while the author sells convenience builds, support, and an online migration
+      surface.
+  project-history:
+    - >
+      Gilles Lamiral's README gives an unusually clear origin story: he initially wrote
+      imapsync in July 2001 for BaSystemes, which needed to install a new IMAP server
+      without losing large old mailboxes reachable over an unreliable low-bandwidth ISDN
+      link.
+    - >
+      The same history section says imapsync began as a patch to copy_folder.pl from the
+      Mail-IMAPClient Perl module examples. Its design was explicitly made with rsync in
+      mind: reruns should avoid wasting bandwidth and avoid creating duplicates.
+    - >
+      The ChangeLog is an RCS-style log with more than one thousand revisions. It
+      documents a tool that evolved through provider-specific behavior, Gmail and Yahoo
+      options, OAuth support, web/CGI use, Docker behavior, logging, folder mapping, and
+      a large unit-test corpus.
+  related-projects:
+    - Mail-IMAPClient is the Perl module lineage named by imapsync's history section.
+    - >
+      rsync is the design inspiration named by the author for avoiding duplicate
+      transfer work.
+    - >
+      offlineimap and mbsync are related IMAP synchronization tools that the README
+      names for two-way synchronization use cases.
+  sources:
+    - https://api.github.com/repos/imapsync/imapsync
+    - https://formulae.brew.sh/api/formula/imapsync.json
+    - https://github.com/imapsync/imapsync
+    - https://imapsync.lamiral.info/
+    - https://imapsync.lamiral.info/ChangeLog
+    - https://imapsync.lamiral.info/INSTALL.d/INSTALL.ANY.txt
+    - https://imapsync.lamiral.info/README
+  summary:
+    - >
+      imapsync is a Perl command-line tool for one-way IMAP account migration and
+      backup. It is one of the practical workhorse packages administrators reach for
+      when mailboxes need to move between providers without duplicating messages or
+      losing folder structure and flags.
+  timeline:
+    - >
+      2001: Gilles Lamiral writes imapsync for a BaSystemes IMAP server migration over a
+      fragile ISDN link.
+    - >
+      2007: imapsync.spec work appears in project FAQ history, showing packaging
+      interest around Linux distributions.
+    - '2011: The GitHub repository is created.'
+    - >
+      2024: The ChangeLog reaches the 2.300 series with refactoring, CGI, Gmail, and
+      logging changes.
+    - '2025: Release 2.314 is documented in the README and VERSION file.'
+    - '2026: The ChangeLog records 2.32x revisions, including refactoring and option changes.'
+  usage:
+    - >
+      The core invocation names a source host, user, and password plus a destination
+      host, user, and password. imapsync then recursively transfers folders and
+      messages, preserves flags, and skips messages it has already identified on the
+      destination.
+    - >
+      The README is careful about operational limits: imapsync is for migration and
+      backup, not active two-way synchronization. It points users who need two-way sync
+      toward offlineimap or mbsync, and it documents strict destination cleanup with
+      options such as --delete2.
 category: productivity
 package-manager:
   apk: imapsync
@@ -29,5 +118,14 @@ executables:
   - imapsync
 provenance:
   formula: imapsync
+  history-sources:
+    - https://api.github.com/repos/imapsync/imapsync
+    - https://formulae.brew.sh/api/formula/imapsync.json
+    - https://github.com/imapsync/imapsync
+    - https://imapsync.lamiral.info/
+    - https://imapsync.lamiral.info/ChangeLog
+    - https://imapsync.lamiral.info/INSTALL.d/INSTALL.ANY.txt
+    - https://imapsync.lamiral.info/README
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
