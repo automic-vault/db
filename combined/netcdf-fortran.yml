@@ -6,6 +6,64 @@ docs:
   - https://docs.unidata.ucar.edu/netcdf-fortran/current
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Its adoption is concentrated in HPC and scientific-modeling build stacks. On July
+      1, 2026, Homebrew showed 2,728 installs over 365 days and 213 installs over 30
+      days, with gcc and netcdf as runtime dependencies. The lower volume than netcdf
+      itself is expected because many users only need command-line tools or C libraries,
+      while Fortran consumers install this package to compile model code.
+  package-nerd-significance:
+    - >
+      This package matters because many legacy and active scientific codes are
+      Fortran-first. Packaging it separately keeps the core C library smaller while
+      preserving the long-running netCDF contract for Fortran model code. Dependency
+      mismatches with netCDF-C are the main thing maintainers watch; the 4.6.3 release
+      notes require netCDF-C 4.9.2 or newer.
+  project-history:
+    - >
+      Fortran has been part of the netCDF story from the beginning because Unidata's
+      original interface work had to account for portable scientific programs across C
+      and Fortran environments. The separate netcdf-fortran distribution now provides
+      Fortran application interfaces, depends on netCDF-C, and contains both F77 and F90
+      APIs. The Fortran usage guide notes that since netCDF 4.1.3 the Fortran software
+      and library have been distinct from the C library while depending on it.
+  related-projects:
+    - netcdf
+    - netcdf-cxx
+    - HDF5
+    - PnetCDF
+  sources:
+    - https://docs.unidata.ucar.edu/netcdf-fortran/current/
+    - https://docs.unidata.ucar.edu/netcdf-fortran/current/f90-use-of-the-netcdf-library.html
+    - https://docs.unidata.ucar.edu/netcdf-fortran/current/nf_release_notes.html
+    - https://docs.unidata.ucar.edu/nug/2.0-draft/netcdf_history.html
+    - https://formulae.brew.sh/formula/netcdf-fortran
+  summary:
+    - >
+      netcdf-fortran is Unidata's Fortran interface package for netCDF data. It exists
+      because Fortran users in climate, weather, ocean, atmospheric, and other
+      scientific codes need native F77/F90 APIs while the file format and core
+      implementation live in netCDF-C.
+  timeline:
+    - >
+      1988: Unidata prototyped netCDF in C while evaluating portable interfaces for
+      scientific users, including Fortran constraints.
+    - >
+      2011-era netCDF 4.1.3: the Fortran library became consistently distinct from the C
+      library while depending on it, according to the Fortran guide.
+    - '2025-03-26: netCDF-Fortran 4.6.2 was released.'
+    - '2026-05-20: netCDF-Fortran 4.6.3 was released.'
+    - '2026-07-01: Homebrew listed stable version 4.6.3.'
+  usage:
+    - >
+      Practical use is compiler-facing: Fortran programs call routines such as
+      nf90_create, nf90_def_dim, nf90_def_var, nf90_put_var, nf90_open, nf90_get_var,
+      and nf90_close. The package installs nf-config so builds can obtain the correct
+      include and linker flags with commands like nf-config --fflags --flibs, avoiding
+      hand-written library paths that break across shared/static builds or Homebrew
+      prefix changes.
 category: data
 package-manager:
   apk: netcdf-fortran
@@ -29,5 +87,12 @@ executables:
   - nf-config
 provenance:
   formula: netcdf-fortran
+  history-sources:
+    - https://docs.unidata.ucar.edu/netcdf-fortran/current/
+    - https://docs.unidata.ucar.edu/netcdf-fortran/current/f90-use-of-the-netcdf-library.html
+    - https://docs.unidata.ucar.edu/netcdf-fortran/current/nf_release_notes.html
+    - https://docs.unidata.ucar.edu/nug/2.0-draft/netcdf_history.html
+    - https://formulae.brew.sh/formula/netcdf-fortran
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

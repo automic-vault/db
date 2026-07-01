@@ -5,6 +5,55 @@ docs:
   - https://docs.unidata.ucar.edu/netcdf-cxx/current
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The package is important inside scientific C++ builds but much smaller than the
+      core netCDF C package. On July 1, 2026, Homebrew reported 652 installs over 365
+      days and 69 installs over 30 days for netcdf-cxx, compared with tens of thousands
+      for netcdf itself. That shape matches its role as a language binding pulled in
+      only by projects that compile C++ against netCDF directly.
+  package-nerd-significance:
+    - >
+      The nerdy packaging point is dependency order: netcdf-cxx is not the file format
+      itself, and it does not replace netcdf. It is a thin language-specific layer for
+      C++ consumers, so mismatched netCDF-C versions, HDF5 support, and library naming
+      are the kinds of issues that matter more than end-user CLI behavior.
+  project-history:
+    - >
+      The modern netCDF-4 C++ API came from Lynton Appel of the Culham Centre for Fusion
+      Energy, where it was developed for managing fusion research data from the MAST
+      experiment. Unidata's C++ guide says the API is a complete read/write interface
+      layered over the netCDF-4 C interface, replacing a previous partial C++ interface
+      and using standard C++ features such as namespaces, exceptions, and templates that
+      were not in the older mid-1990s netCDF-3 C++ API.
+  related-projects:
+    - netcdf
+    - netcdf-fortran
+    - netcdf4-python
+    - HDF5
+  sources:
+    - https://docs.unidata.ucar.edu/netcdf-cxx/current/RELEASE_NOTES.html
+    - https://formulae.brew.sh/formula/netcdf-cxx
+    - https://unidata.github.io/netcdf-cxx4/
+    - https://www.unidata.ucar.edu/software/netcdf/
+  summary:
+    - >
+      netcdf-cxx is Unidata's netCDF-4 C++ interface package. In Homebrew it is a small
+      language-binding formula that depends on the main netcdf C library and installs
+      the C++ library plus ncxx4-config for build integration.
+  timeline:
+    - "Mid-1990s: the first netCDF-3 C++ API existed, according to Unidata's C++ guide."
+    - '2016-05-13: netcdf-cxx4 v4.3.0 was released.'
+    - '2019-09-12: netcdf-cxx4 v4.3.1 was released, requiring netCDF-C 4.6.0 or newer.'
+    - '2026-07-01: Homebrew listed stable version 4.3.1 revision 3.'
+  usage:
+    - >
+      Users install it when a C++ application needs native netCDF-4 read/write APIs
+      rather than calling the C interface directly. In practice it is used by build
+      systems through the installed headers, library, and ncxx4-config, and it inherits
+      netCDF-C behavior, fixes, and file-format support because the C++ layer sits on
+      top of the C library.
 tags:
   - array-data
   - c-plus-plus
@@ -34,6 +83,11 @@ provenance:
     - >
       Official Unidata NetCDF-C++ documentation is hosted at
       docs.unidata.ucar.edu/netcdf-cxx/current/.
+  history-sources:
+    - https://docs.unidata.ucar.edu/netcdf-cxx/current/RELEASE_NOTES.html
+    - https://formulae.brew.sh/formula/netcdf-cxx
+    - https://unidata.github.io/netcdf-cxx4/
+    - https://www.unidata.ucar.edu/software/netcdf/
   repo-sources:
     - >
       source_facts.repo already has https://github.com/Unidata/netcdf-cxx4; per
@@ -47,5 +101,6 @@ category-path:
   - scientific-data
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
