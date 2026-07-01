@@ -6,6 +6,47 @@ docs:
   - https://github.com/mistydemeo/launch_socket_server#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption appears niche and macOS-specific. Homebrew packages it as a single
+      executable for users who want launchd socket activation to front an unprivileged
+      development or local service process.
+  package-nerd-significance:
+    - >
+      The package is interesting because it exposes a native macOS service-management
+      pattern as a tiny command-line utility. It packages policy separation: let launchd
+      own privileged binding, while application code runs without root.
+  project-history:
+    - >
+      The upstream repository was created on 2014-11-07 under Sam Stephenson's GitHub
+      account and later appears in Homebrew metadata through Misty De Meo's maintained
+      repository URL. The README is direct and narrow: the problem is binding ports
+      below 1024 on OS X without root; the solution is to run the server through
+      launch_socket_server.
+  related-projects:
+    - >
+      Related technologies include launchd, launch_activate_socket, Unix-domain sockets,
+      local TCP proxying, and macOS launch daemon plists.
+  sources:
+    - https://formulae.brew.sh/formula/launch_socket_server
+    - https://github.com/mistydemeo/launch_socket_server
+    - https://github.com/sstephenson/launch_socket_server
+  summary:
+    - >
+      launch_socket_server is a small macOS utility for accepting connections on
+      privileged ports without running the application server as root. It sits between
+      launchd and an unprivileged server, proxying launchd-activated sockets to a
+      Unix-domain socket or local TCP port.
+  timeline:
+    - '2014: GitHub repository created on 2014-11-07.'
+    - '2014: Repository pushed activity recorded through 2014-11-10.'
+    - '2020s: Homebrew metadata packages the tool as launch_socket_server.'
+  usage:
+    - >
+      Users create a launch daemon plist that has launchd listen on a privileged port,
+      then configure launch_socket_server to start the real server as a less-privileged
+      user and pass the socket path through LAUNCH_PROGRAM_SOCKET_PATH.
 category: networking
 package-manager:
   brew: launch_socket_server
@@ -22,5 +63,10 @@ executables:
   - launch_socket_server
 provenance:
   formula: launch_socket_server
+  history-sources:
+    - https://formulae.brew.sh/formula/launch_socket_server
+    - https://github.com/mistydemeo/launch_socket_server
+    - https://github.com/sstephenson/launch_socket_server
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium
