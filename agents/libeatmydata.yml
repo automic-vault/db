@@ -6,6 +6,60 @@ docs:
   - https://www.flamingspork.com/projects/libeatmydata
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official page notes that most Linux distributions package libeatmydata as
+      `eatmydata`, and the README gives Debian/Ubuntu installation as `apt install
+      eatmydata`. Its adoption is strongest in test suites, package builds, and other
+      repeatable workloads where crash safety is intentionally traded away for speed.
+  package-nerd-significance:
+    - >
+      libeatmydata is beloved package-nerd plumbing because it names the tradeoff
+      honestly and exposes it as one wrapper command. It is especially useful for
+      distribution builders and database test runners who understand that avoiding fsync
+      is unsafe for production but valuable in controlled, throwaway environments.
+  project-history:
+    - >
+      The project page describes libeatmydata as a small LD_PRELOAD library, warns users
+      not to use it where stored data matters, and notes a migration from an old Bazaar
+      repository to GitHub. The GitHub README ties the project to Smith's linux.conf.au
+      2007 talk, 'Eat My Data: How Everybody gets File IO Wrong,' and says the talk
+      covered common mistakes in POSIX file I/O.
+    - >
+      The GitHub tags show historical releases libeatmydata-65 in September 2012,
+      libeatmydata-82 in June 2013, libeatmydata-105 in November 2016, then v129 in
+      April 2021, v130 in October 2021, and v131 in January 2023. The v130 release added
+      a `syncfs()` wrapper, and v131 included macOS build and test fixes.
+  related-projects:
+    - >
+      The project history references Bazaar, Launchpad, GitHub, Linux distribution
+      packages named `eatmydata`, MySQL test-suite usage, and the POSIX file I/O APIs
+      that the preload library intercepts.
+  sources:
+    - https://github.com/stewartsmith/libeatmydata
+    - https://github.com/stewartsmith/libeatmydata/releases
+    - https://github.com/stewartsmith/libeatmydata/tags
+    - https://www.flamingspork.com/projects/libeatmydata
+  summary:
+    - >
+      libeatmydata is Stewart Smith's LD_PRELOAD library and `eatmydata` wrapper that
+      deliberately turns durability operations such as fsync and O_SYNC into no-ops to
+      make disposable test or build workloads faster.
+  timeline:
+    - >
+      2007: Project originated from Stewart Smith's linux.conf.au talk on POSIX file I/O
+      mistakes.
+    - '2012: libeatmydata-65 tag published.'
+    - '2013: libeatmydata-82 tag published.'
+    - '2016: libeatmydata-105 tag published.'
+    - '2021: v129 and v130 releases published; v130 added syncfs wrapping.'
+    - '2023: v131 release published with small fixes including macOS build and test work.'
+  usage:
+    - >
+      The normal usage is intentionally tiny: install the package and run `eatmydata
+      foo`. The README and project page both stress the safety boundary: use it for
+      testing or disposable work, not for programs whose on-disk data you care about.
 tags:
   - cli
   - fsync
@@ -33,6 +87,11 @@ provenance:
     - >
       Official GitHub README provides installing, usage, performance notes, warnings,
       and links to the official project page.
+  history-sources:
+    - https://github.com/stewartsmith/libeatmydata
+    - https://github.com/stewartsmith/libeatmydata/releases
+    - https://github.com/stewartsmith/libeatmydata/tags
+    - https://www.flamingspork.com/projects/libeatmydata
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/stewartsmith/libeatmydata,
@@ -48,5 +107,6 @@ category-path:
   - testing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
