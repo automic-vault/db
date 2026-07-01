@@ -7,6 +7,65 @@ docs:
   - https://github.com/thom311/libnl/tree/main/man
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      libnl became a standard dependency for Linux networking software that needed
+      structured access to routes, addresses, links, traffic control, generic netlink
+      families, and netfilter state. Its inclusion in many distribution package sets
+      reflects netlink's role as the Linux kernel's preferred extensible networking
+      control API.
+  package-nerd-significance:
+    - >
+      libnl matters to package maintainers because it is Linux-specific, ABI-sensitive,
+      and central to network managers, firewall tools, wireless stacks, containers, and
+      low-level diagnostics. The project's documented SONAME problems in releases 3.2.18
+      and 3.2.19 show why distributions track its ABI carefully.
+  project-history:
+    - >
+      The Infradead project page describes libnl as a suite split into smaller
+      libraries: libnl for socket and message fundamentals, libnl-route for
+      NETLINK_ROUTE interfaces, libnl-genl for generic netlink, and libnl-nf for
+      netfilter interfaces. The split is explicitly intended to avoid forcing every
+      application to link one large library.
+    - >
+      The project history includes a long-lived 1.1.x branch and a 3.x branch. The
+      Infradead page warns that 1.1.x support is limited and tells new applications to
+      target libnl3, while also documenting distribution package names for CentOS,
+      Debian, Fedora, OpenSUSE, Slackware, and Ubuntu.
+  related-projects:
+    - >
+      Related kernel interfaces include netlink, NETLINK_ROUTE, generic netlink, and
+      netfilter.
+    - >
+      The libnl suite's related libraries include libnl, libnl-route, libnl-genl, and
+      libnl-nf.
+  sources:
+    - https://github.com/thom311/libnl
+    - https://www.infradead.org/~tgr/libnl/
+  summary:
+    - >
+      libnl is the Netlink Protocol Library Suite, a set of C libraries for Linux
+      applications that talk to kernel netlink interfaces. Netlink replaced many
+      ioctl-style networking control paths with a message-based IPC mechanism between
+      user space and the kernel.
+  timeline:
+    - >
+      1.1.x era: The project maintained a stable branch but later advised new
+      applications to use libnl3.
+    - >
+      3.2.10: The project reverted an unnecessary SONAME bump after discussion to reduce
+      distribution-maintainer pain.
+    - >
+      3.2.18-3.2.19: The project documented an incorrect SONAME that required affected
+      binaries to be relinked for compatibility with 3.2.20 and later.
+    - '2014-07-16: The Infradead project page records libnl 3.2.25 as released.'
+  usage:
+    - >
+      Callers use libnl core primitives for netlink sockets, message construction,
+      parsing, send, receive, and cache handling, then add family-specific libraries
+      when they need route, generic netlink, or netfilter support. The Homebrew package
+      exposes many nl-* and nf-* command-line helpers around those APIs.
 category: networking
 package-manager:
   brew: libnl
@@ -72,5 +131,9 @@ executables:
   - nl-util-addr
 provenance:
   formula: libnl
+  history-sources:
+    - https://github.com/thom311/libnl
+    - https://www.infradead.org/~tgr/libnl/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

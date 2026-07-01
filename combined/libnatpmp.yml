@@ -6,6 +6,63 @@ docs:
   - https://miniupnp.tuxfamily.org/libnatpmp.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      libnatpmp's adoption follows the MiniUPnP ecosystem and peer-to-peer networking
+      use cases where software wants an explicit router port mapping without relying on
+      UPnP IGD. The MiniUPnP documentation includes examples for simple redirection and
+      a P2P-style initialization state machine.
+    - >
+      In package managers, libnatpmp is small but useful: it gives applications a
+      portable asynchronous NAT-PMP client library and gives users the natpmpc tool for
+      testing gateway support.
+  package-nerd-significance:
+    - >
+      Package nerds care about libnatpmp because it is the tiny sharp tool beside
+      MiniUPnP: one library, one protocol, one CLI, and enough C API to let network
+      applications punch a NAT mapping when the gateway supports NAT-PMP.
+  project-history:
+    - >
+      The official MiniUPnP page describes NAT-PMP as a NAT traversal protocol and
+      positions libnatpmp as a client-side implementation. The GitHub README says the
+      repository was initialized from libnatpmp-20120821 and records Thomas Bernard's
+      2007-2009 copyright.
+    - >
+      The protocol context comes from RFC 6886: NAT-PMP automated NAT port mappings, was
+      implemented in Apple products from 2005 onward, and was superseded in 2013 by Port
+      Control Protocol while retaining a compatible packet-format lineage.
+  related-projects:
+    - >
+      libnatpmp is related to MiniUPnP and MiniUPnPd, UPnP IGD, Apple's Bonjour-era
+      NAT-PMP deployments, and the IETF Port Control Protocol that superseded NAT-PMP.
+  sources:
+    - https://datatracker.ietf.org/doc/html/rfc6886
+    - https://formulae.brew.sh/formula/libnatpmp
+    - https://github.com/miniupnp/libnatpmp
+    - https://github.com/miniupnp/miniupnp
+    - https://miniupnp.tuxfamily.org/libnatpmp.html
+  summary:
+    - >
+      libnatpmp is the MiniUPnP project's small C client library for NAT Port Mapping
+      Protocol, with a natpmpc command-line client for requesting mappings from NAT
+      gateways.
+  timeline:
+    - >
+      2005: RFC 6886 later records NAT-PMP implementation in Apple products from this
+      year onward.
+    - "2007-2009: libnatpmp source records Thomas Bernard's copyright range."
+    - >
+      2012-08-21: The GitHub README says the repository was initialized from
+      libnatpmp-20120821.
+    - '2013-04: RFC 6886 documents NAT-PMP and says PCP superseded it in 2013.'
+    - '2020s: The library remains packaged as the MiniUPnP NAT-PMP client implementation.'
+  usage:
+    - >
+      Applications initialize a natpmp_t object, send address or port-mapping requests,
+      wait with select using the timeout helper, and read responses or retry. The API is
+      intentionally event-loop-friendly because calls are asynchronous and based on
+      non-blocking sockets.
 category: networking
 package-manager:
   apk: libnatpmp
@@ -30,5 +87,12 @@ executables:
   - natpmpc
 provenance:
   formula: libnatpmp
+  history-sources:
+    - https://datatracker.ietf.org/doc/html/rfc6886
+    - https://formulae.brew.sh/formula/libnatpmp
+    - https://github.com/miniupnp/libnatpmp
+    - https://github.com/miniupnp/miniupnp
+    - https://miniupnp.tuxfamily.org/libnatpmp.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

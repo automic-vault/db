@@ -7,6 +7,79 @@ docs:
   - https://maxmind.github.io/libmaxminddb
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The library is distributed by MaxMind and is packaged broadly across Unix-like
+      systems, including Homebrew, Debian, Ubuntu, Fedora, Alpine, Arch, MacPorts, Nix,
+      and openSUSE. MaxMind's README also documents installation through its Ubuntu PPA
+      and through Homebrew or MacPorts on macOS.
+    - >
+      Its adoption follows the adoption of GeoIP2 and GeoLite2 database files: web
+      servers, analytics systems, fraud tooling, CDN infrastructure, and log-processing
+      tools need a small local reader for IP geolocation databases.
+  package-nerd-significance:
+    - >
+      libmaxminddb is important because it is the small ABI-stable-ish native reader
+      sitting underneath a large amount of geolocation plumbing. Packaging it correctly
+      gives higher-level bindings and tools one common implementation for the MaxMind DB
+      format.
+    - >
+      For package maintainers, it is also an example of a data-format reader whose
+      security profile matters: release notes include fixes for crafted database files,
+      integer overflow, recursion depth, and mmdblookup behavior.
+  project-history:
+    - >
+      MaxMind introduced libmaxminddb as the native C implementation for reading MaxMind
+      DB files. The repository describes the format as a custom binary format for fast
+      IP-address lookups with flexible associated data, and links to the public MaxMind
+      DB specification.
+    - >
+      The MaxMind DB specification documents a binary search tree, data section, and
+      metadata area. That format became the foundation for MaxMind's newer GeoIP
+      database distribution and replaced older GeoIP Legacy database handling in many
+      downstream systems.
+  related-projects:
+    - MaxMind DB is the underlying file-format specification.
+    - >
+      GeoIP2 and GeoLite2 databases are the main data products commonly read through
+      libmaxminddb.
+    - >
+      Bindings in other languages and database writer tools depend on the same format
+      and often interoperate with libmaxminddb-generated expectations.
+  sources:
+    - https://dev.maxmind.com/geoip/docs/databases/
+    - https://formulae.brew.sh/formula/libmaxminddb
+    - https://github.com/maxmind/libmaxminddb
+    - https://github.com/maxmind/libmaxminddb/releases
+    - https://maxmind.github.io/MaxMind-DB/
+    - https://maxmind.github.io/libmaxminddb/
+  summary:
+    - >
+      libmaxminddb is MaxMind's C reader library for MaxMind DB files, the binary
+      database format used by MaxMind GeoIP and GeoLite datasets. It packages IP-address
+      lookup against a compact database into a C library and the mmdblookup command-line
+      tool.
+  timeline:
+    - '2013: MaxMind copyright notices in the repository begin for libmaxminddb.'
+    - >
+      2010s: MaxMind DB becomes the documented binary format for GeoIP2 and
+      GeoLite2-style IP lookup databases.
+    - >
+      2024: libmaxminddb 1.10.0 adds build options and fixes lookup behavior for
+      databases with very large search trees.
+    - >
+      2026: libmaxminddb 1.13.0 through 1.13.3 releases fix validation, overflow,
+      double-close, recursion-depth, and metadata edge cases.
+  usage:
+    - >
+      Applications link libmaxminddb to open .mmdb files and look up IPv4 or IPv6
+      addresses. Operators use mmdblookup for debugging, inspection, and shell-level
+      checks against database files.
+    - >
+      The package does not provide the GeoIP data itself; it provides the reader and
+      utility around MaxMind DB files. That separation is why it appears as a library
+      dependency in many packages that leave database download or licensing to the user.
 category: data
 package-manager:
   apk: libmaxminddb
@@ -32,5 +105,13 @@ executables:
   - mmdblookup
 provenance:
   formula: libmaxminddb
+  history-sources:
+    - https://dev.maxmind.com/geoip/docs/databases/
+    - https://formulae.brew.sh/formula/libmaxminddb
+    - https://github.com/maxmind/libmaxminddb
+    - https://github.com/maxmind/libmaxminddb/releases
+    - https://maxmind.github.io/MaxMind-DB/
+    - https://maxmind.github.io/libmaxminddb/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
