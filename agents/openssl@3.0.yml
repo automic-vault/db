@@ -8,6 +8,89 @@ config-file-location:
   unix:
     - openssl.cnf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      OpenSSL 3.0 became the compatibility anchor for the OpenSSL 3 generation because
+      it preserved source compatibility for many 1.1.1 applications while requiring
+      recompilation and, in some cases, API migration. Distributions and package
+      managers adopted it as the route from OpenSSL 1.1.1 into the provider-based
+      OpenSSL architecture.
+    - >
+      Homebrew's `openssl@3.0` is keg-only and versioned, which matters for build
+      reproducibility: a formula can link to the 3.0 branch without being silently moved
+      to newer OpenSSL 3 minor releases. The cited Homebrew page lists a 2026-09-07
+      deprecation date and stable version 3.0.21.
+  package-nerd-significance:
+    - >
+      OpenSSL 3.0 is a packaging landmark because it changed more than a version number.
+      The provider architecture, FIPS integration, license switch, and low-level API
+      deprecations affected build flags, downstream patches, runtime configuration
+      paths, and compatibility promises across huge dependency graphs.
+    - >
+      The `openssl@3.0` formula is package-manager archaeology in action: even after
+      newer OpenSSL 3 branches exist, the old branch remains packaged because TLS
+      libraries are sticky dependencies and some consumers need exact branch semantics.
+  project-history:
+    - >
+      OpenSSL traces back to SSLeay, the open-source SSL library by Eric A. Young and
+      Tim J. Hudson. In December 1998, after Young and Hudson moved to RSA and SSLeay's
+      future became uncertain, Mark Cox, Ralf Engelschall, Stephen Henson, Ben Laurie,
+      and Paul Sutton organized a successor project, changed the planned name from
+      OpenTLS to OpenSSL, and released OpenSSL 0.9.1c on December 23, 1998.
+    - >
+      For two decades OpenSSL became a central TLS and cryptography dependency for web
+      servers, language runtimes, package managers, mail software, VPNs, databases, and
+      countless command-line workflows. The 2014 Heartbleed vulnerability exposed how
+      much internet infrastructure depended on a small maintenance team and led to
+      governance, funding, and foundation changes around the project.
+    - >
+      OpenSSL 3.0, released on September 7, 2021, was a major architectural and
+      licensing reset. The migration guide highlights the switch from the dual
+      OpenSSL/SSLeay licenses to Apache License 2.0, the provider model for algorithm
+      implementations, FIPS provider support, and formal deprecation of many low-level
+      cryptographic APIs in favor of high-level EVP APIs.
+  related-projects:
+    - >
+      OpenSSL descends from SSLeay and competes or coexists with LibreSSL, BoringSSL,
+      AWS-LC, GnuTLS, NSS, wolfSSL, and platform TLS libraries. OpenSSH, curl, web
+      servers, programming-language runtimes, and certificate tooling are among the
+      downstream ecosystems affected by OpenSSL branch choices.
+  sources:
+    - https://docs.openssl.org/3.0/man7/migration_guide/
+    - https://formulae.brew.sh/formula/openssl@3.0
+    - https://github.com/openssl/openssl
+    - https://openssl-library.org/news/openssl-3.0-notes/
+    - https://openssl-library.org/news/timeline/
+    - https://openssl-library.org/post/2018-12-20-20years/index.html
+    - https://openssl.foundation/about/history
+  summary:
+    - >
+      OpenSSL 3.0 is the first OpenSSL 3 major-release line: a TLS, SSL, and
+      general-purpose cryptography toolkit with a command-line program, libssl,
+      libcrypto, providers, and an Apache-2.0 license. Homebrew's `openssl@3.0` formula
+      packages the 3.0 long-lived branch separately for software that must stay on that
+      ABI and behavior profile.
+  timeline:
+    - 'December 23, 1998: OpenSSL 0.9.1c is released.'
+    - '2014: Heartbleed triggers governance and funding changes around OpenSSL.'
+    - 'September 7, 2021: OpenSSL 3.0.0 is released.'
+    - '2021 onward: OpenSSL 3.0 receives security and bug-fix releases in its own series.'
+    - >
+      2026: Homebrew lists `openssl@3.0` as a keg-only formula with stable version
+      3.0.21 and a 2026-09-07 deprecation date.
+  usage:
+    - >
+      Developers use OpenSSL 3.0 through C APIs in libssl/libcrypto, through language
+      bindings that wrap those libraries, and through the `openssl` CLI for
+      certificates, keys, CSRs, testing TLS endpoints, hashing, signing, and format
+      conversion. The 3.0 branch adds provider configuration and FIPS-module choices to
+      those familiar workflows.
+    - >
+      Packagers use `openssl@3.0` when an application has been certified, tested, or
+      constrained against the 3.0 line. The branch is less about new features and more
+      about maintaining predictable OpenSSL 3 behavior while security fixes continue for
+      that line.
 tags:
   - cli
   - cryptography
@@ -22,6 +105,14 @@ provenance:
     - Official OpenSSL documentation and source_facts.name openssl@3.0.
   docs-sources:
     - Official OpenSSL 3.0 documentation and config(5) manual.
+  history-sources:
+    - https://docs.openssl.org/3.0/man7/migration_guide/
+    - https://formulae.brew.sh/formula/openssl@3.0
+    - https://github.com/openssl/openssl
+    - https://openssl-library.org/news/openssl-3.0-notes/
+    - https://openssl-library.org/news/timeline/
+    - https://openssl-library.org/post/2018-12-20-20years/index.html
+    - https://openssl.foundation/about/history
   repo-sources:
     - >
       source_facts.repo already supplies https://github.com/openssl/openssl; prompt
@@ -33,5 +124,6 @@ category-path:
   - security
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

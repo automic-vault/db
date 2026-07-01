@@ -8,6 +8,80 @@ config-file-location:
   unix:
     - $OPENSSLDIR/openssl.cnf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      OpenSSL became a default dependency because it solved two hard packaging problems
+      at once: it supplied a portable TLS stack and a broad cryptographic library.
+      Unix-like operating systems, web servers, mail servers, VPNs, database clients,
+      programming language bindings, and package managers built around it, which made
+      ABI transitions and security updates highly visible across distributions.
+    - >
+      The project’s adoption history also includes hard lessons in security maintenance.
+      Events such as the 2014 Heartbleed vulnerability changed how many organizations
+      viewed OpenSSL patching, funding, audits, and dependency tracking. Later 3.x and
+      4.x branches are packaged with branch-specific formulas so developers can pin
+      applications to a supported ABI and test migrations deliberately.
+  package-nerd-significance:
+    - >
+      For package nerds, OpenSSL is the dependency that makes dependency graphs feel
+      real: a small ABI or policy change can ripple through language ecosystems, OS
+      images, containers, and vendored binaries. The `@4` suffix is meaningful because
+      it advertises a major cryptographic-runtime transition, not a cosmetic formula
+      split.
+  project-history:
+    - >
+      The OpenSSL codebase descends from SSLeay, the SSL implementation written by Eric
+      A. Young and Tim J. Hudson in the 1990s. The OpenSSL project published its first
+      release on December 23, 1998, after SSLeay development stopped, and it became the
+      long-running community-maintained successor for SSL/TLS and general-purpose
+      cryptographic APIs.
+    - >
+      OpenSSL evolved from the pre-TLS web-security era into a toolkit spanning TLS
+      protocol support, X.509 certificate handling, cryptographic algorithms, engines,
+      command-line inspection tools, and compliance-oriented modules. OpenSSL 3.0
+      introduced the provider architecture, moving algorithm implementations behind
+      loadable providers and making FIPS use a provider-based model. OpenSSL 4.0
+      continued that major-version lineage with feature and compatibility changes rather
+      than an LTS promise.
+  related-projects:
+    - >
+      Related implementations and consumers include LibreSSL and BoringSSL as forks or
+      alternate TLS/crypto libraries, plus the many applications that expose
+      OpenSSL-flavored certificate and TLS behavior through their own CLIs.
+  sources:
+    - https://docs.openssl.org/3.0/man7/migration_guide/
+    - https://github.com/openssl/openssl
+    - https://openssl-library.org/post/2018-12-20-20years/index.html
+    - https://openssl-library.org/post/2026-04-14-openssl-40-final-release/
+    - https://openssl-library.org/source/
+  summary:
+    - >
+      OpenSSL is one of the foundational open-source cryptography and TLS toolkits: a C
+      library, command-line utility, and provider of low-level primitives used by
+      operating systems, language runtimes, servers, package managers, and embedded
+      products. The Homebrew `openssl@4` formula tracks the 4.0 series, a
+      feature-release branch announced by the OpenSSL project on April 14, 2026.
+  timeline:
+    - '1995-1998: SSLeay was developed by Eric A. Young and Tim J. Hudson.'
+    - '1998-12-23: the first OpenSSL release was published.'
+    - >
+      2021-09-07: OpenSSL 3.0 introduced the provider architecture used for modern
+      algorithm and FIPS-module loading.
+    - '2026-04-14: OpenSSL 4.0.0 was announced as a feature release.'
+  usage:
+    - >
+      Developers use the `openssl` executable to generate keys and CSRs, inspect
+      certificates, test TLS endpoints, convert key formats, create hashes and
+      signatures, and debug trust-chain problems. Applications link against libssl and
+      libcrypto for TLS sessions, certificate verification, envelope encryption,
+      digests, random number generation, and public-key operations.
+    - >
+      Package maintainers care about exactly which OpenSSL line is installed because
+      headers, library names, provider configuration, FIPS behavior, and deprecated APIs
+      can affect downstream builds. A versioned package such as `openssl@4` lets build
+      scripts and CI select the 4.0 branch while older software remains on a 3.x or LTS
+      branch.
 tags:
   - certificates
   - cli
@@ -21,6 +95,12 @@ provenance:
     - source_facts.name identifies the Homebrew variant; official project name is OpenSSL.
   docs-sources:
     - Official OpenSSL 4.0 docs describe OpenSSL and its configuration file format.
+  history-sources:
+    - https://docs.openssl.org/3.0/man7/migration_guide/
+    - https://github.com/openssl/openssl
+    - https://openssl-library.org/post/2018-12-20-20years/index.html
+    - https://openssl-library.org/post/2026-04-14-openssl-40-final-release/
+    - https://openssl-library.org/source/
   repo-sources:
     - source_facts.repo is already populated; prompt requires repo null.
   tags-sources:
@@ -32,5 +112,6 @@ category-path:
   - security
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

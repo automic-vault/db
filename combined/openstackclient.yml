@@ -12,6 +12,80 @@ credentials-file-location:
   unix:
     - ~/.config/openstack/clouds.yaml
     - ~/.config/openstack/secure.yaml
+history:
+  adoption-history:
+    - >
+      OpenStackClient became the operator-facing CLI because it matched how cloud
+      administrators and users actually work: they create projects, images, networks,
+      volumes, servers, users, roles, and quotas across service boundaries. OpenStack
+      release notes track OpenStackClient versions alongside OpenStack named releases,
+      emphasizing cross-release compatibility instead of a one-client-per-cloud-version
+      model.
+    - >
+      Distributions and package managers package it as a Python application because
+      OpenStack deployments often rely on scripted administration. Debian describes it
+      as a thin wrapper over the stock Python service client modules, which captures its
+      role as a unifying front end over the OpenStack client ecosystem.
+  package-nerd-significance:
+    - >
+      The package is interesting because it is less a standalone tool than a negotiated
+      interface across a large plugin-heavy cloud platform. Its dependency graph, Python
+      compatibility, OpenStackSDK integration, and release-series mapping matter to
+      anyone packaging private-cloud tooling.
+  project-history:
+    - >
+      OpenStack’s early client experience mirrored its service architecture: each major
+      project shipped its own Python client and CLI. The UnifiedCLI proposal documented
+      the pain of inconsistent commands, options, and terminology, and proposed a single
+      OpenStack CLI that reused existing client modules where possible rather than
+      duplicating every REST implementation.
+    - >
+      The `python-openstackclient` project turned that design goal into the `openstack`
+      binary. Its documentation states the primary goal as a unified shell command
+      structure and common language for OpenStack operations, with additional service
+      APIs available through plugins.
+  related-projects:
+    - >
+      Related packages include OpenStackSDK and service clients such as
+      python-novaclient, python-glanceclient, python-cinderclient, python-neutronclient,
+      and python-keystoneclient. OpenStackClient sits above them as the consistent
+      user-facing shell.
+  sources:
+    - https://docs.openstack.org/releasenotes/python-openstackclient/
+    - https://github.com/openstack/openstackclient
+    - https://packages.debian.org/sid/python3-openstackclient
+    - https://pypi.org/project/python-openstackclient/
+    - https://wiki.openstack.org/w/index.php?redirect=no&title=UnifiedCLI
+  summary:
+    - >
+      OpenStackClient, also packaged as `python-openstackclient`, is the unified
+      `openstack` command-line interface for OpenStack clouds. It brings commands for
+      services such as Compute, Identity, Image, Network, Object Store, and Block
+      Storage into one command structure, replacing the older habit of juggling
+      service-specific CLIs such as `nova`, `glance`, and `keystone`.
+  timeline:
+    - >
+      2010: OpenStack began as an open-source cloud platform, creating the multi-service
+      client problem that OpenStackClient later addressed.
+    - >
+      2010s: the UnifiedCLI design documented the plan for a single OpenStack command
+      structure over service-specific clients.
+    - >
+      2014: OpenStack Juno-era packaging used OpenStackClient 0.4.1, showing the tool’s
+      early place in named OpenStack release cycles.
+    - >
+      2023: Antelope/2023.1 release notes mapped OpenStackClient 6.1.0 to that OpenStack
+      release.
+  usage:
+    - >
+      Operators configure authentication through environment variables, command-line
+      options, or `clouds.yaml`, then use `openstack` commands for day-to-day cloud
+      administration and automation. Output format options such as table, JSON, YAML,
+      CSV, and value-oriented output make it useful both for humans and scripts.
+    - >
+      The CLI is also a compatibility layer for OpenStack documentation and support:
+      operational runbooks can say `openstack server list` or `openstack network create`
+      without teaching users which legacy service-specific binary owns each resource.
 category: cloud-infrastructure
 package-manager:
   brew: openstackclient
@@ -29,5 +103,12 @@ executables:
   - openstack
 provenance:
   formula: openstackclient
+  history-sources:
+    - https://docs.openstack.org/releasenotes/python-openstackclient/
+    - https://github.com/openstack/openstackclient
+    - https://packages.debian.org/sid/python3-openstackclient
+    - https://pypi.org/project/python-openstackclient/
+    - https://wiki.openstack.org/w/index.php?redirect=no&title=UnifiedCLI
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

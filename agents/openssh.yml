@@ -10,6 +10,87 @@ credentials-file-location:
   unix:
     - ~/.ssh/id_*
     - ~/.ssh/config
+history:
+  adoption-history:
+    - >
+      OpenSSH became infrastructure software because it replaced insecure remote-login
+      and file-transfer tools with a default, scriptable, auditable SSH suite. The
+      portable release made the OpenBSD code usable on Linux, macOS, Cygwin, Solaris,
+      AIX, HP-UX, and other Unix-like systems by adding compatibility layers,
+      PAM/auditing hooks, and platform-specific sandboxing.
+    - >
+      Package managers generally split OpenSSH into client and server packages or ship
+      it in the operating-system base. Homebrew's `openssh` formula exists for users who
+      want a packaged OpenSSH newer or different from the system copy, with dependencies
+      such as libfido2 and OpenSSL for modern authentication and crypto support.
+  package-nerd-significance:
+    - >
+      OpenSSH is one of the canonical examples of a package becoming part of the
+      operating-system substrate. It is both an upstream security project and a
+      downstream packaging problem: vendors patch it, split client/server binaries,
+      coordinate crypto-library choices, and backport fixes because remote access
+      breakage can lock administrators out of machines.
+    - >
+      For package nerds, OpenSSH is also a portability case study. The upstream OpenBSD
+      version stays small and tightly audited, while portable OpenSSH carries the
+      compatibility code that lets one security-sensitive codebase work across many Unix
+      variants.
+  project-history:
+    - >
+      OpenSSH began in 1999 when OpenBSD developers forked Bjorn Gronvall's OSSH, itself
+      derived from Tatu Ylonen's last sufficiently free ssh 1.2.12 release. The OpenSSH
+      project history describes the goal as freeing SSH from license restrictions,
+      cleaning up the code, and maintaining it under the OpenBSD security-audit culture.
+    - >
+      The initial import landed on September 26, 1999, shortly before OpenBSD 2.6. The
+      early team removed portability clutter, replaced problematic cryptographic and GPL
+      components, repaired bugs, restored features, and added support for SSH 1.5 and
+      later SSH 2. The OpenBSD manual credits Aaron Campbell, Bob Beck, Markus Friedl,
+      Niels Provos, Theo de Raadt, and Dug Song with creating OpenSSH from the original
+      free ssh base.
+    - >
+      OpenSSH's project goal was explicit: because telnet and rlogin are insecure,
+      operating systems should ship SSH support. SSH 2 support became usable around May
+      4, 2000, solving the integrity and patent-era problems of SSH 1 and giving OpenSSH
+      the protocol base that would become standard for secure administration.
+  related-projects:
+    - >
+      OpenSSH descends from Tatu Ylonen's original SSH and Bjorn Gronvall's OSSH. It
+      interacts with crypto libraries such as LibreSSL, OpenSSL, AWS-LC, and BoringSSL,
+      and it overlaps operationally with file-transfer tools, bastion-host systems,
+      VPNs, and configuration-management systems.
+  sources:
+    - https://formulae.brew.sh/formula/openssh
+    - https://github.com/openssh/openssh-portable
+    - https://man.openbsd.org/ssh.1
+    - https://www.openssh.com/goals.html
+    - https://www.openssh.com/history.html
+    - https://www.openssh.com/portable.html
+  summary:
+    - >
+      OpenSSH is the OpenBSD project's freely licensed implementation of the SSH
+      protocol suite: remote login, remote command execution, file transfer, key
+      management, agent forwarding, and server-side SSH access. The package includes
+      `ssh`, `sshd`, `scp`, `sftp`, `ssh-keygen`, `ssh-agent`, `ssh-add`, and related
+      tools.
+  timeline:
+    - '1999: OpenBSD developers fork OSSH and import the code on September 26.'
+    - 'December 1, 1999: OpenBSD 2.6 ships with OpenSSH.'
+    - 'May 4, 2000: SSH 2 support is implemented sufficiently to be usable.'
+    - '2017: OpenSSH 7.6 removes SSH 1 protocol support.'
+    - '2026: Homebrew packages OpenSSH 10.3p1 in the `openssh` formula.'
+  usage:
+    - >
+      Operators use OpenSSH for daily host access, jump hosts, port forwarding, remote
+      command execution, Git-over-SSH, rsync transport, and automated deployments.
+      Developers touch the package through keys, `~/.ssh/config`, known-host
+      verification, `ssh-agent`, `scp`/`sftp`, and server configuration in
+      `sshd_config`.
+    - >
+      OpenSSH also functions as a security policy surface. Choices such as allowed key
+      algorithms, FIDO/U2F support, host key rotation, agent forwarding, chrooting, and
+      subsystem configuration are all exposed through a familiar command and config
+      ecosystem.
 tags:
   - cli
   - cryptography
@@ -35,6 +116,13 @@ provenance:
     - source_facts.name is openssh and source_facts.homepage is the official OpenSSH site.
   docs-sources:
     - The official OpenSSH site provides manual pages at /manual.html.
+  history-sources:
+    - https://formulae.brew.sh/formula/openssh
+    - https://github.com/openssh/openssh-portable
+    - https://man.openbsd.org/ssh.1
+    - https://www.openssh.com/goals.html
+    - https://www.openssh.com/history.html
+    - https://www.openssh.com/portable.html
   repo-sources:
     - >
       The official OpenSSH portable release page lists
@@ -52,5 +140,6 @@ category-path:
   - ssh
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

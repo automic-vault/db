@@ -8,6 +8,74 @@ docs:
     https://github.com/opentimestamps/opentimestamps-client/blob/master/doc/git-integration.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      OpenTimestamps appealed to users who wanted blockchain-backed proof-of-existence
+      without putting whole documents on-chain or trusting a single timestamping
+      authority. Public calendar servers made ordinary timestamp creation cheap and
+      fast, while local verification with Bitcoin Core kept the trust model
+      understandable for security-sensitive users.
+    - >
+      The client remained niche compared with general signing tools, but it developed a
+      small ecosystem of protocol implementations in Python, JavaScript, Java, and Rust.
+      Its strongest adoption story is in release engineering, archival proof,
+      research-notebook integrity, and Git-history timestamping rather than broad
+      consumer file sharing.
+  package-nerd-significance:
+    - >
+      This package sits at the intersection of packaging, cryptography, and reproducible
+      provenance. It is small, but it gives maintainers a way to attach time evidence to
+      source releases, commits, and artifacts without inventing a full transparency log.
+  project-history:
+    - >
+      Peter Todd announced OpenTimestamps in September 2016 as a scalable,
+      trust-minimized, distributed timestamping scheme using Bitcoin. The design
+      separates the timestamp proof format from any single web service: calendars
+      aggregate commitments, Bitcoin supplies the public time attestation, and clients
+      can later verify proofs against the blockchain.
+    - >
+      The client repository packages the everyday tooling around that protocol: stamping
+      files, upgrading pending timestamps, verifying proofs, and integrating timestamps
+      into PGP-signed Git commits. The Git integration work targeted a
+      software-supply-chain problem: a commit signature proves who signed a commit,
+      while a timestamp helps show when that signature existed.
+  related-projects:
+    - >
+      Related projects include opentimestamps-server for calendar services,
+      python-opentimestamps for protocol primitives, java-opentimestamps,
+      javascript-opentimestamps, Bitcoin Core, GnuPG, and Git.
+  sources:
+    - https://github.com/opentimestamps/opentimestamps-client
+    - >
+      https://github.com/opentimestamps/opentimestamps-client/blob/master/doc/git-integration.md
+    - https://github.com/opentimestamps/opentimestamps-client/blob/master/release-notes.md
+    - https://opentimestamps.org/
+    - https://petertodd.org/2016/opentimestamps-announcement
+    - https://petertodd.org/2016/opentimestamps-git-integration
+  summary:
+    - >
+      OpenTimestamps Client is the Python command-line implementation for creating and
+      verifying OpenTimestamps proofs. It anchors file and Git-commit timestamps to
+      Bitcoin-backed attestations, producing small `.ots` proof files that can be
+      checked independently later.
+  timeline:
+    - '2016-09: OpenTimestamps was announced as a Bitcoin-backed timestamping protocol.'
+    - '2016-09: Git integration was documented as a way to timestamp PGP-signed commits.'
+    - >
+      2020s: client release notes continued to refine Git extraction, cache locations,
+      timestamp display precision, and verification behavior.
+  usage:
+    - >
+      Users run commands such as `ots stamp`, `ots verify`, and Git wrapper commands to
+      create proof files, complete pending attestations, and check that a file or commit
+      existed before a Bitcoin block time. Verification can use a local Bitcoin Core
+      node, including a pruned node, so the proof does not depend on the original
+      calendar server staying online.
+    - >
+      The package’s `ots-git-gpg-wrapper` executable is especially package-nerdy: it
+      composes Git signing, GPG signatures, and timestamp proofs so release commits can
+      carry both identity and time evidence.
 category: security
 package-manager:
   brew: opentimestamps-client
@@ -25,5 +93,14 @@ executables:
   - ots-git-gpg-wrapper
 provenance:
   formula: opentimestamps-client
+  history-sources:
+    - https://github.com/opentimestamps/opentimestamps-client
+    - >
+      https://github.com/opentimestamps/opentimestamps-client/blob/master/doc/git-integration.md
+    - https://github.com/opentimestamps/opentimestamps-client/blob/master/release-notes.md
+    - https://opentimestamps.org/
+    - https://petertodd.org/2016/opentimestamps-announcement
+    - https://petertodd.org/2016/opentimestamps-git-integration
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

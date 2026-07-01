@@ -13,6 +13,87 @@ credentials-file-location:
     - ~/.certs
     - ~/certs
     - ~/.config/openssl
+history:
+  adoption-history:
+    - >
+      `openssl@3` is the broad Homebrew adoption path for OpenSSL 3. The cited formula
+      page lists it as also known as `openssl` and `openssl@3.6`, bottled across macOS
+      and Linux, with yearly installs in the millions.
+    - >
+      Homebrew's page also shows the package-manager policy dimension: `openssl@3` can
+      move between OpenSSL 3 minor branches, while `openssl@3.5` and `openssl@3.0` exist
+      for consumers that need a pinned branch. That split lets Homebrew balance default
+      freshness against downstream reproducibility.
+  package-nerd-significance:
+    - >
+      `openssl@3` is one of the packages that makes a package manager feel like
+      infrastructure. A minor OpenSSL branch change can affect build flags, test suites,
+      compliance assumptions, certificate lookup, and runtime behavior for a large
+      dependency graph.
+    - >
+      It is also a clean example of why versioned formula names matter. The package name
+      encodes a compatibility promise at the major-version level, while sibling formulae
+      encode stricter branch promises for software that cannot simply follow the
+      default.
+  project-history:
+    - >
+      OpenSSL was founded in 1998 as an open-source successor to SSLeay, the SSL library
+      by Eric A. Young and Tim J. Hudson. The first OpenSSL release, 0.9.1c, shipped on
+      December 23, 1998 after the initial project team chose the OpenSSL name to signal
+      continuity for users of SSL-era tooling.
+    - >
+      The library became a default dependency for secure internet software, from Apache
+      modules and mail servers to package managers, language runtimes, and appliance
+      firmware. Heartbleed in 2014 revealed both the scale of OpenSSL deployment and the
+      fragility of its funding and maintenance model, prompting foundation and
+      governance changes.
+    - >
+      The OpenSSL 3 generation began with 3.0.0 on September 7, 2021. Its provider
+      architecture, Apache-2.0 licensing, FIPS provider support, and deprecation of
+      low-level APIs reshaped how applications link, configure, and certify
+      OpenSSL-based cryptography.
+  related-projects:
+    - >
+      OpenSSL's ecosystem includes LibreSSL, BoringSSL, AWS-LC, GnuTLS, NSS, wolfSSL,
+      and platform TLS stacks. Downstream packages such as OpenSSH, curl, web servers,
+      database clients, and programming-language runtimes make OpenSSL branch choices
+      visible far beyond cryptography specialists.
+  sources:
+    - https://docs.openssl.org/3.0/man7/migration_guide/
+    - https://formulae.brew.sh/formula/openssl@3
+    - https://github.com/openssl/openssl
+    - https://openssl-library.org/news/openssl-3.0-notes/
+    - https://openssl-library.org/news/openssl-3.5-notes/
+    - https://openssl-library.org/news/timeline/
+    - https://openssl-library.org/post/2018-12-20-20years/index.html
+    - https://openssl.foundation/about/history
+  summary:
+    - >
+      Homebrew's `openssl@3` is the main OpenSSL 3 formula, providing the OpenSSL
+      command-line tool plus libssl and libcrypto for TLS, SSL, certificate, and general
+      cryptography workloads. The formula follows the default OpenSSL 3 branch while
+      separate formulae such as `openssl@3.0` and `openssl@3.5` preserve branch-specific
+      targets.
+  timeline:
+    - 'December 23, 1998: OpenSSL 0.9.1c is released.'
+    - '2014: Heartbleed becomes a watershed event for OpenSSL maintenance and funding.'
+    - 'September 7, 2021: OpenSSL 3.0.0 launches the OpenSSL 3 line.'
+    - 'April 8, 2025: OpenSSL 3.5.0 is released in the OpenSSL 3 family.'
+    - 'October 1, 2025: OpenSSL 3.6.0 appears in the OpenSSL release timeline.'
+    - >
+      2026: Homebrew lists `openssl@3` stable at 3.6.3 and notes a planned downgrade to
+      3.5 LTS before the 3.6 support window ends.
+  usage:
+    - >
+      Users invoke the `openssl` CLI to inspect and generate certificates, create CSRs,
+      test TLS endpoints, hash and sign data, convert PEM/DER/PKCS formats, and manage
+      CA directories. Build systems link against libssl and libcrypto when compiling
+      software that needs TLS, X.509, ASN.1, message digests, public-key cryptography,
+      or provider-backed algorithms.
+    - >
+      On Homebrew systems, dependent formulae use `openssl@3` as the normal OpenSSL 3
+      dependency, while users may need the formula's prefix, include path, library path,
+      and certificate directory when compiling software outside Homebrew.
 category: security
 package-manager:
   apk: libssl3
@@ -41,5 +122,15 @@ executables:
   - openssl
 provenance:
   formula: openssl@3
+  history-sources:
+    - https://docs.openssl.org/3.0/man7/migration_guide/
+    - https://formulae.brew.sh/formula/openssl@3
+    - https://github.com/openssl/openssl
+    - https://openssl-library.org/news/openssl-3.0-notes/
+    - https://openssl-library.org/news/openssl-3.5-notes/
+    - https://openssl-library.org/news/timeline/
+    - https://openssl-library.org/post/2018-12-20-20years/index.html
+    - https://openssl.foundation/about/history
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
