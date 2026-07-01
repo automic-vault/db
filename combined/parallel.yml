@@ -12,6 +12,43 @@ config-file-location:
     - ~/.parallel/config
     - ~/.parallel/ignored_vars
 credentials-file-location: null
+history:
+  - >
+    GNU Parallel grew out of two early-2000s tools by Ole Tange: `xxargs`, which aimed
+    to be a safer xargs-like tool around quoting and whitespace, and `parallel`, a
+    wrapper that generated a makefile and used `make -j` to run command lines at the
+    same time. The GNU history page dates the first Parallel source to 2002-01-06,
+    notes that `xxargs` was developed during 2002-2005, and says the two tools were
+    merged in 2005 because they were often used together.
+  - >
+    The project lineage explains its unusual fit in Unix toolchains. Its two stated
+    goals were to replace xargs and run commands in parallel, so it retained a
+    shell-pipeline interface instead of becoming a batch scheduler. After an
+    unsuccessful attempt to enter GNU findutils, and after a separate `parallel`
+    appeared in moreutils in 2009, Parallel was adopted as an official GNU tool in 2010
+    and renamed GNU Parallel.
+  - >
+    GNU Parallel's adoption followed the sysadmin and scientific-computing path: a
+    February 2011 USENIX ;login: article by Tange presented it as a command-line power
+    tool, while the GNU manual and tutorial turned it into a documented shell primitive.
+    The tool's citation culture, including the `parallel --citation` convention and the
+    later GNU Parallel 2018 Zenodo/book record, helped make it visible in reproducible
+    computational workflows.
+  - >
+    In use, GNU Parallel is a small-language replacement for many shell loops. Users
+    feed it arguments from stdin, `:::` lists, files, or pipes; it expands replacement
+    strings such as `{}` and `{/.}`; it keeps output grouped so parallel jobs do not
+    corrupt downstream pipelines; and it can preserve input order when needed. The same
+    command style supports local CPU fan-out, SSH-based remote execution, semaphores
+    through `sem`, environment/function export through `env_parallel`, and
+    pipe-splitting for streaming data.
+  - >
+    Its ecosystem role is different from make, cron, batch queues, or cluster
+    schedulers: GNU Parallel is for turning serial command-line programs into concurrent
+    pipelines without changing those programs. Package managers ship it as a
+    general-purpose CLI because it sits next to find, xargs, awk, sort, gzip, rsync, and
+    domain tools; package users reach for it when the unit of work is already
+    expressible as a shell command.
 category: developer-tools
 package-manager:
   apk: parallel
@@ -54,5 +91,13 @@ executables:
   - sql
 provenance:
   formula: parallel
+  history-sources:
+    - https://www.gnu.org/software/parallel/history.html
+    - https://www.gnu.org/software/parallel/parallel.html
+    - >
+      https://www.usenix.org/publications/login/february-2011-volume-36-number-1/gnu-parallel-command-line-power-tool
+    - https://zenodo.org/records/1146014
+    - https://savannah.gnu.org/projects/parallel/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

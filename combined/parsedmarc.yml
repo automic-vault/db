@@ -8,6 +8,26 @@ config-file-location:
   unix: /etc/parsedmarc.ini
 credentials-file-location:
   unix: /etc/parsedmarc.ini
+history:
+  - >
+    `parsedmarc` grew out of the operational pain of DMARC reporting: aggregate and
+    failure reports arrive as machine-readable XML, often compressed, and are hard to
+    interpret manually at mailbox scale. Sean Whalen introduced the tool publicly in
+    2018 as a Python module and CLI for fetching DMARC reports, producing consistent
+    JSON or CSV, and helping organizations use DMARC reporting without buying a hosted
+    reporting service.
+  - >
+    Its adoption path has been self-hosted email-security infrastructure. The project
+    documentation positions it as an open-source alternative to commercial DMARC
+    processors when paired with Elasticsearch and Kibana, OpenSearch, or Splunk.
+    Package-manager availability through Homebrew and Nix reflects that it is used both
+    as a workstation inspection tool and as a server-side scheduled mailbox watcher.
+  - >
+    In practice, administrators run `parsedmarc` against IMAP mailboxes, Microsoft Graph
+    or Gmail API sources, Maildir or mbox archives, or local report files. Outputs can
+    feed JSON/CSV workflows or observability backends such as Elasticsearch/OpenSearch,
+    Splunk, Kafka, S3, syslog, and webhooks, turning raw DMARC reports into searchable
+    sender, SPF, DKIM, and policy-alignment evidence.
 category: security
 package-manager:
   brew: parsedmarc
@@ -25,5 +45,14 @@ executables:
   - parsedmarc
 provenance:
   formula: parsedmarc
+  history-sources:
+    - https://github.com/domainaware/parsedmarc
+    - https://domainaware.github.io/parsedmarc/usage.html
+    - https://domainaware.github.io/parsedmarc/installation.html
+    - https://pypi.org/project/parsedmarc/6.3.0/
+    - >
+      https://www.reddit.com/r/netsec/comments/82fw99/introducing_parsedmarc_an_open_source_python/
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

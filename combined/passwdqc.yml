@@ -7,6 +7,33 @@ docs:
 config-file-location:
   unix: /etc/passwdqc.conf
 credentials-file-location: null
+history:
+  - >
+    passwdqc is an Openwall password/passphrase quality-control project with roots in
+    pam_passwdqc, a PAM module for password-changing programs such as passwd(1). The
+    Openwall project page describes the older pam_passwdqc 1.0.5 package as the final
+    pam_passwdqc-only version from just before it was turned into the broader passwdqc
+    package, which added libpasswdqc and standalone tools around the PAM module.
+  - >
+    The expanded passwdqc toolset combines pam_passwdqc, libpasswdqc, pwqcheck, pwqgen,
+    and pwqfilter. Openwall presents it as a password/passphrase strength checking and
+    policy enforcement package: PAM invokes it during password changes, pwqcheck and
+    pwqgen are usable from scripts, and pwqfilter creates or updates binary passphrase
+    filter files that can be used by both the CLI and PAM module.
+  - >
+    Its adoption is strongest in Unix and Linux account-policy contexts. Openwall notes
+    pam_passwdqc integration by default in ALT Linux and RLC Pro Hardened, older
+    pam_passwdqc integration in FreeBSD 5.0+ and DragonFly BSD 2.2+, and packaging of
+    passwdqc for OpenBSD and NetBSD. The source record also maps it into Homebrew,
+    Debian/Ubuntu as libpam-passwdqc, Fedora as libpasswdqc, Nix, and openSUSE.
+  - >
+    Administrators use passwdqc as a policy layer rather than as an authentication
+    database. Configuration is normally centralized in passwdqc.conf; the Debian manpage
+    documents defaults such as different minimum lengths for one-class passwords,
+    multi-class passwords, and passphrases, passphrase word-count support, similarity
+    checks, and optional wordlist/denylist/filter files. That makes the package a small
+    but long-lived part of the server hardening ecosystem, adjacent to Openwall's other
+    password and authentication tools.
 category: security
 package-manager:
   brew: passwdqc
@@ -31,5 +58,14 @@ executables:
   - pwqgen
 provenance:
   formula: passwdqc
+  history-sources:
+    - https://www.openwall.com/passwdqc/
+    - https://github.com/openwall/passwdqc
+    - https://manpages.debian.org/testing/passwdqc/passwdqc.conf.5.en.html
+    - https://openwall.info/wiki/passwdqc
+    - source_facts.package-manager
+    - source_facts.config-file-location
+    - source_facts.executables
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

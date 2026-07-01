@@ -7,6 +7,43 @@ config-file-location: null
 credentials-file-location:
   unix:
     - ~/.password-store
+history:
+  - >
+    `pass`, also known as password-store, was written by Jason A. Donenfeld as a
+    deliberately small Unix password manager. The project presents itself as a ZX2C4
+    project and the source identifies Donenfeld as author; the implementation's
+    copyright line begins in 2012, matching the project's early public history. Its
+    design goal was not to invent a vault format, but to make GnuPG-encrypted files
+    convenient to manage from the shell.
+  - >
+    The core model is intentionally transparent: each password is a separate
+    GPG-encrypted file under `~/.password-store`, and the file path names the website,
+    service, or resource. Because the store is just a directory tree of encrypted text
+    files, users can organize entries with ordinary filesystem tools, include metadata
+    after the first password line, and inspect or edit entries with standard
+    command-line habits.
+  - >
+    Git integration became one of pass's defining adoption mechanisms. The homepage
+    demonstrates `pass git init` and adding a remote; the manual states that when the
+    password-store directory is a Git repository, modifying commands create
+    corresponding commits. This made pass attractive to users and teams who wanted
+    auditable history and multi-machine synchronization without a central
+    password-manager service.
+  - >
+    The project grew an unusually broad surrounding ecosystem because its data model was
+    easy to script against. The passwordstore.org page lists graphical clients, browser
+    integrations, editor integrations, importers, OTP support, and helpers such as
+    `pass-git-helper`; Android Password Store documentation points users at
+    `pass-import` for migrations instead of embedding every importer itself. That
+    extension culture is part of pass's practical identity: the core stays small while
+    adjacent tools handle UI, browser autofill, Git credentials, OTPs, and imports.
+  - >
+    Practitioners use pass by initializing the store with one or more GPG recipient IDs,
+    then running subcommands such as `insert`, `generate`, `show`, `edit`, `rm`, `mv`,
+    `cp`, and `git`. The common daily workflow is to copy a secret to the clipboard for
+    a short interval, generate and commit a new password, or synchronize the encrypted
+    store through Git. Teams can use multiple GPG recipients and folder-level key IDs,
+    which lets different subtrees of the same store be encrypted for different people.
 tags:
   - cli
   - gpg
@@ -33,6 +70,14 @@ provenance:
     - >
       source_facts.homepage is the official passwordstore.org site and primary
       documentation surface.
+  history-sources:
+    - https://www.passwordstore.org/
+    - https://git.zx2c4.com/password-store/about/
+    - https://github.com/zx2c4/password-store
+    - https://github.com/zx2c4/password-store/blob/master/src/password-store.sh
+    - https://password-store.zx2c4.narkive.com/EkKhxAPp/pass-multi-user-pass-group-pass
+    - https://docs.passwordstore.app/docs/users/importing/
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is empty; source_facts.source-archive is from
@@ -47,5 +92,6 @@ category-path:
   - password-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

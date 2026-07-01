@@ -5,6 +5,39 @@ docs:
   - https://passt.top/passt/about
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    passt, short for Plug A Simple Socket Transport, comes from the Linux virtualization
+    and rootless-container networking world rather than from the older full-stack
+    user-mode networking tradition. Its manual credits Stefano Brivio and David Gibson
+    and carries Red Hat GmbH copyright for 2020-2022. The project's own about page
+    defines its core idea as a translation layer between a guest or namespace Layer-2
+    interface and native host Layer-4 sockets for TCP, UDP, and ICMP/ICMPv6 echo,
+    without requiring capabilities or privileges.
+  - >
+    The package actually ships two closely related tools from the same binary: passt for
+    virtual machines, and pasta, Pack A Subtle Tap Abstraction, for Linux network
+    namespaces. pasta applies the same approach to rootless namespaces by creating a tap
+    device inside the namespace and mapping traffic to host sockets; the documentation
+    highlights a local bypass path that can move TCP and UDP data directly between
+    sockets with splice and recvmmsg/sendmmsg paths.
+  - >
+    Its adoption history is tied to replacement of slirp-style user-mode networking.
+    QEMU documentation describes passt as a simple replacement for SLIRP with no
+    privilege requirement, better performance than -net user, full IPv6 support, and a
+    security advantage from running outside QEMU's process context; it also documents
+    QEMU's passt backend and manual socket/vhost-user modes. Oracle Linux documentation
+    records pasta as integrated with Podman v4.1 and higher and default from Podman 5.3
+    onward, with Oracle Linux 9 Update 5 changing the default rootless container
+    networking tool from slirp4netns to pasta.
+  - >
+    Practitioners use passt when a rootless VM needs outbound networking and selective
+    inbound port forwarding without creating tap/veth devices as root. They use pasta
+    when a rootless container or namespace should inherit host-like addressing and
+    routing without the usual NAT-shaped slirp4netns environment. Distribution packaging
+    across Homebrew, Debian, Fedora, Arch, Nix, Alpine, Ubuntu, and openSUSE reflects
+    that role as plumbing used by QEMU, Podman, libvirt-oriented workflows, and
+    namespace debugging rather than as an end-user application.
 tags:
   - cli
   - daemon
@@ -34,6 +67,13 @@ provenance:
     - >
       Official passt about page is the best official documentation surface available
       from source_facts.homepage.
+  history-sources:
+    - https://passt.top/passt/about/
+    - https://manpages.ubuntu.com/manpages/noble/man1/pasta.1.html
+    - https://www.qemu.org/docs/master/system/devices/net.html
+    - https://docs.oracle.com/en/learn/ol-podman-pasta-networking/
+    - source_facts.package-manager
+    - source_facts.executables
   repo-sources:
     - >
       Official source_facts.homepage is hosted at passt.top/passt and the source archive
@@ -49,5 +89,6 @@ category-path:
   - virtualization
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

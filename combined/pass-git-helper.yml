@@ -10,6 +10,25 @@ config-file-location:
     - ~/.config/pass-git-helper/git-pass-mapping.ini
 credentials-file-location:
   unix: ~/.password-store
+history:
+  - >
+    `pass-git-helper` is a narrow bridge between two Unix-style systems: Git's
+    credential-helper protocol and `pass`, the GPG-backed password store. Git's own
+    documentation treats credential helpers as pluggable programs, while the
+    `pass-git-helper` README defines the project as an implementation that uses `pass`
+    as the credential backend for HTTPS Git remotes.
+  - >
+    The tool fits the password-store ecosystem's preference for small composable
+    helpers. Instead of adopting a platform keychain or storing credentials in Git's
+    plaintext `store` helper, users can keep tokens and passwords in `~/.password-store`
+    and let Git ask the helper for the matching username and password when pushing,
+    pulling, or cloning over HTTPS.
+  - >
+    Operationally, users configure Git with a `credential.helper` command and create
+    `~/.config/pass-git-helper/git-pass-mapping.ini`. The mapping file uses INI sections
+    and wildcard patterns to map hosts or host/path combinations to entries in the
+    password store; the helper can also be chained after Git's in-memory `cache` helper
+    so repeated commands avoid repeated GPG prompts.
 category: developer-tools
 package-manager:
   apk: pass-git-helper
@@ -30,5 +49,13 @@ executables:
   - pass-git-helper
 provenance:
   formula: pass-git-helper
+  history-sources:
+    - https://github.com/languitar/pass-git-helper
+    - https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage
+    - https://git-scm.com/doc/credential-helpers
+    - https://packages.debian.org/bullseye/pass-git-helper
+    - https://formulae.brew.sh/formula/pass-git-helper
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium
