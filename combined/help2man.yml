@@ -6,6 +6,83 @@ docs:
   - https://www.gnu.org/software/help2man
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      help2man became common in GNU and distro build systems because it solved a mundane
+      packaging requirement with little maintenance burden. It is packaged across
+      Homebrew, Debian, Fedora, Arch, Alpine, MacPorts, Nix, and other systems, which
+      matches its role as a build-time documentation utility rather than an end-user
+      application.
+    - >
+      Its adoption is strongly tied to Autotools-era release culture: generated tarballs
+      often include man pages, while maintainers can derive them from command output
+      during release preparation or packaging.
+  package-nerd-significance:
+    - >
+      help2man is a classic package-maintainer tool: it turns CLI self-description into
+      a distro-friendly artifact. That makes it important in build recipes, release
+      scripts, and reproducible packaging, even though users rarely invoke it directly
+      after installation.
+    - >
+      It also reflects a GNU documentation compromise. Texinfo may be the canonical
+      manual format for many GNU tools, but package managers, lint tools, and Unix users
+      still reward having a man page installed in the expected location.
+  project-history:
+    - >
+      help2man was written by Brendan O'Dea. The 1.021 README from April 2000 describes
+      the tool as a script for creating simple man pages from help and version output,
+      and the 1.022 NEWS entry in July 2000 says help2man became an official GNU
+      program.
+    - >
+      The GNU README explains the historical reason for the tool: much GNU documentation
+      lived in Info format, while man pages remained expected in Unix environments.
+      help2man provided a way to generate placeholder or useful man pages from the
+      executable itself rather than maintaining a separate roff document by hand.
+    - >
+      Over time the project added options for source/manual headers, localized manual
+      pages, gettext support, Translation Project integration, GPLv3 licensing,
+      reproducible-build date handling through `SOURCE_DATE_EPOCH`, and support for
+      modern version-string patterns.
+  related-projects:
+    - GNU Texinfo is the documentation ecosystem help2man complements.
+    - >
+      Autoconf, Automake, and other GNU build tools commonly coexist with help2man in
+      release toolchains.
+    - >
+      Downstream package managers use help2man as a build-time dependency when upstream
+      projects generate man pages.
+  sources:
+    - https://ftp.gnu.org/gnu/help2man/
+    - https://ftp.gnu.org/gnu/help2man/help2man-1.021.tar.gz
+    - https://ftp.gnu.org/gnu/help2man/help2man-1.49.3.tar.xz
+    - https://salsa.debian.org/bod/help2man
+    - https://www.gnu.org/software/help2man/
+  summary:
+    - >
+      GNU help2man generates simple manual pages from a program's `--help` and
+      `--version` output. It exists for the Unix packaging gap where a program has
+      useful command-line help or Texinfo documentation, but distributors and users
+      still expect a traditional section-1 man page.
+  timeline:
+    - '2000: help2man 1.021 appeared on GNU FTP, and 1.022 became an official GNU program.'
+    - '2001: Options were added for source/manual headers and nonstandard help/version flags.'
+    - '2003: Localized manual-page support was added.'
+    - '2009: The project updated to GPLv3 and expanded translation support.'
+    - '2015: `SOURCE_DATE_EPOCH` support was added for reproducible generated pages.'
+    - >
+      2022: Version 1.49 documented continued maintenance of parsing, translation, and
+      encoding behavior.
+  usage:
+    - >
+      The core command is `help2man [OPTION]... EXECUTABLE`; help2man runs the target
+      program's help and version options, parses the output, and emits a manual page.
+      Options customize the NAME paragraph, section, source, manual title, include
+      snippets, locale, and the exact help/version flags.
+    - >
+      The tool works best for commands whose `--help` output follows GNU-style
+      conventions. For richer pages, maintainers add include files or post-process
+      generated sections rather than writing the whole man page manually.
 category: developer-tools
 package-manager:
   apk: help2man
@@ -30,5 +107,12 @@ executables:
   - help2man
 provenance:
   formula: help2man
+  history-sources:
+    - https://ftp.gnu.org/gnu/help2man/
+    - https://ftp.gnu.org/gnu/help2man/help2man-1.021.tar.gz
+    - https://ftp.gnu.org/gnu/help2man/help2man-1.49.3.tar.xz
+    - https://salsa.debian.org/bod/help2man
+    - https://www.gnu.org/software/help2man/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -5,6 +5,63 @@ docs:
   - https://github.com/atomicobject/heatshrink#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      heatshrink spread as a niche systems package rather than as an application
+      platform. The input package facts record it in Homebrew, Debian, Ubuntu, Nix, and
+      openSUSE-style packaging, which is typical for compact C utilities that developers
+      want available both on build hosts and inside automated firmware toolchains.
+  package-nerd-significance:
+    - >
+      For package nerds, heatshrink is interesting because it sits between a library and
+      a diagnostic CLI. It is small enough to vendor into firmware, but packaging it
+      gives Unix developers a reproducible host-side tool for generating or inspecting
+      compressed payloads with the same algorithm as the embedded target.
+  project-history:
+    - >
+      Atomic Object published heatshrink as an LZSS-based compressor for environments
+      where bounded memory and bounded CPU work are more important than maximum
+      compression ratio. The repository metadata records the public GitHub project from
+      March 2013, and the README describes a design that can run in tens or hundreds of
+      bytes of memory, can be statically allocated, and exposes independent encoder and
+      decoder files for direct embedding.
+    - >
+      The project later documented an optional lightweight index for faster compression.
+      That index kept with the same embedded-systems tradeoff: spend a small,
+      predictable amount of additional memory to reduce search cost rather than
+      introducing a large general-purpose compression runtime.
+  related-projects:
+    - >
+      heatshrink is related to the LZSS family of compressors and to embedded-friendly
+      compression tools that favor predictable memory use over maximum compression
+      ratio. It is also adjacent to firmware build systems that need a host-side
+      compressor matching a tiny decoder on the device.
+  sources:
+    - https://github.com/atomicobject/heatshrink
+    - https://raw.githubusercontent.com/atomicobject/heatshrink/master/README.md
+    - https://spin.atomicobject.com/2013/03/14/heatshrink-embedded-data-compression/
+    - https://spin.atomicobject.com/2014/01/13/lightweight-indexing-for-embedded-systems/
+  summary:
+    - >
+      heatshrink is a small C compression and decompression library aimed at embedded
+      and real-time systems, with a companion command-line program for testing and
+      measuring compression settings. Its package-manager interest comes from being a
+      tiny, copy-into-your-firmware style library that also ships as a Unix CLI.
+  timeline:
+    - '2013: Public GitHub repository metadata records the heatshrink project.'
+    - '2013: Atomic Object published an overview of heatshrink for embedded data compression.'
+    - '2014: Atomic Object documented the optional lightweight index used to speed compression.'
+    - >
+      Package-manager era: The input package facts record heatshrink availability in
+      Homebrew, Debian, Ubuntu, Nix, and zypper-family packaging.
+  usage:
+    - >
+      The README presents two usage modes: the standalone `heatshrink` command for
+      compressing, decompressing, and evaluating window/lookahead settings, and direct
+      inclusion of the encoder or decoder source files in another C project.
+      Configuration centers on window size, lookahead size, input buffer size, and
+      whether dynamic allocation is disabled for embedded builds.
 tags:
   - c-library
   - cli
@@ -29,6 +86,11 @@ provenance:
     - source_facts.name is heatshrink; official GitHub repository README title is heatshrink.
   docs-sources:
     - Official atomicobject/heatshrink README is the primary documentation surface.
+  history-sources:
+    - https://github.com/atomicobject/heatshrink
+    - https://raw.githubusercontent.com/atomicobject/heatshrink/master/README.md
+    - https://spin.atomicobject.com/2013/03/14/heatshrink-embedded-data-compression/
+    - https://spin.atomicobject.com/2014/01/13/lightweight-indexing-for-embedded-systems/
   repo-sources:
     - >
       source_facts.repo already provided as https://github.com/atomicobject/heatshrink;
@@ -43,5 +105,6 @@ category-path:
   - compression
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

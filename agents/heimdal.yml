@@ -13,6 +13,108 @@ credentials-file-location:
     - /etc/krb5.keytab
     - '%{LOCALSTATEDIR}/user/%{euid}/client.keytab'
     - /tmp/krb5cc_<uid>
+history:
+  adoption-history:
+    - >
+      Heimdal's adoption history is tied to sites and operating systems that need
+      Kerberos but do not necessarily choose MIT Kerberos. The input package facts
+      record Heimdal packages across Homebrew, Debian and Ubuntu clients, Fedora
+      development packages, MacPorts, Nix, Alpine, and other Unix packaging systems. Its
+      presence in package managers reflects the need to build software against Kerberos
+      and GSS-API libraries even when a machine is not itself a KDC.
+    - >
+      The setup manual reflects real deployment patterns: administrators create realms,
+      configure `/etc/krb5.conf`, initialize the database, manage keytabs, run kadmind,
+      configure slave servers, and use incremental propagation. This makes Heimdal both
+      a developer dependency and an operations package; package updates can matter to
+      security posture, enterprise authentication, and cross-platform interoperability.
+  package-nerd-significance:
+    - >
+      Heimdal is package-nerd significant because it is one of the packages where ABI,
+      command naming, crypto defaults, and distro policy all matter. A seemingly
+      ordinary formula can provide libraries that many other packages link against,
+      command names that conflict or complement system Kerberos, and defaults that
+      affect whether old realms, Samba, SSH/GSSAPI, LDAP, or campus SSO integrations
+      keep working.
+    - >
+      It is also a reminder that package managers distribute institutions, not just
+      programs: Kerberos sits at the boundary between operating systems, universities,
+      enterprises, network filesystems, directory services, and standards bodies.
+      Heimdal's independent origin, BSD-style licensing, and broad Unix packaging make
+      it an enduring alternative implementation in that ecosystem.
+  project-history:
+    - >
+      Heimdal began as an independent Kerberos 5 implementation associated with Swedish
+      academic and research institutions. The 1998 USENIX paper by Johan Danielsson and
+      Assar Westerlund describes it as an independently developed free Kerberos 5
+      implementation, unencumbered by United States export restrictions, compatible with
+      other implementations, and close to the MIT Kerberos 5 API. That origin explains
+      both the project's name and its long-running role as an alternative to MIT
+      Kerberos in Unix-like systems.
+    - >
+      The project repository describes Heimdal as implementing ASN.1/DER, PKIX, and
+      Kerberos, with man pages for most commands and community channels for discussion
+      and announcements. The codebase is not just a KDC: it includes client programs,
+      libraries, administrative tools, GSS mechanisms, PKIX utilities, and support code
+      such as roken.
+    - >
+      Heimdal's NEWS file shows the long maintenance arc of security infrastructure.
+      Entries include protocol and interoperability work such as AES, SPNEGO, CCAPI, KCM
+      credential caches, Windows change-password support, incremental propagation,
+      PKINIT work, Samba-related plugin improvements, and repeated vulnerability fixes.
+      The release notes also show a gradual move away from weak historical cryptography,
+      including default changes around DES and RC4 in the Heimdal 8 notes.
+  related-projects:
+    - >
+      Heimdal is directly related to MIT Kerberos, the Kerberos protocol standards,
+      GSS-API, PKIX tooling, Samba integration, AFS-related workflows, OpenSSH/GSSAPI
+      deployments, and operating-system Kerberos stacks. In package managers it often
+      appears beside MIT krb5, cyrus-sasl, OpenLDAP, Samba, SSH, and other software that
+      can use Kerberos credentials.
+  sources:
+    - https://github.com/heimdal/heimdal
+    - https://raw.githubusercontent.com/heimdal/heimdal/master/NEWS
+    - https://raw.githubusercontent.com/heimdal/heimdal/master/README.md
+    - https://raw.githubusercontent.com/heimdal/heimdal/master/doc/setup.texi
+    - >
+      https://www.usenix.org/legacy/publications/library/proceedings/usenix98/freenix/heimdal2.pdf
+  summary:
+    - >
+      Heimdal is a free implementation of Kerberos 5 and related security components,
+      including ASN.1/DER, PKIX, GSS-API tooling, client commands, KDC pieces, and
+      administrative utilities. It matters in package-manager culture because Kerberos
+      is infrastructure software: one package can affect login, single sign-on, service
+      keytabs, credential caches, cross-realm trust, and legacy interoperability.
+  timeline:
+    - >
+      1998: Danielsson and Westerlund presented Heimdal as an independent free Kerberos
+      5 implementation at USENIX.
+    - >
+      2000s: NEWS entries document Kerberos 4 compatibility work, Windows
+      password-change support, AFS-related features, AES, SPNEGO, CCAPI, and KCM
+      support.
+    - '2009: GitHub repository metadata records the hosted Heimdal repository.'
+    - >
+      2022: Heimdal 7.8 release notes list multiple security fixes, including PAC
+      parsing, SPNEGO, DES/3DES/arcfour, Unicode normalization, and ASN.1 decoder
+      issues.
+    - >
+      Heimdal 8 development: NEWS entries document OpenSSL 3 support, PKINIT algorithm
+      agility, stronger default enctypes, KDC/plugin improvements, KEYRING credential
+      cache support, and removal of NTLM-related functionality.
+  usage:
+    - >
+      Typical Heimdal usage spans user commands, service configuration, and realm
+      administration. Users acquire and inspect credentials with tools such as `kinit`
+      and `klist`; services use keytabs; administrators configure realms and KDC
+      discovery in `krb5.conf`; KDC operators create databases, manage principals
+      through kadmin, and propagate changes to slaves.
+    - >
+      The manual also documents environment variables shared with MIT-style Kerberos
+      tooling, including `KRB5_CONFIG` for alternate configuration, `KRB5CCNAME` for
+      credential cache selection, and keytab-related variables for service and client
+      keytabs. Those knobs are important in package environments because multiple
+      Kerberos implementations or test realms can coexist on one machine.
 tags:
   - authentication
   - cli
@@ -38,6 +140,13 @@ provenance:
     - source_facts.name is heimdal; official repository and wiki use Heimdal.
   docs-sources:
     - Official heimdal/heimdal GitHub wiki is the available project documentation surface.
+  history-sources:
+    - https://github.com/heimdal/heimdal
+    - https://raw.githubusercontent.com/heimdal/heimdal/master/NEWS
+    - https://raw.githubusercontent.com/heimdal/heimdal/master/README.md
+    - https://raw.githubusercontent.com/heimdal/heimdal/master/doc/setup.texi
+    - >
+      https://www.usenix.org/legacy/publications/library/proceedings/usenix98/freenix/heimdal2.pdf
   repo-sources:
     - >
       source_facts.repo already provided as https://github.com/heimdal/heimdal; not
@@ -53,5 +162,6 @@ category-path:
   - kerberos
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -22,6 +22,90 @@ credentials-file-location:
     - ~/Library/Preferences/helm/registry/config.json
   windows:
     - '%APPDATA%\helm\registry\config.json'
+history:
+  adoption-history:
+    - >
+      Helm entered the CNCF after building a large multi-company contributor base, and
+      later graduated as a CNCF project. Its adoption followed Kubernetes adoption:
+      charts became a common distribution format for cluster add-ons, databases, ingress
+      controllers, observability stacks, and internal platform services.
+    - >
+      The Helm 3 line became important in package-manager ecosystems because it removed
+      the Helm 2 server component while preserving the command name and most everyday
+      chart operations. Versioned packages such as `helm@3` let Homebrew users pin the
+      operational era of Helm separately from future major-line changes.
+  package-nerd-significance:
+    - >
+      Helm matters to package nerds because it made Kubernetes applications feel
+      package-manager-like: a chart has metadata, versions, dependencies, values,
+      repositories, provenance features, and install/upgrade/rollback semantics. It also
+      created an ecosystem of chart repositories, chart-testing tools, chart indexers,
+      and wrappers such as Helmfile and Helmsman.
+    - >
+      The `helm@3` package role is specifically about major-version compatibility.
+      Scripts, CI images, and plugins written for Helm 3 can declare that track without
+      implying anything about a later unqualified Helm package.
+  project-history:
+    - >
+      Helm began as Helm Classic, a Deis project started in 2015 and shown publicly at
+      the inaugural KubeCon. Kubernetes Helm later combined Helm Classic with the
+      Kubernetes port of Google Cloud Deployment Manager, creating the chart-and-release
+      workflow that became familiar to Kubernetes operators.
+    - >
+      Helm 2 introduced Tiller, a server-side in-cluster component that coordinated
+      release operations for teams sharing a cluster. That architecture fit early
+      Kubernetes usage but became awkward once RBAC became a default Kubernetes security
+      expectation.
+    - >
+      Helm 3 removed Tiller and moved permissions back to the user's Kubernetes
+      credentials, while keeping the chart format and release-management workflow. It
+      also changed release names to be namespace-scoped, used Secrets as the default
+      release storage driver, changed Go import paths to `helm.sh/helm/v3`, and added
+      experimental OCI registry support at the 3.0.0 release.
+  related-projects:
+    - Helm Classic was the pre-merge Deis project that led into Kubernetes Helm.
+    - >
+      Google Cloud Deployment Manager influenced the Kubernetes-side deployment-manager
+      work that merged into Helm.
+    - >
+      Chart repositories, OCI registries, Artifact Hub, Helmfile, Helmsman, helm-diff,
+      and helmify are adjacent tools in the Helm packaging ecosystem.
+  sources:
+    - https://formulae.brew.sh/formula/helm@3
+    - https://helm.sh/blog/celebrating-helms-cncf-graduation/
+    - https://helm.sh/blog/helm-3-preview-pt1/
+    - https://helm.sh/blog/helm-3-released/
+    - https://helm.sh/blog/helm-enters-the-cncf/
+    - https://helm.sh/community/history/
+    - https://helm.sh/docs/v3/faq/changes_since_helm2/
+  summary:
+    - >
+      Helm is the Kubernetes package manager and chart tool: it packages Kubernetes
+      manifests into versioned charts, installs them as releases, and records release
+      history in the cluster. The Homebrew `helm@3` formula represents the Helm 3 major
+      line, useful where users or automation want the Helm 3 command-line behavior and
+      plugin/API expectations rather than an unqualified moving major.
+  timeline:
+    - '2015: Helm Classic began at Deis and was introduced at the inaugural KubeCon.'
+    - >
+      2016: Kubernetes Helm emerged from the merge of Helm Classic and the Kubernetes
+      Deployment Manager work.
+    - '2018: Helm entered the CNCF after broad growth in contributors and releases.'
+    - >
+      2019: Helm 3.0.0 was released, removing Tiller and changing release
+      storage/security behavior.
+    - '2020: Helm graduated in the CNCF.'
+  usage:
+    - >
+      Typical usage is `helm repo add`, `helm install`, `helm upgrade`, `helm rollback`,
+      and `helm history` against charts stored in chart repositories or OCI registries.
+      Chart authors use templates, values files, dependencies, and linting to ship
+      repeatable Kubernetes application installs.
+    - >
+      Helm stores repository and registry state in per-user configuration files and uses
+      kubeconfig-based Kubernetes identity for cluster operations. That makes it fit
+      both laptops and CI runners, while keeping authentication boundaries in Kubernetes
+      and registry tooling.
 tags:
   - charts
   - cli
@@ -42,6 +126,14 @@ provenance:
     - >
       https://v3.helm.sh/docs/helm/helm_registry_login/ documents registry login and
       registry config.
+  history-sources:
+    - https://formulae.brew.sh/formula/helm@3
+    - https://helm.sh/blog/celebrating-helms-cncf-graduation/
+    - https://helm.sh/blog/helm-3-preview-pt1/
+    - https://helm.sh/blog/helm-3-released/
+    - https://helm.sh/blog/helm-enters-the-cncf/
+    - https://helm.sh/community/history/
+    - https://helm.sh/docs/v3/faq/changes_since_helm2/
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/helm/helm; per instruction,
@@ -59,5 +151,6 @@ category-path:
   - package-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

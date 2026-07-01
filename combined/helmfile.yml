@@ -7,6 +7,84 @@ docs:
 config-file-location:
   unix: helmfile.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Helmfile spread among teams that wanted Git-tracked, repeatable Helm operations
+      before or alongside fuller GitOps controllers. The project README lists production
+      usage by organizations and systems such as GitLab, reddit, and Jenkins, and its
+      installation notes point to package-manager distribution through Homebrew, pacman,
+      Scoop, openSUSE packages, and other channels.
+    - >
+      Its adoption is tied to Helm's own ecosystem: Helmfile appeals when a cluster
+      contains many Helm releases, multiple environments, secrets/value overlays, and CI
+      jobs that need a single command to compute and apply the desired release set.
+  package-nerd-significance:
+    - >
+      Helmfile is interesting to package-manager people because it treats Helm charts as
+      composable packages but adds a lockstep state layer above them. It is less a
+      package format than a package transaction planner for many Helm releases.
+    - >
+      The tool occupies the space between raw Helm scripts and cluster-resident GitOps
+      controllers: no controller has to be installed, yet the release graph, chart
+      versions, and value overlays live in files that package managers and CI systems
+      can fetch, diff, and cache.
+  project-history:
+    - >
+      The original `roboll/helmfile` repository was created in 2016, during the Helm 2
+      era, around the practical problem of managing many Helm releases from
+      version-controlled configuration. The project later moved under the `helmfile`
+      GitHub organization, where the README and documentation describe it as a
+      declarative specification for deploying Helm charts.
+    - >
+      Helmfile deliberately delegates chart operations to Helm instead of reimplementing
+      Helm. Its documentation also calls out `helm-diff` as a normal companion
+      dependency, which reflects the tool's role as orchestration around the Helm
+      command-line workflow.
+    - >
+      The v1 proposal explains that Helmfile stayed conservative about breaking changes
+      during the v0.x series despite semver's looser expectations for zero-major
+      versions. Helmfile 1.0 turned that accumulated compatibility stance into an
+      explicit stable line with a small set of documented breaking changes.
+  related-projects:
+    - Helm is Helmfile's execution backend for chart operations.
+    - helm-diff is a documented companion plugin for previewing Helm release changes.
+    - >
+      Kustomize and Argo CD appear in Helmfile documentation as adjacent workflows for
+      rendering, composing, or consuming manifests.
+  sources:
+    - https://api.github.com/repos/helmfile/helmfile
+    - https://api.github.com/repos/helmfile/helmfile/releases/tags/v1.0.0
+    - https://api.github.com/repos/roboll/helmfile
+    - https://github.com/helmfile/helmfile
+    - https://github.com/helmfile/helmfile/blob/main/docs/proposals/towards-1.0.md
+    - https://github.com/roboll/helmfile
+    - https://helmfile.readthedocs.io/en/stable
+  summary:
+    - >
+      Helmfile is a declarative state tool for Helm. Instead of running individual
+      `helm` commands release by release, users write a `helmfile.yaml` that declares
+      repositories, environments, values, and releases, then run Helmfile to diff,
+      template, sync, or apply that desired state.
+  timeline:
+    - '2016: The original `roboll/helmfile` repository was created.'
+    - >
+      2022: The `helmfile/helmfile` organization repository was created for the project
+      line used by the documentation.
+    - '2024: A v1.0 release-candidate line appeared as part of the compatibility transition.'
+    - '2025: Helmfile v1.0.0 was published, with v1 mode becoming the default behavior.'
+  usage:
+    - >
+      A typical Helmfile repository contains one or more `helmfile.yaml` files with
+      chart repositories, releases, values files, environment blocks, selectors, and
+      sometimes Go-template fragments. Operators run commands such as `helmfile diff`,
+      `helmfile template`, `helmfile sync`, or `helmfile apply` to review and converge
+      cluster state.
+    - >
+      Helmfile is commonly used in CI/CD because the desired state file can be reviewed
+      like source code while the actual install and upgrade behavior remains Helm
+      behavior. It also supports larger layouts through release templates, conventional
+      directory structure, modular states, and Kustomize integration.
 category: cloud-infrastructure
 package-manager:
   apk: helmfile
@@ -30,5 +108,14 @@ executables:
   - helmfile
 provenance:
   formula: helmfile
+  history-sources:
+    - https://api.github.com/repos/helmfile/helmfile
+    - https://api.github.com/repos/helmfile/helmfile/releases/tags/v1.0.0
+    - https://api.github.com/repos/roboll/helmfile
+    - https://github.com/helmfile/helmfile
+    - https://github.com/helmfile/helmfile/blob/main/docs/proposals/towards-1.0.md
+    - https://github.com/roboll/helmfile
+    - https://helmfile.readthedocs.io/en/stable
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
