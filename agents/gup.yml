@@ -7,6 +7,67 @@ config-file-location:
   unix:
     - gup.json
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README documents installation through Homebrew, WinGet, mise, Nix, aqua,
+      release packages, release binaries, and `go install`, showing that gup is packaged
+      both as a Go-native tool and as an OS/package-manager utility.
+    - >
+      Its adoption is tied to the Go module era, where many developers install developer
+      tools with `go install module@version` but still want package-manager-like
+      operations over the resulting binaries.
+  package-nerd-significance:
+    - >
+      gup is package-nerd catnip because it treats `$GOBIN` like a lightweight package
+      database without trying to replace Go's module installer. It adds just enough
+      inventory, version selection, and parallel update behavior around existing Go
+      commands.
+    - >
+      It also highlights the difference between language-level installers and system
+      package managers: `go install` can build a binary, but tools like gup provide the
+      maintenance loop users expect from package managers.
+  project-history:
+    - >
+      The repository was created in February 2022 and an early v0.7.0 release was
+      published in March 2022. The README frames the project around a specific Go
+      packaging pain point: `go install` places binaries in the user's Go binary
+      directory but does not keep a manifest or provide update management.
+    - >
+      Over time, gup grew beyond parallel updates into a small toolset manager. Its
+      README documents pinning exact versions, exporting and importing a `gup.json` tool
+      manifest, migrating tools to a new binary directory, JSON output for automation,
+      and release integrity metadata such as signed checksums, SBOMs, and build
+      provenance.
+  related-projects:
+    - The Go command provides the `go install` behavior that gup wraps.
+    - aqua, mise, Nix, Homebrew, and WinGet are documented installation paths.
+    - >
+      Tools such as gopls, golangci-lint, and lazygit are representative binaries users
+      manage under `$GOBIN`.
+  sources:
+    - https://api.github.com/repos/nao1215/gup
+    - https://api.github.com/repos/nao1215/gup/releases?per_page=100
+    - https://github.com/nao1215/gup
+    - https://raw.githubusercontent.com/nao1215/gup/main/README.md
+  summary:
+    - >
+      gup is a Go command-line tool that manages binaries installed into `$GOBIN` or
+      `$GOPATH/bin`, filling the gap between `go install` as an installer and the
+      day-to-day need to list, update, pin, export, import, remove, and migrate global
+      Go tools.
+  timeline:
+    - '2022: GitHub repository created.'
+    - '2022: v0.7.0 release published.'
+  usage:
+    - >
+      Typical usage is `gup update` to update every managed binary, `gup check` to
+      report available updates, `gup list` to show installed command metadata, `gup pin`
+      and `gup unpin` to control versions, and `gup export` or `gup import` to reproduce
+      a tool set.
+    - >
+      The `gup.json` manifest matters for packaging culture because it gives global Go
+      tools a portable inventory that `go install` itself does not maintain.
 tags:
   - cli
   - go
@@ -31,6 +92,11 @@ provenance:
     - source_facts.name is gup; official GitHub repository is nao1215/gup.
   docs-sources:
     - Official GitHub README is the project documentation surface for installation and usage.
+  history-sources:
+    - https://api.github.com/repos/nao1215/gup
+    - https://api.github.com/repos/nao1215/gup/releases?per_page=100
+    - https://github.com/nao1215/gup
+    - https://raw.githubusercontent.com/nao1215/gup/main/README.md
   repo-sources:
     - >
       source_facts.repo already supplies https://github.com/nao1215/gup, so repo
@@ -46,5 +112,6 @@ category-path:
   - package-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -7,6 +7,99 @@ docs:
   - https://www.gnu.org/software/gzip/manual/gzip.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      gzip spread through GNU and Unix-like systems because it solved a legal and
+      practical packaging problem at the same time. Source archives, FTP sites,
+      mailing-list patches, backup scripts, log rotation, and package build systems all
+      needed a compression utility that could be redistributed freely and used in
+      pipelines.
+    - >
+      The supplied package facts show broad package-manager normalization: apk,
+      Homebrew, Chocolatey, Debian, dnf, MacPorts, Nix, pacman, Scoop, Ubuntu, winget,
+      zypper, and other ecosystems carry gzip. That ubiquity is expected for a
+      base-system utility, but it is also historically important: package managers rely
+      on gzip both as a package and as infrastructure for other packages' source
+      archives, compressed metadata, and logs.
+  package-nerd-significance:
+    - >
+      gzip is package infrastructure disguised as a small CLI. Package nerds care
+      because .tar.gz source archives, compressed man pages, compressed logs, bootstrap
+      environments, and source mirrors all assume gzip semantics. It is also a lesson in
+      why legal constraints shape technical defaults: the LZW patent problem pushed free
+      systems toward gzip, and the resulting format stuck.
+    - >
+      The gzip family also anchors comparisons with related tools. zlib provides library
+      support for gzip streams, pigz parallelizes gzip-compatible compression, zip is a
+      different archive format, and modern compressors such as xz, zstd, and brotli
+      often coexist with gzip rather than replacing it outright because .gz remains
+      universally understood.
+  project-history:
+    - >
+      The GNU project describes gzip as originally written by Jean-loup Gailly, with
+      Mark Adler writing the decompression part. GNU explains the motivation plainly:
+      gzip was developed as a replacement for compress because Unisys and IBM patents
+      covered the LZW algorithm used by compress. The superior compression ratio was an
+      additional benefit.
+    - >
+      The gzip format was later documented in RFC 1952 in May 1996. The RFC defines a
+      lossless compressed data format that is CPU-, operating-system-, file-system-, and
+      character-set-independent, can operate as a stream, provides compression
+      comparable to strong general-purpose methods, can be implemented without the
+      patent problems that affected compress, and is compatible with the widely used
+      gzip utility.
+    - >
+      gzip's design is deliberately single-file and stream oriented. The separate
+      gzip.org page summarizes that distinction: gzip refers both to the utility and to
+      the associated compressed data format, producing files that generally use the .gz
+      suffix. That simplicity explains why tar.gz became the default source-distribution
+      shape: tar groups files and metadata, gzip compresses the byte stream.
+  related-projects:
+    - >
+      gzip is directly related to compress, the LZW-based Unix utility it replaced; tar,
+      which commonly pairs with gzip to produce .tar.gz archives; zlib, which provides
+      DEFLATE/gzip library support; pigz, a parallel gzip implementation; and RFC 1951
+      DEFLATE, the compression method carried inside the gzip wrapper.
+  sources:
+    - https://git.savannah.gnu.org/git/gzip.git
+    - https://www.gnu.org/software/gzip/
+    - https://www.gnu.org/software/gzip/manual/gzip.html
+    - https://www.gzip.org/
+    - https://www.ietf.org/rfc/rfc1952.txt
+  summary:
+    - >
+      GNU gzip is one of the canonical Unix command-line compression tools and the
+      reference utility behind the .gz file format. It became important because it
+      replaced the patent-burdened Unix compress program with a free software tool, a
+      better compression ratio, and a stream-friendly format that became deeply embedded
+      in source distribution, logs, tarballs, package systems, and network protocols.
+  timeline:
+    - >
+      Early 1990s: Jean-loup Gailly and Mark Adler wrote gzip as a replacement for Unix
+      compress.
+    - '1996: RFC 1952 documented the gzip file format specification version 4.3.'
+    - '1990s: gzip became the common compressor for tar source archives and Unix data streams.'
+    - >
+      2000s: gzip remained part of base GNU and Unix-like toolchains while parallel and
+      higher-ratio compressors appeared around it.
+    - >
+      2010s-2020s: gzip continued to be packaged across Linux distributions,
+      BSD-adjacent package systems, macOS package managers, and Windows package
+      ecosystems.
+  usage:
+    - >
+      gzip compresses and decompresses streams or single files; gunzip reverses
+      compression; zcat writes decompressed content to standard output; and companion
+      scripts such as zgrep, zdiff, zless, zmore, zcmp, gzexe, zforce, and znew make
+      compressed files act more like ordinary Unix text inputs. The GNU manual covers
+      invocation, examples, advanced use, environment behavior, tapes, and known
+      problems.
+    - >
+      The format's streamability is why gzip is common in shell pipelines and data
+      interchange. RFC 1952 explicitly calls out producing and consuming data streams
+      with bounded intermediate storage, which fits Unix filters, HTTP/content encoding
+      history, archival transfer, and ETL-style processing.
 category: system
 package-manager:
   apk: gzip
@@ -47,5 +140,12 @@ executables:
   - znew
 provenance:
   formula: gzip
+  history-sources:
+    - https://git.savannah.gnu.org/git/gzip.git
+    - https://www.gnu.org/software/gzip/
+    - https://www.gnu.org/software/gzip/manual/gzip.html
+    - https://www.gzip.org/
+    - https://www.ietf.org/rfc/rfc1952.txt
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

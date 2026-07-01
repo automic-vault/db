@@ -8,6 +8,70 @@ config-file-location:
     - .gulp.*
     - ~/.gulp.*
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official quick-start documentation teaches `npm install --global gulp-cli`
+      before `npm install --save-dev gulp`, so gulp-cli became the package users and OS
+      package maintainers expose as the executable named `gulp`.
+    - >
+      Homebrew, Chocolatey, Debian, Ubuntu, Arch, and other package indexes package the
+      CLI separately or map it to the `gulp` command, reflecting its status as the
+      distribution-friendly entry point rather than the project-local build library.
+  package-nerd-significance:
+    - >
+      gulp-cli is a clean example of the global-shim/local-library pattern in Node
+      packaging. It reduces global dependency drift, lets different projects use
+      different gulp versions, and gives package managers a small executable package
+      that can be updated without rewriting every project's build stack.
+    - >
+      Its history is also a packaging lesson from the task-runner boom: the command name
+      stayed stable, but ownership of behavior moved into the project dependency graph.
+  project-history:
+    - >
+      The gulp-cli repository was created in December 2014, and the npm package was
+      first published as 0.1.0 later that month. That timing matches gulp's move away
+      from a single globally installed gulp package toward a small command shim that
+      locates and runs the gulp version installed in a project.
+    - >
+      The 1.0.0 npm publication in November 2015 stabilized the split CLI model. The 2.x
+      line, published from December 2017, sat alongside gulp 4-era workflows, and the
+      3.0.0 changelog in March 2024 records modernization work such as Liftoff v5,
+      removal of older flags, and support work for future gulp handlers.
+  related-projects:
+    - gulp is the local task-runner library that gulp-cli launches.
+    - Liftoff is the Node CLI bootstrap library used by gulp-cli.
+    - Interpret is used by gulp-cli to support JavaScript-variant configuration and gulpfiles.
+  sources:
+    - https://github.com/gulpjs/gulp-cli
+    - https://gulpjs.com/docs/en/getting-started/quick-start/
+    - https://raw.githubusercontent.com/gulpjs/gulp-cli/master/CHANGELOG.md
+    - https://raw.githubusercontent.com/gulpjs/gulp-cli/master/README.md
+    - https://registry.npmjs.org/gulp-cli
+  summary:
+    - >
+      gulp-cli is the command-line launcher for gulp, the JavaScript build-system and
+      task-runner ecosystem. Its package-manager role is deliberately split from the
+      local gulp library: users install the CLI as a global or package-manager-provided
+      command, while each project keeps its own gulp dependency and gulpfile.
+  timeline:
+    - '2014: GitHub repository created and npm package 0.1.0 published.'
+    - '2015: npm package 1.0.0 published.'
+    - '2017: v2.0.0 release published.'
+    - >
+      2024: v3.0.0 changelog records CLI modernization and removal of older
+      compatibility paths.
+    - '2025: v3.1.0 changelog records support for top-level await on newer Node 22 builds.'
+  usage:
+    - >
+      Users invoke `gulp [flags] <task>...` from a project tree. The CLI discovers the
+      gulpfile, loads project-local gulp, prints task trees, supports completion, and
+      accepts configuration through `.gulp.*` files in the current directory hierarchy
+      or the home directory.
+    - >
+      For package users, the practical distinction matters: upgrading the command-line
+      package changes the launcher, while task semantics are mainly controlled by the
+      project's pinned gulp and plugin dependencies.
 tags:
   - cli
   - gulp
@@ -34,6 +98,12 @@ provenance:
     - >
       Official GitHub README contains install, usage, configuration, completion, and
       flags documentation.
+  history-sources:
+    - https://github.com/gulpjs/gulp-cli
+    - https://gulpjs.com/docs/en/getting-started/quick-start/
+    - https://raw.githubusercontent.com/gulpjs/gulp-cli/master/CHANGELOG.md
+    - https://raw.githubusercontent.com/gulpjs/gulp-cli/master/README.md
+    - https://registry.npmjs.org/gulp-cli
   repo-sources:
     - >
       source_facts.homepage is the official gulpjs/gulp-cli GitHub repository;
@@ -48,5 +118,6 @@ category-path:
   - build-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
