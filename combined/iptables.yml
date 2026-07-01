@@ -7,6 +7,87 @@ docs:
   - https://www.netfilter.org/projects/iptables/index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      iptables was adopted broadly because it arrived with the Linux kernel's netfilter
+      subsystem and offered a scriptable firewall language that distributions, hosting
+      providers, routers, container stacks, and security appliances could automate. Its
+      save/restore format made rulesets easy to ship in init scripts and configuration
+      management.
+    - >
+      The package remains visible in package-manager culture because many Linux systems,
+      compatibility scripts, and container/networking components still know the iptables
+      command vocabulary even when the underlying backend is nftables. Homebrew's
+      package metadata also exposes the full command family for macOS users who need the
+      Linux-compatible tooling.
+  package-nerd-significance:
+    - >
+      For package nerds, iptables is one of the canonical examples of a small
+      command-line package whose real meaning comes from the kernel ABI underneath it.
+      Its packaging has to preserve many executable names because shell scripts,
+      orchestration tools, and documentation often reference exact command variants.
+    - >
+      It is also a transition fossil: one package contains legacy commands, nft-backed
+      commands, multi-call binaries, and translation helpers, making it a compact map of
+      two generations of Linux firewall administration.
+  project-history:
+    - >
+      The netfilter project was founded by Paul "Rusty" Russell as a redesign of the
+      Linux 2.2 ipchains and Linux 2.0 ipfwadm firewall systems. Netfilter's own project
+      history describes the late-1999 design work by Russell and Marc Boucher that
+      generalized iptables and produced the multiple-table framework that became the
+      filter, nat, and mangle modules.
+    - >
+      iptables became the administrative surface for the Linux 2.4 era of packet
+      filtering. The project grew alongside connection tracking, NAT helpers, userspace
+      queueing, IPv6 work through ip6tables, and later the xtables command family that
+      collected IPv4, IPv6, ARP, and Ethernet bridge filtering tools under related
+      interfaces.
+    - >
+      The iptables 1.8 series marked the nftables transition period by shipping both
+      legacy xtables commands and nft-backed variants such as iptables-nft,
+      ip6tables-nft, arptables-nft, ebtables-nft, and translation tools. That made
+      iptables both a historic interface and a migration bridge to nftables.
+  related-projects:
+    - >
+      iptables is closely related to netfilter kernel hooks, nftables, libnftnl,
+      conntrack-tools, ipset, ulogd, arptables, ebtables, and the older ipchains and
+      ipfwadm systems it replaced.
+  sources:
+    - https://formulae.brew.sh/formula/iptables
+    - https://git.netfilter.org/iptables
+    - https://www.netfilter.org/about.html
+    - https://www.netfilter.org/projects/iptables/index.html
+    - https://www.netfilter.org/projects/nftables/index.html
+  summary:
+    - >
+      iptables is the long-lived user-space command family for controlling Linux packet
+      filtering, NAT, and mangling rules through the netfilter framework. It sits at the
+      intersection of kernel networking, firewall administration, and distribution
+      packaging, with companion commands such as ip6tables, arptables, ebtables,
+      restore/save tools, and nft translation frontends.
+  timeline:
+    - >
+      1999: Netfilter core design work generalized iptables and the filter, nat, and
+      mangle table model.
+    - '2000: Netfilter and iptables work was prepared for inclusion with Linux 2.4.'
+    - '2001: Linux 2.4 made netfilter/iptables the standard Linux firewall framework.'
+    - >
+      2018: iptables 1.8 introduced the nft-backed command variants as part of the
+      nftables migration path.
+    - '2026: Netfilter news records continued iptables 1.8 maintenance releases.'
+  usage:
+    - >
+      Typical use centers on creating chains and rules for packet filtering, network
+      address translation, port forwarding, connection-state matching, and firewall
+      persistence with iptables-save and iptables-restore. Administrators also use
+      iptables-translate and iptables-restore-translate when moving legacy rule sets
+      toward nftables.
+    - >
+      The package is Linux-specific in purpose: on non-Linux systems it is mostly useful
+      for packaging, cross-development, documentation, or compatibility workflows rather
+      than native packet filtering.
 category: networking
 package-manager:
   apk: iptables
@@ -74,5 +155,12 @@ executables:
   - xtables-nft-multi
 provenance:
   formula: iptables
+  history-sources:
+    - https://formulae.brew.sh/formula/iptables
+    - https://git.netfilter.org/iptables
+    - https://www.netfilter.org/about.html
+    - https://www.netfilter.org/projects/iptables/index.html
+    - https://www.netfilter.org/projects/nftables/index.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

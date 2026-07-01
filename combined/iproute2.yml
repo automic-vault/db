@@ -11,6 +11,84 @@ config-file-location:
     - /usr/lib/iproute2/rt_tables
     - /etc/iproute2/tc_cls
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      iproute2's adoption is closely tied to Linux distribution defaults and kernel
+      networking development. The Linux Foundation page says it is usually shipped as
+      iproute or iproute2, with ip and tc as the most important tools, and that new
+      versions are announced on the netdev mailing list.
+    - >
+      Homebrew packages iproute2 as a Linux-only formula, which is fitting: the suite is
+      not a portable Unix compatibility layer but a userspace face for Linux kernel
+      netlink and traffic-control facilities.
+  package-nerd-significance:
+    - >
+      iproute2 is package-nerd infrastructure: many packages merely run on Linux, but
+      iproute2 is how Linux networking is observed and shaped from user space. It also
+      demonstrates a packaging boundary where the right target is Linux only, with
+      dependencies such as libbpf, libmnl, elfutils, and kernel-header-adjacent build
+      logic.
+  project-history:
+    - >
+      The Linux Foundation networking page describes iproute2 as a collection of
+      utilities for TCP/IP networking and traffic control in Linux. It names Alexey
+      Kuznetsov as the original author and connects his work to the Linux kernel QoS
+      implementation, with maintenance by Stephen Hemminger.
+    - >
+      The project became the modern Linux counterpart to older net-tools commands such
+      as ifconfig and route. The same Linux Foundation page notes that many manuals
+      continued to refer to older tools even though ifconfig behaved inadequately in
+      modern environments, and it highlights iproute2's better coverage of modern
+      networking features.
+  related-projects:
+    - >
+      net-tools is the legacy tool family that iproute2 largely supersedes for modern
+      Linux networking.
+    - >
+      The Linux kernel networking stack, rtnetlink/netlink, libbpf, libmnl, and
+      traffic-control subsystems are tightly related.
+    - >
+      LARTC documentation and the netdev mailing list are part of the surrounding
+      operational and development culture.
+  sources:
+    - https://wiki.linuxfoundation.org/networking/iproute2
+    - https://git.kernel.org/pub/scm/network/iproute2/iproute2.git
+    - https://formulae.brew.sh/formula/iproute2
+    - https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/README
+    - https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tags
+    - https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/releases
+  summary:
+    - >
+      iproute2 is the Linux networking utility suite centered on ip and tc, used to
+      configure addresses, routes, tunnels, neighbors, links, traffic control, and
+      related kernel networking features.
+  timeline:
+    - >
+      Project origin: Alexey Kuznetsov authors the suite around Linux routing, QoS, and
+      traffic control work.
+    - >
+      Maintenance era: Stephen Hemminger maintains the project through kernel.org and
+      netdev workflows.
+    - >
+      Distribution era: Linux distributions ship the suite as iproute or iproute2, with
+      ip and tc as the central tools.
+    - >
+      2026: Homebrew formula metadata packages iproute2 7.1.0 for Linux ARM64 and x86_64
+      bottles.
+  usage:
+    - >
+      Administrators use iproute2 for address and link configuration, routing tables,
+      policy routing, tunnels, neighbor entries, bridges, socket statistics, and
+      traffic-control qdiscs/classes/filters. Its tools are accompanied by manpages and
+      detailed usage messages, which suits both interactive repair and scripted
+      provisioning.
+    - >
+      The package exposes more of Linux networking than legacy tools because it tracks
+      kernel features through netlink-oriented utilities. That makes it important in
+      container hosts, routers, CI images, embedded Linux, network namespaces, and any
+      environment where tc, ss, bridge, devlink, or rdma commands are part of
+      operational vocabulary.
 category: networking
 package-manager:
   apk: iproute2
@@ -50,5 +128,13 @@ executables:
   - vdpa
 provenance:
   formula: iproute2
+  history-sources:
+    - https://wiki.linuxfoundation.org/networking/iproute2
+    - https://git.kernel.org/pub/scm/network/iproute2/iproute2.git
+    - https://formulae.brew.sh/formula/iproute2
+    - https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/README
+    - https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tags
+    - https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/releases
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
