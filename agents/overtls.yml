@@ -9,6 +9,29 @@ config-file-location:
 credentials-file-location:
   unix:
     - config.json
+history:
+  - >
+    overtls is a Rust proxy-tunnel project created under ShadowsocksR-Live in 2022. The
+    upstream README describes it as a SOCKS5-style proxy that carries TCP and UDP
+    traffic through TLS, and frames it as a Rust implementation of the OverTLS part of
+    SSRoT from shadowsocksr-native, without the broader ShadowsocksR and Shadowsocks
+    pieces.
+  - >
+    The project's ecosystem role is within censorship-circumvention and proxy tooling
+    rather than general web infrastructure. Its design uses a client/server
+    configuration with a shared `tunnel_path`: the client connects to the server over
+    TLS, traffic matching the secret path is treated as proxy traffic, and other
+    server-side traffic can be forwarded to an ordinary web service for camouflage. The
+    README recommends a VPS, domain name or IP certificate, TLS certificates, and an
+    HTTP server or reverse proxy such as nginx or Caddy.
+  - >
+    Practitioners run `overtls-bin -r server -c config.json` on the server and
+    `overtls-bin -r client -c config.json` locally, with the local client listening as a
+    SOCKS endpoint. The repository ships install scripts, Android and Apple build
+    scripts, a reusable Rust library target, and release artifacts for several operating
+    systems and mobile library formats. Homebrew packages the `overtls-bin` executable
+    from tagged source, but public history beyond the upstream README, Cargo manifest,
+    releases, and package metadata is thin.
 tags:
   - cli
   - gfw-bypass
@@ -33,6 +56,14 @@ provenance:
       ShadowsocksR-Live/overtls repository.
   docs-sources:
     - Official GitHub README is the primary documentation surface for the project.
+  history-sources:
+    - https://github.com/ShadowsocksR-Live/overtls
+    - https://raw.githubusercontent.com/ShadowsocksR-Live/overtls/master/readme.md
+    - https://raw.githubusercontent.com/ShadowsocksR-Live/overtls/master/Cargo.toml
+    - https://raw.githubusercontent.com/ShadowsocksR-Live/overtls/master/config.json
+    - https://api.github.com/repos/ShadowsocksR-Live/overtls
+    - https://github.com/ShadowsocksR-Live/overtls/releases/tag/v0.3.10
+    - https://formulae.brew.sh/api/formula/overtls.json
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -45,5 +76,6 @@ category-path:
   - proxy
 display-name-confidence: high
 docs-confidence: high
+history-confidence: low
 repo-confidence: high
 tags-confidence: high
