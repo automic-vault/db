@@ -6,6 +6,86 @@ docs:
   - https://www.symas.com/symas-embedded-database-lmdb
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      LMDB spread beyond OpenLDAP because it offered a permissively licensed embedded
+      store with transactional semantics, reader concurrency, and simple deployment as
+      ordinary files. Package managers expose it both as development headers/libraries
+      and as standalone utilities, which is why distributions commonly package it under
+      names such as lmdb or liblmdb-dev.
+    - >
+      Its adoption has been strongest in systems software that wants an embedded
+      key-value database without a separate server process. The OpenLDAP and Symas
+      documentation both frame LMDB as a library-first project, while the Homebrew
+      formula records the command-line utilities that make it convenient for database
+      inspection, backup, and conversion.
+  package-nerd-significance:
+    - >
+      LMDB is package-nerd material because it is small, old-school C infrastructure
+      with a large blast radius: many higher-level systems can depend on the same tiny
+      library. It also embodies a distinctive design tradeoff, preferring OS page-cache
+      behavior and copy-on-write pages over a heavier database server architecture.
+    - >
+      For package maintainers, LMDB matters because ABI compatibility, headers, and the
+      mdb_* utilities are all useful separately. It is one of those packages that looks
+      boring in a dependency graph until a storage engine, LDAP deployment, or language
+      binding needs it.
+  project-history:
+    - >
+      The project grew out of OpenLDAP's need for a compact, fast storage engine. Symas
+      describes LMDB as developed for OpenLDAP and emphasizes its memory-mapped design
+      and very small object-code footprint. The OpenLDAP source documentation describes
+      LMDB as a Btree-based database manager, loosely modeled on the Berkeley DB API but
+      intentionally simplified by exposing the database through a memory map.
+    - >
+      Early LMDB release history was tied to the OpenLDAP source tree and the library
+      was renamed from libmdb to liblmdb during the 0.9 series. The public OpenLDAP tree
+      remains the official source-control home, while lmdb.tech hosts generated API
+      documentation from the same library interface.
+  related-projects:
+    - OpenLDAP is the parent project and original deployment driver for LMDB.
+    - >
+      Berkeley DB is the older embedded database API family that LMDB's documentation
+      says it is loosely modeled on.
+    - >
+      Language bindings and wrappers expose LMDB to ecosystems such as Python, Go, Rust,
+      Java, Ruby, and Node.js.
+  sources:
+    - https://git.openldap.org/openldap/openldap/-/blob/master/libraries/liblmdb/lmdb.h
+    - https://git.openldap.org/openldap/openldap/-/tree/mdb.master/libraries/liblmdb
+    - https://www.lmdb.tech/doc/
+    - https://www.symas.com/mdb
+    - source_facts.executables
+    - source_facts.package-manager
+  summary:
+    - >
+      LMDB, the Lightning Memory-Mapped Database, is a small embedded transactional
+      key-value store developed by Symas for the OpenLDAP project. Its package-manager
+      identity is unusual because it is both a library used inside infrastructure
+      software and a tiny suite of command-line utilities such as mdb_dump, mdb_load,
+      mdb_copy, and mdb_stat.
+  timeline:
+    - '2011: LMDB/MDB development becomes visible in the OpenLDAP source history.'
+    - '2012: The 0.9 series renames libmdb to liblmdb.'
+    - >
+      2010s: Linux and Unix package managers adopt LMDB as both a library package and a
+      utility package.
+    - >
+      2020s: OpenLDAP GitLab and lmdb.tech remain the main official source and API
+      documentation surfaces.
+  usage:
+    - >
+      Developers normally link against liblmdb and use LMDB environments and
+      transactions from application code. Operators and package users encounter the
+      mdb_* tools: mdb_dump and mdb_load move database contents through portable dump
+      formats, mdb_copy makes safe copies, and mdb_stat reports environment and database
+      statistics.
+    - >
+      LMDB is commonly chosen when a program needs fast local persistence with low
+      operational overhead. Its memory-mapped model makes configuration mostly about
+      database environment sizing and filesystem placement rather than running a daemon
+      or maintaining credentials.
 tags:
   - cli
   - database
@@ -35,6 +115,13 @@ provenance:
     - >
       source_facts.homepage is the official Symas LMDB product page; source_facts.repo
       points to the official OpenLDAP source repository containing LMDB.
+  history-sources:
+    - https://git.openldap.org/openldap/openldap/-/blob/master/libraries/liblmdb/lmdb.h
+    - https://git.openldap.org/openldap/openldap/-/tree/mdb.master/libraries/liblmdb
+    - https://www.lmdb.tech/doc/
+    - https://www.symas.com/mdb
+    - source_facts.executables
+    - source_facts.package-manager
   repo-sources:
     - source_facts.repo already has a value, so repo is returned as null per instructions.
   tags-sources:
@@ -47,5 +134,6 @@ category-path:
   - database
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

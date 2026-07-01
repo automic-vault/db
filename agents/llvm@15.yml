@@ -5,6 +5,76 @@ docs:
   - https://llvm.org/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The formula's versioned shape reflects how package ecosystems adopt LLVM: compiler
+      stacks move quickly, but language runtimes, static analyzers, code generators, and
+      editor tools often need one major line pinned until their LLVM API usage catches
+      up. llvm@15 offered that stable target after the 15.0.0 release.
+    - >
+      The input metadata shows llvm@15 packaged under names such as llvm15, llvm-15,
+      clangd, clang15, and Homebrew llvm@15 across Linux, macOS, Windows-oriented, and
+      Nix-style ecosystems. That spread is typical for LLVM major releases because both
+      command-line users and build dependencies need predictable versioned tools.
+  package-nerd-significance:
+    - >
+      llvm@15 is significant because it packaged one of LLVM's biggest IR model
+      transitions as a selectable toolchain rather than forcing every downstream package
+      to migrate at once. That is exactly why package managers keep versioned compiler
+      stacks around.
+    - >
+      For maintainers, llvm@15 often marks the point where old typed-pointer assumptions
+      become visible in build logs and tests, while still leaving escape hatches
+      unavailable in later releases.
+  project-history:
+    - >
+      LLVM 15 continued the LLVM project's evolution from reusable optimizer and
+      code-generation libraries into a broad compiler-toolchain platform. Like other
+      major LLVM releases, it shipped coordinated updates across LLVM core, Clang, LLDB,
+      LLD, libc++, compiler-rt, MLIR, and related developer tools.
+    - >
+      A defining migration point for LLVM 15 was opaque pointers. The official
+      opaque-pointer documentation states that LLVM 15 enabled opaque pointers by
+      default while typed pointers were still supported, making this release a
+      compatibility hinge between older typed-pointer IR users and the LLVM 17 world
+      where typed pointers were no longer supported.
+  related-projects:
+    - >
+      LLVM 15 ships with Clang 15, LLDB 15, LLD 15, libc++, compiler-rt, MLIR, OpenMP,
+      and related LLVM tools.
+    - >
+      It is related to llvm@14 as the next migration step, and to llvm@16 and llvm@17 as
+      later stages in the opaque-pointer transition.
+  sources:
+    - https://api.github.com/repos/llvm/llvm-project/releases
+    - https://llvm.org/
+    - https://llvm.org/docs/OpaquePointers.html
+    - https://releases.llvm.org/15.0.0/docs/
+    - https://releases.llvm.org/15.0.0/docs/ReleaseNotes.html
+    - source_facts.package-manager
+  summary:
+    - >
+      llvm@15 is Homebrew's versioned formula for the LLVM 15 release line. It packages
+      a stable 15.x generation of the LLVM compiler infrastructure for users and
+      downstream builds that cannot simply follow the current llvm formula.
+  timeline:
+    - '2000: LLVM begins as a University of Illinois compiler research project.'
+    - '2022-09-06: LLVM 15.0.0 is published on GitHub.'
+    - '2022-09-20: LLVM 15.0.1 is published.'
+    - '2022: LLVM 15 enables opaque pointers by default while retaining typed-pointer support.'
+    - >
+      2023: Package ecosystems continue carrying llvm-15 packages while LLVM 16 and 17
+      advance the opaque-pointer transition.
+  usage:
+    - >
+      Users install llvm@15 to get clang-15, LLVM 15 libraries and headers, LLVM binary
+      utilities, LLDB/LLD tools where packaged, and helper tools such as clang-tidy,
+      clang-format, clangd, llvm-config, opt, llc, and FileCheck.
+    - >
+      It is most useful when a build explicitly requires LLVM 15 or when maintainers
+      need to test code against the opaque-pointer default before moving to later LLVM
+      releases.
 tags:
   - clang
   - cli
@@ -20,6 +90,13 @@ provenance:
     - source_facts.name is llvm@15.
   docs-sources:
     - source_facts.homepage identifies the official LLVM documentation site.
+  history-sources:
+    - https://api.github.com/repos/llvm/llvm-project/releases
+    - https://llvm.org/
+    - https://llvm.org/docs/OpaquePointers.html
+    - https://releases.llvm.org/15.0.0/docs/
+    - https://releases.llvm.org/15.0.0/docs/ReleaseNotes.html
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is already populated; prompt requires repo=null without
@@ -33,5 +110,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

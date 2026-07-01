@@ -6,6 +6,82 @@ docs:
   - https://www.x.org/releases/individual/util
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      lndir's adoption is mostly historical and specialist: it mattered to X11 and X.Org
+      builders, distro maintainers, and developers who wanted out-of-tree builds before
+      modern build systems made that workflow routine. Its standalone packaging in
+      Homebrew and other systems preserves that utility without requiring the larger
+      imake package.
+    - >
+      The X.Org release directory shows lndir split out as an individual util tarball
+      beginning in the modular release era, with releases from 1.0.1 in 2006 through
+      1.0.5 in 2024. The freedesktop cgit mirror shows the active upstream mirror and
+      recent maintenance commits.
+  package-nerd-significance:
+    - >
+      lndir is interesting precisely because it is small and archaic in a useful way. It
+      is a fossil from the X11 build culture that still does one filesystem job cleanly,
+      and package managers keep it available for scripts and users that remember the
+      shadow-directory workflow.
+    - >
+      For package nerds, lndir also illustrates the X.Org modularization story: pieces
+      that once lived inside a monolithic source tree became tiny independently released
+      tarballs with their own version streams.
+  project-history:
+    - >
+      The official manual describes lndir as a program that makes a shadow copy of a
+      directory tree, where files are symbolic links back to the original source tree.
+      X.Org build documentation for X11R6.8 recommended this shadow-tree workflow to
+      keep source directories unmodified and support builds for different operating
+      systems or architectures.
+    - >
+      In the modular X.Org tree, lndir lives under util/lndir. X.Org's module guidelines
+      describe the util module as a home for modular-tree build tools and legacy build
+      tools from the monolithic tree, with lndir listed alongside utilities such as
+      imake, gccmakedep, and makedepend.
+  related-projects:
+    - >
+      X.Org util modules such as imake, makedepend, gccmakedep, and util-macros belong
+      to the same historical build-tool family.
+    - >
+      cleanlinks is commonly mentioned with lndir because it removes stale symbolic
+      links in shadow trees.
+    - >
+      Modern out-of-tree build systems such as CMake and Meson solve related
+      build-directory separation problems without symlink forests.
+  sources:
+    - https://cgit.freedesktop.org/xorg/util/lndir
+    - https://gitlab.freedesktop.org/xorg/util/lndir
+    - https://www.x.org/NewModuleGuidelines/
+    - https://www.x.org/releases/individual/util/
+    - https://xorg.freedesktop.org/archive/X11R6.7.0/doc/lndir.1.html
+    - https://xorg.freedesktop.org/archive/X11R6.8.0/doc/BUILD3.html
+  summary:
+    - >
+      lndir is an X.Org utility that creates a shadow directory tree made of symbolic
+      links to another source tree. It is a small build-support tool from the X11/X.Org
+      world, historically useful when building the same source checkout for multiple
+      machines or configurations.
+  timeline:
+    - 'X11R6 era: lndir is documented as part of X source-tree build workflows.'
+    - '2004: X11R6.8 documentation recommends lndir-based shadow build trees.'
+    - '2006: X.Org publishes lndir 1.0.1 as an individual util release.'
+    - '2024: X.Org publishes lndir 1.0.5.'
+    - >
+      2025: freedesktop cgit mirror shows recent maintenance commits for options and
+      manual-page edits.
+  usage:
+    - >
+      A user creates an empty build directory and runs lndir against the source tree.
+      The result is a parallel directory tree where source files are links and generated
+      objects can live separately. Re-running lndir adds new links and checks existing
+      ones, but deleted source files can leave stale symlinks that may need cleanlinks
+      or a fresh shadow tree.
+    - >
+      The tool has no project-level configuration or credentials. Its behavior is driven
+      by command-line options such as -silent, -ignorelinks, and -withrevinfo.
 tags:
   - build-tools
   - cli
@@ -33,6 +109,13 @@ provenance:
     - >
       source_facts.source-archive is from the official X.Org individual util release
       area; source_facts.homepage is the official freedesktop.org GitLab project.
+  history-sources:
+    - https://cgit.freedesktop.org/xorg/util/lndir
+    - https://gitlab.freedesktop.org/xorg/util/lndir
+    - https://www.x.org/NewModuleGuidelines/
+    - https://www.x.org/releases/individual/util/
+    - https://xorg.freedesktop.org/archive/X11R6.7.0/doc/lndir.1.html
+    - https://xorg.freedesktop.org/archive/X11R6.8.0/doc/BUILD3.html
   repo-sources:
     - >
       source_facts.repo is empty; source_facts.homepage is the official freedesktop.org
@@ -47,5 +130,6 @@ category-path:
   - filesystem
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

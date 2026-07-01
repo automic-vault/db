@@ -5,6 +5,95 @@ docs:
   - https://llvm.org/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      LLVM became a package-manager staple because it is both an end-user toolchain and
+      a dependency for other language runtimes, build systems, static analyzers, editor
+      integrations, and cross-compilation stacks. The official homepage notes production
+      use by commercial and open-source projects and continued academic use, which
+      matches the broad package-manager coverage shown in the input metadata.
+    - >
+      For Homebrew users, llvm is often installed to obtain a newer clang than Apple's
+      system compiler, a full llvm-config and library stack, up-to-date linker and
+      object-file tools, clang-format, clang-tidy, clangd, lldb, and
+      architecture-specific utilities. Versioned Homebrew formulae such as llvm@14
+      through llvm@17 exist because downstream projects frequently need a stable ABI,
+      code-generation behavior, or plugin API tied to a specific LLVM major release.
+  package-nerd-significance:
+    - >
+      LLVM is one of the most consequential developer-tool packages in Unix package
+      managers: it provides compilers, linkers, debuggers, binary utilities, formatters,
+      language servers, and libraries that other packages compile against. Its formula
+      is watched closely because a major LLVM bump can reveal C++ standard-library
+      issues, linker changes, sanitizer behavior changes, and downstream projects that
+      accidentally depended on private compiler internals.
+    - >
+      The package is also historically important because it displaced the idea that a
+      system compiler was a monolith. LLVM's reusable libraries let package ecosystems
+      build many language frontends, analyzers, and toolchain experiments on common
+      optimizer and code-generation components.
+  project-history:
+    - >
+      LLVM began as a University of Illinois research project to provide a modern
+      SSA-based compilation strategy for static and dynamic languages. The official LLVM
+      homepage describes the project as a collection of modular and reusable compiler
+      and toolchain technologies, with LLVM now functioning as a project name rather
+      than an acronym for a virtual machine.
+    - >
+      The project grew from core optimizer and code-generation libraries into an
+      umbrella project. The official overview lists major subprojects such as Clang for
+      C-family languages, LLDB for native debugging, LLD for linking, libc++ for the C++
+      standard library, Flang for Fortran, and MLIR infrastructure for compiler
+      construction. The GitHub README describes the repository as source for compilers,
+      optimizers, and run-time environments.
+  related-projects:
+    - >
+      Clang, LLDB, LLD, libc++, Flang, MLIR, compiler-rt, OpenMP, and polly are LLVM
+      umbrella subprojects or closely shipped components.
+    - >
+      Projects such as Rust, Swift, Julia, Zig, Mesa, WebAssembly toolchains, and many
+      static-analysis tools are common LLVM consumers in package-manager ecosystems.
+    - >
+      Homebrew's llvm@14, llvm@15, llvm@16, and llvm@17 formulae preserve older major
+      release lines for packages that cannot immediately follow the current llvm
+      formula.
+  sources:
+    - https://api.github.com/repos/llvm/llvm-project/releases
+    - https://github.com/llvm/llvm-project
+    - https://github.com/llvm/llvm-project#readme
+    - https://llvm.org/
+    - https://llvm.org/docs
+    - https://releases.llvm.org/
+    - source_facts.package-manager
+  summary:
+    - >
+      LLVM is a modular compiler and toolchain infrastructure project packaged by
+      Homebrew as the current llvm formula. It includes the LLVM core libraries and
+      command-line tools, the Clang compiler frontend, LLDB debugger, LLD linker,
+      libc++, MLIR tooling, and many smaller developer utilities.
+  timeline:
+    - '2000: LLVM begins as a University of Illinois research project.'
+    - '2003: LLVM 1.0 is announced as an open compiler infrastructure release.'
+    - '2011: The LLVM name is treated as the project brand rather than an acronym.'
+    - '2016-12-07: The llvm/llvm-project monorepo is created on GitHub.'
+    - '2019: LLVM 9.0.0 and later releases use Apache-2.0 WITH LLVM-exception licensing.'
+    - '2022-03-23: LLVM 14.0.0 is published.'
+    - '2022-09-06: LLVM 15.0.0 is published.'
+    - '2023-03-17: LLVM 16.0.0 is published.'
+    - '2023-09-19: LLVM 17.0.1 is published.'
+  usage:
+    - >
+      Users install llvm to compile C, C++, Objective-C, and other LLVM-backed
+      languages; run optimizer and code-generation tools such as opt and llc; inspect
+      and transform object files with llvm-objdump, llvm-nm, llvm-ar, and llvm-strip;
+      debug with lldb; format and analyze C-family source with clang-format, clang-tidy,
+      and clangd; and build other packages that need llvm-config or LLVM libraries.
+    - >
+      The package is also a build dependency for projects that embed LLVM as a library,
+      generate LLVM IR, ship compiler plugins, or need MLIR and TableGen tooling. In
+      package-manager culture, llvm is less a single command than a large toolchain
+      substrate whose installed prefix can change the behavior of many builds.
 tags:
   - clang
   - cli
@@ -28,6 +117,14 @@ provenance:
     - source_facts.name is llvm; official project branding at source_facts.homepage is LLVM.
   docs-sources:
     - Official LLVM documentation is hosted at llvm.org/docs.
+  history-sources:
+    - https://api.github.com/repos/llvm/llvm-project/releases
+    - https://github.com/llvm/llvm-project
+    - https://github.com/llvm/llvm-project#readme
+    - https://llvm.org/
+    - https://llvm.org/docs
+    - https://releases.llvm.org/
+    - source_facts.package-manager
   repo-sources:
     - source_facts.repo already has a value, so repo is returned as null per instruction.
   tags-sources:
@@ -40,5 +137,6 @@ category-path:
   - compiler-toolchain
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

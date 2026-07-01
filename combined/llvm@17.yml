@@ -6,6 +6,78 @@ docs:
   - https://llvm.org/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Package ecosystems adopted llvm@17 and llvm-17 style packages both for users who
+      wanted a modern LLVM stack and for downstream projects that had completed the
+      opaque-pointer migration but still needed to pin a major version. The input
+      metadata shows package mappings for Homebrew, MacPorts, Debian/Ubuntu llvm-17,
+      Chocolatey, Nix, Scoop, winget clangd, and other ecosystems.
+    - >
+      The existence of llvm@17 alongside newer unversioned LLVM packages reflects a
+      normal toolchain maintenance pattern: major compiler upgrades are valuable, but
+      downstream projects need time to validate generated code, diagnostics, sanitizer
+      behavior, C++ APIs, and plugin compatibility.
+  package-nerd-significance:
+    - >
+      llvm@17 matters because it packages the first release line in which the
+      opaque-pointer migration is complete from the user's point of view. For
+      maintainers, failures against llvm@17 often mean a real dependency on old
+      typed-pointer APIs or IR assumptions remains.
+    - >
+      As a versioned formula, it also keeps package graphs reproducible. A compiler
+      major version is a platform contract, and llvm@17 lets formula authors choose that
+      contract explicitly.
+  project-history:
+    - >
+      LLVM 17 is a later release of the LLVM umbrella project, which the official
+      homepage describes as modular and reusable compiler and toolchain technologies.
+      The versioned Homebrew formula preserves that release line after the unversioned
+      llvm package advances.
+    - >
+      LLVM 17 is a key endpoint in the opaque-pointer migration documented by LLVM. The
+      official opaque-pointer guide says LLVM 17 supports only opaque pointers and no
+      longer supports typed pointers, following the staged transition through LLVM 14,
+      15, and 16.
+  related-projects:
+    - >
+      LLVM 17 ships with Clang 17, LLDB 17, LLD 17, libc++, compiler-rt, MLIR, OpenMP,
+      and related LLVM tools.
+    - >
+      It follows llvm@16 in the opaque-pointer migration and precedes later unversioned
+      LLVM formula generations.
+  sources:
+    - https://api.github.com/repos/llvm/llvm-project/releases
+    - https://llvm.org/
+    - https://llvm.org/docs/OpaquePointers.html
+    - https://releases.llvm.org/17.0.1/docs/
+    - https://releases.llvm.org/17.0.1/docs/ReleaseNotes.html
+    - source_facts.package-manager
+  summary:
+    - >
+      llvm@17 is Homebrew's versioned formula for the LLVM 17 release line, providing a
+      pinned major version of LLVM's compiler infrastructure, Clang, LLDB, LLD, and
+      related developer tools.
+  timeline:
+    - '2000: LLVM begins as a University of Illinois compiler research project.'
+    - '2023-09-19: LLVM 17.0.1 is published on GitHub.'
+    - '2023: LLVM 17 supports only opaque pointers; typed pointers are no longer supported.'
+    - >
+      2023-2024: Package managers add or retain llvm-17 packages for downstream
+      compatibility and reproducible builds.
+    - >
+      2024 onward: llvm@17 remains useful for packages pinned to LLVM 17 while the
+      unversioned llvm formula advances.
+  usage:
+    - >
+      Users install llvm@17 for clang-17, LLVM 17 libraries and headers, llvm-config,
+      FileCheck, LLDB and LLD tools where included, MLIR tools, clangd, clang-format,
+      clang-tidy, and the broad LLVM utility suite.
+    - >
+      It is a good pinned target for projects that have already adapted to opaque
+      pointers and want a stable LLVM 17 build dependency rather than tracking the
+      current Homebrew llvm formula.
 category: developer-tools
 package-manager:
   apk: filecheck
@@ -183,5 +255,13 @@ executables:
   - yaml2obj
 provenance:
   formula: llvm@17
+  history-sources:
+    - https://api.github.com/repos/llvm/llvm-project/releases
+    - https://llvm.org/
+    - https://llvm.org/docs/OpaquePointers.html
+    - https://releases.llvm.org/17.0.1/docs/
+    - https://releases.llvm.org/17.0.1/docs/ReleaseNotes.html
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -5,6 +5,94 @@ docs:
   - https://github.com/nodejs/llnode#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Node.js's Diagnostics Working Group named llnode in February 2017 alongside
+      node-report as one of the experimental tools that had landed in Node.js Foundation
+      diagnostics work for post-mortem analysis. That placed llnode in the same
+      ecosystem as async_hooks, inspector, tracing, and other efforts to make production
+      Node.js failures easier to investigate.
+    - >
+      The official README documents installation through npm and Homebrew, with platform
+      notes for macOS, Linux, FreeBSD, Windows, and Termux. Release notes show
+      continuing maintenance around supported Node.js lines: v3.0.0 added Node.js 12
+      support and dropped older Node.js and LLDB support, v3.2.0 added Node.js 14
+      support, and v4.0.0 updated support for Node.js 14, 16, and 18 while dropping
+      earlier unsupported versions.
+  package-nerd-significance:
+    - >
+      For package nerds, llnode is the bridge between a high-level JavaScript runtime
+      and a low-level debugger. It packages C++ plugin code, Node.js build tooling, LLDB
+      headers and libraries, and V8 layout knowledge into a command-line tool that can
+      be installed before the incident happens.
+    - >
+      It also illustrates a maintenance problem common to runtime-introspection
+      packages: every major Node.js, V8, and LLVM/LLDB change can move internal
+      structures or APIs. The package is valuable precisely because it absorbs that
+      churn for users who just need to open a core dump and ask what JavaScript objects
+      were alive.
+  project-history:
+    - >
+      The llnode repository was created under the Node.js GitHub organization in
+      November 2015, and its official package metadata describes it as an LLDB plugin
+      for Node.js and V8 that exposes JavaScript state from processes and core dumps.
+      Early tags in the official repository show a 1.0.0 line by 2016, while later
+      releases tracked changes in Node.js, V8, and LLVM's LLDB APIs.
+    - >
+      The project's design is intentionally tied to LLDB. Its README documents a
+      shortcut executable that starts LLDB with the plugin loaded, direct plugin loading
+      inside LLDB, and optional automatic loading through ~/.lldbinit. Its commands add
+      V8-aware operations such as JavaScript backtraces, object inspection, reference
+      finding, active handle listing, and source listing on top of LLDB's standard
+      native-debugging facilities.
+  related-projects:
+    - llnode depends on LLDB from the LLVM project and on Node.js/V8 runtime internals.
+    - >
+      It sits beside other Node.js diagnostics work such as node-report, async_hooks,
+      inspector, node-inspect, and tracing tools.
+    - >
+      For package users, Homebrew's llvm package can provide newer LLDB tooling used by
+      llnode.
+  sources:
+    - https://api.github.com/repos/nodejs/llnode
+    - https://github.com/nodejs/llnode
+    - https://github.com/nodejs/llnode#readme
+    - https://github.com/nodejs/llnode/releases
+    - https://nodejs.org/en/blog/wg/diag-wg-update-2017-02
+    - source_facts.package-manager-url
+  summary:
+    - >
+      llnode is the Node.js project's LLDB plugin for inspecting JavaScript state inside
+      live Node.js processes and core dumps. It matters to package-manager users because
+      it gives native debugger workflows a Node- and V8-aware command set for
+      post-mortem debugging, memory investigation, and crash analysis.
+  timeline:
+    - '2015-11-06: The nodejs/llnode repository is created on GitHub.'
+    - '2016-04: The official repository has a v1.0.0 tag line.'
+    - >
+      2017-02: The Node.js Diagnostics Working Group lists llnode as a post-mortem
+      analysis tool.
+    - '2018-09-25: llnode v2.0.0 is released.'
+    - >
+      2020-01-21: llnode v3.0.0 adds Node.js 12 support and drops older Node.js and LLDB
+      support.
+    - '2020-05-04: llnode v3.2.0 adds Node.js 14 support.'
+    - '2022-09-14: llnode v4.0.0 updates support for Node.js 14, 16, and 18.'
+  usage:
+    - >
+      Package users install llnode when they need to load a Node.js core dump with the
+      exact node executable that produced it, attach LLDB to a live process, or run a
+      Node.js program under LLDB until it aborts. Once loaded, llnode's v8 subcommands
+      expose JavaScript frames, values, source, object counts, references, active
+      handles, and active requests.
+    - >
+      llnode is especially useful for failures that are hard to debug through the
+      regular inspector path: native addon crashes, production core dumps, memory leaks,
+      and post-crash analysis where the process is no longer running. Its README also
+      warns that it supports official active Node.js builds and depends on an
+      appropriate LLDB installation, which is why package-manager integration is
+      practical rather than cosmetic.
 tags:
   - cli
   - debugging
@@ -31,6 +119,13 @@ provenance:
       repository.
   docs-sources:
     - Official GitHub repository README is the available documentation surface.
+  history-sources:
+    - https://api.github.com/repos/nodejs/llnode
+    - https://github.com/nodejs/llnode
+    - https://github.com/nodejs/llnode#readme
+    - https://github.com/nodejs/llnode/releases
+    - https://nodejs.org/en/blog/wg/diag-wg-update-2017-02
+    - source_facts.package-manager-url
   repo-sources:
     - source_facts.repo already has a value, so repo is returned as null per instruction.
   tags-sources:
@@ -43,5 +138,6 @@ category-path:
   - debugging
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

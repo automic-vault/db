@@ -5,6 +5,80 @@ docs:
   - https://llvm.org/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      In package-manager practice, llvm@14 gave downstream projects a stable target
+      after LLVM 15 began the opaque-pointer default transition. Packages that used LLVM
+      C APIs, generated typed-pointer IR, or embedded out-of-tree LLVM passes could
+      remain on 14 while preparing for later releases.
+    - >
+      The input metadata shows llvm@14 mapped across Homebrew, MacPorts, Debian/Ubuntu
+      llvm-14, Fedora llvm14, Nix, Arch-related clang packages, Scoop, winget clangd,
+      Alpine filecheck, and openSUSE clang. That cross-ecosystem spread reflects the
+      importance of major-versioned LLVM packaging.
+  package-nerd-significance:
+    - >
+      llvm@14 is the kind of formula package maintainers keep around because compilers
+      are supply-chain infrastructure. Pinning LLVM 14 can be the difference between an
+      old language frontend still building and a cascade of failures from changed IR, C
+      APIs, or optimizer assumptions.
+    - >
+      Its value is not novelty but repeatability: a package graph can keep one foot on a
+      known LLVM major while the unversioned llvm formula moves forward.
+  project-history:
+    - >
+      LLVM 14 belongs to the same LLVM umbrella project that began as a University of
+      Illinois compiler research project and grew into a modular toolchain suite. The
+      versioned formula exists because LLVM's major releases are not just application
+      updates: they can change compiler diagnostics, optimizer behavior, C++ APIs,
+      plugin interfaces, and binary-tool behavior that downstream packages depend on.
+    - >
+      The official LLVM 14 release notes document the 14.0.0 release as part of the LLVM
+      Compiler Infrastructure and describe major changes across LLVM subprojects. In the
+      opaque-pointer migration, LLVM 14 is specifically called out as the release that
+      supported the necessary APIs for migration and deprecated or removed incompatible
+      APIs, while still not making opaque pointers production-default in the
+      optimization pipeline.
+  related-projects:
+    - >
+      LLVM 14 ships with Clang 14, LLDB 14, LLD 14, libc++, compiler-rt, MLIR, OpenMP,
+      and related LLVM tools.
+    - >
+      It is directly related to llvm@15, llvm@16, llvm@17, and the unversioned llvm
+      formula, which represent later points in the same toolchain release series.
+  sources:
+    - https://api.github.com/repos/llvm/llvm-project/releases
+    - https://llvm.org/
+    - https://llvm.org/docs/OpaquePointers.html
+    - https://releases.llvm.org/14.0.0/docs/
+    - https://releases.llvm.org/14.0.0/docs/ReleaseNotes.html
+    - source_facts.package-manager
+  summary:
+    - >
+      llvm@14 is Homebrew's versioned formula for the LLVM 14 release line, a pinned
+      compiler-toolchain stack that includes LLVM libraries and tools, Clang, LLDB, LLD,
+      and related utilities from the 14.x generation.
+  timeline:
+    - '2000: LLVM begins as a University of Illinois compiler research project.'
+    - '2022-03-23: LLVM 14.0.0 is published on GitHub.'
+    - '2022-04-13: LLVM 14.0.1 is published.'
+    - >
+      2022: LLVM 14 supports APIs needed for the opaque-pointer migration while
+      retaining typed-pointer compatibility.
+    - >
+      2022-2023: Package managers keep llvm-14 style packages for downstream
+      compatibility as LLVM 15 and 16 move the opaque-pointer transition forward.
+  usage:
+    - >
+      Users install llvm@14 when a build script, language runtime, compiler plugin, or
+      analysis tool expects LLVM 14 headers, libraries, or command behavior. The formula
+      also provides versioned tools such as clang-14 while shipping the broader LLVM
+      command set.
+    - >
+      This release line is particularly relevant for projects migrating away from
+      typed-pointer assumptions, because it lets maintainers update code against the new
+      APIs before requiring the default opaque-pointer behavior of later LLVM releases.
 tags:
   - clang
   - cli
@@ -20,6 +94,13 @@ provenance:
     - source_facts.name is llvm@14.
   docs-sources:
     - source_facts.homepage identifies the official LLVM documentation site.
+  history-sources:
+    - https://api.github.com/repos/llvm/llvm-project/releases
+    - https://llvm.org/
+    - https://llvm.org/docs/OpaquePointers.html
+    - https://releases.llvm.org/14.0.0/docs/
+    - https://releases.llvm.org/14.0.0/docs/ReleaseNotes.html
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is already populated; prompt requires repo=null without
@@ -33,5 +114,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

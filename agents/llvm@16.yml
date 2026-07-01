@@ -5,6 +5,78 @@ docs:
   - https://llvm.org/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Package managers carried llvm@16 and llvm-16 style packages because many consumers
+      need the new compiler and toolchain improvements without immediately accepting the
+      next major release's removals. The input metadata shows mappings across Homebrew,
+      MacPorts, Debian/Ubuntu, Alpine, Fedora-style clang packages, Nix, Arch-related
+      clang packages, Scoop, winget clangd, and openSUSE.
+    - >
+      For downstream maintainers, LLVM 16 was often a practical target for modernizing
+      APIs while still having more compatibility surface than LLVM 17. That is why a
+      versioned formula has value even after the unversioned llvm package moves on.
+  package-nerd-significance:
+    - >
+      llvm@16 is significant as the last broad compatibility step before LLVM 17 removed
+      typed-pointer support. In package-maintainer terms, it is a pressure-release
+      valve: new enough to expose migration work, old enough not to remove every escape
+      hatch.
+    - >
+      It also shows why compilers are packaged like platforms. A major LLVM version
+      controls not just a compiler executable but a constellation of libraries, C++
+      APIs, generated tables, debugger behavior, and command-line tools consumed by
+      other packages.
+  project-history:
+    - >
+      LLVM 16 continued the LLVM project's role as a modular infrastructure for compiler
+      frontends, optimizers, code generators, debuggers, linkers, and development tools.
+      The official 16.0.0 documentation and release notes cover the coordinated release
+      of LLVM core and its subprojects.
+    - >
+      In the opaque-pointer migration, LLVM 16 tightened the transition: the official
+      documentation says opaque pointers were enabled by default and typed pointers were
+      supported only on a best-effort basis and not tested. That made LLVM 16 a late
+      migration release for projects still carrying typed-pointer assumptions.
+  related-projects:
+    - >
+      LLVM 16 ships with Clang 16, LLDB 16, LLD 16, libc++, compiler-rt, MLIR, OpenMP,
+      and related LLVM tools.
+    - >
+      It is closely related to llvm@15 as the prior opaque-pointer default release and
+      llvm@17 as the release line that removed typed-pointer support.
+  sources:
+    - https://api.github.com/repos/llvm/llvm-project/releases
+    - https://llvm.org/
+    - https://llvm.org/docs/OpaquePointers.html
+    - https://releases.llvm.org/16.0.0/docs/
+    - https://releases.llvm.org/16.0.0/docs/ReleaseNotes.html
+    - source_facts.package-manager
+  summary:
+    - >
+      llvm@16 is Homebrew's versioned formula for the LLVM 16 release line, preserving
+      the 16.x compiler, debugger, linker, and LLVM library stack for projects that need
+      that major version.
+  timeline:
+    - '2000: LLVM begins as a University of Illinois compiler research project.'
+    - '2023-03-17: LLVM 16.0.0 is published on GitHub.'
+    - '2023-04-05: LLVM 16.0.1 is published.'
+    - >
+      2023: LLVM 16 keeps opaque pointers enabled by default and supports typed pointers
+      only on a best-effort, untested basis.
+    - >
+      2023-2024: Package managers keep llvm-16 packages for downstream projects not
+      ready for LLVM 17 removals.
+  usage:
+    - >
+      Users install llvm@16 for clang-16, LLVM 16 headers and libraries, llvm-config,
+      FileCheck, LLDB/LLD tools where included, MLIR tools, clangd, clang-format,
+      clang-tidy, and the large suite of LLVM object-file and IR utilities.
+    - >
+      It is commonly used as a pinned build dependency for language runtimes, compiler
+      plugins, static-analysis tools, and projects whose test suites are validated
+      against LLVM 16 behavior.
 tags:
   - clang
   - cli
@@ -20,6 +92,13 @@ provenance:
     - source_facts.name is llvm@16.
   docs-sources:
     - source_facts.homepage identifies the official LLVM documentation site.
+  history-sources:
+    - https://api.github.com/repos/llvm/llvm-project/releases
+    - https://llvm.org/
+    - https://llvm.org/docs/OpaquePointers.html
+    - https://releases.llvm.org/16.0.0/docs/
+    - https://releases.llvm.org/16.0.0/docs/ReleaseNotes.html
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is already populated; prompt requires repo=null without
@@ -33,5 +112,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

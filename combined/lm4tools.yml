@@ -6,6 +6,66 @@ docs:
   - https://github.com/utzig/lm4tools#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      lm4tools is a niche embedded-development utility rather than a broad platform. Its
+      adoption follows the Stellaris/Tiva-era LaunchPad hobbyist and embedded workflow:
+      install an ARM Cortex-M cross compiler, build StellarisWare examples, and use
+      lm4flash to load a binary onto the board.
+    - >
+      The supplied package-manager data shows it packaged by Homebrew and also mapped to
+      lm4flash in Debian, Ubuntu, and Nix-style package sets, which is typical for a
+      small hardware-specific CLI whose main value is making flashing scriptable.
+  package-nerd-significance:
+    - >
+      lm4tools is the kind of package that matters disproportionately when you own the
+      matching board: it turns firmware flashing into a repeatable CLI step, which is
+      exactly what package managers and build scripts are good at preserving.
+    - >
+      Because upstream activity and releases are sparse, packagers mostly care that the
+      tiny C utilities build cleanly, link libusb, install predictable binary names, and
+      keep the udev-rule documentation discoverable.
+  project-history:
+    - >
+      The upstream README describes lm4tools as tools for TI Stellaris LaunchPad boards,
+      a low-cost development board with an ARM Cortex-M4F processor. The package
+      contains lm4flash for flashing firmware over the LaunchPad ICDI via libusb-1.0,
+      and lmicdiusb, a TCP/USB bridge that lets GDB communicate with the Stellaris
+      LaunchPad ICDI.
+    - >
+      The GitHub release history is short: v0.1.2 was published in September 2013 as the
+      first public release, and v0.1.3 followed in March 2018 with an install-directory
+      fix.
+  related-projects:
+    - >
+      Related tools and inputs named by upstream include lm4flash, lmicdiusb,
+      libusb-1.0, GDB, arm-none-eabi toolchains, StellarisWare, and the TI Stellaris
+      LaunchPad ICDI.
+  sources:
+    - https://api.github.com/repos/utzig/lm4tools/releases
+    - https://github.com/utzig/lm4tools#readme
+    - https://github.com/utzig/lm4tools/releases
+    - source_facts.package-manager-url
+  summary:
+    - >
+      lm4tools is a small command-line tool collection for multi-platform development on
+      Texas Instruments Stellaris LaunchPad boards.
+  timeline:
+    - '2013-09-03: v0.1.2 is published as the first public release.'
+    - '2018-03-13: v0.1.3 is published with an install-directory fix.'
+    - >
+      2018: Homebrew package data records lm4tools as a packaged CLI for TI Stellaris
+      LaunchPad boards.
+  usage:
+    - >
+      The README's example workflow builds a StellarisWare project and flashes
+      gcc/project0.bin with lm4flash. For non-root Linux flashing, upstream documents a
+      udev rule for the Stellaris LaunchPad ICDI USB vendor and product IDs.
+    - >
+      lmicdiusb is used when GDB needs to talk to the board's ICDI interface through a
+      TCP/USB bridge. The README notes support for Linux, Mac OS X, and BSD for that
+      tool, while lm4flash is described as working on Linux, Mac OS X, Windows, and BSD.
 category: developer-tools
 package-manager:
   brew: lm4tools
@@ -27,5 +87,11 @@ executables:
   - lmicdi
 provenance:
   formula: lm4tools
+  history-sources:
+    - https://api.github.com/repos/utzig/lm4tools/releases
+    - https://github.com/utzig/lm4tools#readme
+    - https://github.com/utzig/lm4tools/releases
+    - source_facts.package-manager-url
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium
