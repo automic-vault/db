@@ -5,6 +5,71 @@ docs:
   - https://github.com/icecc/icecream
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Icecream's natural adopters are Linux distribution builders, KDE/openSUSE
+      developers, embedded teams, and anyone compiling large C or C++ trees on multiple
+      machines. The upstream README explicitly recommends using distribution-maintained
+      packages because startup scripts and integration vary by system.
+    - >
+      The input package metadata shows the reason it fits package managers well:
+      Homebrew, Debian, Fedora, Nix, Ubuntu, and openSUSE all package it, often
+      alongside the `icemon` graphical monitor or other status tools.
+  package-nerd-significance:
+    - >
+      Icecream is package-nerd significant because it turns spare machines into build
+      capacity using ordinary distro packages and shell environment changes. It is a
+      classic example of build tooling whose most valuable feature is not a new
+      compiler, but coordination around existing compilers.
+    - >
+      It also sits in the same mental category as distcc, ccache, and sccache, which
+      makes it a recurring comparison point for developers optimizing package builds.
+  project-history:
+    - >
+      The upstream README and openSUSE wiki both state that Icecream was created by SUSE
+      based on distcc. Like distcc, it distributes compile jobs among remote machines,
+      but its scheduler dynamically chooses the fastest free server, which is especially
+      useful on shared build networks.
+    - >
+      The project matured around a small set of Unix-style tools: `icecc` as the
+      compiler wrapper, `iceccd` as the daemon, `icecc-scheduler` as the coordinator,
+      environment packaging helpers for heterogeneous builds, and optional monitors. Its
+      documentation moved from the openSUSE wiki to the GitHub README, while distro
+      packages remained the recommended installation path.
+  related-projects:
+    - >
+      distcc is the earlier distributed compilation project that inspired Icecream's
+      basic model.
+    - icemon and icecream-sundae are monitor tools recommended by the Icecream README.
+    - ccache can be combined with Icecream by using `CCACHE_PREFIX=icecc`.
+  sources:
+    - https://en.opensuse.org/Icecream
+    - https://formulae.brew.sh/formula/icecream
+    - https://github.com/icecc/icecream
+    - https://packages.debian.org/sid/icecc
+  summary:
+    - >
+      Icecream is a distributed C and C++ compilation system built around a central
+      scheduler, client wrapper, and worker daemons. It grew from SUSE's build-farm
+      needs and from distcc ideas, then became a common package for developers who want
+      local-network compile acceleration without hand-managing host lists.
+  timeline:
+    - '2013: The openSUSE wiki page recorded SUSE origins and distcc lineage.'
+    - '2010s: Documentation moved from the openSUSE wiki into the GitHub README.'
+    - '2019: Icecream 1.2 and 1.3 tags appear in the public repository history.'
+    - >
+      2020s: Distribution packages continue to ship Icecream with scheduler, daemon,
+      wrapper, and environment tools.
+  usage:
+    - >
+      A minimal Icecream network runs one scheduler and one or more daemons. Developers
+      put the Icecream compiler wrapper directory early in PATH or use integration with
+      ccache, then normal builds send eligible compile jobs to workers.
+    - >
+      The project also supports heterogeneous and cross-compilation setups by packaging
+      compiler environments, which is one of the key differences from a simple
+      remote-shell build farm.
 tags:
   - build-acceleration
   - cli
@@ -33,6 +98,11 @@ provenance:
     - >
       source_facts.repo is the official repository; its README is the main project
       documentation surface.
+  history-sources:
+    - https://en.opensuse.org/Icecream
+    - https://formulae.brew.sh/formula/icecream
+    - https://github.com/icecc/icecream
+    - https://packages.debian.org/sid/icecc
   repo-sources:
     - >
       source_facts.repo already contains an official repository URL, so repo is returned
@@ -48,5 +118,6 @@ category-path:
   - distributed-compilation
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
