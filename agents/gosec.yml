@@ -8,6 +8,81 @@ config-file-location:
   unix:
     - config.json
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      gosec became a standard Go security linter because it fits normal Go and CI
+      workflows: go install for local use, a GitHub Action for repository scanning,
+      SARIF output for GitHub code scanning, and package-manager distribution through
+      apk, Homebrew, dnf, MacPorts, Nix, Scoop, and zypper according to the input
+      package facts.
+    - >
+      The project sits in the same practical lane as go vet and staticcheck but focuses
+      on security-sensitive APIs and data flows. Its CII Best Practices badge, GitHub
+      Action, Go analysis package, and package-manager coverage made it accessible both
+      to individual Go developers and to teams wiring security checks into CI.
+  package-nerd-significance:
+    - >
+      For package maintainers, gosec is important because it is easy to add as a single
+      CLI check across Go packages without adopting a SaaS scanner. It gives distro and
+      CI users a reproducible local executable, machine-readable output, CWE mappings,
+      and a documented config file.
+    - >
+      Its package-manager footprint also matters: a security scanner being available
+      from Homebrew, Linux distro channels, Nix, Scoop, and container/GitHub Action
+      paths means the same scanner can be used by laptop developers, CI jobs, and
+      release pipelines.
+  project-history:
+    - >
+      The GitHub repository was created on July 18, 2016. Its README describes gosec as
+      a Go security checker that inspects source code by scanning Go AST and SSA
+      representations, while SecureGo's tools page frames the project as a way to
+      programmatically enforce Secure Go guidelines.
+    - >
+      Over time the project expanded from pattern-style checks into a broader rule
+      catalog. Official rule documentation groups findings by general secure coding,
+      injection, filesystem permissions, crypto and protocol security, import
+      blocklists, language/runtime safety, and taint analysis. The README also documents
+      CWE mapping, SARIF output, GitHub Action usage, Go analysis integration, and
+      configurable global and per-rule settings.
+  related-projects:
+    - SecureGo guidelines provide the surrounding secure-coding project context.
+    - GitHub code scanning consumes gosec SARIF output in documented workflows.
+    - golang.org/x/tools/go/analysis is supported through gosec's analyzer integration.
+    - Bazel nogo is named in the README as an integration target for the analyzer package.
+  sources:
+    - https://github.com/marketplace/actions/gosec-security-checker
+    - https://github.com/securego/gosec
+    - https://raw.githubusercontent.com/securego/gosec/master/README.md
+    - https://raw.githubusercontent.com/securego/gosec/master/RULES.md
+    - https://securego.io/docs/tools
+  summary:
+    - >
+      gosec is the SecureGo project's static security scanner for Go source code, using
+      AST, SSA, and taint-analysis rules to find common vulnerability patterns before
+      code ships.
+  timeline:
+    - '2016-07-18: GitHub repository created'
+    - >
+      2020: SecureGo site documented gosec as a tool for programmatically enforcing
+      Secure Go guidelines
+    - 'v2 era: Module path and docs center on github.com/securego/gosec/v2'
+    - >
+      README era: GitHub Action, SARIF, Go analysis integration, and config-file
+      workflows documented
+    - 'Rule-docs era: Rule catalog organized across AST, SSA, and taint-analysis checks'
+  usage:
+    - >
+      The basic local workflow is gosec ./..., with options for JSON or SARIF reports,
+      selected rule inclusion or exclusion, and a config.json file passed through -conf.
+      CI workflows often run securego/gosec as an action and upload SARIF to GitHub code
+      scanning.
+    - >
+      gosec rules include hardcoded credentials, unchecked errors, unsafe usage, SQL and
+      command injection patterns, archive/path traversal risks, TLS and crypto
+      weaknesses, blocklisted imports, integer/slice issues, and taint-analysis checks
+      for SQL injection, command injection, SSRF, XSS, log injection, SMTP injection,
+      server-side template injection, unsafe deserialization, and open redirects.
 tags:
   - cli
   - go
@@ -35,6 +110,12 @@ provenance:
     - >
       Official GitHub README is the primary documentation surface for securego/gosec;
       securego.io is the official Secure Go project site.
+  history-sources:
+    - https://github.com/marketplace/actions/gosec-security-checker
+    - https://github.com/securego/gosec
+    - https://raw.githubusercontent.com/securego/gosec/master/README.md
+    - https://raw.githubusercontent.com/securego/gosec/master/RULES.md
+    - https://securego.io/docs/tools
   repo-sources:
     - source_facts.repo is already populated, so repo was not re-evaluated per instruction.
   tags-sources:
@@ -48,5 +129,6 @@ category-path:
   - go
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

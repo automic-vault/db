@@ -6,6 +6,82 @@ docs:
   - https://github.com/google/gops#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      gops became a recognizable Go ecosystem utility because it solves a problem shared
+      by many Go service operators: identifying which processes are Go programs and
+      collecting runtime diagnostics without attaching a general-purpose debugger.
+    - >
+      The input package facts list Homebrew, Alpine, Fedora, Nix, and openSUSE packages.
+      That packaging breadth reflects a system-tool role across developer workstations
+      and server-oriented Linux distributions.
+    - >
+      The optional agent model limited universal introspection but made deeper
+      diagnostics explicit: uninstrumented Go processes can be listed, while
+      applications that import `github.com/google/gops/agent` expose richer data.
+  package-nerd-significance:
+    - >
+      gops is package-nerd bait because it is both a command and an importable agent
+      package. Installing the binary is useful, but the most interesting behavior
+      appears when Go programs deliberately import the agent.
+    - >
+      It also shows why language-specific process tools exist alongside generic Unix
+      tools: `ps`, `top`, and `lsof` know processes, but gops knows Go runtime concepts
+      such as goroutines, heap profiles, and Go build versions.
+  project-history:
+    - >
+      The google/gops repository was created in 2016. Its README describes a tool that
+      lists Go processes and can diagnose processes that start the optional gops agent.
+    - >
+      gops built on a Go-specific runtime reality: Go binaries carry enough
+      build/runtime identity to make process listing useful, and the runtime exposes
+      diagnostics such as goroutine stacks, memory statistics, pprof profiles, garbage
+      collection controls, and execution tracing.
+    - >
+      The project retained a small command-line surface while expanding subcommands
+      around local PID inspection and remote host:port agent access.
+  related-projects:
+    - >
+      Go's runtime/pprof and runtime tracing facilities provide the diagnostic substrate
+      for gops commands.
+    - >
+      The gops agent package is embedded by target Go programs that want remote or
+      richer inspection.
+    - >
+      Generic system tools such as ps and pprof overlap with parts of the gops workflow,
+      but gops packages Go-specific discovery and diagnostics together.
+  sources:
+    - https://github.com/google/gops
+    - https://pkg.go.dev/github.com/google/gops
+    - https://pkg.go.dev/github.com/google/gops/agent
+    - https://pkg.go.dev/runtime/pprof
+    - https://pkg.go.dev/runtime/trace
+  summary:
+    - >
+      gops is a Google-maintained command for listing and diagnosing Go processes on a
+      machine. It made Go runtime introspection feel like a normal system-admin command:
+      list Go binaries, inspect runtime state, and ask instrumented processes for stack,
+      memory, GC, pprof, and trace data.
+  timeline:
+    - '2016: google/gops repository created.'
+    - '2017: README examples show Go 1.9-era process listing and runtime diagnostics.'
+    - >
+      2010s: Project documents optional `github.com/google/gops/agent` integration for
+      richer diagnostics.
+    - '2020s: Distribution appears across Homebrew and multiple Linux package sets.'
+  usage:
+    - >
+      Running `gops` with no arguments lists local Go processes with PID, parent PID,
+      program name, Go version, and binary path. Processes running the gops agent are
+      marked in the list.
+    - >
+      With a PID or agent address, gops can report process details, stack traces, memory
+      statistics, runtime stats, GC settings, CPU and heap pprof profiles, and execution
+      traces.
+    - >
+      The README documents both local mode, where the target process must run as the
+      same user, and remote mode, where the user supplies the agent address.
 category: system
 package-manager:
   apk: gops
@@ -26,5 +102,12 @@ executables:
   - gops
 provenance:
   formula: gops
+  history-sources:
+    - https://github.com/google/gops
+    - https://pkg.go.dev/github.com/google/gops
+    - https://pkg.go.dev/github.com/google/gops/agent
+    - https://pkg.go.dev/runtime/pprof
+    - https://pkg.go.dev/runtime/trace
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

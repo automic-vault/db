@@ -6,6 +6,84 @@ docs:
   - https://goproxy.io/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The package has a narrower package-manager footprint than gopls or gops, but it
+      belongs to a critical class of Go build tooling. Its adoption is best understood
+      through the broader adoption of module proxies after Go 1.13.
+    - >
+      The README's Docker and Kubernetes examples show the expected operational setting:
+      goproxy is commonly deployed as service infrastructure, not merely installed as a
+      developer laptop command.
+  package-nerd-significance:
+    - >
+      goproxy matters to package nerds because it embodies Go's post-GOPATH dependency
+      distribution model: module metadata, version lists, `.mod` files, and zip archives
+      served over a simple HTTP protocol.
+    - >
+      It is also a practical bridge between public module mirrors and private enterprise
+      code. The `-exclude` routing pattern maps directly onto the package-manager
+      problem of separating public cacheability from private-source access.
+    - >
+      For reproducible builds, module proxies are important because they reduce
+      dependence on live VCS availability and pair with checksum databases for tamper
+      detection.
+  project-history:
+    - >
+      The goproxyio/goproxy repository was created in 2018, the same period in which Go
+      modules moved into public use. Its README describes it as a global proxy for Go
+      modules and documents proxy mode, router mode, Docker use, Kubernetes deployment,
+      private-module routing, and authentication workarounds.
+    - >
+      The Go project launched the public module mirror, index, and checksum database in
+      2019 and documented that Go 1.13 would use the mirror and checksum database by
+      default for module users. That official infrastructure made GOPROXY a normal part
+      of Go dependency resolution.
+    - >
+      goproxy.io sits in the third-party/self-hostable side of that ecosystem: teams can
+      run a proxy locally, route selected private modules directly, or point to another
+      upstream proxy.
+  related-projects:
+    - proxy.golang.org is the Go team's public module mirror.
+    - sum.golang.org is the public checksum database used by the go command.
+    - >
+      The Go module system defines the GOPROXY protocol and private-module environment
+      variables.
+  sources:
+    - https://github.com/goproxyio/goproxy
+    - https://go.dev/blog/module-mirror-launch
+    - https://go.dev/doc/go1.13
+    - https://go.dev/ref/mod
+    - https://goproxy.io/
+    - https://proxy.golang.org/
+  summary:
+    - >
+      goproxy is a Go module proxy server and router from the goproxy.io project. Its
+      significance comes from the Go modules transition: once GOPROXY became a
+      first-class part of the go command, small proxy servers became
+      build-infrastructure packages rather than optional caching tricks.
+  timeline:
+    - '2018: goproxyio/goproxy repository created.'
+    - '2018: Go 1.11 introduces preliminary module support.'
+    - '2019: Go module mirror, index, and checksum database announced as production ready.'
+    - '2019: Go 1.13 defaults module users to the Go module mirror and checksum database.'
+    - >
+      2020s: goproxy README documents Docker and Kubernetes deployment patterns for
+      self-hosted use.
+  usage:
+    - >
+      In proxy mode, goproxy listens for Go module proxy protocol requests and uses the
+      local go command and a cache directory to answer them. Users then set
+      `GOPROXY=http://host:port` for clients.
+    - >
+      In router mode, goproxy can forward public module requests to an upstream proxy
+      while sending excluded private module patterns directly to their repositories. The
+      README documents this with `-proxy` and `-exclude` flags.
+    - >
+      The Go module reference explains the larger GOPROXY, GOSUMDB, GOPRIVATE,
+      GONOPROXY, and GONOSUMDB environment-variable model that goproxy deployments fit
+      into.
 tags:
   - cli
   - go
@@ -30,6 +108,13 @@ provenance:
     - >
       Official GitHub README documents build and usage; source_facts.homepage is the
       official project/service site.
+  history-sources:
+    - https://github.com/goproxyio/goproxy
+    - https://go.dev/blog/module-mirror-launch
+    - https://go.dev/doc/go1.13
+    - https://go.dev/ref/mod
+    - https://goproxy.io/
+    - https://proxy.golang.org/
   repo-sources:
     - source_facts.repo is already populated, so repo was not re-evaluated per instruction.
   tags-sources:
@@ -43,5 +128,6 @@ category-path:
   - module-proxy
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
