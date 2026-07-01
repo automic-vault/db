@@ -13,6 +13,32 @@ credentials-file-location:
     - $XDG_CONFIG_HOME/Yubico/u2f_keys
     - ~/.config/Yubico/u2f_keys
     - /etc/u2f_mappings
+history:
+  - >
+    pam-u2f is Yubico's Pluggable Authentication Module for Universal 2nd Factor and
+    FIDO2 authenticators. Its NEWS file records an initial 0.0.0 release on 2014-12-16,
+    followed by 1.0.0 on 2015-06-17 with XDG config-file defaults, manual mode,
+    interactive mode, and verbose mode.
+  - >
+    The module bridges the Unix PAM stack with hardware-backed WebAuthn-era credentials.
+    Administrators add pam_u2f.so lines to PAM service files under /etc/pam.d, and users
+    or fleet tooling generate mapping lines with pamu2fcfg. By default, per-user
+    credentials live under $XDG_CONFIG_HOME/Yubico/u2f_keys or
+    ~/.config/Yubico/u2f_keys, while deployments can point authfile at a central mapping
+    file.
+  - >
+    The project's lineage changed materially in version 1.1.0, released 2020-09-17, when
+    it added FIDO2 support and moved from libu2f-host/libu2f-server to libfido2. Later
+    releases added support for EdDSA and SSH ed25519-sk credentials, username expansion
+    in authfile paths, CMake builds, and a module configuration file at
+    /etc/security/pam_u2f.conf.
+  - >
+    pam-u2f's adoption reflects PAM's distribution model rather than a single app
+    ecosystem: it is packaged as libpam-u2f on Debian and Ubuntu, pam-u2f on Fedora and
+    Homebrew, and equivalents across several Unix-like package managers. Practitioners
+    use it to require a YubiKey or other U2F/FIDO2 authenticator for sudo, login, screen
+    unlock, or selected PAM services, with care because a bad PAM rule can lock users
+    out.
 category: security
 package-manager:
   apk: pam-u2f
@@ -38,5 +64,13 @@ executables:
   - pamu2fcfg
 provenance:
   formula: pam-u2f
+  history-sources:
+    - https://github.com/Yubico/pam-u2f
+    - https://github.com/Yubico/pam-u2f/blob/main/NEWS
+    - https://developers.yubico.com/pam-u2f/
+    - https://developers.yubico.com/pam-u2f/Manuals/pamu2fcfg.1.html
+    - https://developers.yubico.com/libfido2/
+    - https://formulae.brew.sh/formula/pam-u2f
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

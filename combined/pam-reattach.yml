@@ -7,6 +7,27 @@ docs:
 config-file-location:
   macos: /etc/pam.d/*
 credentials-file-location: null
+history:
+  - >
+    pam-reattach is a macOS-specific PAM module created for a very particular
+    consequence of Apple's per-session bootstrap namespaces. The repository was created
+    in August 2018, and the README describes the goal as reattaching the authenticating
+    user's process to the active Aqua login session so GUI-tied services are visible
+    during PAM authentication.
+  - >
+    The immediate use case was Touch ID inside long-lived terminal multiplexers. tmux
+    and GNU Screen can outlive the login session that launched them, but services such
+    as the pasteboard and pam_tid-backed Touch ID are tied to the active GUI session.
+    pam-reattach runs before pam_tid in files such as /etc/pam.d/sudo so sudo inside a
+    detached or reattached terminal session can still reach the correct session
+    services.
+  - >
+    Its ecosystem role is small but durable in the macOS power-user stack: it is
+    packaged by Homebrew and MacPorts, and the README documents Apple Silicon Homebrew
+    paths such as /opt/homebrew/lib/pam/pam_reattach.so because PAM module search paths
+    matter. The package also ships an optional reattach-to-session-namespace
+    command-line helper for running arbitrary commands inside the user's session
+    namespace.
 category: system
 package-manager:
   brew: pam-reattach
@@ -26,5 +47,12 @@ executables:
   - reattach-to-session-namespace
 provenance:
   formula: pam-reattach
+  history-sources:
+    - https://github.com/fabianishere/pam_reattach
+    - https://api.github.com/repos/fabianishere/pam_reattach
+    - https://developer.apple.com/library/archive/technotes/tn2083/_index.html
+    - https://formulae.brew.sh/formula/pam-reattach
+    - https://ports.macports.org/port/pam-reattach/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
