@@ -10,6 +10,59 @@ config-file-location:
     - ~/.config/git/config
     - /etc/gitconfig
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      git-svn became important during the long migration from centralized Subversion
+      repositories to distributed Git workflows. Package managers often ship it as a
+      separate package from core Git because SVN interoperability brings extra runtime
+      dependencies, making it visible as its own installable tool even though it belongs
+      to the Git source tree.
+  package-nerd-significance:
+    - >
+      The package matters because it captures an interoperability boundary in packaging
+      form. Installing git alone is not always enough for old enterprise repositories;
+      installing git-svn adds the SVN bridge, Perl plumbing, and documentation needed to
+      keep legacy repositories moving while the rest of a toolchain speaks Git.
+  project-history:
+    - >
+      The git-svn manual describes the command as a conduit between Subversion
+      changesets and Git commits. Its design grew around SVN layouts rather than Git
+      remotes alone: users can initialize tracking for standard trunk/branches/tags
+      repositories, customize trunk, tag, and branch paths, and store SVN remote
+      metadata in Git configuration.
+  related-projects:
+    - >
+      git-svn is related to Subversion itself, one-way conversion helpers such as
+      git-svn-abandon, and third-party svn2git tools that focus on final migration
+      rather than ongoing bidirectional operation.
+  sources:
+    - https://formulae.brew.sh/formula/git-svn
+    - https://git-scm.com/docs/git-svn
+    - https://git.kernel.org/pub/scm/git/git.git
+    - https://github.com/git/git/blob/master/Documentation/git-svn.adoc
+  summary:
+    - >
+      git-svn is Git's built-in bridge for teams that need bidirectional operation
+      between a Subversion repository and a Git repository. It lets a Git checkout track
+      SVN trunk, branches, and tags while still sending commits back with dcommit.
+  timeline:
+    - >
+      Before Git 2.0: SVN-tracking refs used no default prefix, placing them directly
+      under refs/remotes.
+    - >
+      Git 2.0: git-svn documentation records origin/ as the default prefix for
+      SVN-tracking refs.
+    - >
+      Git 2.55.0: Homebrew packages git-svn from the Git release tarball as a separate
+      formula.
+  usage:
+    - >
+      Practitioners use git svn clone or init plus fetch to import SVN history, rebase
+      local Git work onto new SVN revisions, and dcommit Git commits back to the SVN
+      server. It is also used as a migration tool: teams import a legacy SVN repository
+      into Git, inspect or repair branch/tag mapping, and later stop using SVN once the
+      Git repository becomes authoritative.
 tags:
   - cli
   - git
@@ -36,6 +89,11 @@ provenance:
       Documentation.
   docs-sources:
     - Official git-scm documentation has a dedicated git-svn manual page for this command.
+  history-sources:
+    - https://formulae.brew.sh/formula/git-svn
+    - https://git-scm.com/docs/git-svn
+    - https://git.kernel.org/pub/scm/git/git.git
+    - https://github.com/git/git/blob/master/Documentation/git-svn.adoc
   repo-sources:
     - >
       source_facts.repo is empty; source_facts.source-archive is from kernel.org Git
@@ -52,5 +110,6 @@ category-path:
   - scm-bridges
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

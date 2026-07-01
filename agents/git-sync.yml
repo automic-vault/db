@@ -8,6 +8,64 @@ config-file-location: null
 credentials-file-location:
   unix:
     - /etc/git-secret/cookie_file
+history:
+  adoption-history:
+    - >
+      git-sync is closely associated with Kubernetes deployments because the README
+      calls it a perfect sidecar container. The tool also appears in general-purpose
+      package managers such as Homebrew, Nix, and zypper, but its adoption story is
+      primarily about containerized workloads that treat Git as a source of
+      configuration, static assets, manifests, or application data.
+  package-nerd-significance:
+    - >
+      The package is significant because it turns a Git checkout into a predictable
+      runtime interface. The worktree-and-symlink publishing model gives operators
+      atomic updates without adding a GitOps controller, database, or
+      application-specific deployment protocol.
+  project-history:
+    - >
+      The Kubernetes git-sync repository was created in 2016 and describes the program
+      as a simple command that pulls a Git repository into a local directory, waits, and
+      repeats. Its design centers on an explicit filesystem contract: git-sync stores
+      internal state under a root directory and exposes the usable checkout through a
+      named symlink.
+    - >
+      The v4 documentation records a major redesign from the v3 loop. Instead of
+      alternating between clone, fetch, and checkout as a human operator might, v4 made
+      each pass more uniform, fetched the exact commit needed, and used worktrees plus
+      symlink updates to avoid exposing a partially checked-out repository to consumers.
+  related-projects:
+    - >
+      git-sync is related to Kubernetes sidecar patterns, GitOps tooling, and plain Git
+      clients; it occupies the minimal end of that ecosystem by synchronizing files
+      rather than reconciling cluster objects.
+  sources:
+    - https://api.github.com/repos/kubernetes/git-sync
+    - https://formulae.brew.sh/formula/git-sync
+    - https://github.com/kubernetes/git-sync
+    - https://raw.githubusercontent.com/kubernetes/git-sync/master/README.md
+    - https://raw.githubusercontent.com/kubernetes/git-sync/master/v3-to-v4.md
+  summary:
+    - >
+      git-sync is a Kubernetes-oriented sidecar program that keeps a local directory
+      synchronized with a remote Git repository. It packages a common cluster pattern:
+      an application consumes files from a mounted directory while a companion process
+      fetches and publishes Git revisions safely.
+  timeline:
+    - '2016: Kubernetes git-sync repository created.'
+    - 'v3: Sync loop followed a clone, fetch, checkout model.'
+    - >
+      v4: Sync loop switched to a more uniform fetch-by-target model with atomic
+      worktree publication.
+    - >
+      v4.2: Sync loop refined again to fetch by ref and avoid extra transfer when the
+      needed hash is already present.
+  usage:
+    - >
+      Practitioners run git-sync with a repository URL and root directory, either once
+      or on a polling interval. It can follow a branch, tag, or full commit hash, use
+      HTTP(S) or SSH, and call a webhook or execute a command after a successful
+      synchronization.
 tags:
   - cli
   - container
@@ -31,6 +89,12 @@ provenance:
     - >
       Official repository docs directory contains askpass-url, cookie-file, kubernetes,
       proxy, and ssh docs.
+  history-sources:
+    - https://api.github.com/repos/kubernetes/git-sync
+    - https://formulae.brew.sh/formula/git-sync
+    - https://github.com/kubernetes/git-sync
+    - https://raw.githubusercontent.com/kubernetes/git-sync/master/README.md
+    - https://raw.githubusercontent.com/kubernetes/git-sync/master/v3-to-v4.md
   repo-sources:
     - >
       source_facts.repo already has value https://github.com/kubernetes/git-sync; per
@@ -47,5 +111,6 @@ category-path:
   - git-sync
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
