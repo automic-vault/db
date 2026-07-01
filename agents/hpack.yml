@@ -8,6 +8,79 @@ config-file-location:
   unix:
     - package.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README documents native `package.yaml` support in Stack and cabal2nix, while
+      Hackage lists reverse dependencies including stack, pantry, cabal2nix,
+      stack2cabal, stack-lib, and stackage2nix. That places hpack in the machinery
+      around Haskell project templates, Stackage snapshots, and Nix conversion.
+    - >
+      Homebrew, Hackage, Stackage, and Linux distribution packaging make hpack available
+      both as a Haskell library/program and as a standalone CLI. Its adoption is tied to
+      `package.yaml` becoming a common Haskell project file, especially in
+      Stack-oriented projects.
+  package-nerd-significance:
+    - >
+      hpack is important because it sits at the contested boundary between package
+      metadata as a human-maintained source file and package metadata as generated
+      build-tool input. Package nerds care about that boundary: generated `.cabal` files
+      can reduce repetition, but they also introduce questions about source-of-truth,
+      reproducibility, diffs, and downstream tooling.
+    - >
+      Its long changelog is also a miniature history of Haskell packaging pressure
+      points, from SPDX licenses and Cabal version syntax to generated modules and
+      compatibility with Stack, Stackage, Nix, and newer Cabal releases.
+  project-history:
+    - >
+      Simon Hengel's hpack appeared on Hackage in April 2015 with version 0.1.0. The
+      project README describes it as a modern alternative to the Cabal package format,
+      guided by three principles: infer obvious information, give users control when
+      needed, and avoid repeating metadata.
+    - >
+      hpack developed alongside Cabal rather than replacing it. The executable reads
+      `package.yaml` and renders a `.cabal` file, while its changelog tracks years of
+      Cabal compatibility work: SPDX license handling, generated module behavior,
+      internal libraries, `build-tool-depends`, Cabal version inference, and support for
+      newer GHC and Cabal releases.
+  related-projects:
+    - Cabal is the package format and build-tool ecosystem that hpack generates into.
+    - Stack has built-in support for hpack's `package.yaml` workflow.
+    - cabal2nix supports `package.yaml` natively, connecting hpack to Nix packaging workflows.
+    - >
+      Stackage-related tools such as pantry, stack2cabal, stack-lib, and stackage2nix
+      appear in Hackage reverse-dependency metadata.
+  sources:
+    - https://docs.haskellstack.org/en/stable/topics/package_description/
+    - https://formulae.brew.sh/formula/hpack
+    - https://github.com/sol/hpack
+    - https://github.com/sol/hpack/blob/main/CHANGELOG.md
+    - https://hackage.haskell.org/package/hpack
+    - https://hackage.haskell.org/package/hpack-0.1.0
+    - https://hackage.haskell.org/package/hpack-0.39.6
+  summary:
+    - >
+      hpack is a Haskell packaging tool and package-description format built around
+      `package.yaml`. It generates Cabal files while trying to reduce repetition and
+      make common package metadata less verbose.
+  timeline:
+    - '2015: Hackage records hpack 0.1.0 uploaded by Simon Hengel.'
+    - '0.18.0: The changelog adds command-line input-file handling and executable shorthand.'
+    - '0.29.0: The changelog adds Cabal 2.1/2.2-related rendering and SPDX license handling.'
+    - >
+      0.36.0: The changelog changes `Paths_` module inference for package specs using
+      spec-version 0.36.0 or later.
+    - '2026: Hackage records hpack 0.39.6, adding top-level `codeberg` support.'
+  usage:
+    - >
+      Users write package metadata in `package.yaml`. Stack can consume that file
+      directly, cabal2nix supports it natively, and other workflows can run `hpack` to
+      generate the `.cabal` file before building.
+    - >
+      hpack also supports practical package-authoring features such as defaults files,
+      globbing, verbatim Cabal fields, generated module controls, common fields,
+      conditionals, executables, tests, benchmarks, and dependency syntax intended to
+      keep package descriptions maintainable.
 tags:
   - build-tool
   - cabal
@@ -34,6 +107,14 @@ provenance:
     - >
       Official GitHub README has reference documentation; Hackage package page points to
       the GitHub README and module documentation.
+  history-sources:
+    - https://docs.haskellstack.org/en/stable/topics/package_description/
+    - https://formulae.brew.sh/formula/hpack
+    - https://github.com/sol/hpack
+    - https://github.com/sol/hpack/blob/main/CHANGELOG.md
+    - https://hackage.haskell.org/package/hpack
+    - https://hackage.haskell.org/package/hpack-0.1.0
+    - https://hackage.haskell.org/package/hpack-0.39.6
   repo-sources:
     - >
       source_facts.homepage is the official GitHub project URL; Hackage page also points
@@ -49,5 +130,6 @@ category-path:
   - haskell
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
