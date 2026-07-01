@@ -11,6 +11,74 @@ config-file-location:
     - magefile.go
     - Magefile.go
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Mage became a common package-manager install for developers who wanted a
+      cross-platform replacement for Make in Go-heavy repositories. The official
+      installation page documents Homebrew, MacPorts, Scoop, GitHub releases, `go
+      install`, and asdf, while the Homebrew input data also lists Linux distribution,
+      Nix, pacman, winget, and zypper package names.
+    - >
+      The repository has several thousand GitHub stars and hundreds of forks, which is a
+      useful adoption signal for a developer tool whose main audience is maintainers
+      wiring project automation into local builds and CI.
+  package-nerd-significance:
+    - >
+      Mage is package-nerd interesting because it trades Make's whitespace-sensitive
+      shell DSL for Go code while still looking like a tiny command-line build tool to
+      package managers. It sits in the same cultural slot as Make, Rake, Just, and Task,
+      but its dependency story is unusually boring for Go users: install one CLI, write
+      Go.
+    - >
+      Its packaging footprint is broad for a niche build tool, and the docs explicitly
+      cover binary releases and multiple package managers, which makes it easy to pin in
+      CI images or bootstrap on contributor machines.
+  project-history:
+    - >
+      The public GitHub repository was created in September 2017, and the project
+      reached its v1 release in October 2017. The official site describes the core idea
+      as Makefile-like runnable targets written as plain Go functions, with no runtime
+      dependency beyond Go itself.
+    - >
+      Mage evolved around Go workflow conventions. Release notes and documentation added
+      support for Go modules, versioned `go install` use, optional and variadic
+      arguments, multiline help text, tab completion, and the `magefiles/` directory
+      convention for keeping build files separate from normal application code.
+  related-projects:
+    - Make and Rake are the direct inspirations named by the project description.
+    - >
+      Go task runners such as Task and Just occupy adjacent package-manager space, but
+      Mage's distinguishing feature is that tasks are ordinary Go functions.
+  sources:
+    - https://github.com/magefile/mage
+    - https://github.com/magefile/mage/releases
+    - https://magefile.org/
+    - https://magefile.org/magefiles/
+    - https://magefile.org/zeroinstall/
+    - source_facts.package-manager
+    - source_facts.repo
+  summary:
+    - >
+      Mage is a Go-native make/rake-style task runner. Its package identity is simple: a
+      small `mage` CLI finds Go functions in mage files and exposes them as build
+      targets, giving Go projects a build script that is compiled and type-checked as
+      ordinary Go.
+  timeline:
+    - '2017: Public GitHub repository created.'
+    - '2017: v1 release published.'
+    - '2018: Go modules support documented in release history.'
+    - '2021: `magefiles/` directory support released.'
+    - '2026: v1.17.x releases continue the 1.x line with tab completion and help improvements.'
+  usage:
+    - >
+      A typical project adds a mage file with the `mage` build tag and exported
+      functions. Running `mage -l` lists targets, `mage <target>` executes one, and
+      comments on functions become command help.
+    - >
+      Mage is also used in CI and in vendored or zero-install workflows. The
+      zero-install documentation shows how a project can run Mage through `go run` so
+      contributors do not need a preinstalled `mage` binary.
 tags:
   - build-tool
   - cli
@@ -33,6 +101,14 @@ provenance:
     - source_facts.name is mage; official homepage/repo use the Mage project name.
   docs-sources:
     - source_facts.homepage is the official Mage site and documentation surface.
+  history-sources:
+    - https://github.com/magefile/mage
+    - https://github.com/magefile/mage/releases
+    - https://magefile.org/
+    - https://magefile.org/magefiles/
+    - https://magefile.org/zeroinstall/
+    - source_facts.package-manager
+    - source_facts.repo
   repo-sources:
     - source_facts.repo is already populated in the input; returning null per instructions.
   tags-sources:
@@ -45,5 +121,6 @@ category-path:
   - build-system
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

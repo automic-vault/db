@@ -6,6 +6,66 @@ docs:
   - https://gitlab.freedesktop.org/xorg/util/makedepend/-/blob/master/README.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      makedepend belongs to the older imake/X11 build world, where generated dependency
+      blocks inside Makefiles were a normal way to keep C builds correct before
+      compiler-native dependency flags became the common path.
+    - >
+      Its continued packaging is mostly about compatibility and maintenance of older
+      build systems. The upstream README points support and development through the
+      X.Org mailing list and freedesktop.org GitLab, which fits its role as a small
+      utility preserved inside the X.Org module set.
+  package-nerd-significance:
+    - >
+      makedepend is a museum piece that still works: it shows how C dependency
+      generation was bolted onto makefiles before today's compiler -M style flags and
+      higher-level build systems took over.
+    - >
+      For maintainers, it is significant because old X.Org, imake, and C packages may
+      still call makedepend directly. Having it packaged separately keeps those builds
+      reproducible without dragging in a larger historical X11 toolchain.
+  project-history:
+    - >
+      The upstream AUTHORS file credits Todd Brunhoff of Tektronix and MIT Project
+      Athena as the original author, with Jim Fulton credited for the ifparser. The
+      manpage carries Open Group copyright notices from 1993, 1994, and 1998, reflecting
+      the tool's X11-era heritage.
+    - >
+      The current X.Org repository keeps makedepend as a standalone utility module. Its
+      GitLab project page describes it as a utility to parse C source files into
+      dependency lists for Makefiles, and the repository tags show modern 1.0.x releases
+      continuing through 1.0.9 in 2024.
+  related-projects:
+    - X.Org util modules are the current upstream home.
+    - imake-era X11 builds are the historical ecosystem around makedepend.
+    - GNU Make and POSIX make consume the dependency lines makedepend writes.
+  sources:
+    - >
+      https://gitlab.freedesktop.org/api/v4/projects/xorg%2Futil%2Fmakedepend/repository/tags?per_page=20
+    - https://gitlab.freedesktop.org/xorg/util/makedepend
+    - https://gitlab.freedesktop.org/xorg/util/makedepend/-/raw/master/AUTHORS
+    - https://gitlab.freedesktop.org/xorg/util/makedepend/-/raw/master/README.md
+    - https://gitlab.freedesktop.org/xorg/util/makedepend/-/raw/master/makedepend.man
+  summary:
+    - >
+      makedepend is an X.Org utility that parses C source files and writes include-file
+      dependencies into makefiles so make knows which object files must be rebuilt.
+  timeline:
+    - '1993: Manpage copyright begins with The Open Group.'
+    - '2002: Manpage date records a December 14, 2002 manual revision.'
+    - '2007: X.Org GitLab tags include makedepend 1.0.1.'
+    - '2024: X.Org GitLab tags include makedepend 1.0.9.'
+  usage:
+    - >
+      makedepend reads each C source file, processes preprocessor directives such as
+      #include, #define, #ifdef, #if, and #else, then writes dependency lines to
+      makefile or Makefile unless another file is named with -f.
+    - >
+      A typical makefile target runs makedepend with compiler flags and sources, using a
+      marker line such as '# DO NOT DELETE THIS LINE -- make depend depends on it.' so
+      the generated dependency section can be replaced on later runs.
 category: developer-tools
 package-manager:
   apk: makedepend
@@ -27,5 +87,13 @@ executables:
   - makedepend
 provenance:
   formula: makedepend
+  history-sources:
+    - >
+      https://gitlab.freedesktop.org/api/v4/projects/xorg%2Futil%2Fmakedepend/repository/tags?per_page=20
+    - https://gitlab.freedesktop.org/xorg/util/makedepend
+    - https://gitlab.freedesktop.org/xorg/util/makedepend/-/raw/master/AUTHORS
+    - https://gitlab.freedesktop.org/xorg/util/makedepend/-/raw/master/README.md
+    - https://gitlab.freedesktop.org/xorg/util/makedepend/-/raw/master/makedepend.man
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

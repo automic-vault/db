@@ -7,6 +7,78 @@ docs:
   - https://mailcatcher.me/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      MailCatcher became a well-known local mail-testing package across Ruby and
+      web-development workflows. Official instructions cover Rails, PHP, Django, Docker,
+      RVM, Bundler caveats, and direct RubyGems installation, showing adoption across
+      more than Ruby-only projects.
+    - >
+      Repository metadata shows thousands of GitHub stars and hundreds of forks. The
+      input package-manager facts confirm Homebrew and Nix packaging, while the README
+      recommends keeping MailCatcher out of application Gemfiles to avoid dependency
+      conflicts, reinforcing its role as a separate developer tool.
+  package-nerd-significance:
+    - >
+      MailCatcher is historically important because it made fake SMTP a one-command
+      local service before containerized dev stacks were the default. It is small,
+      memorable, and easy to script, which is exactly why it kept showing up in package
+      managers.
+    - >
+      Its packaging story also highlights a common Ruby tool issue: the README
+      explicitly warns against putting MailCatcher in an app Gemfile because its
+      dependencies can conflict with the application. Installing it as a system or user
+      tool via RubyGems, Homebrew, Nix, or Docker keeps that boundary clean.
+  project-history:
+    - >
+      The GitHub repository was created in October 2010, and the README copyright line
+      credits Samuel Cochran from 2010 onward. MailCatcher emerged in the Ruby/Rails era
+      where developers often needed to test application mail without sending real
+      messages to users.
+    - >
+      The tool's feature set stayed intentionally narrow and packageable: capture all
+      mail, show HTML/plain/source views, rewrite embedded assets for display, expose
+      attachments, support a sendmail-like `catchmail` helper, and provide command-line
+      flags for SMTP and HTTP bind addresses and ports. Later releases added Docker
+      usage examples and a simple REST-style message API.
+  related-projects:
+    - MailCatcher is related to other local SMTP testing tools such as MailHog and Mailpit.
+    - >
+      It also fits alongside framework-specific mail preview tools, but differs by
+      acting as an external SMTP server that any application can target.
+  sources:
+    - https://api.github.com/repos/sj26/mailcatcher
+    - https://api.github.com/repos/sj26/mailcatcher/releases
+    - https://github.com/sj26/mailcatcher
+    - https://mailcatcher.me/
+    - source_facts.package-manager
+    - source_facts.repo
+  summary:
+    - >
+      MailCatcher is a Ruby-based development SMTP sink: it runs a local SMTP server,
+      captures outgoing mail, and exposes the captured messages in a web interface. The
+      official README's default flow is still the classic developer loop: install, run
+      `mailcatcher`, point an app at SMTP port 1025, and inspect mail on HTTP port 1080.
+  timeline:
+    - '2010: Public GitHub repository created.'
+    - '2016: Older v0.6.x GitHub releases published.'
+    - '2021: v0.8.0 release published.'
+    - '2022: v0.8.2 release published.'
+    - '2023: v0.9.0 release published.'
+    - '2024: v0.10.0 release published.'
+  usage:
+    - >
+      The standard usage pattern is to run MailCatcher as a daemon or foreground
+      process, configure the application under test to deliver mail to
+      `smtp://127.0.0.1:1025`, and review the results at `http://127.0.0.1:1080/`.
+      `catchmail` lets PHP and other sendmail-oriented software hand messages to the
+      same capture service.
+    - >
+      Package users care about its defaults: port 1025 for SMTP, port 1080 for HTTP, and
+      command-line options rather than a project-specific config file. That makes it
+      easy to install globally with a package manager and use across many local
+      projects.
 category: developer-tools
 package-manager:
   brew: mailcatcher
@@ -26,5 +98,13 @@ executables:
   - mailcatcher
 provenance:
   formula: mailcatcher
+  history-sources:
+    - https://api.github.com/repos/sj26/mailcatcher
+    - https://api.github.com/repos/sj26/mailcatcher/releases
+    - https://github.com/sj26/mailcatcher
+    - https://mailcatcher.me/
+    - source_facts.package-manager
+    - source_facts.repo
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
