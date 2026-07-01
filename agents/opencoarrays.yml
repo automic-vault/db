@@ -7,6 +7,79 @@ docs:
   - https://github.com/sourceryinstitute/OpenCoarrays/blob/main/INSTALL.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The project's most important adoption path was through GCC: the OpenCoarrays
+      README says the OpenCoarrays ABI was adopted by gfortran in GCC 5.1.0. That made
+      OpenCoarrays part of the practical route for package managers and HPC users who
+      wanted Coarray Fortran through a free compiler toolchain rather than a vendor
+      compiler.
+    - >
+      Packaging spread into Unix package systems such as Homebrew, MacPorts, FreeBSD
+      ports, Nix, and Linux distributions, usually as a science or parallel-computing
+      package. MacPorts summarizes the project as an ABI for gfortran support of
+      coarrays and other Fortran 2018 parallel programming features.
+  package-nerd-significance:
+    - >
+      OpenCoarrays is a small package with an outsized toolchain role: it is not just
+      another Fortran library, but the runtime side of a compiler feature. That makes
+      ABI compatibility, MPI selection, compiler version, and wrapper behavior more
+      important than they are for ordinary numerical libraries.
+  project-history:
+    - >
+      Coarrays entered standard Fortran as a PGAS-style parallel programming model in
+      Fortran 2008, but free compiler support depended on a runtime that could map
+      language-level image communication onto existing communication libraries. The
+      OpenCoarrays project filled that role for GCC by providing an ABI between gfortran
+      and a backend such as MPI.
+    - >
+      A 2014 PGAS workshop paper described OpenCoarrays as a new project offering
+      open-source transport layers for coarray Fortran compilers, including MPI and
+      GASNet-based approaches. The 1.0.0 release was announced in July 2015 with the
+      runtime library, compiler wrapper, and launcher, and the announcement noted that
+      GNU Fortran 5.1.0 used OpenCoarrays to support most Fortran 2008 coarray features
+      and some proposed Fortran 2015 TS 18508 features.
+  related-projects:
+    - >
+      OpenCoarrays sits alongside GCC/gfortran, MPI implementations, GASNet-EX,
+      Caffeine, and the broader Fortran 2008/2018/2023 parallel-language standards work.
+  sources:
+    - https://github.com/berkeleylab/caffeine
+    - https://github.com/sourceryinstitute/OpenCoarrays/blob/main/README.md
+    - https://groups.google.com/g/comp.lang.fortran/c/Dm-KY5wivQk
+    - https://nic.uoregon.edu/pgas14/papers/pgas14_submission_7.pdf
+    - https://ports.macports.org/port/OpenCoarrays/summary/
+    - https://www.opencoarrays.org/
+  summary:
+    - >
+      OpenCoarrays is an open-source runtime and ABI layer for Coarray Fortran, aimed
+      primarily at letting GNU Fortran programs use Fortran's standardized multi-image
+      parallel features without writing directly against MPI. The package supplies the
+      `caf` compiler wrapper, the `cafrun` launcher, and the `libcaf_mpi` runtime
+      library.
+  timeline:
+    - >
+      2014: OpenCoarrays was described in PGAS workshop material as a new open-source
+      transport-layer project for coarray Fortran compilers.
+    - >
+      2015: GCC 5.1.0 adopted the OpenCoarrays ABI for gfortran coarray support, and
+      OpenCoarrays 1.0.0 was announced with `libcaf_mpi`, `caf`, and `cafrun`.
+    - >
+      2022: Caffeine work at Lawrence Berkeley National Laboratory pointed toward a
+      compiler-independent Fortran runtime direction built on GASNet-EX, related to the
+      longer-term evolution beyond the MPI-focused OpenCoarrays path.
+  usage:
+    - >
+      Developers compile coarray programs through `caf`, which wraps the selected
+      Fortran compiler and links the OpenCoarrays runtime consistently with the MPI
+      stack used at build time. They launch multi-image programs with `cafrun`, avoiding
+      direct MPI command-line details in routine Coarray Fortran workflows.
+    - >
+      OpenCoarrays is especially relevant for scientific and HPC Fortran users who want
+      to experiment with standard-language parallelism, compare coarray code with MPI
+      implementations, or package Fortran applications that rely on gfortran's coarray
+      support.
 tags:
   - cli
   - coarray-fortran
@@ -34,6 +107,13 @@ provenance:
     - >
       Official README points users to INSTALL.md and GETTING_STARTED.md for installation
       and getting started.
+  history-sources:
+    - https://github.com/berkeleylab/caffeine
+    - https://github.com/sourceryinstitute/OpenCoarrays/blob/main/README.md
+    - https://groups.google.com/g/comp.lang.fortran/c/Dm-KY5wivQk
+    - https://nic.uoregon.edu/pgas14/papers/pgas14_submission_7.pdf
+    - https://ports.macports.org/port/OpenCoarrays/summary/
+    - https://www.opencoarrays.org/
   repo-sources:
     - >
       source_facts.repo is already populated with
@@ -49,5 +129,6 @@ category-path:
   - parallel-computing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

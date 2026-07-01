@@ -7,6 +7,77 @@ docs:
   - https://registry.khronos.org/OpenCL
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The `cl_khr_icd` extension specification describes the ICD Loader as a
+      demultiplexor that exposes platform IDs from multiple vendor implementations to
+      applications linked against the loader. That role made `libOpenCL.so`/OpenCL
+      loader packages a standard dependency for portable OpenCL applications on systems
+      where the actual compute runtime comes from a separate vendor package.
+    - >
+      Package managers often split the OpenCL ecosystem into headers, the ICD loader,
+      and vendor runtimes. That split lets a program build and link once while the
+      user's machine decides at runtime whether Intel, AMD, NVIDIA, POCL, FPGA, or other
+      OpenCL providers are available.
+  package-nerd-significance:
+    - >
+      This is a tiny-looking package with a huge dependency-graph job. Without an ICD
+      loader, every OpenCL consumer would have to choose a vendor implementation at link
+      time or ship awkward runtime glue. With it, distributions can package OpenCL like
+      Vulkan and OpenGL loader stacks: neutral loader first, vendor implementations
+      separately.
+    - >
+      It is especially important in reproducible build and CI images because installing
+      headers and the loader is enough to compile and link many OpenCL applications even
+      when no GPU runtime is present. Runtime capability remains a deployment concern.
+  project-history:
+    - >
+      The need for an ICD loader came from OpenCL's multi-vendor model: a single system
+      may have OpenCL implementations from CPU, GPU, FPGA, or accelerator vendors.
+      Khronos announced the OpenCL Installable Client Driver loader in 2012, describing
+      it as the library that lets applications choose among installed platforms and
+      dispatch calls to the underlying implementation.
+    - >
+      The Khronos GitHub repository packages that mechanism as source code and tests for
+      the official OpenCL ICD Loader. The README is careful about scope: the loader is
+      not an OpenCL implementation, so users must install at least one vendor ICD
+      supporting the `cl_khr_icd` extension.
+  related-projects:
+    - >
+      Related projects include OpenCL-Headers, OpenCL-CLHPP, OpenCL-SDK, vendor OpenCL
+      runtimes, POCL, and higher-level compute stacks such as SYCL implementations that
+      rely on OpenCL platforms on some systems.
+  sources:
+    - https://formulae.brew.sh/formula/opencl-icd-loader
+    - https://github.com/KhronosGroup/OpenCL-ICD-Loader
+    - https://registry.khronos.org/OpenCL/specs/unified/refpages/man/html/cl_khr_icd.html
+    - https://www.khronos.org/news/permalink/opencl-installable-client-driver-icd-loader
+  summary:
+    - >
+      OpenCL ICD Loader is the Khronos official loader library that exports OpenCL API
+      entry points, enumerates installed OpenCL implementations, and dispatches calls to
+      vendor Installable Client Drivers.
+  timeline:
+    - >
+      2012: Khronos published news for the OpenCL Installable Client Driver loader and
+      source availability.
+    - >
+      OpenCL extension era: `cl_khr_icd` defined the mechanism for multiple vendor ICDs
+      behind one loader.
+    - >
+      GitHub era: KhronosGroup/OpenCL-ICD-Loader became the canonical source repository
+      and test location for the official loader.
+  usage:
+    - >
+      Developers link applications against the ICD loader instead of a specific vendor
+      OpenCL library. At runtime the loader enumerates vendor ICDs, exposes OpenCL entry
+      points, and routes calls to the implementation associated with the platform,
+      context, queue, memory object, or other ICD-compatible object.
+    - >
+      Operators and developers use the package to make OpenCL discovery work in
+      heterogeneous installations. The Homebrew package also installs `cllayerinfo`, a
+      Khronos diagnostic tool for inspecting OpenCL layers and loader behavior.
 category: system
 package-manager:
   apk: cllayerinfo
@@ -27,5 +98,11 @@ executables:
   - cllayerinfo
 provenance:
   formula: opencl-icd-loader
+  history-sources:
+    - https://formulae.brew.sh/formula/opencl-icd-loader
+    - https://github.com/KhronosGroup/OpenCL-ICD-Loader
+    - https://registry.khronos.org/OpenCL/specs/unified/refpages/man/html/cl_khr_icd.html
+    - https://www.khronos.org/news/permalink/opencl-installable-client-driver-icd-loader
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
