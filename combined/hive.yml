@@ -17,6 +17,117 @@ credentials-file-location:
     - $HIVE_CONF_DIR/beeline-hs2-connection.xml
     - /etc/hive/conf/beeline-hs2-connection.xml
   windows: ${user.home}\beeline\beeline-hs2-connection.xml
+history:
+  adoption-history:
+    - >
+      Early adoption was intense inside Facebook. The Meta engineering post says Hive
+      was popular with internal users from the start, regularly ran thousands of jobs,
+      served hundreds of users, stored more than 2 PB of uncompressed data, and loaded
+      15 TB daily.
+    - >
+      Open-source adoption followed because Hive lowered the barrier to Hadoop
+      analytics. It let analysts use a SQL-like language while Hadoop handled
+      distributed execution. The Apache site later presents Hive as used by enterprises
+      and cloud/data-platform vendors, and highlights integrations with S3, Azure Data
+      Lake, Google Cloud Storage, Spark, Presto, Impala, Apache Ranger, Apache Atlas,
+      Apache Iceberg, and other data-stack components.
+    - >
+      Hive also created a durable ecosystem surface: the metastore became a central
+      catalog for other engines and data lake architectures, while Beeline and
+      HiveServer2 became common access points for JDBC, ODBC, BI tools, and scripts.
+  package-nerd-significance:
+    - >
+      Hive is one of the packages that made the Hadoop ecosystem approachable to SQL
+      users. It matters in package history because it bridged a low-level
+      distributed-computing substrate and the familiar data-warehouse interface that
+      enterprises already knew how to staff, script, and operate.
+    - >
+      The package also illustrates why some CLI packages are really ecosystems. The
+      `hive` formula is not only a command; it packages services, schema tools,
+      metastore administration, connection clients, and configuration conventions. That
+      makes it closer to a platform component than a simple executable.
+    - >
+      Hive's long tail is especially visible in the metastore. Even as newer engines
+      evolved, the Hive Metastore remained a shared metadata layer in data-lake
+      deployments, so package maintainers and operators continued to care about Hive
+      compatibility beyond the original MapReduce execution model.
+  project-history:
+    - >
+      Facebook engineers started building Hive after data growth exposed the limits of a
+      commercial RDBMS-backed warehouse. The Meta engineering history says Facebook's
+      data grew from a 15 TB dataset in 2007 to more than 2 PB by the time of the 2009
+      article, and that MapReduce was too low-level for many analysis tasks.
+    - >
+      Hive's design brought tables, columns, partitions, and a SQL subset to Hadoop
+      while preserving Hadoop's extensibility. Facebook open sourced Hive in August
+      2008, and Apache Foundation milestones record Hive entering the Apache Incubator
+      in 2008. ASF milestones record Hive becoming a top-level Apache project in 2010.
+    - >
+      The Apache Hive site describes the project as a distributed, fault-tolerant data
+      warehouse at massive scale. It emphasizes SQL over distributed storage, the Hive
+      Metastore as a central metadata repository, HiveServer2 for multi-client access,
+      cost-based optimization, compaction, replication, security integrations, and
+      support for modern storage systems and table formats.
+  related-projects:
+    - Apache Hadoop is the distributed storage and processing ecosystem Hive was built on.
+    - >
+      Apache HCatalog graduated in 2013 to become part of Apache Hive, adding table and
+      storage management services for Hadoop data.
+    - >
+      Apache Spark, Presto, Impala, and other engines integrate with Hive concepts or
+      the Hive Metastore in data lake environments.
+    - >
+      Apache Ranger and Apache Atlas are documented by the Hive site as security,
+      authorization, lineage, and governance integrations.
+    - Apache Iceberg is highlighted by the Hive site as a modern table-format integration.
+  sources:
+    - https://hive.apache.org
+    - https://github.com/apache/hive
+    - https://formulae.brew.sh/formula/hive
+    - https://hive.apache.org/docs/latest
+    - https://hive.apache.org/development/gettingstarted-latest
+    - https://github.com/apache/hive/tags
+    - https://github.com/apache/hive/releases
+  summary:
+    - >
+      Apache Hive is a distributed data warehouse system for reading, writing, managing,
+      and querying large datasets in distributed storage using SQL. It began at Facebook
+      as a way to make Hadoop usable by analysts and engineers who did not want to write
+      MapReduce jobs for ordinary aggregation and reporting.
+    - >
+      As a package, Hive is historically important because it turned Hadoop clusters
+      into SQL-addressable data warehouses. Installing the package gives users not just
+      a CLI named `hive`, but Beeline, HiveServer2, metastore tooling, schema tooling,
+      HPL/SQL, and the operational surface around Hadoop-era data warehousing.
+  timeline:
+    - >
+      2007: Facebook begins moving large-scale data analysis pressure toward
+      Hadoop-backed infrastructure.
+    - '2008-08: Hive is open sourced by Facebook.'
+    - '2008: ASF milestones record Hive entering the Apache Incubator.'
+    - '2009-06-10: Facebook publishes the Hive petabyte-scale Hadoop data warehouse article.'
+    - '2010: ASF milestones record Hive becoming a top-level Apache project.'
+    - >
+      2010s: HiveServer2, Beeline, cost-based optimization, metastore use, and
+      enterprise security integrations become part of common Hive deployments.
+    - >
+      2020s: Apache Hive site highlights data lake, cloud storage, Iceberg, compaction,
+      replication, security, and metastore-centered use cases.
+  usage:
+    - >
+      In package-manager terms, users install Hive to get command-line and service entry
+      points. The Homebrew package exposes `beeline`, `hive`, `hive-config.sh`,
+      `hiveserver2`, `hplsql`, `init-hive-dfs.sh`, `metatool`, `replstats.sh`, and
+      `schematool`.
+    - >
+      Historically, users ran HiveQL through the `hive` CLI; Beeline and HiveServer2
+      became the preferred client/server model for multi-client and authenticated
+      access. Operators configure XML files such as `hive-site.xml`, metastore and
+      server configuration files, and Beeline connection files.
+    - >
+      Typical workloads include SQL analytics on distributed storage, ETL, table and
+      partition management, metastore-backed data lake catalogs, batch reporting,
+      compaction, replication, and integration with BI and JDBC/ODBC clients.
 category: data
 package-manager:
   brew: hive
@@ -42,5 +153,14 @@ executables:
   - schematool
 provenance:
   formula: hive
+  history-sources:
+    - https://hive.apache.org
+    - https://github.com/apache/hive
+    - https://formulae.brew.sh/formula/hive
+    - https://hive.apache.org/docs/latest
+    - https://hive.apache.org/development/gettingstarted-latest
+    - https://github.com/apache/hive/tags
+    - https://github.com/apache/hive/releases
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

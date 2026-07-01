@@ -5,6 +5,94 @@ docs:
   - https://github.com/frej/fast-export#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      hg-fast-export became one of the standard command-line answers to the
+      Mercurial-to-Git migration problem. Its README points users to the GitHub issue
+      tracker for support, documents Git for Windows bash as a known-working Windows
+      environment, and notes that incremental imports are supported for tracking
+      Mercurial repositories over time.
+    - >
+      The package gained extra relevance during the wider migration away from Mercurial
+      hosting toward Git hosting. The input package facts record Homebrew packaging, and
+      the formula keeps the tool one install away for macOS and Linux users doing
+      repository conversion work.
+  package-nerd-significance:
+    - >
+      For package nerds, hg-fast-export is a classic migration utility: small surface,
+      sharp edges, and deep dependence on two VCS data models. It matters because
+      repositories are historical artifacts; preserving their history during a VCS
+      migration is not just a one-time command, it is a careful mapping of authors,
+      branches, tags, encodings, large files, and naming rules.
+    - >
+      It is also notable because it wraps Git's plumbing rather than reimplementing Git
+      storage. That keeps the tool scriptable and packageable, but makes its limitations
+      visible: no direct remote Mercurial import, branch-name collisions, unnamed heads,
+      case-insensitive filesystem traps, and the need for explicit mapping files in
+      messy histories.
+  project-history:
+    - >
+      The project began as a set of Mercurial export scripts written by Rocco Rutte with
+      help from Git and Mercurial community channels. The README says most `hg-*`
+      scripts are MIT-licensed, while `hg-reset.py` is GPLv2 because it copies code from
+      Mercurial; Frej Drejhammar is listed as the maintainer.
+    - >
+      Its core design is intentionally streaming. The README says hg-fast-export does
+      not require a two-pass mechanism or prior repository analysis; it feeds Mercurial
+      changesets into `git-fast-import`, relying on Mercurial's append-only storage
+      model and linear ordering of changesets already seen by the converter.
+    - >
+      Over time the converter accumulated migration features around the hard parts of
+      real repositories: author maps, branch and tag maps, default-branch renaming,
+      non-UTF-8 metadata conversion, filename encoding overrides, content filters,
+      Mercurial largefiles handling, Git LFS strategies, plugin hooks, and reset support
+      for restarting from an earlier import state.
+  related-projects:
+    - >
+      hg-fast-export is related to Mercurial, Git, `git-fast-import`, Git LFS, hg-git,
+      git-remote-hg, repository-host migration tooling, and batch converters such as
+      Chris J Billington's `hg-export-tool`.
+  sources:
+    - https://formulae.brew.sh/formula/hg-fast-export
+    - https://github.com/frej/fast-export
+    - https://raw.githubusercontent.com/frej/fast-export/master/README.md
+    - https://repo.or.cz/w/fast-export.git
+  summary:
+    - >
+      hg-fast-export is a Mercurial-to-Git history converter built around Git's
+      `git-fast-import` mechanism. It exists for projects that need to migrate Mercurial
+      repositories into Git while preserving branches, tags, authors, commit messages,
+      and incremental import state as far as the two systems allow.
+  timeline:
+    - >
+      2000s: The project originated as Mercurial export scripts by Rocco Rutte, with
+      community input from Git and Mercurial channels.
+    - >
+      2010s: The tool became a common path for Mercurial-to-Git conversions as Git
+      hosting grew dominant.
+    - >
+      2017: Older author-map syntax was kept behind `--mappings-are-raw` for
+      compatibility with pre-v171002 behavior.
+    - >
+      2020s: The project documented Python 3.7+ and Mercurial 5.2+ requirements and
+      added migration features for largefiles, LFS, and plugins.
+    - >
+      Package-manager era: Homebrew packages the converter as `hg-fast-export` with
+      wrapper scripts such as `hg-fast-export.sh` and `hg-reset.sh`.
+  usage:
+    - >
+      The basic workflow is to create an empty Git repository, run `hg-fast-export.sh -r
+      <local-hg-repo>`, then check out the imported branch. The README stresses that
+      remote Mercurial repositories must first be cloned locally because the Mercurial
+      API and remote access protocol do not allow hg-fast-export to operate directly
+      over HTTP or SSH.
+    - >
+      Complex migrations often add an authors map with `-A`, branch and tag maps with
+      `-B` and `-T`, a default-branch name with `-M`, encoding flags, content filters,
+      or plugins. Large repositories can use the bundled Git LFS import path to write
+      LFS pointers during conversion rather than doing a separate full history rewrite
+      afterward.
 tags:
   - cli
   - git
@@ -31,6 +119,11 @@ provenance:
     - >
       official GitHub README contains system requirements, usage, options, plugins,
       limitations, and support information
+  history-sources:
+    - https://formulae.brew.sh/formula/hg-fast-export
+    - https://github.com/frej/fast-export
+    - https://raw.githubusercontent.com/frej/fast-export/master/README.md
+    - https://repo.or.cz/w/fast-export.git
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/frej/fast-export; per
@@ -45,5 +138,6 @@ category-path:
   - version-control
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

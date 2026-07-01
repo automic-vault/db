@@ -5,6 +5,80 @@ docs:
   - https://github.com/huggingface/hf-mount#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Hugging Face's changelog announcement framed hf-mount as a way to attach remote
+      storage much larger than local disk and explicitly called out agentic storage. The
+      Hub access-patterns documentation then made hf-mount one of the named access
+      methods next to volume mounts, `hf://` fsspec paths, CLI sync, and the S3 API.
+    - >
+      Homebrew packaging gives macOS and Linux users a direct `brew install hf-mount`
+      path. The README notes that the Homebrew package installs the NFS backend on
+      macOS, while FUSE builds require platform support such as macFUSE or fuse3.
+  package-nerd-significance:
+    - >
+      hf-mount is interesting packaging-wise because it turns cloud ML storage into a
+      traditional Unix mount workflow. The package bundles daemon and backend
+      executables, bridges Rust filesystem code with Hugging Face storage APIs, and
+      exposes a very package-manager-friendly surface: install a binary, run a command,
+      get a path.
+    - >
+      It also shows the Hugging Face CLI ecosystem expanding beyond API wrappers into
+      host-level tools. The package matters when model artifacts are too large for
+      laptop disks or ephemeral CI runners but the consuming program still insists on
+      POSIX-looking files.
+  project-history:
+    - >
+      Hugging Face introduced hf-mount alongside Storage Buckets as a way to attach
+      buckets, models, and datasets from the Hub as local filesystems. The project's
+      README describes a FUSE or NFS filesystem that fetches file bytes lazily on first
+      read, so model and dataset consumers can browse or load remote content without
+      cloning or downloading a full repository first.
+    - >
+      The project sits on top of Hugging Face's newer storage direction: Buckets are
+      S3-like mutable object storage powered by the Xet storage backend, while
+      traditional model and dataset repositories remain Git-based and read-only when
+      mounted. hf-mount turns both forms into a local path abstraction for training,
+      inference, evaluation, browsing, and agent scratch-storage workflows.
+  related-projects:
+    - >
+      hf-mount is related to Hugging Face Storage Buckets, the Hugging Face Hub,
+      `huggingface_hub` filesystem and URI support, Xet-backed storage, FUSE, NFS,
+      macFUSE, and ML tooling that accepts local filesystem paths for models and
+      datasets.
+  sources:
+    - https://formulae.brew.sh/formula/hf-mount
+    - https://github.com/huggingface/hf-mount
+    - https://huggingface.co/changelog/hf-mount
+    - https://huggingface.co/docs/hub/storage-buckets
+    - https://huggingface.co/docs/hub/storage-buckets-access
+    - https://raw.githubusercontent.com/huggingface/hf-mount/main/README.md
+  summary:
+    - >
+      hf-mount is a Hugging Face filesystem tool that mounts Hugging Face Buckets and
+      Hub repositories as local directories. It targets ML workflows where code expects
+      paths but the underlying artifacts are large remote model, dataset, or bucket
+      objects.
+  timeline:
+    - '2026-03-24: Hugging Face announced hf-mount in the Hub changelog.'
+    - '2026: Hugging Face documented hf-mount under Storage Buckets access patterns.'
+    - '2026: Homebrew packaged `hf-mount` for macOS and Linux installation.'
+    - >
+      Storage Buckets era: hf-mount became one of several Hub access paths alongside
+      `hf://` fsspec, volume mounts, CLI sync, and S3-compatible APIs.
+  usage:
+    - >
+      The common flow is `hf-mount start bucket owner/name /mount/path` for a read-write
+      bucket or `hf-mount start repo datasets/name /mount/path` for a read-only Hub
+      repository. Commands can take credentials from `HF_TOKEN`, use NFS by default, or
+      use FUSE where available.
+    - >
+      After mounting, ordinary tools such as shells, Python libraries, model loaders,
+      `find`, `cat`, pandas, DuckDB, training scripts, and inference servers can read
+      paths under the mount. The README also documents cache controls, read-only mode,
+      token-file rotation, overlay mode, and operational limits such as stale metadata
+      windows and no cross-node locking.
 tags:
   - cli
   - filesystem
@@ -35,6 +109,13 @@ provenance:
     - >
       source_facts.homepage is the official GitHub repository; its README is the best
       available documentation surface.
+  history-sources:
+    - https://formulae.brew.sh/formula/hf-mount
+    - https://github.com/huggingface/hf-mount
+    - https://huggingface.co/changelog/hf-mount
+    - https://huggingface.co/docs/hub/storage-buckets
+    - https://huggingface.co/docs/hub/storage-buckets-access
+    - https://raw.githubusercontent.com/huggingface/hf-mount/main/README.md
   repo-sources:
     - >
       source_facts.repo already has https://github.com/huggingface/hf-mount; per
@@ -50,5 +131,6 @@ category-path:
   - filesystem
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

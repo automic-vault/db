@@ -6,6 +6,80 @@ docs:
   - https://libusb.info/hidapi
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      HIDAPI is widely packaged because it solves a cross-platform hardware problem at
+      the C ABI level. The input package map lists packages for Alpine, Homebrew,
+      Debian/Ubuntu, Fedora, MacPorts, Nix, Arch, and openSUSE-style systems.
+    - >
+      The libusb-hosted repository also matters socially: libusb is a familiar home for
+      USB users, and the README says the Linux/libusb backend uses libusb-1.0 while
+      Linux/hidraw supports both USB and Bluetooth HID devices.
+  package-nerd-significance:
+    - >
+      HIDAPI is a classic package-manager library: small, C ABI-friendly,
+      cross-platform, and pulled into many higher-level device tools. It earns its slot
+      in package sets because every downstream would rather not reinvent HID enumeration
+      and report I/O per OS.
+    - >
+      Its licensing is also package-relevant. The README and license files describe
+      GPL-3.0, BSD-style, and original HIDAPI license options, letting open-source and
+      closed-source consumers pick an appropriate licensing path.
+  project-history:
+    - >
+      HIDAPI was originally developed by Alan Ott of Signal 11 Software; the original
+      license file carries a 2009 copyright notice. The tag history shows public 0.x
+      releases beginning in 2010, with early work around test programs and platform
+      makefiles.
+    - >
+      The README records a major stewardship change on June 4, 2019, when the project
+      moved to `libusb/hidapi` to merge important bug fixes and continue development.
+      Release tags after that move include 0.9.0 in June 2019 and later work on CMake,
+      Meson wrapping, API additions, and backend fixes.
+    - >
+      The library kept its simple integration model across the move: applications can
+      link a shared library or embed one platform-specific source file plus the public
+      header. That made HIDAPI practical for hardware tools that need a low-friction C
+      dependency.
+  related-projects:
+    - libusb is both a related project and one of HIDAPI's Unix backends.
+    - hidraw is the Linux kernel interface used by HIDAPI's Linux/hidraw backend.
+    - >
+      hidapitester is a console test application recommended by the README for trying
+      HID devices before integrating HIDAPI into an application.
+  sources:
+    - https://github.com/libusb/hidapi/blob/master/BUILD.md
+    - https://github.com/libusb/hidapi/blob/master/LICENSE.txt
+    - https://github.com/libusb/hidapi/blob/master/hidapi/hidapi.h
+    - https://github.com/libusb/hidapi#readme
+    - https://github.com/libusb/hidapi/tags
+  summary:
+    - >
+      HIDAPI is a small C library for talking to USB and Bluetooth HID-class devices
+      across Windows, Linux, FreeBSD, and macOS. Its package-manager identity is both a
+      development library and a pair of small test binaries used to verify HID access.
+    - >
+      The project is valued because it hides the platform split between Windows
+      `hid.dll`, macOS IOHidManager, Linux hidraw, and libusb-backed Unix builds behind
+      one C API.
+  timeline:
+    - '2009: Original HIDAPI license text credits Alan Ott and Signal 11 Software.'
+    - '2010: hidapi-0.1.0 tag starts the public release line.'
+    - '2019: Project moves to libusb/hidapi for continued maintenance.'
+    - '2019: hidapi-0.9.0 is released after the libusb stewardship move.'
+    - '2023: hidapi-0.13.0 adds device-info API work and Meson wrapper support.'
+    - '2025: hidapi-0.15.0 adds more report/error API surface.'
+  usage:
+    - >
+      Typical application usage is to initialize the library, open a device by vendor ID
+      and product ID, exchange input/output/feature reports, and close/finalize the
+      handle. The README includes a compact C example and points developers to
+      `hidtest/test.c` as a starting point.
+    - >
+      On Linux, users choose between `libhidapi-hidraw` and `libhidapi-libusb` at link
+      time, with udev rules needed for unprivileged device access. On macOS and Windows,
+      HIDAPI uses the native HID frameworks exposed by the operating system.
 tags:
   - bluetooth
   - c
@@ -33,6 +107,12 @@ provenance:
     - >
       official repository links libusb.info/hidapi as generated API documentation;
       official README documents usage and build information
+  history-sources:
+    - https://github.com/libusb/hidapi/blob/master/BUILD.md
+    - https://github.com/libusb/hidapi/blob/master/LICENSE.txt
+    - https://github.com/libusb/hidapi/blob/master/hidapi/hidapi.h
+    - https://github.com/libusb/hidapi#readme
+    - https://github.com/libusb/hidapi/tags
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/libusb/hidapi; per
@@ -47,5 +127,6 @@ category-path:
   - libraries
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

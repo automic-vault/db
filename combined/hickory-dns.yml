@@ -10,6 +10,97 @@ config-file-location:
     - ./config.toml
     - /etc/named.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Hickory's adoption path is split between Rust crates and system packages. The
+      README badges and architecture file emphasize individually published crates, while
+      the Homebrew input record shows the server binary packaged as `hickory-dns` across
+      brew, apk, Debian, and Nix.
+    - >
+      The resolver crate is especially important for Rust applications because the
+      README says it can be used in place of standard OS resolution facilities. The
+      manual also documents server and recursive-resolver operation with DNSSEC
+      validation, which broadens Hickory from library dependency to runnable network
+      service.
+    - >
+      The rebrand preserved continuity for the Trust-DNS user base while making package
+      and crate names align around Hickory. Package maintainers care about that
+      transition because it changed names without changing the basic role of the DNS
+      stack.
+  package-nerd-significance:
+    - >
+      Hickory DNS is notable in package-manager culture because it is a serious
+      network-service package written in Rust, not just a developer convenience CLI. It
+      gives Unix package sets a Rust-native authoritative/recursive DNS option with a
+      library ecosystem behind it.
+    - >
+      The Trust-DNS-to-Hickory rename is also a packaging case study: package names,
+      crate names, documentation URLs, and repository ownership all moved together, so
+      downstreams had to distinguish an upstream continuation from a new unrelated DNS
+      project.
+  project-history:
+    - >
+      The tag history starts in 2015, when the project was still Trust-DNS and early
+      releases focused on DNS resource records, configuration-file support,
+      server/client pieces, and DNSSEC-related work. The architecture notes say the
+      libraries grew from non-blocking I/O before Rust's async/await ecosystem settled.
+    - >
+      Over time, the codebase became a multi-crate DNS suite: `hickory-proto` for
+      message encoding and transports, `hickory-client` for query/update/notify
+      operations, `hickory-server` for hosted zones, `hickory-resolver` for application
+      resolution, `hickory-recursor` for recursive resolution, and `hickory-dns` as the
+      server binary.
+    - >
+      In October 2023, the project prepared Trust-DNS 0.23.1 as the final Trust-DNS
+      release and Hickory DNS 0.24.0 as the branding-change release. The 0.24 commit
+      message records the crate renames, README notices, license-name updates, logo
+      updates, and repository reference changes.
+  related-projects:
+    - Trust-DNS is the direct predecessor and former project name.
+    - >
+      The Hickory crate family includes hickory-proto, hickory-client, hickory-server,
+      hickory-resolver, hickory-recursor, hickory-util, and the hickory-dns binary.
+    - >
+      BIND-style DNS server practice is a background comparison point because Hickory
+      also uses named-style server configuration paths such as `/etc/named.toml` in
+      packaged examples.
+  sources:
+    - https://github.com/hickory-dns/hickory-dns/blob/main/ARCHITECTURE.md
+    - https://github.com/hickory-dns/hickory-dns#readme
+    - https://github.com/hickory-dns/hickory-dns/issues/2051
+    - https://hickory-dns.org/book/hickory/recursive_resolver.html
+    - https://github.com/hickory-dns/hickory-dns/tags
+  summary:
+    - >
+      Hickory DNS is a Rust DNS stack covering client, protocol, resolver, recursor, and
+      authoritative-server use cases. The `hickory-dns` binary is the server-facing
+      package entry point, while the repository also publishes reusable crates for
+      application developers.
+    - >
+      The project is historically the continuation of Trust-DNS. Its own README and
+      rebranding issue describe the move from Trust-DNS to Hickory DNS, including the
+      crate renames and repository move that landed with the 0.24 release line.
+  timeline:
+    - '2015: Trust-DNS 0.1.0 tag appears with early resource-record work.'
+    - '2015: 0.3.0 adds configuration-file support.'
+    - '2020: 0.20.0 release line includes the resolver CLI path documented by the README.'
+    - '2023: Trust-DNS 0.23.1 is prepared as the final Trust-DNS release.'
+    - '2023: Hickory DNS 0.24.0 performs the branding and crate-name transition.'
+    - >
+      2025: 0.25.0 architecture notes mark old Trust-DNS crates as removed in favor of
+      Hickory crates.
+  usage:
+    - >
+      As a command-line package, `hickory-dns` runs a DNS server or resolver from a TOML
+      configuration. The user manual shows recursive-resolver setup with `root.hints`,
+      `trusted-key.key`, `config.toml`, and a `hickory-dns --config=./config.toml`
+      invocation.
+    - >
+      As libraries, the Hickory crates cover lower-level DNS message work, direct client
+      operations, hosted-zone server construction, application resolver integration, and
+      recursive resolution. The README also documents DNSSEC support and feature-gated
+      cryptography providers for DNSSEC, DNS-over-TLS, and related protocols.
 category: networking
 package-manager:
   apk: hickory-dns
@@ -30,5 +121,12 @@ executables:
   - hickory-dns
 provenance:
   formula: hickory-dns
+  history-sources:
+    - https://github.com/hickory-dns/hickory-dns/blob/main/ARCHITECTURE.md
+    - https://github.com/hickory-dns/hickory-dns#readme
+    - https://github.com/hickory-dns/hickory-dns/issues/2051
+    - https://hickory-dns.org/book/hickory/recursive_resolver.html
+    - https://github.com/hickory-dns/hickory-dns/tags
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

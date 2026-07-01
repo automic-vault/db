@@ -5,6 +5,75 @@ docs:
   - https://github.com/rhysd/hgrep#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official README documents installation through release binaries, Homebrew,
+      MacPorts, NetBSD pkgsrc/pkgin, Debian-style `.deb` packages, and Cargo. That
+      packaging spread matches hgrep's role as a small terminal utility rather than a
+      library platform.
+    - >
+      The project also exposes feature flags so users can keep the built-in ripgrep
+      search, the syntect printer, or the bat printer, which made it practical for
+      package maintainers and source builders to tune dependency weight.
+  package-nerd-significance:
+    - >
+      For package-manager users, hgrep is an example of the Rust CLI ecosystem's
+      composable-search style: ripgrep supplies fast traversal and matching, bat/syntect
+      supply readable code presentation, and the final binary stays scriptable.
+    - >
+      It is also interesting as a dependency-shaping package. Builders can choose
+      feature combinations to trade install time, binary size, and formatting behavior
+      instead of carrying every optional printer path.
+  project-history:
+    - >
+      The public release line begins with v0.1.x tags in October 2021. The README
+      describes the original product idea as combining ripgrep-style search with
+      bat-style highlighted display, while keeping a pipe-friendly mode for existing
+      grep workflows.
+    - >
+      The 0.2 and 0.3 series show the project tightening around terminal ergonomics:
+      generated shell completions and man pages, binary release archives, static Linux
+      builds, macOS and Windows support, and improved handling of color capability and
+      encodings.
+  related-projects:
+    - >
+      ripgrep is the closest search-engine relative: hgrep can embed a subset of ripgrep
+      or consume `rg -nH` output.
+    - >
+      bat and syntect are presentation relatives: hgrep uses them as alternative
+      syntax-highlighted output paths.
+    - >
+      Traditional grep remains part of the workflow because hgrep can read `grep -nH`
+      output from standard input.
+  sources:
+    - https://github.com/rhysd/hgrep/blob/master/CHANGELOG.md
+    - https://github.com/rhysd/hgrep#readme
+    - https://github.com/rhysd/hgrep/tags
+  summary:
+    - >
+      hgrep is a Rust command-line search presenter that aims to make local grep results
+      look more like code-search output: matched regions are shown as syntax-highlighted
+      snippets with useful surrounding context.
+    - >
+      Its niche is deliberately narrow. Rather than replacing grep or ripgrep outright,
+      it wraps a built-in subset of ripgrep or reads `grep -nH` and `rg -nH` output from
+      standard input, then formats results with syntect or bat-backed printers.
+  timeline:
+    - '2021: v0.1.x public tags establish the Rust CLI release line.'
+    - '2021: v0.2.0 follows within weeks, continuing rapid terminal-search iteration.'
+    - '2023: v0.3.0 updates syntect and bat integration and adds manual-page generation.'
+    - '2024: v0.3.7 adds broader text-encoding support, including BOM-based detection.'
+    - '2025: v0.3.9 adds Arm Windows release artifacts and additional language/theme support.'
+  usage:
+    - >
+      Typical use is either `hgrep pattern path` for its built-in ripgrep subset or `rg
+      -nH pattern path | hgrep` when the user wants full ripgrep behavior and hgrep only
+      as the display stage.
+    - >
+      hgrep is most useful when raw grep output has too little context: it groups nearby
+      matches, chooses context around blank lines, applies syntax highlighting, and can
+      generate shell completions or a manual page for packaged installs.
 tags:
   - cli
   - grep
@@ -31,6 +100,10 @@ provenance:
     - >
       official GitHub README documents installation, built-in ripgrep, stdin grep
       output, options, completions, and man page generation
+  history-sources:
+    - https://github.com/rhysd/hgrep/blob/master/CHANGELOG.md
+    - https://github.com/rhysd/hgrep#readme
+    - https://github.com/rhysd/hgrep/tags
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/rhysd/hgrep; per instruction
@@ -45,5 +118,6 @@ category-path:
   - search
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

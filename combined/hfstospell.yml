@@ -7,6 +7,90 @@ docs:
   - https://hfst.github.io/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      HFST-based spellers found use through language-technology projects that need
+      finite-state spell checking for morphologically rich and lower-resource languages.
+      The hfst-ospell README explicitly points to Voikko as the route into real
+      applications, and then from Voikko into Enchant, LibreOffice, and Firefox.
+    - >
+      The input package facts record hfst-ospell in Homebrew, Debian, Ubuntu, Nix, and
+      zypper-family packaging. That cross-distro footprint is typical for language
+      infrastructure that is not itself a consumer app but is needed by dictionaries,
+      proofing tools, and build pipelines.
+  package-nerd-significance:
+    - >
+      For package nerds, hfst-ospell is a small but important split package: it packages
+      the proofing runtime separately from the larger HFST compiler/toolkit stack. That
+      makes it easier for distributions to depend on the runtime where a desktop spell
+      checker or dictionary package needs it without forcing every user to install the
+      full morphology development environment.
+    - >
+      It is also a good example of finite-state NLP infrastructure crossing into
+      ordinary desktop packaging. A command-line checker, a C++ library, pkg-config
+      metadata, and desktop proofing adapters make the same linguistic transducers
+      useful from both shell scripts and office-suite spell checking.
+  project-history:
+    - >
+      HFST, the Helsinki Finite-State Technology project, was built at the University of
+      Helsinki as a toolkit for processing natural-language morphologies with
+      finite-state automata and transducers. Its project page describes wide-coverage
+      implementations for languages with varying morphological complexity, and the main
+      HFST repository presents the toolkit as a bridge across finite-state libraries and
+      toolkits for linguistic systems.
+    - >
+      hfst-ospell is the spell-checking branch of that ecosystem. Its README describes a
+      minimal optimized-lookup-format spell-checking library plus a demonstration
+      command-line checker. The code exposes a C++ API around weighted transducers and a
+      `hfst-ospell` utility that composes an error source and lexicon over standard
+      input to print corrections.
+    - >
+      The package kept a deliberately narrow scope: rather than replacing all of HFST,
+      it supplies the spell-checking runtime and proofing-facing command tools. The
+      GitHub release list records releases through 0.5.4 in February 2024, while the
+      broader HFST site points users to binaries, libraries, morphological resources,
+      and release notes.
+  related-projects:
+    - >
+      hfst-ospell is related to the main HFST toolkit, OpenFST, foma, SFST, Voikko,
+      Enchant, LibreOffice proofing, Firefox proofing, GiellaLT/Divvun language
+      resources, and newer HFST-compatible spell-checking tools such as divvunspell.
+  sources:
+    - https://formulae.brew.sh/formula/hfstospell
+    - https://github.com/hfst/hfst
+    - https://github.com/hfst/hfst-ospell
+    - https://github.com/hfst/hfst-ospell/blob/master/hfst-ospell-office.1
+    - https://hfst.github.io/
+    - https://raw.githubusercontent.com/hfst/hfst-ospell/master/README.md
+  summary:
+    - >
+      HFST ospell is the spell-checking library and command-line tool associated with
+      Helsinki Finite-State Technology. It applies HFST optimized-lookup transducers to
+      spell checking, correction, and integration with desktop proofing stacks.
+  timeline:
+    - >
+      1999-2022: The HFST project page copyright range reflects the long-running
+      Helsinki finite-state toolkit web presence.
+    - >
+      2000s-2010s: HFST developed as a finite-state toolkit for linguistic systems and
+      morphological processing.
+    - >
+      2010s: hfst-ospell provided an optimized-lookup spell-checking library and
+      demonstration command-line checker.
+    - '2018: The `hfst-ospell-office` manual page in the repository carries a March 2018 date.'
+    - '2024-02-20: GitHub release metadata records hfst-ospell 0.5.4.'
+  usage:
+    - >
+      Developers can link against the library with `pkg-config --cflags hfstospell` and
+      `pkg-config --libs hfstospell`, then construct spellers from HFST transducer
+      files. Command-line users can run `hfst-ospell` with an error source and lexicon,
+      and related packaged tools include `hfst-ospell-office` and `hfst-ospell-predict`.
+    - >
+      The practical workflow is usually upstream of a user-facing editor: build or
+      obtain ZHFST/HFST resources for a language, test correction behavior with the
+      command-line tools, and integrate the runtime through Voikko or adjacent proofing
+      infrastructure.
 category: developer-tools
 package-manager:
   brew: hfstospell
@@ -28,5 +112,13 @@ executables:
   - hfst-ospell-predict
 provenance:
   formula: hfstospell
+  history-sources:
+    - https://formulae.brew.sh/formula/hfstospell
+    - https://github.com/hfst/hfst
+    - https://github.com/hfst/hfst-ospell
+    - https://github.com/hfst/hfst-ospell/blob/master/hfst-ospell-office.1
+    - https://hfst.github.io/
+    - https://raw.githubusercontent.com/hfst/hfst-ospell/master/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
