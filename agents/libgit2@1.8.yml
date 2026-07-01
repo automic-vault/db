@@ -6,6 +6,88 @@ docs:
   - https://libgit2.org/docs/reference
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      libgit2 became important because Git moved into IDEs, graphical clients, hosting
+      providers, and scripting environments where invoking the command-line git program
+      was awkward or too slow. Its binding ecosystem made it a shared native dependency
+      behind higher-level packages such as pygit2, Rugged, LibGit2Sharp, NodeGit, and
+      git2-rs.
+    - >
+      The 1.8.0 release was published on 2024-03-20 with OpenSSH execution support,
+      easier commit creation, and worktree improvements. It also changed several
+      structures and options in ABI-visible ways, including worktree configuration
+      levels, config entries, and push options.
+  package-nerd-significance:
+    - >
+      libgit2 is a classic package-manager dependency trap: it is a library, not a CLI,
+      and minor-looking upgrades can break FFI bindings or compiled extensions. The 1.8
+      formula line is package-manager plumbing for ABI stability, especially on macOS
+      where Homebrew is commonly used by Ruby, Python, Rust, and .NET developers.
+    - >
+      The 2024 v1.9.0 changelog expected that release to be the final v1.x lineage and
+      warned that v2.0 would carry API and ABI changes for SHA-256 support and other
+      breaking changes. That makes older versioned formulae part of the bridge between
+      the v1 ABI world and later libgit2 development.
+  project-history:
+    - >
+      The project grew around the idea that Git repository operations should be
+      embeddable without shelling out to the git executable. Its own README describes a
+      pure C library with bindings for Ruby, .NET, Python, Node.js, Rust, and other
+      ecosystems, and with production use in GUI clients, hosting forges, and developer
+      tools.
+    - >
+      The 1.0.0 release on 2020-04-01 marked the first stable libgit2 API line. The
+      release notes explicitly promised compatibility across releases of the same major
+      version, which made the v1 series a practical target for bindings, package
+      managers, and long-lived native applications.
+  related-projects:
+    - >
+      Git is the upstream version-control system whose repository concepts libgit2
+      implements as a library.
+    - >
+      pygit2, Rugged, LibGit2Sharp, NodeGit, and git2-rs are language bindings or
+      wrappers that make libgit2 usable from higher-level ecosystems.
+    - >
+      Homebrew's unversioned libgit2 formula and libgit2@1.8 formula represent different
+      packaging tracks for the same upstream project.
+  sources:
+    - https://formulae.brew.sh/formula/libgit2@1.8
+    - https://github.com/libgit2/libgit2
+    - https://github.com/libgit2/libgit2/blob/main/docs/changelog.md
+    - https://github.com/libgit2/libgit2/releases/tag/v1.0.0
+    - https://github.com/libgit2/libgit2/releases/tag/v1.8.0
+  summary:
+    - >
+      libgit2 is the C library form of Git: a portable, re-entrant implementation of Git
+      core methods intended to be linked into applications rather than run as the
+      user-facing git command. The 1.8 Homebrew formula line represents a specific
+      ABI-era of that library, useful when language bindings or applications have not
+      yet moved to newer libgit2 structures.
+  timeline:
+    - >
+      2020-04-01: libgit2 1.0.0 was released as the first stable release with
+      same-major-version API compatibility.
+    - >
+      2024-03-20: libgit2 1.8.0 was released with OpenSSH execution support, commit
+      creation improvements, worktree work, and ABI-visible changes.
+    - >
+      2024-12-28: libgit2 1.9.0 notes described expected end of the v1.x lineage and
+      anticipated v2.0 API and ABI changes.
+    - >
+      2026-07-01: The batch input listed Homebrew's libgit2@1.8 as a versioned formula
+      distinct from the unversioned libgit2 package.
+  usage:
+    - >
+      Developers use libgit2 when an application needs to inspect, create, fetch, push,
+      diff, or otherwise manipulate Git repositories through a C API or through a
+      language binding. The package also installs the small git2 compatibility tool, but
+      the library is the real artifact.
+    - >
+      The versioned Homebrew formula matters because native Git bindings often pin to a
+      libgit2 major or minor ABI. Keeping libgit2@1.8 lets dependent software build
+      against the 1.8 API/ABI while the unversioned formula can move on.
 tags:
   - api
   - c-library
@@ -20,6 +102,12 @@ provenance:
     - source_facts.name; normalized for display from versioned formula name.
   docs-sources:
     - source_facts.homepage is official libgit2 site; libgit2 docs and reference are official.
+  history-sources:
+    - https://formulae.brew.sh/formula/libgit2@1.8
+    - https://github.com/libgit2/libgit2
+    - https://github.com/libgit2/libgit2/blob/main/docs/changelog.md
+    - https://github.com/libgit2/libgit2/releases/tag/v1.0.0
+    - https://github.com/libgit2/libgit2/releases/tag/v1.8.0
   repo-sources:
     - source_facts.repo is already populated; prompt requires repo null.
   tags-sources:
@@ -31,5 +119,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

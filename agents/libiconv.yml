@@ -7,6 +7,64 @@ docs:
   - https://www.gnu.org/software/libiconv
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The package became common in Unix packaging because many projects use Autoconf
+      tests for iconv and need a fallback on macOS, BSD, Windows ports, or older
+      commercial Unix systems.
+    - >
+      The GNU documentation explicitly calls out GNU gettext integration and the
+      circular first-install relationship between gettext and libiconv on some systems,
+      which is why packagers often care about bootstrap order.
+  package-nerd-significance:
+    - >
+      libiconv is one of the classic portability packages: invisible when libc has
+      enough charset support, essential when it does not. It also exposes subtle
+      packaging choices around libc replacement, gettext, locale charsets, and whether a
+      dependency should use the system iconv or GNU's implementation.
+    - >
+      For package maintainers, it is a reminder that text encoding is infrastructure. A
+      tiny mismatch in iconv availability can decide whether internationalized software
+      builds or produces correct output.
+  project-history:
+    - >
+      The GNU project page frames libiconv around the internet-era problem of moving
+      text among Unicode and older language- or country-dependent encodings. It provides
+      both the iconv() library interface and an iconv command-line program.
+    - >
+      GNU libiconv's long-term role has been portability rather than novelty: it
+      supplies consistent conversion support on platforms where libc iconv is absent,
+      incomplete, or not compatible with the encodings an application needs.
+  related-projects:
+    - >
+      GNU gettext is closely related because gettext can use libiconv for message
+      conversion and shares build-system history around iconv.m4.
+    - >
+      glibc iconv is the main system implementation that may make GNU libiconv
+      unnecessary on GNU/Linux systems.
+    - POSIX iconv is the standard API surface that libiconv implements for portable software.
+  sources:
+    - https://formulae.brew.sh/formula/libiconv
+    - https://lists.gnu.org/archive/html/info-gnu/2024-12/msg00004.html
+    - https://www.gnu.org/software/libiconv
+    - https://www.gnu.org/software/libiconv/documentation/libiconv-1.19/iconv.1.html
+    - https://www.gnu.org/software/libiconv/documentation/libiconv-1.19/iconv.3.html
+  summary:
+    - >
+      GNU libiconv is the GNU character-set conversion library for systems that lack a
+      usable iconv implementation or lack Unicode-capable conversions.
+  timeline:
+    - >
+      1998: GNU libiconv documentation carries Free Software Foundation copyright from
+      this period.
+    - '2024: GNU libiconv 1.18 release notes described POSIX:2024 API compatibility work.'
+    - '2026: The GNU project page documented libiconv 1.19 source and manuals.'
+  usage:
+    - >
+      Developers link against libiconv through iconv_open, iconv, and iconv_close, while
+      users can call the iconv program to convert files or streams between encodings.
+      Build systems commonly surface it through LIBICONV or LTLIBICONV substitutions.
 tags:
   - character-encoding
   - charset-conversion
@@ -37,6 +95,12 @@ provenance:
     - >
       Official GNU libiconv page has a Documentation section linking the program and
       library manuals.
+  history-sources:
+    - https://formulae.brew.sh/formula/libiconv
+    - https://lists.gnu.org/archive/html/info-gnu/2024-12/msg00004.html
+    - https://www.gnu.org/software/libiconv
+    - https://www.gnu.org/software/libiconv/documentation/libiconv-1.19/iconv.1.html
+    - https://www.gnu.org/software/libiconv/documentation/libiconv-1.19/iconv.3.html
   repo-sources:
     - >
       Official GNU libiconv page says development sources are obtained through Savannah;
@@ -52,5 +116,6 @@ category-path:
   - character-encoding
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

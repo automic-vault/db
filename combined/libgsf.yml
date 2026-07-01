@@ -6,6 +6,80 @@ docs:
   - https://gnome.pages.gitlab.gnome.org/libgsf/api
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      libgsf was adopted through GNOME Office and file-format tooling rather than as a
+      famous end-user command. It is infrastructure for applications that need
+      structured file reading and writing without duplicating OLE, ZIP, compression,
+      metadata, and stream code.
+    - >
+      The Homebrew package exposes command-line tools such as gsf,
+      gsf-office-thumbnailer, and gsf-vba-dump, showing the library's practical
+      packaging surface: archive-like inspection, office document thumbnails, and VBA
+      extraction/debugging around compound document formats.
+  package-nerd-significance:
+    - >
+      libgsf is a small dependency with a long tail: most users do not ask for it by
+      name, but office-file importers, thumbnailers, and data tools benefit from one
+      shared implementation of gnarly container formats.
+    - >
+      It is package-nerd significant because it demonstrates the GNOME/GLib style of
+      extracting reusable infrastructure from an application. Gnumeric needed better
+      Excel container handling; the result became a general library that distributions
+      can patch, fuzz, and update once.
+  project-history:
+    - >
+      The libgsf README says the project was started by Jody Goldberg and aims to
+      provide an efficient, extensible I/O abstraction for dealing with different
+      structured file formats. The GTK-Doc manual adds that it began in 2002 as part of
+      the Gnumeric project, replacing libole2 for Microsoft Excel file handling because
+      libole2 had become difficult to maintain and generalize.
+    - >
+      The GitLab repository history includes an initial backup commit dated 2002-05-23.
+      Since then, the 1.14 series has continued as a quiet GNOME infrastructure library
+      with fixes for OLE2 edge cases, large files, ZIP64 behavior, thumbnailing,
+      introspection, fuzzed-file crashes, and metadata handling.
+  related-projects:
+    - Gnumeric is the spreadsheet project from which libgsf emerged.
+    - libole2 is the older library that GSF replaced for Gnumeric's Excel file handling.
+    - >
+      GLib, GNOME, GTK-Doc, OLE2, ZIP, OpenDocument, and office thumbnailing tools are
+      part of the surrounding ecosystem.
+  sources:
+    - https://gitlab.gnome.org/GNOME/libgsf
+    - https://gitlab.gnome.org/GNOME/libgsf/-/raw/master/NEWS
+    - https://gitlab.gnome.org/GNOME/libgsf/-/raw/master/README
+    - https://gnome.pages.gitlab.gnome.org/libgsf/api/index.html
+  summary:
+    - >
+      libgsf is the GNOME Structured File Library, an I/O abstraction for compound and
+      structured file formats such as Microsoft OLE2, ZIP/JAR, gzip, bzip,
+      OpenDocument-related streams, metadata, and thumbnails. It came out of Gnumeric's
+      need for maintainable spreadsheet file-format infrastructure.
+  timeline:
+    - >
+      2002: The reference manual says GSF started as part of Gnumeric to replace libole2
+      for Microsoft Excel file handling.
+    - '2002-05-23: The GitLab repository records the initial backup commit.'
+    - '2016: Release 1.14.38 fixed BSD test compatibility and ZIP64 behavior.'
+    - >
+      2024: Release 1.14.53 fixed integer overflows affecting memory allocation and
+      improved OLE/OpenDocument handling.
+    - >
+      2026: Release 1.14.57 fixed problems with OLE files larger than 4 GB and improved
+      gzip, bzip, and ZIP handling for 4 GB and larger reads and writes.
+  usage:
+    - >
+      Developers use libgsf through its C API to read and write structured files and
+      streams. The reference manual groups APIs around basic I/O, stream sources, ZIP
+      files, compression, MS OLE2, metadata, OASIS Open Document support, and related
+      utilities.
+    - >
+      Packagers ship it for applications that depend on GNOME/GLib-style structured file
+      handling. Its release notes show continued attention to malformed files and very
+      large OLE/ZIP cases, which are exactly the edge cases shared libraries are meant
+      to centralize.
 category: developer-tools
 package-manager:
   apk: libgsf
@@ -34,5 +108,11 @@ executables:
   - gsf-vba-dump
 provenance:
   formula: libgsf
+  history-sources:
+    - https://gitlab.gnome.org/GNOME/libgsf
+    - https://gitlab.gnome.org/GNOME/libgsf/-/raw/master/NEWS
+    - https://gitlab.gnome.org/GNOME/libgsf/-/raw/master/README
+    - https://gnome.pages.gitlab.gnome.org/libgsf/api/index.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

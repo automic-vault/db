@@ -6,6 +6,82 @@ docs:
   - https://www.gnupg.org/software/libgpg-error/index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Libgpg-error is adopted mostly by being pulled in as a dependency of the GnuPG
+      stack. A system that builds libgcrypt, GPGME, pinentry, or GnuPG itself generally
+      needs the common error/runtime layer first.
+    - >
+      Package managers expose it as both a library and a small tool package; the
+      Homebrew batch input lists gpg-error, gpg-error-config, gpgrt-config, and yat2m
+      executables. Debian and Ubuntu package the tools under gpgrt-tools, which reflects
+      the project's gradual Libgpgrt naming direction.
+  package-nerd-significance:
+    - >
+      This is the kind of tiny library that explains why cryptographic packages have
+      deep dependency chains. It appears boring, but if it is missing or mismatched,
+      libgcrypt, GPGME, and larger GnuPG builds fail early.
+    - >
+      The rename pressure toward gpgrt is package-nerd notable: package names, tool
+      names, headers, and downstream dependencies do not all switch at once, so
+      distributions carry both the historical libgpg-error identity and newer
+      gpgrt-facing interfaces.
+  project-history:
+    - >
+      The GnuPG project describes Libgpg-error as a library that originally defined
+      common error values for GPG, GPGSM, GPGME, GPG-Agent, libgcrypt, Libksba, DirMngr,
+      Pinentry, SCdaemon, and related components. The project page also notes the
+      long-term plan to rename the library to Libgpgrt, reflecting its broader role as
+      the GnuPG runtime.
+    - >
+      The public repository history dates back to 2003 in the GitHub mirror, and the
+      official tarball directory records a long sequence of 1.x releases. By the 2020s,
+      release notes document new gpgrt-prefixed process APIs, name-value helpers,
+      Windows registry helpers, cross-compilation work, and platform fixes.
+  related-projects:
+    - >
+      GnuPG, libgcrypt, GPGME, Libksba, Pinentry, DirMngr, and SCdaemon are direct
+      members of the ecosystem that use the shared error/runtime layer.
+    - >
+      Libgpgrt is the intended runtime-library identity reflected by gpgrt-prefixed
+      functions, gpgrt.h, and gpgrt-config.
+    - >
+      Homebrew, Debian, Ubuntu, Fedora, Arch, and other package managers distribute it
+      as a foundational GnuPG dependency.
+  sources:
+    - https://github.com/gpg/libgpg-error
+    - https://github.com/gpg/libgpg-error/blob/master/NEWS
+    - https://github.com/gpg/libgpg-error/blob/master/README
+    - https://gnupg.org/ftp/gcrypt/libgpg-error/
+    - https://www.gnupg.org/software/libgpg-error/index.html
+  summary:
+    - >
+      Libgpg-error is the small but central GnuPG runtime library that gives GnuPG
+      components a common vocabulary for error codes and error handling. Over time it
+      also accumulated reusable runtime pieces such as streams, printf-style functions,
+      locks, Base64 helpers, logging, option parsing, and Windows portability support.
+  timeline:
+    - '2003-06-05: The GitHub mirror includes repository history from this date.'
+    - >
+      2020-11-19: The GnuPG project page source was last changed, describing the gpgrt.h
+      direction.
+    - '2024-06-19: Version 1.50 added a new set of process spawn functions.'
+    - >
+      2025-04-08: Version 1.52 added name-value file APIs, string-list APIs, and Windows
+      registry helpers.
+    - >
+      2026-05-07: Version 1.61 fixed es_printf and vfnameconcat security-related bugs
+      and added Emscripten cross-compile support.
+  usage:
+    - >
+      Developers use Libgpg-error directly when writing code in the GnuPG ecosystem or
+      when they need the library's gpgrt runtime services. Most users encounter it
+      indirectly through cryptographic packages that rely on GnuPG libraries.
+    - >
+      At build time, gpgrt-config and gpg-error-config help downstream software discover
+      headers, compiler flags, and linker flags, making the package part of the familiar
+      Unix library toolchain.
 category: developer-tools
 package-manager:
   apk: libgpg-error
@@ -34,5 +110,12 @@ executables:
   - yat2m
 provenance:
   formula: libgpg-error
+  history-sources:
+    - https://github.com/gpg/libgpg-error
+    - https://github.com/gpg/libgpg-error/blob/master/NEWS
+    - https://github.com/gpg/libgpg-error/blob/master/README
+    - https://gnupg.org/ftp/gcrypt/libgpg-error/
+    - https://www.gnupg.org/software/libgpg-error/index.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

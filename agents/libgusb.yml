@@ -5,6 +5,62 @@ docs:
   - https://github.com/hughsie/libgusb#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GUsb is packaged broadly because GLib-based desktop and device-management software
+      often needs USB access without depending directly on raw libusb callbacks. The
+      batch input lists Alpine, Homebrew, Debian, Fedora, Arch, Ubuntu, and openSUSE
+      package names, including GObject Introspection packages on Debian and Ubuntu.
+  package-nerd-significance:
+    - >
+      GUsb sits in the classic GNOME plumbing layer: it is not a user-facing app, but it
+      lets firmware tools, hardware managers, and desktop services share one USB
+      abstraction. The JSON and emulation additions in the 0.4 series also make it
+      attractive for repeatable tests around hardware behavior.
+  project-history:
+    - >
+      The upstream README describes GUsb as a GObject wrapper for libusb1 with
+      asynchronous control, bulk, and interrupt transfers, cancellation support, and
+      main-loop integration. Its scope is intentionally narrower than libusb itself: not
+      every libusb operation is wrapped, but the project accepts feature requests when
+      the wrapper fits the library's purpose.
+    - >
+      Release notes show the library moving beyond simple device access into testability
+      and serialization work. Version 0.4.0, released on September 12, 2022, added BOS
+      descriptor support, JSON serialization of GUsbDevice objects, and emulated
+      USB-device replay. Version 0.4.9, released on April 22, 2024, focused on HID
+      descriptor handling, handle cleanup, and emulator safety fixes.
+  related-projects:
+    - libusb1 is the low-level USB library wrapped by GUsb.
+    - GLib, GObject, and GIO provide the application framework integration targeted by GUsb.
+    - >
+      GObject Introspection packages expose GUsb to language bindings in distributions
+      such as Debian and Ubuntu.
+  sources:
+    - https://formulae.brew.sh/formula/libgusb
+    - https://github.com/hughsie/libgusb
+    - https://raw.githubusercontent.com/hughsie/libgusb/main/NEWS
+    - https://raw.githubusercontent.com/hughsie/libgusb/main/README.md
+    - https://raw.githubusercontent.com/hughsie/libgusb/main/meson.build
+  summary:
+    - >
+      GUsb is a small GLib/GObject wrapper around libusb1, intended to make asynchronous
+      USB transfers fit naturally into GLib main-loop applications and system daemons.
+      It is package-nerd useful because it turns low-level USB plumbing into a library
+      that GNOME-style C programs can consume without each one hand-rolling libusb
+      integration.
+  timeline:
+    - '2021-03-12: Version 0.3.6 added string-descriptor byte APIs and Darwin dylib fixes.'
+    - '2022-09-12: Version 0.4.0 added JSON serialization and device emulation support.'
+    - '2022-10-01: Version 0.4.1 ported documentation from gtk-doc to gi-docgen.'
+    - '2024-04-22: Version 0.4.9 fixed HID descriptor, libusb handle, and emulator issues.'
+  usage:
+    - >
+      Applications and daemons use GUsb to enumerate devices, perform asynchronous USB
+      transfers, respond to hotplug events, and integrate those operations with GLib
+      cancellation and event handling. The gusbcmd executable provides a small
+      command-line surface for inspecting or exercising the library.
 tags:
   - async-io
   - c-library
@@ -34,6 +90,12 @@ provenance:
     - >
       Official repository README is the best official documentation surface found;
       repository also contains a docs directory: https://github.com/hughsie/libgusb
+  history-sources:
+    - https://formulae.brew.sh/formula/libgusb
+    - https://github.com/hughsie/libgusb
+    - https://raw.githubusercontent.com/hughsie/libgusb/main/NEWS
+    - https://raw.githubusercontent.com/hughsie/libgusb/main/README.md
+    - https://raw.githubusercontent.com/hughsie/libgusb/main/meson.build
   repo-sources:
     - >
       source_facts.repo is already populated as https://github.com/hughsie/libgusb; per
@@ -49,5 +111,6 @@ category-path:
   - usb
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

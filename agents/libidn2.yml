@@ -6,6 +6,76 @@ docs:
   - https://www.gnu.org/software/libidn/libidn2/reference
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The GNU Libidn page explicitly calls Libidn2 the successor of GNU Libidn and notes
+      that it provides IDNA2008, TR46, and a compatibility layer for GNU Libidn. That
+      made it the practical migration path for distributions and network applications
+      moving away from IDNA2003 behavior.
+    - >
+      Libidn2 is package-visible because applications often need a shared, audited
+      implementation of Unicode domain-name conversion rather than hand-rolling
+      security-sensitive Punycode and normalization behavior.
+  package-nerd-significance:
+    - >
+      Libidn2 is where DNS, Unicode versioning, security-sensitive string handling, and
+      compatibility policy meet. Packagers care about it because changing from libidn to
+      libidn2 can alter IDNA behavior, but staying on IDNA2003 can be wrong for software
+      that expects IDNA2008/TR46.
+    - >
+      It is also a good example of a successor package that is not just a new ABI: it
+      represents a standards transition and a different view of what domain names should
+      accept.
+  project-history:
+    - >
+      The IETF IDNA2008 RFC series replaced the earlier IDNA2003 model, describing a
+      revised protocol and definitions for internationalized domain names. Libidn2 was
+      created to implement that newer standards family while retaining package-level
+      continuity for GNU users.
+    - >
+      The Libidn2 NEWS file records an initial 0.0 alpha release on 2011-03-09 for
+      public API review, with IDNA2008 lookup mostly implemented. Release 0.2 on
+      2011-03-30 added the idn2 command-line tool and made lookup/register functions
+      operational.
+    - >
+      Release 0.12 on 2016-12-26 added TR46/UTS #46 support to the API and idn2 utility.
+      Release 2.0.0 on 2017-03-29 changed the version numbering scheme and added
+      to-ASCII and to-Unicode conversion functions corresponding to Libidn functions.
+      Release 2.0.5 on 2018-05-18 switched the default library behavior to IDNA2008 as
+      amended by non-transitional TR46.
+  related-projects:
+    - GNU Libidn is the predecessor and compatibility target.
+    - GNU libunistring is related through Unicode string support used by Libidn2 builds.
+    - RFC 5890, RFC 5891, and Unicode UTS #46 define the standards context around Libidn2.
+  sources:
+    - https://datatracker.ietf.org/doc/html/rfc5890
+    - https://datatracker.ietf.org/doc/html/rfc5891
+    - https://github.com/libidn/libidn2/blob/master/NEWS
+    - https://unicode.org/reports/tr46/
+    - https://www.gnu.org/software/libidn/
+    - https://www.gnu.org/software/libidn/libidn2/manual/libidn2.html
+  summary:
+    - >
+      GNU Libidn2 is the GNU successor to Libidn for IDNA2008 and Unicode TR46
+      internationalized-domain-name processing.
+  timeline:
+    - >
+      2010: RFC 5890 and related RFCs documented the IDNA2008 revision that superseded
+      IDNA2003.
+    - '2011: Libidn2 0.0 alpha released for public API review.'
+    - '2011: Libidn2 0.2 added the idn2 command-line tool.'
+    - '2016: Libidn2 0.12 added TR46/UTS #46 support.'
+    - >
+      2017: Libidn2 2.0.0 changed version numbering and added Libidn-corresponding
+      conversion APIs.
+    - '2018: Libidn2 2.0.5 made IDNA2008 plus non-transitional TR46 the default behavior.'
+  usage:
+    - >
+      Users call idn2 for command-line conversion and debugging, while applications link
+      the library for IDNA lookup and registration conversions. The manual emphasizes
+      correct locale and UTF-8 handling because feeding bytes in the wrong character set
+      can produce errors or wrong output.
 tags:
   - cli
   - dns
@@ -35,6 +105,13 @@ provenance:
     - >
       Official GNU Libidn2 manual and reference manual are hosted under
       gnu.org/software/libidn/libidn2.
+  history-sources:
+    - https://datatracker.ietf.org/doc/html/rfc5890
+    - https://datatracker.ietf.org/doc/html/rfc5891
+    - https://github.com/libidn/libidn2/blob/master/NEWS
+    - https://unicode.org/reports/tr46/
+    - https://www.gnu.org/software/libidn/
+    - https://www.gnu.org/software/libidn/libidn2/manual/libidn2.html
   repo-sources:
     - Official Savannah Git page for GNU Libidn lists libidn/libidn2.git and its clone URL.
   tags-sources:
@@ -48,5 +125,6 @@ category-path:
   - internationalization
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
