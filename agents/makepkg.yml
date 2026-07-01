@@ -11,6 +11,71 @@ config-file-location:
     - $XDG_CONFIG_HOME/pacman/makepkg.conf
     - ~/.makepkg.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      On Arch Linux, `makepkg` became the normal way for users and maintainers to build
+      packages from PKGBUILDs. The man page frames the workflow plainly: once a PKGBUILD
+      exists, `makepkg` downloads and validates sources, checks dependencies, runs the
+      build and packaging functions, installs into a temporary root, writes metadata,
+      and creates a package for pacman.
+    - >
+      The Arch User Repository amplified `makepkg`'s role because AUR packages are
+      distributed as build recipes rather than prebuilt binaries. That made PKGBUILD
+      review, local compilation, checksums, source arrays, and `makepkg -si` part of
+      everyday Arch package-manager literacy.
+  package-nerd-significance:
+    - >
+      `makepkg` matters because it makes the Arch package format legible and
+      reproducible at the shell level. A package recipe is a Bash file, the package
+      database is intentionally simple, and the toolchain exposes enough knobs for
+      distribution maintainers, AUR users, and local rebuilders to reason about exactly
+      what got built.
+  project-history:
+    - >
+      The pacman project began with Judd Vinet's early Arch Linux package manager
+      releases in 2002. The official pacman page records a 1.0 release on February 25,
+      2002, a 2.0 release in August 2002 that introduced sync package databases, and
+      later major versions that grew the toolchain around the simple compressed package
+      format.
+    - >
+      The official pacman history calls out version 3.0 as the split between the pacman
+      front end and libalpm, version 4.0 as the point where package signing and
+      verification covered the makepkg, repo-add, and pacman toolchain, version 6.0 for
+      parallel downloads, and version 7.0 for sandboxed downloads. `makepkg` developed
+      with that ecosystem because package building, repository metadata, installation,
+      and verification all have to agree on package formats and metadata.
+  related-projects:
+    - >
+      Related Arch packaging tools include pacman, libalpm, repo-add, repo-remove,
+      makepkg-template, pacman-key, namcap, devtools, and AUR helpers that delegate
+      builds to `makepkg`.
+  sources:
+    - https://gitlab.archlinux.org/pacman/pacman
+    - https://man.archlinux.org/man/PKGBUILD.5
+    - https://man.archlinux.org/man/makepkg.8
+    - https://man.archlinux.org/man/makepkg.conf.5
+    - https://pacman.archlinux.page/
+  summary:
+    - >
+      `makepkg` is Arch Linux's package build script for turning PKGBUILD recipes into
+      pacman-installable packages. It sits in the pacman project alongside libalpm,
+      repo-add, pacman-key, and related utilities, and is the practical center of Arch
+      source packaging culture.
+  timeline:
+    - '2002: pacman 1.0 is released.'
+    - '2002: pacman 2.0 introduces sync package databases.'
+    - '2007: pacman 3.0 splits the package manager into libalpm and the pacman front end.'
+    - '2011: pacman 4.0 adds signing and verification across makepkg, repo-add, and pacman.'
+    - '2021: pacman 6.0 adds parallel downloads.'
+    - '2024: pacman 7.0 adds sandboxed download support.'
+  usage:
+    - >
+      Typical usage is to enter a directory containing a PKGBUILD and run `makepkg`,
+      often with flags to install dependencies, clean build files, sign packages, or
+      install the result with pacman. `makepkg.conf` controls compiler flags, build
+      environment options, source download agents, compression, signing, and per-user
+      overrides.
 tags:
   - arch-linux
   - cli
@@ -41,6 +106,12 @@ provenance:
   docs-sources:
     - Official Arch manual page documents makepkg(8).
     - source_facts.homepage points to the official Arch Wiki makepkg page.
+  history-sources:
+    - https://gitlab.archlinux.org/pacman/pacman
+    - https://man.archlinux.org/man/PKGBUILD.5
+    - https://man.archlinux.org/man/makepkg.8
+    - https://man.archlinux.org/man/makepkg.conf.5
+    - https://pacman.archlinux.page/
   repo-sources:
     - >
       source_facts.repo already provides https://gitlab.archlinux.org/pacman/pacman, so
@@ -56,5 +127,6 @@ category-path:
   - packaging
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

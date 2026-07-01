@@ -6,6 +6,81 @@ docs:
   - https://man-db.gitlab.io/man-db
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official man-db homepage lists use by several GNU/Linux distributions,
+      including Arch Linux, Debian, Dragora, Fedora, Gentoo, openSUSE, and Ubuntu, and
+      notes that it also compiles and runs on a number of proprietary Unix systems.
+    - >
+      In package-manager culture, man-db is one of the packages users notice during
+      installs and upgrades because `mandb` updates the manual-page index. It is
+      infrastructure rather than an application: distributions depend on it to make
+      `man`, `apropos`, and `whatis` fast and searchable.
+  package-nerd-significance:
+    - >
+      man-db is important to package nerds because it turns scattered manual pages from
+      every installed package into a searchable local index. Its post-install hooks,
+      cache ownership choices, setuid options, compression support, and path mapping
+      influence how documentation behaves across a whole system.
+    - >
+      It is also a classic distribution-integration package: the upstream tarball has
+      defaults, but Linux distributions commonly patch paths or integrate it with
+      package triggers, tmpfiles cleanup, and policy around `/usr/share/man` and
+      `/var/cache/man`.
+  project-history:
+    - >
+      The man-db source tree carries copyright lines going back to John W. Eaton in
+      1990-1991, Graeme W. Wilford, Fabrizio Polacco, and later Colin Watson. The README
+      identifies Colin Watson as current maintainer and points users to the manual for
+      configuration and formatter details.
+    - >
+      man-db's development reflects the long transition from historical Unix man-page
+      lookup toward database-backed indexing. Its configuration and cache model track
+      Filesystem Hierarchy Standard paths such as `/usr/share` for manual pages and
+      `/var/cache/man` for cached cat pages, while preserving compatibility with older
+      FSSTND layouts.
+  related-projects:
+    - >
+      man-db is related to traditional Unix `man`, `apropos`, `whatis`, `catman`, and
+      `makewhatis` implementations.
+    - >
+      It also depends on formatter tools such as groff or compatible nroff/troff
+      implementations, and it is often compared with mandoc on systems that can use
+      either as the manual-page viewer/searcher.
+  sources:
+    - https://gitlab.com/man-db/man-db
+    - https://gitlab.com/man-db/man-db/-/raw/main/NEWS.md
+    - https://gitlab.com/man-db/man-db/-/raw/main/README.md
+    - https://gitlab.com/man-db/man-db/-/raw/main/man/man1/manpath.man1
+    - https://gitlab.com/man-db/man-db/-/raw/main/man/man5/manpath.man5
+    - https://gitlab.com/man-db/man-db/-/raw/main/src/man_db.conf.in
+    - https://man-db.nongnu.org/
+  summary:
+    - >
+      man-db is an implementation of the standard Unix manual-page system accessed
+      through `man`. Its official homepage describes it as using an indexed database
+      instead of traditional flat-text whatis databases, with utilities such as `man`,
+      `mandb`, `apropos`, and `whatis` around that database.
+  timeline:
+    - '1990: Early man-db copyright lineage begins with John W. Eaton.'
+    - >
+      2001: README notes FHS manual roots `/usr/share` and `/var/cache/man` as current
+      defaults for manual and cat hierarchies.
+    - '2020: GitLab project creation records the modern GitLab project presence.'
+    - '2022: NEWS notes the Git repository transfer to https://gitlab.com/man-db/man-db.'
+    - '2025: man-db 2.13.1 was released with formatting, portability, and build fixes.'
+  usage:
+    - >
+      `mandb` initializes or manually updates index database caches, and the stored
+      information is used by man-db utilities to improve speed and functionality.
+      `manpath` computes manual search paths using the man-db configuration file and the
+      user's environment.
+    - >
+      The upstream documentation points packagers and builders to `./src/man_db.conf`
+      and `man/man5/manpath.5` for configuration details. Installed paths depend on
+      `sysconfdir`, while the upstream `manpath` manual documents `~/.manpath` as the
+      default user configuration for `manpath -C`.
 tags:
   - cli
   - documentation-system
@@ -31,6 +106,14 @@ provenance:
   docs-sources:
     - Official GitLab repository includes a manual directory referenced by the project README.
     - source_facts.homepage is the official man-db documentation site.
+  history-sources:
+    - https://gitlab.com/man-db/man-db
+    - https://gitlab.com/man-db/man-db/-/raw/main/NEWS.md
+    - https://gitlab.com/man-db/man-db/-/raw/main/README.md
+    - https://gitlab.com/man-db/man-db/-/raw/main/man/man1/manpath.man1
+    - https://gitlab.com/man-db/man-db/-/raw/main/man/man5/manpath.man5
+    - https://gitlab.com/man-db/man-db/-/raw/main/src/man_db.conf.in
+    - https://man-db.nongnu.org/
   repo-sources:
     - Official GitLab project describes man-db as tools for reading manual pages.
     - >
@@ -48,5 +131,6 @@ category-path:
   - manual-pages
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
