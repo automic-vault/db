@@ -9,6 +9,79 @@ config-file-location:
   unix:
     - include/mbedtls/mbedtls_config.h
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The package is widely present across Unix package managers, including Homebrew,
+      Debian/Ubuntu, Fedora, Alpine, Arch, MacPorts, Nix, and openSUSE package names
+      listed in the input metadata. That spread reflects Mbed TLS's role as a dependency
+      for embedded tooling, network software, and projects that want a compact TLS
+      implementation instead of OpenSSL.
+    - >
+      For package managers, mbedtls@3 is specifically useful as a parallel-installable
+      major version. It lets downstream formulae and ports continue building against the
+      3.x ABI while other consumers migrate on their own schedule.
+  package-nerd-significance:
+    - >
+      Mbed TLS is package-nerd relevant because it is both a library dependency and a
+      security-sensitive ABI surface. Its major-versioned Homebrew formula records the
+      practical reality that TLS libraries cannot always be upgraded in lockstep across
+      an ecosystem.
+    - >
+      The 3.x line is also a useful marker for the PSA Crypto transition in C
+      cryptography libraries: package maintainers care which consumers use legacy Mbed
+      TLS APIs, which use PSA APIs, and which need LTS security backports.
+  project-history:
+    - >
+      The project began as PolarSSL and became Mbed TLS under Arm's Mbed ecosystem
+      before moving into the TrustedFirmware.org family. Its official documentation
+      describes a small, portable TLS and cryptography implementation with build-time
+      configuration through headers such as mbedtls_config.h, which is why distribution
+      packages expose both libraries and a set of diagnostic and test command-line
+      programs.
+    - >
+      Mbed TLS 3.0.0 was the major compatibility break for the 3.x line: the release
+      removed deprecated APIs and pushed users toward the PSA Crypto interfaces. Later
+      3.x releases, especially the 3.6 long-term-support branch, became important for
+      packagers because they offered a stable line for applications that needed Mbed TLS
+      3 rather than the newer major series.
+  related-projects:
+    - >
+      Related TLS and cryptography stacks include OpenSSL, LibreSSL, BoringSSL, wolfSSL,
+      and GnuTLS. Within the same project family, TF-PSA-Crypto is closely related to
+      Mbed TLS's PSA Crypto work.
+  sources:
+    - https://github.com/Mbed-TLS/mbedtls/releases/tag/v3.0.0
+    - https://github.com/Mbed-TLS/mbedtls/releases/tag/v3.6.0
+    - https://mbed-tls.readthedocs.io/en/latest/
+    - https://mbed-tls.readthedocs.io/en/latest/kb/how-to/using-mbedtls-config-file/
+    - https://www.trustedfirmware.org/projects/mbed-tls
+    - source_facts.package-manager
+  summary:
+    - >
+      Mbed TLS is a C cryptography and SSL/TLS library aimed at embedded and constrained
+      systems, but it is also packaged broadly as a general-purpose TLS stack for
+      Unix-like systems. Homebrew's mbedtls@3 formula tracks the 3.x major series, whose
+      API and configuration model matter to downstream packages that have not moved to
+      later ABI lines.
+  timeline:
+    - '2014: The PolarSSL codebase became Mbed TLS in the Arm Mbed ecosystem.'
+    - >
+      2021: Mbed TLS 3.0.0 introduced a major API transition and removed deprecated
+      interfaces.
+    - '2024: Mbed TLS 3.6 became a long-term-support line for the 3.x series.'
+    - '2026: Homebrew continues to package the 3.x line separately as mbedtls@3.'
+  usage:
+    - >
+      Most users consume Mbed TLS as C libraries and headers rather than as an end-user
+      CLI. The installed example and utility programs, such as mbedtls-selftest,
+      mbedtls-benchmark, ssl_client, ssl_server, cert_app, and key_app, are useful for
+      smoke tests, performance checks, and certificate/key experiments.
+    - >
+      Configuration is traditionally handled at build time through
+      include/mbedtls/mbedtls_config.h or an alternate MBEDTLS_CONFIG_FILE. That makes
+      the package unusually sensitive to distribution build flags, enabled algorithms,
+      and ABI compatibility.
 tags:
   - c-library
   - cli
@@ -25,6 +98,13 @@ provenance:
     - Official Mbed TLS project name and brew formula version suffix.
   docs-sources:
     - Official Mbed TLS 3.6 README links to ReadTheDocs and API documentation.
+  history-sources:
+    - https://github.com/Mbed-TLS/mbedtls/releases/tag/v3.0.0
+    - https://github.com/Mbed-TLS/mbedtls/releases/tag/v3.6.0
+    - https://mbed-tls.readthedocs.io/en/latest/
+    - https://mbed-tls.readthedocs.io/en/latest/kb/how-to/using-mbedtls-config-file/
+    - https://www.trustedfirmware.org/projects/mbed-tls
+    - source_facts.package-manager
   repo-sources:
     - source_facts.repo is already populated; prompt says return repo as null.
   tags-sources:
@@ -36,5 +116,6 @@ category-path:
   - security
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

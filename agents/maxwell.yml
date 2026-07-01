@@ -10,6 +10,61 @@ config-file-location:
 credentials-file-location:
   unix:
     - config.properties
+history:
+  adoption-history:
+    - >
+      Maxwell found a niche among teams that wanted MySQL CDC without running a full
+      Kafka Connect stack. Its official README frames use cases as ETL, audit logs,
+      cache invalidation, search indexing, and inter-service communication, and the
+      GitHub project shows thousands of stars and many releases.
+  package-nerd-significance:
+    - >
+      Maxwell is significant to data-package users because it turns a database
+      replication stream into line-oriented JSON events that can be piped through
+      standard streaming infrastructure. It is also a good example of a Java service
+      packaged as a CLI daemon for operational use.
+  project-history:
+    - >
+      The official repository describes Maxwell as a CDC application that reads MySQL
+      binlogs and writes data changes as JSON to Kafka, Kinesis, and other streaming
+      platforms. Its changelog starts in March 2015 with a first possible release that
+      included basic Kafka support and JSON output of binlog deltas.
+    - >
+      Early 2015 releases quickly added Kafka command-line options, persisted binlog
+      positions inside MySQL, primary-key capture, Kafka keys, MySQL 5.6 support,
+      transaction IDs, and server-id fixes. Later releases extended producers,
+      monitoring, high availability, MariaDB compatibility, MySQL 8 support, parser
+      fixes, and security dependency updates.
+  related-projects:
+    - MySQL binlog, Apache Kafka, Amazon Kinesis, RabbitMQ, Redis, Google Pub/Sub, Debezium
+  sources:
+    - https://github.com/zendesk/maxwell
+    - https://github.com/zendesk/maxwell/blob/master/config.properties.example
+    - https://maxwells-daemon.io/changelog/
+    - https://maxwells-daemon.io/config/
+    - https://maxwells-daemon.io/quickstart/
+  summary:
+    - >
+      Maxwell's Daemon is a MySQL change-data-capture tool from Zendesk that reads
+      binlogs and emits row changes as JSON to Kafka and other streaming systems.
+  timeline:
+    - >
+      2015-03-04: First possible Maxwell release with basic Kafka support and JSON
+      binlog deltas.
+    - '2015-03-18: Maxwell begins storing last-written binlog position inside the MySQL master.'
+    - '2015-04-06: Primary-key capture and single-topic output arrive.'
+    - '2015-09-15: v0.11.0 adds transaction information in Kafka stream output.'
+    - >
+      2021: Releases add SNS, NATS, high availability, Docker multi-platform builds, and
+      log4j security updates.
+    - '2024: Official changelog still records active parser and dependency maintenance.'
+  usage:
+    - >
+      Users run `bin/maxwell` with MySQL connection credentials and a producer target
+      such as stdout, Kafka, Kinesis, NATS, Pub/Sub, BigQuery, RabbitMQ, Redis, SNS, or
+      SQS. Configuration can be passed by command line, scoped environment variables, or
+      a Java `config.properties` file, and secrets such as MySQL passwords commonly live
+      in those configuration paths.
 tags:
   - binlog
   - change-data-capture
@@ -35,6 +90,12 @@ provenance:
     - Official documentation header uses "Maxwell's Daemon"; source_facts.name is maxwell.
   docs-sources:
     - Official maxwells-daemon.io documentation provides Quick Start and Reference pages.
+  history-sources:
+    - https://github.com/zendesk/maxwell
+    - https://github.com/zendesk/maxwell/blob/master/config.properties.example
+    - https://maxwells-daemon.io/changelog/
+    - https://maxwells-daemon.io/config/
+    - https://maxwells-daemon.io/quickstart/
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/zendesk/maxwell; per
@@ -50,5 +111,6 @@ category-path:
   - change-data-capture
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
