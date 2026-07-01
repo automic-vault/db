@@ -11,6 +11,75 @@ config-file-location:
     - ~/.notmuch-config.<profile>
     - ~/.notmuch-config
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is niche but durable. Homebrew's formula API reported 276
+      install-on-request events in its 365-day analytics window, while the main notmuch
+      formula reported 2,580 install-on-request events. That gap is expected because
+      notmuch-mutt serves a subset of Notmuch users who stay with Mutt.
+    - >
+      The integration also sits beside a wider Notmuch frontend ecosystem. Notmuch's
+      frontend page lists notmuch-mutt as a shipped frontend, and also lists NeoMutt,
+      notmuchfs, aerc, alot, astroid, and other tools that grew around Notmuch's library
+      and database model.
+  package-nerd-significance:
+    - >
+      notmuch-mutt is packaging glue, but important glue: it shows why Notmuch became
+      infrastructure rather than just an email client. The separate Homebrew formula
+      lets old-school Mutt users adopt the search/indexing layer without changing their
+      whole mail UI.
+  project-history:
+    - >
+      The Notmuch wiki frames notmuch-mutt as an old-fashioned mixed setup: Notmuch
+      performs indexing/search, and Mutt remains the mail user agent. The script creates
+      a virtual maildir folder containing search results whenever a search is made.
+    - >
+      The Notmuch notmuch-mutt wiki page was created on 2013-01-08 and points to Stefano
+      Zacchiroli's January 2011 how-to for using Notmuch with Mutt, which is a useful
+      marker for the integration's early community usage.
+  related-projects:
+    - notmuch
+    - Mutt
+    - NeoMutt
+    - notmuchfs
+  sources:
+    - https://formulae.brew.sh/api/formula/notmuch-mutt.json
+    - https://formulae.brew.sh/api/formula/notmuch.json
+    - https://notmuchmail.org/
+    - https://notmuchmail.org/frontends/
+    - https://notmuchmail.org/news/
+    - https://notmuchmail.org/notmuch-mutt/
+    - https://notmuchmail.org/releases/
+  summary:
+    - >
+      notmuch-mutt is the Mutt integration script shipped with Notmuch. It exists for
+      users who want Notmuch's fast full-text search, thread reconstruction, and tagging
+      while continuing to read mail in Mutt.
+    - >
+      The package is not an independent upstream project; its history follows Notmuch.
+      Homebrew splits it as a separate formula, and several Linux distributions package
+      it separately, because Mutt users may want the bridge without installing the Emacs
+      UI pieces.
+  timeline:
+    - >
+      2011-01: Stefano Zacchiroli published a Notmuch-with-Mutt how-to referenced by the
+      Notmuch wiki.
+    - '2013-01-08: Notmuch wiki page for notmuch-mutt created.'
+    - >
+      2026-01-31: Notmuch 0.40 released; Homebrew packages notmuch-mutt at the matching
+      0.40 version.
+  usage:
+    - >
+      Users configure Mutt macros or scripts so a query runs through notmuch-mutt, which
+      then exposes matching messages as a virtual maildir. The tradeoff is classic and
+      explicit in the docs: global search across folders works, but changes made in the
+      result listing do not automatically carry back to the original folders.
+    - >
+      A second style uses Mutt's limit feature with notmuch search --output=messages and
+      message-id filtering. The Notmuch wiki describes this as more natural for people
+      who think in one-folder-at-a-time Mutt workflows, but warns that it scales only
+      for reasonably specific queries.
 tags:
   - cli
   - email
@@ -35,6 +104,14 @@ provenance:
     - 'source_facts.name: notmuch-mutt'
   docs-sources:
     - Official Notmuch site hosts the notmuch-mutt usage page
+  history-sources:
+    - https://formulae.brew.sh/api/formula/notmuch-mutt.json
+    - https://formulae.brew.sh/api/formula/notmuch.json
+    - https://notmuchmail.org/
+    - https://notmuchmail.org/frontends/
+    - https://notmuchmail.org/news/
+    - https://notmuchmail.org/notmuch-mutt/
+    - https://notmuchmail.org/releases/
   repo-sources:
     - Official Notmuch homepage gives git clone URL https://git.notmuchmail.org/git/notmuch
     - source_facts.source-archive uses the official notmuch release tarball
@@ -49,5 +126,6 @@ category-path:
   - email
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
