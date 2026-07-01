@@ -8,6 +8,99 @@ docs:
 config-file-location:
   unix: /usr/local/etc/openldap/slapd.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      OpenLDAP's adoption is tied to LDAP itself. RFC 4510 defines LDAPv3 as an Internet
+      protocol for accessing distributed directory services that follow X.500 data and
+      service models, and OpenLDAP became the widely packaged open-source implementation
+      for Unix-like systems that needed those directory services.
+    - >
+      Administrators use OpenLDAP for centralized identity and directory data,
+      especially where applications, Unix accounts, mail systems, network devices, or
+      legacy enterprise systems already speak LDAP. Its long life also comes from being
+      infrastructure glue: many deployments do not expose it to end users, but
+      authentication and address-book workflows depend on it.
+  package-nerd-significance:
+    - >
+      OpenLDAP is a high-leverage systems package because it is both a daemon and a
+      dependency surface. Packaging choices affect service files, configuration paths,
+      schema directories, TLS defaults, dynamic modules, library ABI consumers, and
+      whether downstream software links against the system LDAP client library.
+    - >
+      It is also a lesson in boring infrastructure longevity. The package exists because
+      directory protocols and identity integrations outlive trend cycles; the hard
+      packaging work is preserving upgrade paths, defaults, and operational
+      documentation across decades of deployments.
+  project-history:
+    - >
+      OpenLDAP traces back to the University of Michigan LDAP codebase. The OpenLDAP
+      Foundation says OpenLDAP Software is based on prior University of Michigan work,
+      and Howard Chu's 2018 retrospective describes the project as starting from the
+      last University of Michigan LDAP 3.3 release after the Michigan team moved on to
+      Netscape Directory Server work.
+    - >
+      Kurt Zeilenga founded the project in 1998, and OpenLDAP 1.0.0 was released on 26
+      August 1998 as essentially University of Michigan LDAP 3.3 plus accumulated
+      community patches. The OpenLDAP Foundation, established in August 1998,
+      coordinates the project and promotes open-source LDAP development.
+    - >
+      The project grew through major server and protocol milestones: OpenLDAP 2.0 added
+      LDAPv3, SASL, StartTLS, and improved server architecture; 2.2 brought LDAP Sync
+      replication and overlays; 2.3 added cn=config and password-policy work; 2.4 added
+      MirrorMode and MultiMaster replication; 2.5 added the LDAP Load Balancer Daemon
+      and many overlay/library enhancements; 2.6 added file-based logging and
+      load-balancer improvements.
+  related-projects:
+    - >
+      OpenLDAP is related to the IETF LDAPv3 RFC series, X.500 directory models,
+      University of Michigan LDAP, Netscape Directory Server descendants, LMDB/back-mdb
+      storage, SASL, TLS, Kerberos-oriented authentication deployments, and downstream
+      clients that depend on libldap.
+  sources:
+    - https://datatracker.ietf.org/doc/html/rfc4510
+    - https://git.openldap.org/openldap/openldap
+    - https://www.openldap.org/conf/odd-tuebingen-2018/HowardHist.pdf
+    - https://www.openldap.org/doc/admin24/intro.html
+    - https://www.openldap.org/foundation/
+    - https://www.openldap.org/software/
+    - https://www.openldap.org/software/roadmap.html
+  summary:
+    - >
+      OpenLDAP is an open-source suite of LDAP directory software. It packages the slapd
+      directory server, client tools, libraries, schemas, overlays, replication
+      features, and operational documentation around the IETF LDAP protocol family.
+  timeline:
+    - >
+      1996: the University of Michigan LDAP 3.3 codebase became the base from which
+      OpenLDAP later started.
+    - >
+      August 1998: the OpenLDAP Foundation and Project were established, and OpenLDAP
+      1.0.0 was released on 26 August 1998.
+    - >
+      August 2000: OpenLDAP 2.0 added LDAPv3 support, SASL, StartTLS, thread pooling,
+      and other server improvements.
+    - >
+      October 2007: OpenLDAP 2.4 added MirrorMode and MultiMaster replication, Proxy
+      Sync replication, expanded monitoring, and new overlays.
+    - >
+      April 2021: OpenLDAP 2.5 added lloadd, transaction support, new replication
+      protocols, multi-factor-authentication-related features, and many overlay/library
+      changes.
+    - >
+      October 2021: OpenLDAP 2.6 added file-based logging and additional load-balancer
+      strategies.
+  usage:
+    - >
+      The admin guide frames OpenLDAP as software for building, configuring, and
+      operating directory services, including the standalone LDAP daemon slapd.
+      Operators define a directory information tree, schemas, access controls, indexes,
+      replication topology, TLS/SASL settings, and backends, then manage entries with
+      tools such as ldapsearch, ldapadd, ldapmodify, and ldapdelete.
+    - >
+      Package users install openldap either as a server stack or as client libraries and
+      command-line utilities needed by other software. The same package can support a
+      running slapd service, local schema/testing work, or development against libldap.
 category: networking
 package-manager:
   apk: libldap
@@ -52,5 +145,14 @@ executables:
   - slaptest
 provenance:
   formula: openldap
+  history-sources:
+    - https://datatracker.ietf.org/doc/html/rfc4510
+    - https://git.openldap.org/openldap/openldap
+    - https://www.openldap.org/conf/odd-tuebingen-2018/HowardHist.pdf
+    - https://www.openldap.org/doc/admin24/intro.html
+    - https://www.openldap.org/foundation/
+    - https://www.openldap.org/software/
+    - https://www.openldap.org/software/roadmap.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

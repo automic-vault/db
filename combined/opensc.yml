@@ -8,6 +8,85 @@ docs:
 config-file-location:
   unix: /etc/opensc.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      OpenSC became a common free PKCS#11 provider for cards that do not rely solely on
+      vendor middleware. Debian describes it as a way for applications such as
+      Firefox/Iceweasel and Thunderbird/Icedove to use smart cards via PKCS#11, while
+      Red Hat documentation says RHEL provides the OpenSC PKCS#11 driver for smart cards
+      by default.
+    - >
+      Its adoption is broad in distribution terms: packages exist across Homebrew,
+      Debian, Ubuntu, Fedora, Arch, Alpine, Nix, Chocolatey, winget, MacPorts, and
+      openSUSE. That breadth reflects a support role for authentication, mail
+      encryption, digital signatures, VPN/client certificates, SSH, browser certificate
+      stores, and token debugging.
+  package-nerd-significance:
+    - >
+      OpenSC is package-nerd gold because it turns hardware variance into a
+      distro-maintained middleware stack. The package surface includes shared libraries,
+      a PKCS#11 module, many tiny card tools, PC/SC integration, Windows MiniDriver
+      support, macOS CryptoTokenKit/Tokend pieces, udev/system integration in some
+      distributions, and card-driver policy encoded in opensc.conf.
+  project-history:
+    - >
+      The OpenSC project dates to the early 2000s. Its project-history page records
+      libopensc and opensc-apps 0.3.x releases in November and December 2001, and OpenSC
+      0.4.0 on 2001-12-29 by Juha Yrjola, Antti Tapaninen, and Timo Teras, merging
+      libopensc and opensc-apps into one package and adding abstract card handling.
+    - >
+      The project evolved from Unix smart-card tooling into cross-platform middleware.
+      SourceForge metadata records the project as registered on 2001-05-03, and the
+      modern GitHub project describes downloads for Windows installers, macOS
+      installers, source tarballs, and nightly builds.
+  related-projects:
+    - >
+      OpenSC commonly works with pcsc-lite, CCID reader drivers, p11-kit, NSS, libp11,
+      engine_pkcs11, pkcs11-provider, OpenSSL, GnuTLS, Firefox, Thunderbird, OpenVPN,
+      SSH, and hardware tokens or smart cards implementing PIV, OpenPGP, PKCS#15, or
+      vendor-specific applets.
+  sources:
+    - >
+      https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/security_hardening/configuring-applications-to-use-cryptographic-hardware-through-pkcs-11_security-hardening
+    - https://github.com/OpenSC/OpenSC
+    - https://github.com/OpenSC/OpenSC/blob/master/NEWS
+    - https://github.com/OpenSC/OpenSC/wiki/Creating-applications-with-smart-card-support
+    - https://github.com/OpenSC/OpenSC/wiki/Frequently-Asked-Questions
+    - https://github.com/OpenSC/OpenSC/wiki/History-of-the-OpenSC-Project
+    - https://packages.debian.org/sid/opensc-pkcs11
+    - https://sourceforge.net/projects/opensc/
+  summary:
+    - >
+      OpenSC provides smart-card tools and middleware, centered on cryptographic cards
+      and tokens. It implements a PKCS#11 module, PKCS#15 support, many card-specific
+      utilities, and platform integration pieces that let applications use private keys
+      without extracting them from cards.
+  timeline:
+    - '2001-05-03: SourceForge metadata records OpenSC registration.'
+    - '2001-11-23: OpenSC 0.3 was created.'
+    - >
+      2001-12-29: OpenSC 0.4.0 merged libopensc and opensc-apps into one package and
+      added abstract card handling.
+    - >
+      2002-03-13: OpenSC 0.6.0 added card-reader abstraction and support for additional
+      card families, according to NEWS excerpts.
+    - >
+      2025-2026: OpenSC NEWS and wiki history show ongoing releases, card-driver fixes,
+      PKCS#11 changes, and packaging work.
+  usage:
+    - >
+      Operators use pkcs11-tool, opensc-tool, pkcs15-tool, pkcs15-init, piv-tool,
+      openpgp-tool, and card-specific helpers to inspect readers, list slots, initialize
+      cards, import certificates, test PIN behavior, and exercise cryptographic
+      operations. The package usually reads configuration from opensc.conf and
+      integrates with PC/SC readers.
+    - >
+      Applications use the OpenSC PKCS#11 module through NSS, p11-kit, OpenSSL
+      integration layers, browser certificate stores, VPN clients, SSH tooling, and
+      other software that knows PKCS#11. The OpenSC FAQ emphasizes that PKCS#11 is a
+      software API for cryptographic hardware, while PKCS#15 is an on-card filesystem
+      layout; OpenSC bridges both when a supported card allows it.
 category: security
 package-manager:
   apk: opensc
@@ -57,5 +136,16 @@ executables:
   - westcos-tool
 provenance:
   formula: opensc
+  history-sources:
+    - >
+      https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/security_hardening/configuring-applications-to-use-cryptographic-hardware-through-pkcs-11_security-hardening
+    - https://github.com/OpenSC/OpenSC
+    - https://github.com/OpenSC/OpenSC/blob/master/NEWS
+    - https://github.com/OpenSC/OpenSC/wiki/Creating-applications-with-smart-card-support
+    - https://github.com/OpenSC/OpenSC/wiki/Frequently-Asked-Questions
+    - https://github.com/OpenSC/OpenSC/wiki/History-of-the-OpenSC-Project
+    - https://packages.debian.org/sid/opensc-pkcs11
+    - https://sourceforge.net/projects/opensc/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
