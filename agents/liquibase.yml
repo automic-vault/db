@@ -11,6 +11,82 @@ credentials-file-location:
   unix:
     - ./liquibase.properties
     - path supplied with --driver-properties-file
+history:
+  adoption-history:
+    - >
+      Liquibase adoption followed the rise of database DevOps: teams wanted schema
+      changes reviewed, versioned, and deployed alongside application code instead of
+      kept as ad hoc DBA scripts. Support for SQL, XML, YAML, and JSON changelogs made
+      it usable across teams with different preferences.
+    - >
+      Package managers carry Liquibase because developers and CI workers need a
+      reproducible CLI. The Homebrew formula also records packaging details that differ
+      from the cask path: it uses the liquibase formula name, depends on openjdk, and
+      tells users to set LIQUIBASE_HOME to the formula libexec directory.
+  package-nerd-significance:
+    - >
+      Liquibase is a classic developer-tool package because it lives in local shells, CI
+      images, Docker workflows, and build systems but acts on external databases.
+      Correct packaging has to balance Java runtime dependency, driver extensibility,
+      config-file conventions, and command-line reproducibility.
+    - >
+      The formula/cask split is package-nerd useful: the formula presents Liquibase as a
+      Homebrew-managed CLI with an OpenJDK dependency and LIQUIBASE_HOME guidance, while
+      the cask presents Liquibase Community as a vendor-distributed application archive.
+  project-history:
+    - >
+      Nathan Voxland founded the Liquibase open-source project in 2006 to make database
+      changes easier to track. The project developed into a Java-based database
+      migration ecosystem with command-line usage, embeddable libraries, build-tool
+      integrations, and commercial governance products around the same core workflow.
+    - >
+      The main source repository is the liquibase/liquibase GitHub project. The
+      documentation site distinguishes Liquibase Community from Liquibase Secure, but
+      both build around the same core concepts of changelogs, changesets, checksums,
+      update operations, rollback operations, and database history tables.
+  related-projects:
+    - Flyway is Liquibase's closest package-manager neighbor in database migration tooling.
+    - >
+      Related tooling includes JDBC drivers, Maven and Gradle plugins, Docker images,
+      database diff tools, CI/CD systems, and commercial database DevOps products.
+  sources:
+    - https://docs.liquibase.com/
+    - https://docs.liquibase.com/community/user-guide-5-0-3/what-is-a-changelog
+    - https://docs.liquibase.com/secure/user-guide-5-2/what-is-the-databasechangelog-table
+    - https://formulae.brew.sh/cask/liquibase-community
+    - https://formulae.brew.sh/formula/liquibase
+    - https://github.com/liquibase/liquibase
+    - https://www.liquibase.com/company/leadership
+  summary:
+    - >
+      Liquibase is a database change management project and CLI that turns schema and
+      data changes into versioned changelog files, records which changesets have run,
+      and supports repeatable deployment and rollback workflows.
+  timeline:
+    - '2006: Nathan Voxland founded the Liquibase open-source project.'
+    - >
+      2010s: Liquibase expanded from a Java database migration library into a broader
+      DevOps command-line and integration ecosystem.
+    - >
+      2020: Liquibase company branding aligned with the project name and the product
+      family around Community and commercial offerings.
+    - >
+      2025: Liquibase documentation described Community changelogs in SQL, XML, YAML,
+      and JSON and continued documenting DATABASECHANGELOG behavior.
+    - >
+      2026: The Homebrew formula record for this batch identifies liquibase stable
+      4.33.0 with an OpenJDK dependency and LIQUIBASE_HOME guidance.
+  usage:
+    - >
+      A typical Liquibase project stores changelogs in the repository, points Liquibase
+      at a target database and JDBC driver, then runs update or rollback commands.
+      Liquibase records execution in DATABASECHANGELOG and uses checksums to notice
+      changes to previously deployed changesets.
+    - >
+      The Homebrew formula is the package-manager-oriented CLI path for brew install
+      liquibase. In this batch it records stable version 4.33.0, while the
+      cask:liquibase-community package records the vendor Community cask at version
+      5.0.3.
 tags:
   - change-tracking
   - cli
@@ -38,6 +114,14 @@ provenance:
       docs use Liquibase branding.
   docs-sources:
     - Official Liquibase documentation is hosted at docs.liquibase.com.
+  history-sources:
+    - https://docs.liquibase.com/
+    - https://docs.liquibase.com/community/user-guide-5-0-3/what-is-a-changelog
+    - https://docs.liquibase.com/secure/user-guide-5-2/what-is-the-databasechangelog-table
+    - https://formulae.brew.sh/cask/liquibase-community
+    - https://formulae.brew.sh/formula/liquibase
+    - https://github.com/liquibase/liquibase
+    - https://www.liquibase.com/company/leadership
   repo-sources:
     - source_facts.repo is already populated; repo lookup skipped per instruction.
   tags-sources:
@@ -51,5 +135,6 @@ category-path:
   - schema-migration
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -8,6 +8,89 @@ config-file-location:
     - /etc/pam.conf
     - /etc/pam.d/
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      PAM became part of the expected shape of a Linux login stack: distribution
+      packages, service files under /etc/pam.d, and modules such as pam_unix,
+      pam_limits, pam_env, pam_access, pam_faillock, and pam_mkhomedir made
+      authentication policy composable without rebuilding every consumer program.
+    - >
+      The Homebrew formula is Linux-only and packages Linux-PAM for Homebrew-on-Linux
+      use cases, which is a good example of why package managers care about it: many
+      higher-level packages assume the PAM ABI and module layout even when installed
+      outside a traditional distribution.
+  package-nerd-significance:
+    - >
+      Linux-PAM sits at the uncomfortable but important boundary between package
+      management and machine security: installing or upgrading it can affect login,
+      sudo, SSH, desktop sessions, password policy, resource limits, and home-directory
+      creation.
+    - >
+      Its release notes show a classic system-library evolution story: security fixes,
+      module deprecations, distro integration, build-system changes, Y2038-related
+      cleanup, SELinux and audit support, and compatibility work across authentication
+      stacks.
+  project-history:
+    - >
+      The PAM design entered the Unix security vocabulary through the October 1995 Open
+      Software Foundation RFC by SunSoft authors Vipin Samar and Roland Schemers. That
+      document framed PAM as a way to keep login, ftp, telnet, rlogin, and similar entry
+      points independent from rapidly changing authentication mechanisms such as
+      Kerberos, RSA, S/Key, smart cards, and local Unix passwords.
+    - >
+      Linux-PAM carried that model into Linux distributions. The project repository
+      identifies Andrew G. Morgan, Dmitry V. Levin, Thorsten Kukuk, Sebastien Tricaud,
+      and Tomas Mraz among the original authors and maintainers, and the repository
+      history preserves a long-running C codebase, manual pages, examples, tests, and
+      release notes.
+  related-projects:
+    - >
+      OpenPAM and Solaris PAM are related PAM-family implementations; libpwquality,
+      passwdqc, lastlog2, and wtmpdb appear in Linux-PAM's own release notes as
+      neighboring projects for password quality and login accounting.
+    - >
+      System services such as sudo, OpenSSH, login managers, shadow utilities, and
+      distribution installers commonly integrate with PAM policy rather than embedding
+      all authentication policy themselves.
+  sources:
+    - https://formulae.brew.sh/formula/linux-pam
+    - https://github.com/linux-pam/linux-pam
+    - https://raw.githubusercontent.com/linux-pam/linux-pam/master/AUTHORS
+    - https://raw.githubusercontent.com/linux-pam/linux-pam/master/NEWS
+    - https://raw.githubusercontent.com/linux-pam/linux-pam/master/doc/specs/rfc86.0.txt
+  summary:
+    - >
+      Linux-PAM is the Linux implementation of the Pluggable Authentication Modules
+      model: applications call a common PAM API, while administrators compose
+      authentication, account, password, and session behavior through loadable modules
+      and policy files.
+  timeline:
+    - >
+      1995: OSF RFC 86.0 described the PAM architecture for unified login with pluggable
+      authentication modules.
+    - >
+      2005: The 0.99 release series included Linux audit support, module additions, and
+      packaging-era cleanup visible in the Linux-PAM NEWS history.
+    - "2009: The 1.0.x release series marked Linux-PAM's transition out of the 0.99 series."
+    - >
+      2020: Linux-PAM 1.5.0 removed deprecated pam_cracklib and pam_tally modules and
+      pointed users toward pam_pwquality, passwdqc, and pam_faillock.
+    - >
+      2024: Linux-PAM 1.6.0 added long-line configuration support and several
+      parser-hardening changes.
+    - '2025: Linux-PAM 1.7.0 switched the build system from autotools to Meson.'
+    - '2026: Linux-PAM 1.7.2 was published on GitHub on January 22, 2026.'
+  usage:
+    - >
+      Administrators use Linux-PAM by editing service-specific policy stacks in
+      /etc/pam.d or the older /etc/pam.conf style, choosing modules and control flags
+      for authentication, account checks, password changes, and session setup.
+    - >
+      For developers and packagers, Linux-PAM matters as a C library and module ABI.
+      Applications link to libpam and call pam_start, pam_authenticate, pam_acct_mgmt,
+      pam_open_session, and related interfaces, while distributions ship modules and
+      policy defaults.
 tags:
   - authentication
   - cli
@@ -38,6 +121,12 @@ provenance:
     - >
       Official Linux-PAM repository contains the doc directory and README notes
       generation of manual pages from XML sources.
+  history-sources:
+    - https://formulae.brew.sh/formula/linux-pam
+    - https://github.com/linux-pam/linux-pam
+    - https://raw.githubusercontent.com/linux-pam/linux-pam/master/AUTHORS
+    - https://raw.githubusercontent.com/linux-pam/linux-pam/master/NEWS
+    - https://raw.githubusercontent.com/linux-pam/linux-pam/master/doc/specs/rfc86.0.txt
   repo-sources:
     - source_facts.repo is already populated; repo lookup skipped per instruction.
   tags-sources:
@@ -51,5 +140,6 @@ category-path:
   - pam
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

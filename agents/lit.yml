@@ -5,6 +5,61 @@ docs:
   - https://llvm.org/docs/CommandGuide/lit.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      lit's adoption is unusually deep for a small Python test tool because it is
+      carried by LLVM, Clang, LLD, MLIR, and downstream compiler projects. The PyPI
+      package made the runner available outside a full LLVM checkout, while distribution
+      packages such as Homebrew's `lit` make it convenient for projects that want
+      LLVM-style tests without building all of LLVM.
+  package-nerd-significance:
+    - >
+      lit matters to package maintainers because it is a tiny command whose real
+      importance comes from compiler ecosystems. Packaging it separately lets downstream
+      projects run conformance and regression tests without hauling in an entire LLVM
+      build tree.
+  project-history:
+    - >
+      lit developed inside the LLVM project as the project's Python-based test runner.
+      The LLVM documentation describes it as lightweight, portable, and intentionally
+      simple at the command line, while still flexible enough to support different test
+      formats and suite layouts.
+    - >
+      As LLVM grew into a family of compiler infrastructure projects, lit became part of
+      the shared contributor workflow. The LLVM Testing Infrastructure Guide documents
+      regression tests under `llvm/test`, `llvm-lit` invocations for individual files
+      and directories, `check-*` build targets, and the use of lit configuration files
+      such as `lit.cfg` and `lit.site.cfg.py`.
+  related-projects:
+    - >
+      Related projects include LLVM, Clang, LLD, MLIR, FileCheck, GoogleTest-based LLVM
+      unit tests, and the LLVM test-suite repository.
+  sources:
+    - https://github.com/llvm/llvm-project
+    - https://llvm.org/docs/CommandGuide/lit.html
+    - https://llvm.org/docs/TestingGuide.html
+    - https://pypi.org/project/lit/
+  summary:
+    - >
+      lit, the LLVM Integrated Tester, is the portable test runner used for LLVM- and
+      Clang-style test suites. It discovers tests, runs them in parallel, summarizes
+      pass and failure results, and drives the small regression tests that are central
+      to LLVM development.
+  timeline:
+    - '2010-09-18: The `lit` package published version 0.1.0 on PyPI.'
+    - '2024-06-25: PyPI recorded the 18.1.8 release of the standalone `lit` package.'
+    - >
+      2026: LLVM 23.0.0git documentation described lit as the LLVM Integrated Tester and
+      documented response files, parallel execution, result output, and test-suite
+      infrastructure.
+  usage:
+    - >
+      The common pattern is to put `RUN:` lines in test files, use FileCheck or project
+      tools to validate output, and run suites through `lit`, `llvm-lit`, or
+      build-system targets like `check-llvm` and `check-all`. lit's configuration files
+      let projects define substitutions, features, test suffixes, environment settings,
+      and custom formats.
 tags:
   - clang
   - cli
@@ -33,6 +88,11 @@ provenance:
       Integrated Tester.
   docs-sources:
     - Official LLVM command guide provides lit documentation.
+  history-sources:
+    - https://github.com/llvm/llvm-project
+    - https://llvm.org/docs/CommandGuide/lit.html
+    - https://llvm.org/docs/TestingGuide.html
+    - https://pypi.org/project/lit/
   repo-sources:
     - >
       Official LLVM GitHub repository is llvm/llvm-project; lit is documented as an LLVM
@@ -48,5 +108,6 @@ category-path:
   - compiler-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
