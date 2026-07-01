@@ -7,6 +7,106 @@ config-file-location:
   unix:
     - .hlint.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      HLint became a standard Haskell development utility because it can be run cheaply
+      during local development, code review, and CI. The README documents installation
+      through the ordinary Haskell toolchain, direct binary use in CI, and workflows
+      that generate an initial report before committing a project-specific .hlint.yaml
+      baseline.
+    - >
+      The README also documents broad integration: editor plugins, Haskell Language
+      Server, ghc-mod, Intero, GHC source plugins, Code Climate, Danger, Restyled, HLint
+      test helpers, GitHub Actions, and code-scanning workflows. That integration
+      footprint made HLint visible both to individual Haskell developers and to larger
+      codebases enforcing house style.
+  package-nerd-significance:
+    - >
+      HLint is one of the canonical Haskell developer-tool packages: small enough to run
+      locally, opinionated enough to teach idioms, and integrated enough to show up in
+      editors, CI, code review bots, and language-server diagnostics.
+    - >
+      For package maintainers, HLint matters because it externalizes style and
+      simplification rules into a configurable tool. Projects can ship .hlint.yaml to
+      encode local decisions, silence accepted warnings, and add custom hints without
+      requiring every contributor to internalize the entire style guide.
+    - >
+      Its long parser and configuration evolution also mirrors the Haskell ecosystem's
+      own tooling history: from custom parsers and Haskell-flavored config toward YAML
+      project files, ghc-lib, and tighter integration with the compiler and
+      language-server stack.
+  project-history:
+    - >
+      The hlint.cabal file gives Neil Mitchell as author and maintainer and carries a
+      copyright line beginning in 2006. Neil Mitchell's publication page ties HLint to a
+      longer research and tooling thread around transformation and analysis of Haskell
+      source code, including a 2007 thesis seminar and a 2008 PhD thesis on
+      functional-program transformation and analysis.
+    - >
+      HLint's README describes its core purpose as suggesting possible improvements such
+      as alternative functions, code simplification, and spotting redundancies. It
+      deliberately operates on modules in isolation rather than typechecking whole
+      projects, a tradeoff that lets it parallelize, run incrementally, and analyze code
+      that may not compile yet.
+    - >
+      In 2017, HLint 2.0 moved configuration toward YAML. Neil Mitchell's release post
+      says earlier configuration used specially crafted Haskell files, while HLint 2.0
+      added .hlint.yaml search from the working directory upward and encouraged YAML
+      because the Haskell-based format had become overloaded.
+    - >
+      By 2020, HLint had undergone a major parser migration. Mitchell's MuniHac talk
+      abstract describes HLint as over 14 years old, notes changes in license, project
+      name, source control, and configuration, and explains the move from
+      haskell-src-exts toward the GHC API via ghc-lib as GHC compatibility became more
+      important.
+  related-projects:
+    - >
+      GHC and ghc-lib: parser/compiler infrastructure used by HLint's later parser
+      architecture.
+    - 'haskell-src-exts: the parser library HLint used before the GHC API migration.'
+    - >
+      Haskell Language Server, ghc-mod, Intero: Haskell tooling integrations named by
+      the README.
+    - >
+      apply-refact: the refactoring helper used when HLint applies suggestions with
+      --refactor.
+  sources:
+    - https://github.com/ndmitchell/hlint
+    - https://github.com/ndmitchell/hlint#readme
+    - https://github.com/ndmitchell/hlint/tags
+    - https://github.com/ndmitchell/hlint/releases
+  summary:
+    - >
+      HLint is Neil Mitchell's Haskell source-code suggestion tool. It parses Haskell
+      modules and reports style, simplification, redundancy, and maintainability hints,
+      with configuration through .hlint.yaml and integrations across editors, CI
+      systems, and Haskell IDE tooling.
+  timeline:
+    - '2006: HLint authorship/copyright line begins in hlint.cabal.'
+    - >
+      2007: Neil Mitchell presented work on transformation and analysis of Haskell
+      source code.
+    - >
+      2008: Neil Mitchell's PhD thesis on transformation and analysis of functional
+      programs was published.
+    - '2013: The ndmitchell/hlint GitHub repository was created.'
+    - '2017-04-06: HLint 2.0 introduced YAML configuration and .hlint.yaml search.'
+    - >
+      2020-09-11: The MuniHac talk described HLint's migration to the GHC API parser via
+      ghc-lib.
+  usage:
+    - >
+      A normal run is hlint source, where source is a file or directory. HLint
+      recursively scans .hs and .lhs files, reports file/line locations, severity, the
+      code it found, and a possible replacement. For larger projects, hlint . --report
+      creates an HTML report, and hlint . --default can create a .hlint.yaml file that
+      records outstanding hints.
+    - >
+      HLint suggestions are intentionally advisory. The README warns that most hints are
+      good ideas in many circumstances but should not be applied blindly, especially
+      when contributing to another project or when language extensions and laziness
+      semantics matter.
 tags:
   - cli
   - code-quality
@@ -33,6 +133,11 @@ provenance:
     - >
       Official GitHub README is the primary documentation surface and includes
       installation, usage, FAQ, customization, and hacking notes.
+  history-sources:
+    - https://github.com/ndmitchell/hlint
+    - https://github.com/ndmitchell/hlint#readme
+    - https://github.com/ndmitchell/hlint/tags
+    - https://github.com/ndmitchell/hlint/releases
   repo-sources:
     - >
       source_facts.repo was empty; source_facts.homepage is the official
@@ -47,5 +152,6 @@ category-path:
   - static-analysis
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

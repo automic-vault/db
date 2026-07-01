@@ -6,6 +6,98 @@ docs:
   - https://libguestfs.org/hivex.3.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      hivex adoption has been strongest where Linux and Unix systems need to inspect
+      Windows installations offline: virtualization, rescue, migration, forensics, and
+      image-customization workflows. The libguestfs manual records that before
+      libguestfs 1.19.35 users copied hives out, processed them locally with hivex, and
+      copied them back; from that libguestfs version, major hivex APIs were exposed
+      directly through libguestfs for registry operations inside opened Windows guests.
+    - >
+      The Homebrew input facts show the package carried across multiple Unix package
+      ecosystems under names such as brew:hivex, Debian/Ubuntu libhivex-bin, and
+      distribution packages for Alpine, Fedora, Arch, openSUSE, MacPorts, and Nix. That
+      pattern matches hivex's role as infrastructure: many users meet it through image
+      tooling or distribution packages rather than as a standalone application brand.
+  package-nerd-significance:
+    - >
+      hivex is a classic package-nerd package: small, old, sharp-edged, and
+      disproportionately important when the job involves foreign operating-system
+      internals. It is the kind of dependency that appears in rescue images, forensic
+      toolchains, VM migration stacks, and distro repositories because it solves a
+      format problem that general-purpose JSON/XML/text tools cannot solve.
+    - >
+      Its significance also comes from the libguestfs ecosystem boundary. hivex is
+      independent enough to package as its own formula and library, but close enough to
+      libguestfs that Windows guest registry support in higher-level tools can rely on
+      it.
+  project-history:
+    - >
+      The hivex source identifies Richard W.M. Jones and Red Hat as the authorship line
+      beginning in 2009. Its README describes a self-contained library for Windows
+      Registry hive binary files, derived from earlier registry-format research and
+      tools including NTREG, dumphive, old Samba editreg code, format papers, and
+      reverse engineering work in the libguestfs tree.
+    - >
+      The design emphasis was security and robustness around untrusted registry data.
+      The manual describes hivex as designed to be secure against buggy or malicious
+      hive files, and the README contrasts it with NTREG by emphasizing error handling,
+      corrupt and malicious files, and endianness. That made it a natural companion to
+      libguestfs, whose broader purpose is safe access to guest disk images.
+    - >
+      hivex developed as a small but important subproject in the libguestfs family. The
+      libguestfs download index lists hivex alongside libguestfs, supermin, nbdkit, and
+      related components, and the libguestfs manual explains that Windows registry
+      support routes through a separate C library called hivex.
+  related-projects:
+    - >
+      libguestfs: the larger guest disk image toolkit that integrates hivex for Windows
+      registry work.
+    - >
+      virt-win-reg: the higher-level libguestfs tool recommended for exporting or
+      modifying registry data in Windows virtual machines.
+    - >
+      NTREG, dumphive, Samba editreg: earlier registry readers or tools named by hivex
+      as source material or influence.
+  sources:
+    - https://libguestfs.org
+    - https://github.com/libguestfs/hivex
+    - https://formulae.brew.sh/formula/hivex
+    - https://libguestfs.org/hivex.3.html
+    - https://github.com/libguestfs/hivex/tags
+    - https://github.com/libguestfs/hivex/releases
+  summary:
+    - >
+      hivex is the libguestfs project's standalone C library and tool set for reading
+      and writing Windows Registry hive files. It occupies a practical systems niche: it
+      gives Unix and virtualization tooling a structured way to inspect binary Windows
+      registry data without relying on Windows or on textual .REG conversion as the
+      primary interface.
+  timeline:
+    - '2009: Richard W.M. Jones and Red Hat authorship line begins for hivex.'
+    - >
+      2012: The GitHub repository for libguestfs/hivex was created as an official
+      source-control mirror.
+    - >
+      libguestfs 1.19.35 era: Major hivex APIs became available directly through the
+      libguestfs API for Windows guest registry access.
+    - >
+      2024: The libguestfs download index continued listing hivex as a separate source
+      archive family.
+  usage:
+    - >
+      Typical use is programmatic registry inspection through the C API or language
+      bindings, or command-line inspection/conversion with tools such as hivexsh,
+      hivexml, hivexget, and hivexregedit. The manual also points users who only need
+      Windows VM registry export or modification toward virt-win-reg, which layers the
+      registry workflow into libguestfs tooling.
+    - >
+      Package users care that hivex treats the binary hive as the primary data source.
+      Its README explicitly avoids making textual .REG the main interface because
+      parsing that format can be as troublesome as parsing the binary registry hive
+      itself.
 category: system
 package-manager:
   apk: hivex
@@ -32,5 +124,13 @@ executables:
   - hivexsh
 provenance:
   formula: hivex
+  history-sources:
+    - https://libguestfs.org
+    - https://github.com/libguestfs/hivex
+    - https://formulae.brew.sh/formula/hivex
+    - https://libguestfs.org/hivex.3.html
+    - https://github.com/libguestfs/hivex/tags
+    - https://github.com/libguestfs/hivex/releases
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -11,6 +11,84 @@ credentials-file-location:
   unix:
     - ~/.config/hookdeck/config.toml
     - .hookdeck/config.toml
+history:
+  adoption-history:
+    - >
+      Hookdeck CLI is distributed through npm, Homebrew, Scoop, direct Linux
+      archives/packages, and Docker. That packaging spread is important for a webhook
+      tool because teams use it across macOS laptops, Windows development machines,
+      Linux CI workers, and containerized test jobs.
+    - >
+      The docs and README frame the CLI as part of a team workflow rather than a one-off
+      tunnel: event history persists between sessions, teammates can inspect or replay
+      events, and the CLI can manage Event Gateway resources for CI/CD and testing.
+  package-nerd-significance:
+    - >
+      Hookdeck CLI sits in a recognizable package-manager category: developer tunnel
+      tools that become operational CLIs. Package maintainers care about it because it
+      ships across several distribution channels and because a single executable touches
+      credentials, local config, browser login, terminal UI behavior, and CI automation.
+    - >
+      It is also a useful example of a vendor CLI that moved from a narrow local webhook
+      listener into a control plane for platform resources. That expansion changes how
+      package users think about upgrades: new releases can affect both localhost
+      development and infrastructure automation.
+  project-history:
+    - >
+      The official README describes the original center of gravity: forward webhooks and
+      other events to a local web server using free, permanent event URLs, while
+      preserving event history for inspection, replay, and testing. The docs explicitly
+      position the CLI as an alternative to ngrok-style tunnels for webhook development.
+    - >
+      The generated command reference shows the project evolving beyond `listen`. It
+      includes authentication, project management, local development, sources,
+      destinations, connections, transformations, events, requests, attempts, metrics,
+      and a Gateway MCP command group. That puts the CLI in both local-development and
+      infrastructure-management roles.
+    - >
+      The configuration model also matured into profile-based TOML files. Global flags
+      include `--hookdeck-config`, defaulting to `$HOME/.config/hookdeck/config.toml`,
+      and login/project commands can save local state in `.hookdeck/config.toml` for
+      repository-scoped workflows.
+  related-projects:
+    - >
+      ngrok and other HTTP tunnel tools are related because Hookdeck positions the CLI
+      as an alternative for webhook development.
+    - Hookdeck Console and Hookdeck Event Gateway are the platform surfaces the CLI manages.
+    - MCP-compatible clients are related through the `hookdeck gateway mcp` command group.
+  sources:
+    - https://hookdeck.com/docs/cli
+  summary:
+    - >
+      Hookdeck CLI is the command-line companion to Hookdeck's webhook/event-gateway
+      platform. It began from the practical local-development problem of receiving
+      third-party webhook traffic on a developer machine, then expanded into a broader
+      CLI for event inspection, replay, project selection, connection management, and
+      Event Gateway resource operations.
+  timeline:
+    - >
+      2021: Hookdeck-authored local-development material describes the CLI as a webhook
+      proxy and ngrok alternative.
+    - >
+      2024: Official connection-management guide documents CLI-driven Infrastructure as
+      Code, CI/CD, and production automation workflows for CLI v1.2.0 and later.
+    - >
+      2026: Generated CLI reference covers local development, Event Gateway resource
+      management, metrics, and MCP integration.
+  usage:
+    - >
+      For local development, `hookdeck listen` forwards incoming events for one or more
+      Hookdeck sources to a local port or URL. Interactive mode provides a terminal UI
+      with event history and request/response inspection, while compact and quiet output
+      modes support scripts and CI logs.
+    - >
+      For platform management, command groups operate on projects, sources,
+      destinations, connections, transformations, events, requests, attempts, and
+      metrics. `hookdeck login` persists credentials; `hookdeck project use --local`
+      pins project selection into a repository-local config file.
+    - >
+      The CLI also supports agent-oriented workflows through `hookdeck gateway mcp`,
+      exposing Event Gateway capabilities to MCP-compatible clients.
 tags:
   - api
   - cli
@@ -29,6 +107,8 @@ provenance:
     - 'source_facts.name: hookdeck'
   docs-sources:
     - https://hookdeck.com/docs/cli is the official Hookdeck CLI documentation.
+  history-sources:
+    - https://hookdeck.com/docs/cli
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/hookdeck/hookdeck-cli; per
@@ -44,5 +124,6 @@ category-path:
   - webhooks
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
