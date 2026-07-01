@@ -7,6 +7,98 @@ docs:
   - https://www.gnu.org/software/gsasl/reference
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GNU SASL's adoption is best visible in other network software. The project page
+      lists free software users including Exim, Mutt, GNU Mailutils, msmtp and mpop,
+      VMime, curl, Jabberd2, and GNU Anubis.
+    - >
+      Its adoption pattern is typical of infrastructure libraries: few end users invoke
+      it directly, but maintainers of mail, XMPP, and transfer software package it so
+      that authentication mechanisms are available through a shared implementation
+      rather than duplicated in every client.
+    - >
+      The project also tracks portability explicitly. The GNU page mentions Windows
+      resources, a native Visual Studio build in 2008, and release engineering around
+      reproducible tarballs and CI across several GNU/Linux-derived systems in the 2.2
+      series.
+  package-nerd-significance:
+    - >
+      GNU SASL is package-nerd material because it is a low-level authentication
+      dependency with a CLI attached. It is easy to overlook until a mail client, MTA,
+      or XMPP server needs a specific SASL mechanism or a distro wants one shared,
+      auditable implementation.
+    - >
+      Its release history also exposes packaging concerns that library maintainers care
+      about: ABI/API transitions, optional Kerberos/GSS choices, Windows portability,
+      reproducible tarballs, and integration tests against Dovecot and GNU Mailutils.
+  project-history:
+    - >
+      The project began in 2002 as libgsasl and became an official GNU package in
+      December 2002. The GNU project page records the initial 0.0.0 release on
+      2002-10-07, the rename from libgsasl to GNU SASL in 0.0.4, and the opening of GNU
+      web pages with development moved to Savannah.
+    - >
+      Early development focused on establishing a clean-room SASL implementation with
+      clear copyright and licensing, then broadening mechanism support. The GNU page
+      lists goals such as thread safety, internationalization through SASLprep,
+      portability, and callbacks that let the embedding application control
+      authorization infrastructure.
+    - >
+      The licensing story is part of the project's identity. The GNU SASL page says the
+      library was changed to LGPLv2.1+ because other free SASL implementations existed
+      and the maintainer expected that LGPL terms would invite more help, while the
+      command-line application and tests later moved to GPLv3-or-later.
+    - >
+      The project evolved through major protocol additions: GSSAPI support in 2003,
+      SCRAM-SHA-1 experiments in 2009, GS2-KRB5 and SCRAM-SHA-1(-PLUS) in the 2010
+      stable series, SAML20 and OPENID20 in 2012, SCRAM-SHA-256 in 2021, and a 2.0.0
+      line in 2022 that dropped obsolete APIs.
+  related-projects:
+    - >
+      GNU Mailutils is both a related GNU mail package and an integration-test target
+      mentioned in GNU SASL release notes.
+    - Dovecot appears in later GNU SASL integration tests for GSSAPI behavior.
+    - >
+      GnuTLS and GSS-API implementations such as GNU GSS, MIT Kerberos, Heimdal, and
+      libgssglue are optional or related pieces around secure authentication.
+  sources:
+    - https://gitlab.com/gsasl/gsasl/-/raw/master/NEWS
+    - https://gitlab.com/gsasl/gsasl/-/raw/master/README.md
+    - https://www.gnu.org/software/gsasl/
+    - https://www.gnu.org/software/gsasl/manual/html_node/Introduction.html
+  summary:
+    - >
+      GNU SASL is the GNU project's implementation of the Simple Authentication and
+      Security Layer framework. It is both a C library, libgsasl, and a command-line
+      program, gsasl, aimed at applications that need SASL authentication for protocols
+      such as IMAP, SMTP, and XMPP.
+    - >
+      The package sits in the network-authentication layer rather than in a user-facing
+      mail or chat client. Its value is that application authors can delegate SASL
+      mechanisms, callback handling, and protocol details to a small portable C library.
+  timeline:
+    - '2002: Initial 0.0.0 release.'
+    - '2002: Became an official GNU project and moved development to Savannah.'
+    - '2004: 0.2.0 marked a new major release and the library license moved toward LGPL terms.'
+    - >
+      2007: Development moved from CVS to git, and the command-line tool and tests moved
+      to GPLv3-or-later.
+    - '2010: Stable 1.6.0 added SCRAM-SHA-1(-PLUS) and GS2-KRB5 support.'
+    - '2012: Stable 1.8.0 added SAML20 and OPENID20 support.'
+    - '2021: Stable 1.10.0 added SCRAM-SHA-256 support.'
+    - '2022: Stable 2.0.0 dropped obsolete APIs.'
+  usage:
+    - >
+      Library users embed libgsasl and provide callbacks for authentication and
+      authorization data. The command-line gsasl tool is useful for testing SASL
+      exchanges and for exercising mechanisms outside a full mail or chat client.
+    - >
+      The supported mechanism list is broad for a small C library: ANONYMOUS, CRAM-MD5,
+      DIGEST-MD5, EXTERNAL, GS2-KRB5, GSSAPI, LOGIN, NTLM, OPENID20, PLAIN, SCRAM-SHA-1,
+      SCRAM-SHA-1-PLUS, SCRAM-SHA-256, SCRAM-SHA-256-PLUS, SAML20, and SECURID are
+      documented by the project README and GNU page.
 tags:
   - authentication
   - c-library
@@ -36,6 +128,11 @@ provenance:
     - >
       Official GNU SASL page links to manual and API reference; official GNU manual
       documents GNU Simple Authentication and Security Layer.
+  history-sources:
+    - https://gitlab.com/gsasl/gsasl/-/raw/master/NEWS
+    - https://gitlab.com/gsasl/gsasl/-/raw/master/README.md
+    - https://www.gnu.org/software/gsasl/
+    - https://www.gnu.org/software/gsasl/manual/html_node/Introduction.html
   repo-sources:
     - Official GNU SASL Development section says to clone https://gitlab.com/gsasl/gsasl.git.
   tags-sources:
@@ -49,5 +146,6 @@ category-path:
   - sasl
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -5,6 +5,116 @@ docs:
   - https://grpc.io/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The 1.0 announcement described early usage in open source projects such as etcd,
+      containerd, and CockroachDB and by companies including Netflix, Vendasta, YikYak,
+      Carbon3D, Cisco, Juniper, Arista, and Ciena. It also cited Google Cloud APIs and
+      TensorFlow using gRPC for API surfaces or inter-process communication.
+    - >
+      The official site presents gRPC as useful across data centers, mobile
+      applications, browsers, and backend services, with pluggable support for load
+      balancing, tracing, health checking, and authentication.
+    - >
+      gRPC-Web extended the model toward browser clients. The official gRPC-Web history
+      notes work beginning in 2016, a 1.0/GA moment in 2018 for the Google
+      implementation, and Envoy-proxy-based deployment patterns for translating browser
+      requests to gRPC HTTP/2 services.
+  package-nerd-significance:
+    - >
+      gRPC is a dependency magnet. It appears in language package managers, OS package
+      managers, Docker images, generated-code workflows, and cloud-native control planes
+      because service definitions need compiler plugins and runtime libraries.
+    - >
+      It also illustrates a hard packaging problem: one protocol family spans C/C++, Go,
+      Java, Python, Ruby, PHP, Objective-C, C#, Node, web proxies, and generated
+      artifacts. OS packages often expose only a slice of that surface while language
+      ecosystems ship their own runtime packages.
+    - >
+      For CLI and formula users, the codegen plugins are the visible part. A successful
+      install often matters less because a human will run `grpc_cpp_plugin` directly and
+      more because Bazel, CMake, Make, Gradle, or another build tool can find it during
+      protocol generation.
+  project-history:
+    - >
+      The gRPC design came from Google's internal Stubby RPC infrastructure. The
+      official 2015 motivation and design post explains that Stubby had connected large
+      numbers of Google microservices for more than a decade but was tied to internal
+      infrastructure, while HTTP/2 and related public standards made an open rework
+      practical.
+    - >
+      gRPC was announced publicly in 2015 and reached 1.0 on 2016-08-23. The 1.0
+      announcement stated that C++, Java, Go, Node, Ruby, Python, and C# moved to 1.0
+      across Linux, Windows, and Mac, with Objective-C and Android Java support also
+      moving to 1.0.
+    - >
+      The 1.0 release established a stable core protocol and API surface, semantic
+      versioning expectations, cross-language interoperability tests, and public
+      performance measurements. That combination made gRPC packageable not only as a
+      library but as a cross-language toolchain component.
+    - >
+      CNCF accepted gRPC on 2017-02-16 at the Incubating maturity level. The CNCF
+      project page identifies it as a high-performance open source universal RPC
+      framework and exposes project health and contributor metrics through LFX insights.
+  related-projects:
+    - >
+      Protocol Buffers provide the default interface definition language and message
+      encoding for gRPC.
+    - >
+      grpc-go, grpc-java, grpc-node, grpc-dotnet, grpc-web, and other language
+      implementations carry gRPC into specific ecosystems.
+    - Envoy is commonly used as a gRPC and gRPC-Web proxy in cloud-native deployments.
+    - grpc-gateway maps gRPC services to REST/JSON interfaces for mixed client environments.
+    - >
+      etcd, containerd, CockroachDB, TensorFlow, and several Google Cloud APIs are
+      prominent projects or services cited by official gRPC materials.
+  sources:
+    - https://github.com/grpc/grpc
+    - https://grpc.io/
+    - https://grpc.io/blog/ga-announcement/
+    - https://grpc.io/blog/grpc-csharp-future/
+    - https://grpc.io/blog/principles/
+    - https://grpc.io/blog/state-of-grpc-web/
+    - https://grpc.io/docs/what-is-grpc/introduction/
+    - https://www.cncf.io/projects/grpc/
+  summary:
+    - >
+      gRPC is an open source, high-performance Remote Procedure Call framework used to
+      define services with Protocol Buffers and generate client/server bindings across
+      languages.
+    - >
+      The Homebrew `grpc` package is especially package-manager-relevant because it
+      ships native code and protocol-compiler plugins for multiple languages, making it
+      part runtime library, part code-generation toolkit, and part distributed-systems
+      plumbing.
+  timeline:
+    - '2014: CNCF project metrics list the first commit date as 2014-05-06.'
+    - >
+      2015: gRPC design principles were published, describing the public rework of
+      Google's Stubby ideas.
+    - '2016: gRPC 1.0 was announced on 2016-08-23.'
+    - '2017: gRPC was accepted to CNCF at the Incubating maturity level.'
+    - '2018: gRPC-Web reached general availability for the Google implementation.'
+    - >
+      2021: The gRPC C# project announced a shift toward grpc-dotnet for the future of
+      C# usage.
+  usage:
+    - >
+      Developers define services in `.proto` files, then use `protoc` and gRPC plugins
+      to generate typed client and server code. The Homebrew package's executables are
+      language plugins such as `grpc_cpp_plugin`, `grpc_csharp_plugin`,
+      `grpc_node_plugin`, `grpc_objective_c_plugin`, `grpc_php_plugin`,
+      `grpc_python_plugin`, and `grpc_ruby_plugin`.
+    - >
+      Common package use is indirect: a developer installs `grpc` so builds can generate
+      service stubs, compile native gRPC dependencies, or satisfy packages that need
+      C-core-based language bindings.
+    - >
+      gRPC's design goals explain why it became a package-manager staple: broad platform
+      coverage, open licensing, interoperability over common infrastructure,
+      general-purpose performance, streaming, blocking and non-blocking APIs,
+      cancellation, flow control, pluggability, metadata, and standardized status codes.
 tags:
   - api
   - cli
@@ -30,6 +140,15 @@ provenance:
     - 'source_facts.name: grpc.'
   docs-sources:
     - Official gRPC website provides a dedicated /docs documentation path.
+  history-sources:
+    - https://github.com/grpc/grpc
+    - https://grpc.io/
+    - https://grpc.io/blog/ga-announcement/
+    - https://grpc.io/blog/grpc-csharp-future/
+    - https://grpc.io/blog/principles/
+    - https://grpc.io/blog/state-of-grpc-web/
+    - https://grpc.io/docs/what-is-grpc/introduction/
+    - https://www.cncf.io/projects/grpc/
   repo-sources:
     - >
       source_facts.repo already has value https://github.com/grpc/grpc; returned null
@@ -46,5 +165,6 @@ category-path:
   - framework
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

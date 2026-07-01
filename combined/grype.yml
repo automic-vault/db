@@ -15,6 +15,99 @@ config-file-location:
     - $XDG_CONFIG_HOME/grype/config.yaml
     - $XDG_CONFIG_HOME/grype/config.yml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Grype's adoption tracks the rise of software supply-chain security, container
+      scanning, and SBOM workflows. The official README and docs emphasize local CLI
+      use, CI/CD automation, and scanning of images, directories, archives, and SBOMs.
+      The Homebrew facts also show packaging across macOS, Linux, Windows package
+      managers, and distribution ecosystems, which is typical for security CLIs expected
+      to run on developer workstations and CI agents.
+    - >
+      Anchore's open-source page presents Grype with Syft and Grant as a set of
+      developer-friendly container-security tools. That grouping matters historically
+      because Grype is not just a container scanner; it is part of a workflow where SBOM
+      generation, vulnerability matching, license checks, and automation are treated as
+      separate composable command-line steps.
+  package-nerd-significance:
+    - >
+      Grype is significant to package nerds because it turns package metadata into
+      security decisions. It has to understand OS package managers, language package
+      managers, image layers, SBOM formats, vulnerability identifiers, fixed-version
+      ranges, and suppression or VEX context. That makes it a practical stress test for
+      how well packaging metadata represents real software contents.
+    - >
+      It also illustrates the modern CLI distribution pattern for security tools: a
+      single compiled executable, Homebrew and other package-manager formulae, container
+      images, CI integration, generated documentation, and a separate data-update path
+      for the vulnerability database.
+  project-history:
+    - >
+      Anchore created the grype repository in May 2020 and published beta releases in
+      July 2020. The README describes a standalone CLI that scans images, directories,
+      and SBOMs; supports major Linux distribution package ecosystems; supports language
+      package ecosystems; and understands Docker, OCI, and Singularity image formats.
+    - >
+      The project evolved alongside Anchore's broader open-source supply-chain tooling.
+      Syft, created in May 2020, generates SBOMs for container images and filesystems,
+      while Grype consumes image contents or SBOM documents to report known
+      vulnerabilities. Anchore later moved substantial usage and reference documentation
+      to oss.anchore.com as the tools accumulated guides, coverage matrices, CLI
+      references, and configuration docs.
+    - >
+      Grype's release history shows steady iteration from the 0.1.0 beta series in 2020
+      into frequent tagged releases. Its feature set expanded beyond simple CVE tables
+      to include SBOM scanning, multiple output formats, risk prioritization signals
+      such as EPSS and KEV, OpenVEX filtering and augmentation, and documented
+      configuration-file search paths.
+  related-projects:
+    - Syft is Anchore's companion SBOM generator and is commonly paired with Grype.
+    - Grant is Anchore's related license-checking CLI.
+    - >
+      Trivy, Docker Scout, and other vulnerability scanners occupy adjacent container
+      and SBOM scanning workflows.
+    - OpenVEX is supported by Grype for filtering and augmenting vulnerability results.
+  sources:
+    - https://anchore.com/blog/anchore-oss-docs-have-a-new-home/
+    - https://anchore.com/opensource/
+    - https://api.github.com/repos/anchore/grype
+    - https://api.github.com/repos/anchore/grype/releases?per_page=100&page=2
+    - https://github.com/anchore/grype
+    - https://github.com/anchore/syft
+    - https://oss.anchore.com/docs/guides/vulnerability/getting-started/
+    - https://oss.anchore.com/docs/guides/vulnerability/scan-targets/
+  summary:
+    - >
+      Grype is Anchore's open-source vulnerability scanner for container images,
+      filesystems, and SBOMs. It became part of the Syft-and-Grype toolchain: Syft
+      catalogs what software is present, and Grype matches that inventory against
+      vulnerability data.
+  timeline:
+    - '2020: anchore/grype repository created.'
+    - '2020: Grype 0.1.0 beta releases published.'
+    - '2020: anchore/syft repository created as the companion SBOM generator.'
+    - >
+      2023: Grype release stream includes 0.64.x and later 0.x releases, reflecting
+      continued pre-1.0 iteration.
+    - >
+      2025: Anchore announced a dedicated oss.anchore.com documentation home for Syft,
+      Grype, and Grant.
+    - >
+      2026: Anchore OSS docs describe Grype guides for vulnerability scanning, scan
+      targets, interpreting results, filtering, and database management.
+  usage:
+    - >
+      Common usage is `grype <image>` for a container image, `grype dir:.` for a
+      directory, or `grype sbom:<path>` for an existing SBOM. The docs describe JSON
+      output for downstream processing, database downloads for vulnerability matching,
+      offline operation after an initial database download, and CI/CD use where
+      pipelines can fail based on severity thresholds.
+    - >
+      Package and security engineers care about the input source because Grype can scan
+      Docker and OCI images, local directories, archives, and SBOM files. Its results
+      depend on package cataloging and vulnerability database matching, so it is often
+      paired with Syft when an explicit SBOM artifact is desired.
 category: security
 package-manager:
   apk: grype
@@ -38,5 +131,15 @@ executables:
   - grype
 provenance:
   formula: grype
+  history-sources:
+    - https://anchore.com/blog/anchore-oss-docs-have-a-new-home/
+    - https://anchore.com/opensource/
+    - https://api.github.com/repos/anchore/grype
+    - https://api.github.com/repos/anchore/grype/releases?per_page=100&page=2
+    - https://github.com/anchore/grype
+    - https://github.com/anchore/syft
+    - https://oss.anchore.com/docs/guides/vulnerability/getting-started/
+    - https://oss.anchore.com/docs/guides/vulnerability/scan-targets/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

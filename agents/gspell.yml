@@ -5,6 +5,80 @@ docs:
   - https://gitlab.gnome.org/GNOME/gspell
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      gspell's adoption is tied to GTK 3 application development and GNOME text editing
+      components. The README explicitly says the 1.x versions target GTK 3, and the API
+      is designed for applications that want spelling support without embedding a full
+      editor.
+    - >
+      For packagers, the project's own notes recommend hunspell over aspell on GNU/Linux
+      because Enchant prefers hunspell and aspell does not work well with gspell. That
+      makes dictionary packaging part of the practical gspell story.
+  package-nerd-significance:
+    - >
+      gspell is interesting because it extracted spell-checking behavior from an
+      application plugin into a reusable GNOME library. That is exactly the kind of
+      small desktop-stack component distributions package so multiple apps can share one
+      implementation.
+    - >
+      Its dependency notes matter in packaging practice: GLib, GTK 3, Enchant, ICU,
+      hunspell dictionaries, GIR packages, and GTK documentation all affect whether
+      downstream applications get spell-checking that works cleanly.
+  project-history:
+    - >
+      The first gspell release was 0.1.0 on 2015-09-30. Its NEWS file says that the code
+      came from the gedit spell plugin rather than being written from scratch.
+    - >
+      The project quickly moved toward library polish: 0.1.2 created a GNOME Bugzilla
+      product and online API reference naming, 0.2.2 relicensed the code from GPLv2+ to
+      LGPLv2.1+, and 1.0.0 on 2016-03-20 declared the API stable with
+      backward-compatible 1.x stable versions.
+    - >
+      Later releases followed GNOME's even/odd minor-version scheme. The 1.5 development
+      cycle added gspell-app1 and documented no-spell-check tag support; 1.7 adopted
+      Enchant 2; 1.8.1 recorded the move to GNOME GitLab; and the 1.13 development cycle
+      removed Autotools and added Meson.
+  related-projects:
+    - gedit is the source lineage for the first gspell code.
+    - >
+      GtkSpell is named by the README as the basis for an enhanced GtkTextView inline
+      spell checker.
+    - >
+      GtkSourceView and libgedit-gtksourceview are related through the no-spell-check
+      tag support.
+    - Enchant, hunspell, and ICU are practical spelling and language dependencies.
+  sources:
+    - https://github.com/GNOME/gspell
+    - https://gitlab.gnome.org/GNOME/gspell
+    - https://raw.githubusercontent.com/GNOME/gspell/master/NEWS
+    - https://raw.githubusercontent.com/GNOME/gspell/master/README.md
+    - https://raw.githubusercontent.com/GNOME/gspell/master/docs/more-information.md
+    - https://raw.githubusercontent.com/GNOME/gspell/master/gspell.doap
+  summary:
+    - >
+      gspell is a GNOME spell-checking library for GTK applications. It provides a
+      GObject-based API, inline spell checking for GtkEntry and GtkTextView, a
+      GtkTextView spell-check dialog, language choosers, and support for the
+      no-spell-check tag used by GtkSourceView and libgedit-gtksourceview.
+  timeline:
+    - '2015: First 0.1.0 release, based on code from the gedit spell plugin.'
+    - '2015: 0.2.2 relicensed gspell from GPLv2+ to LGPLv2.1+.'
+    - '2016: 1.0.0 declared the API stable for the 1.x line.'
+    - '2017: 1.5.2 added gspell-app, later renamed gspell-app1.'
+    - '2017: 1.7.1 switched to Enchant 2.'
+    - '2018: 1.8.1 recorded the move to GNOME GitLab.'
+    - '2024: 1.13.1 added Meson and removed Autotools.'
+  usage:
+    - >
+      Application developers use gspell to add spell-checking widgets and behavior to
+      GTK interfaces. It wraps lower-level spelling services through Enchant and exposes
+      GTK-friendly components such as checkers, language choosers, and inline checking
+      for text widgets.
+    - >
+      The small gspell-app1 program, introduced during the 1.5 development cycle, gives
+      packagers and developers a convenient command to exercise the library.
 tags:
   - cli
   - gnome
@@ -33,6 +107,13 @@ provenance:
     - >
       source_facts.homepage is the official GNOME GitLab project and best official
       documentation surface identified in the supplied fields.
+  history-sources:
+    - https://github.com/GNOME/gspell
+    - https://gitlab.gnome.org/GNOME/gspell
+    - https://raw.githubusercontent.com/GNOME/gspell/master/NEWS
+    - https://raw.githubusercontent.com/GNOME/gspell/master/README.md
+    - https://raw.githubusercontent.com/GNOME/gspell/master/docs/more-information.md
+    - https://raw.githubusercontent.com/GNOME/gspell/master/gspell.doap
   repo-sources:
     - >
       source_facts.repo is empty; source_facts.homepage is the official GNOME GitLab
@@ -48,5 +129,6 @@ category-path:
   - spell-checking
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

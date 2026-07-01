@@ -6,6 +6,94 @@ docs:
   - https://github.com/fullstorydev/grpcurl#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      grpcurl adoption follows gRPC adoption. As teams moved internal APIs to gRPC, they
+      needed a quick shell-native way to list services, describe methods, send requests,
+      add metadata, test TLS and mTLS, and script health or debugging calls.
+    - >
+      FullStory's blog noted that grpcurl implementation code helped power other dynamic
+      gRPC tools such as Uber's Prototool. The README also lists Homebrew, Docker, Snap,
+      Go install, and third-party packages, showing broad packaging interest around a
+      small CLI.
+    - >
+      The tool became a common recommendation because it preserves the Unix habit of
+      direct command-line API inspection while respecting gRPC's schema-driven binary
+      protocol.
+  package-nerd-significance:
+    - >
+      grpcurl is one of those packages that earns its place by being exactly the missing
+      CLI. It lets package-manager users install a single binary and immediately inspect
+      a gRPC service without writing a generated client.
+    - >
+      It is also an archetypal Go-distributed developer tool: upstream releases
+      binaries, Homebrew packages it, Docker images exist, and `go install` remains a
+      source path. That redundancy is useful because grpcurl is often needed inside CI
+      images and ephemeral debugging shells.
+    - >
+      For API tooling, grpcurl made gRPC feel less opaque to developers raised on curl,
+      jq, and shell pipelines. Its JSON bridge is not the wire format; it is the human
+      interface that makes the protobuf wire format tolerable at a prompt.
+  project-history:
+    - >
+      The official GitHub repository was created in 2017, and the first listed GitHub
+      release was v1.0.0 in September 2018. FullStory's engineering blog later described
+      grpcurl as a tool for querying gRPC servers similarly to how curl queries HTTP
+      endpoints.
+    - >
+      grpcurl emerged to fill a protocol gap: ordinary curl cannot conveniently invoke
+      gRPC because gRPC uses HTTP/2 plus protobuf binary messages. The README explains
+      that grpcurl uses server reflection, proto source files, or protoset descriptor
+      files to discover schemas and translate JSON request bodies to protobuf messages.
+    - >
+      The repository also provides a Go library package for building other tools that
+      dynamically invoke gRPC endpoints, making grpcurl both a user-facing CLI and a
+      reusable implementation example for reflection-driven gRPC tooling.
+  related-projects:
+    - gRPC is the RPC framework grpcurl targets.
+    - >
+      Protocol Buffers provide the message and descriptor model grpcurl uses for
+      JSON-to-binary translation.
+    - grpcui is a browser UI built as a companion to grpcurl.
+    - gRPC server reflection lets grpcurl discover schemas directly from a running service.
+    - >
+      Prototool is cited by FullStory as another dynamic gRPC tool that used grpcurl
+      implementation code.
+  sources:
+    - https://github.com/fullstorydev/grpcurl
+    - https://github.com/fullstorydev/grpcurl/releases
+    - https://raw.githubusercontent.com/fullstorydev/grpcurl/master/README.md
+    - https://www.fullstory.com/blog/tale-of-grpcurl/
+  summary:
+    - >
+      grpcurl is a command-line tool for interacting with gRPC servers, deliberately
+      analogous to curl for HTTP. It makes binary protobuf-based RPCs scriptable by
+      accepting and emitting human-friendly JSON while using gRPC schemas to marshal
+      requests.
+  timeline:
+    - '2017: The grpcurl GitHub repository was created.'
+    - '2018: v1.0.0 was published on GitHub releases.'
+    - >
+      2019: FullStory published 'The tale of gRPCurl', explaining the curl-for-gRPC
+      motivation and related tooling reuse.
+    - >
+      2020s: The README documents Homebrew, Docker, Snap, Go install, and other
+      packaging routes.
+  usage:
+    - >
+      Typical usage is `grpcurl HOST:PORT list`, `grpcurl HOST:PORT describe SERVICE`,
+      or `grpcurl -d '{...}' HOST:PORT package.Service/Method`. Users can add metadata
+      with `-H`, use plaintext or TLS, and feed JSON from stdin with `-d @`.
+    - >
+      When a server supports gRPC reflection, grpcurl can discover services dynamically.
+      Without reflection, users provide `.proto` sources or compiled protoset files so
+      grpcurl can encode and decode messages correctly.
+    - >
+      grpcurl supports unary and streaming RPCs, including interactive bidirectional
+      streaming from a terminal. That makes it useful for smoke tests, local
+      development, CI checks, and quick production debugging when paired with
+      appropriate credentials and network access.
 category: developer-tools
 package-manager:
   apk: grpcurl
@@ -28,5 +116,11 @@ executables:
   - grpcurl
 provenance:
   formula: grpcurl
+  history-sources:
+    - https://github.com/fullstorydev/grpcurl
+    - https://github.com/fullstorydev/grpcurl/releases
+    - https://raw.githubusercontent.com/fullstorydev/grpcurl/master/README.md
+    - https://www.fullstory.com/blog/tale-of-grpcurl/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
