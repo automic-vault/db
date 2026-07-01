@@ -7,6 +7,82 @@ docs:
   - https://www.khronos.org/opengles/sdk/Reference-Compiler
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption followed the rise of Vulkan and SPIR-V: graphics projects needed a
+      standard way to turn human-written shader languages into SPIR-V modules and to
+      validate shaders against Khronos rules. The repository's long-lived presence under
+      the KhronosGroup organization, several thousand stars, and packaging across
+      Homebrew, Debian, Fedora, Arch, Nix, MacPorts, Scoop, and other distributions
+      reflect its role as shared infrastructure rather than a single-application
+      utility.
+    - >
+      For package maintainers, glslang became a dependency-sized building block for
+      Vulkan SDKs, rendering engines, CI checks, and shader asset pipelines. Its value
+      is partly cultural: installing it gives a reproducible command-line validator that
+      tracks Khronos reference behavior more closely than ad hoc compiler front ends.
+  package-nerd-significance:
+    - >
+      glslang matters to package users because it is small enough to install as a
+      command-line tool but authoritative enough to sit in serious graphics build
+      graphs. It also demonstrates the Khronos ecosystem pattern: glslang handles
+      language front-end and SPIR-V generation work, while adjacent packages such as
+      SPIRV-Tools handle optimization and lower-level binary manipulation.
+  project-history:
+    - >
+      The project descends from the OpenGL and OpenGL ES reference compiler work
+      maintained by Khronos. Its public KhronosGroup GitHub repository was created in
+      2015, the same period in which SPIR-V and Vulkan-era shader tooling moved into
+      more open, packageable workflows. The README describes the GLSL and ESSL front end
+      as a reference validator whose results carry similar weight to the specifications,
+      and it describes the AST-to-SPIR-V back end as virtually complete.
+    - >
+      glslang grew beyond a GLSL syntax checker into a central shader translation and
+      validation component. It added a partial HLSL front end, a reflection API, CMake
+      and GN build support, and release automation that publishes binaries from tested
+      tree states. The project documentation also records migration of `spirv-remap`
+      functionality into SPIRV-Tools as `spirv-opt` functionality, illustrating how
+      Khronos shader tooling was split into focused companion projects.
+  related-projects:
+    - >
+      SPIRV-Tools provides SPIR-V optimization, validation, and binary tooling used
+      beside glslang.
+    - >
+      Vulkan SDK distributions and rendering engines commonly pair glslang with shader
+      compilation and asset-pipeline tooling.
+    - >
+      Khronos specifications for OpenGL, OpenGL ES, Vulkan, and SPIR-V define the
+      standards context that gives glslang its reference-tool role.
+  sources:
+    - https://api.github.com/repos/KhronosGroup/glslang
+    - https://github.com/KhronosGroup/glslang
+    - https://raw.githubusercontent.com/KhronosGroup/glslang/main/README.md
+    - https://www.khronos.org/opengles/sdk/tools/Reference-Compiler/
+  summary:
+    - >
+      glslang is Khronos Group's reference front end for GLSL and ESSL, with a SPIR-V
+      back end and a standalone command-line wrapper. In package-manager form it is best
+      known through the `glslangValidator` and `glslang` executables used by graphics
+      developers, engine build systems, and shader toolchains.
+  timeline:
+    - '2015: KhronosGroup created the public GitHub repository.'
+    - >
+      2015: Vulkan and SPIR-V-era workflows made reference shader-to-SPIR-V tooling
+      broadly package-relevant.
+    - '2026: The README announced deprecation of the HLSL front end with migration guidance.'
+  usage:
+    - >
+      Practitioners use glslang by passing shader files to the standalone wrapper. File
+      extensions such as `.vert`, `.frag`, `.comp`, and ray-tracing-stage extensions
+      select stage-specific rules, and the tool prints diagnostics, AST information, or
+      SPIR-V output depending on options. Developers also build it from source through
+      CMake or GN when integrating it into larger graphics SDKs or engine build systems.
+    - >
+      Typical use cases include validating shaders before they enter a game or
+      visualization build, compiling GLSL or ESSL to SPIR-V for Vulkan pipelines,
+      checking generated shader code in CI, and inspecting reflection information for
+      engine resource binding code.
 category: developer-tools
 package-manager:
   apk: glslang
@@ -36,5 +112,11 @@ executables:
   - glslangValidator
 provenance:
   formula: glslang
+  history-sources:
+    - https://api.github.com/repos/KhronosGroup/glslang
+    - https://github.com/KhronosGroup/glslang
+    - https://raw.githubusercontent.com/KhronosGroup/glslang/main/README.md
+    - https://www.khronos.org/opengles/sdk/tools/Reference-Compiler/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
