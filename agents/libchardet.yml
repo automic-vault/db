@@ -5,6 +5,64 @@ docs:
   - https://github.com/Joungkyun/libchardet#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      libchardet's adoption is narrower than Python chardet or uchardet, but it fills
+      the same packaging niche for C/C++ consumers that need Mozilla-style charset
+      guessing without embedding the whole browser-era component. The batch input lists
+      packages in Homebrew, Debian/Ubuntu, Fedora, Arch, Nix, and openSUSE, mostly as a
+      development library.
+  package-nerd-significance:
+    - >
+      libchardet is significant because charset detection is one of those small
+      compatibility problems that keeps returning in editors, importers, scrapers, mail
+      tools, and document converters. It also shows how browser infrastructure escaped
+      into standalone libraries: Mozilla/Netscape detection code became reusable C,
+      Python, Perl, and other language bindings.
+  project-history:
+    - >
+      Mozilla's archived charset detector documentation describes the original detector
+      as an XPCOM component that receives bytes and guesses the charset. A companion
+      Mozilla document from 2002 explains that the universal detector implementation was
+      separable from the XPCOM wrapper and could be used by other projects.
+    - >
+      The libchardet README says the library is based on Mozilla Universal Charset
+      Detector code originally written by Netscape Communications Corporation, with a C
+      wrapping API and libtool build environment. It also records later changes: version
+      1.0.5 incorporated single-byte charset confidence ideas and language models from
+      uchardet, and version 1.0.6 added BOM reporting.
+  related-projects:
+    - >
+      Related projects include Mozilla Universal Charset Detector, uchardet, Python
+      chardet, John Gardiner Myers's Encode-Detect Perl module, and applications that
+      need to infer encodings before decoding text.
+  sources:
+    - https://formulae.brew.sh/formula/libchardet
+    - https://github.com/Joungkyun/libchardet
+    - https://www-archive.mozilla.org/projects/intl/chardet.html
+    - https://www-archive.mozilla.org/projects/intl/detectorsrc
+    - https://www-archive.mozilla.org/projects/intl/universalcharsetdetection
+  summary:
+    - >
+      libchardet is a C/C++ API around Mozilla's Universal Charset Detector lineage. It
+      detects the likely character encoding of byte streams, a task that matters when
+      programs ingest legacy text without reliable charset labels.
+  timeline:
+    - '2002-08-15: Mozilla charset detector documentation was last modified.'
+    - >
+      2002-11-06: Mozilla standalone universal charset detector notes described using
+      the detector outside Mozilla.
+    - >
+      2019: libchardet README copyright line names JoungKyun.Kim and describes the
+      standalone C/C++ API.
+    - '2021-05-13: GitHub release listing shows libchardet 1.0.6.'
+  usage:
+    - >
+      The repository documents a small API centered on detect_obj_init, detect or
+      detect_r, confidence reporting, and object cleanup. The package also installs
+      chardet-config for build integration, so downstream C/C++ projects can compile
+      against the library.
 tags:
   - c
   - charset-detection
@@ -32,6 +90,12 @@ provenance:
     - >
       source_facts.homepage and source_facts.repo both point to the official GitHub
       project, whose README is the best supplied documentation surface.
+  history-sources:
+    - https://formulae.brew.sh/formula/libchardet
+    - https://github.com/Joungkyun/libchardet
+    - https://www-archive.mozilla.org/projects/intl/chardet.html
+    - https://www-archive.mozilla.org/projects/intl/detectorsrc
+    - https://www-archive.mozilla.org/projects/intl/universalcharsetdetection
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/Joungkyun/libchardet, so
@@ -46,5 +110,6 @@ category-path:
   - text-processing
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
