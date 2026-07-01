@@ -7,6 +7,97 @@ docs:
   - https://wiki.gnome.org/Projects%282f%29gtk%282d%29vnc.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The GNOME wiki explicitly names Vinagre, GNOME Boxes, and virt-viewer as gtk-vnc
+      users. That is the adoption pattern that matters for packagers: gtk-vnc is not
+      usually installed because users type its executable, but because virtualization,
+      remote desktop, and GNOME applications need its libraries, introspection data, and
+      small tools.
+    - >
+      Distribution package names in the input show the same split role across
+      ecosystems: some package the library as gtk-vnc, while Debian and Ubuntu expose
+      GObject Introspection packages such as gir1.2-gtk-vnc-2.0 and RPM ecosystems often
+      provide development packages for consumers that compile against the widget.
+  package-nerd-significance:
+    - >
+      gtk-vnc is a classic dependency package: small on the surface, but it carries ABI,
+      introspection, protocol, and toolkit-version consequences for remote-desktop
+      stacks. It is important to package indexes because applications such as Boxes and
+      virt-viewer depend on a stable embeddable VNC widget rather than reimplementing
+      RFB.
+    - >
+      It also captures GNOME platform migration history. The move from GTK 2 support to
+      GTK 3-only in 1.0.0, from Autotools to Meson, and later from gtk-doc to gi-docgen
+      mirrors broader GNOME packaging shifts.
+  project-history:
+    - >
+      The GNOME wiki describes gtk-vnc as a VNC viewer widget for GTK built around
+      coroutines so it can remain asynchronous while single-threaded. The same page
+      documents the public GitLab repository and the GNOME source tarball location.
+    - >
+      Early releases in the upstream NEWS file show the project maturing from the 0.3
+      line through GTK 2 and GTK 3 integration. The 0.3.8 release added Win32/MinGW
+      portability and MS Logon authentication, while later 0.4 releases included GTK 3
+      support and removal of older GDK image/pixmap usage. The 0.5 and 0.6 lines added
+      protocol, authentication, introspection, Python, Vala, and API refinements.
+    - >
+      The 1.0.0 release in August 2019 marked a packaging and API boundary: Autotools
+      was replaced with Meson, GTK 2 support was dropped, GTK 3 became mandatory, and
+      the example/demo code was modernized. Later releases continued the library
+      direction with desktop resize extensions, GNUTLS changes, macOS build fixes,
+      gi-docgen API docs, coroutine portability work, and visible-cursor and
+      authentication fixes.
+  related-projects:
+    - VNC and the RFB protocol are the remote-display technologies implemented by gtk-vnc.
+    - Vinagre, GNOME Boxes, and virt-viewer are named upstream users.
+    - >
+      GTK, GLib, GObject Introspection, GNUTLS, SASL, and Meson are important platform
+      and packaging dependencies in the upstream history.
+  sources:
+    - https://download.gnome.org/sources/gtk-vnc/
+    - https://download.gnome.org/sources/gtk-vnc/0.6/
+    - https://download.gnome.org/sources/gtk-vnc/1.3/
+    - https://gitlab.gnome.org/GNOME/gtk-vnc/-/raw/master/NEWS
+    - https://wiki.gnome.org/Projects%282f%29gtk%282d%29vnc.html
+  summary:
+    - >
+      gtk-vnc is a GNOME-hosted VNC client library and GTK display widget. It packages
+      the Remote Framebuffer/VNC protocol behind reusable C libraries, so downstream
+      programs can embed a remote-desktop viewer instead of shelling out to a separate
+      VNC client.
+  timeline:
+    - >
+      2008-12-07: Version 0.3.8 includes Win32/MinGW portability and MS Logon
+      authentication support.
+    - >
+      2010-07-11: Version 0.4.0 includes GTK 3 support and removes older GDK
+      pixmap/image usage.
+    - '2011-12-21: Version 0.5.0 starts a new feature line with API and protocol additions.'
+    - '2016-08-18: Version 0.6.0 release appears in GNOME source tarballs.'
+    - >
+      2018-08-01: Version 0.8.0 deletes the Python 2 binding in favor of GObject
+      Introspection.
+    - >
+      2019-08-07: Version 1.0.0 replaces Autotools with Meson, drops GTK 2 support, and
+      requires GTK 3.
+    - '2021-04-14: Version 1.2.0 adds desktop resize, scaling, and several VNC extension APIs.'
+    - >
+      2025-01-06: Version 1.4.0 replaces gtk-doc with gi-docgen and broadens coroutine
+      portability.
+  usage:
+    - >
+      Applications embed gtk-vnc when they need a GTK widget that speaks VNC/RFB,
+      handles authentication and encoding details, and participates naturally in a GTK
+      application. Users may also encounter command-line helper programs such as
+      gvnccapture, but the core value is the embeddable library.
+    - >
+      The project history matters operationally because VNC clients sit at the edge of
+      security, graphics, input, and portability. NEWS entries mention SASL, TLS
+      certificate handling, VeNCrypt, MS Logon authentication, cursor encodings, HiDPI
+      rendering, desktop resize extensions, and coroutine implementations for Unix,
+      Windows, and macOS.
 category: networking
 package-manager:
   apk: gtk-vnc
@@ -32,5 +123,12 @@ executables:
   - gvnccapture
 provenance:
   formula: gtk-vnc
+  history-sources:
+    - https://download.gnome.org/sources/gtk-vnc/
+    - https://download.gnome.org/sources/gtk-vnc/0.6/
+    - https://download.gnome.org/sources/gtk-vnc/1.3/
+    - https://gitlab.gnome.org/GNOME/gtk-vnc/-/raw/master/NEWS
+    - https://wiki.gnome.org/Projects%282f%29gtk%282d%29vnc.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

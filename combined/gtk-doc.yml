@@ -7,6 +7,95 @@ docs:
   - https://wiki.gnome.org/DocumentationProject/GtkDoc
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GTK-Doc was adopted across the GNOME C library ecosystem because it understands
+      GObject-specific concepts that generic C documentation tools may not: signals,
+      properties, object scanners, and conventions used by GTK widgets and GObject
+      classes.
+    - >
+      The archived GNOME GtkDoc page describes it as a tool for extracting API
+      documentation from C code like Doxygen, with special support for GObject, and
+      describes HTML output by default with PDF and man-page output possible with extra
+      work. GNOME project pages and coding-practice material refer to GTK-Doc
+      annotations as part of documenting public C APIs.
+  package-nerd-significance:
+    - >
+      GTK-Doc is a classic build dependency that users may never run directly but
+      packagers recognize instantly. Enabling API docs in a GNOME library can pull in
+      GTK-Doc, DocBook DTDs, DocBook XSL stylesheets, libxml2/libxslt, Python modules,
+      and sometimes PDF tooling such as dblatex.
+    - >
+      Its long tail matters because old projects may still expect gtkdocize and
+      Autotools integration, while the GTK-Doc project itself moved its own build to
+      Meson. That split between being built with Meson and still supporting Autotools
+      integration in downstream projects is package-maintainer lore.
+  project-history:
+    - >
+      The GTK-Doc repository has a 'start' tag dated 1998-11-24 and a GTK_DOC_1_0 tag
+      dated 2003-01-20. The GNOME source archive also lists gtk-doc-1.0 tarballs dated
+      2003-01-20, giving a fixed early release anchor.
+    - >
+      The project README says GTK-Doc is used to document C code, typically the public
+      API of libraries such as GLib-based libraries, but also application code. It also
+      notes that GTK-Doc was not originally intended as a general-purpose documentation
+      tool and points to Doxygen for that broader role.
+    - >
+      The project evolved from a DocBook-oriented GNOME documentation pipeline into a
+      Python/Meson-era maintenance tool. The NEWS file records Python 3-related changes,
+      an experimental gtkdoc-mkhtml2 toolchain in 1.30, Python 3 requirements in 1.29,
+      and the removal of Autotools as a way to build GTK-Doc itself in 1.36.0.
+  related-projects:
+    - >
+      GTK, GLib, GObject, GNOME libraries, Devhelp, DocBook, libxml2, libxslt, Meson,
+      and Autotools are the central related projects in GTK-Doc's package history.
+    - >
+      gi-docgen is the related GNOME documentation generator associated with GObject
+      Introspection-era API reference publishing; archived GNOME pages describe efforts
+      to generate documentation from introspection data as a successor direction for
+      parts of the GTK-Doc role.
+  sources:
+    - https://download.gnome.org/sources/gtk-doc/1.0/
+    - https://gitlab.gnome.org/GNOME/gtk-doc
+    - https://gitlab.gnome.org/GNOME/gtk-doc/-/raw/master/NEWS
+    - https://gitlab.gnome.org/GNOME/gtk-doc/-/raw/master/README.md
+    - https://gitlab.gnome.org/api/v4/projects/GNOME%2Fgtk-doc/repository/tags?per_page=100
+    - https://wiki.gnome.org/DocumentationProject/GtkDoc
+  summary:
+    - >
+      GTK-Doc is a documentation generator for C APIs, especially GLib, GObject, GTK,
+      and GNOME-style libraries. It extracts structured comments from C code,
+      understands GObject signals and properties, produces DocBook XML, and transforms
+      that output into HTML and other formats.
+    - >
+      For package maintainers, GTK-Doc is the build-time tool that explains why GNOME
+      library packages often have optional documentation flags, gtkdocize steps, DocBook
+      dependencies, scanner binaries, and generated API reference artifacts.
+  timeline:
+    - '1998: GTK-Doc repository has a start tag.'
+    - '2003: GTK-Doc 1.0 tag and GNOME source tarballs appeared.'
+    - '2018: GTK-Doc 1.29 NEWS records Python 3 requirement changes.'
+    - >
+      2019: GTK-Doc 1.30 NEWS records Pygments use and an experimental gtkdoc-mkhtml2
+      toolchain.
+    - >
+      2020: GTK-Doc 1.33.0 NEWS records reproducible-build and GTK action documentation
+      support.
+    - >
+      2026: GTK-Doc 1.36.0 NEWS records that GTK-Doc can no longer be built with
+      Autotools, while Autotools integration files remain for downstream projects.
+  usage:
+    - >
+      A project using GTK-Doc writes documentation blocks in C comments, keeps section
+      and symbol metadata, runs tools such as gtkdoc-scan, gtkdoc-scangobj, gtkdoc-mkdb,
+      gtkdoc-mkhtml, gtkdoc-fixxref, gtkdoc-mkman, gtkdoc-mkpdf, and often integrates
+      gtkdocize with Autotools-era projects or Meson build definitions.
+    - >
+      The README describes generated HTML as browsable in a normal browser or in
+      Devhelp. The manual/wiki workflow also explains the package's role in local
+      developer environments: it is not just a documentation renderer, but a scanner and
+      cross-reference pipeline used while building source distributions.
 category: developer-tools
 package-manager:
   apk: gtk-doc
@@ -43,5 +132,13 @@ executables:
   - gtkdocize
 provenance:
   formula: gtk-doc
+  history-sources:
+    - https://download.gnome.org/sources/gtk-doc/1.0/
+    - https://gitlab.gnome.org/GNOME/gtk-doc
+    - https://gitlab.gnome.org/GNOME/gtk-doc/-/raw/master/NEWS
+    - https://gitlab.gnome.org/GNOME/gtk-doc/-/raw/master/README.md
+    - https://gitlab.gnome.org/api/v4/projects/GNOME%2Fgtk-doc/repository/tags?per_page=100
+    - https://wiki.gnome.org/DocumentationProject/GtkDoc
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -6,6 +6,77 @@ docs:
   - https://github.com/google/guetzli#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Guetzli was quickly packaged because it offered an easy experiment for web image
+      optimization: a single CLI that reads PNG or JPEG input and writes optimized JPEG
+      output. The official README documents Homebrew and MacPorts installation paths,
+      and the input metadata records packaging across Alpine, Homebrew, Debian,
+      MacPorts, Nix, Arch, Scoop, and Ubuntu.
+    - >
+      Its adoption was bounded by cost. The README warns that it uses about 300 MB of
+      memory per megapixel and roughly one minute of CPU per megapixel, making it better
+      suited to offline asset pipelines than interactive image conversion.
+  package-nerd-significance:
+    - >
+      Guetzli is a package-nerd favorite because it embodies a clear tradeoff: excellent
+      density for legacy JPEGs, paid for with CPU and memory. It is a compact
+      command-line artifact from a major research organization, easy to package, easy to
+      benchmark, and easy to compare against libjpeg, MozJPEG, Zopfli, WebP, JPEG XL,
+      and later Jpegli work.
+    - >
+      Google's later Jpegli announcement explicitly places newer JPEG work in relation
+      to earlier Guetzli-style heuristics, making Guetzli part of the historical path
+      from high-effort JPEG optimization toward faster modern JPEG-compatible encoders.
+  project-history:
+    - >
+      Google announced Guetzli as open source on 2017-03-16. The announcement described
+      it as a JPEG encoder for digital images and web graphics that targeted file-size
+      reductions while remaining compatible with existing browsers, image-processing
+      applications, and the JPEG standard.
+    - >
+      The repository README says Guetzli-generated images are typically 20-30 percent
+      smaller than libjpeg images of equivalent quality, and that Guetzli emits
+      sequential, non-progressive JPEGs. The implementation uses a psychovisual approach
+      focused on quantization decisions, with Butteraugli-related perceptual modeling
+      present in the repository.
+  related-projects:
+    - >
+      Guetzli is related to libjpeg, MozJPEG, Butteraugli, Zopfli, WebP, JPEG XL,
+      Brunsli, and Jpegli. Its distinguishing trait is staying inside the legacy JPEG
+      format while using a slower perceptual search to improve compression density.
+  sources:
+    - https://github.com/google/guetzli
+    - https://opensource.googleblog.com/2017/03/guetzli-new-open-source-jpeg-encoder.html
+    - >
+      https://opensource.googleblog.com/2024/04/introducing-jpegli-new-jpeg-coding-library.html
+    - https://raw.githubusercontent.com/google/guetzli/master/README.md
+  summary:
+    - >
+      Guetzli is Google's perceptual JPEG encoder for producing smaller sequential JPEG
+      files at high visual quality. It belongs to the same family of format-compatible
+      compression experiments as Zopfli: spend more CPU time during encoding while
+      keeping output compatible with existing decoders.
+  timeline:
+    - '2017-03-16: Google Open Source Blog announces Guetzli.'
+    - >
+      2017-03-21: GitHub release metadata shows the release series around the public
+      launch window.
+    - '2017: README documents POSIX, Windows, macOS, Homebrew, MacPorts, and Bazel build paths.'
+    - >
+      2024: Google's Jpegli announcement discusses faster heuristics developed after
+      earlier Guetzli-style approaches.
+  usage:
+    - >
+      The CLI usage is direct: `guetzli [--quality Q] [--verbose] original.png
+      output.jpg` or the same with JPEG input. The README recommends high-quality,
+      preferably uncompressed input and notes that PNG alpha is flattened onto black
+      because JPEG has no alpha channel.
+    - >
+      Guetzli assumes sRGB input with gamma 2.2 and ignores color-profile metadata. That
+      assumption is important in package notes because it affects whether the tool is
+      appropriate for a given image workflow.
 category: media
 package-manager:
   apk: guetzli
@@ -28,5 +99,12 @@ executables:
   - guetzli
 provenance:
   formula: guetzli
+  history-sources:
+    - https://github.com/google/guetzli
+    - https://opensource.googleblog.com/2017/03/guetzli-new-open-source-jpeg-encoder.html
+    - >
+      https://opensource.googleblog.com/2024/04/introducing-jpegli-new-jpeg-coding-library.html
+    - https://raw.githubusercontent.com/google/guetzli/master/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
