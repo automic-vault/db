@@ -5,6 +5,67 @@ docs:
   - https://github.com/danielrobbins/keychain#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Keychain spread widely because it fit naturally into .bash_profile, .zprofile,
+      cron, and remote-login setups. Package-manager coverage across Alpine, Debian,
+      Fedora, Homebrew, MacPorts, Nix, Arch, Ubuntu, and openSUSE reflects how common
+      ssh-agent reuse became for developers and administrators.
+  package-nerd-significance:
+    - >
+      Keychain is a small package with outsized dotfile significance: it is glue between
+      OpenSSH, GnuPG, login shells, and package-managed user environments. It also shows
+      how a simple shell utility can remain useful for decades and later be rewritten
+      without changing the user-facing contract too abruptly.
+  project-history:
+    - >
+      Keychain was created by Daniel Robbins and became associated with Gentoo and
+      Funtoo-era shell workflows. The classic implementation was a shell script that
+      wrote reusable environment snippets under the user's home directory so later
+      shells could attach to the same agent.
+    - >
+      The project moved back under Daniel Robbins' GitHub account as its official home
+      after a period under Funtoo. In the 2.9 series the project deprecated older
+      options such as --agents, and in the 3.0 beta series it began a ground-up Python 3
+      rewrite while preserving compatibility with traditional invocations.
+  related-projects:
+    - >
+      Keychain wraps OpenSSH's ssh-agent and ssh-add and can coordinate with gpg-agent.
+      It is adjacent to shell startup frameworks, password managers that expose SSH
+      agents, and OS-native keychain services, but its historical niche is portable Unix
+      shell glue.
+  sources:
+    - https://github.com/danielrobbins/keychain
+    - https://github.com/danielrobbins/keychain/blob/master/ChangeLog.md
+    - https://man.freebsd.org/cgi/man.cgi?query=keychain&sektion=1
+    - https://manpages.ubuntu.com/manpages/focal/man1/keychain.1.html
+    - https://www.funtoo.org/Funtoo%3AKeychain
+  summary:
+    - >
+      Keychain is Daniel Robbins' long-running helper for sharing ssh-agent and
+      gpg-agent state across login shells, remote sessions, cron jobs, and other
+      long-lived user environments. It solves the everyday Unix annoyance of spawning or
+      unlocking a new agent for every terminal.
+  timeline:
+    - >
+      2000s: Keychain became a common Gentoo/Funtoo-associated ssh-agent helper created
+      by Daniel Robbins.
+    - >
+      2025: The Funtoo archive noted Daniel Robbins' return as maintainer and pointed to
+      the danielrobbins/keychain GitHub repository as the official home.
+    - '2025: Keychain 2.9 deprecated --agents and related legacy behavior.'
+    - '2026-06: Keychain 3.0.0_beta1 introduced a Python 3 rewrite.'
+    - >
+      2026: Keychain 3.0.0_beta2 added coordinated multi-terminal initialization and
+      stronger GPG verification behavior.
+  usage:
+    - >
+      A typical setup runs keychain during shell startup, evaluates its environment
+      output, and then reuses the existing ssh-agent or gpg-agent rather than prompting
+      for every new session. The 3.0 beta changelog focuses on multi-terminal
+      coordination and more reliable GPG warm-up, which are exactly the rough edges
+      users hit in modern terminal multiplexers, IDE terminals, and WSL sessions.
 tags:
   - authentication
   - cli
@@ -32,6 +93,12 @@ provenance:
     - >
       Official current GitHub home README documents Keychain usage and project details;
       Funtoo page notes GitHub as the official home.
+  history-sources:
+    - https://github.com/danielrobbins/keychain
+    - https://github.com/danielrobbins/keychain/blob/master/ChangeLog.md
+    - https://man.freebsd.org/cgi/man.cgi?query=keychain&sektion=1
+    - https://manpages.ubuntu.com/manpages/focal/man1/keychain.1.html
+    - https://www.funtoo.org/Funtoo%3AKeychain
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/danielrobbins/keychain, so
@@ -47,5 +114,6 @@ category-path:
   - ssh-agent
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
