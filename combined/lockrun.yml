@@ -6,6 +6,66 @@ docs:
   - http://unixwiz.net/tools/lockrun.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The tool's natural audience is Unix administrators with cron jobs that must not
+      overlap, especially polling and monitoring jobs. It was tested on FreeBSD and
+      Linux, received a report of working on Mac OS X, and later gained portability work
+      such as Solaris `lockf()` support.
+    - >
+      Homebrew and Alpine packaging made the small C utility easier to install without
+      manually downloading and compiling the source file.
+  package-nerd-significance:
+    - >
+      lockrun is package-manager-relevant because it solves a narrow operations problem
+      with one C file and no daemon. It overlaps with `flock(1)` patterns, but its
+      documented cron-oriented interface made it a remembered admin tool.
+    - >
+      Its packaging story is also a reminder that not every useful Unix package has a
+      modern VCS repository; sometimes the authoritative upstream is a source file and a
+      carefully written HTML manual.
+  project-history:
+    - >
+      The official Unixwiz.net page explains that lockrun was created in response to
+      network-monitoring cron jobs that could run longer than their schedule interval.
+      The tool was designed as a protective wrapper that checks whether another
+      protected instance is already running before launching the requested command.
+    - >
+      lockrun is distributed as portable C source code rather than through a hosted
+      source repository. The official page documents building it with `gcc lockrun.c -o
+      lockrun` and installing it into `/usr/local/bin`.
+  related-projects:
+    - >
+      flock(1), run-one, and daemon supervisors solve adjacent locking or
+      single-instance execution problems.
+    - >
+      Cacti poller scripts are used in the official documentation as a motivating cron
+      example.
+  sources:
+    - http://unixwiz.net/tools/
+    - http://unixwiz.net/tools/lockrun.html
+  summary:
+    - >
+      lockrun is a small public-domain Unix utility by Steve Friedl for running cron
+      jobs with overrun protection. It wraps a command, takes an advisory file lock, and
+      prevents overlapping invocations from piling up.
+  timeline:
+    - '2006: Initial lockrun release.'
+    - '2009: Solaris 10 `lockf()` support was added.'
+    - '2010: `--quiet` parameter was added.'
+    - >
+      2012: Documentation about no kill option, `--retries`, and `setsid()` support were
+      added.
+  usage:
+    - >
+      A typical crontab entry invokes `lockrun --lockfile=/var/run/name.lockrun --
+      command`. If the lock cannot be acquired, lockrun exits instead of launching a
+      second copy; `--wait`, `--quiet`, `--verbose`, and `--maxtime` adjust behavior.
+    - >
+      The official documentation warns that the lockfile should be placed in a directory
+      protected from other users and not in `/tmp`, because a writable directory could
+      enable symlink attacks against the lockfile path.
 category: system
 package-manager:
   apk: lockrun
@@ -23,5 +83,9 @@ executables:
   - lockrun
 provenance:
   formula: lockrun
+  history-sources:
+    - http://unixwiz.net/tools/
+    - http://unixwiz.net/tools/lockrun.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

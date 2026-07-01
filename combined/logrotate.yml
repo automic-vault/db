@@ -7,6 +7,75 @@ docs:
 config-file-location:
   unix: /etc/logrotate.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      logrotate is widely packaged across Unix and Unix-like systems. The supplied
+      package metadata records packages in Alpine, Homebrew, Chocolatey, Debian,
+      Fedora/DNF, MacPorts, Nix, Arch, Ubuntu, and openSUSE, reflecting its status as
+      infrastructure plumbing rather than an application-specific tool.
+    - >
+      Its adoption has been helped by the simple contract between packages and the host
+      system: applications can install small snippets under a system's logrotate
+      configuration directory, while logrotate centralizes schedule, retention,
+      compression, permissions, and post-rotation hooks.
+  package-nerd-significance:
+    - >
+      logrotate is one of the small system tools that package managers quietly depend
+      on. It lets packaged daemons ship predictable log retention behavior without each
+      daemon inventing its own rotation code, and its config snippets are a familiar
+      part of Linux and Unix package post-installation hygiene.
+  project-history:
+    - >
+      The official README describes logrotate as a utility designed to simplify
+      administration of systems that generate many log files. Its manpage documents the
+      traditional cron or systemd timer execution model and the central
+      `/etc/logrotate.conf` configuration file.
+    - >
+      The current upstream GitHub changelog shows continuing maintenance through modern
+      3.x releases. Recent entries include systemd integration hardening, state-file
+      locking, Zstandard compression support, stricter parser behavior, fixes for
+      security-sensitive file handling, and a 2024 3.22.0 release with additional
+      parser, rotation, and timer fixes.
+  related-projects:
+    - 'cron and systemd timers: common schedulers for running logrotate.'
+    - >
+      gzip, xz, zstd, and other compressors: external compression tools commonly used by
+      logrotate configurations.
+    - 'syslog and daemon packages: common producers of logs managed by logrotate.'
+  sources:
+    - https://github.com/logrotate/logrotate
+    - https://github.com/logrotate/logrotate/blob/main/ChangeLog.md
+    - https://github.com/logrotate/logrotate/blob/main/logrotate.8.in
+    - source_facts.package-manager
+  summary:
+    - >
+      logrotate is the standard Unix-style utility for rotating, compressing, removing,
+      and optionally mailing log files so long-running systems do not accumulate
+      unbounded logs.
+  timeline:
+    - >
+      2016: 3.11.0 imports systemd service and timer examples and adds new configuration
+      directives.
+    - >
+      2018: 3.15.0 renames the default example to logrotate.conf and improves systemd
+      timer behavior.
+    - '2020: 3.17.0 adds state-file locking; 3.18.0 adds Zstandard compression support.'
+    - '2022: 3.20.0 addresses CVE-2022-1348 around state-file handling.'
+    - >
+      2024: 3.22.0 release fixes time calculations, copy/compress edge cases, named-pipe
+      handling, parser ambiguity, and timer behavior.
+  usage:
+    - >
+      Administrators define log paths and directives in `/etc/logrotate.conf` or
+      included configuration files. logrotate can rotate hourly, daily, weekly, monthly,
+      after elapsed minutes, or by size; it can compress old logs, create replacement
+      files, move logs to old directories, run scripts, and maintain a state file to
+      avoid repeated rotations.
+    - >
+      Package maintainers care about directives such as `create`, `copytruncate`,
+      `missingok`, `compress`, `delaycompress`, `su`, and `postrotate` because they
+      determine whether daemons keep writing safely after logs are moved or truncated.
 category: system
 package-manager:
   apk: logrotate
@@ -32,5 +101,11 @@ executables:
   - logrotate
 provenance:
   formula: logrotate
+  history-sources:
+    - https://github.com/logrotate/logrotate
+    - https://github.com/logrotate/logrotate/blob/main/ChangeLog.md
+    - https://github.com/logrotate/logrotate/blob/main/logrotate.8.in
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

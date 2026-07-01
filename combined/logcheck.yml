@@ -9,6 +9,72 @@ config-file-location:
     - /etc/logcheck/logcheck.conf
     - /etc/logcheck/*.d/*
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      logcheck's adoption is strongest in Debian-family systems, where its manpages,
+      package page, and logcheck-database rules are first-class distribution artifacts.
+      The supplied package metadata also records package availability in Homebrew,
+      Alpine, Nix, openSUSE, Debian, and Ubuntu.
+    - >
+      The package belongs to an older Unix administration style: periodic cron jobs,
+      regex rule directories in /etc, and email to root or an administrator. That style
+      remains useful on servers where a small local checker is preferable to a
+      centralized log pipeline.
+  package-nerd-significance:
+    - >
+      logcheck is a packaging-culture artifact: much of its value lives in
+      distribution-maintained regex databases and package-specific rule files, not in a
+      large binary. It is a useful example of Debian packaging acting as upstream
+      stewardship for a security-administration workflow.
+  project-history:
+    - >
+      Debian's package page says logcheck was originally part of the Abacus Project
+      security tools and was later rewritten. The Debian repository's change notes
+      describe the Debian package becoming effectively Debian-native after a major
+      overhaul around version 1.1.9.1 because Debian's version had diverged
+      substantially from the old upstream 1.1.1 code.
+    - >
+      The current Debian Salsa repository presents logcheck as the maintained source
+      home for Debian packaging, with the project description centered on mailing
+      summaries of log file entries to administrators via cron.
+  related-projects:
+    - 'logtail: used by logcheck workflows to process recent log messages.'
+    - 'logcheck-database: the companion rules package that supplies regular-expression filters.'
+  sources:
+    - https://manpages.debian.org/testing/logcheck/logcheck.8.en.html
+    - https://packages.debian.org/sid/logcheck
+    - https://salsa.debian.org/debian/logcheck
+    - https://salsa.debian.org/debian/logcheck/-/raw/debian/sid/CHANGES
+    - https://salsa.debian.org/debian/logcheck/-/raw/debian/sid/docs/README.logcheck-database
+  summary:
+    - >
+      logcheck is a Debian-oriented log monitoring tool that scans system logs for
+      unexpected entries and emails reports to the administrator. It focuses on
+      filtering routine messages out so security violations, attack alerts, and unusual
+      system events stand out.
+  timeline:
+    - >
+      Pre-1.1.9.1: logcheck originates in the Abacus Project security tools and is later
+      rewritten.
+    - >
+      1.1.9.1: Debian change notes describe a major overhaul and larger config/rulefile
+      changes.
+    - '2018: Debian Salsa project page records repository creation on May 13, 2018.'
+    - >
+      Current: Debian manpages document hourly cron use, report levels, and
+      /etc/logcheck configuration.
+  usage:
+    - >
+      The logcheck command runs by default as an hourly cron job and after reboot. It
+      filters messages at paranoid, server, or workstation levels, sorts reports into
+      system events, security events, and attack alerts, and sends email only when
+      messages survive the rules.
+    - >
+      Administrators tune it through `/etc/logcheck/logcheck.conf`, monitored-file
+      lists, and rule directories such as cracking.d, violations.d, violations.ignore.d,
+      and ignore.d.*. The logcheck-database documentation emphasizes writing precise
+      extended regular expressions and testing new rules with logcheck-test.
 category: security
 package-manager:
   apk: logcheck
@@ -33,5 +99,12 @@ executables:
   - logtail2
 provenance:
   formula: logcheck
+  history-sources:
+    - https://manpages.debian.org/testing/logcheck/logcheck.8.en.html
+    - https://packages.debian.org/sid/logcheck
+    - https://salsa.debian.org/debian/logcheck
+    - https://salsa.debian.org/debian/logcheck/-/raw/debian/sid/CHANGES
+    - https://salsa.debian.org/debian/logcheck/-/raw/debian/sid/docs/README.logcheck-database
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

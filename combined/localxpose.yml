@@ -7,6 +7,78 @@ docs:
   - https://localxpose.io/docs/cli
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      LocalXpose adoption is tied to the broader ngrok-style tunneling workflow:
+      developers run a local service, authenticate the tunnel client, and receive a
+      public endpoint for webhooks, demos, testing, remote access, or IoT/edge
+      connectivity.
+    - >
+      The official docs emphasize account login and access tokens, suggesting a
+      SaaS-oriented adoption model rather than the anonymous public tunnel model used by
+      simpler tools.
+  package-nerd-significance:
+    - >
+      LocalXpose is notable as a Homebrew cask because it packages a proprietary network
+      edge service into a local CLI binary. Package users care about
+      architecture-specific downloads, authentication behavior, token storage, and
+      whether the CLI can run headlessly in services or CI.
+    - >
+      Its support for HTTP, HTTPS, TCP, TLS, and UDP tunnels makes it broader than
+      simple HTTP-only localhost sharing tools, but the hosted-service dependency means
+      package installation is only one part of operability.
+  project-history:
+    - >
+      Official LocalXpose documentation describes the service as a reverse proxy for
+      securely exposing localhost services without complex network infrastructure. The
+      product ships a cross-platform CLI and GUI for Linux, macOS, Windows, FreeBSD, and
+      Docker.
+    - >
+      The official GitHub organization documents LocalXpose as a tunneling service and
+      lists package-manager installation paths including Homebrew cask, Snap, npm,
+      Chocolatey, and Docker. The same page says the core tunneling service is not presented as
+      the open source project; the visible open source work is centered on
+      supporting tools such as the GitHub Action.
+  related-projects:
+    - >
+      ngrok, localtunnel, Cloudflare Tunnel, and inlets address similar local-service
+      exposure workflows.
+    - >
+      LocalXpose/localxpose-action is the official GitHub Action for creating tunnels in
+      CI and preview workflows.
+  sources:
+    - https://github.com/LocalXpose
+    - https://localxpose.io/docs
+    - https://localxpose.io/docs/cli
+    - https://localxpose.io/docs/cli/config.yaml
+  summary:
+    - >
+      LocalXpose is a commercial tunneling and reverse-proxy client for exposing
+      localhost services to the public internet. The packaged `loclx` CLI is aimed at
+      developers who need HTTP, TCP, TLS, or UDP tunnels for development, testing,
+      demos, and remote access.
+  timeline:
+    - >
+      2022: Official blog/tutorial material documents LocalXpose use cases such as port
+      forwarding and localhost exposure.
+    - >
+      2025: Official documentation describes cross-platform downloads, access-token
+      login, regions, and HTTP/TCP/TLS/UDP tunnel support.
+    - >
+      2025: Official GitHub organization highlights package-manager distribution and the
+      LocalXpose GitHub Action.
+  usage:
+    - >
+      A first-time user downloads or installs the CLI, creates an account, copies an
+      access token from the LocalXpose dashboard, runs `loclx account login`, and then
+      starts a tunnel such as `loclx tunnel http --to localhost:3000`.
+    - >
+      For repeatable multi-tunnel setups, `loclx tunnel config init` creates a YAML file
+      in the current working directory, and `loclx tunnel config -f
+      /path/to/config.yaml` runs tunnels from that file. The CLI documentation says
+      account login stores the token in the OS keyring and falls back to
+      `$HOME/.access`.
 category: networking
 package-manager:
   brew-cask: localxpose
@@ -24,5 +96,11 @@ executables:
   - loclx
 provenance:
   cask: localxpose
+  history-sources:
+    - https://github.com/LocalXpose
+    - https://localxpose.io/docs
+    - https://localxpose.io/docs/cli
+    - https://localxpose.io/docs/cli/config.yaml
   provider: brew-cask
   source: https://formulae.brew.sh/api/cask.json
+history-confidence: medium
