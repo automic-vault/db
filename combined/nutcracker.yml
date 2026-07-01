@@ -7,6 +7,62 @@ docs:
 config-file-location:
   unix: conf/nutcracker.yml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      twemproxy's package-nerd role was strongest in the early Redis and memcached
+      scaling era: it let teams keep client libraries simple while putting consistent
+      hashing, server pools, node ejection, and low backend connection counts in a
+      separate process. Its Homebrew formula still exists as `nutcracker`/`twemproxy`,
+      but Homebrew analytics on 2026-07-01 showed only 25 installs over 365 days, so the
+      package-manager footprint is now mostly maintenance and legacy operations rather
+      than new mainstream adoption.
+  package-nerd-significance:
+    - >
+      Nutcracker matters historically because it captures a pre-native-cluster moment in
+      Redis/memcached operations: sharding was often pushed into clients or a
+      lightweight proxy, and Homebrew/Debian/Ubuntu packaging made the proxy easy to
+      install for local testing and operations scripts.
+  project-history:
+    - >
+      The public changelog records a twemproxy 0.1.16 release on 2012-02-09, when the
+      project was described as a fast, lightweight proxy for the memcached protocol.
+      Redis support was visible to the Redis community by late 2012, when Salvatore
+      Sanfilippo wrote about Twitter's proxy as a practical sharding layer before Redis
+      Cluster was available.
+  related-projects:
+    - Redis Cluster
+    - Redis Sentinel
+    - memcached
+  sources:
+    - https://antirez.com/news/44
+    - https://formulae.brew.sh/formula/nutcracker
+    - https://github.com/twitter/twemproxy
+    - https://github.com/twitter/twemproxy/blob/master/ChangeLog
+  summary:
+    - >
+      Nutcracker is the Homebrew formula name for Twitter's twemproxy, a small C proxy
+      for memcached and Redis protocols. Twitter's README describes it as built to
+      reduce backend cache-server connection counts, with pipelining and sharding used
+      to scale distributed cache architectures.
+  timeline:
+    - >
+      2012-02-09: twemproxy 0.1.16 appears in the project changelog as a lightweight
+      memcached proxy release.
+    - >
+      2012-12-18: Redis creator Salvatore Sanfilippo publishes a detailed note on
+      twemproxy's Redis sharding behavior and operational tradeoffs.
+    - >
+      2026-07-01: Homebrew lists `nutcracker` stable 0.5.0 revision 1, with `twemproxy`
+      as an alias.
+  usage:
+    - >
+      Operators run the `nutcracker` daemon with a YAML configuration that defines one
+      or more pools, listen addresses, hash/distribution choices, Redis mode, timeouts,
+      and backend servers. Common production patterns are to run multiple proxy
+      instances for availability and to decide explicitly whether failed backend
+      ejection is acceptable for cache use or whether a fixed key-to-server map is
+      required.
 category: networking
 package-manager:
   brew: nutcracker
@@ -27,5 +83,11 @@ executables:
   - test_all
 provenance:
   formula: nutcracker
+  history-sources:
+    - https://antirez.com/news/44
+    - https://formulae.brew.sh/formula/nutcracker
+    - https://github.com/twitter/twemproxy
+    - https://github.com/twitter/twemproxy/blob/master/ChangeLog
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

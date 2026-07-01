@@ -9,6 +9,59 @@ config-file-location:
   unix: config_file.toml
 credentials-file-location:
   unix: keyfile.toml
+history:
+  adoption-history:
+    - >
+      The adoption pattern is strongest among distribution and repository maintainers.
+      Arch Linux packages nvchecker in Extra, Arch Linux CN documents it for repo
+      maintenance, Homebrew ships it for macOS/Linux users, and the docs include source
+      backends for GitHub, GitLab, PyPI, NPM, crates.io, Debian, Ubuntu, Repology,
+      Anitya, container registries, and more. Homebrew analytics on 2026-07-01 showed
+      251 installs over 365 days, which understates usage in Linux packaging automation.
+  package-nerd-significance:
+    - >
+      nvchecker is package-maintainer glue: it does not build packages, but it turns
+      dozens of upstream release surfaces into a consistent update signal that can feed
+      bots, CI jobs, or human review queues.
+  project-history:
+    - >
+      nvchecker comes from lilydjwg and the Arch-oriented packaging world. An Arch Linux
+      CN wiki page from 2015 recommends it to package maintainers for keeping repository
+      packages up to date, while the upstream documentation records a 1.x-to-2.x
+      transition that changed command syntax, moved configuration from INI to TOML, made
+      source selection explicit, and switched version record files to JSON.
+  related-projects:
+    - Arch Linux CN lilac
+    - Repology
+    - Anitya
+    - Renovate
+  sources:
+    - https://archlinux.org/packages/extra/any/nvchecker/
+    - https://formulae.brew.sh/formula/nvchecker
+    - https://github.com/archlinuxcn/repo/wiki/use-nvchecker-to-check-new-version
+    - https://github.com/lilydjwg/nvchecker
+    - https://nvchecker.readthedocs.io/en/latest/usage.html
+  summary:
+    - >
+      nvchecker is a Python tool for checking whether new upstream software versions
+      have been released. Its README and documentation define the 2.x branch as the
+      active TOML-configured line, with helper commands such as `nvtake`, `nvcmp`,
+      `nvchecker-notify`, and `nvchecker-ini2toml` around version-record workflows.
+  timeline:
+    - >
+      2015-07-24: Arch Linux CN wiki documentation recommends nvchecker for package
+      maintainers.
+    - >
+      2.x branch: upstream documentation records the TOML configuration format, explicit
+      source plugins, and JSON version-record workflow.
+    - '2026-07-01: Homebrew lists nvchecker 2.20 revision 2.'
+  usage:
+    - >
+      A maintainer writes a TOML file with one table per watched project and a `source`
+      such as GitHub, PyPI, NPM, regex, Debian, or Repology, then runs `nvchecker -c
+      config_file.toml`. nvchecker writes or compares JSON version records; `nvcmp`
+      reports differences between old and new records, and `nvtake` marks selected
+      updates as processed.
 category: developer-tools
 package-manager:
   apk: nvchecker
@@ -35,5 +88,12 @@ executables:
   - nvtake
 provenance:
   formula: nvchecker
+  history-sources:
+    - https://archlinux.org/packages/extra/any/nvchecker/
+    - https://formulae.brew.sh/formula/nvchecker
+    - https://github.com/archlinuxcn/repo/wiki/use-nvchecker-to-check-new-version
+    - https://github.com/lilydjwg/nvchecker
+    - https://nvchecker.readthedocs.io/en/latest/usage.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
