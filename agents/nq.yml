@@ -5,6 +5,72 @@ docs:
   - https://github.com/leahneukirchen/nq#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      nq has more mindshare than its tiny code size suggests. The GitHub metadata
+      consulted for this batch reported about 3.1k stars and 70 forks, and the input
+      record shows packages across Alpine, Homebrew, Debian, Fedora/DNF, MacPorts, Nix,
+      and Ubuntu.
+    - >
+      Homebrew analytics reported only 52 installs over its 365-day window, so Homebrew
+      is not the best measure of its audience. Its broader adoption signal is distro
+      packaging and repeated mentions in command-line communities as a no-daemon
+      alternative to heavier queue systems or ad hoc nohup chains.
+  package-nerd-significance:
+    - >
+      nq is significant as a minimal Unix tool: it uses filesystem locks and process
+      semantics instead of owning an infrastructure layer. That makes it attractive to
+      users who prefer composable command-line primitives.
+  project-history:
+    - >
+      The README positions nq as a set of small utilities for lightweight job queues
+      with no setup, maintenance, supervision, or long-running daemon. It depends on
+      POSIX.1-2008 behavior plus flock(2), and the README records testing across Linux,
+      OpenBSD, FreeBSD, NetBSD, Mac OS X, and SmartOS.
+    - >
+      The design is deliberately Unixy: jobs are represented by timestamp/PID log files,
+      ordering is enforced with file locks, output is redirected to the job file, and
+      environment variable NQDIR can move queues out of the current directory. The v1.0
+      tag points to a 2024-07-03 commit that renamed fq to nqtail and tq to nqterm
+      because another fq project created packaging conflicts.
+  related-projects:
+    - task-spooler
+    - nohup
+    - flock
+    - tmux
+    - screen
+  sources:
+    - https://api.github.com/repos/leahneukirchen/nq
+    - >
+      https://api.github.com/repos/leahneukirchen/nq/commits/2556453d844f9d5224abd843ea2de3df1e8a0d42
+    - >
+      https://api.github.com/repos/leahneukirchen/nq/commits/2bb551efd8b3e50d715482a8f3b89f88bae74397
+    - https://api.github.com/repos/leahneukirchen/nq/tags?per_page=10
+    - https://formulae.brew.sh/api/formula/nq.json
+    - https://github.com/leahneukirchen/nq
+  summary:
+    - >
+      nq is a tiny Unix command-line queue utility by Leah Neukirchen. Its GitHub
+      repository was created on 2015-07-31, and its first listed tag, v0.1, points to a
+      commit dated 2015-08-28.
+  timeline:
+    - '2015-07-31: GitHub repository leahneukirchen/nq created.'
+    - '2015-08-28: v0.1 tag commit date.'
+    - >
+      2024-07-03: v1.0 tag commit renames fq to nqtail and tq to nqterm to avoid
+      packaging conflicts.
+  usage:
+    - >
+      Practical use is simple: prefix a long-running command with nq, get a job id, and
+      let it run in the background in queue order. Users inspect output with nqtail,
+      wait with nq -w, test pending jobs with nq -t, kill by PID-like filename
+      conventions, and set NQDIR when they want named queues.
+    - >
+      Package nerds like nq because it solves a real shell annoyance without a service,
+      config file, database, or scheduler. It is especially handy for serializing
+      downloads, builds, benchmark runs, or one-off maintenance commands on machines
+      where installing and supervising a queue daemon would be silly.
 tags:
   - batch-jobs
   - cli
@@ -29,6 +95,15 @@ provenance:
     - 'source_facts.name: nq'
   docs-sources:
     - Official repository README is the primary nq documentation
+  history-sources:
+    - https://api.github.com/repos/leahneukirchen/nq
+    - >
+      https://api.github.com/repos/leahneukirchen/nq/commits/2556453d844f9d5224abd843ea2de3df1e8a0d42
+    - >
+      https://api.github.com/repos/leahneukirchen/nq/commits/2bb551efd8b3e50d715482a8f3b89f88bae74397
+    - https://api.github.com/repos/leahneukirchen/nq/tags?per_page=10
+    - https://formulae.brew.sh/api/formula/nq.json
+    - https://github.com/leahneukirchen/nq
   repo-sources:
     - >
       source_facts.repo already has https://github.com/leahneukirchen/nq; per
@@ -42,5 +117,6 @@ category-path:
   - job-queue
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

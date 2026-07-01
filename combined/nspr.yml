@@ -6,6 +6,58 @@ docs:
   - https://firefox-source-docs.mozilla.org/nspr/index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Mozilla's documentation says NSPR is used by Mozilla clients plus many Red Hat and
+      Oracle server applications. Its most visible downstream role is as the portability
+      substrate for NSS, so package managers often install it indirectly through
+      security libraries rather than because an end user asked for `nspr-config` by
+      name.
+    - >
+      On July 1, 2026, Homebrew's formula page listed NSPR 4.39 and reported 273,494
+      installs in its 365-day analytics window, but only 3,006 installs on request. That
+      gap is a good package-nerd signal: NSPR is mostly dependency plumbing.
+  package-nerd-significance:
+    - >
+      NSPR matters because it is one of the tiny base layers beneath a surprising amount
+      of browser and PKI software. It is not fashionable infrastructure, but build
+      failures here ripple into NSS and packages that consume NSS.
+  project-history:
+    - >
+      Mozilla's NSPR history says the first generation was conceived to satisfy Java VM
+      porting requirements, while the second-generation NSPR20 effort started in 1996
+      and expanded the idea into a general portability layer for C and C++ clients. The
+      same page describes NSPR as functionally complete and in sustaining engineering,
+      which matches its role as old, boring infrastructure rather than a fast-moving
+      application framework.
+  related-projects:
+    - NSS depends on NSPR for cross-platform I/O and threading semantics.
+  sources:
+    - https://firefox-source-docs.mozilla.org/nspr/about_nspr.html
+    - https://firefox-source-docs.mozilla.org/nspr/index.html
+    - https://formulae.brew.sh/formula/nspr
+  summary:
+    - >
+      NSPR, the Netscape Portable Runtime, is a C portability layer from the
+      Netscape/Mozilla lineage. It abstracts non-GUI operating-system services such as
+      threads, synchronization, file and network I/O, time, memory allocation, and
+      shared-library loading so Mozilla-era code can run across many Unix, Windows, and
+      macOS targets.
+  timeline:
+    - >
+      1996: the NSPR20 second-generation effort began, rebuilding the original
+      Java-porting portability layer into a broader runtime API.
+    - >
+      July 1, 2026: Homebrew formula analytics listed NSPR 4.39 with large
+      dependency-driven install volume.
+  usage:
+    - >
+      Developers use NSPR directly when maintaining old Mozilla-family C/C++ code or
+      software that already expects NSPR APIs. Practically, package users see headers,
+      libraries, and `nspr-config`; modern greenfield projects usually choose native OS
+      APIs, pthreads, or higher-level runtimes unless they need compatibility with
+      NSS/Mozilla code.
 category: developer-tools
 package-manager:
   apk: nspr
@@ -30,5 +82,10 @@ executables:
   - nspr-config
 provenance:
   formula: nspr
+  history-sources:
+    - https://firefox-source-docs.mozilla.org/nspr/about_nspr.html
+    - https://firefox-source-docs.mozilla.org/nspr/index.html
+    - https://formulae.brew.sh/formula/nspr
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

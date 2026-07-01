@@ -5,6 +5,60 @@ docs:
   - https://www.gnupg.org/software/ntbtls/index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ntbTLS is narrow infrastructure rather than a general TLS competitor. The GnuPG
+      libraries page lists it under other GnuPG-related libraries, while the project
+      page frames it as a good fit where GnuPG already has certificate verification and
+      wants to avoid pulling in another TLS library's crypto stack.
+    - >
+      The release directory shows public tarballs from 0.1.0 on February 21, 2017
+      through 0.3.2 on January 12, 2024. On July 1, 2026, Homebrew listed ntbTLS 0.3.2
+      with 62 installs in its 365-day analytics window, which matches its specialized
+      role.
+  package-nerd-significance:
+    - >
+      ntbTLS matters because it shows the GnuPG project's preference for minimizing
+      independent crypto implementations inside the stack. For packagers, the important
+      details are its Libgcrypt/LibKSBA dependencies, GPL licensing, and intentionally
+      limited protocol surface.
+  project-history:
+    - >
+      The GnuPG wiki says ntbTLS started in 2014 as Werner Koch's stripped-down fork of
+      PolarSSL, later known as mbedTLS, using Libgcrypt and existing GnuPG modules for
+      X.509 handling. The official page says the code replaced PolarSSL crypto with
+      Libgcrypt, removed older SSL/TLS protocol support, and has been used by the GnuPG
+      version of Gpg4win since 2017.
+  related-projects:
+    - Libgcrypt supplies cryptographic primitives.
+    - LibKSBA supplies X.509 and CMS handling.
+    - PolarSSL/mbedTLS is the historical source base for the TLS protocol code.
+    - GnuPG and Gpg4win are the main practical ecosystem.
+  sources:
+    - https://formulae.brew.sh/formula/ntbtls
+    - https://github.com/gpg/ntbtls
+    - https://gnupg.org/ftp/gcrypt/ntbtls/
+    - https://wiki.gnupg.org/NTBTLS
+    - https://www.gnupg.org/software/libraries.html
+    - https://www.gnupg.org/software/ntbtls/index.html
+  summary:
+    - >
+      ntbTLS, the Not Too Bad TLS Library, is a small GnuPG-family TLS 1.2 client
+      library intended to pair with Libgcrypt and LibKSBA. It deliberately leaves
+      certificate verification to callers such as GnuPG's `dirmngr`.
+  timeline:
+    - '2014: ntbTLS began as a stripped-down PolarSSL fork.'
+    - 'February 21, 2017: the GnuPG file area published ntbtls-0.1.0.'
+    - "2017: Gpg4win's GnuPG build began using ntbTLS."
+    - 'January 12, 2024: ntbtls-0.3.2 tarball date in the GnuPG file area.'
+    - 'July 1, 2026: Homebrew listed stable version 0.3.2.'
+  usage:
+    - >
+      Package users usually encounter `ntbtls-config` and the library as build-time
+      plumbing for GnuPG-adjacent software. It is not a drop-in OpenSSL replacement: the
+      README says the server part and TLS 1.3 are not implemented in version 0.3, and
+      callers must do certificate verification themselves.
 tags:
   - c
   - cli
@@ -21,6 +75,13 @@ provenance:
     - >
       source_facts.homepage is the official GnuPG site; official ntbtls page is
       https://www.gnupg.org/software/ntbtls/index.html.
+  history-sources:
+    - https://formulae.brew.sh/formula/ntbtls
+    - https://github.com/gpg/ntbtls
+    - https://gnupg.org/ftp/gcrypt/ntbtls/
+    - https://wiki.gnupg.org/NTBTLS
+    - https://www.gnupg.org/software/libraries.html
+    - https://www.gnupg.org/software/ntbtls/index.html
   repo-sources:
     - Official GnuPG ntbtls pages point to the GnuPG source browser for ntbtls.
   tags-sources:
@@ -32,5 +93,6 @@ category-path:
   - security
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

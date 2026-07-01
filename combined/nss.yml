@@ -7,6 +7,77 @@ docs:
   - https://firefox-source-docs.mozilla.org/security/nss/index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      NSS's adoption comes from browsers, mail clients, PKI tooling, and platforms that
+      value its PKCS #11 model and Mozilla root store integration. Mozilla docs say it
+      is used by Mozilla and other companies in Firefox, AOL Instant Messenger, Red Hat
+      server products, and other products; Ubuntu documentation describes it as
+      originally developed by Netscape, inherited by Mozilla, and used mainly in Firefox
+      and Thunderbird on Ubuntu.
+    - >
+      On July 1, 2026, Homebrew listed NSS 3.125 with 486,543 installs in its 365-day
+      analytics window and 105,895 installs on request. Unlike NSPR, NSS is both a
+      dependency and a directly requested toolkit because it ships command-line
+      utilities such as `certutil`, `pk12util`, `modutil`, `vfychain`, and `tstclnt`.
+  package-nerd-significance:
+    - >
+      NSS is significant because it is the Mozilla security stack: a browser-grade
+      TLS/PKI implementation with command-line tools and a different trust/key storage
+      model from OpenSSL. Packaging it correctly matters for browsers, certificate
+      management, and any software linked against Mozilla's crypto libraries.
+  project-history:
+    - >
+      Mozilla's archived NSS history says the code began as the base security code in
+      the original Netscape Navigator products: Navigator 1.0 supported SSL 2.0,
+      Navigator 2.0 added SSL 3.0 and server-side private-key support, Navigator 3.0
+      added client authentication, and Communicator 4.0 broke much of the security code
+      into its own NSPR-dependent component.
+    - >
+      After Communicator 4.0, the security code began shipping independently. The
+      archived history describes HCL as the first independently buildable security-code
+      line, with NSS 2.0 as the first release fully tested and made available outside
+      Netscape. Firefox Source Docs describes the modern NSS package as MPL-2.0
+      libraries for security-enabled client and server applications.
+  related-projects:
+    - NSPR provides the portability layer used by NSS.
+    - Firefox, Thunderbird, and other Mozilla-family software are major NSS consumers.
+  sources:
+    - https://firefox-source-docs.mozilla.org/security/nss/index.html
+    - https://formulae.brew.sh/formula/nss
+    - >
+      https://nss-crypto.org/reference/security/nss/legacy/an_overview_of_nss_internals/index.html
+    - https://nss-crypto.org/reference/security/nss/legacy/faq/index.html
+    - https://nss-crypto.org/reference/security/nss/legacy/overview/index.html
+    - https://ubuntu.com/server/docs/explanation/crypto/network-security-services-nss/
+    - https://www-archive.mozilla.org/projects/security/pki/nss/history
+  summary:
+    - >
+      NSS, Network Security Services, is Mozilla's C library set for TLS, PKI, S/MIME,
+      X.509 certificates, PKCS standards, and related crypto/security tasks. It descends
+      from Netscape's browser and server security code and remains a major non-OpenSSL
+      security stack.
+  timeline:
+    - 'Navigator 1.0 era: Netscape security code supported SSL 2.0.'
+    - 'Navigator 2.0 era: SSL 3.0 and server-side private-key support entered the codebase.'
+    - >
+      Communicator 4.0 era: security code was partly split into its own NSPR-dependent
+      component.
+    - 'NSS 2.0 era: the code became fully tested and available outside Netscape.'
+    - 'July 1, 2026: Homebrew listed NSS 3.125.'
+  usage:
+    - >
+      Developers use NSS when they need Mozilla-compatible TLS/PKI behavior, PKCS #11
+      modules, certificate/key databases, S/MIME/CMS processing, or command-line
+      certificate database management. The practical package-nerd workflow is often
+      `certutil -d sql:...`, `pk12util`, `modutil`, and `nss-config`, especially when
+      dealing with software that uses NSS databases rather than PEM files directly.
+    - >
+      NSS depends on NSPR for cross-platform I/O and threading. Its architecture
+      includes FreeBL, Softoken, CKBI built-in root certificates, certificate/key
+      databases, and SSL/TLS and S/MIME modules, which is why it feels like a complete
+      PKI stack rather than a small crypto primitive library.
 category: security
 package-manager:
   apk: nss
@@ -94,5 +165,15 @@ executables:
   - vfyserv
 provenance:
   formula: nss
+  history-sources:
+    - https://firefox-source-docs.mozilla.org/security/nss/index.html
+    - https://formulae.brew.sh/formula/nss
+    - >
+      https://nss-crypto.org/reference/security/nss/legacy/an_overview_of_nss_internals/index.html
+    - https://nss-crypto.org/reference/security/nss/legacy/faq/index.html
+    - https://nss-crypto.org/reference/security/nss/legacy/overview/index.html
+    - https://ubuntu.com/server/docs/explanation/crypto/network-security-services-nss/
+    - https://www-archive.mozilla.org/projects/security/pki/nss/history
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
