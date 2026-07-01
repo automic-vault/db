@@ -8,6 +8,72 @@ config-file-location:
   unix:
     - .kube-linter.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      KubeLinter's adoption path followed the normal Kubernetes CLI pattern: standalone
+      release binaries, Homebrew packaging, Go installation, Docker images, and CI
+      integration. The companion stackrox/kube-linter-action repository packages the
+      same scanner as a GitHub Action for pull-request and workflow checks.
+  package-nerd-significance:
+    - >
+      For package people, KubeLinter is a good example of the security-shift-left wave
+      becoming a small installable CLI. It sits next to kubectl, helm, kustomize, and CI
+      actions rather than requiring a hosted service, which is why Homebrew and other
+      package-manager delivery matter.
+    - >
+      Its significance is less about replacing cluster admission policy and more about
+      catching obvious manifest mistakes while the artifact is still text in a
+      repository.
+  project-history:
+    - >
+      The public GitHub repository was created on 2020-08-13, and the first GitHub
+      release, 0.0.1, was published on 2020-09-17. StackRox announced KubeLinter
+      publicly on 2020-10-28 as an open source tool for finding Kubernetes
+      misconfigurations before workloads reach a cluster.
+    - >
+      The project later became part of the StackRox/Red Hat Kubernetes security
+      toolchain identity: its README says KubeLinter was created by StackRox and is
+      powered by Red Hat. The codebase stayed focused on one job: linting Kubernetes
+      YAML-family inputs with configurable checks and machine-readable output formats.
+  related-projects:
+    - kube-linter-action packages KubeLinter for GitHub Actions workflows.
+    - Helm and Kustomize are common upstream renderers for the manifests KubeLinter scans.
+    - >
+      Kubernetes admission controllers and policy engines such as OPA Gatekeeper solve
+      related policy problems later in the deployment path.
+  sources:
+    - https://api.github.com/repos/stackrox/kube-linter
+    - https://api.github.com/repos/stackrox/kube-linter/releases
+    - https://docs.kubelinter.io/
+    - https://formulae.brew.sh/formula/kube-linter
+    - https://github.com/stackrox/kube-linter
+    - https://github.com/stackrox/kube-linter-action
+    - >
+      https://www.prnewswire.com/news-releases/stackrox-releases-kubelinter-an-open-source-tool-to-identify-kubernetes-misconfigurations-301161556.html
+  summary:
+    - >
+      KubeLinter is StackRox's static-analysis CLI for Kubernetes manifests, Helm
+      charts, and Kustomize output. It checks workload definitions before deployment and
+      reports production-readiness and security recommendations such as non-root
+      execution, least privilege, resource settings, and secret handling.
+  timeline:
+    - '2020-08-13: GitHub repository created.'
+    - '2020-09-17: First GitHub release, 0.0.1, published.'
+    - >
+      2020-10-28: StackRox announced KubeLinter as an open source Kubernetes
+      misconfiguration scanner.
+    - '2026-03-10: GitHub release v0.8.3 published.'
+  usage:
+    - >
+      Users run KubeLinter locally or in CI against rendered manifests, Helm charts, or
+      Kustomize output. A failed check returns a non-zero exit code, which makes the
+      tool useful as a lightweight guardrail before kubectl apply, Helm install, or a
+      GitOps reconciler sees the manifests.
+    - >
+      The config file convention in this batch, .kube-linter.yaml, matches the tool's
+      configurable-policy role: teams can enable, disable, or define checks around their
+      own Kubernetes baseline instead of accepting a single universal rule set.
 tags:
   - cli
   - helm
@@ -35,6 +101,15 @@ provenance:
     - >
       Dedicated official documentation domain is docs.kubelinter.io; official repository
       README is secondary.
+  history-sources:
+    - https://api.github.com/repos/stackrox/kube-linter
+    - https://api.github.com/repos/stackrox/kube-linter/releases
+    - https://docs.kubelinter.io/
+    - https://formulae.brew.sh/formula/kube-linter
+    - https://github.com/stackrox/kube-linter
+    - https://github.com/stackrox/kube-linter-action
+    - >
+      https://www.prnewswire.com/news-releases/stackrox-releases-kubelinter-an-open-source-tool-to-identify-kubernetes-misconfigurations-301161556.html
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/stackrox/kube-linter, so
@@ -50,5 +125,6 @@ category-path:
   - kubernetes
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

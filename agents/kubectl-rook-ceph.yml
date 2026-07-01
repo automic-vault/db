@@ -8,6 +8,68 @@ config-file-location:
   unix:
     - ~/.kube/config
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption follows Rook Ceph operators rather than the broader Kubernetes user base.
+      The plugin is distributed through Krew, Homebrew, Nix, and zypper, making it
+      convenient for administrators who already manage clusters from a workstation.
+    - >
+      The repository metadata observed on 2026-07-01 showed roughly 100 GitHub stars,
+      but its practical significance is larger than that number suggests because it is
+      tied to a CNCF storage project and documented from the official Rook
+      troubleshooting pages.
+  package-nerd-significance:
+    - >
+      kubectl-rook-ceph is a good example of a package that packages operational tribal
+      knowledge. Instead of asking admins to remember pod exec incantations and Ceph
+      toolbox workflows, it turns Rook-specific routines into a versioned kubectl
+      plugin.
+  project-history:
+    - >
+      The standalone plugin repository was created on 2021-09-16 under the Rook
+      organization. Its README describes it as a Krew plugin for the Rook Ceph storage
+      provider, while the Rook documentation frames it as a troubleshooting tool for
+      Rook clusters.
+    - >
+      The plugin evolved as an operational shell around Rook Ceph: it can run Ceph,
+      RADOS, RBD, and RGW admin commands, print monitor endpoints, restart the operator,
+      purge OSDs, run maintenance flows, and help with disaster-recovery and cleanup
+      cases.
+  related-projects:
+    - >
+      Related projects include Rook, Ceph, kubectl, Krew, RADOS, RBD, and RGW. The
+      plugin is specifically about Rook-managed Ceph clusters, not generic Kubernetes
+      storage.
+  sources:
+    - https://api.github.com/repos/rook/kubectl-rook-ceph
+    - https://formulae.brew.sh/formula/kubectl-rook-ceph
+    - https://github.com/rook/kubectl-rook-ceph
+    - https://github.com/rook/kubectl-rook-ceph#readme
+    - https://krew.sigs.k8s.io/docs/user-guide/setup/install/
+    - https://rook.io/docs/rook/latest/Troubleshooting/kubectl-plugin
+  summary:
+    - >
+      kubectl-rook-ceph is the Rook project's kubectl plugin for common Rook Ceph
+      management and troubleshooting tasks. It exposes Ceph commands, health checks,
+      operator actions, maintenance flows, and cleanup commands through `kubectl
+      rook-ceph`.
+  timeline:
+    - '2021-09-16: GitHub repository created.'
+    - '2024-09-17: Release v0.9.2 published.'
+    - '2024-12-18: Release v0.9.3 published.'
+    - '2025-05-06: Release v0.9.4 published.'
+    - '2026-03-31: Release v0.9.6 published.'
+  usage:
+    - >
+      Users run commands as `kubectl rook-ceph <root-args> <command> <command-args>`,
+      usually against a namespace that contains a Rook Ceph cluster. The official docs
+      emphasize checking Rook pod health, checking Ceph health, creating debug pods,
+      restarting the operator, purging OSDs, and running arbitrary Ceph commands.
+    - >
+      Because the plugin operates through kubectl contexts and namespaces, its
+      credentials story is inherited from Kubernetes kubeconfig rather than from a
+      separate Ceph credential file.
 tags:
   - ceph
   - cli
@@ -37,6 +99,13 @@ provenance:
     - >
       Official Rook docs include a kubectl Plugin troubleshooting page; official README
       documents install, update, usage, and commands.
+  history-sources:
+    - https://api.github.com/repos/rook/kubectl-rook-ceph
+    - https://formulae.brew.sh/formula/kubectl-rook-ceph
+    - https://github.com/rook/kubectl-rook-ceph
+    - https://github.com/rook/kubectl-rook-ceph#readme
+    - https://krew.sigs.k8s.io/docs/user-guide/setup/install/
+    - https://rook.io/docs/rook/latest/Troubleshooting/kubectl-plugin
   repo-sources:
     - >
       source_facts.repo is already populated with
@@ -53,5 +122,6 @@ category-path:
   - kubectl-plugin
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

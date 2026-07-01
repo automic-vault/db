@@ -8,6 +8,72 @@ config-file-location:
   unix: ~/.kube/config
 credentials-file-location:
   unix: ~/.kube/cache/oidc-login
+history:
+  adoption-history:
+    - >
+      kubelogin gained adoption because Kubernetes documented client-go credential
+      plugins as a stable feature in Kubernetes v1.22. That mechanism lets kubectl and
+      client-go execute an external command to receive user credentials for
+      authentication protocols such as OAuth2 and SAML.
+    - >
+      The README documents installation through Homebrew, Krew, Chocolatey, and GitHub
+      Releases. The package also appears in apk, Nix, Scoop, winget, and zypper metadata
+      in the batch input, showing that an authentication helper crossed from Kubernetes
+      plugin culture into general OS package managers.
+  package-nerd-significance:
+    - >
+      kubelogin is significant because it is both a kubectl plugin and a
+      security-sensitive credential helper. Packaging matters here: users want a
+      reproducible binary from Homebrew, Krew, Chocolatey, or distro packages because
+      the tool participates directly in Kubernetes API authentication.
+  project-history:
+    - >
+      The public GitHub repository was created on March 21, 2018. The README identifies
+      kubelogin as a kubectl plugin for Kubernetes OIDC authentication and explains that
+      it is designed to run as a client-go credential plugin.
+    - >
+      The project tracks Kubernetes exec credential APIs and browser-based OIDC login
+      flows. Its CLI can be invoked through kubectl plugin naming as kubectl oidc-login,
+      and it stores token cache data in the filesystem by default with an option to use
+      the system keyring.
+  related-projects:
+    - >
+      Kubernetes client-go credential plugins provide the exec-plugin mechanism
+      kubelogin implements.
+    - Krew distributes kubelogin as the oidc-login kubectl plugin.
+    - >
+      OpenID Connect and OAuth2 identity providers are the authentication systems
+      kubelogin bridges into kubectl.
+  sources:
+    - https://api.github.com/repos/int128/kubelogin
+    - https://formulae.brew.sh/formula/kubelogin
+    - https://github.com/int128/kubelogin
+    - https://github.com/int128/kubelogin/releases
+    - https://kubernetes.io/docs/reference/access-authn-authz/authentication/
+    - https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/
+  summary:
+    - >
+      int128/kubelogin is a kubectl plugin for Kubernetes OpenID Connect authentication,
+      also known as kubectl oidc-login. It became important as Kubernetes client
+      authentication moved toward exec credential plugins and as clusters increasingly
+      delegated user login to OIDC identity providers.
+  timeline:
+    - '2018-03-21: Public GitHub repository created'
+    - '2021: Kubernetes v1.22 marked client-go credential plugins stable'
+    - '2026-05-30: v1.36.2 release published'
+    - >
+      2026: README documented Homebrew, Krew, Chocolatey, and GitHub Releases
+      installation paths
+  usage:
+    - >
+      When kubectl runs, kubelogin opens a browser for the user to authenticate with an
+      OIDC provider, obtains a token, and returns Kubernetes ExecCredential output for
+      client-go. The kubeconfig user.exec stanza points to the plugin command and
+      arguments.
+    - >
+      The default token cache path documented by the README is ~/.kube/cache/oidc-login,
+      and kubectl oidc-login clean deletes cached credentials so the next kubectl run
+      starts a fresh browser login.
 category: developer-tools
 package-manager:
   apk: kubectl-oidc_login
@@ -31,5 +97,13 @@ executables:
   - kubectl-oidc_login
 provenance:
   formula: kubelogin
+  history-sources:
+    - https://api.github.com/repos/int128/kubelogin
+    - https://formulae.brew.sh/formula/kubelogin
+    - https://github.com/int128/kubelogin
+    - https://github.com/int128/kubelogin/releases
+    - https://kubernetes.io/docs/reference/access-authn-authz/authentication/
+    - https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
