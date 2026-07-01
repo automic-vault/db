@@ -7,6 +7,83 @@ docs:
   - https://lz4.github.io/lz4
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      LZ4 became a default packaging candidate because it fills a practical niche that
+      gzip, bzip2, and xz do not: fast enough for hot paths, simple enough to vendor,
+      and portable enough for every Unix-like distribution. The input package facts show
+      it packaged across Homebrew, Debian/Ubuntu, Fedora, Arch, Alpine, MacPorts, Nix,
+      Scoop, and openSUSE-style ecosystems.
+    - >
+      In package-manager culture, LZ4 is often installed less as an end-user archiver
+      and more as infrastructure: a build dependency, a runtime shared library, or a
+      fast compressor used by other tools. That makes ABI stability, CLI compatibility,
+      and the distinction between raw blocks and framed .lz4 files recurring concerns
+      for maintainers.
+  package-nerd-significance:
+    - >
+      LZ4 is a package nerd staple because it is a small C project with huge transitive
+      reach. It shows up as both a leaf CLI and a dependency of larger systems, so
+      distributions care about symbol versions, shared-library packaging, test vectors,
+      frame-format compatibility, and whether downstreams accidentally mix raw LZ4
+      blocks with framed files.
+    - >
+      It also marks a generational shift in compression packaging: instead of treating
+      compression as a storage-only tradeoff, LZ4 made compression cheap enough to
+      appear in latency-sensitive runtime paths.
+  project-history:
+    - >
+      The reference implementation is associated with Yann Collet and dates to the early
+      2010s; the official library license carries a 2011 copyright line. The project
+      settled into the familiar Unix package shape of a small C library plus CLI
+      programs such as lz4, unlz4, lz4cat, and legacy-compatible lz4c.
+    - >
+      LZ4's upstream history is unusually important for package maintainers because the
+      format became embedded below the application layer: libraries, storage systems,
+      language bindings, kernels, databases, and transport protocols all wanted a very
+      fast, low-latency compressor. Later releases kept that core identity while
+      expanding the production surface, including official frame-format support,
+      dictionary APIs, and, in the v1.10.0 release, multithreaded compression work aimed
+      at modern multi-core and high-throughput storage systems.
+  related-projects:
+    - LZ4_HC is the high-compression variant shipped with the same upstream project.
+    - lz4-java, python-lz4, and similar bindings expose the format to language ecosystems.
+    - >
+      Zstandard is another Yann Collet compression project, optimized for a different
+      speed/ratio point.
+  sources:
+    - https://github.com/lz4/lz4
+    - https://github.com/lz4/lz4/blob/dev/lib/LICENSE
+    - https://github.com/lz4/lz4/releases
+    - https://lz4.github.io/lz4/
+    - source_facts.package-manager
+  summary:
+    - >
+      LZ4 is a lossless compression format, C library, and command-line tool centered on
+      very high compression and decompression throughput. The official project describes
+      it as an algorithm with compression above 500 MB/s per core and a decoder that can
+      run in the multiple-GB/s-per-core range, with LZ4_HC available when users want a
+      slower but denser high-compression mode.
+  timeline:
+    - '2011: liblz4 copyright era begins in the official source tree.'
+    - >
+      2010s: LZ4 spreads from a standalone compressor into Unix package repositories and
+      system libraries.
+    - >
+      2024: v1.10.0 adds major multithreading work and promotes dictionary compression
+      support.
+  usage:
+    - >
+      The lz4 command compresses and decompresses files, while unlz4 and lz4cat provide
+      decompression-oriented entry points. Users pick it when speed is more important
+      than maximum compression ratio, especially for logs, caches, temporary artifacts,
+      backup pipelines, and data streams.
+    - >
+      Developers usually consume liblz4 directly for in-memory buffers or the LZ4 frame
+      API when data needs a self-describing stream format. High-compression mode is
+      useful for precompressed assets, but the package's everyday reputation comes from
+      the fast path.
 category: system
 package-manager:
   apk: lz4
@@ -34,5 +111,12 @@ executables:
   - unlz4
 provenance:
   formula: lz4
+  history-sources:
+    - https://github.com/lz4/lz4
+    - https://github.com/lz4/lz4/blob/dev/lib/LICENSE
+    - https://github.com/lz4/lz4/releases
+    - https://lz4.github.io/lz4/
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

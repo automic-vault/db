@@ -7,6 +7,76 @@ docs:
   - https://www.nongnu.org/lzip
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Lzip did not replace gzip or xz as the universal default, but it earned durable
+      packaging across Unix-like distributions because it offers a clear format story
+      and strong recovery semantics. The input package facts show it available in
+      Homebrew, Debian/Ubuntu, Fedora, Arch, Alpine, MacPorts, Nix, Scoop, and
+      openSUSE-style ecosystems.
+    - >
+      Its adoption is strongest among users who care about long-term source
+      distribution, recoverable compressed tar archives, and a conservative command-line
+      interface. Package maintainers also encounter it because some upstream source
+      releases are distributed as .tar.lz files.
+  package-nerd-significance:
+    - >
+      Lzip is significant because it is a format argument disguised as a small CLI: the
+      package is about reproducible, recoverable, documented compression rather than
+      chasing the absolute best ratio. That makes it beloved in the slice of the
+      packaging world that cares about future decodability and damaged-media recovery.
+    - >
+      For maintainers, the lzip family raises practical questions about bootstrapping
+      .tar.lz source archives, installing info/manual documentation, and deciding when
+      to package the sibling tools separately.
+  project-history:
+    - >
+      Antonio Diaz Diaz's lzip project started in 2008, with the Savannah old-release
+      index showing lzip 0.1 in August 2008 and lzip 1.0 in October 2008. The project
+      framed itself not just as another LZMA compressor but as a safer Unix archive
+      format with a small, fully documented container, CRC-protected data, explicit
+      member sizes, and a reference decompressor explained in the manual.
+    - >
+      The project grew into a family rather than a single binary. lzlib provides a
+      library interface, clzip and pdlzip provide alternate implementations, plzip
+      handles parallel compression, lunzip and lzd focus on decompression and education,
+      tarlz combines tar archiving with lzip members, and lziprecover handles damaged
+      .lz files.
+  related-projects:
+    - lziprecover repairs and extracts data from damaged lzip files.
+    - plzip is the parallel compressor for large files.
+    - tarlz builds tar archives that preserve alignment between tar members and lzip members.
+    - lzlib exposes the lzip format through a library API.
+  sources:
+    - https://download-mirror.savannah.gnu.org/releases/lzip/
+    - https://download-mirror.savannah.gnu.org/releases/lzip/old/
+    - https://www.nongnu.org/lzip/
+    - https://www.nongnu.org/lzip/manual/lzip_manual.html
+    - source_facts.package-manager
+  summary:
+    - >
+      Lzip is a GPL command-line compressor and .lz file format built around a
+      simplified LZMA stream, a gzip/bzip2-like interface, and unusually explicit
+      data-integrity goals. Its official manual says it was designed for
+      interoperability, long-term archiving, and robust three-factor integrity checking.
+  timeline:
+    - '2008: lzip 0.1 appears in the Savannah old-release index.'
+    - '2008: lzip 1.0 is released.'
+    - >
+      2010s: lzip family tools such as lzlib, plzip, lunzip, pdlzip, clzip, and
+      lziprecover appear in Savannah release areas.
+    - '2026: lzip 1.26 is documented by the official manual and release index.'
+  usage:
+    - >
+      The lzip CLI mirrors familiar gzip/bzip2 workflows: compress files to .lz,
+      decompress with -d, test integrity with -t, list metadata with -l, write to stdout
+      with -c, and tune compression with -0 through -9 or explicit dictionary and
+      match-length options.
+    - >
+      For archive pipelines, lzip is commonly paired with tar as .tar.lz. The manual
+      highlights multimember output, concatenated stream handling, volume splitting, and
+      cooperation with lziprecover for damaged files.
 category: system
 package-manager:
   apk: lzip
@@ -32,5 +102,12 @@ executables:
   - lzip
 provenance:
   formula: lzip
+  history-sources:
+    - https://download-mirror.savannah.gnu.org/releases/lzip/
+    - https://download-mirror.savannah.gnu.org/releases/lzip/old/
+    - https://www.nongnu.org/lzip/
+    - https://www.nongnu.org/lzip/manual/lzip_manual.html
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

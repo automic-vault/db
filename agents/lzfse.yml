@@ -5,6 +5,69 @@ docs:
   - https://github.com/lzfse/lzfse#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption follows two paths. On Apple platforms, LZFSE is recommended through
+      system APIs for cases where Apple wants a balanced speed/ratio codec with good
+      energy behavior. In package managers, lzfse is usually provided as a compatibility
+      tool and library for reading or creating streams outside the Apple SDK
+      environment.
+    - >
+      The input package facts show packaging in Homebrew, Debian/Ubuntu, Fedora, Alpine,
+      MacPorts, Nix, and openSUSE-style ecosystems, which is broad for a
+      platform-originated codec whose main upstream is a compact reference
+      implementation.
+  package-nerd-significance:
+    - >
+      LZFSE matters to package people because it turns a platform codec into a portable
+      build artifact. That helps Linux and macOS package sets process Apple-originated
+      data and gives downstreams a small, BSD-licensed reference implementation rather
+      than reverse-engineered code.
+    - >
+      It is also a useful example of modern compression design crossing from OS vendor
+      APIs into normal Unix package repositories.
+  project-history:
+    - >
+      LZFSE entered public developer consciousness through Apple's platform Compression
+      APIs, then gained a cross-platform package identity when Apple published the
+      reference C implementation and a small command-line tool. That made it possible
+      for non-Apple systems and package managers to build and test LZFSE streams without
+      depending on private Apple frameworks.
+    - >
+      The project is narrower than LZ4, xz, or zstd: it exists primarily to expose and
+      document Apple's algorithm outside the OS SDK. The repository's contents reflect
+      that role, with a Makefile, Xcode project, encoder and decoder sources, and a
+      single lzfse executable rather than a larger suite of tools.
+  related-projects:
+    - Apple Compression.framework exposes LZFSE and other algorithms through system APIs.
+    - LZ4 and zlib occupy neighboring speed/ratio tradeoff points.
+    - Finite State Entropy is the entropy-coding family named in the LZFSE design.
+  sources:
+    - https://developer.apple.com/documentation/Compression/Algorithm/lzfse
+    - https://developer.apple.com/documentation/compression/compression_lzfse
+    - https://github.com/lzfse/lzfse
+    - source_facts.package-manager
+  summary:
+    - >
+      LZFSE is Apple's Lempel-Ziv plus Finite State Entropy compression algorithm and
+      the name of Apple's portable reference C implementation. The upstream README
+      describes it as the reference compressor introduced in Apple's Compression library
+      with OS X 10.11 and iOS 9, targeting deflate-like compression ratios with higher
+      speed.
+  timeline:
+    - "2015: LZFSE is introduced with OS X 10.11 and iOS 9's Compression library."
+    - '2010s: Apple publishes the reference C implementation and command-line tool on GitHub.'
+    - '2010s-2020s: Distribution packages adopt lzfse as a small compatibility compressor.'
+  usage:
+    - >
+      The lzfse command-line tool compresses and decompresses files in LZFSE format.
+      Developers on Apple platforms generally use Compression.framework or related Apple
+      APIs; developers elsewhere use the reference C implementation when they need
+      interoperable LZFSE support.
+    - >
+      Its practical niche is Apple-format interoperability and a middle point between
+      very fast compressors such as LZ4 and denser but slower compressors.
 tags:
   - cli
   - compression
@@ -27,6 +90,11 @@ provenance:
     - 'source_facts.name: lzfse'
   docs-sources:
     - official GitHub README from source_facts.homepage and source_facts.repo
+  history-sources:
+    - https://developer.apple.com/documentation/Compression/Algorithm/lzfse
+    - https://developer.apple.com/documentation/compression/compression_lzfse
+    - https://github.com/lzfse/lzfse
+    - source_facts.package-manager
   repo-sources:
     - source_facts.repo already populated; per instruction, not second-guessed
   tags-sources:
@@ -38,5 +106,6 @@ category-path:
   - compression
 display-name-confidence: medium
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

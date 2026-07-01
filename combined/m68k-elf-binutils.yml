@@ -6,6 +6,77 @@ docs:
   - https://sourceware.org/binutils/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Binutils is foundational infrastructure for GNU and GNU/Linux systems because it
+      provides the assembler and linker needed to compile and link programs. Cross
+      builds extend that same infrastructure to embedded, hobbyist, retrocomputing, and
+      operating-system-development targets.
+    - >
+      The supplied package facts list Homebrew and MacPorts packaging for
+      `m68k-elf-binutils`, reflecting its niche use by developers building 68k ELF
+      firmware, kernels, and bare-metal experiments on macOS.
+  package-nerd-significance:
+    - >
+      Cross-binutils packages are the first layer of a bare-metal toolchain: without the
+      target assembler, linker, and object utilities, the compiler driver cannot produce
+      useful firmware or kernel images.
+    - >
+      For package maintainers, the `m68k-elf-` prefix is the whole trick: it allows
+      multiple target toolchains to coexist while preserving conventional GNU tool names
+      under a target triplet.
+  project-history:
+    - >
+      GNU Binutils is the GNU project's collection of binary tools. Its central programs
+      are the GNU linker `ld`, the GNU assembler `as`, and the ELF-only `gold` linker,
+      with supporting tools such as `ar`, `nm`, `objcopy`, `objdump`, `readelf`, `size`,
+      `strings`, and `strip`.
+    - >
+      The m68k-elf package is not a separate upstream project; it is a cross-toolchain
+      packaging of the same GNU Binutils source for the `m68k-elf` target triplet. The
+      target prefix keeps its assembler, linker, and object tools separate from
+      host-native tools.
+    - >
+      GNU Binutils uses the BFD library for low-level binary-file manipulation and the
+      opcodes library for assembly and disassembly. The upstream assembler documentation
+      includes M680x0-dependent features, options, syntax, directives, and opcodes.
+  related-projects:
+    - m68k-elf-gcc is the matching target-prefixed compiler package.
+    - >
+      GDB shares the upstream binutils-gdb source repository, though this Homebrew
+      package installs the Binutils tools rather than GDB.
+    - >
+      The GNU assembler documentation has M680x0-specific sections for the architecture
+      family targeted by this package.
+  sources:
+    - https://sourceware.org/binutils/docs/
+    - https://sourceware.org/binutils/docs/as/index.html
+    - https://sourceware.org/binutils/docs/binutils/index.html
+    - https://www.gnu.org/software/binutils/
+    - source_facts.executables
+    - source_facts.package-manager
+  summary:
+    - >
+      m68k-elf-binutils is a target-prefixed Homebrew build of GNU Binutils for
+      bare-metal Motorola 68000-family ELF development.
+  timeline:
+    - >
+      1990s: GNU Binutils became a core GNU toolchain component for assembling, linking,
+      and inspecting binaries
+    - '2026: GNU Binutils 2.46 documentation published'
+    - '2026: GNU Binutils 2.46.1 listed as the latest release on the official project page'
+    - '2026: Homebrew package facts list target-prefixed m68k-elf executables'
+  usage:
+    - >
+      Users typically pair `m68k-elf-binutils` with `m68k-elf-gcc`. The package installs
+      prefixed tools such as `m68k-elf-as`, `m68k-elf-ld`, `m68k-elf-objcopy`,
+      `m68k-elf-objdump`, and `m68k-elf-readelf` so build systems can target m68k ELF
+      without colliding with host tools.
+    - >
+      Common workflows include assembling startup files, linking
+      linker-script-controlled firmware images, inspecting ELF sections and symbols,
+      converting ELF output to raw binaries, and diagnosing relocation or ABI issues.
 category: developer-tools
 package-manager:
   brew: m68k-elf-binutils
@@ -40,5 +111,13 @@ executables:
   - m68k-elf-strip
 provenance:
   formula: m68k-elf-binutils
+  history-sources:
+    - https://sourceware.org/binutils/docs/
+    - https://sourceware.org/binutils/docs/as/index.html
+    - https://sourceware.org/binutils/docs/binutils/index.html
+    - https://www.gnu.org/software/binutils/
+    - source_facts.executables
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

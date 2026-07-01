@@ -9,6 +9,78 @@ config-file-location:
     - default.prf
     - custom.prf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Lynis has unusually broad packaging for a security-audit shell tool. The batch
+      package metadata lists Alpine, Homebrew, Debian, Fedora/DNF, MacPorts, Nix, Arch,
+      Ubuntu, and openSUSE/Zypper, while the upstream docs also mention CISOfy package
+      repositories and custom RPM package building.
+    - >
+      CISOfy built a commercial ecosystem around the open source tool through Lynis
+      Enterprise, using Lynis scans as the local audit engine while adding centralized
+      reporting, monitoring, compliance features, dashboards, and support. That
+      commercial/open-source split helped keep Lynis relevant both as a package-manager
+      tool and as a managed audit component.
+  package-nerd-significance:
+    - >
+      Lynis matters to package people because it is both a packaged security utility and
+      a package-system inspector. Its checks know about APT/dpkg, RPM/YUM, pacman,
+      zypper, apk, Homebrew, and other platform details, so keeping it current means
+      tracking operating-system churn, package-manager behavior, and hardening
+      expectations across many Unix-like systems.
+  project-history:
+    - >
+      The official README traces Lynis development to May 2007, with Michael Boelen as
+      author from 2007 to 2013 and CISOfy carrying development from 2013 onward. The
+      project is GPLv3-licensed, written as shell scripts, and maintained at CISOfy with
+      public development on GitHub.
+    - >
+      Lynis was designed to run directly from an unpacked directory as well as from
+      installed packages. Its README and documentation emphasize broad Unix coverage
+      rather than one distribution: Linux, BSD variants, macOS, Solaris, AIX, and
+      related Unix-like systems are all part of the supported-audit story.
+    - >
+      The changelog shows ongoing maintenance into the 2020s, with releases adding OS
+      detection, end-of-life databases, malware and file-integrity checks, macOS checks,
+      package-manager checks, and many platform-specific hardening tests.
+  related-projects:
+    - >
+      Lynis Enterprise builds centralized reporting and compliance workflows around
+      Lynis scan data.
+    - >
+      Lynis Collector is an enterprise component for collecting and uploading audit
+      reports in batch.
+  sources:
+    - https://cisofy.com/documentation/lynis/
+    - https://github.com/CISOfy/lynis
+    - https://raw.githubusercontent.com/CISOfy/lynis/master/CHANGELOG.md
+    - https://raw.githubusercontent.com/CISOfy/lynis/master/FAQ
+    - https://raw.githubusercontent.com/CISOfy/lynis/master/README
+    - https://raw.githubusercontent.com/CISOfy/lynis/master/default.prf
+    - source_facts.package-manager
+  summary:
+    - >
+      Lynis is an open source Unix-like system security auditing and hardening tool. It
+      gathers security information, runs checks, and reports warnings and suggestions
+      for administrators, auditors, security specialists, and system maintainers.
+  timeline:
+    - '2007: Lynis development begins under Michael Boelen.'
+    - '2013: CISOfy becomes the named development organization.'
+    - '2014: CISOfy software signing key is documented for download verification.'
+    - '2024: Lynis 3.1.x releases add modern OS and platform checks.'
+    - '2026: Lynis 3.1.7 is released with updated end-of-life database entries.'
+  usage:
+    - >
+      The common interactive workflow is `lynis audit system`, often run as root for a
+      full audit. The documentation also covers quick or quiet scans, cron jobs, update
+      checks, viewing profiles and settings, and reading `/var/log/lynis.log` after a
+      scan to interpret findings.
+    - >
+      Lynis uses profiles as its configuration model. The FAQ says profiles are usually
+      stored in `/etc/lynis` or discoverable with `lynis show profiles`; the default
+      profile warns users to put local changes in `custom.prf` beside `default.prf`
+      rather than editing the default file.
 tags:
   - cli
   - hardening
@@ -32,6 +104,14 @@ provenance:
   docs-sources:
     - official CISOfy Lynis documentation
     - official GitHub README from source_facts.repo
+  history-sources:
+    - https://cisofy.com/documentation/lynis/
+    - https://github.com/CISOfy/lynis
+    - https://raw.githubusercontent.com/CISOfy/lynis/master/CHANGELOG.md
+    - https://raw.githubusercontent.com/CISOfy/lynis/master/FAQ
+    - https://raw.githubusercontent.com/CISOfy/lynis/master/README
+    - https://raw.githubusercontent.com/CISOfy/lynis/master/default.prf
+    - source_facts.package-manager
   repo-sources:
     - source_facts.repo already populated; per instruction, not second-guessed
   tags-sources:
@@ -43,5 +123,6 @@ category-path:
   - auditing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

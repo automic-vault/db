@@ -6,6 +6,72 @@ docs:
   - https://github.com/emmanuel-marty/lzsa#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      LZSA's adoption is concentrated in retrocomputing, demoscene, and homebrew game
+      development rather than mainstream system archives. The official README lists
+      concrete uses including ZX Spectrum demos, Apple II projects, Commander X16 ROM
+      work, RomWBW, rasm-compressed data sections, and Amstrad CPC game assets.
+    - >
+      Package-manager adoption is correspondingly smaller than LZ4 or lzip. The input
+      package facts show Homebrew and Nix packages, enough to make the compressor easy
+      to install on developer machines even though the decompression targets are often
+      vintage CPUs.
+  package-nerd-significance:
+    - >
+      LZSA is package-nerd significant because it is a niche tool with real
+      cross-compilation value: the package runs on modern macOS/Linux build hosts but
+      exists to feed 8-bit runtime environments.
+    - >
+      It also shows a different kind of compression packaging pressure. For LZSA, the
+      artifact that matters may be a 67-byte Z80 depacker or a 6502 speed-optimized
+      routine, not a shared library ABI.
+  project-history:
+    - >
+      LZSA is not a general Unix compressor in the gzip tradition. It is a modern tool
+      built for old hardware constraints: small decompressors, simple byte-aligned
+      decoding, limited 8-bit arithmetic, and assets that must unpack quickly on Z80,
+      6502, 8088, 6809, 6309, and related targets.
+    - >
+      The repository combines a command-line compressor, formal stream/block format
+      documents, benchmark comparisons, and contributed assembly depackers. Releases
+      through the 1.3 and 1.4 series focused on ratio improvements, faster LZSA2
+      compression, and a growing collection of platform-specific depackers.
+  related-projects:
+    - LZ4 is an explicit design reference for LZSA1.
+    - ZX7 is an explicit comparison point for LZSA2.
+    - Lizard/LZ5 and other optimal packers appear in upstream comparisons.
+  sources:
+    - https://github.com/emmanuel-marty/lzsa
+    - https://github.com/emmanuel-marty/lzsa/blob/master/BlockFormat_LZSA1.md
+    - https://github.com/emmanuel-marty/lzsa/blob/master/BlockFormat_LZSA2.md
+    - https://github.com/emmanuel-marty/lzsa/blob/master/StreamFormat.md
+    - https://github.com/emmanuel-marty/lzsa/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      LZSA is Emmanuel Marty's byte-aligned lossless packer family optimized for very
+      fast decompression on 8-bit computers. Its upstream README describes LZSA1 and
+      LZSA2 as formats designed to beat familiar retrocomputing tradeoffs: LZSA1 as an
+      LZ4-like choice for 8-bit scenarios, and LZSA2 as a ZX7-like choice with much
+      faster decompression.
+  timeline:
+    - '2010s: LZSA appears as a retrocomputing-focused compressor and format family.'
+    - >
+      2019-2020: Upstream README records use in demos, games, and ROM projects across
+      Z80, 6502, and related systems.
+    - >
+      2023: GitHub releases include the 1.4.x series, continuing performance and
+      depacker work.
+  usage:
+    - >
+      Developers run the lzsa tool on modern systems to pack assets, then include the
+      matching depacker on the target machine. The key choice is not just compression
+      ratio but the decompressor's speed and code size on a specific CPU.
+    - >
+      The upstream format documentation supports implementers who need to write or audit
+      their own depackers, which is common in size-constrained retro projects.
 category: system
 package-manager:
   brew: lzsa
@@ -23,5 +89,13 @@ executables:
   - lzsa
 provenance:
   formula: lzsa
+  history-sources:
+    - https://github.com/emmanuel-marty/lzsa
+    - https://github.com/emmanuel-marty/lzsa/blob/master/BlockFormat_LZSA1.md
+    - https://github.com/emmanuel-marty/lzsa/blob/master/BlockFormat_LZSA2.md
+    - https://github.com/emmanuel-marty/lzsa/blob/master/StreamFormat.md
+    - https://github.com/emmanuel-marty/lzsa/releases
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium
