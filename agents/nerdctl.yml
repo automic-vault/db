@@ -11,6 +11,84 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.docker/config.json
+history:
+  adoption-history:
+    - >
+      nerdctl became important because containerd itself is a runtime API, not a
+      friendly end-user container workflow. Tools such as Rancher Desktop and Lima
+      document nerdctl as the CLI users run when they select or start a
+      containerd-backed environment. Rancher Desktop documentation says nerdctl is
+      Docker-compatible and is for experimenting with containerd features not present in
+      Docker, while Lima documents built-in containerd and nerdctl integration and shows
+      `lima nerdctl run` as its container example.
+    - >
+      Package-manager adoption is broad for a container tool: Homebrew, Alpine, Nix,
+      Arch, Scoop, and openSUSE entries are present in the av.db source record. The
+      Homebrew formula API reported stable version 2.3.4 and 259 install-on-request
+      events in the prior 30 days when checked on 2026-07-01.
+  package-nerd-significance:
+    - >
+      nerdctl is a high-signal package because it sits at the boundary between everyday
+      Docker muscle memory and lower-level OCI/containerd infrastructure. If a package
+      collection wants to represent modern container workflows, nerdctl is one of the
+      few CLIs that explains how containerd is actually used by humans.
+  project-history:
+    - >
+      The project grew out of the containerd ecosystem after containerd had become a
+      common runtime substrate for Kubernetes and local developer environments. The
+      README describes the tool as supporting Docker-like UX, Compose, rootless
+      operation, lazy pulling through eStargz/Nydus/OverlayBD, encrypted images through
+      ocicrypt, IPFS-based distribution, and image signing and verification. Release
+      artifacts are split into minimal archives containing nerdctl itself and full
+      archives bundling dependencies such as containerd, runc, CNI, and BuildKit.
+    - >
+      GitHub metadata retrieved on 2026-07-01 showed the repository created on
+      2020-12-04, written in Go, with about 10.2k stars and 795 forks. GitHub releases
+      showed 94 releases through v2.3.4, published on 2026-06-29, with compatibility
+      notes for containerd v1.7 and v2.0 through v2.3.
+  related-projects:
+    - containerd
+    - Docker
+    - BuildKit
+    - Rancher Desktop
+    - Lima
+    - RootlessKit
+    - eStargz
+    - Nydus
+    - ocicrypt
+  sources:
+    - https://api.github.com/repos/containerd/nerdctl
+    - https://api.github.com/repos/containerd/nerdctl/releases?per_page=100
+    - https://docs.rancherdesktop.io/tutorials/working-with-containers/
+    - https://formulae.brew.sh/api/formula/nerdctl.json
+    - https://github.com/containerd/nerdctl
+    - https://github.com/containerd/nerdctl/releases
+    - https://lima-vm.io/docs/examples/containers/containerd/
+  summary:
+    - >
+      nerdctl is the Docker-compatible command-line client for containerd. It was
+      created under the containerd organization in December 2020, shipped its first
+      GitHub release v0.0.1 on 2020-12-09, and is explicitly described by the project as
+      a non-core containerd subproject. Its practical niche is not to replace Docker as
+      a product, but to expose containerd directly through familiar Docker-like commands
+      while also surfacing containerd features that Docker historically did not expose.
+  timeline:
+    - '2020-12-04: GitHub repository created under containerd.'
+    - '2020-12-09: v0.0.1 release published.'
+    - >
+      2026-06-29: v2.3.4 release published, with release notes listing containerd
+      compatibility through v2.3 and minimal/full binary distributions.
+  usage:
+    - >
+      Package nerds use nerdctl when they want Docker-shaped commands against
+      containerd: `nerdctl run`, `nerdctl build`, `nerdctl compose up`, image
+      inspection, registry operations, and rootless containerd setup. It is also common
+      as the terminal face of Lima, Rancher Desktop's containerd mode, and other Docker
+      Desktop replacement stacks.
+    - >
+      Its more specialized value is for containerd-native experiments: lazy-pulled
+      images, encrypted images, rootless containerd, image signing verification, and
+      debugging containerd behavior without going through dockerd.
 tags:
   - cli
   - containerd
@@ -37,6 +115,14 @@ provenance:
     - >
       Official repository has a docs directory with command reference, compose, config,
       rootless, and related documentation
+  history-sources:
+    - https://api.github.com/repos/containerd/nerdctl
+    - https://api.github.com/repos/containerd/nerdctl/releases?per_page=100
+    - https://docs.rancherdesktop.io/tutorials/working-with-containers/
+    - https://formulae.brew.sh/api/formula/nerdctl.json
+    - https://github.com/containerd/nerdctl
+    - https://github.com/containerd/nerdctl/releases
+    - https://lima-vm.io/docs/examples/containers/containerd/
   repo-sources:
     - source_facts.repo already provided; per instructions not re-evaluated
   tags-sources:
@@ -49,5 +135,6 @@ category-path:
   - cli
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
