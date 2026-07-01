@@ -7,6 +7,76 @@ docs:
   - https://github.com/gfx-rs/wgpu/tree/trunk/naga-cli
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Naga adoption is mostly transitive through wgpu, not through direct CLI use. On
+      July 1, 2026 the wgpu GitHub API showed 17,474 stars, 1,343 forks, and GitHub's
+      rendered repository page showed it used by more than 46,000 dependents. crates.io
+      reported 28,591,294 total downloads for the naga library crate and 43,842 for
+      naga-cli. Homebrew reported 358 naga-cli installs over 365 days, which fits the
+      CLI's role as a developer/debugging tool rather than the normal application
+      dependency path.
+  package-nerd-significance:
+    - >
+      naga-cli is significant because it exposes one of the key moving parts behind Rust
+      WebGPU portability. wgpu uses Naga to translate WGSL into platform shading
+      languages for native backends, and maintainer writing describes Naga as powering
+      wgpu and transitively Gecko/Firefox. For package nerds, the formula is also a
+      classic binary-name collision case: `brew install naga-cli` and `brew install
+      naga` cannot coexist because both provide `naga`.
+  project-history:
+    - >
+      Naga began as part of the gfx-rs graphics stack, with docs and maintainer writing
+      tying it to an earlier Javelin name and to the WebGPU/WGSL transition. The old
+      standalone gfx-rs/naga repository is archived because development moved into the
+      wgpu repository, but the docs still describe Naga as a standalone library. The
+      naga crate was created on crates.io on February 27, 2020; the naga-cli crate was
+      created on October 20, 2021.
+  related-projects:
+    - wgpu
+    - WebGPU
+    - WGSL
+    - SPIR-V
+    - Tint
+    - Dawn
+    - Gecko
+    - Firefox
+  sources:
+    - https://api.github.com/repos/gfx-rs/wgpu
+    - https://api.github.com/repos/gfx-rs/wgpu/releases/latest
+    - https://crates.io/api/v1/crates/naga
+    - https://crates.io/api/v1/crates/naga-cli
+    - https://docs.rs/crate/naga/latest
+    - https://formulae.brew.sh/api/formula/naga-cli.json
+    - https://formulae.brew.sh/formula/naga-cli
+    - https://gfx-rs.github.io/2021/10/07/release-0.11.html
+    - https://github.com/gfx-rs/naga
+    - https://github.com/gfx-rs/wgpu
+    - https://kvark.github.io/naga/shader/2022/02/17/shader-translation-benchmark.html
+  summary:
+    - >
+      naga-cli is the command-line frontend for Naga, the Rust shader translation and
+      validation library used by the gfx-rs/wgpu stack. The package installs a `naga`
+      binary, which is why the Homebrew formula conflicts with the unrelated Snake-game
+      formula named `naga`.
+  timeline:
+    - '2018-09-13: wgpu repository created.'
+    - '2020-02-27: naga crate created on crates.io.'
+    - >
+      2021-10-07: gfx-rs announced wgpu v0.11 and naga v0.7, describing naga as the
+      shader translation and validation layer.
+    - '2021-10-20: naga-cli crate created on crates.io.'
+    - '2026-05-02: wgpu/naga v29.0.3 published.'
+    - '2026-07-01: crates.io reported 28,591,294 naga downloads and 43,842 naga-cli downloads.'
+  usage:
+    - >
+      The CLI is used to validate shaders and exercise conversion paths: WGSL
+      validation, SPIR-V dumps, SPIR-V to Metal, WGSL to GLSL under a selected profile,
+      and output formats such as WGSL, GLSL, Metal, HLSL, SPIR-V, and DOT. Graphics
+      developers use it when debugging shader portability, testing Naga behavior at a
+      particular wgpu commit, checking snapshots, or reducing shader translation bugs
+      outside a full application.
 category: developer-tools
 package-manager:
   brew: naga-cli
@@ -27,5 +97,18 @@ executables:
   - naga
 provenance:
   formula: naga-cli
+  history-sources:
+    - https://api.github.com/repos/gfx-rs/wgpu
+    - https://api.github.com/repos/gfx-rs/wgpu/releases/latest
+    - https://crates.io/api/v1/crates/naga
+    - https://crates.io/api/v1/crates/naga-cli
+    - https://docs.rs/crate/naga/latest
+    - https://formulae.brew.sh/api/formula/naga-cli.json
+    - https://formulae.brew.sh/formula/naga-cli
+    - https://gfx-rs.github.io/2021/10/07/release-0.11.html
+    - https://github.com/gfx-rs/naga
+    - https://github.com/gfx-rs/wgpu
+    - https://kvark.github.io/naga/shader/2022/02/17/shader-translation-benchmark.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

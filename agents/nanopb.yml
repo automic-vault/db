@@ -8,6 +8,75 @@ config-file-location:
   unix:
     - <proto basename>.options next to the .proto file
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GitHub API data fetched on 2026-07-01 showed 5,454 stars and 1,027 forks, strong
+      adoption for a niche embedded serialization library. The repository also includes
+      Zephyr-related integration files, examples, tests, Bazel/CMake/Meson/Swift package
+      metadata, and generator tooling, reflecting use across several embedded build
+      systems.
+    - >
+      Homebrew's formula JSON generated on 2026-07-01 reported stable version 0.4.9.1,
+      an old formula name of `nanopb-generator`, 1,082 installs over 365 days, and 740
+      installs-on-request over 365 days. That pattern fits a toolchain component: many
+      installs are explicit because developers need the generator and protoc integration
+      for firmware or cross-platform protocol work.
+  package-nerd-significance:
+    - >
+      nanopb is one of the standard answers when someone wants Protocol Buffers on a
+      microcontroller without dragging in a large runtime. It keeps protobuf's schema
+      compatibility story while making the code size, allocation behavior, and generated
+      C output legible to embedded build systems.
+  project-history:
+    - >
+      The upstream license text credits Petteri Aimonen and dates the project to 2011.
+      The GitHub repository used for development was created on 2015-04-29, and the
+      official site points development and bug reporting to GitHub while keeping the
+      documentation and release downloads on jpa.kapsi.fi.
+    - >
+      The core design is deliberately embedded-first: pure C runtime, generated `.pb.c`
+      and `.pb.h` files from `.proto` definitions, static sizing through `.options`
+      files, no required malloc, split encoder/decoder files so projects can compile
+      only the pieces they need, and callback streams for messages larger than available
+      RAM.
+  related-projects:
+    - Google Protocol Buffers
+    - Zephyr RTOS
+    - grpcio-tools
+    - protoc
+  sources:
+    - https://api.github.com/repos/nanopb/nanopb
+    - https://api.github.com/repos/nanopb/nanopb/releases?per_page=5
+    - https://formulae.brew.sh/api/formula/nanopb.json
+    - https://formulae.brew.sh/formula/nanopb
+    - https://github.com/nanopb/nanopb
+    - https://jpa.kapsi.fi/nanopb/
+    - https://jpa.kapsi.fi/nanopb/docs/concepts.html
+    - https://jpa.kapsi.fi/nanopb/docs/index.html
+  summary:
+    - >
+      nanopb is a small-code-size Protocol Buffers implementation in ANSI C, aimed at
+      microcontrollers and other memory-constrained systems. Its official site describes
+      targets with tight memory budgets under 10 kB ROM and under 1 kB RAM.
+  timeline:
+    - '2011: upstream license text credits the original nanopb copyright to Petteri Aimonen.'
+    - '2015-04-29: nanopb/nanopb repository created on GitHub.'
+    - '2025-08-14: Nanopb 0.4.9.1 release published.'
+    - >
+      2026-07-01: Homebrew formula JSON listed stable version 0.4.9.1 and 1,082 installs
+      over 365 days.
+  usage:
+    - >
+      A typical user writes Protocol Buffer schemas in `.proto` files, runs
+      `nanopb_generator.py` or `protoc-gen-nanopb` to produce C headers and sources,
+      then compiles `pb_common.c`, `pb_encode.c`, and/or `pb_decode.c` into firmware.
+      `.options` files set maximum field sizes so generated structs can stay static.
+    - >
+      Package nerds use the Homebrew package mostly for the host-side generator, not
+      because macOS is the target runtime. The generated C is then carried into
+      firmware, RTOS, or embedded Linux builds where normal Google protobuf runtimes
+      would be too large or too allocation-heavy.
 tags:
   - c
   - cli
@@ -38,6 +107,15 @@ provenance:
     - >
       source_facts.homepage is the official dedicated docs page; official GitHub README
       is secondary documentation.
+  history-sources:
+    - https://api.github.com/repos/nanopb/nanopb
+    - https://api.github.com/repos/nanopb/nanopb/releases?per_page=5
+    - https://formulae.brew.sh/api/formula/nanopb.json
+    - https://formulae.brew.sh/formula/nanopb
+    - https://github.com/nanopb/nanopb
+    - https://jpa.kapsi.fi/nanopb/
+    - https://jpa.kapsi.fi/nanopb/docs/concepts.html
+    - https://jpa.kapsi.fi/nanopb/docs/index.html
   repo-sources:
     - >
       source_facts.repo is empty; official nanopb documentation links examples and older
@@ -53,5 +131,6 @@ category-path:
   - serialization
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
