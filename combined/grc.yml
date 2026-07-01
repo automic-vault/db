@@ -12,6 +12,77 @@ config-file-location:
     - /usr/local/share/grc/<grcat-config>
     - /usr/share/grc/<grcat-config>
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      grc fit naturally into Unix packaging because it is a wrapper around existing
+      commands, ships as a small script-and-configuration package, and can be enabled
+      per shell through bash, zsh, or fish snippets. The batch package facts list it
+      across Homebrew, Debian, Fedora, MacPorts, Nix, Arch, Ubuntu, and openSUSE
+      ecosystems, which matches its role as a portable terminal enhancement rather than
+      a platform-specific application.
+  package-nerd-significance:
+    - >
+      grc is a classic package-nerd utility because its value grows with distro
+      integration: the useful part is not just the executable, but the curated set of
+      color files, shell snippets, and install paths that make common commands nicer
+      immediately after installation.
+    - >
+      It also illustrates the long tail of terminal polish packages: small, old,
+      stable-enough tools that persist because they compose with everything else in the
+      shell.
+  project-history:
+    - >
+      Radovan Garabik describes grc as his response to the many separate logfile and
+      command-output colorizers that existed around the late 1990s. The project split
+      the work into two programs: grcat, the filter that reads standard input and
+      applies color rules, and grc, the front end that runs another command and selects
+      an appropriate grcat configuration.
+    - >
+      The upstream Debian-style changelog records version 0.1 as the initial release on
+      1999-10-14 and version 1.0 as the first stable version on 2001-02-23. Subsequent
+      entries show the project accumulating the kind of practical terminal features
+      package users notice: stderr handling, nested and overlapping regexes, multiline
+      blocks, skip rules, diff coloring, Python 3 compatibility work, zsh alias
+      compatibility, and additional command configurations.
+  related-projects:
+    - grcat is the filtering half of the grc project.
+    - >
+      The upstream README explicitly frames grc among older command-output colorizers
+      such as colortail, gccolor, and colormake.
+    - >
+      Shell startup snippets for bash, zsh, and fish are part of the practical packaging
+      surface.
+  sources:
+    - https://github.com/garabik/grc
+    - https://kassiopeia.juls.savba.sk/~garabik/software/grc.html
+    - https://kassiopeia.juls.savba.sk/~garabik/software/grc/README.txt
+    - https://raw.githubusercontent.com/garabik/grc/master/debian/changelog
+  summary:
+    - >
+      grc, the Generic Colouriser, is a small Python command-line wrapper and filter for
+      adding ANSI color to log files and command output. Its package-manager appeal is
+      that it sits in front of ordinary Unix commands rather than replacing them: users
+      keep tools such as ping, traceroute, netstat, ps, diff, and tail, while grc and
+      grcat apply regular-expression based color rules.
+  timeline:
+    - '1999: Version 0.1 initial release recorded in the upstream changelog.'
+    - '2001: Version 1.0 marked as the first stable version.'
+    - '2003: grcat gained an error path for missing configuration files.'
+    - '2013: Preliminary Python 3 support appeared in version 1.5.'
+    - '2017: Version 1.10 was marked Python 3 compatible and added many configurations.'
+    - '2018: Version 1.11.3 made --colour=auto the default.'
+    - '2021: Version 1.13 and 1.13.1 refined shell alias behavior and IP address coloring.'
+  usage:
+    - >
+      Typical use is interactive: run commands such as grc ping hostname, grc tail
+      /var/log/syslog, or pipe data through grcat with a named configuration. grc
+      chooses color rules from /etc/grc.conf or ~/.grc/grc.conf, then grcat searches
+      user and system configuration directories for the referenced rule file.
+    - >
+      The configuration model is intentionally plain text. Rules are regular expressions
+      with keywords such as regexp, colours, command, concat, skip, replace, and count,
+      so package maintainers and users can add color rules without changing the program.
 category: developer-tools
 package-manager:
   brew: grc
@@ -36,5 +107,11 @@ executables:
   - grcat
 provenance:
   formula: grc
+  history-sources:
+    - https://github.com/garabik/grc
+    - https://kassiopeia.juls.savba.sk/~garabik/software/grc.html
+    - https://kassiopeia.juls.savba.sk/~garabik/software/grc/README.txt
+    - https://raw.githubusercontent.com/garabik/grc/master/debian/changelog
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

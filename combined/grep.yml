@@ -7,6 +7,119 @@ docs:
   - https://www.gnu.org/software/grep/manual/grep.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      grep became part of the ordinary Unix vocabulary because it solves a primitive
+      shell need: find matching text in streams and files. GNU grep extended that role
+      across GNU/Linux systems and other Unix-like package sets, while Homebrew and
+      other macOS package managers package it for users who want GNU behavior alongside
+      or instead of platform grep.
+    - >
+      The GNU project page documents stable source releases on GNU download servers, Git
+      development through Savannah, bug and commit mailing lists, translation
+      infrastructure, and the manual. That is the classic GNU adoption model: tarball
+      releases, public development, man/info documentation, and downstream distribution
+      through operating-system packages.
+  package-nerd-significance:
+    - >
+      GNU grep is package-nerd significant because it sits in the base-toolchain layer.
+      Scripts, build systems, test harnesses, log pipelines, and interactive shell
+      sessions assume some grep-like command exists, but exact behavior can differ
+      between GNU, BSD, BusyBox, and other implementations.
+    - >
+      The egrep and fgrep names show the packaging tension clearly. GNU grep 2.5.3
+      deprecated those separate commands in 2007, and GNU grep 3.8 began warning that
+      they are obsolescent in favor of grep -E and grep -F. Package maintainers still
+      have to decide how to ship compatibility links while nudging users toward the
+      POSIX-style option forms.
+    - >
+      For macOS package users, GNU grep is also a namespace package: Homebrew installs
+      GNU utilities in ways that avoid silently replacing system tools unless users opt
+      into GNU-prefixed commands or path changes.
+  project-history:
+    - >
+      The Unix oral-history account attributes the original grep idea to Doug McIlroy
+      asking Ken Thompson to lift the regular-expression recognizer out of the editor
+      into a one-pass program. That origin explains the enduring shape of grep: read
+      input sequentially, match a pattern, and print selected lines.
+    - >
+      GNU grep's source distribution credits Mike Haertel with the main program and the
+      DFA and kwset matchers, Isamu Hasegawa and others with the POSIX
+      regular-expression matcher, James Woods with early Boyer-Moore-style filtering
+      ideas, and later maintainers including Alain Magloire, Bernhard Rosenkranzer,
+      Stepan Kasal, Tony Abou-Assaleh, Jim Meyering, and Paolo Bonzini.
+    - >
+      GNU grep's implementation history is unusually important for such a familiar
+      command. The README describes a lazy-state deterministic matcher combined with
+      Boyer-Moore and Aho-Corasick fixed-string searches, allowing the program to reject
+      impossible input before invoking the full regular-expression matcher. That
+      performance lineage is why GNU grep is discussed not only as a utility but also as
+      an example of practical string-search engineering.
+  related-projects:
+    - ed is the editor whose g/re/p command gave grep its name.
+    - >
+      egrep and fgrep survive as historically separate entry points but map conceptually
+      to grep -E and grep -F.
+    - >
+      GNU sed, GNU awk, find, xargs, ripgrep, The Silver Searcher, ack, git grep, and
+      BusyBox grep all live near GNU grep in the practical text-search ecosystem.
+    - >
+      PCRE and PCRE2 matter because GNU grep's -P mode uses Perl-compatible
+      regular-expression support when built with it.
+  sources:
+    - https://dspinellis.github.io/oral-history-of-unix/frs122/unixhist/finalhis.htm
+    - https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz
+    - https://savannah.gnu.org/git/?group=grep
+    - https://www.gnu.org/software/grep/
+    - https://www.gnu.org/software/grep/manual/grep.html
+  summary:
+    - >
+      GNU grep is the GNU Project's implementation of grep, the Unix text-search utility
+      whose name comes from the ed command pattern g/re/p. As a package, it is one of
+      the canonical command-line tools: tiny at the interface, deep in implementation,
+      and present in nearly every Unix-like software collection.
+    - >
+      The original grep came from early Unix culture at Bell Labs; GNU grep belongs to
+      the later free-software lineage that reimplemented core Unix utilities for the GNU
+      operating system and for portable Unix-like environments. Package managers care
+      about both stories: grep is a standard shell verb, while GNU grep brings GNU
+      options, performance engineering, and portability.
+  timeline:
+    - >
+      1973: The original grep entered early Unix culture as a standalone
+      regular-expression search command.
+    - >
+      1992: GNU grep source files carry Free Software Foundation copyright years
+      beginning in 1992.
+    - >
+      2007: GNU grep 2.5.3 deprecated the egrep and fgrep command names in favor of grep
+      -E and grep -F.
+    - >
+      2012: GNU grep 2.12 adjusted recursive symlink behavior and added the
+      --dereference-recursive alias for -R.
+    - '2014: GNU grep 2.21 made GREP_OPTIONS obsolescent with diagnostics.'
+    - '2020: GNU grep 3.6 removed GREP_OPTIONS behavior.'
+    - >
+      2022: GNU grep 3.8 switched -P from PCRE to PCRE2 and began warning for
+      obsolescent egrep and fgrep invocations.
+    - >
+      2025: GNU grep 3.12 removed the long-obsolete --unix-byte-offsets option and
+      included portability fixes for large directories and some Unicode cases.
+  usage:
+    - >
+      At the interface, GNU grep searches one or more input files for lines matching one
+      or more patterns and prints matching lines by default. Its ordinary forms cover
+      basic regular expressions, extended regular expressions through grep -E, fixed
+      strings through grep -F, pattern files through -f, recursive search, context
+      lines, filename and line-number prefixes, binary-file behavior, and optional color
+      highlighting.
+    - >
+      GNU grep also carries decades of compatibility decisions. The manual marks
+      POSIX-specified options, labels GNU long options as extensions, and documents
+      behavior across encodings, binary data, directories, and performance-sensitive
+      pattern sets. That combination makes it both a user command and a portability
+      boundary for shell scripts.
 category: developer-tools
 package-manager:
   apk: grep
@@ -34,5 +147,12 @@ executables:
   - grep
 provenance:
   formula: grep
+  history-sources:
+    - https://dspinellis.github.io/oral-history-of-unix/frs122/unixhist/finalhis.htm
+    - https://ftp.gnu.org/gnu/grep/grep-3.12.tar.xz
+    - https://savannah.gnu.org/git/?group=grep
+    - https://www.gnu.org/software/grep/
+    - https://www.gnu.org/software/grep/manual/grep.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
