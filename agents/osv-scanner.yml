@@ -9,6 +9,91 @@ config-file-location:
   unix:
     - osv-scanner.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      OSV-Scanner's adoption path is closely tied to OSV.dev itself. OSV.dev presents
+      OSV as an open, precise, distributed vulnerability database and publishes GitHub
+      workflows that run OSV-Scanner in CI/CD. That made the scanner useful not just as
+      a local audit command, but also as a reusable supply-chain check for pull requests
+      and scheduled repository scans.
+    - >
+      Package-manager availability widened the audience beyond Go developers: the input
+      metadata records packages for Homebrew, Alpine, Nix, Arch, Scoop, winget, and
+      zypper. Homebrew packaging is especially important for a CLI security tool because
+      it lets macOS developers add the scanner to local and CI environments with the
+      same command style they use for other developer tools.
+  package-nerd-significance:
+    - >
+      OSV-Scanner is package-nerd infrastructure: it operationalizes lockfile parsing,
+      package URL/ecosystem mapping, advisory matching, and remediation suggestions. Its
+      significance is not just that it scans dependencies, but that it exposes how much
+      package metadata quality determines vulnerability precision.
+    - >
+      The tool also sits at the intersection of multiple package ecosystems and OS
+      package databases. For av.db-style metadata, it is a useful example of a CLI whose
+      value comes from being able to understand many package managers consistently
+      rather than from managing one package format deeply.
+  project-history:
+    - >
+      Google's GitHub repository records `google/osv-scanner` as created on 2022-11-14,
+      and the Google Online Security Blog announced OSV-Scanner on 2022-12-13 as a free
+      tool from the Google Open Source Security Team. The announcement framed it as an
+      access layer for OSV vulnerability information: it would scan manifests,
+      lockfiles, SBOMs, and git directories, then report known vulnerabilities affecting
+      the discovered packages.
+    - >
+      The project later moved beyond a thin OSV lookup client. Its README describes
+      OSV-Scanner as both the officially supported frontend to the OSV database and a
+      CLI interface to OSV-Scalibr, Google's extraction/scanning library. The V2 line
+      added broader package extraction, OS package detection, container image scanning,
+      license scanning through deps.dev data, offline database downloads, and guided
+      remediation workflows for selected ecosystems.
+  related-projects:
+    - OSV.dev provides the vulnerability database and API that OSV-Scanner queries.
+    - >
+      OSV-Scalibr provides extraction and scanning components used under the OSV-Scanner
+      V2 architecture.
+    - >
+      deps.dev supplies supplemental package data used by OSV-Scanner for dependency
+      resolution, license scanning, container metadata, and package deprecation checks.
+  sources:
+    - https://api.github.com/repos/google/osv-scanner
+    - https://formulae.brew.sh/formula/osv-scanner
+    - https://github.com/google/osv-scanner
+    - https://github.com/google/osv-scanner/releases/tag/v2.4.0
+    - https://google.github.io/osv-scanner/
+    - https://osv.dev/
+    - https://raw.githubusercontent.com/google/osv-scanner/main/README.md
+    - https://security.googleblog.com/2022/12/announcing-osv-scanner-vulnerability.html
+  summary:
+    - >
+      OSV-Scanner is Google's command-line vulnerability scanner for matching project
+      dependencies, source trees, SBOMs, and container contents against the OSV.dev
+      vulnerability database. It is significant because it turns the OSV schema and
+      distributed advisory corpus into a developer-facing tool that package maintainers,
+      security teams, and CI systems can run without buying into a proprietary advisory
+      database.
+  timeline:
+    - '2022-11-14: GitHub records creation of `google/osv-scanner`.'
+    - '2022-12-13: Google announced OSV-Scanner on the Google Online Security Blog.'
+    - '2025-01-24: the project opened a discussion thread for OSV-Scanner V2 beta feedback.'
+    - >
+      2026-06-18: GitHub release v2.4.0 added support including CycloneDX 1.7, more
+      default source-scanning plugins, Alpine PURL distro qualifiers, Swift
+      Package.resolved scanning, and Chisel container extraction.
+  usage:
+    - >
+      Developers use OSV-Scanner to recursively scan a source directory, point it at
+      lockfiles and manifests, scan SBOMs, or inspect container images. Its documented
+      `scan source` and `scan image` modes cover the common package-nerd cases: checking
+      npm, Go, Maven, PyPI, Cargo, RubyGems, Composer, NuGet, and other ecosystem
+      metadata against advisories.
+    - >
+      Security teams use it in automation because the output is tied to machine-readable
+      OSV records and because it can run without a custom service. The README also
+      documents offline scanning after downloading local OSV databases, which matters
+      for reproducible audits and restricted build environments.
 tags:
   - cli
   - go
@@ -39,6 +124,15 @@ provenance:
     - >
       official GitHub README points users to detailed documentation at
       google.github.io/osv-scanner; official docs include usage pages.
+  history-sources:
+    - https://api.github.com/repos/google/osv-scanner
+    - https://formulae.brew.sh/formula/osv-scanner
+    - https://github.com/google/osv-scanner
+    - https://github.com/google/osv-scanner/releases/tag/v2.4.0
+    - https://google.github.io/osv-scanner/
+    - https://osv.dev/
+    - https://raw.githubusercontent.com/google/osv-scanner/main/README.md
+    - https://security.googleblog.com/2022/12/announcing-osv-scanner-vulnerability.html
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/google/osv-scanner,
@@ -54,5 +148,6 @@ category-path:
   - vulnerability-scanning
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

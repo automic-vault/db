@@ -8,6 +8,67 @@ docs:
   - https://github.com/mtrojnar/osslsigncode/blob/master/osslsigncode.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      osslsigncode filled a practical gap for cross-platform release engineering: sign
+      Windows installers and executables from Linux or macOS CI systems using
+      OpenSSL-compatible key material. Its packaging across Homebrew, Debian/Ubuntu,
+      Fedora, MacPorts, Nix, Scoop, winget, and openSUSE reflects that it is used by
+      build and security pipelines rather than by end-user desktop workflows.
+    - >
+      Vendor documentation from DigiCert includes osslsigncode in third-party
+      signing-tool instructions for PKCS#11 workflows, showing that certificate
+      authorities and signing services treat it as a supported path for Authenticode
+      operations outside Microsoft tooling.
+  package-nerd-significance:
+    - >
+      osslsigncode is significant because it packages a Windows trust-format workflow in
+      portable Unix-style form. It sits at the awkward intersection of OpenSSL, Windows
+      Authenticode, timestamp authorities, hardware-backed keys, and reproducible
+      release automation.
+  project-history:
+    - >
+      The project was created to avoid depending on Microsoft's `signtool.exe` and
+      Windows CryptoAPI when signing Windows binaries from Unix-like build environments.
+      Its README explains the origin plainly: binaries could be built with Wine on
+      Linux, but signing with signtool failed because the necessary Windows APIs were
+      not fully implemented there.
+    - >
+      The codebase records a longer authorship chain than the GitHub namespace suggests.
+      The main C source includes copyright attribution for Per Allansson for 2005-2015
+      and Michal Trojnara for 2018-2023, while the maintained GitHub repository is under
+      mtrojnar and uses CMake-based builds.
+  related-projects:
+    - >
+      Microsoft signtool.exe is the proprietary reference tool that osslsigncode
+      partially replaces. OpenSSL, cURL, PKCS#11 engines/providers, and
+      certificate-authority timestamp services are its operational dependencies and
+      ecosystem neighbors.
+  sources:
+    - >
+      https://docs.digicert.com/en/software-trust-manager/code-signing/sign-with-third-party-signing-tools/windows-applications/sign-authenticode-files-with-osslsigncode-using-openssl-pkcs11-engine.html
+    - https://formulae.brew.sh/formula/osslsigncode
+    - https://github.com/mtrojnar/osslsigncode
+    - https://github.com/mtrojnar/osslsigncode/blob/master/osslsigncode.c
+    - https://github.com/mtrojnar/osslsigncode/blob/master/osslsigncode.md
+  summary:
+    - >
+      osslsigncode is an OpenSSL- and cURL-based command-line implementation of
+      Authenticode signing, timestamping, verification, removal, and extraction for
+      Windows-oriented file formats such as PE, CAB, CAT, MSI, APPX, and selected script
+      files.
+  usage:
+    - >
+      A typical use signs a PE or MSI file with a certificate and private key,
+      optionally adds an Authenticode or RFC 3161 timestamp, and verifies the resulting
+      signature. The README also documents PKCS#12 containers, PKCS#11 engines and
+      providers, Windows CNG engine use, CAB Java signing compatibility, and operations
+      for extracting or removing signatures.
+    - >
+      The tool is especially useful in CI/CD systems that build Windows artifacts on
+      non-Windows hosts or store signing keys in HSM, token, PKCS#11, or provider-backed
+      systems.
 category: security
 package-manager:
   brew: osslsigncode
@@ -33,5 +94,13 @@ executables:
   - osslsigncode
 provenance:
   formula: osslsigncode
+  history-sources:
+    - >
+      https://docs.digicert.com/en/software-trust-manager/code-signing/sign-with-third-party-signing-tools/windows-applications/sign-authenticode-files-with-osslsigncode-using-openssl-pkcs11-engine.html
+    - https://formulae.brew.sh/formula/osslsigncode
+    - https://github.com/mtrojnar/osslsigncode
+    - https://github.com/mtrojnar/osslsigncode/blob/master/osslsigncode.c
+    - https://github.com/mtrojnar/osslsigncode/blob/master/osslsigncode.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
