@@ -8,6 +8,69 @@ config-file-location:
   unix:
     - /etc/malloc.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      jemalloc moved from a FreeBSD allocator into a portable package used by
+      applications that care about allocator behavior under concurrency and
+      fragmentation pressure. Its adoption pattern is therefore less like a user-facing
+      CLI and more like a selectable runtime component for databases, language runtimes,
+      services, and performance investigations.
+  package-nerd-significance:
+    - >
+      jemalloc is package-nerd material because it sits below ordinary application code:
+      swapping an allocator can change memory fragmentation, latency, profiling
+      visibility, and production stability without changing the application source. Its
+      presence across many package managers makes allocator choice a reproducible
+      dependency rather than a local build trick.
+  project-history:
+    - >
+      The project describes itself as emphasizing fragmentation avoidance and scalable
+      concurrency. Its public history begins with use as the FreeBSD libc allocator in
+      2005, then broadens in 2010 with developer-facing facilities such as heap
+      profiling and monitoring or tuning hooks.
+    - >
+      The project site points to GitHub as the primary repository and treats the manual
+      page and wiki as the two main documentation surfaces. Its branch layout has kept
+      stable release tracking and older stable lines visible, which matters for
+      downstream packaging because allocators are low-level dependencies with
+      conservative upgrade habits.
+  related-projects:
+    - >
+      FreeBSD remains historically important because jemalloc entered production use
+      through its libc allocator.
+    - >
+      jeprof is the related profiling utility shipped with the package for heap-profile
+      analysis.
+    - >
+      Other allocator projects such as system malloc implementations and alternative
+      malloc libraries are the natural comparison set, but jemalloc's packaging role is
+      strongest where a program deliberately opts into its allocation behavior.
+  sources:
+    - https://github.com/jemalloc/jemalloc
+    - https://github.com/jemalloc/jemalloc/wiki
+    - https://jemalloc.net/
+    - https://jemalloc.net/jemalloc.3.html
+  summary:
+    - >
+      jemalloc is a general-purpose malloc implementation known in package-manager
+      catalogs because it can be installed as a system allocator, linked into
+      performance-sensitive programs, or preloaded for applications that benefit from
+      predictable allocation behavior.
+  timeline:
+    - '2005: jemalloc first came into use as the FreeBSD libc allocator.'
+    - '2010: development broadened to include heap profiling plus monitoring and tuning hooks.'
+    - '2013: the public GitHub repository was created for the project.'
+    - >
+      2016: the project retired legacy mailing lists in favor of GitHub-based project
+      activity.
+  usage:
+    - >
+      Package users commonly install the library and development files, link programs
+      against it, or use loader mechanisms to substitute it for the platform allocator.
+      The bundled tools and scripts such as jemalloc-config, jemalloc.sh, and jeprof
+      make the Homebrew formula useful both for building software and for profiling heap
+      behavior.
 tags:
   - c
   - cli
@@ -36,6 +99,11 @@ provenance:
     - >
       Official jemalloc homepage has a Documentation section linking to the jemalloc(3)
       manual page and project wiki.
+  history-sources:
+    - https://github.com/jemalloc/jemalloc
+    - https://github.com/jemalloc/jemalloc/wiki
+    - https://jemalloc.net/
+    - https://jemalloc.net/jemalloc.3.html
   repo-sources:
     - >
       source_facts.repo already populated with https://github.com/jemalloc/jemalloc; per
@@ -51,5 +119,6 @@ category-path:
   - memory-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

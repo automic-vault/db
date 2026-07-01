@@ -7,6 +7,64 @@ config-file-location:
   unix:
     - ./.java-version
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      jenv became useful in Java shops because the JDK landscape is fragmented: Android,
+      server, build, and legacy projects often require different Java majors on the same
+      developer machine. Its README explicitly calls out Android tools using Java 8
+      while server applications use later releases, which explains its fit with
+      project-local version files.
+    - >
+      Homebrew, MacPorts, pacman, and Scoop package metadata in the input show that jenv
+      escaped a single-source install workflow and became a cross-package-manager
+      convenience for developers who already install JDKs through their platform
+      tooling.
+  package-nerd-significance:
+    - >
+      jenv matters to package-manager users because it deliberately does less than
+      SDKMAN-style installers: it manages shims and environment selection, while
+      Homebrew or the operating system installs Java. That separation makes it a small
+      glue package with outsized value on machines that carry several vendor and
+      versioned JDKs.
+  project-history:
+    - >
+      The public GitHub repository for jenv was created in 2013. The project
+      documentation names Gildas Cuisinier as maintainer and frames the repository as a
+      continuation of an earlier beloved Java environment manager rather than a
+      from-scratch package installer.
+    - >
+      The release stream visible on GitHub shows a compact Unix shell tool that
+      continued to receive maintenance releases through the 0.5.x and 0.6.x series.
+      Release notes for 0.6.0 include fixes around shim behavior, shell support, install
+      instructions, and the addition of a command for selecting a Java version for one
+      command invocation.
+  related-projects:
+    - >
+      The README explicitly traces jenv's style to rbenv. It also sits beside Homebrew,
+      MacPorts, SDKMAN-style Java installers, and vendor OpenJDK packages rather than
+      replacing them.
+  sources:
+    - https://api.github.com/repos/jenv/jenv
+    - https://formulae.brew.sh/formula/jenv
+    - https://github.com/jenv/jenv
+    - https://github.com/jenv/jenv/releases
+  summary:
+    - >
+      jenv is a shell-oriented Java environment manager. Its README describes it as an
+      updated fork of jenv adapted from rbenv, focused on switching Java versions and
+      setting JAVA_HOME at global, directory-local, or per-shell scope without
+      installing Java itself.
+  timeline:
+    - '2013: Public GitHub repository created for jenv/jenv.'
+    - '2020: GitHub release 0.5.3 appears in the release stream.'
+    - '2025: GitHub release 0.6.0 records shim, install, and shell-support maintenance.'
+  usage:
+    - >
+      A typical jenv workflow is to install the shell hooks, add already-installed JDK
+      homes with `jenv add`, enable the export plugin when JAVA_HOME management is
+      desired, and use `jenv global`, `jenv local`, or `jenv shell` to select the active
+      version. `jenv local` writes a `.java-version` file in the working tree.
 tags:
   - cli
   - environment-manager
@@ -31,6 +89,11 @@ provenance:
     - source_facts.name is jenv; official repository is jenv/jenv and uses the jenv name.
   docs-sources:
     - Official repository README is the primary documentation surface for jenv.
+  history-sources:
+    - https://api.github.com/repos/jenv/jenv
+    - https://formulae.brew.sh/formula/jenv
+    - https://github.com/jenv/jenv
+    - https://github.com/jenv/jenv/releases
   repo-sources:
     - >
       source_facts.repo already populated with https://github.com/jenv/jenv; per
@@ -45,5 +108,6 @@ category-path:
   - java-version-management
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
