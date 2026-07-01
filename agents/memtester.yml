@@ -5,6 +5,69 @@ docs:
   - https://pyropus.ca/software/memtester
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      memtester became a standard small system-utility package because it solves a
+      practical diagnostic problem without needing a boot disk. The official page says
+      prebuilt executables are included with or available for many operating systems and
+      mentions Debian, Ubuntu, Fedora/DAG packages, NetBSD ports, MacPorts, and
+      Solaris/SunOS sources; the batch input additionally lists apk, Homebrew, Debian,
+      Fedora, MacPorts, Nix, Arch, Ubuntu, and zypper package names.
+  package-nerd-significance:
+    - >
+      memtester is a classic sysadmin package: tiny C source, no elaborate build system,
+      broad Unix portability, a man page, and a job that is easiest to trust when
+      installed from the system package manager. It is also valuable to embedded and
+      hardware bring-up workflows where userspace physical-memory testing is useful.
+  project-history:
+    - >
+      The upstream README credits the original source to Simon Kirby in 1999, version 2
+      to Charles Cazabon in 1999, notes that version 3 was not publicly released, and
+      describes version 4 as a 2004 rewrite by Cazabon. The rewrite focused on replacing
+      hacky earlier code, improving portability, and making the tester fully 64-bit
+      aware.
+    - >
+      The project page says memtester is portable across 32- and 64-bit Unix-like
+      systems, including unusual proprietary Unix systems and Mac OS X. The 4.x
+      changelog shows steady maintenance from the 2004 rewrite through 2024, with
+      changes for 64-bit offsets, physical-address testing, portability fixes, compiler
+      compatibility, and hardware-developer use cases.
+  related-projects:
+    - >
+      memtester is related to boot-time memory testers and hardware diagnostic tools,
+      but its niche is userspace Unix testing. It is commonly packaged alongside other
+      low-level system utilities rather than developer profilers.
+  sources:
+    - https://pyropus.ca/software/memtester/
+    - https://pyropus.ca/software/memtester/old-versions/
+    - https://pyropus.ca/software/memtester/old-versions/memtester-4.7.1.tar.gz
+    - source_facts.package-manager-url
+  summary:
+    - >
+      memtester is a GPL-2-only userspace utility for stress-testing a computer's memory
+      subsystem for faults. Unlike boot-time memory-test environments, it runs under
+      Unix-like operating systems and allocates memory from userspace.
+  timeline:
+    - '1999: Original source by Simon Kirby; version 2 copyright by Charles Cazabon.'
+    - >
+      2004-08-07: memtester 4.0.0 rewrite released for cleaner code, portability, and
+      64-bit awareness.
+    - '2009-07-23: memtester 4.1.0 adds physical-region testing with `-p`.'
+    - '2012-06-09: memtester 4.3.0 adds alternate device mapping and MEMTESTER_TEST_MASK.'
+    - '2024-12-16: memtester 4.7.1 fixes stricter C23/gcc-15 compile compatibility.'
+  usage:
+    - >
+      The basic invocation is `memtester <memory> [runs]`, usually as root so pages can
+      be locked with `mlock`. The man page warns that unlocked testing is slower and
+      less effective, that users must choose a safe allocation size, and that
+      overcommitting memory can make a system unusable or trigger an out-of-memory
+      killer.
+    - >
+      Hardware developers can use `-p` with an optional `-d` device to test a physical
+      memory region mapped through `/dev/mem` or another device, and newer releases
+      include options such as `-u` for uncached memory semantics on some systems.
+      `MEMTESTER_TEST_MASK` can limit which tests run.
 tags:
   - cli
   - hardware-diagnostics
@@ -31,6 +94,11 @@ provenance:
     - >
       Official Pyropus homepage is the upstream documentation/download surface and no
       separate official docs or source-control repository was identified.
+  history-sources:
+    - https://pyropus.ca/software/memtester/
+    - https://pyropus.ca/software/memtester/old-versions/
+    - https://pyropus.ca/software/memtester/old-versions/memtester-4.7.1.tar.gz
+    - source_facts.package-manager-url
   repo-sources:
     - >
       Official homepage publishes source archives; no official HTTP source-control
@@ -46,5 +114,6 @@ category-path:
   - diagnostics
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: medium
 tags-confidence: high

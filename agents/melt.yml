@@ -5,6 +5,60 @@ docs:
   - https://github.com/charmbracelet/melt#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Melt's adoption is mostly package-manager and Charm ecosystem oriented. The README
+      documents installation through Homebrew, Arch user packages, Scoop, Nix,
+      Debian/Ubuntu via Charm's apt repository, Fedora/RHEL via Charm's yum repository,
+      Go install, and GitHub release binaries; the batch input also lists Homebrew,
+      Debian, Ubuntu, Nix, Winget, and zypper package names.
+  package-nerd-significance:
+    - >
+      Melt is interesting to package maintainers because it packages a very specific
+      cryptographic recovery workflow as a small CLI, with cross-platform binary
+      artifacts and package-manager instructions instead of a large key-management
+      suite. It also sits at the intersection of SSH, BIP39 mnemonics, and Charm's
+      polished Go CLI distribution style.
+  project-history:
+    - >
+      The project is published in the Charmbracelet GitHub organization and describes
+      itself as part of Charm. Its README explains the central design choice: Ed25519
+      private keys contain a 32-byte seed, and Melt converts that seed into mnemonic
+      entropy so the same key can later be reconstructed.
+    - >
+      The public release stream began with v0.1.0 in March 2022 and continued through
+      v0.6.x releases in 2024. The README caveats keep the scope deliberately narrow:
+      only Ed25519 keys are supported, comments on public keys may be lost, and some
+      nonessential bytes may differ even when the restored key is effectively the same
+      key.
+  related-projects:
+    - >
+      Melt uses the BIP39 mnemonic approach and is related operationally to OpenSSH
+      `ssh-keygen` for inspecting or changing restored key comments. It is also part of
+      the broader Charmbracelet family of Go command-line tools.
+  sources:
+    - https://github.com/charmbracelet/melt#readme
+    - https://github.com/charmbracelet/melt/releases.atom
+    - source_facts.package-manager-url
+  summary:
+    - >
+      Melt is a Charm command-line utility for backing up and restoring Ed25519 SSH
+      private keys using memorable seed phrases. Its niche is not general SSH key
+      management, but reversible conversion between an Ed25519 key seed and a
+      BIP39-style mnemonic.
+  timeline:
+    - '2022-03-14: v0.1.0 release published on GitHub.'
+    - >
+      2022: README documents Homebrew, Scoop, Nix, Debian/Ubuntu, Fedora/RHEL, Go, and
+      binary release installation paths.
+    - '2024-08-15: v0.6.2 release published on GitHub.'
+  usage:
+    - >
+      Typical use is `melt ~/.ssh/id_ed25519` to emit seed words, then `melt restore
+      ./my-key --seed "..."` or stdin/stdout pipelines to reconstruct the key. Users
+      normally verify the restored public-key fingerprint and can use `ssh-keygen -c`
+      afterward to add back a public-key comment.
 tags:
   - cli
   - ed25519
@@ -20,6 +74,10 @@ provenance:
     - source_facts.name and official GitHub repository name.
   docs-sources:
     - Official charmbracelet/melt GitHub README.
+  history-sources:
+    - https://github.com/charmbracelet/melt#readme
+    - https://github.com/charmbracelet/melt/releases.atom
+    - source_facts.package-manager-url
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/charmbracelet/melt; prompt
@@ -31,5 +89,6 @@ category-path:
   - security
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

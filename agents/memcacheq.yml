@@ -5,6 +5,64 @@ docs:
   - https://github.com/stvchu/memcacheq#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      MemcacheQ appears as a niche infrastructure package rather than a broad platform.
+      The batch input lists Homebrew and MacPorts package names, while the upstream
+      README sends users to the MemcacheDB mailing list and old Google Code
+      download/install locations.
+  package-nerd-significance:
+    - >
+      MemcacheQ matters historically because it is one of the small services that reused
+      the memcached protocol as an application integration surface. For package
+      collections, it is a compact C daemon with classic Unix dependencies and a clear
+      relationship to memcached-era infrastructure patterns.
+  project-history:
+    - >
+      The upstream README presents MemcacheQ as a very small, fast, multiple-queue
+      service compatible with memcache clients. Its design goal was pragmatic
+      compatibility: existing memcache client libraries could enqueue and dequeue
+      messages by talking to a queue server on the memcache protocol.
+    - >
+      The ChangeLog shows v0.0.1 in March 2008, a rewrite around newer MemcacheDB code
+      with multiple-queue support in September 2008, v0.2.0 in December 2009, and a
+      cleanup v0.2.1 release in December 2014. The README was last updated by Steve Chu
+      on 2009-12-09.
+  related-projects:
+    - >
+      MemcacheQ is related to memcached through protocol compatibility, to MemcacheDB
+      through its code history and mailing-list community, and to Berkeley DB and
+      libevent as runtime/build dependencies.
+  sources:
+    - https://github.com/stvchu/memcacheq#readme
+    - https://github.com/stvchu/memcacheq/releases.atom
+    - https://raw.githubusercontent.com/stvchu/memcacheq/master/ChangeLog
+    - https://raw.githubusercontent.com/stvchu/memcacheq/master/INSTALL
+    - source_facts.package-manager-url
+  summary:
+    - >
+      MemcacheQ is a simple queue service that exposes queue operations through the
+      memcache protocol. Producers append with `set`, consumers read with `get`, and
+      queue storage is backed by Berkeley DB.
+  timeline:
+    - '2008-03-15: v0.0.1 released.'
+    - '2008-09-19: v0.1.0 released after a rewrite based on newer MemcacheDB code.'
+    - >
+      2009-12-09: v0.2.0 released with rewritten multiple-queue map code and instant
+      per-queue statistics.
+    - '2014-12-17: v0.2.1 cleanup release published on GitHub.'
+  usage:
+    - >
+      The documented interface uses only two basic commands: `set <queue name> ...`
+      appends a message to the tail of a queue, and `get <queue name>` consumes a
+      message from the head. `stats queue` reports queue sizes, and `delete <queue>`
+      removes a queue.
+    - >
+      Deployment requires Berkeley DB 4.7 or later and libevent 1.4.x or later. The
+      INSTALL file shows a daemon example using `memcacheq -d -r -H /data1/memcacheq -N
+      -R -v -L 1024 -B 1024`, and notes that `-B` controls maximum message length
+      because fixed-length Berkeley DB queue storage pads shorter messages.
 tags:
   - c
   - cli
@@ -34,6 +92,12 @@ provenance:
     - >
       Official repository README is the best available documentation surface; linked
       legacy memcachedb.org docs are historical/unavailable from the README.
+  history-sources:
+    - https://github.com/stvchu/memcacheq#readme
+    - https://github.com/stvchu/memcacheq/releases.atom
+    - https://raw.githubusercontent.com/stvchu/memcacheq/master/ChangeLog
+    - https://raw.githubusercontent.com/stvchu/memcacheq/master/INSTALL
+    - source_facts.package-manager-url
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/stvchu/memcacheq, so repo is
@@ -50,5 +114,6 @@ category-path:
   - queue-service
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

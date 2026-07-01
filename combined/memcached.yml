@@ -8,6 +8,83 @@ docs:
   - https://memcached.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Memcached became a standard package across Unix-like systems and language
+      ecosystems because its protocol and operating model are small. The official site
+      notes APIs for most popular languages, the development wiki says portability
+      matters because Memcached ships as a standard package on many operating systems,
+      and the batch input lists packages across Homebrew, Debian, Ubuntu, Fedora, Arch,
+      Alpine, Nix, MacPorts, Scoop, and zypper.
+    - >
+      The official homepage also names Netflix as a supporter and links users to
+      documentation, mailing lists, GitHub issues, and release notes, showing a mature
+      infrastructure around a widely deployed daemon rather than a single-library
+      project.
+  package-nerd-significance:
+    - >
+      Memcached is a package-manager classic: tiny enough to install everywhere,
+      important enough to appear in nearly every server distribution, and old enough
+      that downstreams care about init systems, portability, protocol compatibility, and
+      security fixes. It is also a reference point for cache clients, monitoring tools,
+      and experiments such as queues or persistent stores that reuse the memcached
+      protocol.
+  project-history:
+    - >
+      The official about page traces Memcached to Brad Fitzpatrick at LiveJournal in
+      2003. The project grew from a web scaling tool into a long-lived C daemon, with
+      libevent-based networking and a protocol simple enough to be implemented by
+      clients in many languages.
+    - >
+      The project documentation frames the architecture as a virtual pool of memory:
+      clients hash keys to servers, servers store opaque values, and servers do not
+      coordinate with each other. This simplicity made Memcached easy to deploy
+      horizontally and kept the daemon focused on fast memory storage, eviction, and
+      protocol handling.
+    - >
+      The current upstream development repository is the central GitHub repository under
+      the memcached organization. The development wiki describes the codebase as started
+      in 2003, stable, long-term, and performance-sensitive, with central-branch quality
+      gates, buildbots, regression tests, and careful performance testing.
+  related-projects:
+    - >
+      Related projects include memcache-top for terminal stats monitoring, MemcacheQ for
+      a queue service over the memcache protocol, language-specific Memcached clients,
+      libevent as a core dependency, and mc-crusher for performance testing.
+  sources:
+    - https://docs.memcached.org/
+    - https://github.com/memcached/memcached/wiki/DevelopmentRepos
+    - https://memcached.org/
+    - https://memcached.org/about
+    - https://raw.githubusercontent.com/memcached/memcached/master/README.md
+    - source_facts.package-manager-url
+  summary:
+    - >
+      Memcached is a high-performance distributed in-memory key-value cache for small
+      arbitrary data, originally built to reduce database load for dynamic web
+      applications. Its deliberately simple server design leaves distribution and key
+      placement to clients.
+  timeline:
+    - '2003: Brad Fitzpatrick originally develops Memcached for LiveJournal.'
+    - >
+      2019: Development wiki describes the 2003 codebase as a stable long-term project
+      with many users.
+    - >
+      2024: Documentation site publishes the modern Memcached overview and
+      design-philosophy pages.
+    - '2026-05-18: Official homepage lists v1.6.42 as the latest stable release.'
+  usage:
+    - >
+      Applications store the results of database calls, API calls, or page rendering
+      under application-defined keys and retrieve those values before doing expensive
+      work again. The official examples show direct protocol interaction over telnet on
+      port 11211 with commands such as `get` and `stats`.
+    - >
+      Operationally, administrators tune memory size, server count, and client hashing
+      behavior rather than treating Memcached as a replicated database. The docs
+      emphasize that servers are independent, data can expire or be evicted, and
+      forgetting is a feature of the cache model.
 category: data
 package-manager:
   apk: memcached
@@ -34,5 +111,13 @@ executables:
   - memcached
 provenance:
   formula: memcached
+  history-sources:
+    - https://docs.memcached.org/
+    - https://github.com/memcached/memcached/wiki/DevelopmentRepos
+    - https://memcached.org/
+    - https://memcached.org/about
+    - https://raw.githubusercontent.com/memcached/memcached/master/README.md
+    - source_facts.package-manager-url
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

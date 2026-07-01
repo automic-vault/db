@@ -10,6 +10,66 @@ config-file-location:
     - melange.yaml
     - melange.yml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      melange's adoption is strongly tied to Wolfi, Chainguard Images, and apko-based
+      image construction. The upstream README says the majority of its APKs are built
+      for the Wolfi or Alpine Linux ecosystems, and the supplied package facts list
+      Homebrew, Alpine, Nix, pacman, and openSUSE packaging.
+    - >
+      For teams building minimal container images, melange provides a package-native
+      alternative to ad hoc Dockerfile build steps. That makes it relevant in
+      reproducible-build and SBOM-heavy workflows where APKs are easier to scan, sign,
+      attest, and reuse.
+  package-nerd-significance:
+    - >
+      melange is package-nerd catnip because it brings distro-style package recipes into
+      cloud-native image builds. It is small in concept but high leverage: YAML recipes,
+      APK outputs, signing, pipelines, and apko integration let maintainers replace
+      one-off container build scripts with reusable package metadata.
+  project-history:
+    - >
+      The project was created for supply-chain-aware package production, where software
+      is built into APK artifacts with controlled pipelines and provenance rather than
+      copied directly into images. The README frames this as part of secure software
+      factories: build and capture software artifacts into packages so images can be
+      assembled from auditable components.
+    - >
+      The v0.1.0 release appeared in June 2022. Since then melange has become a core
+      piece of the Chainguard/Wolfi packaging stack, with release automation,
+      multi-architecture support, QEMU-based emulation, pipeline libraries, package
+      signing, and documentation for build files, pipelines, testing, and updates.
+  related-projects:
+    - "apko: Chainguard's tool for building OCI images from APK packages."
+    - 'Wolfi: the APK-based Linux distribution ecosystem frequently built with melange.'
+    - 'Alpine Linux: the APK package ecosystem whose package format melange targets.'
+  sources:
+    - https://github.com/chainguard-dev/melange
+    - https://github.com/chainguard-dev/melange/releases/tag/v0.1.0
+    - https://github.com/chainguard-dev/melange/releases/tag/v0.55.0
+    - https://github.com/chainguard-dev/melange/tree/main/docs
+    - source_facts.package-manager-url
+  summary:
+    - >
+      melange is Chainguard's declarative build tool for producing APK packages from
+      source. The README describes it as a pipeline-oriented APK builder commonly used
+      for packages that feed container images built with apko, especially in the Wolfi
+      and Alpine Linux ecosystems.
+  timeline:
+    - '2022-06-02: Release v0.1.0 published.'
+    - '2022 onward: melange used with apko, Wolfi, and Alpine-oriented APK production.'
+    - '2026-06-29: Release v0.55.0 published with ongoing pipeline improvements.'
+  usage:
+    - >
+      A melange build file declares package metadata, build environment contents,
+      pipeline steps, subpackages, and tests. The README shows melange build
+      examples/gnu-hello.yaml and a containerized invocation with
+      cgr.dev/chainguard/melange.
+    - >
+      The tool writes architecture-specific APK outputs under a packages directory. It
+      can generate signing keys with melange keygen and accepts --signing-key during
+      builds.
 category: developer-tools
 package-manager:
   apk: melange
@@ -32,5 +92,12 @@ executables:
   - melange
 provenance:
   formula: melange
+  history-sources:
+    - https://github.com/chainguard-dev/melange
+    - https://github.com/chainguard-dev/melange/releases/tag/v0.1.0
+    - https://github.com/chainguard-dev/melange/releases/tag/v0.55.0
+    - https://github.com/chainguard-dev/melange/tree/main/docs
+    - source_facts.package-manager-url
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
