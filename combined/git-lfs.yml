@@ -13,6 +13,79 @@ config-file-location:
     - ~/.gitconfig
     - /etc/gitconfig
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Git LFS matters because it is both a Git extension and a protocol/specification
+      surface. The README describes pre-built binaries for macOS, Windows, Linux, and
+      FreeBSD, Homebrew installation, Debian and RPM packages, Chocolatey installation,
+      and inclusion in Git for Windows. That distribution footprint helped make LFS
+      available to designers, game teams, data projects, and software teams using hosted
+      Git services.
+    - >
+      The project also has a maintainer model around a core team and alumni, public
+      releases with signed hashes, official command documentation, an FAQ, and
+      implementation notes. Those are signs of infrastructure-level Git tooling rather
+      than a one-off helper script.
+  package-nerd-significance:
+    - >
+      Git LFS is package-nerd significant because it is a CLI, a Git filter integration,
+      and a wire-format specification in one package. It shows how a package can become
+      part of the developer-tooling substrate: package managers distribute the binary,
+      Git invokes it through filters and hooks, and hosting platforms implement the
+      matching storage API.
+  project-history:
+    - >
+      The public git-lfs repository was created in 2013, and the changelog records
+      v0.5.0 in April 2015 as the initial public release. The official specification
+      preserves a clue from the pre-release era by documenting legacy pointer files that
+      used a `hawser.github.com` version URL before the `git-lfs.github.com/spec/v1`
+      pointer URL.
+    - >
+      Git LFS reached v1.0.0 in October 2015. Before that milestone, v0.6.0 switched the
+      client to the Batch API by default while retaining fallback to the legacy API. The
+      2.x line later removed old APIs and added features such as `git lfs migrate`,
+      which rewrites history to convert large Git blobs into LFS objects.
+  related-projects:
+    - >
+      Git LFS relates to Git attributes, clean and smudge filters, Git for Windows, and
+      hosted Git LFS server implementations. Its problem space overlaps with artifact
+      repositories and data-versioning tools, but its distinctive feature is that
+      ordinary Git commits retain pointer files while large object transfer is handled
+      out of band.
+  sources:
+    - https://api.github.com/repos/git-lfs/git-lfs
+    - https://git-lfs.com/
+    - https://github.com/git-lfs/git-lfs#readme
+    - https://github.com/git-lfs/git-lfs/blob/main/CHANGELOG.md
+    - https://github.com/git-lfs/git-lfs/blob/main/docs/spec.md
+    - https://github.com/git-lfs/git-lfs/tree/main/docs
+  summary:
+    - >
+      Git LFS is the reference command-line implementation and specification for storing
+      large file contents outside ordinary Git blobs while keeping small pointer files
+      in the repository. It became one of the standard answers for repositories that
+      need to version art assets, datasets, media, archives, and other large binaries
+      without making every clone carry every large object as normal Git history.
+  timeline:
+    - '2013: Public GitHub repository created.'
+    - '2015: v0.5.0 marked the initial public release.'
+    - '2015: v0.6.0 used the Batch API by default.'
+    - '2015: v1.0.0 released.'
+    - '2017: v2.0.0 removed legacy APIs.'
+    - '2017: v2.2.0 added `git lfs migrate`.'
+  usage:
+    - >
+      Practitioners run `git lfs install` once to configure clean and smudge filters,
+      use `git lfs track` to add patterns to `.gitattributes`, commit that attributes
+      file, and then add and push files as usual. Git LFS writes pointer files into Git
+      and stores object contents under the LFS object store, uploading LFS objects
+      before the Git push completes.
+    - >
+      `git lfs migrate` is used when large files already exist in history and need to be
+      moved into LFS, with the usual history-rewrite consequences. Operators also use
+      `git lfs env`, tracing, signed release verification, and the command manpages when
+      debugging installs or server interactions.
 category: developer-tools
 package-manager:
   apk: git-lfs
@@ -40,5 +113,13 @@ executables:
   - git-lfs
 provenance:
   formula: git-lfs
+  history-sources:
+    - https://api.github.com/repos/git-lfs/git-lfs
+    - https://git-lfs.com/
+    - https://github.com/git-lfs/git-lfs#readme
+    - https://github.com/git-lfs/git-lfs/blob/main/CHANGELOG.md
+    - https://github.com/git-lfs/git-lfs/blob/main/docs/spec.md
+    - https://github.com/git-lfs/git-lfs/tree/main/docs
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

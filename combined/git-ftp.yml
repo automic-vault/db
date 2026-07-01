@@ -11,6 +11,58 @@ config-file-location:
     - .git-ftp-include
 credentials-file-location:
   unix: .git/config
+history:
+  adoption-history:
+    - >
+      git-ftp became the most visible project in this batch because it solved a
+      deployment niche that Git itself does not cover. Its packaging in Homebrew and
+      other Unix package collections reflects use by developers who need repeatable
+      deployments without rsync, SSH shell access, or a platform-specific deployment
+      service.
+  package-nerd-significance:
+    - >
+      git-ftp is package-manager interesting because it packages an old-web deployment
+      pattern as a Git subcommand-style CLI. It sits at the edge between version-control
+      tooling and hosting compatibility, where a small shell utility can replace heavier
+      deployment systems for simple sites.
+  project-history:
+    - >
+      The project grew around a common shared-hosting problem: teams had Git locally but
+      only FTP, FTPS, SFTP, or lftp-style access on the deployment target. The README
+      describes the tool as uploading to FTP servers 'the Git way', while the changelog
+      records a long stabilization path through 1.0.0, submodule handling, include and
+      ignore rules, hooks, FTPES/SFTP fixes, and compatibility work for newer Git
+      versions.
+    - >
+      A 0.8-era changelog entry records the move to the git-ftp GitHub organization.
+      Later releases added push hooks, snapshot and pull/download actions, BusyBox
+      fixes, PEM/key options, and better error handling, keeping the tool as a
+      shell-based bridge between Git workflows and older hosting environments.
+  related-projects:
+    - >
+      git-ftp is related to Git deployment hooks, rsync-based deploy scripts, lftp
+      workflows, and hosted CI actions that publish artifacts to FTP targets.
+  sources:
+    - https://formulae.brew.sh/formula/git-ftp
+    - https://github.com/git-ftp/git-ftp
+    - https://github.com/git-ftp/git-ftp/blob/master/CHANGELOG.md
+    - https://github.com/git-ftp/git-ftp/blob/master/README.md
+  summary:
+    - >
+      git-ftp is a Git-oriented deployment utility for FTP and related protocols. Its
+      core idea is to record the deployed Git commit on the server, then use Git history
+      to upload only files that changed since that commit.
+  timeline:
+    - '2013: Repository created under the git-ftp organization on GitHub.'
+    - '2016: 1.3.0 added push hooks, snapshot support, and file-list performance work.'
+    - '2018: 1.5.0 addressed Git 2.16 compatibility and SFTP documentation.'
+    - '2020: 1.6.0 release line focused on error handling and nested branch support.'
+  usage:
+    - >
+      Practitioners configure FTP URL, user, and password in Git config, run `git ftp
+      init` for a first upload or `git ftp catchup` when files already exist remotely,
+      and then deploy later commits with `git ftp push`. The ignore and include files
+      let projects tune which tracked or untracked paths are sent.
 category: developer-tools
 package-manager:
   brew: git-ftp
@@ -31,5 +83,11 @@ executables:
   - git-ftp
 provenance:
   formula: git-ftp
+  history-sources:
+    - https://formulae.brew.sh/formula/git-ftp
+    - https://github.com/git-ftp/git-ftp
+    - https://github.com/git-ftp/git-ftp/blob/master/CHANGELOG.md
+    - https://github.com/git-ftp/git-ftp/blob/master/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
