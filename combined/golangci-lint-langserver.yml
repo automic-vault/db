@@ -6,6 +6,68 @@ docs:
   - https://github.com/nametake/golangci-lint-langserver#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is mostly editor-driven. The README documents coc.nvim, vim-lsp,
+      nvim-lspconfig, Emacs lsp-mode, and Helix configuration, and notes that Emacs
+      lsp-mode has built-in support when the executable is present.
+    - >
+      The batch input records Homebrew and Nix packaging, which matches its role as an
+      auxiliary executable installed beside `golangci-lint` rather than as a primary Go
+      toolchain command.
+  package-nerd-significance:
+    - >
+      For package nerds, golangci-lint-langserver is the glue package: it turns a
+      CI-oriented linter runner into editor feedback without reimplementing the linters.
+      That is useful in Homebrew and Nix because users can compose it with pinned
+      versions of `golangci-lint`, Neovim, Emacs, or Helix.
+    - >
+      Its narrow scope is also the point. The package exists to bridge command-line lint
+      output into LSP diagnostics, so a small, dependency-light binary is more valuable
+      than a broad feature set.
+  project-history:
+    - >
+      The project was demonstrable by an asciinema recording around 2020 and had early
+      0.0.x releases in that period. Its README centers on launching
+      `golangci-lint-langserver` and passing a `golangci-lint run` command that emits
+      JSON diagnostics.
+    - >
+      As golangci-lint evolved from v1 to v2 output flags, the README added
+      version-compatibility guidance: v2 uses `--output.json.path stdout
+      --show-stats=false`, while v1 used `--out-format json`.
+  related-projects:
+    - golangci-lint is the required analyzer backend.
+    - gopls is commonly run beside it as the main Go language server.
+    - >
+      coc.nvim, vim-lsp, nvim-lspconfig, Emacs lsp-mode, and Helix are documented editor
+      clients.
+  sources:
+    - https://asciinema.org/a/308369
+    - https://github.com/nametake/golangci-lint-langserver
+    - https://github.com/nametake/golangci-lint-langserver/issues/17
+    - https://github.com/nametake/golangci-lint-langserver/releases
+    - https://golangci-lint.run/docs/welcome/integrations/
+  summary:
+    - >
+      golangci-lint-langserver is a small language server that adapts golangci-lint
+      diagnostics to editor LSP clients. Its README defines it directly as a
+      golangci-lint language server and documents editor configuration rather than a
+      large standalone product surface.
+  timeline:
+    - '2020: Public demo and early 0.0.x release line for the language server.'
+    - '2021: Users were configuring v0.0.6 with Neovim and golangci-lint JSON output.'
+    - '2023: README notes built-in Emacs lsp-mode support since late 2023.'
+    - '2025: README documents golangci-lint v2 output flag compatibility.'
+  usage:
+    - >
+      Users install `golangci-lint` separately, install the language server with Go's
+      install command or a package manager, and configure the editor's LSP client to run
+      it for Go files.
+    - >
+      The language server shells out to `golangci-lint run` and reads JSON output, so
+      its practical behavior is tightly coupled to the installed golangci-lint version
+      and the project's `.golangci` configuration.
 category: developer-tools
 package-manager:
   brew: golangci-lint-langserver
@@ -24,5 +86,12 @@ executables:
   - golangci-lint-langserver
 provenance:
   formula: golangci-lint-langserver
+  history-sources:
+    - https://asciinema.org/a/308369
+    - https://github.com/nametake/golangci-lint-langserver
+    - https://github.com/nametake/golangci-lint-langserver/issues/17
+    - https://github.com/nametake/golangci-lint-langserver/releases
+    - https://golangci-lint.run/docs/welcome/integrations/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

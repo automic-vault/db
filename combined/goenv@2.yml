@@ -13,6 +13,76 @@ config-file-location:
     - ./.goenv-version (legacy project-local version file)
     - $GOENV_RC_FILE, default $HOME/.goenvrc
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      goenv gained package-manager relevance because Go developers needed the same
+      repeatable multi-version workflow that Ruby and Python users had through rbenv and
+      pyenv. The README notes Homebrew installation for both the main package and the
+      goenv@2 legacy formula.
+    - >
+      The v2 line remains significant for CI and production setups that standardized on
+      the shell implementation before the v3 rewrite. The README calls out AWS CodeBuild
+      and existing production systems as examples of environments where v2 may remain in
+      use during migration.
+  package-nerd-significance:
+    - >
+      For package people, goenv is interesting as a direct transplant of the shim-based
+      language-runtime manager pattern into the Go ecosystem. It shows how a package can
+      be culturally important even when the underlying trick is old: predictable PATH
+      shims plus tiny version files.
+    - >
+      goenv@2 also matters as a versioned package split. Homebrew keeps the shell
+      implementation available under a versioned formula while the upstream project
+      moves through a rewrite, giving users a migration path without hiding the older
+      behavior.
+  project-history:
+    - >
+      The repository preserves inherited history from the rbenv and pyenv lineage, and
+      the README states that goenv was cloned from pyenv and modified for Go.
+      Go-specific repository history appears in the mid-2010s, with releases and command
+      documentation settling around Go version installation, shims, and per-directory
+      version files.
+    - >
+      The command set follows the familiar rbenv-style vocabulary: global, local, shell,
+      install, uninstall, rehash, which, whence, and version. The environment
+      documentation adds Go-specific behavior around GOROOT, GOPATH, go.mod based
+      version detection, and auto-install behavior.
+  related-projects:
+    - pyenv provided the stated starting point for goenv's design and code lineage.
+    - rbenv is the older shim-based version-manager model that shaped pyenv and goenv.
+    - >
+      gvm is listed by the README as a different Go version-management approach modeled
+      after nvm.
+  sources:
+    - https://github.com/go-nv/goenv
+    - https://github.com/go-nv/goenv#readme
+    - https://github.com/go-nv/goenv/blob/master/COMMANDS.md
+    - https://github.com/go-nv/goenv/blob/master/ENVIRONMENT_VARIABLES.md
+  summary:
+    - >
+      goenv is a Go toolchain version manager in the rbenv and pyenv family. Its
+      shell-shim model lets a user pick a Go version globally, per project, or through
+      an environment override.
+    - >
+      The goenv@2 package represents the shell-script based line of the project. The
+      project documentation describes v2 as the legacy branch kept for existing
+      installations while a Go-based v3 line carries the rewrite.
+  timeline:
+    - '2016: Early goenv tags such as v20160417 and v20161028 appear in the repository.'
+    - '2017: Repository history records Homebrew core formula availability documentation.'
+    - '2022: Repository history includes 2.x maintenance releases.'
+    - '2026: README documents v2 as a legacy line and v3 as a Go-based rewrite.'
+  usage:
+    - >
+      Users install Go versions with goenv install, select a global version by writing
+      $GOENV_ROOT/version, and pin project directories with .go-version. The shell
+      integration uses eval "$(goenv init -)" so shims resolve commands through the
+      selected Go version.
+    - >
+      The tool is most useful where multiple repositories require different Go versions,
+      where CI images need a predictable Go bootstrap, or where package maintainers test
+      against several Go releases without replacing the system Go.
 category: developer-tools
 package-manager:
   brew: goenv@2
@@ -32,5 +102,11 @@ executables:
   - goenv-uninstall
 provenance:
   formula: goenv@2
+  history-sources:
+    - https://github.com/go-nv/goenv
+    - https://github.com/go-nv/goenv#readme
+    - https://github.com/go-nv/goenv/blob/master/COMMANDS.md
+    - https://github.com/go-nv/goenv/blob/master/ENVIRONMENT_VARIABLES.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

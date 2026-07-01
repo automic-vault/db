@@ -5,6 +5,93 @@ docs:
   - https://github.com/golang-migrate/migrate#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      golang-migrate became a common Go ecosystem migration tool because it works both
+      as a standalone `migrate` binary and as an importable library. The README points
+      to packagecloud deb packages, Docker images, GitHub releases, and Go
+      documentation, while the batch input records Homebrew, Fedora, Nix, Scoop, and
+      other package-manager entries.
+    - >
+      The maintained fork's GitHub repository had over 18,000 stars and more than 1,500
+      forks in the 2026 GitHub API snapshot used for this batch, making it one of the
+      better-known Go-native database migration tools.
+  package-nerd-significance:
+    - >
+      For package nerds, golang-migrate is the archetypal Go single-binary
+      infrastructure tool: it can be installed from Homebrew, run from Docker, vendored
+      as a library, or baked into a release artifact. The driver split also makes
+      downstream builds interesting, because packagers and application authors decide
+      which database/source drivers to include.
+    - >
+      Its significance is also cultural: it represents the Go preference for explicit
+      URLs, small binaries, and predictable failure over framework-managed migration
+      magic. That makes it popular in CI pipelines and container entrypoints where
+      reproducibility beats convenience.
+  project-history:
+    - >
+      The project traces back to `mattes/migrate`, a database migration repository
+      created in 2014. The maintained `golang-migrate/migrate` repository was created in
+      January 2018 and states that it was forked from `mattes/migrate`.
+    - >
+      The fork preserved the core CLI/library model while continuing the driver
+      architecture. Its README documents a broad matrix of database drivers, including
+      PostgreSQL, MySQL/MariaDB, SQLite, SQL Server, Cassandra/ScyllaDB, ClickHouse,
+      MongoDB, CockroachDB, and cloud-oriented sources such as GitHub, GitLab, S3, and
+      Google Cloud Storage.
+    - >
+      The project standardized on Go module import paths for v4 and explicitly marks v3
+      as unsupported in its README. That version boundary matters because many Go
+      projects embed migration support directly in their own binaries rather than only
+      shelling out to the CLI.
+  related-projects:
+    - `mattes/migrate` is the direct upstream ancestor named by the maintained repository.
+    - >
+      The README points users coming from other migration systems to `migradaptor`, and
+      it links broader database-tool alternatives through Awesome Go.
+    - >
+      Database and source drivers connect golang-migrate to PostgreSQL, MySQL/MariaDB,
+      SQLite, MongoDB, ClickHouse, SQL Server, GitHub, GitLab, S3, and Google Cloud
+      Storage workflows.
+  sources:
+    - https://github.com/golang-migrate/migrate
+    - https://github.com/golang-migrate/migrate/blob/master/GETTING_STARTED.md
+    - https://github.com/golang-migrate/migrate/releases
+    - https://github.com/mattes/migrate
+    - https://github.com/mattes/migrate/releases
+    - https://pkg.go.dev/github.com/golang-migrate/migrate/v4
+  summary:
+    - >
+      golang-migrate is a Go database migration project distributed as both a CLI and a
+      Go library. It applies ordered migration files from source drivers to database
+      drivers, deliberately keeping database drivers simple while centralizing migration
+      logic in the core package.
+  timeline:
+    - '2014: `mattes/migrate` repository created for database migrations in Go.'
+    - '2017: `mattes/migrate` v3 preview releases published.'
+    - '2018: `golang-migrate/migrate` repository created as a fork of `mattes/migrate`.'
+    - '2018: `golang-migrate/migrate` v3.1.0 and later v3 releases published.'
+    - >
+      2019-2026: v4 import path and driver ecosystem documented as the supported line;
+      v3 documented as unsupported.
+  usage:
+    - >
+      The standard workflow is to create paired up/down SQL files with `migrate create`,
+      then run them with a source such as `file://path/to/migrations` and a database
+      URL. The getting-started guide emphasizes running migrations up, down, and up
+      again before committing them.
+    - >
+      Operationally, golang-migrate is intentionally explicit: the README says the CLI
+      has no config search paths, no config files, and no magic environment-variable
+      injection. Users pass source and database URLs directly, and database credentials
+      normally live in those URLs or in caller-managed secret handling rather than in a
+      tool-owned credentials file.
+    - >
+      The getting-started guide highlights dirty database states, force operations,
+      idempotent migrations, transaction wrapping, and database locking when multiple
+      app instances may run migrations. Those warnings are why package users often treat
+      `migrate` as deployment infrastructure rather than a casual development helper.
 tags:
   - cli
   - database
@@ -29,6 +116,13 @@ provenance:
     - >
       source_facts.repo is the official GitHub project; README is the best official
       documentation surface in the supplied facts.
+  history-sources:
+    - https://github.com/golang-migrate/migrate
+    - https://github.com/golang-migrate/migrate/blob/master/GETTING_STARTED.md
+    - https://github.com/golang-migrate/migrate/releases
+    - https://github.com/mattes/migrate
+    - https://github.com/mattes/migrate/releases
+    - https://pkg.go.dev/github.com/golang-migrate/migrate/v4
   repo-sources:
     - >
       source_facts.repo already has official repository
@@ -45,5 +139,6 @@ category-path:
   - migrations
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

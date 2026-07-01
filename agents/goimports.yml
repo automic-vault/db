@@ -6,6 +6,76 @@ docs:
   - https://pkg.go.dev/golang.org/x/tools/cmd/goimports
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      goimports was adopted through editors as much as through terminals. The official
+      command docs include examples for Emacs and Vim, telling users to make goimports
+      their format-on-save command.
+    - >
+      Because it lives in x/tools rather than the core go command, goimports is a
+      classic package-manager/editor dependency: small binary, official upstream, and
+      installed wherever developers want import organization without manually editing
+      import blocks.
+  package-nerd-significance:
+    - >
+      goimports matters because it is the bridge between Go's no-bikeshedding formatting
+      culture and the messier reality of import discovery. It made save hooks feel
+      magical without requiring a full IDE.
+    - >
+      For packagers, it is an example of an official subcommand distributed from a
+      larger module. The package name is the command, but the upstream repository and
+      release cadence are tied to golang.org/x/tools.
+  project-history:
+    - >
+      The cmd/goimports documentation carries a 2013 Go Authors copyright notice, and
+      repository history records goimports moving into go.tools in December 2013. Soon
+      after, the README was renamed to doc.go, making the command documentation part of
+      the source package.
+    - >
+      The implementation evolved alongside Go tooling: repository history shows work on
+      package lookup, standard-library handling, cgo exports, vendor directory support,
+      and module-era behavior. The command remains documented through both its source
+      directory and pkg.go.dev.
+  related-projects:
+    - gofmt is the formatter behavior goimports preserves while adding import management.
+    - >
+      golang.org/x/tools is the official repository that contains cmd/goimports and the
+      imports package.
+    - >
+      gopls overlaps with goimports in editor workflows by providing language-server
+      driven formatting and import organization.
+  sources:
+    - https://github.com/golang/tools
+    - https://github.com/golang/tools/tree/master/cmd/goimports
+    - https://pkg.go.dev/golang.org/x/tools/cmd/goimports
+  summary:
+    - >
+      goimports is a Go formatter command that also adds missing imports and removes
+      unused imports. It is part of golang.org/x/tools, the official Go supplementary
+      tools repository.
+    - >
+      The command became one of the canonical editor-save tools in Go development
+      because it turns source formatting and import maintenance into one operation.
+  timeline:
+    - '2013: goimports moves into go.tools and command documentation becomes doc.go.'
+    - >
+      2014: Repository history records import lookup, standard-library, cgo, and
+      golang.org/x path work.
+    - '2016: Vendor directory support lands in the imports package.'
+    - '2016: .goimportsignore support is added for excluding GOPATH directories from scans.'
+    - >
+      2026: x/tools history continues to update imports behavior for module cache and
+      tooling changes.
+  usage:
+    - >
+      The documented install path uses go install for golang.org/x/tools/cmd/goimports.
+      In use, it formats code like gofmt and rewrites imports based on symbols in the
+      file.
+    - >
+      goimports respects $GOPATH/src/.goimportsignore, a line-oriented ignore file for
+      directories that should not be scanned when resolving packages under GOPATH. That
+      file is the only official fixed config-file location documented by the command.
 tags:
   - cli
   - developer-tools
@@ -36,6 +106,10 @@ provenance:
       source_facts.homepage points to official Go package documentation;
       source_facts.repo points to the official golang/tools repository containing
       cmd/goimports.
+  history-sources:
+    - https://github.com/golang/tools
+    - https://github.com/golang/tools/tree/master/cmd/goimports
+    - https://pkg.go.dev/golang.org/x/tools/cmd/goimports
   repo-sources:
     - source_facts.repo is already populated; per instruction, repo was not re-determined.
   tags-sources:
@@ -48,5 +122,6 @@ category-path:
   - formatter
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

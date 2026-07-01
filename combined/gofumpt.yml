@@ -6,6 +6,77 @@ docs:
   - https://github.com/mvdan/gofumpt#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      gofumpt spread through Go editor and CI workflows because it preserves gofmt
+      compatibility while reducing formatting latitude. Its README presents it as a
+      drop-in formatter, and the changelog notes that gopls supports gofumpt natively.
+    - >
+      Package-manager adoption followed that formatter role: the input package facts
+      list Homebrew, Nix, and pacman names, reflecting use across developer workstations
+      rather than as a service dependency.
+  package-nerd-significance:
+    - >
+      gofumpt is package-nerd catnip because it is deliberately boring: it extends gofmt
+      without rejecting gofmt's social contract. That made it acceptable in environments
+      where arbitrary style formatters would be too divisive.
+    - >
+      Its release history tracks Go's own formatter internals, so package maintainers
+      care about which Go release a gofumpt version is based on. The vendoring change in
+      v0.5.0 is especially important because it made output less dependent on the
+      compiler used to build the binary.
+  project-history:
+    - >
+      The repository began in March 2019 by importing source from cmd/gofmt and adding
+      the first stricter formatting rules. The README continues to describe the tool as
+      a fork of gofmt with added rules implemented in the format package.
+    - >
+      The first release, v0.1.0 in January 2021, documented the features that had worked
+      for more than a year. Later releases track Go formatter changes: v0.3.0 was based
+      on Go 1.18's gofmt, v0.5.0 vendored Go formatting packages for stable behavior
+      across build toolchains, and v0.10.0 was based on Go 1.26's gofmt.
+  related-projects:
+    - gofmt is the upstream formatter model and source base.
+    - >
+      gopls, the Go language server, provides editor integration that can apply gofumpt
+      behavior.
+    - >
+      goimports is related in editor workflows because it formats Go code while managing
+      imports.
+  sources:
+    - https://github.com/mvdan/gofumpt
+    - https://github.com/mvdan/gofumpt#readme
+    - https://github.com/mvdan/gofumpt/blob/master/CHANGELOG.md
+  summary:
+    - >
+      gofumpt is a stricter Go formatter that remains compatible with gofmt output. It
+      accepts a narrower formatting style and can be used as a drop-in command for
+      formatting Go source.
+    - >
+      The project occupies a practical niche between the Go toolchain's conservative
+      formatter and teams that want more consistent source layout without maintaining
+      custom formatter rules.
+  timeline:
+    - '2019: Repository starts with cmd/gofmt source and first stricter formatting rules.'
+    - '2021: v0.1.0 documents the first released rule set and deprecates gofumports.'
+    - >
+      2022: v0.3.0 bases the formatter on Go 1.18's gofmt and adds concurrency-related
+      speedups.
+    - '2023: v0.5.0 vendors Go formatting packages for stable formatter output.'
+    - >
+      2026: v0.10.0 bases the formatter on Go 1.26's gofmt and adds rule selection for
+      extra rules.
+  usage:
+    - >
+      The common command-line pattern is gofumpt -l -w . for listing and rewriting
+      formatted files. The README documents skipped vendor and testdata directories
+      unless passed explicitly, and generated files only receive added rules when passed
+      explicitly.
+    - >
+      Teams usually run gofumpt in pre-commit hooks, CI checks, or editor format-on-save
+      paths. Library users can also call the format package when they need gofumpt
+      behavior inside Go tooling.
 category: developer-tools
 package-manager:
   brew: gofumpt
@@ -24,5 +95,10 @@ executables:
   - gofumpt
 provenance:
   formula: gofumpt
+  history-sources:
+    - https://github.com/mvdan/gofumpt
+    - https://github.com/mvdan/gofumpt#readme
+    - https://github.com/mvdan/gofumpt/blob/master/CHANGELOG.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

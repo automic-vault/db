@@ -7,6 +7,101 @@ docs:
 config-file-location: null
 credentials-file-location:
   unix: ~/.google_authenticator
+history:
+  adoption-history:
+    - >
+      The package is widely packaged under names such as google-authenticator-libpam,
+      google-authenticator, and libpam-google-authenticator. The batch metadata records
+      Homebrew, Alpine, Debian, Fedora, Nix, Ubuntu, and openSUSE-family package names,
+      and Homebrew's formula page documents SSH PAM configuration snippets.
+    - >
+      Its adoption comes from fitting an existing Unix security boundary: administrators
+      can add an auth required pam_google_authenticator.so line to PAM configuration and
+      let users enroll per-account secrets, rather than deploying a separate
+      authentication server.
+    - >
+      Because PAM is distribution- and service-sensitive, the project also exposes
+      rollout controls such as nullok for users without a secret file, secret= for
+      nonstandard secret locations, user= for alternate file access, owner and
+      permission checks, time-skew handling, HOTP counter behavior, and combined
+      password-code prompting.
+  package-nerd-significance:
+    - >
+      For package nerds, google-authenticator-libpam is a classic example of a small
+      library package with outsized operational consequences. Packaging has to put a PAM
+      shared object in the right security module path, install a user enrollment binary,
+      and often provide service-specific post-install guidance.
+    - >
+      It is also a good reminder that authentication packages are not just CLIs. Their
+      paths, file permissions, PAM control flags, and distro integration details can
+      determine whether users are protected, locked out, or silently bypassing a second
+      factor.
+  project-history:
+    - >
+      The project implements a PAM module named pam_google_authenticator and a
+      google-authenticator setup binary. The README describes it as an example PAM
+      module for two-factor authentication to servers via SSH, OpenVPN, and similar
+      services, and explicitly scopes it away from logging into Google or other
+      TOTP/HOTP services.
+    - >
+      The implementation is grounded in the HOTP and TOTP standards. RFC 4226 defined
+      HMAC-based one-time passwords in 2005, and RFC 6238 extended HOTP with a
+      time-based moving factor in 2011. The project's README cites both standards as the
+      algorithms behind its one-time codes.
+    - >
+      The GitHub repository was created in November 2016 under Google's organization,
+      and Git tags show 1.03 through 1.11 release labels. The man page documents the PAM
+      module interface, default secret-file behavior, security notes, and deployment
+      options.
+  related-projects:
+    - >
+      Google Authenticator mobile apps generate compatible one-time codes for enrolled
+      secrets.
+    - >
+      Linux-PAM and service PAM configurations such as sshd and OpenVPN are the
+      integration surfaces for the module.
+    - >
+      pam_oath, FreeOTP, oathtool, and other OATH-compatible tooling occupy adjacent
+      HOTP/TOTP authentication space.
+  sources:
+    - https://api.github.com/repos/google/google-authenticator-libpam
+    - https://formulae.brew.sh/formula/google-authenticator-libpam
+    - https://github.com/google/google-authenticator-libpam
+    - https://raw.githubusercontent.com/google/google-authenticator-libpam/master/README.md
+    - >
+      https://raw.githubusercontent.com/google/google-authenticator-libpam/master/man/pam_google_authenticator.8.md
+    - https://sources.debian.org/src/google-authenticator/
+    - https://www.rfc-editor.org/rfc/rfc4226
+    - https://www.rfc-editor.org/rfc/rfc6238
+  summary:
+    - >
+      google-authenticator-libpam is Google's PAM module and setup utility for adding
+      HOTP or TOTP second-factor authentication to Unix login flows such as SSH and
+      OpenVPN. Its package significance is unusually high for a small C/PAM project
+      because it bridges standard one-time-password algorithms, the Google Authenticator
+      app ecosystem, and distribution-level authentication stacks.
+  timeline:
+    - '2005: RFC 4226 publishes HOTP.'
+    - '2011: RFC 6238 publishes TOTP as a time-based extension of HOTP.'
+    - '2016-11: Google GitHub repository created.'
+    - '2016-2026: Git tags show 1.03 through 1.11 release labels.'
+    - >
+      2026: README and man page document PAM setup, ~/.google_authenticator secrets,
+      HOTP/TOTP behavior, and security-sensitive module options.
+  usage:
+    - >
+      A user typically runs google-authenticator to create ~/.google_authenticator. The
+      setup can display a QR code when libqrencode is available, or provide a URL or
+      alphanumeric secret that can be entered into an authenticator app.
+    - >
+      An administrator enables the PAM module in a service configuration, commonly with
+      an auth line for pam_google_authenticator.so. The module then prompts for a
+      one-time code in addition to the normal password, using either time-based TOTP or
+      counter-based HOTP depending on user setup and options.
+    - >
+      The man page emphasizes that the secret file is per account, defaults to
+      .google_authenticator in the user's home directory, and must satisfy ownership and
+      permission checks unless explicitly relaxed.
 category: security
 package-manager:
   apk: google-authenticator
@@ -30,5 +125,16 @@ executables:
   - google-authenticator
 provenance:
   formula: google-authenticator-libpam
+  history-sources:
+    - https://api.github.com/repos/google/google-authenticator-libpam
+    - https://formulae.brew.sh/formula/google-authenticator-libpam
+    - https://github.com/google/google-authenticator-libpam
+    - https://raw.githubusercontent.com/google/google-authenticator-libpam/master/README.md
+    - >
+      https://raw.githubusercontent.com/google/google-authenticator-libpam/master/man/pam_google_authenticator.8.md
+    - https://sources.debian.org/src/google-authenticator/
+    - https://www.rfc-editor.org/rfc/rfc4226
+    - https://www.rfc-editor.org/rfc/rfc6238
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

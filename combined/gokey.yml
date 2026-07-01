@@ -6,6 +6,75 @@ docs:
   - https://github.com/cloudflare/gokey#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      gokey's adoption is mostly that of a compact security utility: it is useful to
+      users who do not want to store, back up, or synchronize a password vault. The
+      README emphasizes that generated passwords are available wherever the user can
+      provide the same master password and realm.
+    - >
+      The input package facts list Homebrew, Debian, MacPorts, Nix, and Ubuntu package
+      names, which indicates distribution through both macOS-focused and Linux
+      distribution channels.
+  package-nerd-significance:
+    - >
+      gokey matters to package nerds because it is a small, auditable-feeling security
+      CLI with no vault service, database daemon, or sync dependency. Its packaging
+      footprint is a single Go command, but its security model lives in deterministic
+      derivation choices.
+    - >
+      It is also a useful contrast with mainstream password managers: packaging the tool
+      is easy, while the hard part is documenting the operational warning that losing
+      the master password or seed file loses the derived outputs.
+  project-history:
+    - >
+      The repository begins in October 2016 with an initial release. The README
+      describes simple password derivation, seed-file mode, and support for output types
+      including passwords, raw bytes, ECC keys, RSA keys, x25519, and ed25519.
+    - >
+      Early history focused on random-generation internals and command behavior. Later
+      history includes release-binary automation, dependency updates, imported
+      deterministic key-generation logic from Go's crypto packages, and seed unwrap
+      testing.
+  related-projects:
+    - >
+      Go's crypto packages are related through key-generation behavior referenced in
+      repository history.
+    - >
+      Deterministic password managers are the broader tool family; gokey's
+      distinguishing feature is combining password and private-key derivation in a Go
+      CLI.
+    - Cloudflare is the upstream organization that publishes the repository.
+  sources:
+    - https://github.com/cloudflare/gokey
+    - https://github.com/cloudflare/gokey#readme
+    - https://github.com/cloudflare/gokey/releases
+  summary:
+    - >
+      gokey is Cloudflare's vaultless password manager written in Go. Instead of storing
+      passwords in a vault, it derives passwords and keys from a master password plus a
+      realm string, with optional encrypted seed-file mode for higher-entropy material.
+    - >
+      The project sits in the deterministic-password-manager family: the user keeps a
+      master secret and recreates site-specific outputs rather than synchronizing a
+      password database.
+  timeline:
+    - '2016: Repository begins with an initial release.'
+    - '2016: Early commits change random-generation internals and output conditioning.'
+    - '2022: Release-binary publishing through GitHub Actions is added.'
+    - '2023: Deterministic key-generation logic from Go crypto packages is imported.'
+    - '2026: v0.2.1 tag appears with public KeyGen RNG member work.'
+  usage:
+    - >
+      In simple mode, a user runs gokey with a master password and a realm such as a
+      resource URL. Changing the realm derives a different output while keeping the same
+      master password.
+    - >
+      For higher-entropy passwords or private keys, the README documents seed-file mode:
+      generate an encrypted seed file, protect it with the master password, and derive
+      passwords or keys from the seed plus realm. Seed paths are command inputs rather
+      than a fixed credentials-file location.
 category: security
 package-manager:
   brew: gokey
@@ -26,5 +95,10 @@ executables:
   - gokey
 provenance:
   formula: gokey
+  history-sources:
+    - https://github.com/cloudflare/gokey
+    - https://github.com/cloudflare/gokey#readme
+    - https://github.com/cloudflare/gokey/releases
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
