@@ -6,6 +6,107 @@ docs:
   - https://github.com/vmware/govmomi/tree/main/govc#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      govc adoption followed vSphere automation needs: administrators and platform teams
+      could use environment variables such as GOVC_URL, GOVC_USERNAME, GOVC_PASSWORD,
+      GOVC_DATACENTER, GOVC_DATASTORE, GOVC_NETWORK, and related defaults to script
+      against ESXi or vCenter. The README documents released binaries, Docker images,
+      source builds, and a minimal runner image, making the CLI easy to place in shells,
+      CI jobs, and containerized automation.
+    - >
+      Package-manager adoption reflects that operational niche. The input metadata lists
+      govc in Homebrew, Alpine, Nix, Scoop, and zypper, which fits the tool's role as an
+      infrastructure CLI that needs to appear in both developer laptops and automation
+      images.
+  package-nerd-significance:
+    - >
+      govc matters to package maintainers because it packages a large
+      proprietary-platform API surface into one scriptable binary. It is often the
+      easiest way to automate vSphere from Unix shells without installing a heavyweight
+      GUI or a language-specific SDK stack.
+    - >
+      It also has unusually high example value: because govc is built directly on
+      govmomi and used as a test harness, its commands double as runnable API examples.
+      People packaging or auditing vSphere automation stacks can use govc behavior to
+      understand the underlying Go library and vice versa.
+  project-history:
+    - >
+      govmomi started in 2014 as a Go library for interacting with VMware vSphere APIs
+      for ESXi and vCenter Server. Its README presents govc as one of the repository's
+      core deliverables alongside the vSphere API client, vcsim mock framework, and
+      toolbox guest tools framework. govc's own README expands the role: it is built on
+      govmomi, designed as a user-friendly alternative to the GUI, well suited for
+      automation, and useful as a concrete example of govmomi API usage.
+    - >
+      The changelog records govc's v0.1.0 release on 2015-03-17 and shows that early
+      work already included cross-compilation, version variables, functional tests,
+      device commands, VM information, VNC controls, datastore listing, and the CLI
+      skeleton. The v0.2.0 release later in 2015 added more govc commands and
+      cross-compilation improvements, helping the project become practical as a
+      downloadable operations tool rather than only a Go source checkout.
+    - >
+      The project kept govc and the library moving together as vSphere APIs changed.
+      Later changelog entries show govc accumulating inventory, datastore, VM, host,
+      session, import/export, Kubernetes/vSphere, CNS volume, GPU, storage-policy, and
+      namespace-related commands. A 2024-era refactor moved most govc command packages
+      under a shared `cli` package, formalizing the split between the command
+      implementation and the top-level govc entry point.
+  related-projects:
+    - govmomi is the Go vSphere API library that govc is built on.
+    - >
+      vcsim is the vSphere API mock framework shipped in the same repository and used
+      for testing API consumers.
+    - >
+      pyvmomi and rbvmomi are sibling VMware SDKs named in the README as related
+      language bindings.
+    - >
+      VMware/Broadcom vSphere Web Services API documentation is the upstream API surface
+      that govmomi and govc follow.
+  sources:
+    - https://api.github.com/repos/vmware/govmomi
+    - https://raw.githubusercontent.com/vmware/govmomi/main/CHANGELOG.md
+    - https://raw.githubusercontent.com/vmware/govmomi/main/README.md
+    - https://raw.githubusercontent.com/vmware/govmomi/main/govc/README.md
+  summary:
+    - >
+      govc is the vSphere command-line interface shipped inside the govmomi project. It
+      gives VMware vSphere users a scriptable Go-based alternative to GUI operations,
+      while also serving as a working example and test harness for the govmomi API
+      bindings.
+  timeline:
+    - '2014: The govmomi repository was created for Go access to VMware vSphere APIs.'
+    - >
+      2015: govc v0.1.0 was released, with changelog entries for cross-compilation and
+      the initial CLI work.
+    - '2015: v0.2.0 added more govc commands and build/release improvements.'
+    - >
+      2018: govc releases included VM clone fixes, JSON/event improvements, datastore
+      and host command growth, and session-related work.
+    - >
+      2024: govc command packages were moved under the shared `cli` package, with
+      installation guidance adjusted for submodules and released binaries.
+    - >
+      2025: changelog entries show continued govc growth around GPU, CNS volume,
+      encryption, KMS, storage policy, and import/export workflows.
+    - >
+      2026: v0.53 and v0.54 changelog entries include govc command fixes and
+      `library.import` disk options.
+  usage:
+    - >
+      A typical govc setup supplies a vCenter or ESX endpoint through GOVC_URL or the
+      `-u` flag, optionally separates credentials into GOVC_USERNAME and GOVC_PASSWORD,
+      and then uses commands to inspect, create, clone, import, export, configure, or
+      query vSphere objects. Managed entities can be addressed by absolute inventory
+      paths, relative paths, or glob-like patterns, and many defaults can be supplied
+      through environment variables.
+    - >
+      The README also documents troubleshooting-oriented flags: `-verbose` writes
+      compact request/response detail to stderr, `-trace` prints HTTP/API traffic, and
+      `-debug` writes API call artifacts under `~/.govmomi/debug` unless GOVC_DEBUG_PATH
+      changes the destination. That makes govc useful both as an operator CLI and as a
+      diagnostic front-end for govmomi behavior.
 category: cloud-infrastructure
 package-manager:
   apk: govc
@@ -26,5 +127,11 @@ executables:
   - govc
 provenance:
   formula: govc
+  history-sources:
+    - https://api.github.com/repos/vmware/govmomi
+    - https://raw.githubusercontent.com/vmware/govmomi/main/CHANGELOG.md
+    - https://raw.githubusercontent.com/vmware/govmomi/main/README.md
+    - https://raw.githubusercontent.com/vmware/govmomi/main/govc/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

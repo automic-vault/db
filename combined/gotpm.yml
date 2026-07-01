@@ -6,6 +6,61 @@ docs:
   - https://github.com/google/go-tpm-tools#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The package-manager footprint is modest compared with broader security scanners,
+      but the Homebrew formula and the repository's documented `go install
+      github.com/google/go-tpm-tools/cmd/gotpm@latest` path made gotpm available to
+      developers who wanted a Go-native TPM utility. Adoption is tied to hardware-backed
+      security, confidential-computing, and attestation users rather than
+      general-purpose shell workflows.
+  package-nerd-significance:
+    - >
+      For package maintainers, gotpm is a small but useful example of a hardware-facing
+      Go CLI where distribution quality depends on CGO/OpenSSL simulator edges, Go
+      toolchain support, and whether the host actually has TPM 2.0 access. It also sits
+      in the package ecosystem around google/go-tpm, which matters for people tracking
+      Go security tooling and reproducible attestation utilities.
+  project-history:
+    - >
+      go-tpm-tools dates to Google's 2018 TPM 2.0 work and explicitly narrows its scope
+      to TPM 2.0 rather than TPM 1.2. The README frames the library as a complement to
+      Go-TPM: Go-TPM supplies lower-level TPM access, while go-tpm-tools adds simplified
+      APIs and workflows around attestation, signing, import, event logs, and
+      server-side verification. gotpm is exposed from the same repository as the
+      user-facing CLI for exercising TPM operations without writing Go code.
+  related-projects:
+    - google/go-tpm provides the lower-level TPM library that go-tpm-tools complements.
+    - Microsoft's TPM 2.0 simulator is used through the go-tpm-tools simulator bindings.
+    - >
+      Trusted Computing Group TPM 2.0 specifications define the hardware/security domain
+      that the tool targets.
+  sources:
+    - https://api.github.com/repos/google/go-tpm-tools
+    - https://github.com/google/go-tpm-tools/releases
+    - https://raw.githubusercontent.com/google/go-tpm-tools/master/README.md
+  summary:
+    - >
+      gotpm is the command-line companion in Google's go-tpm-tools repository, a TPM 2.0
+      support module built to sit above google/go-tpm. The repository packages
+      higher-level client, server, protobuf, simulator, and CLI pieces for Go programs
+      that need TPM signing, attestation, PCR reads, sealing, event-log handling, or
+      related workflows.
+  timeline:
+    - >
+      2018: Google copyright and repository metadata place go-tpm-tools in Google's TPM
+      2.0 support work.
+    - '2020: v0.2.1 release notes described signer improvements.'
+    - '2021: v0.3.0 release notes emphasized attestation generation and verification.'
+    - '2021: v0.3.0 prereleases previewed the larger attestation-oriented update series.'
+  usage:
+    - >
+      gotpm is installed either with `go install` from the repository or by building the
+      `cmd/gotpm` directory from a clone. The README directs users to `gotpm --help` and
+      per-command help, while the surrounding packages document TPM 2.0 operations such
+      as signing, attestation, PCR reads, sealing and unsealing, NV data reads, and TCG
+      event-log handling.
 category: security
 package-manager:
   brew: gotpm
@@ -22,5 +77,10 @@ executables:
   - gotpm
 provenance:
   formula: gotpm
+  history-sources:
+    - https://api.github.com/repos/google/go-tpm-tools
+    - https://github.com/google/go-tpm-tools/releases
+    - https://raw.githubusercontent.com/google/go-tpm-tools/master/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

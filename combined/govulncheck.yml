@@ -7,6 +7,105 @@ docs:
   - https://go.dev/security/vuln
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      govulncheck adoption is unusually direct for a language-security tool because the
+      Go project itself promotes it in the security documentation, tutorial, repository
+      README, and package documentation. The Go blog also describes integrations with
+      pkg.go.dev, the VS Code Go extension, a GitHub Action, and OSV-Scanner integration
+      work, putting the CLI into editor, package discovery, CI, and scanner ecosystems.
+    - >
+      The input package-manager metadata lists govulncheck in Homebrew, Debian, Ubuntu,
+      Fedora, MacPorts, Nix, Arch, and zypper. That broad packaging matters because
+      security checks are commonly installed in CI images and developer environments
+      where relying only on `go install` may not match local package policy.
+  package-nerd-significance:
+    - >
+      govulncheck is significant because it changed Go vulnerability scanning from
+      manifest-level dependency matching toward call-aware analysis. For package
+      maintainers, this matters: it can reduce alert fatigue, make security CI less
+      noisy, and help distinguish vulnerable-but-unused dependency code from reachable
+      vulnerable functions.
+    - >
+      It is also one of the clearer examples of modern language-ecosystem security
+      plumbing: a curated vulnerability database, OSV-format data, package-discovery
+      integration, editor integration, CI integration, an installable CLI, and a public
+      API all orbit the same tool.
+  project-history:
+    - >
+      The golang/vuln repository was created as the code home for Go
+      vulnerability-management tooling and database clients. The official README
+      describes the repository as Go's support for vulnerability management: tooling for
+      analyzing codebases and binaries, backed by a Go vulnerability database curated by
+      the Go security team.
+    - >
+      The Go team publicly announced vulnerability management support on 2022-09-06.
+      That announcement introduced govulncheck as a standalone command for frequent
+      updates and rapid feedback, separate from the Go distribution while the team
+      gathered user experience. The same post described the Go vulnerability database as
+      a curated source built from CVEs, GitHub Security Advisories, direct package
+      maintainer reports, and Go security team review.
+    - >
+      On 2023-07-13, the Go team announced govulncheck v1.0.0 and a stable scanning API.
+      That marked govulncheck's transition from an experimental ecosystem tool into an
+      official integration point for other scanners and workflows. The Go documentation
+      and pkg.go.dev pages later describe source and binary analysis, JSON and other
+      machine-readable formats, database configuration, privacy properties, and known
+      limitations.
+  related-projects:
+    - >
+      The Go vulnerability database at vuln.go.dev provides the curated data used by
+      govulncheck.
+    - pkg.go.dev surfaces Go vulnerability information in package discovery workflows.
+    - >
+      The VS Code Go extension and the govulncheck GitHub Action are official or
+      Go-team-documented integration paths.
+    - >
+      OSV-Scanner is referenced by the Go team as an integration point for govulncheck
+      analysis.
+  sources:
+    - https://api.github.com/repos/golang/vuln
+    - https://go.dev/blog/govulncheck
+    - https://go.dev/blog/vuln
+    - https://go.dev/doc/security/vuln/
+    - https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck
+    - https://raw.githubusercontent.com/golang/vuln/master/README.md
+  summary:
+    - >
+      govulncheck is the Go project's command-line vulnerability scanner. It is part of
+      Go's vulnerability-management effort and is backed by the Go vulnerability
+      database, with a defining design goal of reducing noise by reporting
+      vulnerabilities that are reachable through the functions a program actually calls.
+  timeline:
+    - >
+      2021: The golang/vuln mirror repository was created for Go vulnerability database
+      clients and tools.
+    - >
+      2022-09-06: The Go team announced Go vulnerability management and introduced
+      govulncheck as a standalone low-noise scanner.
+    - >
+      2023-07-13: The Go team announced govulncheck v1.0.0 and a stable API for scanner
+      integrations.
+    - >
+      2023: The Go blog described pkg.go.dev, VS Code Go extension, GitHub Action, and
+      OSV-Scanner integration paths.
+    - >
+      2026: pkg.go.dev documentation described govulncheck source/binary analysis, JSON
+      streaming, SARIF, VEX-oriented output, and documented limitations.
+  usage:
+    - >
+      The common command path is intentionally simple: install
+      `golang.org/x/vuln/cmd/govulncheck` and run `govulncheck ./...` from a Go module.
+      The scanner can analyze source code, and package documentation also describes
+      binary analysis with `-mode binary`, extraction mode, build tags, test-file
+      inclusion, verbose output, JSON streaming, SARIF, and OpenVEX-related output
+      support.
+    - >
+      By default, govulncheck queries the Go vulnerability database at vuln.go.dev. The
+      pkg.go.dev documentation states that those requests contain module paths with
+      vulnerabilities known to the database rather than code or other properties of the
+      user's program, and the repository links to a dedicated privacy policy.
 category: security
 package-manager:
   brew: govulncheck
@@ -30,5 +129,13 @@ executables:
   - govulncheck
 provenance:
   formula: govulncheck
+  history-sources:
+    - https://api.github.com/repos/golang/vuln
+    - https://go.dev/blog/govulncheck
+    - https://go.dev/blog/vuln
+    - https://go.dev/doc/security/vuln/
+    - https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck
+    - https://raw.githubusercontent.com/golang/vuln/master/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
