@@ -6,6 +6,85 @@ docs:
   - https://lttng.org/man/3/lttng-ust
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      LTTng-UST became important because full-system performance debugging often needs
+      both sides of the user/kernel boundary. The official documentation emphasizes
+      correlated kernel, user application, and user library tracing, plus low overhead
+      and production suitability. The supplied package-manager facts show broad
+      distribution packaging across Homebrew, apk, dnf, Nix, pacman, and zypper, which
+      matches the official claim that LTTng is available on major desktop, server, and
+      embedded Linux distributions.
+    - >
+      The LTTng 2.x series also made LTTng-UST a separately versioned package that
+      tracks the same minor release series as the rest of LTTng. The official download
+      page lists current release archives and Git clone URLs for lttng-tools, lttng-ust,
+      and lttng-modules, and notes that applications instrumented with older LTTng-UST
+      versions do not need to be rebuilt for newer LTTng-tools.
+  package-nerd-significance:
+    - >
+      LTTng-UST is a classic packaging dependency for serious Linux observability
+      stacks: it is not only an executable, but a set of ABI-sensitive libraries that
+      other instrumented software links against. Package managers care about it because
+      version compatibility with LTTng-tools, liburcu, optional agents, and distribution
+      library paths directly affects whether traces can be recorded in production.
+  project-history:
+    - >
+      LTTng, short for Linux Trace Toolkit: next generation, grew out of the Linux
+      tracing work associated with Mathieu Desnoyers and the Polytechnique
+      Montreal/EfficiOS ecosystem. Official LTTng publications list papers and talks
+      from the mid-2000s onward, including 2006 work on low-impact GNU/Linux tracing,
+      2008 work on tracing across hypervisor-to-user-space execution layers, and 2009
+      work on combining kernel and application tracing.
+    - >
+      The LTTng documentation presents LTTng as a toolkit made of separate but
+      coordinated components: LTTng-tools for control, LTTng-modules for kernel
+      instrumentation, and LTTng-UST for user-space instrumentation. LTTng-UST
+      specifically contains shared libraries for C/C++ user applications, Java and
+      Python tracing support, and user-space helpers, all designed to record
+      low-overhead traces that can be correlated with kernel events.
+  related-projects:
+    - LTTng-tools controls tracing sessions and enables LTTng-UST events.
+    - LTTng-modules provides the Linux kernel tracing side of the same toolkit.
+    - Userspace RCU is a build dependency documented by LTTng for LTTng-tools and LTTng-UST.
+    - Babeltrace is commonly used to view or process LTTng trace data.
+  sources:
+    - https://lttng.org/
+    - https://lttng.org/docs/v2.13/
+    - https://lttng.org/download/
+    - https://lttng.org/man/3/lttng-ust/v2.15/
+    - https://lttng.org/publications/
+    - https://raw.githubusercontent.com/lttng/lttng-ust/master/README.md
+    - source_facts.package-manager
+  summary:
+    - >
+      LTTng-UST is the user-space tracing component of the LTTng project. It provides
+      libraries and agents that let C, C++, Java, Python, and other user applications
+      emit events into LTTng traces, complementing the LTTng kernel tracer and
+      LTTng-tools control utilities.
+  timeline:
+    - '2006: Official publications list LTTng work on low-impact GNU/Linux tracing.'
+    - '2009: Official publications include combined kernel and application tracing with LTTng.'
+    - >
+      2012: LTTng 2.0 era talks presented application, library, and kernel tracing
+      within Linux distributions.
+    - >
+      2026: Official documentation still presents LTTng as active open source Linux
+      tracing infrastructure, with LTTng-UST as the user-space component.
+  usage:
+    - >
+      Developers use LTTng-UST by linking applications against liblttng-ust or by
+      loading user-space tracing helpers. The man page documents three main paths:
+      printf-like tracef APIs, log-level tracelog APIs, and custom tracepoint providers.
+      In normal workflows LTTng-tools controls sessions, enables user-space events,
+      records traces, and hands trace data to viewers such as Babeltrace.
+    - >
+      The package matters most for performance investigations, production diagnostics,
+      embedded Linux tracing, and situations where logging is either too high level or
+      too expensive. It is not a configuration-file-driven command-line app; it is a
+      library and instrumentation toolkit, so no credentials or persistent user config
+      path is part of the package identity.
 tags:
   - c
   - cli
@@ -33,6 +112,14 @@ provenance:
     - >
       Official LTTng documentation covers LTTng-UST; official man page documents
       lttng-ust interfaces.
+  history-sources:
+    - https://lttng.org/
+    - https://lttng.org/docs/v2.13/
+    - https://lttng.org/download/
+    - https://lttng.org/man/3/lttng-ust/v2.15/
+    - https://lttng.org/publications/
+    - https://raw.githubusercontent.com/lttng/lttng-ust/master/README.md
+    - source_facts.package-manager
   repo-sources:
     - >
       Official LTTng download page gives 'git clone
@@ -50,5 +137,6 @@ category-path:
   - tracing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

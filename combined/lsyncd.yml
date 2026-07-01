@@ -6,6 +6,80 @@ docs:
   - https://lsyncd.github.io/lsyncd
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The project has unusually strong adoption signals for a daemon-sized Unix utility:
+      GitHub shows roughly 6.1k stars, 474 forks, 926 commits, and a long issue history.
+      The supplied package-manager facts show packaging across Homebrew, Debian, Ubuntu,
+      Fedora/DNF, Alpine, Nix, and openSUSE/Zypper, which is consistent with a tool used
+      by administrators rather than a single-platform script.
+    - >
+      Recent official release notes show renewed maintenance. Version 2.3.0 is described
+      as the first release 'since quite a while' under a new maintainer, adding nix
+      flake support, tunnel commands, `batchSizeLimit`, `-onepass`, crontab support, and
+      relative executable paths; version 2.3.1 followed with bug fixes and cleanup.
+  package-nerd-significance:
+    - >
+      Lsyncd is package-nerd significant because it sits at the intersection of classic
+      Unix tools: kernel file notifications, rsync, ssh, daemonization, and Lua
+      configuration. It is the kind of package administrators install to avoid a heavier
+      distributed filesystem while still getting near-real-time mirroring from familiar
+      components.
+    - >
+      Its cross-distro packaging also makes it useful as a history marker: it is not a
+      fashionable single-ecosystem tool, but a durable sysadmin daemon that earned its
+      place in major package sets through practical deployment value.
+  project-history:
+    - >
+      The official README and manual describe Lsyncd as a lightweight live mirror
+      solution built around platform filesystem event APIs: inotify on Linux and
+      fsevents on macOS. Instead of introducing a new filesystem or block replication
+      layer, it waits briefly, collapses change events, and spawns rsync or related
+      actions to keep a target tree synchronized.
+    - >
+      Lsyncd's configuration model is a major part of its identity. The manual documents
+      Lua-syntax configuration files, daemon-wide `settings`, default sync layers such
+      as `default.rsync`, `default.rsyncssh`, and `default.direct`, and lower-level
+      customization paths that can range from shell commands to Lua code.
+  related-projects:
+    - rsync is the default synchronization backend.
+    - ssh is used by the rsync+ssh mode to handle remote moves efficiently.
+    - Lua supplies the configuration language.
+    - >
+      DRBD, GlusterFS, BindFS, Mirror, and git-annex are discussed in the README as
+      related synchronization approaches with different trade-offs.
+  sources:
+    - https://github.com/lsyncd/lsyncd
+    - https://github.com/lsyncd/lsyncd/releases
+    - https://lsyncd.github.io/lsyncd/
+    - https://lsyncd.github.io/lsyncd/manual/config/file/
+    - https://lsyncd.github.io/lsyncd/manual/invoking/
+    - source_facts.package-manager
+  summary:
+    - >
+      Lsyncd, short for Live Syncing Daemon, is a Unix daemon that watches filesystem
+      events and batches changes into rsync or rsync+ssh transfers.
+  timeline:
+    - '2.1 era: Documentation says Lsyncd is predominantly configured through a config file.'
+    - '2.2.1: README states Lsyncd requires rsync >= 3.1 on source and target machines.'
+    - >
+      2.3.0: Release notes describe renewed maintenance and new features including nix
+      flakes, tunnels, `-onepass`, and crontab support.
+    - '2.3.1: Latest GitHub release lists bug fixes and code cleanup.'
+  usage:
+    - >
+      The official invocation docs say Lsyncd can be configured mainly by passing a
+      config file as the only command-line option, or cursorily through options such as
+      `-rsync` and `-rsyncssh`. The manual's examples show typical one-way mirroring
+      from a source directory to a local destination, remote rsync target, or remote
+      host and target directory.
+    - >
+      The project explicitly warns against treating it as a two-way synchronization
+      system. Its README frames Lsyncd as best for slowly changing local directory
+      trees, especially one-way sync from a secure area to a less secure mirror, and
+      points users at specialized tools such as git-annex for bidirectional or
+      conflict-aware workflows.
 category: system
 package-manager:
   apk: lsyncd
@@ -29,5 +103,13 @@ executables:
   - lsyncd
 provenance:
   formula: lsyncd
+  history-sources:
+    - https://github.com/lsyncd/lsyncd
+    - https://github.com/lsyncd/lsyncd/releases
+    - https://lsyncd.github.io/lsyncd/
+    - https://lsyncd.github.io/lsyncd/manual/config/file/
+    - https://lsyncd.github.io/lsyncd/manual/invoking/
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

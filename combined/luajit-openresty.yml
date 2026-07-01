@@ -6,6 +6,76 @@ docs:
   - https://github.com/openresty/luajit2#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption follows OpenResty rather than a standalone language community.
+      OpenResty's components documentation says OpenResty's LuaJIT branch is bundled and
+      enabled by default in OpenResty releases since 1.5.8.1, and later OpenResty
+      documentation recommends the branch for ARM64 and OpenResty-specific APIs.
+    - >
+      As a Homebrew and MacPorts package, luajit-openresty also matters outside full
+      OpenResty installs: package users can install the OpenResty-tuned LuaJIT runtime
+      directly for development, extension testing, or applications that need OpenResty's
+      LuaJIT behavior.
+  package-nerd-significance:
+    - >
+      For package maintainers, this package is the LuaJIT variant that explains why
+      systems may ship both luajit and luajit-openresty. It is not merely a differently
+      named formula: it represents the runtime ABI and behavioral expectations of the
+      OpenResty ecosystem.
+    - >
+      It is also a good example of a language runtime split driven by an embedding
+      platform. The package is small at the command-line surface, but its significance
+      comes from keeping OpenResty's Lua ecosystem reproducible across source builds,
+      distro packages, and Homebrew installs.
+  project-history:
+    - >
+      The branch exists because OpenResty embeds LuaJIT deeply into its web platform.
+      OpenResty's LuaJIT page says LuaJIT became enabled by default in OpenResty 1.5.8.1
+      and that modern OpenResty uses its own LuaJIT branch with bug fixes and
+      optimizations for OpenResty workloads.
+    - >
+      The repository README is explicit that this is the official OpenResty branch, not
+      an independent fork in the usual sense, because it regularly synchronizes changes
+      from upstream LuaJIT. Its additions include Lua APIs such as table.isempty,
+      table.isarray, table.nkeys, table.clone, jit.prngstate, and thread exdata helpers,
+      plus C APIs and JIT tuning.
+  related-projects:
+    - LuaJIT is the upstream runtime that OpenResty's branch follows.
+    - OpenResty is the primary platform that bundles and depends on this branch.
+    - >
+      ngx_lua and lua-resty libraries are the main package ecosystem that benefits from
+      OpenResty's LuaJIT behavior.
+  sources:
+    - https://github.com/openresty/luajit2
+    - https://openresty.org/en/components.html
+    - https://openresty.org/en/luajit.html
+    - source_facts.package-manager
+  summary:
+    - >
+      OpenResty LuaJIT is OpenResty's maintained branch of LuaJIT 2. It tracks upstream
+      LuaJIT while carrying runtime and JIT changes that OpenResty needs for high-volume
+      nginx/OpenResty deployments.
+  timeline:
+    - "2011: OpenResty's LuaJIT documentation page was created."
+    - >
+      2014: OpenResty documentation states LuaJIT is enabled by default since OpenResty
+      1.5.8.1.
+    - >
+      2017: The branch documents additional OpenResty patches and APIs on top of
+      upstream LuaJIT.
+    - '2025: GitHub shows v2.1-20250826 as a recent OpenResty LuaJIT release tag.'
+  usage:
+    - >
+      Users typically install it as the LuaJIT runtime for OpenResty modules, nginx Lua
+      code, and OpenResty-adjacent libraries. It can also be used as a drop-in LuaJIT
+      variant when a project expects OpenResty's extra APIs or JIT defaults.
+    - >
+      The important operational distinction is compatibility with OpenResty's runtime
+      assumptions. The branch stays close to upstream LuaJIT, but package maintainers
+      and module authors care about the additional APIs, OpenResty macro, and
+      optimizations documented in the README.
 category: language-runtime
 package-manager:
   brew: luajit-openresty
@@ -24,5 +94,11 @@ executables:
   - luajit-2.1.1776221388
 provenance:
   formula: luajit-openresty
+  history-sources:
+    - https://github.com/openresty/luajit2
+    - https://openresty.org/en/components.html
+    - https://openresty.org/en/luajit.html
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

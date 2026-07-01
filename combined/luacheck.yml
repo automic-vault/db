@@ -12,6 +12,89 @@ config-file-location:
     - ~/.config/luacheck/.luacheckrc
   windows: '%LOCALAPPDATA%\Luacheck\.luacheckrc'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Luacheck was adopted because Lua's global-variable model makes typos and
+      accidental globals easy to miss. Its support for named standard-global sets,
+      project globals, inline suppressions, editor-oriented stable output, and recursive
+      directory checking made it practical for projects that wanted CI linting without
+      imposing a full type system.
+    - >
+      The official README lists editor integrations for Vim/Syntastic, SublimeLinter,
+      Atom, Emacs/Flycheck, Brackets, VS Code, Nova, Geany, Node.js bindings, Gulp,
+      Docker, and GitHub Actions. The supplied package-manager facts show distribution
+      packages for apk, Homebrew, Debian/Ubuntu, pacman, Scoop, and zypper.
+  package-nerd-significance:
+    - >
+      Luacheck is the old reliable Lua linter package: small, scriptable, available as a
+      CLI, and easy to connect to editors and CI. Package nerds care about it because it
+      sits at the intersection of Lua versions, LuaRocks modules, editor plugins, and
+      distribution packages, and because its config lookup behavior directly affects how
+      projects lint in reproducible builds.
+  project-history:
+    - >
+      Luacheck began as a Lua linter by Peter Melnichenko, with the changelog recording
+      0.1.0 as the first release on 25 Mar 2014. Early releases quickly added
+      command-line reporting, stdin and directory checking, config loading, Lua
+      5.2/5.3/LuaJIT syntax support, and the warning-code system that made the tool
+      useful in editors and CI.
+    - >
+      The project matured through the 0.x line by adding inline comments, caching,
+      parallel checking, custom formatters, rockspec handling, and support for newer Lua
+      versions. The README describes Luacheck as written in Lua, runnable on Lua 5.1
+      through 5.4 and LuaJIT, and configurable from CLI options, config files, or inline
+      Lua comments.
+    - >
+      In 2022 the project moved through the 1.0 milestone and adopted semver-oriented
+      release expectations. Later changelog entries show package-maintenance work around
+      Docker images, GitHub Actions, new builtin standard sets, NO_COLOR support, and
+      Lua ecosystem integrations such as SILE, Ldoc, Playdate, and Minetest globals.
+  related-projects:
+    - Lua is the language Luacheck analyzes.
+    - LuaRocks is the installation path documented by the official README.
+    - LuaFileSystem is used for recursive directory checking when installed through LuaRocks.
+    - >
+      Busted, rockspec, OpenResty ngx_lua, and other named standard sets appear in
+      Luacheck's supported globals.
+    - >
+      LuaLS overlaps as a language-server tool, while Luacheck remains focused on
+      linting and static analysis.
+  sources:
+    - https://luacheck.readthedocs.io/en/stable/
+    - https://luacheck.readthedocs.io/en/stable/cli.html
+    - https://luacheck.readthedocs.io/en/stable/config.html
+    - https://raw.githubusercontent.com/lunarmodules/luacheck/master/CHANGELOG.md
+    - https://raw.githubusercontent.com/lunarmodules/luacheck/master/README.md
+    - source_facts.package-manager
+  summary:
+    - >
+      Luacheck is a command-line static analyzer and linter for Lua. It reports issues
+      such as undefined globals, unused variables, uninitialized variables, unreachable
+      code, and syntax errors, while allowing project-specific global sets and per-file
+      configuration.
+  timeline:
+    - '2014-03-25: Luacheck 0.1.0 was the first release.'
+    - >
+      2014: Early releases added directory checking, config loading, Lua 5.2/5.3/LuaJIT
+      syntax support, and warning codes.
+    - >
+      2015: Luacheck added inline options, custom output formatters, caching, parallel
+      checking, and version reporting.
+    - '2020: Luacheck added Lua 5.4 standard definitions and parser/runtime compatibility work.'
+    - '2022: Luacheck v1.0.0 marked the semver-era milestone.'
+    - '2024: Luacheck 1.2.0 added Minetest standard support and performance fixes.'
+  usage:
+    - >
+      Users run luacheck with files, directories, stdin, or rockspecs. The CLI returns
+      distinct exit codes for clean runs, warnings, syntax or inline-option errors, file
+      errors, and critical argument/config/cache errors, which makes it straightforward
+      to wire into CI.
+    - >
+      Configuration is usually a .luacheckrc file discovered from the current directory
+      upward, a platform-specific default config path, or a custom --config path. Config
+      files are Lua scripts that set options such as std, globals, read_globals, ignore,
+      enable, line length, and per-path overrides.
 category: developer-tools
 package-manager:
   apk: luacheck
@@ -34,5 +117,13 @@ executables:
   - luacheck
 provenance:
   formula: luacheck
+  history-sources:
+    - https://luacheck.readthedocs.io/en/stable/
+    - https://luacheck.readthedocs.io/en/stable/cli.html
+    - https://luacheck.readthedocs.io/en/stable/config.html
+    - https://raw.githubusercontent.com/lunarmodules/luacheck/master/CHANGELOG.md
+    - https://raw.githubusercontent.com/lunarmodules/luacheck/master/README.md
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
