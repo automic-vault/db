@@ -9,6 +9,77 @@ config-file-location:
   unix: ~/.gphotos-uploader-cli/config.hjson
 credentials-file-location:
   unix: ~/.gphotos-uploader-cli/config.hjson
+history:
+  adoption-history:
+    - >
+      The project is packaged in Homebrew and documented for macOS and Linux users who
+      want unattended or repeated uploads rather than a desktop sync tool. Its GitHub
+      metadata shows a medium-sized user base for a niche Google Photos automation
+      client, with hundreds of stars and forks.
+    - >
+      Adoption is constrained by Google Photos API behavior and OAuth setup. The
+      configuration documentation asks users to create a Google Cloud project, enable
+      the Google Photos Library API, configure OAuth consent, create desktop app
+      credentials, and place client credentials in the HJSON configuration.
+  package-nerd-significance:
+    - >
+      The package is interesting because it turns a cloud-photo workflow into a
+      Unix-style batch command. That makes it useful for NAS boxes, photo ingest
+      scripts, headless machines, and users who want a package-managed tool instead of a
+      GUI uploader.
+    - >
+      It also demonstrates the maintenance cost of cloud CLIs: OAuth flows, API scopes,
+      quota avoidance, token storage, and upstream API client changes all show up in
+      package history even when the command's user-facing purpose stays simple.
+  project-history:
+    - >
+      The GitHub README explains the original motivation: Google's own uploader covered
+      macOS and Windows, while this project brought a command-line uploader to Linux and
+      other systems that can compile a Go program.
+    - >
+      The changelog records early public packaging work in 2018, concurrent upload
+      support in June 2019, secret backend support, a repository transfer into the
+      GPhotos Uploaders organization, and later major releases adapting to Google Photos
+      API scope and authentication changes.
+  related-projects:
+    - >
+      Related projects include the gphotosuploader Google Photos API client for Go,
+      Google Photos Library API tooling, keyring-backed secret storage libraries,
+      GoReleaser, and other backup or upload CLIs.
+  sources:
+    - https://github.com/gphotosuploader/gphotos-uploader-cli
+    - https://github.com/gphotosuploader/gphotos-uploader-cli/blob/main/CHANGELOG.md
+    - https://github.com/gphotosuploader/gphotos-uploader-cli/blob/main/README.md
+    - https://github.com/gphotosuploader/gphotos-uploader-cli/blob/main/docs/configuration.md
+    - https://github.com/gphotosuploader/gphotos-uploader-cli/releases
+    - https://gphotosuploader.github.io/gphotos-uploader-cli/
+  summary:
+    - >
+      Google Photos uploader CLI is a Go command-line tool for uploading local media
+      folders to Google Photos accounts, with configuration-driven jobs, OAuth
+      credentials, secret backends, album rules, filters, and resumable upload behavior.
+  timeline:
+    - '2018-09-20: 0.1.11 added GoReleaser-based binary publishing after releases.'
+    - >
+      2019-06-18: 0.2.0 added support for five concurrent uploads and introduced the
+      changelog.
+    - '2019: 0.3.0 added multiple secret backends through keyring support.'
+    - '2019: 0.6.0 recorded the repository transfer to the GPhotos Uploaders organization.'
+    - >
+      2023: 4.0.0 added client cache behavior, album and media-item listing commands,
+      and progress bars.
+    - '2025-06-05: 5.1.0 adjusted OAuth redirect URL handling for the auth command.'
+  usage:
+    - >
+      Users configure `~/.gphotos-uploader-cli/config.hjson` with API app credentials,
+      account email, secret backend choice, and one or more jobs. Jobs identify source
+      folders, album behavior, delete-after-upload behavior, and include or exclude
+      patterns.
+    - >
+      The changelog shows the CLI growing around real upload concerns: token refresh,
+      resumable uploads, duplicate album handling, file tracking, album listing,
+      media-item listing, redirect URL configuration, and Google Photos API scope
+      changes.
 category: media
 package-manager:
   brew: gphotos-uploader-cli
@@ -26,5 +97,13 @@ executables:
   - gphotos-uploader-cli
 provenance:
   formula: gphotos-uploader-cli
+  history-sources:
+    - https://github.com/gphotosuploader/gphotos-uploader-cli
+    - https://github.com/gphotosuploader/gphotos-uploader-cli/blob/main/CHANGELOG.md
+    - https://github.com/gphotosuploader/gphotos-uploader-cli/blob/main/README.md
+    - https://github.com/gphotosuploader/gphotos-uploader-cli/blob/main/docs/configuration.md
+    - https://github.com/gphotosuploader/gphotos-uploader-cli/releases
+    - https://gphotosuploader.github.io/gphotos-uploader-cli/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

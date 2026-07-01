@@ -6,6 +6,85 @@ docs:
   - https://www.gnupg.org/software/gpgme/index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The GnuPG project recommends GPGME as the way applications should use the GnuPG
+      crypto stack, because command-line options and textual output are not the same
+      thing as an official API. That recommendation is why GPGME shows up as a
+      dependency under mail user agents, desktop key managers, package-signing tools,
+      and language bindings.
+    - >
+      Distribution adoption follows from that API role. Homebrew packages the library
+      together with command-line helper tools such as `gpgme-config`, `gpgme-json`,
+      `gpgme-tool`, and `gnupg-key-manage`; Debian and Ubuntu expose `gpgme-json`; and
+      other package systems carry the core `gpgme` library.
+  package-nerd-significance:
+    - >
+      GPGME is packaging glue with security consequences. It hides command-line churn
+      behind ABI and API promises, which lets desktop applications, TUI tools, mail
+      clients, and language bindings depend on GnuPG while still integrating with normal
+      shared-library packaging.
+    - >
+      For maintainers, GPGME also explains why many packages pull in the GnuPG stack
+      even when they are not named `gpg`: they need the supported API, the engine
+      binaries, libgpg-error, and sometimes Assuan or language binding packages.
+  project-history:
+    - >
+      GPGME was created inside the GnuPG ecosystem to make public-key crypto engines
+      easier for applications to use. The reference manual describes it as a C library
+      that uses GnuPG and GpgSM as backends for OpenPGP and CMS.
+    - >
+      The NEWS file records a 1.0.0 release on 2004-09-30, described by the project as a
+      thoroughly tested stable library branch. Shortly after that, version 1.0.2 on
+      2004-12-28 changed the library license to LGPL-2.1-or-later, a significant
+      packaging and application-integration decision.
+    - >
+      Over time GPGME grew beyond its C surface. The GnuPG wiki documents official
+      bindings for C++, Qt, Python, and Common Lisp, and the NEWS file records later
+      work on Python bindings, `gpgme-json`, and a 2.0.0 release in 2025 that split the
+      C++, Qt, and Python bindings into separately released projects.
+  related-projects:
+    - >
+      Related GnuPG components include GnuPG, GpgSM, libgpg-error, libassuan, pinentry,
+      GPA, Kleopatra, Gpg4win, and language binding packages built over GPGME.
+  sources:
+    - https://dev.gnupg.org/source/gpgme.git
+    - https://github.com/gpg/gpgme/blob/master/NEWS
+    - https://wiki.gnupg.org/APIs
+    - https://www.gnupg.org/documentation/manuals/gpgme/Introduction.html
+    - https://www.gnupg.org/software/gpgme/index.html
+  summary:
+    - >
+      GPGME, short for GnuPG Made Easy, is the official C API for integrating
+      applications with the GnuPG crypto stack. It gives programs a stable high-level
+      interface for encryption, decryption, signing, verification, and key management
+      instead of scripting the `gpg` command line.
+  timeline:
+    - '2004-09-30: GPGME 1.0.0 established the stable 1.x branch.'
+    - '2004-12-28: GPGME 1.0.2 changed the library license to LGPL-2.1-or-later.'
+    - >
+      2005-10-01: GPGME 1.1.0 added configurable backend engine filenames and home
+      directories.
+    - >
+      2018-04-18: GPGME 1.11.0 added `gpgme-json` as a native messaging server for web
+      browsers.
+    - >
+      2024-06-17: The GnuPG wiki API page documented GPGME as the recommended API and
+      listed official language bindings.
+    - >
+      2025-06-03: GPGME 2.0.0 split C++, Qt, and Python bindings into separately
+      released projects.
+    - '2026-05-18: GPGME 2.1.0 added new decrypt result fields and context flags.'
+  usage:
+    - >
+      Applications create a GPGME context and use library calls for encryption,
+      decryption, signing, signature verification, key listing, import, export, and key
+      management. GPGME invokes GnuPG or GpgSM behind the API, so application code does
+      not need to parse `gpg` status output directly.
+    - >
+      The library is especially important for mail user agents and GUI tools that need
+      OpenPGP or S/MIME support without becoming cryptographic engines themselves.
 tags:
   - api
   - cli
@@ -34,6 +113,12 @@ provenance:
     - >
       GnuPG official GPGME page links to the manual; official manual is hosted under
       gnupg.org/documentation/manuals/gpgme.
+  history-sources:
+    - https://dev.gnupg.org/source/gpgme.git
+    - https://github.com/gpg/gpgme/blob/master/NEWS
+    - https://wiki.gnupg.org/APIs
+    - https://www.gnupg.org/documentation/manuals/gpgme/Introduction.html
+    - https://www.gnupg.org/software/gpgme/index.html
   repo-sources:
     - >
       GnuPG official Git access page says GnuPG and related projects are in public Git
@@ -50,5 +135,6 @@ category-path:
   - libraries
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: medium
 tags-confidence: high

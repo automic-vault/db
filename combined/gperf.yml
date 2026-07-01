@@ -7,6 +7,82 @@ docs:
   - https://www.gnu.org/software/gperf
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GNU documents gperf as useful for static search sets such as compiler reserved
+      words, assembler instruction opcodes, and shell built-ins. That made it attractive
+      in source-based packaging ecosystems because generated lookup tables can be fast,
+      deterministic, and dependency-light.
+    - >
+      The GNU project page distributes gperf through the GNU FTP mirror network and
+      points development to the Savannah project, placing it in the same distribution
+      pattern as many older GNU build-time utilities. Homebrew, Debian, Ubuntu, Fedora,
+      Arch, Nix, MacPorts, Chocolatey, and other package systems carry packages for it
+      in the input metadata, reflecting its role as a small but widely available build
+      dependency.
+  package-nerd-significance:
+    - >
+      Package maintainers care about gperf because it often appears as a small build
+      requirement that is easy to miss when bootstrapping language runtimes, compilers,
+      and parser-heavy tools. It is old, tiny, and boring in the good way: a generated C
+      file is easier to ship than a runtime dependency.
+    - >
+      It also illustrates a packaging distinction between generated artifacts and
+      generators. Some upstreams ship generated source, while others require gperf at
+      build time, so package recipes need to know whether gperf is a native build tool
+      or merely an optional maintainer tool.
+  project-history:
+    - >
+      The GNU manual says the gperf utility was written in GNU C++ by Douglas C.
+      Schmidt, with the general idea inspired by Keith Bostic's C algorithm distributed
+      to net.sources around 1984. The manual frames the GNU program as a heavily
+      modified, enhanced, and extended implementation created at the University of
+      California, Irvine.
+    - >
+      gperf belongs to the classic Unix compiler-tool family. Its input format resembles
+      tools such as lex in using declarations and `%%` separators, while its output is
+      ordinary C or C++ source that can be checked into or generated during builds.
+  related-projects:
+    - >
+      Related GNU and Unix build tools include flex, bison, GNU indent, compiler front
+      ends, and parser or lexer generators that also turn compact declarative inputs
+      into C-family source.
+    - >
+      The manual specifically discusses static sets such as C reserved words, assembler
+      opcodes, and shell built-ins as natural problem domains for gperf.
+  sources:
+    - https://git.savannah.gnu.org/cgit/gperf.git
+    - https://www.gnu.org/software/gperf/
+    - https://www.gnu.org/software/gperf/manual/gperf.html
+  summary:
+    - >
+      GNU gperf is the GNU perfect hash function generator: it reads a static set of
+      keywords and emits C or C++ lookup code designed for collision-free recognition
+      with one string comparison.
+  timeline:
+    - >
+      1984: Keith Bostic's C perfect-hash algorithm circulated on net.sources, later
+      cited by the GNU manual as an inspiration.
+    - >
+      Late 1980s: Douglas C. Schmidt developed the GNU C++ implementation at the
+      University of California, Irvine.
+    - >
+      1998-2025: The GNU project page records long-running FSF maintenance of the gperf
+      web page and GNU mirror distribution.
+    - >
+      3.x series: gperf continued as a GPL-3-or-later GNU utility with C and C++
+      code-generation support documented in the GNU manual.
+  usage:
+    - >
+      A user supplies a keyword file, optionally including struct declarations and gperf
+      declarations, and gperf writes generated lookup code. The GNU page describes
+      options for C or C++ output, switch statements or nested if statements instead of
+      a hash table, and algorithm tuning.
+    - >
+      Typical use is not interactive end-user work but build-time code generation.
+      Projects use it when a fixed vocabulary needs fast membership tests without
+      maintaining handwritten hash tables.
 category: developer-tools
 package-manager:
   apk: gperf
@@ -34,5 +110,10 @@ executables:
   - gperf
 provenance:
   formula: gperf
+  history-sources:
+    - https://git.savannah.gnu.org/cgit/gperf.git
+    - https://www.gnu.org/software/gperf/
+    - https://www.gnu.org/software/gperf/manual/gperf.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
