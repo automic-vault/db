@@ -8,6 +8,72 @@ docs:
 config-file-location:
   unix: CIPHERDIR/gocryptfs.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      gocryptfs spread through the channels expected for a filesystem utility: upstream
+      release binaries, Linux distribution packages, MacPorts, Homebrew, and
+      package-manager metadata for Alpine, Debian, Fedora, Nix, Arch, Ubuntu, and
+      openSUSE in the batch input.
+    - >
+      Its adoption was helped by a clear operational niche: users wanted per-directory
+      encryption that worked with sync tools and ordinary filesystems without placing
+      trust in a full-disk-encryption layer or a cloud provider.
+  package-nerd-significance:
+    - >
+      Package nerds care about gocryptfs because filesystem tools are hard to package
+      well: they touch FUSE, kernel interfaces, release signatures, platform caveats,
+      and data safety. gocryptfs documents those edges unusually directly, including
+      signed releases, security design, stable CLI ABI, benchmark expectations, and
+      config-file recovery advice.
+    - >
+      It is also a strong example of Go in systems-tool packaging: a single CLI with
+      static-binary potential, distribution packages, and tight interaction with
+      low-level OS facilities.
+  project-history:
+    - >
+      The public GitHub repository was created in September 2015. The README says
+      gocryptfs is built on go-fuse, was inspired by EncFS, and strives to fix EncFS
+      security issues while providing good performance.
+    - >
+      The project reached version 1.0 on July 17, 2016 after stress and correctness
+      testing with fsstress, extractloop, and xfstests. The README also records a March
+      3, 2017 security audit, signed releases from v0.4 onward, Linux as the native
+      platform, beta-quality macOS support, and a stable CLI ABI for scripts and
+      applications.
+  related-projects:
+    - EncFS is the design predecessor named by gocryptfs.
+    - go-fuse is the FUSE library gocryptfs builds on.
+    - cppcryptfs is the independent Windows reimplementation named in the README.
+    - SiriKali is a graphical frontend that supports gocryptfs.
+  sources:
+    - https://api.github.com/repos/rfjakob/gocryptfs
+    - https://api.github.com/repos/rfjakob/gocryptfs/releases
+    - https://github.com/rfjakob/gocryptfs
+    - https://github.com/rfjakob/gocryptfs/blob/master/Documentation/MANPAGE.md
+    - https://github.com/rfjakob/gocryptfs/releases
+    - https://nuetzlich.net/gocryptfs
+  summary:
+    - >
+      gocryptfs is an encrypted FUSE overlay filesystem written in Go. It was designed
+      as an EncFS-inspired tool that fixes security weaknesses while preserving the
+      convenient model of mounting an encrypted directory as a plaintext view.
+  timeline:
+    - '2015-09: GitHub repository created.'
+    - '2016-07: Version 1.0 reached and declared ready for general consumption.'
+    - '2017-03: Security audit completed.'
+    - '2021-06: v2.0 released in the release history.'
+    - '2025-08: v2.6.1 released.'
+  usage:
+    - >
+      The core workflow is to run `gocryptfs -init CIPHERDIR` and then mount `CIPHERDIR`
+      at a plaintext mount point. The manpage also documents password changes,
+      filesystem checks, info display, reverse mode, deterministic names, speed tests,
+      and other operational flags.
+    - >
+      gocryptfs stores encrypted data in CIPHERDIR and presents a plaintext view at
+      MOUNTPOINT. Its `gocryptfs.conf` file is part of the encrypted directory metadata,
+      while the password or master key remains the user's responsibility.
 category: security
 package-manager:
   apk: gocryptfs
@@ -33,5 +99,13 @@ executables:
   - gocryptfs-xray
 provenance:
   formula: gocryptfs
+  history-sources:
+    - https://api.github.com/repos/rfjakob/gocryptfs
+    - https://api.github.com/repos/rfjakob/gocryptfs/releases
+    - https://github.com/rfjakob/gocryptfs
+    - https://github.com/rfjakob/gocryptfs/blob/master/Documentation/MANPAGE.md
+    - https://github.com/rfjakob/gocryptfs/releases
+    - https://nuetzlich.net/gocryptfs
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

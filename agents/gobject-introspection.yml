@@ -5,6 +5,97 @@ docs:
   - https://gi.readthedocs.io/en/latest
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GObject Introspection became a shared foundation for language bindings rather than
+      a user-facing app. The official users page lists bindings and consumers including
+      Vala, Genie, PyGObject, GTK-Perl/Introspection, JGIR, GJS, Seed, GirFFI,
+      Ruby-GNOME, Guile GI, lgi, node-gir, go-gir, haskell-gi, Common Lisp, Free Pascal,
+      Prolog, Harbour, C++, and Crystal projects.
+    - >
+      Distribution packaging reflects that infrastructure role. Homebrew packages it as
+      gobject-introspection with dependencies on GLib, Cairo, pkgconf, and Python, while
+      the input package facts map it across multiple Unix packaging systems under names
+      such as gobject-introspection, gir1.2-freedesktop, and girepository-1_0.
+  package-nerd-significance:
+    - >
+      GObject Introspection is one of the packages that explains why GNOME stacks look
+      the way they do in package managers: many applications do not depend on it
+      directly for a command-line interface, but their language bindings, generated
+      metadata, and typelibs depend on it being present and correctly split.
+    - >
+      It is also a recurring example of packaging complexity caused by generated ABI
+      metadata. The same package participates in compiler-like scanning, documentation,
+      runtime reflection, language bindings, and cross-build work, so small changes in
+      it can ripple through GTK, GStreamer, GJS, PyGObject, and desktop application
+      builds.
+  project-history:
+    - >
+      The project grew out of GNOME's long-standing need to share binding metadata
+      instead of duplicating hand-maintained fixes across language bindings. The
+      official goals page frames the work as a bridge between low-level C libraries and
+      higher-level runtimes, and as a way to keep binding metadata inside the libraries
+      through annotations.
+    - >
+      GNOME's source archive records the 0.5.0 tarball on September 1, 2008. By the
+      1.30.0 release on September 20, 2011, the project had entered the 1.x line used
+      alongside the GNOME 3 era. The documentation describes the core toolchain as
+      g-ir-scanner, g-ir-compiler, g-ir-generate, g-ir-annotation-tool, GIR XML, typelib
+      files, and libgirepository.
+  related-projects:
+    - >
+      GLib and GObject are the underlying object-system layer whose APIs are described
+      by introspection metadata.
+    - >
+      PyGObject, GJS, Vala, Ruby-GNOME, lgi, haskell-gi, and other bindings are
+      documented users of the introspection repository.
+    - >
+      GTK and GStreamer are common examples of GObject-based libraries whose bindings
+      and applications rely on introspection data in GNOME-oriented distributions.
+  sources:
+    - https://download.gnome.org/sources/gobject-introspection/
+    - https://download.gnome.org/sources/gobject-introspection/0.5/
+    - https://download.gnome.org/sources/gobject-introspection/1.30/
+    - https://formulae.brew.sh/formula/gobject-introspection
+    - https://gi.readthedocs.io/en/latest/
+    - https://gi.readthedocs.io/en/latest/changelog.html
+    - https://gi.readthedocs.io/en/latest/goals.html
+    - https://gi.readthedocs.io/en/latest/users.html
+    - https://gitlab.gnome.org/GNOME/gobject-introspection
+  summary:
+    - >
+      GObject Introspection is GNOME infrastructure that turns C libraries using GObject
+      conventions into machine-readable metadata. It provides GIR XML, compiled typelib
+      files, scanner/compiler tools, and libgirepository so higher-level language
+      bindings can call C APIs without each binding maintaining its own handwritten
+      metadata.
+    - >
+      For package maintainers it is not just another developer tool. It is build-time
+      and runtime plumbing that many GNOME-adjacent packages need so Python, JavaScript,
+      Vala, Perl, Ruby, Lua, Haskell, and other bindings can consume the same library
+      metadata.
+  timeline:
+    - '2008-09-01: GNOME source archive records gobject-introspection 0.5.0'
+    - '2011-09-20: GNOME source archive records gobject-introspection 1.30.0'
+    - "2018-02-08: GNOME GitLab project record created during GNOME's GitLab-hosted era"
+    - '2019-03-10: 1.60.0 changelog notes the final release supporting autotools'
+    - '2019-08-07: 1.61.1 changelog notes the autotools build system was dropped'
+    - '2025-09-13: 1.86.0 appears in the official changelog and GNOME source archive'
+  usage:
+    - >
+      Library authors enable introspection during the build, annotate APIs, and generate
+      GIR files and typelibs. Binding authors and runtime libraries then consume those
+      artifacts to expose the same C APIs in languages such as Python via PyGObject or
+      JavaScript via GJS.
+    - >
+      Package builders care about it because it can affect cross-compilation, build
+      ordering, and split packages: GIR development metadata and compiled typelibs often
+      need to land in different package outputs. The official documentation includes
+      dedicated build-system integration material for Meson and Autotools, and the
+      changelog records build-system transitions such as the end of autotools support
+      after the 1.60 line and the later drop of autotools in the 1.61 development
+      series.
 tags:
   - cli
   - gir
@@ -32,6 +123,16 @@ provenance:
     - 'source_facts.name: gobject-introspection'
   docs-sources:
     - source_facts.homepage is the official GObject Introspection documentation site
+  history-sources:
+    - https://download.gnome.org/sources/gobject-introspection/
+    - https://download.gnome.org/sources/gobject-introspection/0.5/
+    - https://download.gnome.org/sources/gobject-introspection/1.30/
+    - https://formulae.brew.sh/formula/gobject-introspection
+    - https://gi.readthedocs.io/en/latest/
+    - https://gi.readthedocs.io/en/latest/changelog.html
+    - https://gi.readthedocs.io/en/latest/goals.html
+    - https://gi.readthedocs.io/en/latest/users.html
+    - https://gitlab.gnome.org/GNOME/gobject-introspection
   repo-sources:
     - >
       official GObject Introspection docs say the project is stored in git at
@@ -46,5 +147,6 @@ category-path:
   - introspection
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
