@@ -6,6 +6,72 @@ docs:
   - https://www.math.utah.edu/~beebe/software/ndiff/ndiff.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is niche and mostly packaging-preservation driven. FreeBSD still ships
+      math/ndiff, and Homebrew listed stable 2.00 on July 1, 2026 with 149 installs in
+      its 365-day analytics window.
+    - >
+      The name is overloaded: Homebrew's formula page links to Beebe's numeric ndiff but
+      also says it conflicts with Nmap, whose separate Ndiff compares Nmap scan XML.
+      That collision is important for anyone reconciling package histories across
+      ecosystems.
+  package-nerd-significance:
+    - >
+      This package is a good example of why package enrichment needs source-aware
+      disambiguation. A naive name lookup for `ndiff` often lands on Nmap, while
+      Homebrew's formula and Beebe's homepage point to a numeric comparison tool from a
+      different lineage.
+  project-history:
+    - >
+      The official ndiff page shows update timestamps in 2002 and 2004 and distributes
+      ndiff 2.00, while keeping ndiff 1.00 archives for historical purposes. FreshPorts
+      identifies the author as Nelson H. F. Beebe, says the tool is GPLv2, and records
+      the FreeBSD port as added on February 18, 2004.
+    - >
+      The problem statement is classic numerical computing: ordinary `diff` is too noisy
+      when compiler, CPU, operating system, or library changes create tiny
+      floating-point output differences. ndiff reports only values outside chosen
+      tolerances and reports the amount of error.
+  related-projects:
+    - diff
+    - GMP
+    - FreeBSD math/ndiff
+    - Nmap Ndiff
+  sources:
+    - https://formulae.brew.sh/formula/ndiff
+    - https://packages.debian.org/sid/ndiff
+    - https://www.freshports.org/math/ndiff/
+    - https://www.math.utah.edu/~beebe/software/ndiff/
+  summary:
+    - >
+      brew:ndiff is Nelson H. F. Beebe's numeric-tolerance file comparator, not Nmap's
+      XML scan comparator of the same command name. The official page describes
+      comparing files that should be identical or numerically similar while ignoring
+      small numeric differences under absolute or relative error tolerances.
+  timeline:
+    - >
+      {'date': '2002-04-23', 'event': 'One update timestamp shown on the official ndiff
+      page.'}
+    - >
+      {'date': '2004-02-18', 'event': 'FreshPorts records math/ndiff being added to
+      FreeBSD ports.'}
+    - >
+      {'date': '2004-11-12', 'event': 'Second update timestamp shown on the official
+      ndiff page.'}
+    - >
+      {'date': '2026-07-01', 'event': 'Homebrew Formulae listed stable 2.00, conflict
+      with nmap, and 149 installs in the 365-day analytics window.'}
+  usage:
+    - >
+      Typical use is regression testing for numerical programs: run the same code under
+      two toolchains or platforms, save text outputs, and run ndiff with
+      `--relative-error` or absolute tolerance settings to distinguish harmless rounding
+      drift from real changes.
+    - >
+      Package maintainers and scientific developers can use it where golden files
+      contain floating-point values and a plain text diff would drown the useful signal.
 tags:
   - cli
   - diff
@@ -19,6 +85,11 @@ provenance:
     - source_facts.name and official ndiff page title.
   docs-sources:
     - source_facts.homepage is the official author page and links the official manual page.
+  history-sources:
+    - https://formulae.brew.sh/formula/ndiff
+    - https://packages.debian.org/sid/ndiff
+    - https://www.freshports.org/math/ndiff/
+    - https://www.math.utah.edu/~beebe/software/ndiff/
   repo-sources:
     - >
       source_facts.repo is empty; official author page lists source archives but no
@@ -30,5 +101,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
