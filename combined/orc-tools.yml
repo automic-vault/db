@@ -7,6 +7,76 @@ docs:
   - https://orc.apache.org/api/orc-tools/org/apache/orc/tools/package-summary.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The tools inherit Apache ORC's adoption in Hadoop and analytical data lakes. ORC
+      documentation says the format was created in January 2013 to speed up Apache Hive
+      and improve Hadoop storage efficiency, and it names large Hadoop users such as
+      Facebook and Yahoo in its adoption discussion.
+    - >
+      Because ORC files are binary columnar files, command-line tools fill a
+      package-maintenance gap: data engineers, release engineers, and distro packagers
+      need a way to verify metadata, print data as JSON, convert CSV or JSON into ORC,
+      count rows, inspect key metadata, and merge files during tests and migrations.
+  package-nerd-significance:
+    - >
+      For package nerds, `orc-tools` is the inspect-and-repair companion to a columnar
+      storage format. It is the difference between ORC as an opaque data-lake file and
+      ORC as something that can be validated, dumped, converted, counted, benchmarked,
+      and scripted from a shell.
+  project-history:
+    - >
+      The tools grew out of the need to inspect and manipulate ORC files without always
+      launching Hive, Spark, or a full Hadoop job. The older Hive manual documented
+      `hive --orcfiledump` for analyzing ORC files, while the Apache ORC project later
+      documents a standalone ORC tools jar that packages utilities and Java
+      dependencies, including Hadoop, into one artifact.
+    - >
+      The ORC Java Tools documentation marks subcommand additions across ORC releases:
+      `scan` since ORC 1.3, `convert` and `json-schema` since ORC 1.4, `key` since ORC
+      1.5, `count` and `version` since ORC 1.6, `sizes` since ORC 1.7.2, and `check` and
+      `merge` since ORC 2.0.1.
+  related-projects:
+    - >
+      Apache ORC Tools is part of the Apache ORC repository and follows the ORC format's
+      ecosystem: Apache Hive, Apache Spark, Hadoop file systems, HDFS, and other
+      data-lake engines that read or write ORC.
+  sources:
+    - https://cwiki.apache.org/confluence/display/Hive/LanguageManual%2BORC
+    - https://formulae.brew.sh/formula/orc-tools
+    - https://orc.apache.org/api/orc-tools/org/apache/orc/tools/package-summary.html
+    - https://orc.apache.org/docs/
+    - https://orc.apache.org/docs/java-tools.html
+  summary:
+    - >
+      Apache ORC Tools is the Java command-line tooling package for Apache ORC files. It
+      wraps ORC inspection, conversion, counting, merging, metadata dumping, JSON schema
+      inference, encryption-key inspection, benchmarking scans, and version reporting
+      into an executable jar and package-manager CLI.
+  timeline:
+    - >
+      2013-01: Apache ORC documentation says ORC files were created as part of the Hive
+      speed and Hadoop storage-efficiency initiative.
+    - >
+      2013: The Hive manual documents ORC as introduced in Hive 0.11.0 and includes
+      `hive --orcfiledump` for inspection.
+    - >
+      ORC 1.3 through 2.0.1: Apache ORC Java Tools documentation records the arrival of
+      subcommands such as `scan`, `convert`, `count`, `sizes`, `check`, and `merge`.
+  usage:
+    - >
+      Users invoke the tools as `java -jar orc-tools-X.Y.Z-uber.jar <sub-command>
+      <args>` or through a packaged launcher such as Homebrew's `orc-tools`. Common
+      workflows include `meta` to inspect file metadata, `data` to print records,
+      `convert` to create ORC files from CSV or JSON, `count` to recursively count rows,
+      `sizes` to inspect per-column disk usage, and `merge` to combine ORC files with
+      compatible schemas.
+    - >
+      The API documentation exposes the package as Java classes such as `Driver`,
+      `FileDump`, `JsonFileDump`, `KeyTool`, `MergeFiles`, `PrintData`, `PrintVersion`,
+      and `RowCount`, matching the command-line utility role rather than a general
+      application framework.
 category: developer-tools
 package-manager:
   brew: orc-tools
@@ -23,5 +93,12 @@ executables:
   - orc-tools
 provenance:
   formula: orc-tools
+  history-sources:
+    - https://cwiki.apache.org/confluence/display/Hive/LanguageManual%2BORC
+    - https://formulae.brew.sh/formula/orc-tools
+    - https://orc.apache.org/api/orc-tools/org/apache/orc/tools/package-summary.html
+    - https://orc.apache.org/docs/
+    - https://orc.apache.org/docs/java-tools.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -5,6 +5,76 @@ docs:
   - https://gstreamer.freedesktop.org/modules/orc.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GStreamer adopted ORC as part of its multimedia stack and hosts the project page
+      under the GStreamer site. GStreamer describes it as a library and tools for
+      compiling SIMD assembly-language-like programs over arrays of data, maintained by
+      the GStreamer Team.
+    - >
+      A GStreamer 0.4.42 release announcement says liborc is used for SIMD acceleration
+      in plugins including `audioconvert`, `audiomixer`, `compositor`, `videoscale`, and
+      `videoconvert`. That places ORC under everyday desktop and media-pipeline
+      workloads even when end users never call `orcc` directly.
+  package-nerd-significance:
+    - >
+      For package nerds, ORC is a quiet dependency with a clear reason to exist: it lets
+      multimedia packages ship portable SIMD acceleration without carrying a bespoke
+      assembly implementation for every CPU family. It also explains why a tiny compiler
+      package appears as a dependency of much larger audio and video stacks.
+  project-history:
+    - >
+      The ORC README calls ORC the successor to Liboil, the Library of Optimized Inner
+      Loops. Liboil provided hand-optimized inner loops; ORC moved that idea toward a
+      restricted assembly-like language that can be compiled at runtime, emitted as
+      assembly source, extended with new opcodes, or emulated for testing.
+    - >
+      ORC's design addressed a common multimedia problem: high-throughput audio and
+      video filters need CPU-vectorized loops across several architectures, but
+      handwritten intrinsics multiply code paths and runtime combinations. The README
+      says ORC targets SIMD-style operations such as saturated addition and subtraction,
+      with backends including SSE, MMX, MIPS, Altivec, NEON, and TI C64x+.
+  related-projects:
+    - >
+      ORC is historically related to Liboil and operationally related to GStreamer. Its
+      problem space overlaps compiler auto-vectorization, handwritten SIMD intrinsics,
+      and architecture-specific assembly, but it takes a small domain-specific runtime
+      compiler approach.
+  sources:
+    - https://archlinux.org/packages/extra/x86_64/orc/
+    - https://discourse.gstreamer.org/t/orc-0-4-42-release/5592
+    - https://formulae.brew.sh/formula/orc
+    - https://github.com/GStreamer/orc
+    - https://gstreamer.freedesktop.org/modules/orc.html
+  summary:
+    - >
+      ORC, the Oil Runtime Compiler and later described by GStreamer as the Optimized
+      Inner Loop Runtime Compiler, is a C library and toolset for compiling and
+      executing small array-processing programs that map well to SIMD instructions. Its
+      Homebrew package installs tools such as `orcc` and `orc-bugreport` alongside the
+      runtime library.
+  timeline:
+    - >
+      Liboil era: ORC's README identifies ORC as the successor to the Library of
+      Optimized Inner Loops.
+    - >
+      0.4 series: The README states that ORC 0.4 releases maintain API and ABI
+      compatibility inside the series.
+    - >
+      2026-01-08: GStreamer announced ORC 0.4.42 and named several GStreamer plugins
+      that use liborc for SIMD acceleration.
+  usage:
+    - >
+      Library users describe kernels in ORC's small language, then let ORC generate
+      target-specific code or run an emulated fallback. The README frames this as useful
+      when a program needs vector extensions directly from an application, wants
+      assembly output without linking the ORC runtime, or needs runtime-defined
+      functions that ordinary compiler intrinsics cannot produce.
+    - >
+      `orcc` is the developer-facing compiler tool. Downstream packages mostly care
+      about the shared library because GStreamer plugins and similar media code depend
+      on it for fast pixel, sample, and buffer transformations.
 tags:
   - cli
   - compiler
@@ -34,6 +104,12 @@ provenance:
       Official GStreamer ORC page is the best official documentation surface and links
       source downloads and Git.
     - source_facts.homepage is the official GStreamer ORC module page.
+  history-sources:
+    - https://archlinux.org/packages/extra/x86_64/orc/
+    - https://discourse.gstreamer.org/t/orc-0-4-42-release/5592
+    - https://formulae.brew.sh/formula/orc
+    - https://github.com/GStreamer/orc
+    - https://gstreamer.freedesktop.org/modules/orc.html
   repo-sources:
     - >
       Official GStreamer ORC page links browse Git to
@@ -50,5 +126,6 @@ category-path:
   - compiler
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

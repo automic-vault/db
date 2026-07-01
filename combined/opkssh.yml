@@ -15,6 +15,72 @@ config-file-location:
     - '%ProgramData%\opk\providers'
     - '%ProgramData%\opk\auth_id'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The project moved quickly into normal package-manager territory for a security
+      tool: its metadata lists packages for Homebrew, Debian development packages,
+      Fedora, Nix, and Windows winget, and the README documents Homebrew, winget,
+      Chocolatey, Nix, and direct binary installs.
+  package-nerd-significance:
+    - >
+      opkssh is interesting because it packages an identity-protocol research result as
+      a small CLI that plugs into a decades-old Unix extension point. For package nerds,
+      the notable bit is not a new daemon or a replacement SSH stack, but a
+      cross-platform binary that makes SSH key lifecycle policy distributable through
+      package managers.
+  project-history:
+    - >
+      The tool is built on OpenPubkey, a protocol described in a 2023 IACR paper that
+      binds a user-held public key into an OpenID Connect ID Token, turning that token
+      into what the authors call a PK Token. opkssh applies that idea to SSH by
+      generating an SSH key/certificate carrying the PK Token and by configuring sshd to
+      verify it.
+    - >
+      Cloudflare announced on 2025-03-25 that it had open-sourced OPKSSH under the
+      OpenPubkey project. The announcement says the OpenPubkey protocol became an open
+      source Linux Foundation project in 2023, while OPKSSH had remained closed source
+      under BastionZero, later Cloudflare, until the donation.
+  related-projects:
+    - >
+      OpenPubkey is the underlying protocol. OpenSSH supplies the client/server behavior
+      and `AuthorizedKeysCommand` integration point. The broader ecosystem includes
+      OpenID Providers such as Google, Microsoft Entra ID, GitLab, Keycloak, Authentik,
+      Authelia, Zitadel, and similar OIDC services.
+  sources:
+    - >
+      https://blog.cloudflare.com/open-sourcing-openpubkey-ssh-opkssh-integrating-single-sign-on-with-ssh/
+    - https://eprint.iacr.org/2023/296
+    - https://formulae.brew.sh/formula/opkssh
+    - https://github.com/openpubkey/opkssh
+  summary:
+    - >
+      opkssh, short for OpenPubkey SSH, brings OpenID Connect identity into ordinary SSH
+      login flows. It lets administrators authorize identities such as email addresses
+      and groups instead of distributing long-lived SSH public keys, while still using
+      the stock SSH client and server protocol.
+  timeline:
+    - >
+      2023: OpenPubkey is published as a protocol for binding OpenID Connect ID Tokens
+      to user-held public keys.
+    - >
+      2023: OpenPubkey becomes an open source Linux Foundation project, according to
+      Cloudflare's OPKSSH open-source announcement.
+    - >
+      2025-03-25: Cloudflare announces that OPKSSH has been donated to the OpenPubkey
+      project and released as open source.
+  usage:
+    - >
+      A user runs `opkssh login`, authenticates in a browser with an OpenID Provider,
+      and receives a generated SSH key whose public side contains the OpenPubkey token.
+      On the server, opkssh is used through sshd's `AuthorizedKeysCommand` hook, so the
+      verifier can extract the PK Token, validate the identity provider signature and
+      expiry, and map the identity to a Unix or Windows account.
+    - >
+      Operators use `/etc/opk/providers` to choose trusted OpenID Providers and client
+      IDs, and `/etc/opk/auth_id` or per-user equivalents to authorize identities,
+      subjects, or group claims. The design gives SSH administrators an SSO-style access
+      list without changing the SSH wire protocol.
 category: security
 package-manager:
   brew: opkssh
@@ -35,5 +101,12 @@ executables:
   - opkssh
 provenance:
   formula: opkssh
+  history-sources:
+    - >
+      https://blog.cloudflare.com/open-sourcing-openpubkey-ssh-opkssh-integrating-single-sign-on-with-ssh/
+    - https://eprint.iacr.org/2023/296
+    - https://formulae.brew.sh/formula/opkssh
+    - https://github.com/openpubkey/opkssh
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
