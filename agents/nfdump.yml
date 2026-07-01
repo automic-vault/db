@@ -5,6 +5,66 @@ docs:
   - https://github.com/phaag/nfdump#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      nfdump is an infrastructure package rather than a trendy CLI. It appears across
+      Homebrew, Debian, Ubuntu, Fedora, Alpine, Nix, MacPorts, and FreeBSD ports, and is
+      tied historically to NfSen. The GitHub repository showed 1,405 commits when
+      researched. Homebrew's API generated on 2026-07-01 reported 233
+      installs-on-request in the preceding 365 days.
+  package-nerd-significance:
+    - >
+      nfdump matters because it keeps the packet-capture mental model for flow records:
+      small composable commands, tcpdump-like filters, files you can retain or expire,
+      and text/CSV/JSON/custom output for shell pipelines and monitoring integrations.
+  project-history:
+    - >
+      The legacy SourceForge page says the project moved to GitHub and describes the
+      original design: collect flow data to disk first, organize it in timestamped
+      files, then analyze historical or continuous traffic with a fast tcpdump-like
+      filter language. FreshPorts records the FreeBSD port being added on 2004-11-07
+      with version 1.1 and NetFlow v5/v7 support; later documentation and packaging show
+      support expanded to v9, IPFIX, and sFlow.
+    - >
+      The GitHub README describes the 1.7.x series codename `unicorn`, compatibility
+      with files created by nfdump 1.6.18 or newer, and conversion paths for older
+      legacy flow files.
+  related-projects:
+    - NfSen
+    - NetFlow
+    - IPFIX
+    - sFlow
+    - nfcapd
+    - sfcapd
+    - nfexpire
+    - nfreplay
+  sources:
+    - https://formulae.brew.sh/api/formula/nfdump.json
+    - https://github.com/phaag/nfdump
+    - https://manpages.debian.org/unstable/nfdump/nfcapd.1.en.html
+    - https://nfdump.sourceforge.net/
+    - https://www.freshports.org/net-mgmt/nfdump/
+  summary:
+    - >
+      nfdump is a long-lived command-line toolkit for collecting, storing, replaying,
+      filtering, aggregating, and analyzing NetFlow, IPFIX, and sFlow data. The core
+      workflow pairs collector daemons such as `nfcapd` and `sfcapd` with `nfdump`
+      queries over rotated binary flow files.
+  timeline:
+    - '2004-11-07: FreshPorts records the FreeBSD nfdump port being added.'
+    - >
+      2014-12-01: legacy SourceForge page listed 1.6.13 as the stable version and
+      pointed users to GitHub.
+    - '2026-07-01: Homebrew formula API generated data for nfdump 1.7.8.'
+  usage:
+    - >
+      Practical users run `nfcapd` on UDP ports fed by routers, firewalls, or switches,
+      rotate files every few minutes, and query them later with expressions such as
+      `nfdump -r flowfile 'src ip 192.0.2.1 and dst port 443'`. The Debian nfcapd
+      manpage says it accepts NetFlow v1, v5/v7, v9, and IPFIX transparently and works
+      with exporters including Cisco Flexible NetFlow, ASA firewalls, NAT event logging,
+      Juniper, VMware, Palo Alto, and yaf.
 tags:
   - cli
   - netflow
@@ -28,6 +88,12 @@ provenance:
     - >
       source_facts.repo points to the official GitHub project; README is the best
       available official documentation surface.
+  history-sources:
+    - https://formulae.brew.sh/api/formula/nfdump.json
+    - https://github.com/phaag/nfdump
+    - https://manpages.debian.org/unstable/nfdump/nfcapd.1.en.html
+    - https://nfdump.sourceforge.net/
+    - https://www.freshports.org/net-mgmt/nfdump/
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -40,5 +106,6 @@ category-path:
   - network-monitoring
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

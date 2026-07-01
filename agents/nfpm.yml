@@ -7,6 +7,78 @@ config-file-location:
   unix:
     - ./nfpm.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      nFPM's adoption is tied to GoReleaser rather than to a distro committee. Becker's
+      original post said GoReleaser was about to remove fpm and default to nFPM, and
+      GoReleaser's packaging documentation now exposes nFPM directly under its
+      package/archive pipeline.
+    - >
+      The project has grown beyond the original deb/rpm goal. GoReleaser's nFPM
+      documentation lists apk, deb, rpm, Termux deb, Arch Linux, ipk, and MSIX as
+      package formats, which shows how it became a general release-artifact generator
+      for projects that ship binaries across Linux distributions and, later, Windows
+      MSIX.
+  package-nerd-significance:
+    - >
+      nFPM matters because it sits in the gray zone between tarballs and real distro
+      packages. It gives upstream projects a small, reproducible way to generate
+      packages with maintainer scripts and dependency metadata, while avoiding the
+      heavier machinery of distro-specific packaging repositories.
+  project-history:
+    - >
+      Carlos Becker introduced nFPM in a February 23, 2018 post after working on
+      GoReleaser and finding fpm awkward for that workflow because it depended on Ruby,
+      tar behavior, and external packaging software. The name means "Not FPM"; the
+      project was meant to be simpler, predictable, usable both as a library and as a
+      binary, and implemented with minimal external dependencies.
+    - >
+      The GitHub README repeats that origin story in package-nerd terms: fpm was useful,
+      but its Ruby and system-tool dependencies were a pain, so nFPM became a simpler,
+      zero-dependency, low-assumption alternative. The repository also credits fpm as
+      the inspiration rather than pretending to be a wholly new packaging idea.
+  related-projects:
+    - GoReleaser
+    - fpm
+    - Debian dpkg
+    - RPM
+    - Alpine apk
+    - Arch Linux pacman
+  sources:
+    - https://carlosbecker.com/posts/nfpm/
+    - https://formulae.brew.sh/formula/nfpm
+    - https://github.com/goreleaser/nfpm
+    - https://goreleaser.com/customization/package/nfpm/
+    - https://nfpm.goreleaser.com/docs/quick-start/
+  summary:
+    - >
+      nFPM is a Go-based packaging tool from the GoReleaser ecosystem for producing
+      native Linux packages such as deb, rpm, apk, ipk, Arch Linux packages, Termux
+      debs, and MSIX packages. Its practical niche is release automation: take files and
+      metadata from a build and emit distro-package artifacts without forcing every
+      project to maintain native packaging trees.
+  timeline:
+    - >
+      2018-02-23: Carlos Becker published "Creating debs and rpms with Go" and described
+      why nFPM was created.
+    - '2018: GoReleaser was moving away from fpm toward nFPM for its Linux package pipeline.'
+    - >
+      2026-06-23: GoReleaser's nFPM documentation listed Linux formats plus MSIX and
+      Termux-specific packaging behavior.
+  usage:
+    - >
+      Package nerds use nFPM either through GoReleaser's `nfpms` section or as the
+      standalone `nfpm` CLI/Go library. The common flow is to describe package name,
+      files, config files, scripts, dependencies, maintainer metadata, and target
+      formats in YAML, then have CI produce distro-shaped packages next to checksums,
+      archives, Homebrew taps, and container images.
+    - >
+      Its value is highest for upstream application projects that want acceptable native
+      packages without becoming Debian, RPM, Alpine, Arch, and OpenWrt packaging
+      specialists. It does not replace distribution-maintained packaging policy; it
+      makes upstream release artifacts boring enough for users to install with familiar
+      package tools.
 tags:
   - apk
   - cli
@@ -31,6 +103,12 @@ provenance:
       documentation site.
   docs-sources:
     - source_facts.homepage is the official dedicated nfpm documentation site.
+  history-sources:
+    - https://carlosbecker.com/posts/nfpm/
+    - https://formulae.brew.sh/formula/nfpm
+    - https://github.com/goreleaser/nfpm
+    - https://goreleaser.com/customization/package/nfpm/
+    - https://nfpm.goreleaser.com/docs/quick-start/
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -43,5 +121,6 @@ category-path:
   - packaging
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

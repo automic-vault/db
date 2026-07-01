@@ -5,6 +5,74 @@ docs:
   - https://nghttp2.org/documentation
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      nghttp2 became important because large projects did not want to hand-roll HTTP/2
+      framing. Apache httpd's documentation says `mod_http2` uses nghttp2 as its
+      implementation base and requires libnghttp2 when building HTTP/2 support.
+    - >
+      curl also made nghttp2 part of the mainstream HTTP/2 toolchain. curl's 7.43.0
+      changelog in June 2015 required nghttp2 1.0.0 or later for HTTP/2 multiplexing
+      support, and everything curl documents HTTP/2 support for HTTP and HTTPS when curl
+      is built with the needed prerequisites.
+  package-nerd-significance:
+    - >
+      nghttp2 is the little C library behind a lot of HTTP/2 enablement. It is a classic
+      packaging multiplier: small on its own, but it changes the capabilities of curl,
+      Apache httpd, and other network stacks that link to it.
+  project-history:
+    - >
+      The project came out of the HTTP/2 standardization period. Its own documentation
+      says the code base was forked from Tatsuhiro Tsujikawa's earlier spdylay project,
+      a C implementation of Google's SPDY protocol, and was originally based on RFC 7540
+      and RFC 7541 before moving toward RFC 9113.
+    - >
+      That origin explains the shape of the package: it is not only a library, but a lab
+      bench for HTTP/2. The tools let implementers speak h2 or h2c directly, inspect
+      frames, run a proxy, and stress-test servers while the library handles the binary
+      framing details.
+  related-projects:
+    - spdylay
+    - HTTP/2
+    - HPACK
+    - curl
+    - Apache httpd mod_http2
+  sources:
+    - https://curl.se/changes.html
+    - https://everything.curl.dev/http/versions/http2.html
+    - https://formulae.brew.sh/formula/nghttp2
+    - https://github.com/nghttp2/nghttp2
+    - https://httpd.apache.org/docs/current/howto/http2.html
+    - https://nghttp2.org/documentation/package_README.html
+  summary:
+    - >
+      nghttp2 is a C implementation of HTTP/2's framing layer plus command-line tools:
+      `nghttp` for client/frame inspection, `nghttpd` for a test server, `nghttpx` for
+      proxying, and `h2load` for benchmarking. It also exposes HPACK encoding and
+      decoding APIs.
+  timeline:
+    - >
+      2012: Source files in the nghttp2 tree carry early copyright dates from Tatsuhiro
+      Tsujikawa's implementation work.
+    - '2013: nghttp2 emerged from the spdylay/SPDY lineage during HTTP/2 standardization.'
+    - >
+      2015-06-17: curl 7.43.0 documented HTTP/2 multiplexing support requiring nghttp2
+      1.0.0 or later.
+    - >
+      2015: Apache httpd 2.4 HTTP/2 support standardized around `mod_http2`, which uses
+      libnghttp2 as its implementation base.
+  usage:
+    - >
+      Developers install nghttp2 directly when they need the command-line tools, or
+      indirectly as a dependency for HTTP clients and servers. `nghttp` is useful for
+      seeing HTTP/2 frames rather than just HTTP semantics, while `h2load` is a quick
+      load generator for h2 endpoints.
+    - >
+      Packagers care about nghttp2 because it is a protocol-library dependency with ABI
+      and feature implications. A curl or Apache build with libnghttp2 available can
+      expose HTTP/2 support; without it, the package may build but lose protocol
+      behavior that users assume is present.
 tags:
   - c-library
   - cli
@@ -27,6 +95,13 @@ provenance:
     - source_facts.name is nghttp2; source_facts.homepage is the official nghttp2 site.
   docs-sources:
     - Official nghttp2 site provides a dedicated /documentation/ section.
+  history-sources:
+    - https://curl.se/changes.html
+    - https://everything.curl.dev/http/versions/http2.html
+    - https://formulae.brew.sh/formula/nghttp2
+    - https://github.com/nghttp2/nghttp2
+    - https://httpd.apache.org/docs/current/howto/http2.html
+    - https://nghttp2.org/documentation/package_README.html
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -39,5 +114,6 @@ category-path:
   - http
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

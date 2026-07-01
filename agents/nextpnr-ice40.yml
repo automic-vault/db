@@ -5,6 +5,69 @@ docs:
   - https://github.com/YosysHQ/nextpnr#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is strongest among people using small Lattice iCE40 boards, open hardware
+      examples, CI-able FPGA builds, and education/hobbyist workflows where the vendor
+      IDE is too heavy. GitHub showed about 1.7k stars and 318 forks on the nextpnr
+      repository when researched, and the Homebrew API generated on 2026-04-23 reported
+      50 installs-on-request in the preceding 365 days for the separate nextpnr-ice40
+      formula.
+  package-nerd-significance:
+    - >
+      The formula is intentionally architecture-specific rather than a monolithic
+      all-FPGA build. That packaging shape mirrors nextpnr's build system, where
+      `-DARCH=ice40` builds the iCE40 executable and keeps users from pulling every
+      supported architecture database when they only need Lattice iCE40.
+  project-history:
+    - >
+      A 35C3 talk described nextpnr as the next step after Project IceStorm, replacing
+      arachne-pnr in the open-source iCE40 flow while opening a path to multiple FPGA
+      vendors. The 2019 Yosys+nextpnr paper framed the combination of Yosys and nextpnr
+      as an architecture-neutral open-source Verilog-to-bitstream framework for
+      commercial FPGAs, with iCE40 and ECP5 as hardware-proven early targets.
+  related-projects:
+    - Yosys
+    - Project IceStorm
+    - arachne-pnr
+    - Project Trellis
+    - Project Oxide
+  sources:
+    - https://arxiv.org/pdf/1903.10407
+    - https://formulae.brew.sh/api/formula/nextpnr-ice40.json
+    - https://github.com/YosysHQ/nextpnr
+    - https://media.ccc.de/v/35c3-9612-the_nextpnr_foss_fpga_place-and-route_tool
+    - https://prjicestorm.readthedocs.io/en/latest/overview.html
+  summary:
+    - >
+      nextpnr-ice40 is the Lattice iCE40 build of nextpnr, YosysHQ's portable FPGA
+      place-and-route tool. In the open FPGA stack it sits after synthesis: Yosys emits
+      a JSON netlist, nextpnr-ice40 performs pack/place/route against the iCE40
+      architecture database, and IceStorm turns the routed ASCII bitstream into a
+      programmable binary.
+    - >
+      The project matters because it helped move the iCE40 flow away from one-off
+      place-and-route tooling toward a retargetable FOSS framework. Public project
+      material describes nextpnr as vendor-neutral and timing-driven, with iCE40 support
+      backed by Project IceStorm and later support for ECP5, Nexus, Gowin, GateMate, and
+      experimental back ends.
+  timeline:
+    - >
+      2018-12: 35C3 talk presented nextpnr as a retargetable FOSS place-and-route tool
+      replacing arachne-pnr in the IceStorm flow.
+    - >
+      2019-03: Yosys+nextpnr paper described the framework for open Verilog-to-bitstream
+      flows.
+    - '2026-03-12: GitHub release listing showed nextpnr 0.10 as the latest release.'
+    - '2026-04-23: Homebrew formula API generated data for nextpnr-ice40 0.10.'
+  usage:
+    - >
+      Package nerd usage is usually scripted: synthesize Verilog with `yosys -p
+      'synth_ice40 ... -json design.json'`, run `nextpnr-ice40 --json design.json --pcf
+      pins.pcf --asc design.asc`, then use `icepack` and `iceprog` from IceStorm. The
+      Homebrew formula encodes that relationship directly by depending on `icestorm` and
+      using `yosys` for its test dependency.
 tags:
   - cli
   - eda
@@ -32,6 +95,12 @@ provenance:
     - >
       Official YosysHQ/nextpnr README is the primary official documentation surface for
       nextpnr.
+  history-sources:
+    - https://arxiv.org/pdf/1903.10407
+    - https://formulae.brew.sh/api/formula/nextpnr-ice40.json
+    - https://github.com/YosysHQ/nextpnr
+    - https://media.ccc.de/v/35c3-9612-the_nextpnr_foss_fpga_place-and-route_tool
+    - https://prjicestorm.readthedocs.io/en/latest/overview.html
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/YosysHQ/nextpnr; returned
@@ -45,5 +114,6 @@ category-path:
   - fpga
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

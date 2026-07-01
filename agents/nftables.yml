@@ -5,6 +5,83 @@ docs:
   - https://wiki.nftables.org/wiki-nftables/index.php/Main_Page
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The migration was intentionally gradual because firewall rules are operational
+      infrastructure. The project provides an iptables/ip6tables compatibility layer
+      over the nftables infrastructure, and distributions have used that bridge to move
+      old command syntaxes onto the newer kernel backend.
+    - >
+      By the Debian 10 and RHEL 8 era, nftables had moved from future replacement to
+      default low-level packet-filtering framework in major Linux distributions. Red Hat
+      documents nftables as the successor to iptables, ip6tables, arptables, ebtables,
+      and ipset, and recommends it when administrators need direct control beyond
+      high-level firewalld scenarios.
+  package-nerd-significance:
+    - >
+      nftables is one of the big Linux plumbing migrations: not a flashy app, but a
+      shift in how packet filtering, NAT, and firewall state are represented. Its
+      packaging matters because kernel version, libmnl, libnftnl, the `nft` tool, and
+      distribution compatibility alternatives all have to line up.
+  project-history:
+    - >
+      The nftables design was publicly presented at Netfilter Workshop 2008 and released
+      publicly in March 2009 by Patrick McHardy. It was developed to reduce duplicated
+      packet-filtering code and make extension easier than the separate xtables-era
+      tools.
+    - >
+      nftables was selected for Linux 3.13 in 2013 and became available upstream with
+      the Linux 3.13 kernel line in January 2014. The official project page describes
+      the replacement target, the new VM-based ruleset model, and the separate userspace
+      command-line tool.
+  related-projects:
+    - Netfilter
+    - iptables
+    - ip6tables
+    - arptables
+    - ebtables
+    - firewalld
+    - libmnl
+    - libnftnl
+  sources:
+    - >
+      https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_firewalls_and_packet_filters/getting-started-with-nftables_firewall-packet-filters
+    - https://formulae.brew.sh/formula/nftables
+    - https://netfilter.org/projects/nftables/
+    - https://people.netfilter.org/pablo/netdev0.1/slides/nftables-netdev-2015.pdf
+    - >
+      https://wiki.nftables.org/wiki-nftables/index.php/List_of_updates_since_Linux_kernel_3.13
+    - https://wiki.nftables.org/wiki-nftables/index.php/Moving_from_iptables_to_nftables
+    - https://wiki.nftables.org/wiki-nftables/index.php/What_is_nftables%3F
+  summary:
+    - >
+      nftables is the Netfilter project's replacement for the older iptables, ip6tables,
+      arptables, and ebtables command families. It combines a new in-kernel packet
+      classification framework with the `nft` userspace command and libnftables library,
+      while reusing Netfilter pieces such as hooks, connection tracking, NAT, queueing,
+      and logging.
+  timeline:
+    - '2008: nftables was presented at Netfilter Workshop in Paris.'
+    - '2009-03: Patrick McHardy announced the first public nftables release.'
+    - '2013-10: nftables was selected for Linux 3.13.'
+    - '2014-01: Linux 3.13 made nftables available upstream.'
+    - >
+      2019: Debian 10 and RHEL 8 generation distributions made nftables a default or
+      primary low-level firewall backend.
+  usage:
+    - >
+      Admins use `nft` to create tables, chains, sets, maps, NAT rules, and packet
+      filters in a single syntax across address families. The package is most useful
+      when you need explicit rulesets, performance-friendly sets/maps, atomic ruleset
+      replacement, or a firewall that is easier to reason about than layered iptables
+      invocations.
+    - >
+      Package nerds care about which backend their distro's `iptables` command actually
+      targets. On newer systems, `iptables-nft` compatibility may be present even when
+      scripts still look old, while serious new rulesets are usually written as
+      `/etc/nftables.conf` and loaded by the nftables service or by distribution
+      firewall tooling.
 tags:
   - cli
   - firewall
@@ -31,6 +108,16 @@ provenance:
     - >
       Official nftables project page and wiki are the official documentation surfaces
       for nftables.
+  history-sources:
+    - >
+      https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_firewalls_and_packet_filters/getting-started-with-nftables_firewall-packet-filters
+    - https://formulae.brew.sh/formula/nftables
+    - https://netfilter.org/projects/nftables/
+    - https://people.netfilter.org/pablo/netdev0.1/slides/nftables-netdev-2015.pdf
+    - >
+      https://wiki.nftables.org/wiki-nftables/index.php/List_of_updates_since_Linux_kernel_3.13
+    - https://wiki.nftables.org/wiki-nftables/index.php/Moving_from_iptables_to_nftables
+    - https://wiki.nftables.org/wiki-nftables/index.php/What_is_nftables%3F
   repo-sources:
     - >
       Official netfilter nftables project page links the nftables user-space utility
@@ -46,5 +133,6 @@ category-path:
   - firewall
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
