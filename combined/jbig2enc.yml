@@ -6,6 +6,65 @@ docs:
   - https://github.com/agl/jbig2enc/blob/master/README.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Homebrew packages the executable as jbig2enc, while Debian and Ubuntu expose the
+      related command through a jbig2 package name. OCRmyPDF documentation treats a
+      JBIG2 encoder as an optional but recommended component for smaller OCR-produced
+      PDFs, which is one of the main reasons the encoder matters in Unix packaging even
+      though the upstream project is small.
+  package-nerd-significance:
+    - >
+      jbig2enc sits at an awkward packaging boundary: it is a tiny specialist encoder,
+      but it unlocks much smaller scanned-document PDFs for tools higher in the stack.
+      Packagers also care about its history because JBIG2 patent concerns long affected
+      distribution decisions, while later releases focused on build-system portability
+      and memory-safety fixes.
+  project-history:
+    - >
+      The public GitHub repository was created in 2009, and the bundled ChangeLog
+      records releases as early as the 0.21-era work on PDF output and old-book scans.
+      The project grew around Leptonica integration, with repeated releases updating
+      Leptonica compatibility, Windows build support, autotools, CMake, Meson, and the
+      helper script later named jbig2topdf.py.
+  related-projects:
+    - >
+      The README names Leptonica as a required imaging library and links related
+      jbig2enc sample and minidjvu projects. In package-manager use it is often
+      encountered through OCRmyPDF and other scanned-document workflows.
+  sources:
+    - https://formulae.brew.sh/formula/jbig2enc
+    - https://github.com/agl/jbig2enc
+    - https://github.com/agl/jbig2enc/blob/master/ChangeLog
+    - https://github.com/agl/jbig2enc/blob/master/README.md
+    - https://ocrmypdf.readthedocs.io/en/v9.0.0/jbig2.html
+  summary:
+    - >
+      jbig2enc is a command-line JBIG2 encoder for monochrome document images. Its
+      README describes JBIG2 as a bi-level image format that can outperform Group 4 fax
+      compression and says the tool can generate JBIG2 streams, fragments for embedding
+      in PDFs, symbol extraction and classification, refinement coding, and multipage
+      document compression.
+  timeline:
+    - >
+      2009: Public GitHub repository created and version 0.27 recorded with Leptonica
+      1.58 support.
+    - >
+      2012: Version 0.28 added autotools support, a Visual C++ solution, version
+      reporting, and PDF DPI fixes.
+    - '2017: Version 0.29 fixed builds with Leptonica 1.70 and adjusted reference counting.'
+    - >
+      2024: Version 0.30 moved PDF helper support to Python 3, added CMake, standalone
+      .jb2 support, DPI options, and ARM endian fixes.
+    - >
+      2026: Versions 0.31 and 0.32 added build-system work, CI improvements, argument
+      checks, C++17 requirements, and memory-leak fixes.
+  usage:
+    - >
+      Typical usage is document-pipeline work: encode scanned bilevel images with jbig2,
+      then use jbig2topdf.py to wrap the JBIG2 output into a PDF. The README also
+      documents standalone .jb2 output and sample commands for multi-image PDF creation.
 category: media
 package-manager:
   apk: jbig2enc
@@ -28,5 +87,12 @@ executables:
   - jbig2topdf.py
 provenance:
   formula: jbig2enc
+  history-sources:
+    - https://formulae.brew.sh/formula/jbig2enc
+    - https://github.com/agl/jbig2enc
+    - https://github.com/agl/jbig2enc/blob/master/ChangeLog
+    - https://github.com/agl/jbig2enc/blob/master/README.md
+    - https://ocrmypdf.readthedocs.io/en/v9.0.0/jbig2.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
