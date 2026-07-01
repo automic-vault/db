@@ -10,6 +10,83 @@ config-file-location:
     - mapproxy.yaml
     - seed.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      MapProxy's adoption follows the deployment pattern of GIS infrastructure: it is
+      installed next to web servers, WSGI servers, WMS sources, and tile caches rather
+      than used as a desktop app. The official deployment docs describe local
+      development with mapproxy-util serve-develop and production deployment either
+      embedded in a web server or behind an HTTP server or proxy.
+    - >
+      The input package metadata lists Homebrew, Debian, Ubuntu, and Nix packages.
+      Combined with the official pip installation instructions, that shows the project
+      is consumed through both Python packaging and system package managers.
+  package-nerd-significance:
+    - >
+      MapProxy matters to package indexes because it is glue: it bridges old and new OGC
+      services, tile formats, cache stores, and web deployment models. That kind of
+      package is not glamorous, but it reduces repeated custom proxy code in GIS shops.
+    - >
+      It also illustrates a common packaging story for Python infrastructure:
+      installable from pip, but still useful as an OS package because operators want
+      stable command names, service integration, and reproducible deployment
+      dependencies.
+  project-history:
+    - >
+      The official MapProxy site describes the project as an open-source proxy for
+      geospatial data that caches, accelerates, and transforms data from existing map
+      services for desktop and web GIS clients. Its GitHub repository was created in
+      April 2012, but the official release notes show the project already had 0.x and
+      1.x history before the current GitHub era.
+    - >
+      MapProxy's feature set grew around practical web mapping operations: WMS sources,
+      WMTS and TMS output, MapServer and Mapnik configurations, Google/Bing-compatible
+      tile sources, ArcGIS REST sources, reprojection, tile storage backends,
+      watermarks, and cache seeding. Later release notes show it adding cache backends
+      such as SQLite and Riak, dimensions for WMTS, digest authentication for source
+      requests, and eventually semver-based release management.
+    - >
+      By 2026 the project had reached the 6.x line, with official GitHub releases for
+      6.0.0 in October 2025 and 6.1.1 in June 2026. That long maintenance arc is
+      important in GIS packaging because organizations often run map caches as quiet
+      infrastructure for years.
+  related-projects:
+    - >
+      MapProxy can use MapServer and Mapnik configurations as sources or related
+      rendering infrastructure.
+    - >
+      It commonly works with OGC WMS, WMTS, and TMS clients and with web servers or HTTP
+      proxies for deployment.
+  sources:
+    - https://api.github.com/repos/mapproxy/mapproxy
+    - https://api.github.com/repos/mapproxy/mapproxy/releases?per_page=5
+    - https://github.com/mapproxy/mapproxy/blob/master/CHANGES.txt
+    - https://mapproxy.github.io/mapproxy/latest/configuration.html
+    - https://mapproxy.github.io/mapproxy/latest/deployment.html
+    - https://mapproxy.org/
+    - https://mapproxy.org/download
+    - source_facts.package-manager
+  summary:
+    - >
+      MapProxy is a Python-based geospatial proxy, tile cache, and WMS/WMTS/TMS service
+      layer used to cache, transform, and accelerate map services.
+  timeline:
+    - '2012: Current GitHub repository created.'
+    - '2013: MapProxy 1.6.0 released with additional cache and WMTS-related features.'
+    - '2025: MapProxy 6.0.0 released.'
+    - '2026: MapProxy 6.1.1 released.'
+  usage:
+    - >
+      MapProxy is configured with two main YAML files: mapproxy.yaml for server
+      behavior, layers, sources, caches, grids, and services, and seed.yaml for the
+      mapproxy-seed tool. The official docs show mapproxy-util create for generating
+      starter configs and mapproxy-util serve-develop for local testing.
+    - >
+      Package users typically care about the CLI entry points mapproxy-util and
+      mapproxy-seed, because those cover the lifecycle of generating a configuration,
+      running a development server, pre-filling tile caches, and deploying the WSGI app
+      behind Apache, nginx, Varnish, or another production front end.
 category: data
 package-manager:
   brew: mapproxy
@@ -31,5 +108,15 @@ executables:
   - mapproxy-util
 provenance:
   formula: mapproxy
+  history-sources:
+    - https://api.github.com/repos/mapproxy/mapproxy
+    - https://api.github.com/repos/mapproxy/mapproxy/releases?per_page=5
+    - https://github.com/mapproxy/mapproxy/blob/master/CHANGES.txt
+    - https://mapproxy.github.io/mapproxy/latest/configuration.html
+    - https://mapproxy.github.io/mapproxy/latest/deployment.html
+    - https://mapproxy.org/
+    - https://mapproxy.org/download
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

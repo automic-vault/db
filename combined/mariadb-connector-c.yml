@@ -50,6 +50,86 @@ credentials-file-location:
     - '%MARIADB_HOME%\my.cnf'
     - '%MYSQL_HOME%\my.ini'
     - '%MYSQL_HOME%\my.cnf'
+history:
+  adoption-history:
+    - >
+      Connector/C spread through operating-system packaging because many database-aware
+      programs need headers, mariadb_config or mysql_config compatibility, and
+      libmariadb at compile or link time. MariaDB's Debian 10 announcement notes that
+      Debian shipped MariaDB 10.3 with Connector/C 3.0 and that packages formerly
+      depending on legacy MySQL/MariaDB client libraries moved to libmariadb3 from
+      LGPL-licensed Connector/C.
+    - >
+      For Homebrew users, the separate mariadb-connector-c formula is useful when a
+      package needs the C client library and build metadata but not a local MariaDB
+      server. It also provides mysql_config compatibility for software that still
+      expects MySQL-flavored discovery commands.
+  package-nerd-significance:
+    - >
+      Package maintainers care about Connector/C because it decouples client-library
+      packaging from the database server and preserves MySQL C API compatibility names.
+      It is the package that often fixes builds of database clients, language bindings,
+      monitoring tools, and older autotools projects looking for mysql_config.
+    - >
+      The Homebrew formula is especially convenient on developer workstations: it gives
+      native builds a MariaDB/MySQL-compatible client library without starting a daemon
+      or pulling in server administration tools.
+  project-history:
+    - >
+      The connector descends from the MariaDB Client Library for C and was later branded
+      as MariaDB Connector/C. MariaDB's own release notes describe Connector/C 3.0.0 in
+      January 2016 as an alpha of the renamed client library, while the 2.3 series
+      remained a stable GA line in 2016. The project is maintained separately from the
+      server tree at the official MariaDB Corporation GitHub repository.
+    - >
+      MariaDB documents Connector/C as the library used to connect C and C++
+      applications to MariaDB and MySQL databases, under the LGPLv2.1 license. That
+      licensing and source split made it attractive to distributions and build systems
+      that wanted a client library without depending on a full server installation.
+  related-projects:
+    - MariaDB Server is the database server most closely associated with Connector/C.
+    - >
+      MySQL-compatible applications and language bindings often use Connector/C through
+      libmariadb or mysql_config-compatible discovery.
+    - >
+      MariaDB Connector/J, Connector/ODBC, and Connector/C++ are sibling connector
+      projects for other client APIs.
+  sources:
+    - https://github.com/mariadb-corporation/mariadb-connector-c
+    - https://mariadb.com/docs/connectors/mariadb-connector-c
+    - https://mariadb.com/docs/connectors/mariadb-connector-c/building-connectorc-from-source
+    - >
+      https://mariadb.com/docs/connectors/mariadb-connector-c/configuring-mariadb-connectorc-with-option-files
+    - https://mariadb.com/docs/connectors/mariadb-connector-c/mariadb-connector-c-guide
+    - https://mariadb.com/docs/release-notes/connectors/c/2.3/2.3.0
+    - https://mariadb.com/docs/release-notes/connectors/c/3.0/3.0.0
+    - https://mariadb.org/debian-10-mariadb-10-3/
+  summary:
+    - >
+      MariaDB Connector/C is the C client library for applications that connect to
+      MariaDB and MySQL-compatible servers. In package-manager terms it is the small but
+      important client-side piece that many native programs need at build time or
+      runtime, especially when replacing Oracle MySQL client libraries with MariaDB's
+      LGPL client stack.
+  timeline:
+    - >
+      2015: Connector/C 2.2.1 was documented as a stable GA release of the MariaDB
+      Client Library for C.
+    - '2016: Connector/C 3.0.0 appeared as an alpha of the renamed MariaDB Connector/C.'
+    - '2016: Connector/C 2.3.0 was a stable GA release of the client library.'
+    - '2017: Connector/C 3.0.2 reached stable GA status.'
+    - '2019: Debian 10 shipped MariaDB 10.3 with MariaDB Connector/C 3.0 and libmariadb3.'
+    - '2026: MariaDB Connector/C 3.4.9 release notes document the continuing stable 3.4 series.'
+  usage:
+    - >
+      Typical use is indirect: install the package, let build tools find mariadb_config
+      or mysql_config, and link software against libmariadb. Application developers can
+      also use Connector/C's option-file support so clients read the same my.cnf-style
+      defaults as other MariaDB and MySQL command-line clients.
+    - >
+      Because Connector/C can read default or custom option files, package users should
+      treat my.cnf locations as both configuration and possible credential locations
+      when client option groups contain user, password, TLS key, or passphrase settings.
 category: developer-tools
 package-manager:
   apk: mariadb-connector-c
@@ -74,5 +154,16 @@ executables:
   - mysql_config
 provenance:
   formula: mariadb-connector-c
+  history-sources:
+    - https://github.com/mariadb-corporation/mariadb-connector-c
+    - https://mariadb.com/docs/connectors/mariadb-connector-c
+    - https://mariadb.com/docs/connectors/mariadb-connector-c/building-connectorc-from-source
+    - >
+      https://mariadb.com/docs/connectors/mariadb-connector-c/configuring-mariadb-connectorc-with-option-files
+    - https://mariadb.com/docs/connectors/mariadb-connector-c/mariadb-connector-c-guide
+    - https://mariadb.com/docs/release-notes/connectors/c/2.3/2.3.0
+    - https://mariadb.com/docs/release-notes/connectors/c/3.0/3.0.0
+    - https://mariadb.org/debian-10-mariadb-10-3/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

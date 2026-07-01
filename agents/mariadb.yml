@@ -9,6 +9,105 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.my.cnf
+history:
+  adoption-history:
+    - >
+      MariaDB adoption was helped by distribution packaging. MariaDB's download page
+      calls it one of the world's most popular open source relational databases and
+      notes that it is available in the standard repositories of major Linux
+      distributions. The Foundation homepage also describes MariaDB as part of most
+      cloud offerings and the default in many Linux distributions.
+    - >
+      Distribution choices reinforced the package-manager story. MariaDB's Debian 10
+      announcement says Debian shipped MariaDB 10.3 and that installing mysql-server on
+      that release resolved to MariaDB instead, continuing a pattern where users
+      received MariaDB through ordinary operating-system package workflows.
+    - >
+      MariaDB is also common in container and service environments. A MariaDB Foundation
+      engineering post described the server as foundational software and cited Docker
+      Hub scale as a reason for strict testing across many architectures and
+      configurations.
+  package-nerd-significance:
+    - >
+      MariaDB is a package-nerd staple because it is both a server and a compatibility
+      surface. It provides MySQL-flavored command names, client libraries, development
+      headers, storage engines, and service-management behavior that many packages and
+      test suites assume exist.
+    - >
+      The unversioned Homebrew mariadb formula tracks the current packaged MariaDB line
+      and is the right choice for users who want the maintained default rather than a
+      pinned compatibility branch. People running production-like local data often
+      prefer versioned formulae when they need a specific LTS line.
+  project-history:
+    - >
+      MariaDB began in 2009 as a community fork of MySQL after concerns about Oracle's
+      acquisition of MySQL through Sun. MariaDB Foundation material says the first
+      release, MariaDB 5.1.38, shipped on 29 October 2009 with speed improvements, an
+      enhanced thread pool, and storage-engine work such as XtraDB and Aria.
+    - >
+      The project positioned itself as a backward-compatible, drop-in replacement for
+      MySQL while continuing independent development. MariaDB's public documentation
+      describes the source as hosted on GitHub, and Foundation material emphasizes open
+      development, public issue tracking, and community contribution.
+    - >
+      Over time MariaDB moved from being a MySQL fork to a database line with its own
+      release cadence, storage-engine choices, replication features, backup tooling,
+      Galera packaging, and long-term-support policy. The server remains important
+      because it preserves much of the operational and client-tool culture that grew
+      around MySQL.
+  related-projects:
+    - MySQL is the original upstream project and compatibility target.
+    - MariaDB Connector/C provides the C client library used by many client packages.
+    - >
+      Galera Cluster is commonly packaged with MariaDB for synchronous multi-primary
+      clustering.
+    - >
+      MariaDB Backup and the mariadb command-line clients are part of the surrounding
+      operational toolchain.
+  sources:
+    - https://mariadb.com/docs/server
+    - >
+      https://mariadb.com/docs/server/clients-and-utilities/server-client-software/download/getting-the-mariadb-source-code
+    - >
+      https://mariadb.com/docs/server/server-management/install-and-upgrade-mariadb/configuring-mariadb/configuring-mariadb-with-option-files
+    - https://mariadb.org/
+    - https://mariadb.org/about/
+    - https://mariadb.org/debian-10-mariadb-10-3/
+    - https://mariadb.org/download/
+    - https://mariadb.org/mariadb-server-turns-fifteen/
+    - https://mariadb.org/what-weve-developed-in-2024/
+  summary:
+    - >
+      MariaDB is a community-developed, MySQL-compatible relational database server made
+      by original MySQL developers and maintained as open source infrastructure. In
+      package managers it is the familiar mysql-compatible server package used for local
+      development, CI, self-hosted applications, and production deployments.
+  timeline:
+    - '2009: MariaDB began as a community fork of MySQL.'
+    - '2009: MariaDB 5.1.38 was released on 29 October 2009.'
+    - '2012: MariaDB Foundation was created to support open development of MariaDB Server.'
+    - '2019: Debian 10 shipped MariaDB 10.3 as its MySQL-compatible server path.'
+    - '2024: MariaDB 11.4 was made a long-term-support release with a locked feature set.'
+    - '2025: MariaDB 11.8 was released as the yearly LTS release for 2025.'
+    - >
+      2026: MariaDB Foundation listed multiple maintained long-term release lines,
+      including 10.6, 10.11, 11.4, 11.8, and 12.3.
+  usage:
+    - >
+      Package users install MariaDB when they need a local or managed SQL server
+      compatible with MySQL clients and protocols. The Homebrew formula exposes server
+      and administrative tools such as mariadbd, mariadb, mariadb-admin, mariadb-dump,
+      mariadb-upgrade, mariabackup, and Galera-related scripts.
+    - >
+      Configuration is centered on my.cnf or my.ini option files. MariaDB's official
+      docs explain the default option-file hierarchy across Unix-like systems and
+      Windows, and client tools can also use option files to avoid putting passwords on
+      command lines.
+    - >
+      For package-manager users, the important operational detail is that a database
+      package has state: upgrading the formula can also mean upgrading server binaries,
+      data directories, plugins, dump compatibility, and client tools. MariaDB's release
+      notes and LTS policy therefore matter more than the version number alone.
 tags:
   - cli
   - database
@@ -40,6 +139,18 @@ provenance:
     - 'source_facts.name: mariadb'
   docs-sources:
     - 'Official MariaDB Server documentation: https://mariadb.com/docs/server/'
+  history-sources:
+    - https://mariadb.com/docs/server
+    - >
+      https://mariadb.com/docs/server/clients-and-utilities/server-client-software/download/getting-the-mariadb-source-code
+    - >
+      https://mariadb.com/docs/server/server-management/install-and-upgrade-mariadb/configuring-mariadb/configuring-mariadb-with-option-files
+    - https://mariadb.org/
+    - https://mariadb.org/about/
+    - https://mariadb.org/debian-10-mariadb-10-3/
+    - https://mariadb.org/download/
+    - https://mariadb.org/mariadb-server-turns-fifteen/
+    - https://mariadb.org/what-weve-developed-in-2024/
   repo-sources:
     - 'Official MariaDB GitHub server repository: https://github.com/MariaDB/server'
   tags-sources:
@@ -52,5 +163,6 @@ category-path:
   - relational
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
