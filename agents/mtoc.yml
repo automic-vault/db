@@ -5,6 +5,34 @@ docs:
   - https://opensource.apple.com/
 config-file-location: null
 credentials-file-location: null
+history:
+  project-history:
+    - >
+      Its main visible adoption path is firmware development on macOS. The TianoCore EDK
+      II Xcode guide says Xcode supplies many development tools but not all tools needed
+      for TianoCore, and names mtoc as the utility required to convert macOS Mach-O
+      images to the PE/COFF form required by the UEFI specification. In that workflow,
+      developers build EDK II firmware on macOS with Xcode and use mtoc as the format
+      bridge between Apple's native object/executable format and UEFI's PE/COFF image
+      expectations.
+  sources:
+    - https://formulae.brew.sh/formula/mtoc
+    - https://github.com/apple-oss-distributions/cctools
+    - https://github.com/tianocore/tianocore.github.io/wiki/xcode
+    - https://raw.githubusercontent.com/Homebrew/homebrew-core/master/Formula/m/mtoc.rb
+  summary:
+    - >
+      mtoc is a narrow Apple/Darwin build tool: a Mach-O to PE/COFF binary converter
+      built from Apple's open-source cctools distribution. Homebrew packages it from the
+      apple-oss-distributions/cctools source archive, builds the mtoc Xcode scheme,
+      installs the mtoc binary and man page, and marks it as conflicting with ocmtoc
+      because both provide the same command name.
+  usage:
+    - >
+      As a package, mtoc is not a general binary-conversion suite like objconv and not
+      the whole cctools collection. It is the small extract a Homebrew user installs
+      when the build chain specifically asks for mtoc, most often through EDK II or
+      related UEFI build instructions.
 tags:
   - apple
   - binary-conversion
@@ -29,6 +57,11 @@ provenance:
     - >
       source_facts.homepage: official Apple Open Source homepage is the best official
       documentation surface supplied
+  history-sources:
+    - https://formulae.brew.sh/formula/mtoc
+    - https://github.com/apple-oss-distributions/cctools
+    - https://github.com/tianocore/tianocore.github.io/wiki/xcode
+    - https://raw.githubusercontent.com/Homebrew/homebrew-core/master/Formula/m/mtoc.rb
   repo-sources:
     - source_facts.repo already has a value; per instruction repo returned as null
   tags-sources:
@@ -39,5 +72,6 @@ category-path:
   - binary-tools
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

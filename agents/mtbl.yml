@@ -5,6 +5,41 @@ docs:
   - https://github.com/farsightsec/mtbl#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  project-history:
+    - >
+      In practice mtbl is used where a program wants compact, immutable, searchable
+      key-value files and wants to control the surrounding data-management workflow
+      itself. Writers accept already sorted, duplicate-free key-value pairs and write in
+      a single sequential pass; readers support exact-key, prefix, and range iteration;
+      sorter and merger interfaces support bulk-load and multi-table merge workflows
+      with caller-provided duplicate-key merge logic. The file format changed at version
+      1.0.0, with newer releases retaining read support for older files.
+  sources:
+    - https://formulae.brew.sh/formula/mtbl
+    - https://github.com/farsightsec/mtbl
+    - >
+      https://mail-archive.freebsd.org/cgi/getmsg.cgi?fetch=4079084+0+archive/2015/svn-ports-all/20150405.svn-ports-all
+    - https://www.caida.org/workshops/isc-caida/1210/slides/isc1210_redmonds.html
+  summary:
+    - >
+      mtbl is a Farsight Security C library that packages the Sorted String Table idea
+      as a small Unix-style library rather than as a full database. Its README describes
+      the design as based on the SSTable implementation in Google LevelDB: immutable
+      files map sorted byte-string keys to byte-string values, with an index at the end
+      for lookup. The project deliberately leaves database duties such as update
+      handling, deletion, and coordinating search results across tables to the caller,
+      exposing primitives for creating, searching, and merging SSTable files instead.
+  usage:
+    - >
+      Its ecosystem role is clearest in Farsight/Internet-measurement software. CAIDA
+      slides from ISC described mtbl alongside dnstable as an SSTable implementation for
+      scalable, compact, sequential-I/O construction. FreeBSD's 2015 addition of
+      dnstable records dnstable as a passive-DNS encoding library and utilities that
+      store records in SSTable files and depend on libmtbl. For package managers, mtbl
+      is a low-level C dependency rather than an end-user application; Homebrew exposes
+      the companion utilities mtbl_dump, mtbl_info, mtbl_merge, and mtbl_verify for
+      inspecting, merging, and checking table files.
 tags:
   - c-library
   - cli
@@ -33,6 +68,12 @@ provenance:
     - >
       source_facts.homepage points to the official GitHub repository; README is the
       official documentation surface.
+  history-sources:
+    - https://formulae.brew.sh/formula/mtbl
+    - https://github.com/farsightsec/mtbl
+    - >
+      https://mail-archive.freebsd.org/cgi/getmsg.cgi?fetch=4079084+0+archive/2015/svn-ports-all/20150405.svn-ports-all
+    - https://www.caida.org/workshops/isc-caida/1210/slides/isc1210_redmonds.html
   repo-sources:
     - >
       source_facts.homepage is the official source-control repository URL and GitHub
@@ -48,5 +89,6 @@ category-path:
   - data-storage
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
