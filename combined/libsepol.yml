@@ -7,6 +7,76 @@ docs:
   - https://selinuxproject.github.io/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      libsepol's adoption followed SELinux adoption in distributions: it is packaged as
+      a base SELinux userspace component rather than as a user-facing application.
+      Systems that build, load, downgrade, inspect, or manage SELinux policy tend to
+      pull in libsepol directly or indirectly.
+    - >
+      The library is also useful outside a fully SELinux-enabled Linux system, because
+      policy analysis and compilation workflows can run on systems that are not
+      enforcing SELinux.
+  package-nerd-significance:
+    - >
+      libsepol is the package that reminds distro maintainers that SELinux is not one
+      package: the enforcement model depends on a layered toolchain. libselinux is the
+      runtime-facing layer, libsepol is the binary-policy layer, and libsemanage plus
+      policycoreutils build the administrative experience above them.
+    - >
+      Because Homebrew can build libsepol on macOS mainly for policy analysis, it is a
+      neat example of a Linux security component whose most portable part is the
+      file-format and compiler tooling.
+  project-history:
+    - >
+      libsepol grew as part of the SELinux userspace stack, which was separated from the
+      kernel-side mandatory access-control mechanism into libraries, compilers, and
+      administrative tools. The SELinuxProject repository contains libsepol alongside
+      libselinux, libsemanage, policycoreutils, checkpolicy, and secilc.
+    - >
+      The upstream userspace package documentation describes secilc and checkpolicy as
+      using libsepol to generate binary policy. It also describes libsemanage as relying
+      on libsepol for binary policy manipulation and on libselinux for interaction with
+      the running SELinux system.
+  related-projects:
+    - >
+      checkpolicy and secilc use libsepol to produce binary policy, libsemanage uses it
+      when managing policy modules, libselinux may use it when loading policy, and
+      policycoreutils provides many of the command-line tools around those libraries.
+  sources:
+    - https://github.com/SELinuxProject/selinux
+    - https://github.com/SELinuxProject/selinux/wiki
+    - https://github.com/SELinuxProject/selinux/wiki/Releases
+    - https://github.com/SELinuxProject/selinux/wiki/Userspace-Packages
+    - >
+      https://www.nsa.gov/Research/Technical-Papers-Brochures/smdpage14229/2/smdsort14229/description/
+  summary:
+    - >
+      libsepol is the SELinux binary policy manipulation library. It sits below
+      higher-level management tools and policy compilers, handling the compiled policy
+      representation that the kernel consumes.
+  timeline:
+    - >
+      2001: NSA published SELinux technical reports on the original Linux kernel patch
+      and Linux Security Module integration.
+    - >
+      2008-09-09: The SELinux userspace release archive lists coordinated source tarball
+      releases including libsepol.
+    - >
+      2015-02-02: The userspace release archive includes libsepol 2.4 alongside
+      libselinux 2.4 and related packages.
+    - '2026-02-02: SELinuxProject repository metadata records SELinux userspace release 3.10.'
+  usage:
+    - >
+      Administrators usually touch libsepol indirectly through semodule, semanage,
+      checkpolicy, secilc, load_policy, and related SELinux tools. The Homebrew formula
+      exposes helper commands such as chkcon and sepol_check_access for policy-oriented
+      checks.
+    - >
+      For developers, libsepol is the lower-level library to use when the task is
+      reading, writing, checking, or transforming SELinux binary policy rather than
+      asking the running system for a process or file context.
 category: security
 package-manager:
   apk: libsepol
@@ -35,5 +105,13 @@ executables:
   - sepol_validate_transition
 provenance:
   formula: libsepol
+  history-sources:
+    - https://github.com/SELinuxProject/selinux
+    - https://github.com/SELinuxProject/selinux/wiki
+    - https://github.com/SELinuxProject/selinux/wiki/Releases
+    - https://github.com/SELinuxProject/selinux/wiki/Userspace-Packages
+    - >
+      https://www.nsa.gov/Research/Technical-Papers-Brochures/smdpage14229/2/smdsort14229/description/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

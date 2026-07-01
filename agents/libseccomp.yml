@@ -6,6 +6,58 @@ docs:
   - https://github.com/seccomp/libseccomp/tree/main/doc
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      libseccomp became important because seccomp-BPF moved from a kernel primitive into
+      ordinary application sandboxing and container security workflows. Its
+      supported-architecture list and release process reflect use by distributions and
+      runtimes that need consistent syscall-filter generation across Linux ABIs.
+  package-nerd-significance:
+    - >
+      libseccomp is one of those packages whose installed files look small but whose
+      consequences are large: container profiles, browser sandboxes, service hardening,
+      and low-level Linux security tooling all prefer a stable API over handwritten BPF
+      filters.
+  project-history:
+    - >
+      The Linux kernel documentation frames seccomp filtering as a way for a process to
+      reduce exposed kernel syscall surface by installing a BPF program over syscall
+      metadata. The libseccomp README describes the library as an easy-to-use,
+      platform-independent interface to that filtering mechanism, abstracting the BPF
+      language behind a conventional function-call API.
+    - >
+      The libseccomp tag history shows v0.1.0 and v1.0.0 tags in January 2013, followed
+      by a long 2.x series. The README also documents architecture support,
+      manpage-based documentation, regression tests, release signing, and Go bindings in
+      the separate libseccomp-golang repository.
+  related-projects:
+    - >
+      Related projects include the Linux kernel seccomp-BPF interface,
+      libseccomp-golang, container runtimes, browser sandboxes, and Linux
+      service-hardening tools.
+  sources:
+    - https://api.github.com/repos/seccomp/libseccomp/releases?per_page=100
+    - https://github.com/seccomp/libseccomp
+    - https://github.com/seccomp/libseccomp/tree/main/doc
+    - https://www.kernel.org/doc/html/latest/userspace-api/seccomp_filter.html
+  summary:
+    - >
+      libseccomp is the userspace helper library for Linux seccomp syscall filtering. It
+      gives applications and container runtimes a portable API for generating BPF-based
+      syscall filters instead of hand-writing architecture-specific filter programs.
+  timeline:
+    - '2013: v0.1.0 and v1.0.0 tags were made in January.'
+    - '2015: v2.2.x releases expanded the 2.x line.'
+    - '2019: v2.4.0 was published in March.'
+    - '2020: v2.5.0 was published in July.'
+    - '2025: v2.6.0 was published in January.'
+  usage:
+    - >
+      Applications initialize a filter context, add syscall rules, load the resulting
+      filter into the kernel, and optionally use tools such as scmp_sys_resolver while
+      developing policies. The library docs emphasize tests that can run even on systems
+      without seccomp-BPF, plus live tests for systems with kernel support.
 tags:
   - cli
   - linux
@@ -36,6 +88,11 @@ provenance:
       Official README says the doc directory contains available documentation, mostly
       manpages.
     - Official repository README provides project overview, resources, and build instructions.
+  history-sources:
+    - https://api.github.com/repos/seccomp/libseccomp/releases?per_page=100
+    - https://github.com/seccomp/libseccomp
+    - https://github.com/seccomp/libseccomp/tree/main/doc
+    - https://www.kernel.org/doc/html/latest/userspace-api/seccomp_filter.html
   repo-sources:
     - >
       source_facts.repo already has https://github.com/seccomp/libseccomp, so repo
@@ -50,5 +107,6 @@ category-path:
   - linux
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

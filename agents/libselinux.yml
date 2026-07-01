@@ -6,6 +6,87 @@ docs:
   - https://selinuxproject.github.io/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The upstream SELinux README describes SELinux as present in many major Linux
+      distributions and says the userspace libraries and tools are packaged by Alpine,
+      Debian and Ubuntu, Gentoo, Fedora and RHEL, SLES and openSUSE, Yocto, and others.
+      That made libselinux a quiet but widely depended-on system library rather than an
+      application users install for its own UI.
+    - >
+      The userspace packages wiki points to package-manager reverse dependency queries
+      for libselinux as a way to find SELinux-modified programs, and lists init systems,
+      PAM, OpenSSH, cron, sudo, shadow-utils, and other core packages as historical
+      examples of SELinux-aware integration points.
+  package-nerd-significance:
+    - >
+      libselinux is one of those packages whose importance is mostly visible through
+      dependency graphs: if SELinux support is compiled into system software, this
+      library is often the shared object that appears in the linkage. It is also a good
+      example of how Linux security features split across kernel APIs, policy compilers,
+      runtime libraries, and distro packaging.
+    - >
+      For Homebrew users, libselinux is interesting because it brings a Linux security
+      userland component onto macOS mostly as a build dependency and analysis library,
+      exposing the portability boundary between SELinux policy tooling and actual
+      SELinux enforcement.
+  project-history:
+    - >
+      SELinux began as a National Security Agency research effort around flexible
+      mandatory access control for Linux. NSA documentation from 2001 describes the
+      original SELinux kernel patch for Linux 2.2 and the later Linux Security Module
+      implementation. The modern SELinuxProject userspace repository collects the
+      libraries and tools that complement the kernel feature, including libselinux,
+      libsepol, libsemanage, policycoreutils, and related utilities.
+    - >
+      Within that stack, libselinux became the runtime interface for applications that
+      need SELinux context and policy services. The upstream userspace package notes
+      describe libselinux as providing library functions for SELinux kernel APIs such as
+      getcon(), plus support functions such as getseuserbyname(), and note that it may
+      use libsepol when loading policy.
+  related-projects:
+    - >
+      libsepol manipulates SELinux binary policy, libsemanage manages installed policy
+      modules, policycoreutils provides administrative commands, checkpolicy and secilc
+      compile policy, and the Linux kernel enforces the loaded policy.
+  sources:
+    - https://github.com/SELinuxProject/selinux
+    - https://github.com/SELinuxProject/selinux/wiki
+    - https://github.com/SELinuxProject/selinux/wiki/Releases
+    - https://github.com/SELinuxProject/selinux/wiki/Userspace-Packages
+    - >
+      https://www.nsa.gov/Research/Technical-Papers-Brochures/smdpage14229/2/smdsort14229/description/
+  summary:
+    - >
+      libselinux is the runtime library and small utility layer used by SELinux-aware
+      programs to talk to SELinux kernel APIs, inspect labels, and perform
+      access-control checks. In package terms it is the userland ABI that turns SELinux
+      from a kernel feature into something daemons, init systems, login tools, package
+      scripts, and administrators can actually use.
+  timeline:
+    - >
+      2001: NSA published SELinux technical reports covering the Linux 2.2 kernel patch
+      and the Linux Security Module based implementation.
+    - >
+      2008-09-09: The SELinux userspace release archive lists source tarball releases
+      for libselinux, libsepol, policycoreutils, and related packages.
+    - >
+      2015-02-02: The userspace release notes moved the default SELinux module store to
+      /var/lib/selinux/.
+    - >
+      2026-02-02: The SELinuxProject repository release list records SELinux userspace
+      release 3.10.
+  usage:
+    - >
+      Administrators encounter libselinux through utilities such as getenforce,
+      setenforce, getfilecon, setfilecon, matchpathcon, selinuxenabled, and getsebool.
+      Developers encounter it as the C library used by programs that need to read
+      process and file contexts, ask whether SELinux is enabled, or evaluate an SELinux
+      permission decision.
+    - >
+      On macOS via Homebrew it is mainly useful for policy analysis and tooling
+      experiments, not for enabling the Linux kernel SELinux enforcement path.
 tags:
   - access-control
   - cli
@@ -36,6 +117,13 @@ provenance:
   docs-sources:
     - Official SELinux Project website is the upstream documentation site.
     - Official SELinuxProject GitHub wiki documents SELinux userspace libraries and tools.
+  history-sources:
+    - https://github.com/SELinuxProject/selinux
+    - https://github.com/SELinuxProject/selinux/wiki
+    - https://github.com/SELinuxProject/selinux/wiki/Releases
+    - https://github.com/SELinuxProject/selinux/wiki/Userspace-Packages
+    - >
+      https://www.nsa.gov/Research/Technical-Papers-Brochures/smdpage14229/2/smdsort14229/description/
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -49,5 +137,6 @@ category-path:
   - access-control
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
