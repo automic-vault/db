@@ -7,6 +7,69 @@ docs:
   - https://xorg.freedesktop.org/releases/individual/util
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      imake's adoption story is almost inverted: it was once central to building X and X
+      applications, then became legacy infrastructure after X.Org modularization and the
+      move to Autotools. Package managers continue to carry it because old external X11
+      software and vendor source packages can still depend on Imakefiles and `xmkmf`.
+    - >
+      X.Org maintainers explicitly advise projects still using imake to migrate to build
+      systems that add support for new platforms and runtimes. The 2025 imake 1.0.11
+      announcement still added RISC-V and LoongArch Linux support, illustrating the
+      maintenance pressure created by old build recipes on newer architectures.
+  package-nerd-significance:
+    - >
+      imake is package-nerd archaeology with real build consequences. It explains why
+      some ports collections and formulas still preserve X11 support utilities long
+      after the main upstream ecosystem moved through Autotools and toward Meson.
+  project-history:
+    - >
+      The X Window System used imake extensively through X11R6.9 for both builds inside
+      the X source tree and external software. X.Org's release notes describe the
+      X11R7.x shift to modular source releases, and the imake README states that X moved
+      to GNU autoconf and automake for X11R7.0 and later releases in 2005.
+    - >
+      As a standalone X.Org utility package, imake includes helper programs such as
+      `ccmakedep`, `mergelib`, `revpath`, `mkdirhier`, `makeg`, `cleanlinks`,
+      `mkhtmlindex`, and `xmkmf`. Its README also notes that most real usage needs the
+      X.Org `util/cf` files, which provide platform-specific configuration data.
+  related-projects:
+    - >
+      imake is closely tied to X.Org `util/cf`, `xmkmf`, Autotools-era X.Org modular
+      builds, and newer Meson migration work. Its historical peers are the broader X11
+      utility and build-support packages distributed from X.Org's individual module
+      archives.
+  sources:
+    - https://formulae.brew.sh/api/formula/imake.json
+    - https://gitlab.freedesktop.org/xorg/util/imake
+    - https://gitlab.freedesktop.org/xorg/util/imake/-/raw/master/README.md
+    - https://lists.x.org/archives/xorg-announce/2025-December/003650.html
+    - https://www.x.org/archive/X11R7.7/doc/xorg-docs/ReleaseNotes.txt
+  summary:
+    - >
+      imake is the historic X Window System makefile-generation tool built around C
+      preprocessor templates. It is no longer the preferred X.Org build system, but it
+      remains packaged so older X11-era software can still be built.
+  timeline:
+    - >
+      1988: X11 version 11 was first released, forming the protocol era in which imake
+      became important.
+    - '2005: X11R7.0 moved X.Org builds to GNU autoconf and automake.'
+    - '2012: X11R7.7 was described as the eighth modular X Window System release.'
+    - '2025: imake 1.0.11 added Linux RISC-V and LoongArch support plus Meson build support.'
+    - '2026: Homebrew packages imake 1.0.11 for legacy X11 build compatibility.'
+  usage:
+    - >
+      imake preprocesses Imakefiles into makefiles using X.Org configuration templates,
+      with `xmkmf` commonly used by external packages to generate build files. The
+      support tools cover dependency generation, directory creation, library merging,
+      path calculation, and HTML index generation.
+    - >
+      The practical package-manager use is compatibility: install imake and the X.Org
+      configuration files when a legacy X11 source package asks for Imakefile processing
+      rather than `configure`, Meson, or CMake.
 category: developer-tools
 package-manager:
   apk: imake
@@ -37,5 +100,12 @@ executables:
   - xmkmf
 provenance:
   formula: imake
+  history-sources:
+    - https://formulae.brew.sh/api/formula/imake.json
+    - https://gitlab.freedesktop.org/xorg/util/imake
+    - https://gitlab.freedesktop.org/xorg/util/imake/-/raw/master/README.md
+    - https://lists.x.org/archives/xorg-announce/2025-December/003650.html
+    - https://www.x.org/archive/X11R7.7/doc/xorg-docs/ReleaseNotes.txt
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

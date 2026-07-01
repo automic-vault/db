@@ -7,6 +7,75 @@ docs:
   - https://github.com/royhills/ike-scan#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ike-scan became a standard package for VPN assessment work because it targets the
+      exposed UDP/500 and UDP/4500 surfaces that often sit at network borders. The input
+      metadata shows packaging in Homebrew, Debian, Ubuntu, MacPorts, and Nix, and the
+      README documents builds on Linux, BSDs, Solaris, macOS, Cygwin, and several older
+      Unix systems.
+  package-nerd-significance:
+    - >
+      The package is significant because it packages a specific security-research
+      technique, not just a generic network scanner. Its data files, including
+      ike-backoff-patterns and ike-vendor-ids, are part of the value: they turn timing
+      behavior and vendor payloads into repeatable fingerprints that can be updated as
+      products change.
+  project-history:
+    - >
+      The project grew out of NTA Monitor research into UDP retransmission backoff
+      fingerprinting. Roy Hills' 2003 white paper explains the observation that many UDP
+      services, including IKE, leave retransmission timing decisions to implementers,
+      creating measurable patterns that can identify VPN products.
+    - >
+      ike-scan v1.0 was the initial public release in the project's NEWS file.
+      Subsequent releases expanded platform support, added Windows binaries, accumulated
+      vendor ID and backoff fingerprints, and added psk-crack for aggressive-mode
+      pre-shared-key material captured by ike-scan.
+    - >
+      Version 1.9 marked a major feature expansion: IKEv2 packet support, NAT traversal,
+      source IP spoofing on raw-socket systems, stdin dictionaries for psk-crack, Vendor
+      ID fingerprinting, and improved pseudo-random packet generation. Version 1.9.4
+      moved development from an internal SVN repository to GitHub.
+  related-projects:
+    - >
+      ike-scan sits beside packet tools such as tcpdump and broader scanners such as
+      Nmap, but its closest related artifact is its own UDP backoff fingerprinting
+      paper. Its psk-crack companion makes it part scanner and part focused IPsec
+      assessment toolkit.
+  sources:
+    - https://github.com/royhills/ike-scan
+    - https://formulae.brew.sh/formula/ike-scan
+    - https://github.com/royhills/ike-scan/wiki
+    - https://github.com/royhills/ike-scan#readme
+    - https://github.com/royhills/ike-scan/tags
+    - https://github.com/royhills/ike-scan/releases
+  summary:
+    - >
+      ike-scan is Roy Hills' command-line scanner for discovering IPsec VPN endpoints
+      that speak IKE and fingerprinting their implementations. The README frames its
+      core jobs as discovery, fingerprinting, transform enumeration, user enumeration
+      for some VPN systems, and offline pre-shared-key cracking through the bundled
+      psk-crack program.
+  timeline:
+    - '2003: UDP backoff fingerprinting white paper describes ike-scan as the example program.'
+    - 'v1.0: Initial public release supports Debian, FreeBSD, and OpenBSD builds.'
+    - 'v1.7: psk-crack and aggressive-mode PSK capture support are added.'
+    - >
+      v1.8: Vendor ID and UDP backoff pattern databases expand to 135 vendor IDs and 29
+      backoff patterns.
+    - >
+      v1.9: IKEv2, NAT traversal, Vendor ID fingerprinting, and stdin dictionaries for
+      psk-crack are added.
+    - '2013: v1.9.4 moves development from internal SVN to GitHub.'
+  usage:
+    - >
+      Operators use ike-scan to send IKE phase-1 probes to one or many targets, list
+      responding hosts, inspect transform support, collect Vendor ID payloads, and
+      optionally measure retransmission backoff with --showbackoff. In aggressive mode,
+      --pskcrack output can feed psk-crack for dictionary or brute-force testing of
+      captured pre-shared-key hashes.
 category: security
 package-manager:
   brew: ike-scan
@@ -28,5 +97,13 @@ executables:
   - psk-crack
 provenance:
   formula: ike-scan
+  history-sources:
+    - https://github.com/royhills/ike-scan
+    - https://formulae.brew.sh/formula/ike-scan
+    - https://github.com/royhills/ike-scan/wiki
+    - https://github.com/royhills/ike-scan#readme
+    - https://github.com/royhills/ike-scan/tags
+    - https://github.com/royhills/ike-scan/releases
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

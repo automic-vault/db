@@ -6,6 +6,59 @@ docs:
   - https://github.com/libimobiledevice/ifuse#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ifuse became a small but widely packaged bridge between the Linux/macOS FUSE
+      ecosystem and iPhone/iPad file access. The Homebrew formula, Linux distribution
+      packages listed in the input, and the README's Linux and macOS build notes reflect
+      its role as an installable companion to usbmuxd, libplist, and libimobiledevice.
+  package-nerd-significance:
+    - >
+      Package maintainers care about ifuse because it sits at a three-way compatibility
+      boundary: Apple protocol behavior, libimobiledevice library ABI, and the host FUSE
+      implementation. The 1.2.0 to 1.2.1 data-corruption fix is a compact example of why
+      small filesystem packages can carry outsized risk.
+  project-history:
+    - >
+      The project's own NEWS file records version 0.9.0 as the first public release,
+      with AFC and AFC2 filesystem access and file-mode handling. Later releases
+      followed libiphone and libimobiledevice API changes, with version 1.0.0 explicitly
+      adopting libimobiledevice APIs and version 1.2.0 moving to libfuse 3 and requiring
+      libimobiledevice 1.4.0.
+    - >
+      The README describes the tool as an independent application, not an Apple product,
+      and documents the split between safe media-directory mounting, app
+      document/container mounting, and root filesystem mounting on jailbroken devices
+      with AFC2.
+  related-projects:
+    - >
+      ifuse depends on libimobiledevice for iOS communication, usbmuxd for device
+      transport, libplist/libusbmuxd support libraries, and a host FUSE implementation
+      such as libfuse or macFUSE.
+  sources:
+    - https://formulae.brew.sh/formula/ifuse
+    - https://github.com/libimobiledevice/ifuse
+    - https://libimobiledevice.org/
+    - https://raw.githubusercontent.com/libimobiledevice/ifuse/master/NEWS
+  summary:
+    - >
+      ifuse is the FUSE-facing member of the libimobiledevice tool family: it turns iOS
+      device storage exposed through Apple File Conduit services into a local mount
+      point on Unix-like systems.
+  timeline:
+    - '0.9.0: First public release with AFC and AFC2 filesystem access.'
+    - '1.0.0: Ported from libiphone APIs to libimobiledevice APIs.'
+    - '1.1.0: Added house_arrest support for app document/file-sharing access.'
+    - '1.1.4: Added app listing, network-device support, and newer dependency baselines.'
+    - '2025: Version 1.2.0 switched to libfuse 3.'
+    - '2026: Version 1.2.1 fixed a FUSE capability regression that could corrupt data.'
+  usage:
+    - >
+      Typical use is `ifuse <mountpoint>` to mount the media area of a connected device,
+      with options such as `--documents`, `--container`, `--list-apps`, and `--root`
+      covering app file sharing and jailbroken-device cases. Unmounting is delegated to
+      the platform's FUSE tooling.
 category: system
 package-manager:
   apk: ifuse
@@ -30,5 +83,11 @@ executables:
   - ifuse
 provenance:
   formula: ifuse
+  history-sources:
+    - https://formulae.brew.sh/formula/ifuse
+    - https://github.com/libimobiledevice/ifuse
+    - https://libimobiledevice.org/
+    - https://raw.githubusercontent.com/libimobiledevice/ifuse/master/NEWS
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

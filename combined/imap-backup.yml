@@ -8,6 +8,83 @@ config-file-location:
   unix: ~/.imap-backup/config.json
 credentials-file-location:
   unix: ~/.imap-backup/config.json
+history:
+  adoption-history:
+    - >
+      imap-backup is distributed as a RubyGem and as a Homebrew formula. RubyGems
+      download counts are much higher than Homebrew installs, which fits a Ruby CLI
+      whose main package channel is the gem ecosystem, while Homebrew gives Mac and
+      Linux users a convenient binary-package entry point.
+    - >
+      The package's adoption comes from a durable personal-infrastructure problem: IMAP
+      accounts need local, restartable, scriptable backups without coupling the archive
+      to a desktop mail client. Its docs also cover migration and restore operations, so
+      the tool is used for both preservation and moving mail between providers.
+  package-nerd-significance:
+    - >
+      imap-backup is package-nerd significant because it turns email portability into a
+      boring CLI workflow. It also demonstrates the tradeoffs of local-first backup
+      tools: plain JSON configuration, mboxrd serialization, metadata version
+      migrations, locking, and careful restart behavior matter more than a large service
+      backend.
+  project-history:
+    - >
+      The RubyGems version history shows `imap-backup` beginning with 0.0.1 in 2012 and
+      reaching 1.0.0 in early 2013. The project's developer documentation states design
+      goals of secure local configuration, restartable operation, and independence from
+      a mail client or MTA.
+    - >
+      The tool has grown from basic account backup into a broader IMAP maintenance
+      utility. Recent changelog entries document download strategies, Thunderbird export
+      improvements, configuration-free single-account backups, container images, a
+      consolidated `copy` command replacing older migration and mirror flows, account
+      locking, metadata migrations, and internationalization.
+  related-projects:
+    - >
+      imap-backup is related to IMAP synchronization and archival tools such as
+      isync/mbsync and offline mail workflows, but its docs emphasize local mboxrd
+      backups plus restore/copy operations rather than maintaining a live Maildir
+      mirror.
+  sources:
+    - https://formulae.brew.sh/api/formula/imap-backup.json
+    - https://github.com/joeyates/imap-backup
+    - https://raw.githubusercontent.com/joeyates/imap-backup/main/CHANGELOG.md
+    - https://raw.githubusercontent.com/joeyates/imap-backup/main/docs/commands/backup.md
+    - https://raw.githubusercontent.com/joeyates/imap-backup/main/docs/files/config.md
+    - https://rubygems.org/api/v1/gems/imap-backup.json
+    - https://rubygems.org/api/v1/versions/imap-backup.json
+  summary:
+    - >
+      imap-backup is a Ruby command-line tool for backing up and migrating IMAP email
+      accounts to local disk. It targets Gmail and other IMAP services, storing messages
+      in mboxrd files with companion metadata.
+  timeline:
+    - '2012: imap-backup 0.0.1 was published to RubyGems.'
+    - '2013: imap-backup 1.0.0 was published to RubyGems.'
+    - >
+      2022: The changelog records backup flags, mirror mode, stats, and
+      provider-specific backup fixes in the 6.x and 7.x lines.
+    - >
+      2023: Version 14.0.0 added configuration-free single-account backups, and 14.3.0
+      added container images.
+    - >
+      2024: Version 16.0.0 added the `copy` command and deprecated older migrate/mirror
+      commands.
+    - >
+      2026: The 16.x and 17.0.0.rc0 lines added localization, account locking, metadata
+      migration, and mboxrd serialization fixes.
+  usage:
+    - >
+      `imap-backup setup` creates configuration, and `imap-backup backup` copies
+      messages for configured accounts to disk. The backup command is incremental and
+      interruptible, and stores email in mboxrd files with IMAP metadata containing
+      offsets and message lengths.
+    - >
+      The config documentation records the default path as `~/.imap-backup/config.json`
+      and warns that usernames and passwords are stored in plain text there, with
+      permissions set on Unix-like systems. Other commands include restore, copy, and
+      single-account backup flows, with performance settings for delayed metadata writes
+      and multi-fetch size.
 category: productivity
 package-manager:
   brew: imap-backup
@@ -24,5 +101,14 @@ executables:
   - imap-backup
 provenance:
   formula: imap-backup
+  history-sources:
+    - https://formulae.brew.sh/api/formula/imap-backup.json
+    - https://github.com/joeyates/imap-backup
+    - https://raw.githubusercontent.com/joeyates/imap-backup/main/CHANGELOG.md
+    - https://raw.githubusercontent.com/joeyates/imap-backup/main/docs/commands/backup.md
+    - https://raw.githubusercontent.com/joeyates/imap-backup/main/docs/files/config.md
+    - https://rubygems.org/api/v1/gems/imap-backup.json
+    - https://rubygems.org/api/v1/versions/imap-backup.json
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
