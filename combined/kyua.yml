@@ -6,6 +6,86 @@ docs:
   - https://github.com/freebsd/kyua#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Kyua's adoption followed BSD operating-system testing needs rather than
+      application-framework fashion. Its README documents packages for FreeBSD, NetBSD
+      pkgsrc, OpenBSD, Fedora, and Homebrew, reflecting a tool distributed mainly where
+      system test suites and ports infrastructure need a common runner.
+    - >
+      FreeBSD documentation describes ATF test programs relying on a separate runtime
+      engine and names Kyua as the runtime of choice. That made Kyua part of the
+      practical interface between operating-system tests, package builds, and CI
+      reporting.
+  package-nerd-significance:
+    - >
+      Kyua is a classic package-nerd tool because it lives at the layer where packaging,
+      operating-system QA, and reproducible test execution meet. It is small enough to
+      install as a command-line dependency, but important enough that a broken Kyua
+      package can affect large downstream test runs.
+    - >
+      Its relationship with ATF, TAP, FreeBSD, NetBSD, and Homebrew makes it a useful
+      marker of Unix test infrastructure moving from ad hoc scripts toward queryable,
+      reportable test databases.
+  project-history:
+    - >
+      Kyua began in November 2010 as Julio Merino's attempt to replace the ATF tools
+      while preserving compatibility with ATF-written tests. The NetBSD wiki framed the
+      goal as reimplementing the ATF tools while keeping the NetBSD test suite usable,
+      especially to unlock features such as parallel execution, richer reports, and
+      support for non-ATF tests.
+    - >
+      The project reached Kyua 0.1 in July 2011 after it could run most of the NetBSD
+      test suite unmodified. FreeBSD later adopted Kyua as part of its own test-suite
+      and CI work, and in 2024 the project moved under the FreeBSD GitHub organization
+      after a long quiet period.
+  related-projects:
+    - >
+      ATF is Kyua's closest companion: ATF provides libraries and conventions for
+      writing tests, while Kyua runs them and records results.
+    - >
+      TAP support connects Kyua to the broader Unix testing convention used by many
+      language and packaging ecosystems.
+    - >
+      FreeBSD CI and test-suite work helped turn Kyua from a NetBSD-adjacent experiment
+      into practical operating-system testing infrastructure.
+  sources:
+    - https://blogsystem5.substack.com/p/kyua-graduates
+    - https://github.com/freebsd/kyua
+    - https://man.freebsd.org/cgi/man.cgi?format=html&query=atf&sektion=7
+    - https://raw.githubusercontent.com/freebsd/kyua/master/NEWS
+    - https://raw.githubusercontent.com/freebsd/kyua/master/README.md
+    - https://wiki.netbsd.org/kyua/
+  summary:
+    - >
+      Kyua is a BSD-oriented test runner and reporting tool for infrastructure software.
+      It was designed around ATF compatibility but grew into a standalone command-line
+      runtime able to run ATF tests, plain test programs, and TAP-style tests.
+    - >
+      For package people, Kyua matters because it is not just another unit-test binary:
+      it is part of the operating-system test-suite story for NetBSD and FreeBSD, and it
+      appears across ports and distribution packages as the runner behind many low-level
+      test suites.
+  timeline:
+    - '2010: Kyua was born as a testing framework for infrastructure software.'
+    - '2011: Kyua 0.1 was launched after it could run most of the NetBSD test suite unmodified.'
+    - '2013: Work to integrate Kyua into FreeBSD was underway.'
+    - '2015: Kyua 0.12 added parallel test execution.'
+    - >
+      2016: Kyua 0.13 was released with fixes for timestamps, TAP parsing, and
+      long-running executions.
+    - '2024: The project moved under the FreeBSD GitHub organization.'
+    - '2025: Kyua 0.14.1 was released with renewed ATF compatibility and build fixes.'
+  usage:
+    - >
+      Users define test suites with Kyuafiles and run them with the `kyua` command. Kyua
+      records results, can generate reports, and can run tests written with ATF as well
+      as simpler external programs.
+    - >
+      The 0.12 release in November 2015 added parallel test execution, a significant
+      improvement for large system test suites where individual tests are often
+      I/O-bound or process-bound rather than CPU-bound.
 category: developer-tools
 package-manager:
   apk: kyua
@@ -28,5 +108,13 @@ executables:
   - kyua
 provenance:
   formula: kyua
+  history-sources:
+    - https://blogsystem5.substack.com/p/kyua-graduates
+    - https://github.com/freebsd/kyua
+    - https://man.freebsd.org/cgi/man.cgi?format=html&query=atf&sektion=7
+    - https://raw.githubusercontent.com/freebsd/kyua/master/NEWS
+    - https://raw.githubusercontent.com/freebsd/kyua/master/README.md
+    - https://wiki.netbsd.org/kyua/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
