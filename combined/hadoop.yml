@@ -16,6 +16,119 @@ config-file-location:
     - etc/hadoop/mapred-site.xml
     - etc/hadoop/yarn-site.xml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Hadoop's adoption history is tied to the rise of commodity-cluster data
+      processing. The Apache homepage describes a framework designed to scale from
+      single servers to thousands of machines, with failure detection and handling in
+      the application layer rather than relying only on hardware high availability.
+    - >
+      The broader ecosystem made Hadoop more than one binary. Apache release notes and
+      docs refer to HBase, Pig, Oozie, Hive, Sqoop, WebHDFS, and YARN applications as
+      downstream or companion systems. For package managers, that ecosystem means Hadoop
+      often arrives as a dependency, local test harness, or compatibility target even
+      when production clusters are provisioned by other means.
+  package-nerd-significance:
+    - >
+      Hadoop is a heavyweight formula by package-manager standards: a Java-centric
+      distributed-systems stack with many scripts, XML configs, daemon roles, and
+      ecosystem expectations. It matters to package nerds because installing it locally
+      can satisfy client tooling, build-time assumptions, demos, and compatibility tests
+      without standing up a full distribution.
+    - >
+      It is also a naming and dependency landmark. Many big-data packages historically
+      needed to say which Hadoop line, HDFS client, YARN API, or MapReduce compatibility
+      level they targeted. That makes the package less about a single executable and
+      more about a versioned contract with the surrounding data ecosystem.
+  project-history:
+    - >
+      Apache's early Hadoop documentation records the project split from Nutch MapReduce
+      and distributed filesystem code in 2006, with Hadoop code moved into its own
+      source tree in February, project approval in March, and release 0.1.0 in April.
+      The project grew around a practical abstraction: store data across many machines
+      with HDFS and run distributed computation with MapReduce.
+    - >
+      Hadoop 1.0.0 arrived in December 2011 after what Apache called six years of
+      gestation. That release came from the 0.20-security line and included security,
+      HBase-related HDFS append/sync work, WebHDFS, and performance improvements. The
+      1.x era established Hadoop as a deployable foundation for large-scale storage and
+      batch processing.
+    - >
+      The 2.x line changed Hadoop's architecture by introducing YARN, described in
+      Apache release notes as NextGen MapReduce. YARN separated cluster resource
+      management from the MapReduce programming model, letting Hadoop run a wider set of
+      distributed applications while keeping HDFS as a common storage layer. Apache's
+      2.0.2-alpha notes also recorded YARN deployment on a 2000-node cluster at release
+      time.
+    - >
+      Hadoop 3.x continued the infrastructure evolution. The 3.0.0 documentation
+      highlights erasure coding in HDFS for lower storage overhead than three-way
+      replication, along with a broader set of HDFS, YARN, MapReduce, and operational
+      features. Later Apache site news documents 3.4 and 3.5 lines as large maintenance
+      and enhancement releases.
+  related-projects:
+    - >
+      Apache Nutch: origin project from which Hadoop's early MapReduce and distributed
+      filesystem code split.
+    - 'HDFS: Hadoop Distributed File System storage layer.'
+    - 'YARN: Hadoop cluster resource-management framework.'
+    - 'MapReduce: batch-processing framework and command surface in Hadoop.'
+    - >
+      Apache HBase, Hive, Pig, Oozie, and Sqoop: common Hadoop-era ecosystem projects
+      referenced in Apache release and setup material.
+  sources:
+    - https://hadoop.apache.org/
+    - https://hadoop.apache.org/docs/r3.0.0/
+    - >
+      https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/ClusterSetup.html
+    - >
+      https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
+    - https://hadoop.apache.org/release/2.0.0-alpha.html
+    - https://hadoop.apache.org/release/page/9.html
+    - https://hadoop.apache.org/version_control.html
+    - https://web.mit.edu/~mriap/hadoop/hadoop-0.13.1/docs/
+  summary:
+    - >
+      Apache Hadoop is the Apache Software Foundation framework for reliable, scalable,
+      distributed computing across clusters. The Homebrew package exposes the
+      command-line surface around Hadoop Common, HDFS, YARN, and MapReduce, making it a
+      developer workstation entry point into a historically server-oriented big-data
+      stack.
+  timeline:
+    - >
+      2006: Hadoop code moved out of Nutch, the project was approved, and release 0.1.0
+      was published.
+    - '2011: Hadoop 1.0.0 was released from the 0.20-security code line.'
+    - >
+      2012: Hadoop 2.0.0-alpha introduced HDFS HA, YARN, HDFS Federation, and protobuf
+      wire compatibility.
+    - >
+      2012: Hadoop 2.0.2-alpha notes recorded a more stable YARN deployed on a 2000-node
+      cluster.
+    - >
+      2017: Hadoop 3.0.0 documentation described HDFS erasure coding and other 3.x
+      architecture updates.
+    - >
+      2024: Apache announced the Hadoop 3.4 line with thousands of fixes, improvements,
+      and enhancements since 3.3.
+    - >
+      2026: Apache announced the Hadoop 3.5 line with hundreds of fixes, improvements,
+      and enhancements since 3.4.
+  usage:
+    - >
+      On a workstation, the package is commonly used for command-line tools such as
+      `hadoop`, `hdfs`, `yarn`, and `mapred`, for local pseudo-distributed testing, for
+      interacting with HDFS-compatible services, or for building software that expects
+      Hadoop client libraries and scripts. The single-node setup docs are a common
+      starting point because they let developers run Hadoop locally before touching a
+      cluster.
+    - >
+      Operational Hadoop usage is configuration-heavy. Apache cluster setup
+      documentation names site-specific XML files under `etc/hadoop`, including
+      core-site.xml, hdfs-site.xml, yarn-site.xml, and mapred-site.xml, plus environment
+      scripts such as hadoop-env.sh and yarn-env.sh. The same docs instruct
+      administrators to distribute configuration to HADOOP_CONF_DIR across machines.
 category: data
 package-manager:
   brew: hadoop
@@ -59,5 +172,17 @@ executables:
   - yarn-daemons.sh
 provenance:
   formula: hadoop
+  history-sources:
+    - https://hadoop.apache.org/
+    - https://hadoop.apache.org/docs/r3.0.0/
+    - >
+      https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/ClusterSetup.html
+    - >
+      https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
+    - https://hadoop.apache.org/release/2.0.0-alpha.html
+    - https://hadoop.apache.org/release/page/9.html
+    - https://hadoop.apache.org/version_control.html
+    - https://web.mit.edu/~mriap/hadoop/hadoop-0.13.1/docs/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

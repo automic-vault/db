@@ -6,6 +6,95 @@ docs:
   - https://www.hamlib.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Hamlib became infrastructure rather than a single end-user program. The official
+      README notes C++ support, bindings for Perl, Python, and TCL, and a network daemon
+      usable by any language with sockets. That made it practical for GUI applications,
+      scripts, and distributed station-control setups to share the same hardware
+      backends.
+    - >
+      Package-manager adoption reflects that infrastructure role. The input package
+      facts list Hamlib in Homebrew, Alpine, Debian/Ubuntu, Fedora, MacPorts, Nix, Arch,
+      and openSUSE-style packaging, which is the kind of broad Unix distribution
+      footprint expected for a hardware-control library used by other amateur-radio
+      software.
+  package-nerd-significance:
+    - >
+      Hamlib is a classic package-nerd dependency: the executables are useful, but the
+      real value is the shared ABI/API and the growing backend database. Distributions
+      package it because many higher-level radio tools can depend on one control library
+      instead of vendoring device protocols or requiring users to build hardware drivers
+      from source.
+    - >
+      It is also a packaging stress case. The project spans C libraries, command-line
+      tools, daemon protocols, language bindings, release branches, and
+      hardware-specific backends. Packagers care about Hamlib because an upgrade can
+      unlock new equipment support, but major-version or command/API changes can affect
+      client applications that link to the library or script against the utilities.
+  project-history:
+    - >
+      Hamlib traces its copyright lineage to Frank Singleton, Stephane Fillod, and the
+      Hamlib Group beginning in 2000. The official README describes the project goal as
+      stable, flexible shared libraries for faster development of amateur-radio
+      equipment-control applications.
+    - >
+      The design grew around a generic library API and backend modules for specific
+      devices. The README describes `libhamlib` as the generic API seen by application
+      programs, with radio, rotator, and amplifier backends behind it. That backend
+      model is the central historical choice: support for new hardware can be added
+      without rewriting every client application.
+    - >
+      The project has also accumulated command-line utilities and network daemons. Tools
+      such as `rigctl`, `rotctl`, and `ampctl` expose direct shell control and testing,
+      while `rigctld`, `rotctld`, and `ampctld` make the same command families available
+      over TCP sockets for applications written in other languages or running on other
+      machines.
+  related-projects:
+    - >
+      Client applications commonly relate to Hamlib through the `rigctl`/`rotctl`
+      utilities or the `rigctld`/`rotctld` network daemons. The project also relates to
+      radio logging, digital-mode, satellite-tracking, and remote-station software that
+      need standardized rig or rotator control.
+    - >
+      The project keeps a SourceForge presence for snapshots and backup distribution
+      while the master repository is on GitHub.
+  sources:
+    - https://formulae.brew.sh/formula/hamlib
+    - https://github.com/Hamlib/Hamlib
+    - https://github.com/Hamlib/Hamlib/wiki
+    - https://github.com/Hamlib/Hamlib/wiki/Network-Device-Control
+  summary:
+    - >
+      Hamlib is the long-running free-software control layer for amateur-radio rigs,
+      rotators, and amplifiers. It matters because it gives radio applications a shared
+      API and command set instead of forcing every logging, digital-mode, contest, or
+      satellite tool to speak each device protocol directly.
+  timeline:
+    - >
+      2000: Copyright lineage begins with Frank Singleton, Stephane Fillod, and the
+      Hamlib Group.
+    - >
+      2001-2011: Copyright notices in utility manual pages identify Stephane Fillod's
+      early long-term authorship period.
+    - '2002 onward: Hamlib Group contributor copyright appears in utility documentation.'
+    - >
+      2010s-2020s: The project continues as a shared library plus command utilities,
+      daemon interfaces, bindings, release branches, and a GitHub-hosted master
+      repository.
+  usage:
+    - >
+      Users and developers most often meet Hamlib through the control utilities.
+      `rigctl` can set or query radio state from the shell, `rotctl` controls antenna
+      rotators, and the daemon variants let multiple clients speak to equipment through
+      TCP ports. The dummy model gives developers a way to test behavior without
+      physical radio hardware.
+    - >
+      For application authors, the package provides a common API for equipment
+      capabilities and state. The library abstracts differences among serial,
+      USB-serial, Ethernet, Wi-Fi, Bluetooth, and similar control paths where devices
+      present a command interface.
 tags:
   - cli
   - ham-radio
@@ -32,6 +121,11 @@ provenance:
     - >
       Official GitHub wiki is the best dedicated documentation surface found;
       source_facts.homepage is the official project site fallback.
+  history-sources:
+    - https://formulae.brew.sh/formula/hamlib
+    - https://github.com/Hamlib/Hamlib
+    - https://github.com/Hamlib/Hamlib/wiki
+    - https://github.com/Hamlib/Hamlib/wiki/Network-Device-Control
   repo-sources:
     - source_facts.repo is already populated, so repo was not re-determined.
   tags-sources:
@@ -45,5 +139,6 @@ category-path:
   - hardware-control
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

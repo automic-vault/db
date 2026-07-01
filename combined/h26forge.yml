@@ -8,6 +8,70 @@ docs:
   - https://github.com/h26forge/h26forge#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is primarily visible in security-research use rather than broad
+      application development. The README lists vulnerabilities and fixes associated
+      with H26Forge-generated or H26Forge-assisted test cases across FFmpeg/VLC, Apple
+      platforms, Firefox, Pixel hardware decoding, and CoreMedia on Windows.
+    - >
+      Its Homebrew formula made the research tool easier to install as a normal
+      command-line package, which matters for a tool whose users may be reproducing
+      papers, validating decoder behavior, or generating batches of proof-of-concept
+      media on macOS.
+  package-nerd-significance:
+    - >
+      H26Forge is interesting because it packages a highly specialized academic/security
+      artifact as a Rust CLI. Instead of being a codec, encoder, or transcoder, it
+      deliberately creates edge-case media that remains parseable enough to exercise
+      decoder semantics, filling a gap between fuzzers, bitstream analyzers, and
+      multimedia test suites.
+  project-history:
+    - >
+      The public repository was created in February 2023, alongside the USENIX Security
+      2023 paper by W.R. Vasquez, Stephen Checkoway, and Hovav Shacham. The README
+      describes the tool as infrastructure for analyzing, generating, and manipulating
+      H.264 files, and the paper frames it as a response to the difficulty of exploring
+      bugs in hardware-accelerated and privileged video decoders.
+    - >
+      H26Forge evolved around three modes: random mutation of syntax elements, scripted
+      programmatic editing, and generation of Annex B H.264 streams that can be written
+      to files or streamed over RTP. The project documentation also records conformance
+      work against ITU H.264 test vectors and examples for reproducing specific
+      decoder-bug conditions.
+  related-projects:
+    - >
+      H26Forge sits near FFmpeg, ITU H.264 conformance vectors, browser and OS video
+      decoders, and security fuzzing infrastructure. Its documentation also relates it
+      to H.264/AVC specification work and to proof-of-concept generation for decoder
+      CVEs.
+  sources:
+    - https://formulae.brew.sh/formula/h26forge
+    - https://github.com/h26forge/h26forge
+    - https://github.com/h26forge/h26forge/blob/main/docs/GETTINGSTARTED.md
+    - https://raw.githubusercontent.com/h26forge/h26forge/main/README.md
+    - https://wrv.github.io/h26forge.pdf
+  summary:
+    - >
+      H26Forge is a research-oriented H.264 security tool for producing syntactically
+      valid but semantically non-compliant video bitstreams. Its package-manager niche
+      is narrow: it gives codec and vulnerability researchers a reproducible CLI for
+      generating, mutating, and editing Annex B H.264 streams without hand-editing
+      entropy-coded syntax elements.
+  timeline:
+    - '2023: Public GitHub repository created.'
+    - '2023: USENIX Security paper described H26Forge and its decoder-vulnerability workflow.'
+    - >
+      2024: README trophy list included later decoder findings such as Pixel MFC and
+      Apple CoreMedia issues.
+  usage:
+    - >
+      Typical use starts with generating an Annex B H.264 bitstream, mutating syntax
+      elements from an existing stream, or running a Python editing script over decoded
+      syntax elements before re-encoding. The project points users to FFmpeg for
+      extracting Annex B streams from MP4 input and to `config/default.json` or
+      specialized configs for generation ranges.
 category: security
 package-manager:
   apk: h26forge
@@ -26,5 +90,12 @@ executables:
   - h26forge
 provenance:
   formula: h26forge
+  history-sources:
+    - https://formulae.brew.sh/formula/h26forge
+    - https://github.com/h26forge/h26forge
+    - https://github.com/h26forge/h26forge/blob/main/docs/GETTINGSTARTED.md
+    - https://raw.githubusercontent.com/h26forge/h26forge/main/README.md
+    - https://wrv.github.io/h26forge.pdf
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

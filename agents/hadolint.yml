@@ -12,6 +12,92 @@ config-file-location:
     - ~/hadolint/config.yaml
     - ~/.hadolint.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README documents several installation paths: prebuilt binaries for macOS,
+      Windows, and Linux, Homebrew on macOS, Scoop on Windows, Nix, Docker Hub images,
+      GHCR images, and source builds with Haskell tooling. That breadth is why Hadolint
+      appears in local developer environments, pre-commit hooks, CI jobs, editor
+      integrations, and containerized lint workflows.
+    - >
+      Hadolint's adoption is tied to a specific DevOps habit: treating Dockerfiles like
+      source code with repeatable lint rules. Its GitHub Action companion and
+      integration documentation reinforce the tool's role in pull-request checks, while
+      the CLI remains simple enough for one-off use as `hadolint Dockerfile`.
+  package-nerd-significance:
+    - >
+      Hadolint is package-nerd catnip because it sits at the intersection of Haskell
+      distribution, static binaries, Docker images, shell linting, CI formats, and
+      config-file discovery. It gives a local package manager a cleaner path than
+      `docker run` when a workflow needs fast startup, editor integration, or offline
+      linting.
+    - >
+      It also demonstrates how a single-purpose CLI can become infrastructure glue.
+      Package maintainers care about its static binary story, cross-platform release
+      assets, and transitive ShellCheck behavior because those details shape whether
+      Dockerfile linting is painless inside larger build pipelines.
+  project-history:
+    - >
+      The first GitHub release in April 2016 described Hadolint as a smarter Dockerfile
+      linter that builds on ShellCheck. Early releases added a clearer command-line
+      interface, multi-file support, Homebrew compatibility, YAML-based ignored-rule
+      configuration, and integration documentation for editors and CI systems.
+    - >
+      The project matured by expanding both Dockerfile syntax support and output
+      formats. Release notes record JSON, CodeClimate, Checkstyle XML, Codacy,
+      SonarQube, SARIF, GNU-style, and other formatter work across the 1.x and 2.x
+      lines. Configuration also grew from ignored rules into severity thresholds,
+      trusted registries, label schemas, strict-label behavior, and inline ignore
+      pragmas.
+    - >
+      Hadolint 2.0 in 2021 was described by the project as a major internal refactor
+      focused on maintainability and efficiency, with new rule families around LABEL,
+      COPY, useradd, HEALTHCHECK, and package-manager usage. Later releases continued
+      tracking Dockerfile syntax, shell behavior, distribution quirks, and packaging
+      targets such as static binaries and ARM64 builds.
+  related-projects:
+    - 'ShellCheck: shell-script analyzer used by Hadolint for RUN instruction shell code.'
+    - 'language-docker: Dockerfile parser used by Hadolint in its Haskell implementation.'
+    - 'hadolint-action: GitHub Action wrapper for running Hadolint in workflows.'
+    - 'Docker and OCI build tooling: the file format and build workflows Hadolint checks.'
+  sources:
+    - https://github.com/hadolint/hadolint
+    - https://github.com/hadolint/hadolint-action
+    - https://github.com/hadolint/hadolint/releases
+    - https://hadolint.github.io/hadolint/
+    - https://raw.githubusercontent.com/hadolint/hadolint/master/README.md
+  summary:
+    - >
+      Hadolint is a Haskell Dockerfile linter that parses Dockerfiles into an abstract
+      syntax tree, applies Dockerfile best-practice rules, and delegates shell snippets
+      in RUN instructions to ShellCheck. In package-manager culture it is a compact,
+      CI-friendly static analyzer for container builds, often installed locally even
+      when the same tool is also available as a container image.
+  timeline:
+    - '2016: v1.0 release introduced the Dockerfile linter built on ShellCheck.'
+    - '2016: v1.2 and v1.2.1 added multi-Dockerfile support and Homebrew compatibility work.'
+    - '2017: v1.2.6 added YAML configuration for ignored rules.'
+    - '2018: v1.5.0 added JSON, CodeClimate JSON, and Checkstyle XML output formats.'
+    - '2018: v1.10.0 added trusted-registry checks for FROM images.'
+    - '2018: v1.13.0 exposed Hadolint for use as a library.'
+    - >
+      2021: v2.0.0 delivered a major internal refactor and added several Dockerfile rule
+      families.
+    - '2022: v2.10.0 added ARM64 binary support through a new release workflow.'
+    - '2025: v2.14.0 continued rule and package-manager compatibility updates.'
+  usage:
+    - >
+      Typical package usage is direct CLI linting of one or more Dockerfiles, optionally
+      selecting output formats for CI annotations or machine-readable reports. Users can
+      override severities, ignore specific rule codes, require label schemas, reject
+      untrusted registries, and set a failure threshold that decides when the process
+      exits unsuccessfully.
+    - >
+      Hadolint looks for YAML configuration in project and user config locations, using
+      the first file found. This makes the Homebrew package useful for teams that want a
+      repository-local `.hadolint.yaml` while still allowing individual defaults under
+      XDG or home-directory paths.
 tags:
   - cli
   - dockerfile
@@ -41,6 +127,12 @@ provenance:
     - >
       Official GitHub README provides how-to-use, install, CLI, configure, rules, and
       development documentation.
+  history-sources:
+    - https://github.com/hadolint/hadolint
+    - https://github.com/hadolint/hadolint-action
+    - https://github.com/hadolint/hadolint/releases
+    - https://hadolint.github.io/hadolint/
+    - https://raw.githubusercontent.com/hadolint/hadolint/master/README.md
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -53,5 +145,6 @@ category-path:
   - linting
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

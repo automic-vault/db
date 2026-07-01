@@ -7,6 +7,101 @@ docs:
   - https://github.com/uber/h3#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      H3 adoption began with Uber's internal marketplace analytics and spread through
+      open-source bindings and data-platform integrations. The Uber blog describes H3 as
+      used throughout Uber for quantitative marketplace analysis, and the H3 site
+      positions it for joining disparate datasets and aggregating at different precision
+      levels.
+    - >
+      Package-manager adoption reflects two audiences: developers who want the C
+      CLI/library through Homebrew, MacPorts, Nix, or Linux packages, and data users who
+      install bindings such as h3-py, h3-js, h3-java, PostgreSQL extensions, or
+      warehouse functions. That split made H3 both a systems package and a data-analysis
+      primitive.
+  package-nerd-significance:
+    - >
+      H3 is a package-nerd favorite because a relatively small C library and CLI unlock
+      a large ecosystem of geospatial workflows. It lets packages expose geospatial
+      indexing through ordinary scalar values, which is much easier to package, bind,
+      test, and move between languages than a full GIS stack.
+    - >
+      The 4.0 migration is also historically important: the project took the pain of API
+      renaming and error-return cleanup while documenting that existing H3 indexes and
+      grid layout remained compatible. That distinction matters for package upgrades
+      because stored H3 IDs can outlive a language binding or library major version.
+  project-history:
+    - >
+      Uber created H3 to support marketplace analysis, pricing, dispatch optimization,
+      and spatial visualization at city scale. The public repository was created in
+      December 2017, and Uber's engineering blog announced that H3 had been open sourced
+      on GitHub and that JavaScript bindings had also been opened.
+    - >
+      The H3 design combines a global hexagonal grid with a hierarchical index. Official
+      documentation describes a discrete global grid system developed at Uber, with
+      cells that can represent points and shapes, aggregate datasets at different
+      resolutions, and support algorithms such as nearest neighbors, shortest paths, and
+      smoothing.
+    - >
+      The C library became the stable core, while Java, JavaScript, Python, and other
+      bindings made the grid usable from application, analytics, and database workflows.
+      The documentation's bindings page records the broader ecosystem, including cloud
+      data warehouses, PostgreSQL, Spark-style analytics, and language bindings
+      maintained by Uber and the community.
+    - >
+      Version 4.0.0 in 2022 introduced breaking API changes around terminology, error
+      handling, and more consistent function names, while preserving the grid layout and
+      index interpretation across 3.x and 4.x. Later 4.x releases continued to add
+      functions and improve algorithms while keeping the core index model stable.
+  related-projects:
+    - >
+      Related projects include S2 Geometry, h3-js, h3-java, h3-py, PostgreSQL H3
+      extensions, BigQuery and warehouse integrations, GIS systems, and spatial
+      analytics platforms that use H3 cells as join and aggregation keys.
+  sources:
+    - https://formulae.brew.sh/formula/h3
+    - https://github.com/uber/h3
+    - https://github.com/uber/h3/releases
+    - https://h3geo.org/
+    - https://h3geo.org/docs/
+    - https://h3geo.org/docs/community/bindings/
+    - https://h3geo.org/docs/library/migrating-3.x/
+    - https://raw.githubusercontent.com/uber/h3/master/README.md
+    - https://www.uber.com/us/en/blog/h3/
+  summary:
+    - >
+      H3 is Uber's hexagonal hierarchical geospatial indexing system, implemented as a C
+      core library with command-line tools and bindings across data platforms and
+      programming languages. It is important in package ecosystems because it turns
+      latitude/longitude data into stable cell IDs that can be joined, aggregated,
+      visualized, and exchanged without carrying heavy GIS machinery into every project.
+  timeline:
+    - '2017: Public H3 repository created.'
+    - >
+      2018: Uber engineering blog described H3, its marketplace use, GitHub release, and
+      JavaScript bindings.
+    - '2018: 3.x releases expanded local IJ, grid-line, and base-cell functions.'
+    - '2020: 3.7.x releases added area and distance functions and packaging/build fixes.'
+    - >
+      2022: 4.0.0 introduced breaking API changes while preserving grid and index
+      compatibility.
+    - >
+      2024: 4.2.0 release added an experimental memory-efficient polygon-to-cells
+      algorithm and an `h3` binary for shell-script use.
+    - '2025: 4.4.x releases added index-inspection and cell-construction functions.'
+  usage:
+    - >
+      The CLI examples convert latitude and longitude into a cell ID with
+      `latLngToCell`, inspect boundaries with `cellToBoundary`, and operate on grid
+      neighborhoods. Library users commonly index events, points, or polygons into
+      cells, aggregate by resolution, compact or uncompact cell sets, find neighboring
+      cells, and exchange indexes as 64-bit integers or hexadecimal strings.
+    - >
+      Because the grid has fixed resolutions and a globally meaningful index, H3 is used
+      for spatial joins, heatmaps, regional rollups, mobility analysis, delivery and
+      dispatch models, and analytic tables where a cell ID can be a normal join key.
 category: data
 package-manager:
   brew: h3
@@ -38,5 +133,16 @@ executables:
   - localIjToCell
 provenance:
   formula: h3
+  history-sources:
+    - https://formulae.brew.sh/formula/h3
+    - https://github.com/uber/h3
+    - https://github.com/uber/h3/releases
+    - https://h3geo.org/
+    - https://h3geo.org/docs/
+    - https://h3geo.org/docs/community/bindings/
+    - https://h3geo.org/docs/library/migrating-3.x/
+    - https://raw.githubusercontent.com/uber/h3/master/README.md
+    - https://www.uber.com/us/en/blog/h3/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
