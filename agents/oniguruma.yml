@@ -7,6 +7,75 @@ docs:
   - https://github.com/kkos/oniguruma/blob/master/doc/SYNTAX.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Oniguruma's adoption came from being useful where byte-oriented regex engines were
+      not enough. PHP's mbstring installation manual says Oniguruma is necessary for
+      multibyte regular-expression functions and that PHP 7.4.0 switched to pkg-config
+      detection of the external libonig library after earlier bundled use.
+    - >
+      The editor ecosystem also standardized on Oniguruma syntax. Microsoft's
+      vscode-textmate README says TextMate grammars use the Oniguruma dialect and that
+      the library is used in VS Code; the VS Code extension API guide likewise says
+      TextMate grammars rely on Oniguruma regular expressions.
+  package-nerd-significance:
+    - >
+      Oniguruma is a classic package-graph library: small from a user-interface
+      perspective, but large in dependency impact. It sits under PHP multibyte regex,
+      TextMate grammar tokenization, VS Code-related tooling, and multiple language or
+      editor stacks, so packaging updates can ripple into builds, syntax highlighting,
+      and security maintenance.
+  project-history:
+    - >
+      The upstream README describes Oniguruma as a modern and flexible
+      regular-expression library that combines features traditionally found in different
+      regex implementations. A key design point is that character encoding can be
+      specified per regular-expression object, with supported encodings ranging from
+      ASCII and UTF families to EUC variants, Shift_JIS, Big5, GB18030, KOI8-R, CP1251,
+      and ISO-8859 variants.
+    - >
+      The project continued through 6.x releases with Unicode and API work: 6.9.6 added
+      compatibility and safety-related options, 6.9.7 added callback and Python syntax
+      APIs, 6.9.8 updated to Unicode 14.0.0 and fixed OSS-Fuzz findings, 6.9.9 updated
+      to Unicode 15.1.0, and 6.9.10 updated to Unicode 16.0 and added the (*SKIP)
+      operator. The README states that the project ended on April 24, 2025.
+  related-projects:
+    - >
+      Oniguruma is the upstream ancestor of Onigmo. It is also tied to PHP mbstring,
+      TextMate grammars, VS Code's TextMate tokenizer stack, and package names such as
+      libonig on Linux distributions.
+  sources:
+    - https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide
+    - https://formulae.brew.sh/formula/oniguruma
+    - https://github.com/kkos/oniguruma
+    - https://github.com/microsoft/vscode-textmate
+    - https://www.php.net/manual/en/mbstring.installation.php
+  summary:
+    - >
+      Oniguruma is a BSD-licensed C regular-expression engine known for rich syntax and
+      unusually broad character-encoding support. It became infrastructure for language
+      runtimes, multibyte text processing, and editor syntax-highlighting systems.
+  timeline:
+    - >
+      PHP 7.4.0: PHP's mbstring build switched to pkg-config detection for libonig,
+      while the manual notes prior bundled use.
+    - >
+      2020-2022: 6.9.6 through 6.9.8 added API work, Unicode 14.0.0 support, and fixes
+      from OSS-Fuzz and Coverity.
+    - '2024-2025: 6.9.9 and 6.9.10 updated Unicode support to 15.1.0 and 16.0.'
+    - 'April 24, 2025: the upstream README states that the Oniguruma project ended.'
+  usage:
+    - >
+      C developers include oniguruma.h, link with libonig, and choose among the native
+      Oniguruma API plus GNU and POSIX-compatible APIs. The upstream README includes
+      sample programs for callouts, encodings, named groups, POSIX usage, scanning,
+      syntax tests, and user-defined Unicode properties.
+    - >
+      Downstream users often never call libonig directly. PHP developers touch it
+      through mb_ereg and related mbstring regex functions, while editor-extension
+      authors touch its syntax through TextMate grammar patterns consumed by VS Code and
+      compatible tooling.
 tags:
   - c-library
   - character-encoding
@@ -37,6 +106,12 @@ provenance:
     - >
       Official README at https://github.com/kkos/oniguruma points users to doc/API for
       the Oniguruma API and includes doc/SYNTAX.md in the repository documentation.
+  history-sources:
+    - https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide
+    - https://formulae.brew.sh/formula/oniguruma
+    - https://github.com/kkos/oniguruma
+    - https://github.com/microsoft/vscode-textmate
+    - https://www.php.net/manual/en/mbstring.installation.php
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/kkos/oniguruma, so repo is
@@ -53,5 +128,6 @@ category-path:
   - regular-expressions
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

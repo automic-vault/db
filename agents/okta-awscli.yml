@@ -10,6 +10,62 @@ credentials-file-location:
   unix:
     - ~/.aws/credentials
     - ~/.okta-credentials.cache
+history:
+  adoption-history:
+    - >
+      The package sits in the long-running niche of enterprise AWS federation helpers.
+      Okta developer forum threads from 2017 and AWS documentation for
+      AssumeRoleWithSAML show the underlying need: organizations wanted AWS CLI access
+      without distributing long-lived IAM user keys, using a corporate identity provider
+      and AWS STS instead.
+  package-nerd-significance:
+    - >
+      For package nerds, okta-awscli is a good example of a small package that encodes
+      an enterprise identity pattern: browser SSO and SAML federation collapsed into a
+      repeatable CLI credential flow. Its continued Homebrew packaging also records the
+      era before vendor-provided AWS federation CLIs fully absorbed this use case.
+  project-history:
+    - >
+      The GitHub repository was created on 2017-07-22. Its README positions the project
+      as a successor-style implementation inspired by nimbusscale/okta_aws_login, with
+      the important design difference that okta-awscli uses Okta APIs during
+      authentication rather than scraping and parsing HTML.
+  related-projects:
+    - >
+      Related tools include nimbusscale/okta_aws_login, Okta's community-supported
+      okta-aws-cli-assume-role, and Okta's separate okta-aws-cli project. AWS STS
+      AssumeRoleWithSAML is the underlying AWS operation that makes the pattern
+      possible.
+  sources:
+    - https://api.github.com/repos/okta-awscli/okta-awscli
+    - https://devforum.okta.com/t/accessing-aws-cli-through-okta/161
+    - https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html
+    - https://formulae.brew.sh/formula/okta-awscli
+    - https://github.com/okta-awscli/okta-awscli
+    - https://github.com/okta/okta-aws-cli
+    - https://github.com/oktadev/okta-aws-cli-assume-role
+  summary:
+    - >
+      okta-awscli is a Python command-line bridge between Okta SSO and AWS command-line
+      credentials. It authenticates a user with Okta, obtains a SAML assertion, and
+      exchanges that assertion for temporary AWS STS credentials that can be used by
+      awscli, boto, boto3, and other AWS API tooling.
+  timeline:
+    - '2017-07-22: The okta-awscli/okta-awscli repository was created on GitHub.'
+    - >
+      2018-2024: Public issues and packaging activity show maintenance around Okta MFA
+      behavior, Python dependencies, macOS certificate handling, and AWS credential edge
+      cases.
+    - >
+      2026-07-01: GitHub repository metadata reported 314 stars, 144 forks, Python as
+      the primary language, and Apache-2.0 licensing.
+  usage:
+    - >
+      Operators configure Okta and AWS profile details in a local okta-awscli
+      configuration file, then run the executable to populate or refresh AWS credential
+      material. The practical workflow is less about general Okta administration and
+      more about making federated, MFA-backed AWS access feel like normal AWS CLI
+      profile usage.
 tags:
   - aws
   - cli
@@ -36,6 +92,14 @@ provenance:
     - >
       official GitHub README includes configuration, supported features, and usage
       documentation
+  history-sources:
+    - https://api.github.com/repos/okta-awscli/okta-awscli
+    - https://devforum.okta.com/t/accessing-aws-cli-through-okta/161
+    - https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html
+    - https://formulae.brew.sh/formula/okta-awscli
+    - https://github.com/okta-awscli/okta-awscli
+    - https://github.com/okta/okta-aws-cli
+    - https://github.com/oktadev/okta-aws-cli-assume-role
   repo-sources:
     - >
       source_facts.repo is empty; source_facts.homepage points to the official GitHub
@@ -50,5 +114,6 @@ category-path:
   - identity
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
