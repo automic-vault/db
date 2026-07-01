@@ -5,6 +5,77 @@ docs:
   - https://github.com/ip2location/IP2Location-C-Library#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The Homebrew formula and other package-manager metadata make the C library easy to
+      install on developer machines and servers that need local IP geolocation without a
+      hosted API call. Its Fedora package links from the upstream README show the
+      project also reaching Linux distribution packaging.
+    - >
+      The project is not just a single CLI convenience: related IP2Location modules,
+      such as the Varnish module, depend on the C library as the native lookup layer,
+      which gives the package importance beyond direct command-line use.
+  package-nerd-significance:
+    - >
+      For package maintainers, IP2Location C Library is a classic
+      data-plus-native-library package: the code is small, the value comes from
+      compatibility with external database files, and downstream packaging must keep the
+      CLI, shared library, sample data, and documentation aligned.
+    - >
+      It also illustrates a common Homebrew pattern for vendor-backed data tooling: a
+      permissively licensed client library shipped separately from the proprietary or
+      separately licensed data products it reads.
+  project-history:
+    - >
+      The project belongs to IP2Location's family of language libraries for its
+      commercial and LITE geolocation databases. Its README describes lookups for
+      country, region, city, coordinates, postal code, ISP, domain, usage type, address
+      type, IAB category, ASN, and related database fields, with the library reading
+      those values from IP2Location BIN files.
+    - >
+      The changelog shows a long 2010s evolution around data-file formats and API
+      breadth: 2013 added memory and cache opening modes, 2014 added IPv6 support, 2016
+      added lookup support for an index section in a new BIN format, and later releases
+      moved detailed notes to GitHub releases.
+  related-projects:
+    - >
+      Related upstream projects include the IP2Location database products, IP2Location
+      LITE sample databases, language-specific IP2Location libraries, and modules such
+      as IP2Location-Varnish that use the C library as a dependency.
+    - >
+      At the package level it sits near tools such as GeoIP and libmaxminddb, but it is
+      tied to the IP2Location BIN database format rather than MaxMind's MMDB format.
+  sources:
+    - https://formulae.brew.sh/formula/ip2location
+    - https://github.com/ip2location/IP2Location-C-Library
+    - https://github.com/ip2location/IP2Location-C-Library/blob/master/ChangeLog
+    - https://www.ip2location.com/documentation/ip2location-libraries/c
+  summary:
+    - >
+      IP2Location C Library is the C implementation and command-line front end for
+      querying IP2Location BIN geolocation databases. In package-manager terms it is a
+      small native bridge between downloadable IP intelligence data and Unix automation,
+      exposing both a library API and the `ip2location` executable.
+  timeline:
+    - '2013: Version 6.0.0 added memory, cache, and shared-memory opening and cleanup APIs.'
+    - '2014: Version 7.0.0 added IPv6 support and removed the IMath library dependency.'
+    - '2016: Version 8.0.0 added lookup support for the index section in a newer BIN format.'
+    - >
+      2017: Version 8.0.5 closed out the in-file changelog era before release notes
+      moved to GitHub releases.
+    - '2023: The 8.6.x releases continued the GitHub release stream.'
+    - '2025: Version 8.7.0 was published through GitHub releases.'
+  usage:
+    - >
+      Typical usage is to install the library, obtain an IP2Location BIN database, and
+      run `ip2location -d [database] --ip [address]` or feed addresses from a file.
+      Library consumers use the C API where a low-level native geolocation lookup is
+      preferable to shelling out.
+    - >
+      The package is useful in log enrichment, local analytics, security tooling, and
+      edge services where repeat geolocation lookups should avoid network latency or
+      third-party API calls.
 tags:
   - c
   - cli
@@ -19,6 +90,11 @@ provenance:
     - Official repository name is IP2Location-C-Library.
   docs-sources:
     - source_facts.homepage is the official GitHub repository README.
+  history-sources:
+    - https://formulae.brew.sh/formula/ip2location
+    - https://github.com/ip2location/IP2Location-C-Library
+    - https://github.com/ip2location/IP2Location-C-Library/blob/master/ChangeLog
+    - https://www.ip2location.com/documentation/ip2location-libraries/c
   repo-sources:
     - >
       source_facts.repo already has
@@ -31,5 +107,6 @@ category-path:
   - data
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -6,6 +6,74 @@ docs:
   - https://github.com/asdfzxcvbn/ipapatch#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The project has modest but visible adoption through GitHub stars and a Homebrew
+      formula. Its packaging matters because the target workflow is highly CLI-oriented:
+      downloading a release binary or installing through Homebrew is simpler than
+      building a Go toolchain on every device or CI host.
+    - >
+      The README emphasizes cross-platform goals across macOS, Linux, and iOS, with
+      Windows described as less proven. That portability is part of the appeal for IPA
+      patching workflows that span desktop hosts and jailbroken or development devices.
+  package-nerd-significance:
+    - >
+      Package nerds care about ipapatch because it turns a fragile iOS app-modification
+      workflow into a distributable command-line package. It is small, specialized, and
+      sits at the intersection of archive formats, Mach-O editing, app extensions, and
+      code-signing expectations.
+    - >
+      The project also shows the value of dependency diet in CLI packaging: v2.0.0
+      removed the external `zip` dependency so releases could behave more like
+      self-contained native binaries.
+  project-history:
+    - >
+      The README presents ipapatch as a tool for fixing IPA plugin-related problems in
+      share sheets, widgets, VPNs, and similar extension contexts. It uses
+      zxPluginsInject by default and credits Chocolate Fluffy's original IPA patcher
+      tweak plus blacktop's ipsw and go-macho work for making native load-command
+      injection possible.
+    - >
+      The release stream began in May 2025 with v1.0.0. Early releases skipped watch
+      apps, added a `--plugins-only` flag, removed an oversized archive dependency, and
+      tightened how modified binaries and output IPAs were handled.
+  related-projects:
+    - >
+      Related projects named by the upstream README include zxPluginsInject, Chocolate
+      Fluffy's original patch, blacktop's ipsw, and go-macho.
+    - >
+      It belongs near other IPA tooling such as app duplication, sideload signing, and
+      Mach-O patching utilities, but its own scope is plugin and extension patching
+      rather than App Store download or signing.
+  sources:
+    - https://formulae.brew.sh/formula/ipapatch
+    - https://github.com/asdfzxcvbn/ipapatch
+    - https://github.com/asdfzxcvbn/ipapatch/releases
+    - https://github.com/asdfzxcvbn/zxPluginsInject/releases/tag/v1.0.1
+  summary:
+    - >
+      ipapatch is a Go CLI for modifying iOS IPA packages and their plugin payloads. Its
+      niche is the iOS sideloading and app-modification workflow, where users need a
+      portable binary that can patch app bundles without driving Xcode.
+  timeline:
+    - '2025-05-11: v1.0.0 marked the first public release.'
+    - >
+      2025-05-17: v1.1.0 reduced executable and output IPA sizes by replacing a broad
+      archive dependency with zip-specific handling.
+    - '2025-05-17: v1.1.1 added the `--plugins-only` flag.'
+    - '2025-07: v2.0.0 removed the external `zip` command dependency.'
+    - '2025-08-12: v2.1.2 updated the bundled zxPluginsInject dependency to v1.0.1.'
+    - '2025-08-31: v2.1.3 fixed signing for unusual binaries.'
+  usage:
+    - >
+      ipapatch is used after an IPA has already been obtained: the user runs the CLI
+      against the package to inject or adjust plugin-related Mach-O load commands and
+      then passes the output into signing or installation tooling.
+    - >
+      Release notes show practical polish around output compatibility, such as v2.1.0's
+      fix for IPAs that some signing apps and tools could not extract and v2.1.3's fix
+      for signing unusual binaries.
 category: developer-tools
 package-manager:
   brew: ipapatch
@@ -23,5 +91,11 @@ executables:
   - ipapatch
 provenance:
   formula: ipapatch
+  history-sources:
+    - https://formulae.brew.sh/formula/ipapatch
+    - https://github.com/asdfzxcvbn/ipapatch
+    - https://github.com/asdfzxcvbn/ipapatch/releases
+    - https://github.com/asdfzxcvbn/zxPluginsInject/releases/tag/v1.0.1
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium
