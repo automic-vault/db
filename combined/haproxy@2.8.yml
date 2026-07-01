@@ -7,6 +7,92 @@ docs:
   - https://docs.haproxy.org/2.8/management.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      HAProxy's adoption is rooted in high-traffic site reliability and package-manager
+      availability. It is distributed through many Unix package managers in the supplied
+      facts, and its upstream site explicitly links to packages, images, branch source
+      directories, documentation, and bug trackers.
+    - >
+      The 2.8 branch became a packaging target because HAProxy users often pin branches
+      for operational compatibility. A versioned package lets local tooling, scripts, or
+      deployment tests keep using a branch-specific `haproxy` executable while the
+      general formula can move independently.
+  package-nerd-significance:
+    - >
+      Versioned HAProxy formulae are significant because load balancers are
+      infrastructure compatibility boundaries. Config syntax, TLS library linkage, QUIC
+      behavior, reload behavior, and observability details can all matter more than the
+      mere presence of the executable.
+    - >
+      Package maintainers therefore care about branch naming, source archive provenance,
+      bottle linkage, and whether a versioned branch is intended for critical fixes,
+      broad maintenance, or compatibility testing. The formula role is branch access,
+      not a fork.
+  project-history:
+    - >
+      HAProxy grew from Zprox, a slow-client testing and proxying tool described on the
+      official history page. HAProxy 1.0 was developed in 2001 to offload traffic from
+      hardware load balancers; the branch table on haproxy.org lists 1.0 from
+      2001-12-16.
+    - >
+      Across the 1.x line, HAProxy accumulated the features that made it a standard
+      package: health checks, round-robin scheduling, cookie insertion, client-side
+      IPv6, maxconn limits, TCP scripting, ACLs, SSL, compression, Lua scripting,
+      runtime APIs, and multithreading.
+    - >
+      HAProxy 2.x continued that path toward cloud and protocol-heavy deployment. The
+      official history page identifies HAProxy 2.0 with Kubernetes ingress, Data Plane
+      API, Prometheus exporter, and cloud-native logging, while the haproxy.org branch
+      table lists HAProxy 2.8 from 2023-05-31.
+  related-projects:
+    - >
+      Related HAProxy ecosystem projects include the HAProxy Kubernetes Ingress
+      Controller, HAProxy Data Plane API, Prometheus exporters, stats tools, Docker
+      images, and branch-specific documentation sets.
+    - >
+      Adjacent load-balancing and proxy projects include NGINX, Envoy, Varnish, and
+      Keepalived.
+  sources:
+    - https://docs.haproxy.org/2.8/configuration.html
+    - https://docs.haproxy.org/2.8/management.html
+    - https://www.haproxy.com/history
+    - https://www.haproxy.org/
+  summary:
+    - >
+      The `haproxy@2.8` package is a version-track package for the HAProxy load
+      balancer. It packages the HAProxy project through the 2.8 branch role, while the
+      project history remains the wider HAProxy history of a high-performance TCP and
+      HTTP proxy.
+    - >
+      This distinction matters for operators: the formula name signals branch pinning,
+      not a separate upstream project. Users choose it when they want the HAProxy daemon
+      and documentation behavior associated with the 2.8 branch line.
+  timeline:
+    - '1999: Zprox described as the testing ancestor of HAProxy.'
+    - '2001-12-16: HAProxy 1.0 branch listed by haproxy.org.'
+    - '2014-06-19: HAProxy 1.5 branch listed; official history highlights SSL and compression.'
+    - '2017-11-26: HAProxy 1.8 branch listed; official history highlights multithreading.'
+    - >
+      2019-06-16: HAProxy 2.0 branch listed; official history highlights Kubernetes
+      ingress, Data Plane API, and Prometheus exporter.
+    - '2023-05-31: HAProxy 2.8 branch listed by haproxy.org.'
+    - >
+      2023: HAProxy history page associates the 2.8 branch with production-ready QUIC
+      work, Lua-based mailers, OCSP auto updates, Let's Encrypt support, wolfSSL
+      support, and operational improvements.
+  usage:
+    - >
+      Usage is the same operational pattern as HAProxy generally: load balancing HTTP or
+      TCP services, enforcing health checks, managing TLS, routing by ACLs or headers,
+      inspecting traffic, exposing stats, and using management/runtime interfaces for
+      operational control.
+    - >
+      For `haproxy@2.8`, the official docs preserved in the input point directly at the
+      2.8 configuration and management manuals. That makes the package useful when a
+      local test or deployment depends on 2.8-era configuration syntax or branch
+      behavior.
 category: networking
 package-manager:
   apk: haproxy
@@ -33,5 +119,11 @@ executables:
   - haproxy
 provenance:
   formula: haproxy@2.8
+  history-sources:
+    - https://docs.haproxy.org/2.8/configuration.html
+    - https://docs.haproxy.org/2.8/management.html
+    - https://www.haproxy.com/history
+    - https://www.haproxy.org/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

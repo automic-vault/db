@@ -6,6 +6,105 @@ docs:
   - https://harfbuzz.github.io/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      HarfBuzz adoption followed the need for shared, correct complex-script shaping
+      across open source desktops, browsers, toolkits, and document stacks. The README
+      states that HarfBuzz shapes the majority of text on modern screens, which reflects
+      its position below many user-facing applications.
+    - >
+      Because shaping quality depends on Unicode, OpenType, AAT, Graphite,
+      script-specific rules, and font quirks, HarfBuzz became a shared place for
+      correctness and robustness work that individual applications would struggle to
+      maintain independently.
+    - >
+      Its wide package-manager presence in the supplied input facts reflects this
+      dependency role: HarfBuzz is not just a command-line tool package, it is a library
+      package that other packages build against.
+  package-nerd-significance:
+    - >
+      HarfBuzz is package-nerd significant because it sits in the dependency graph of
+      text rendering. A version bump can change glyph placement, script behavior, subset
+      output, sanitizer strictness, ABI exposure, or optional backend integration.
+    - >
+      It is also a classic example of a small-looking package with enormous blast
+      radius. Packaging choices around FreeType, Graphite2, GLib, CoreText, DirectWrite,
+      ICU-like Unicode data, build flags, and command-line utilities affect everything
+      from web browsers to PDF producers.
+    - >
+      The project's release history shows why maintainers track it closely: HarfBuzz 1.0
+      implemented the Universal Shaping Engine, 2.0 added AAT shaping support, 3.0
+      stabilized the subset API and ABI, and 8.0 introduced an experimental WebAssembly
+      shaper.
+  project-history:
+    - >
+      The HarfBuzz manual says the project began as text-shaping code inside FreeType
+      and was extracted into its own project. Behdad Esfahbod's text-rendering history
+      explains that FreeType's OpenType Layout code was removed from FreeType's
+      rasterization scope, then carried separately by Pango and Qt developers.
+    - >
+      Around 2006, Pango and Qt developers cooperated to reunify the layout engine as a
+      freedesktop.org project named HarfBuzz. The same history notes that HarfBuzz was
+      relicensed to the old MIT license and that the plan became a unified shaping
+      engine rather than only a merged copy of existing code.
+    - >
+      The project's own README says HarfBuzz started as a text shaping engine and grew
+      into a broader font platform supporting OpenType and Apple Advanced Typography.
+      Its component map includes core shaping, subsetting, font-function integrations
+      with FreeType/CoreText/Uniscribe/DirectWrite/GDI/GLib/Graphite2, and CLI tools
+      such as `hb-shape`, `hb-view`, and `hb-subset`.
+  related-projects:
+    - >
+      Closely related projects include FreeType, Pango, Qt, Cairo, Skia, Graphite2,
+      CoreText, Uniscribe, DirectWrite, fontconfig, and the OpenType and Unicode
+      specifications.
+    - >
+      HarfBuzz also relates to browser engines, PDF and office suites, TeX engines, font
+      subsetting pipelines, and font engineering tools that need reproducible shaping.
+  sources:
+    - https://behdad.org/text/
+    - https://github.com/harfbuzz/harfbuzz
+    - https://github.com/harfbuzz/harfbuzz-old
+    - https://harfbuzz.github.io/why-is-it-called-harfbuzz.html
+    - https://raw.githubusercontent.com/harfbuzz/harfbuzz/main/NEWS
+  summary:
+    - >
+      HarfBuzz is an open source text shaping engine and font platform. It converts
+      Unicode text plus font data into positioned glyphs, which makes it a quiet but
+      critical dependency for readable Arabic, Indic, Southeast Asian, and many other
+      complex-script layouts.
+    - >
+      For package users, HarfBuzz is the kind of library that disappears when it works
+      and becomes instantly visible when it regresses: browsers, GUI toolkits, document
+      editors, terminals, and font tools depend on consistent shaping behavior.
+  timeline:
+    - >
+      Pre-2006: OpenType layout code originates in FreeType and is carried by Pango and
+      Qt after extraction from FreeType's rasterizer scope.
+    - >
+      2006: Pango and Qt developers cooperate to reunify the layout engine as HarfBuzz
+      under freedesktop.org.
+    - >
+      2008: Behdad Esfahbod describes rewrite work aimed at robustness and efficient
+      mmap-based font use.
+    - '2015-07-26: HarfBuzz 1.0.0 release notes list Universal Shaping Engine implementation.'
+    - '2018-10-18: HarfBuzz 2.0.0 release notes list AAT shaping support.'
+    - >
+      2021-09-17: HarfBuzz 3.0.0 release notes declare the subset API and
+      harfbuzz-subset ABI stable.
+    - '2023-07-09: HarfBuzz 8.0.0 release notes introduce an experimental WebAssembly shaper.'
+  usage:
+    - >
+      Most users consume HarfBuzz indirectly through libraries and applications. Direct
+      users call its C API or C++ implementation to feed buffers, fonts, features,
+      scripts, languages, and directions, then receive glyph IDs and positions for
+      rendering.
+    - >
+      The package also ships command-line utilities useful to font engineers and package
+      maintainers. Tools such as `hb-shape`, `hb-view`, `hb-info`, and `hb-subset` help
+      reproduce shaping behavior, inspect font support, render examples, and create
+      smaller font subsets.
 category: developer-tools
 package-manager:
   apk: harfbuzz
@@ -37,5 +136,12 @@ executables:
   - hb-view
 provenance:
   formula: harfbuzz
+  history-sources:
+    - https://behdad.org/text/
+    - https://github.com/harfbuzz/harfbuzz
+    - https://github.com/harfbuzz/harfbuzz-old
+    - https://harfbuzz.github.io/why-is-it-called-harfbuzz.html
+    - https://raw.githubusercontent.com/harfbuzz/harfbuzz/main/NEWS
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -7,6 +7,111 @@ config-file-location:
   unix:
     - <project-root>/hie.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      HLS adoption follows the spread of LSP-capable Haskell editing in VS Code, Emacs,
+      Vim/Neovim, and other clients. Its docs emphasize that editor configuration is
+      client-specific while the server side remains the same executable family, which is
+      exactly the distribution shape package managers like Homebrew, Nix, Arch,
+      MacPorts, and Scoop are good at providing.
+    - >
+      The package appears on Hackage with a long version series and a broad dependency
+      set around ghcide, hls-plugin-api, hie-bios, hiedb, LSP libraries, formatters, and
+      refactoring tools. That public package record is evidence that HLS became a normal
+      Haskell package ecosystem artifact, not only a GitHub binary release.
+    - >
+      Binary distribution is unusually important for HLS because GHC version
+      compatibility is central to user experience. The installation docs instruct users
+      to install the wrapper and the server executables for the GHC versions they work
+      with; Homebrew exposes that shape through versioned executables such as
+      haskell-language-server-wrapper and per-GHC server names.
+  package-nerd-significance:
+    - >
+      For package nerds, HLS is a stress test of language-tool distribution. It must
+      line up GHC ABIs, plugin versions, Hackage dependencies, native binaries, editor
+      expectations, and project build tools. A package-manager upgrade can materially
+      change editor behavior because it changes the compiler matrix and plugin set.
+    - >
+      It also represents a broader packaging pattern: move editor intelligence into a
+      protocol-speaking server, then let editors and operating-system package managers
+      share that server. In Haskell, where compiler versions and build plans are
+      especially specific, that pattern is more demanding than simply shipping one
+      static CLI.
+  project-history:
+    - >
+      The documentation describes HLS as a language server that speaks LSP to editor
+      clients, which lets editors reuse a common protocol for diagnostics, completions,
+      hover information, definition lookup, references, formatting, and related IDE
+      functions. That positioned HLS as infrastructure rather than a single editor
+      extension.
+    - >
+      A central technical lineage is ghcide. The HLS component documentation describes
+      ghcide as a library for Haskell IDE tooling, paired with hie-bios for discovering
+      project structure, dependencies, extensions, and build information. HLS packages
+      that foundation with plugins and release engineering so users do not have to
+      assemble the stack manually.
+    - >
+      The 1.0.0 changelog framed the release as a celebratory stabilization point, with
+      internal changes, bug fixes, performance work, GHC 8.10.4 support, HIE DB
+      integration for references and symbols, and plugins for import disambiguation,
+      shadowed imports, evaluation, formatting, and tactics. Later changelog entries
+      show the project repeatedly tracking new GHC families and pruning old compiler
+      support.
+  related-projects:
+    - >
+      ghcide supplies core IDE services and is documented by HLS as a library for
+      Haskell IDE tooling.
+    - hie-bios discovers project layout and build settings for Haskell tools.
+    - haskell-ide-engine is part of the predecessor ecosystem that HLS consolidated.
+    - >
+      GHC, Cabal, Stack, Hackage, HIE DB, HLint, Ormolu, Fourmolu, and editor LSP
+      clients form the surrounding toolchain.
+  sources:
+    - https://formulae.brew.sh/formula/haskell-language-server
+    - https://github.com/haskell/haskell-language-server
+    - https://hackage.haskell.org/package/haskell-language-server
+    - https://haskell-language-server.readthedocs.io/en/stable/components/ghcide.html
+    - https://haskell-language-server.readthedocs.io/en/stable/installation.html
+    - https://haskell-language-server.readthedocs.io/en/stable/what-is-hls.html
+    - https://raw.githubusercontent.com/haskell/haskell-language-server/master/ChangeLog.md
+  summary:
+    - >
+      Haskell Language Server is the official Language Server Protocol implementation
+      for Haskell. Its package-manager identity matters because it turns a historically
+      difficult editor-integration story into a single installable tool that editors can
+      discover through the standard LSP model.
+    - >
+      The project grew out of the Haskell IDE ecosystem around ghcide, hie-bios,
+      plugins, and the earlier haskell-ide-engine effort. The Homebrew formula
+      description preserves that consolidation story directly: HLS became the
+      integration point for ghcide and haskell-ide-engine rather than another standalone
+      editor-specific tool.
+  timeline:
+    - >
+      2020: Public Hackage candidate versions for haskell-language-server appeared,
+      including 0.1.0.0.
+    - >
+      2021: The 1.0.0 changelog marked a stabilization point with HIE DB integration,
+      plugin work, and GHC 8.10.4 support.
+    - >
+      2023: The 2.x line continued the ghcide/plugin architecture while tracking newer
+      GHC releases.
+    - >
+      2026: The 2.14.0.0 package record and changelog show bindists for multiple GHC
+      versions, including GHC 9.14.1 and 9.12.x.
+  usage:
+    - >
+      Typical use is indirect: an editor or LSP client launches
+      haskell-language-server-wrapper in a Haskell project, and the wrapper selects an
+      HLS binary compatible with the project compiler. Users then get type diagnostics,
+      completions, hover, code actions, references, formatting integration, Cabal-file
+      assistance, and other plugin-provided features.
+    - >
+      Project discovery often depends on hie.yaml, Cabal, Stack, or implicit hie-bios
+      rules. That makes HLS especially sensitive to how a project is built, which is why
+      package users care about the wrapper, the supported-GHC matrix, and the
+      documentation around troubleshooting build cradles.
 tags:
   - cli
   - developer-tools
@@ -34,6 +139,14 @@ provenance:
       use Haskell Language Server.
   docs-sources:
     - Official Haskell Language Server documentation is hosted on Read the Docs.
+  history-sources:
+    - https://formulae.brew.sh/formula/haskell-language-server
+    - https://github.com/haskell/haskell-language-server
+    - https://hackage.haskell.org/package/haskell-language-server
+    - https://haskell-language-server.readthedocs.io/en/stable/components/ghcide.html
+    - https://haskell-language-server.readthedocs.io/en/stable/installation.html
+    - https://haskell-language-server.readthedocs.io/en/stable/what-is-hls.html
+    - https://raw.githubusercontent.com/haskell/haskell-language-server/master/ChangeLog.md
   repo-sources:
     - >
       source_facts.repo already provides
@@ -49,5 +162,6 @@ category-path:
   - language-server
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

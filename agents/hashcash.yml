@@ -5,6 +5,92 @@ docs:
   - http://www.hashcash.org/docs/hashcash.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Hashcash's first adoption story was email anti-spam: senders could attach
+      X-Hashcash headers and receivers could treat valid stamps as a whitelisting
+      signal. The official docs describe a default email validity window and a database
+      of spent stamps to stop reuse.
+    - >
+      The larger adoption story came later through Bitcoin. Hashcash.org explicitly
+      describes Hashcash as the mining function used in Bitcoin, while also explaining
+      the differences: Bitcoin uses SHA-256 rather than SHA1, double hashing, and a more
+      finely adjusted network difficulty. That made Hashcash a bridge between cypherpunk
+      anti-spam tools and package-manager-visible cryptocurrency infrastructure.
+  package-nerd-significance:
+    - >
+      Hashcash is one of those packages whose code footprint is much smaller than its
+      historical footprint. It is a command-line tool for an old anti-spam mechanism,
+      but it also preserves a concrete implementation of proof-of-work in the Unix
+      package ecosystem.
+    - >
+      For package nerds, Hashcash matters because it connects mail-era anti-abuse
+      tooling, command-line cryptographic utilities, source tarballs rather than modern
+      hosted repos, and the intellectual lineage of Bitcoin mining. Its Homebrew formula
+      keeps a small historical security tool installable long after its original
+      email-spam use case stopped being mainstream.
+  project-history:
+    - >
+      Hashcash was invented by Adam Back in 1997 as a denial-of-service and anti-spam
+      countermeasure. The basic idea was to attach a stamp to a message; the sender
+      expends adjustable computational work to mint the stamp, while the recipient can
+      verify it cheaply. The official site describes both the algorithm and the email
+      tool as `hashcash`, which is why the package combines a security idea with a
+      concrete Unix-style command.
+    - >
+      The command-line documentation presents the package as a tool for minting stamps,
+      checking stamps, estimating work, purging spent-stamp databases, counting partial
+      preimage bits, and extracting resource names. The implementation used SHA1 partial
+      preimages for version-1 stamps, with an adjustable bit target and a receiver-side
+      database option for double-spend protection.
+  related-projects:
+    - Bitcoin uses a Hashcash-style mining function with SHA-256 and dynamic difficulty.
+    - >
+      RPOW is discussed by Hashcash.org as an earlier reusable proof-of-work system in
+      the same design family.
+    - >
+      Email anti-spam systems and X-Hashcash headers are the original deployment target
+      for the command-line tool.
+  sources:
+    - http://www.hashcash.org/
+    - http://www.hashcash.org/docs/hashcash.html
+    - http://www.hashcash.org/source/
+    - http://www.hashcash.org/bitcoin/
+  summary:
+    - >
+      Hashcash is Adam Back's proof-of-work scheme for making a sender spend CPU time
+      before a receiver accepts a message or request. The Homebrew package installs the
+      command-line tool that mints and verifies Hashcash stamps, but the package is
+      historically important because the algorithm became one of the canonical
+      proof-of-work designs referenced by later anti-abuse and cryptocurrency systems.
+  timeline:
+    - >
+      1997: Adam Back invents Hashcash as a proof-of-work anti-spam and
+      denial-of-service countermeasure.
+    - >
+      2002: The Hashcash denial-of-service countermeasure paper is published as a
+      technical report.
+    - >
+      2004: Hashcash 1.02 code and the version-1 stamp format are described in the
+      official developer notes and man page.
+    - >
+      2009: Bitcoin launches using a Hashcash-style proof-of-work mining function with
+      SHA-256 and network difficulty adjustment.
+    - >
+      2013: Hashcash.org's Bitcoin notes compare Bitcoin difficulty with Hashcash bit
+      difficulty and explain the conceptual relationship.
+  usage:
+    - >
+      The `hashcash` executable can mint stamps with `-m`, check them with `-c`,
+      estimate work with `-s`, purge spent-stamp databases with `-p`, and count proof
+      bits with `-w`. In email use, the resource is typically a recipient address, and
+      the stamp can be placed in an X-Hashcash header.
+    - >
+      The package is also useful as a reference implementation. The official site notes
+      that the algorithm is simple enough to implement from scratch with a hash library
+      and that verification can be understood as counting leading zero bits in a hash
+      output.
 tags:
   - anti-spam
   - cli
@@ -30,6 +116,11 @@ provenance:
     - source_facts.name provides hashcash; official homepage uses Hashcash.
   docs-sources:
     - Official hashcash.org hosts the hashcash documentation page under /docs/.
+  history-sources:
+    - http://www.hashcash.org/
+    - http://www.hashcash.org/docs/hashcash.html
+    - http://www.hashcash.org/source/
+    - http://www.hashcash.org/bitcoin/
   repo-sources:
     - >
       Official hashcash.org pages provide downloads/docs but no confident official
@@ -44,5 +135,6 @@ category-path:
   - anti-abuse
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: low
 tags-confidence: high

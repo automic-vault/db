@@ -11,6 +11,72 @@ config-file-location:
     - /path/to/haraka/config/plugins
     - /path/to/haraka/config/smtp_forward.ini
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Haraka's homepage says it has been used heavily in high-traffic sites, and the
+      README describes it as handling thousands of concurrent connections and thousands
+      of messages per second. Adoption appears concentrated among mail operators and
+      application teams that need programmable SMTP behavior.
+    - >
+      Its package-manager footprint is thinner than HAProxy or HarfBuzz in the supplied
+      facts, with Homebrew as the listed package manager, which matches its niche role
+      as a Node.js-based mail server rather than a universal system dependency.
+  package-nerd-significance:
+    - >
+      Haraka is interesting to package users because it treats SMTP policy as JavaScript
+      plugins. Packaging has to bridge Node.js runtime expectations, executable scripts,
+      global installation patterns, and service-directory configuration generated
+      outside the package prefix.
+    - >
+      The package is also a reminder that not all MTAs are monolithic C daemons: for
+      some deployments, a lightweight evented SMTP front end plus plugins is the smaller
+      operational unit.
+  project-history:
+    - >
+      The official README credits Haraka to Matt Sergeant and notes later maintenance by
+      Matt Simerson and the Haraka community. The repository history begins in March
+      2011, fitting the early Node.js era when evented JavaScript servers were being
+      applied to network daemons.
+    - >
+      Haraka's design took the SMTP conversation and exposed it as hook points such as
+      connection, HELO, MAIL, RCPT, DATA, queue, and post-DATA stages. That made the
+      project attractive to administrators who wanted custom filtering and routing logic
+      without patching a traditional MTA.
+  related-projects:
+    - >
+      Related mail infrastructure includes Node.js, Qpsmtpd, SpamAssassin, rspamd, DKIM
+      plugins, DNSBL services, Postfix, qmail, Dovecot, and other MTAs or mailbox stores
+      that Haraka can complement.
+    - >
+      Haraka's plugin model makes the ecosystem of Haraka plugins as important as the
+      core daemon.
+  sources:
+    - https://github.com/haraka/Haraka
+    - https://github.com/haraka/Haraka/blob/master/README.md
+    - https://haraka.github.io/
+  summary:
+    - >
+      Haraka is a Node.js SMTP server and mail transfer agent with an asynchronous
+      plugin architecture. Its niche is not mail storage; it is a programmable SMTP
+      edge, relay, filter, or submission service that can sit beside systems such as
+      IMAP stores, qmail-like stores, Postfix, or application backends.
+  timeline:
+    - '2011-03-10: Haraka repository history begins with the first commit.'
+    - '2011-03-12: Early commits show the first working SMTP implementation taking shape.'
+    - '2011-04-05: The v0.2 tag appears in the official git tag history.'
+    - >
+      2020s: README and homepage describe Haraka as a high-performance, plugin-oriented
+      Node.js SMTP server maintained by the community.
+  usage:
+    - >
+      Typical use is installing the `haraka` command, creating a service directory with
+      `haraka -i`, editing files under `config/`, enabling plugins in `config/plugins`,
+      and running the daemon with `haraka -c`.
+    - >
+      Common plugin-driven roles include inbound filtering, DKIM signing,
+      authentication, DNSBL or reputation checks, SpamAssassin or rspamd integration,
+      queueing, forwarding, rate limiting, and SMTP submission.
 tags:
   - cli
   - mail-server
@@ -39,6 +105,10 @@ provenance:
     - >
       Official haraka.github.io site is the primary documentation surface; official
       GitHub README is an additional project documentation source.
+  history-sources:
+    - https://github.com/haraka/Haraka
+    - https://github.com/haraka/Haraka/blob/master/README.md
+    - https://haraka.github.io/
   repo-sources:
     - >
       source_facts.repo is empty; official Haraka site and package metadata identify
@@ -54,5 +124,6 @@ category-path:
   - smtp-server
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

@@ -6,6 +6,104 @@ docs:
   - https://www.haproxy.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      HAProxy became a standard choice for high-traffic HTTP and TCP load balancing
+      because it combined low overhead, predictable behavior, and admin-friendly
+      configuration. The project homepage emphasizes high availability, reliability,
+      performance, and security, and the package appears across many Unix package
+      managers in the supplied input facts.
+    - >
+      Its adoption also reflects a packaging pattern: operations teams often need distro
+      or package-manager builds for repeatable deployment, while also caring about exact
+      upstream branch support, OpenSSL or alternate TLS linkage, systemd integration,
+      and whether a branch receives only critical fixes or broader maintenance.
+  package-nerd-significance:
+    - >
+      HAProxy is package-nerd material because it is both tiny in surface area and heavy
+      in operational consequences. A package revision can change TLS behavior, threading
+      defaults, QUIC support, Lua support, compression, service files, or hardening
+      flags.
+    - >
+      The project's parallel branch model makes version selection meaningful. A formula
+      named `haproxy` follows the general package role, while versioned formulae such as
+      `haproxy@2.8` exist to keep a particular upstream branch available for operators
+      who need that branch's ABI, behavior, or support window.
+  project-history:
+    - >
+      The HAProxy history page traces the project back to Zprox, a tool used in 1999 to
+      test how applications behaved with many slow modem clients. In 2000 Zprox gained
+      header rewriting and a minimal configuration language with concepts such as
+      listeners and servers; in 2001 HAProxy 1.0 appeared as a tool for offloading
+      traffic from hardware load balancers.
+    - >
+      The public branch table on haproxy.org places HAProxy 1.0 on 2001-12-16, followed
+      by 1.1 in 2002, 1.2 in 2003, and 1.3 in 2006. The early releases established the
+      durable shape of the program: a single-purpose network daemon, a configuration
+      file centered on frontends/backends/listeners/servers, health checking, cookie
+      persistence, logging, and incremental protocol support.
+    - >
+      HAProxy evolved by adding operational features without changing its basic package
+      identity. HAProxy 1.5 brought SSL and compression into the community branch, 1.8
+      introduced multithreading and HTTP/2-era plumbing, 2.0 added cloud-native-adjacent
+      features such as the Kubernetes Ingress Controller, Data Plane API, and Prometheus
+      exporter, and 2.8 added production-oriented QUIC work along with reliability,
+      observability, and usability improvements.
+  related-projects:
+    - >
+      Related infrastructure includes NGINX, Envoy, Varnish, Keepalived, the HAProxy
+      Kubernetes Ingress Controller, the HAProxy Data Plane API, and tools that consume
+      HAProxy's stats or runtime interfaces.
+    - >
+      The PROXY protocol is closely associated with HAProxy's ecosystem because it lets
+      upstream proxies preserve client connection metadata across TCP hops.
+  sources:
+    - https://docs.haproxy.org/
+    - https://github.com/haproxy/haproxy/
+    - https://www.haproxy.com/history
+    - https://www.haproxy.org/
+  summary:
+    - >
+      HAProxy is a long-running open source TCP and HTTP reverse proxy and load
+      balancer. Its project identity is unusually tied to operations culture: it is a
+      small, fast daemon, configured with plain text, used for health checks, traffic
+      steering, failover, TLS termination, observability, and controlled reloads in
+      Unix-like production environments.
+    - >
+      For package users, HAProxy matters because it sits at the point where upstream
+      release branches, distribution packaging, TLS libraries, init systems, and
+      operational safety meet. The Homebrew package represents the general HAProxy
+      command-line daemon rather than a language library or desktop application.
+  timeline:
+    - '1999: Zprox used as a slow-client testing tool.'
+    - '2001-12-16: HAProxy 1.0 branch listed by haproxy.org.'
+    - >
+      2002-03-10: HAProxy 1.1 branch adds early scheduler, health-check, logging, and
+      cookie features.
+    - '2003-11-09: HAProxy 1.2 branch adds client-side IPv6 and maxconn-era scaling features.'
+    - '2014-06-19: HAProxy 1.5 branch listed; project history highlights SSL and compression.'
+    - >
+      2017-11-26: HAProxy 1.8 branch listed; project history highlights multithreading
+      and HTTP/2-related work.
+    - >
+      2019-06-16: HAProxy 2.0 branch listed; project history highlights cloud-native
+      logging, Kubernetes ingress, Data Plane API, and Prometheus exporter.
+    - >
+      2023-05-31: HAProxy 2.8 branch listed; project history and homepage describe QUIC
+      and operational improvements in that branch.
+  usage:
+    - >
+      Typical use is as a front-line or internal load balancer: accepting HTTP or raw
+      TCP connections, selecting backends, checking server health, adding forwarded
+      headers, terminating TLS, exposing stats, and allowing controlled reloads or
+      runtime changes.
+    - >
+      For Homebrew users, the package provides the `haproxy` executable for local
+      development, test rigs, laptop-hosted reverse proxying, and small deployments.
+      Production Unix installations commonly pair the daemon with a service manager and
+      a configuration file such as `haproxy.cfg`, but the batch input has no official
+      config path to preserve.
 tags:
   - cli
   - high-availability
@@ -33,6 +131,11 @@ provenance:
     - >
       Official HAProxy documentation domain and the official haproxy.org docs section
       are dedicated documentation surfaces.
+  history-sources:
+    - https://docs.haproxy.org/
+    - https://github.com/haproxy/haproxy/
+    - https://www.haproxy.com/history
+    - https://www.haproxy.org/
   repo-sources:
     - >
       source_facts.repo is empty; official haproxy.org source distribution points to the
@@ -48,5 +151,6 @@ category-path:
   - proxy
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

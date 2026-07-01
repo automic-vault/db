@@ -6,6 +6,97 @@ docs:
   - https://hashcat.net/wiki
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      hashcat's adoption is tied to penetration testing, forensics, password-audit labs,
+      and capture-the-hash workflows. The open-source announcement explicitly mentioned
+      penetration testers and forensic scientists as users who needed to implement or
+      modify GPU kernels, and it chose MIT licensing partly to make distribution and
+      Linux packaging easier.
+    - >
+      Package-manager adoption followed naturally once the tool was open source: the
+      supplied facts show hashcat packaged across Homebrew, Debian, Ubuntu, Fedora,
+      Arch, Nix, MacPorts, Scoop, Alpine, and openSUSE ecosystems. The official README
+      and wiki point users to release archives, platform packages, build docs, a support
+      forum, and hashcat-utils for supplemental cracking workflows.
+  package-nerd-significance:
+    - >
+      hashcat is one of the classic heavyweight security formulas: it is a CLI, but
+      packaging it means caring about OpenCL/CUDA/Metal/HIP runtime availability, GPU
+      driver expectations, bundled examples and rules, Perl/Python conversion helpers,
+      and platform-specific build paths.
+    - >
+      It is also a good example of how open sourcing changes package visibility. Before
+      v2.00, packaging and modification were constrained; after the MIT switch, Linux
+      distributions and Homebrew-style ecosystems could ship the tool more naturally,
+      and users could inspect kernels, add hash modes, and build from source.
+    - >
+      For package nerds, hashcat's long release gaps and major architectural releases
+      matter. Version 6.0.0 introduced a modular hash-mode plugin interface and
+      compute-backend API, while version 7.0.0 followed more than two years of
+      development with bridge APIs, hash-mode autodetection, Docker build support, and
+      many new hash types.
+  project-history:
+    - >
+      The hashcat family existed before the public GitHub repository as separate
+      CPU-oriented hashcat and GPU-oriented oclHashcat tools. In December 2015 the
+      project announced that hashcat and oclHashcat had gone open source under the MIT
+      license. The v2.00 announcement also stated a plan to eventually combine the CPU
+      and GPU projects into one project named `hashcat`.
+    - >
+      The public repository began with the v2.00 era. The official wiki later described
+      the unified version as combining the previous CPU-based hashcat, renamed
+      hashcat-legacy, and GPU-based oclHashcat. This consolidation is why the Homebrew
+      package installs one `hashcat` command but also inherits a long history of GPU
+      cracking workflows, rule engines, masks, dictionaries, example hashes, and
+      conversion helper scripts.
+  related-projects:
+    - >
+      oclHashcat is the GPU-oriented predecessor whose code path became central to the
+      unified hashcat project.
+    - hashcat-legacy is the CPU-based predecessor name used after unification.
+    - hashcat-utils provides supplemental tools for cracking workflows.
+    - >
+      John the Ripper is a related password-cracking project often compared through
+      rules, modes, and hash-format workflows.
+  sources:
+    - https://github.com/hashcat/hashcat
+    - https://hashcat.net/wiki
+    - https://hashcat.net/hashcat/
+    - https://hashcat.net/forum/
+  summary:
+    - >
+      hashcat is a password-recovery and hash-cracking utility known for GPU
+      acceleration, many attack modes, and a large catalog of optimized hash modes. It
+      became a major security-tool package because it combines research-grade
+      password-auditing techniques with a practical CLI, distributed release archives,
+      and a public source tree.
+  timeline:
+    - >
+      2015-12: hashcat and oclHashcat move to open source under the MIT license; hashcat
+      v2.00 is released.
+    - '2016-06: v3.00 is tagged during the unified public-source era.'
+    - >
+      2020-06: v6.0.0 is released with a new plugin interface, compute-backend API, CUDA
+      backend, and extensive developer documentation.
+    - '2022-09: v6.2.6 appears in the official release archive list.'
+    - >
+      2025-08: v7.0.0 is released after more than two years of development, followed by
+      v7.1.x tags in the same month.
+  usage:
+    - >
+      hashcat is invoked with a hash or hash file, an attack mode, an optional hash
+      mode, and candidate sources such as dictionaries, masks, rules, or directories.
+      The wiki documents command-line options for attack mode, hash type, status output,
+      potfiles, restore files, sessions, rule files, masks, device selection, backend
+      information, and benchmark modes.
+    - >
+      The official feature list emphasizes multi-OS support, CPU/GPU/APU compute
+      backends, OpenCL and CUDA runtimes, multi-hash and multi-device cracking,
+      sessions, restore support, stdin and file-based candidate input, benchmarking,
+      automatic performance tuning, thermal watchdog behavior, and hundreds of optimized
+      hash types.
 category: security
 package-manager:
   apk: hashcat
@@ -57,5 +148,11 @@ executables:
   - vmwarevmx2hashcat.py
 provenance:
   formula: hashcat
+  history-sources:
+    - https://github.com/hashcat/hashcat
+    - https://hashcat.net/wiki
+    - https://hashcat.net/hashcat/
+    - https://hashcat.net/forum/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -12,6 +12,118 @@ config-file-location:
 credentials-file-location:
   unix:
     - $STACK_ROOT/upload/credentials.json
+history:
+  adoption-history:
+    - >
+      Stack adoption spread through Haskell projects that wanted a consistent command
+      line across operating systems and CI machines. Its docs and Hackage package page
+      both emphasize Linux, macOS, and Windows support, while package managers
+      distribute it as a single stack executable.
+    - >
+      The tool became part of the Commercial Haskell and Stackage workflow, but it also
+      stayed in the broader Haskell package ecosystem through Hackage releases, GitHub
+      releases, and distribution by Homebrew, MacPorts, Nix, Arch, Debian, Ubuntu,
+      Chocolatey, Scoop, and winget as reflected in package metadata.
+    - >
+      Stack's adoption history also includes coexistence with Cabal. The docs present
+      Cabal, Hackage, and Stackage as related pieces: Cabal defines and builds packages,
+      Hackage hosts packages, Stackage supplies curated snapshots, and Stack coordinates
+      project workflows around those components.
+  package-nerd-significance:
+    - >
+      Stack is package-nerd material because it changed the default conversation about
+      Haskell dependency management from only solving constraints to selecting
+      known-good snapshots. That made build reproducibility, resolver names, and curated
+      package sets visible in everyday project files.
+    - >
+      It also sits at the intersection of package managers. Homebrew installs Stack as
+      an OS package; Stack then installs or selects GHC and builds Haskell packages from
+      Hackage or snapshots. This layering is both powerful and occasionally surprising,
+      so packagers care about exactly which Stack version is distributed and how it
+      handles GHC, MSYS2, Docker, Nix, Hackage Security, and credentials.
+    - >
+      The changelog is a compact history of Haskell ecosystem pressure points: Windows
+      path handling, Hackage authentication changes, Docker behavior, Nix mode, Cabal
+      library compatibility, Stackage server API changes, and evolving GHC support.
+  project-history:
+    - >
+      The Stack changelog records the first public release on 2015-06-09 as the Haskell
+      Tool Stack, beta quality. Within weeks it added index updates, package removal
+      from HTTPS and Git, install support, test-running improvements, stack init,
+      resolver support, Hackage upload support, stack new, stack solver, stack path,
+      stack dot, stack upgrade, and the --stack-yaml flag.
+    - >
+      The documentation describes Stack as a program for developing Haskell projects,
+      aimed at new and experienced users, with support across Linux, macOS, and Windows.
+      Its core promise is orchestration: select a GHC, read stack.yaml, build
+      dependencies and project packages, and keep the toolchain reproducible enough for
+      local development and CI.
+    - >
+      Over time Stack grew beyond the early snapshot-and-build loop. The changelog shows
+      Docker and Nix integration, script interpreter support, Hackage authentication and
+      upload behavior, Hpack integration, lock files, snapshot listing, Windows/MSYS
+      handling, and later support for newer GHC and Cabal versions.
+  related-projects:
+    - Stackage provides curated snapshot sets that Stack uses as resolvers.
+    - Hackage is the package repository Stack reads from and can upload to.
+    - >
+      Cabal provides package descriptions and build infrastructure beneath many Stack
+      operations.
+    - GHC is the compiler Stack installs, selects, and invokes.
+    - >
+      Hpack, Docker, Nix, MSYS2, and Hackage Security are recurring integration points
+      in Stack's release history.
+  sources:
+    - https://docs.haskellstack.org/
+    - https://docs.haskellstack.org/en/stable/ChangeLog/
+    - https://docs.haskellstack.org/en/stable/tutorial/
+    - https://formulae.brew.sh/formula/haskell-stack
+    - https://github.com/commercialhaskell/stack
+    - https://hackage.haskell.org/package/stack
+    - https://raw.githubusercontent.com/commercialhaskell/stack/master/ChangeLog.md
+  summary:
+    - >
+      Stack is a cross-platform command-line build tool for Haskell projects. It became
+      important by making GHC installation, package snapshots, project templates,
+      builds, tests, scripts, uploads, and reproducible project configuration accessible
+      through one executable.
+    - >
+      Its package history is tied to Stackage: Stack made snapshot-based Haskell
+      development a normal workflow, complementing Cabal and Hackage by giving users a
+      resolver-centered way to pin a coherent package set.
+  timeline:
+    - '2015-06-09: First public release as the Haskell Tool Stack.'
+    - >
+      2015-06-23: 0.1.0.0 added stack new, stack solver, stack path, and expanded
+      Haddock support.
+    - '2015-06-26: 0.1.1.0 added stack dot, stack upgrade, STACK_EXE, and --stack-yaml.'
+    - >
+      2017: The 1.x line included Docker-related changes, script interpreter work,
+      Hackage credentials fixes, and Nix integration improvements.
+    - >
+      2023: The changelog records Hackage-only releases and Stack 2.x maintenance around
+      snapshots, Docker, and GHC support.
+    - >
+      2026: Stack 3.x changelog entries show ongoing work for newer GHC/Cabal, Stackage
+      API changes, Windows MSYS2 defaults, Backpack planning, and Hackage authentication
+      behavior.
+  usage:
+    - >
+      Typical package-manager usage begins with installing stack, then running commands
+      such as stack new, stack init, stack setup, stack build, stack test, stack exec,
+      stack ghci, stack run, stack script, stack upload, and stack path inside or around
+      a Haskell project.
+    - >
+      A project-level stack.yaml selects a snapshot or compiler and project packages;
+      global and user configuration live under Stack's root/config locations. This split
+      is why the package has both project configuration and user credentials paths:
+      builds are project-specific, but Hackage upload credentials are user-specific.
+    - >
+      Stack is also used as a bootstrapper. It can install or select GHC, build a
+      project with the versions implied by its snapshot, and run tools in the resulting
+      environment. That makes it attractive for tutorials and CI scripts because one
+      command can reproduce a build plan that would otherwise require several separate
+      tools.
 tags:
   - build-tool
   - cli
@@ -39,6 +151,14 @@ provenance:
       identifies the Homebrew formula as haskell-stack.
   docs-sources:
     - Official Stack documentation is hosted at docs.haskellstack.org.
+  history-sources:
+    - https://docs.haskellstack.org/
+    - https://docs.haskellstack.org/en/stable/ChangeLog/
+    - https://docs.haskellstack.org/en/stable/tutorial/
+    - https://formulae.brew.sh/formula/haskell-stack
+    - https://github.com/commercialhaskell/stack
+    - https://hackage.haskell.org/package/stack
+    - https://raw.githubusercontent.com/commercialhaskell/stack/master/ChangeLog.md
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/commercialhaskell/stack; per
@@ -53,5 +173,6 @@ category-path:
   - build-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
