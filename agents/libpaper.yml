@@ -10,6 +10,66 @@ config-file-location:
     - '@sysconfdir@/papersize'
     - '@sysconfdir@/paperspecs'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      libpaper became a distribution-level convention because many unrelated tools need
+      the same answer: what paper size should this system or user prefer? Debian
+      manpages document paperconf, while modern libpaper manpages document the newer
+      paper command and XDG-aware user files.
+  package-nerd-significance:
+    - >
+      libpaper is a tiny package with an outsized packaging lesson: internationalization
+      sometimes means centralizing one mundane default. It exists so PostScript, TeX,
+      printing, and document tools can share policy without every package growing its
+      own paper-size configuration machinery.
+  project-history:
+    - >
+      The original Debian libpaper design was proposed by Yves Arrouye in 1996 as a way
+      for programs to use /etc/papersize at runtime, support a catalog of paper names,
+      and avoid recompiling or rewriting package scripts when the system default
+      changed.
+    - >
+      Reuben Thomas's maintained libpaper package builds on that design. Its README says
+      it enables users to indicate their preferred paper size, provides the paper
+      utility, specifies system-wide and per-user paper-size catalogues, and keeps
+      paperconf for compatibility with libpaper version 1.
+  related-projects:
+    - paper is the newer command-line interface for querying paper sizes.
+    - paperconf is the compatibility command from libpaper version 1.
+    - >
+      psutils and other document-processing tools are natural consumers of libpaper
+      because they need named paper sizes.
+  sources:
+    - https://github.com/rrthomas/libpaper
+    - https://github.com/rrthomas/libpaper/releases
+    - https://lists.debian.org/debian-devel/1996/06/msg00116.html
+    - https://man.archlinux.org/man/extra/libpaper/paper.1.en
+    - https://manpages.debian.org/unstable/libpaper-utils/paperconf.1.en.html
+  summary:
+    - >
+      libpaper is a small Unix library and command-line toolkit for discovering and
+      configuring preferred paper sizes, so document and printing tools can avoid
+      hard-coded A4-versus-letter assumptions.
+  timeline:
+    - >
+      1996: Yves Arrouye proposed using a libpaper library and /etc/papersize for
+      runtime paper-size defaults in Debian.
+    - >
+      2001: The Debian paperconf manpage documented PAPERSIZE, PAPERCONF, and
+      /etc/papersize behavior.
+    - >
+      2013: Reuben Thomas's libpaper line started its copyright period and superseded
+      his earlier paper package.
+    - >
+      2024: paper 2.2.5 manpages documented XDG_CONFIG_HOME/papersize and locale
+      fallback behavior.
+  usage:
+    - >
+      Programs can call the library, shell scripts can call paper or paperconf, and
+      users can set PAPERSIZE or write papersize files. The modern paper command checks
+      PAPERSIZE, the user's XDG papersize file, locale paper defaults, /etc/papersize,
+      and paper-size catalogues.
 tags:
   - cli
   - configuration
@@ -37,6 +97,12 @@ provenance:
     - >
       source_facts.homepage is the official GitHub project; its README is the primary
       documentation surface.
+  history-sources:
+    - https://github.com/rrthomas/libpaper
+    - https://github.com/rrthomas/libpaper/releases
+    - https://lists.debian.org/debian-devel/1996/06/msg00116.html
+    - https://man.archlinux.org/man/extra/libpaper/paper.1.en
+    - https://manpages.debian.org/unstable/libpaper-utils/paperconf.1.en.html
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/rrthomas/libpaper, so repo
@@ -52,5 +118,6 @@ category-path:
   - paper
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -7,6 +7,74 @@ docs:
   - https://libimobiledevice.org/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README states that libplist is used by libimobiledevice and corresponding
+      projects. Distribution packaging follows from that role: a small serialization
+      library becomes a shared dependency for iOS-device tooling, command-line
+      utilities, and bindings.
+    - >
+      The project also gained packaging importance outside direct device access because
+      plist files are a common Apple serialization format. `plistutil` gives Unix users
+      a simple way to convert and inspect those files without Apple tooling.
+  package-nerd-significance:
+    - >
+      libplist is significant because it is the small serialization layer underneath a
+      larger reverse-engineered device-access stack. It turns Apple's plist formats into
+      ordinary Unix-library territory.
+    - >
+      Its security and fuzzing history matter because plist parsing often sits at a
+      trust boundary: tools may ingest files or device-provided data that should not
+      crash or corrupt memory.
+  project-history:
+    - >
+      libplist belongs to the libimobiledevice family, a free software stack for talking
+      to iPhone, iPod Touch, iPad, and Apple TV devices from non-Apple platforms without
+      bundling Apple's proprietary libraries. In that stack, property-list parsing is
+      foundational because many Apple device protocols exchange structured plist data.
+    - >
+      The NEWS file shows the library evolving from the 1.x API line into 2.x releases
+      with a custom XML parser, binary-plist parsing refactors, fuzzing, Cython
+      bindings, JSON/OpenStep support, and more explicit format/error APIs.
+  related-projects:
+    - libimobiledevice is the parent stack and main downstream user family.
+    - >
+      usbmuxd, libusbmuxd, libirecovery, and other libimobiledevice projects are related
+      packages in the same device-access ecosystem.
+    - Apple property lists are the data format family that libplist implements independently.
+  sources:
+    - https://github.com/libimobiledevice/libplist
+    - https://libimobiledevice.org/
+    - https://libimobiledevice.org/docs
+    - https://raw.githubusercontent.com/libimobiledevice/libplist/master/NEWS
+    - https://raw.githubusercontent.com/libimobiledevice/libplist/master/README.md
+  summary:
+    - >
+      libplist is the libimobiledevice project's portable C library for Apple
+      property-list data. It reads and writes binary, XML, JSON, and OpenStep plist
+      formats and ships the `plistutil` command-line converter.
+  timeline:
+    - >
+      2018: The NEWS file's 2.0.0 entry records parser refactoring, removal of the
+      libxml2 dependency, malformed-input handling, and security fixes.
+    - >
+      2020: The NEWS file's 2.2.0 entry records GitHub Actions build testing,
+      `plistutil` improvements, and the libplist-2.0 API-version rename.
+    - >
+      2023: The NEWS file's 2.3.0 entry records JSON and OpenStep format support plus
+      new format/error APIs.
+    - >
+      2025: The NEWS file's 2.7.0 entry records Unix-timestamp helper APIs and
+      build/tooling changes.
+  usage:
+    - >
+      Developers link libplist to parse, generate, and convert plist data in C or C++
+      programs, with optional Python bindings. Command-line users use `plistutil` to
+      convert between supported plist encodings.
+    - >
+      Packagers care about the library/utility split, generated documentation, Cython
+      option, and libimobiledevice dependency graph.
 category: developer-tools
 package-manager:
   apk: libplist
@@ -32,5 +100,12 @@ executables:
   - plistutil
 provenance:
   formula: libplist
+  history-sources:
+    - https://github.com/libimobiledevice/libplist
+    - https://libimobiledevice.org/
+    - https://libimobiledevice.org/docs
+    - https://raw.githubusercontent.com/libimobiledevice/libplist/master/NEWS
+    - https://raw.githubusercontent.com/libimobiledevice/libplist/master/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

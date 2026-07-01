@@ -6,6 +6,70 @@ docs:
   - https://noping.cc/liboping
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      liboping's adoption is concentrated in monitoring and operations tooling. It is
+      useful when software needs repeated ping-style probes without forking ping for
+      every host or reimplementing raw-socket handling.
+    - >
+      The GitHub repository includes Perl bindings in the source package, which made the
+      library accessible to monitoring scripts as well as C applications.
+  package-nerd-significance:
+    - >
+      liboping is package-nerd interesting because it packages ICMP probing as a library
+      instead of a shell loop around ping. That matters for monitoring systems, where
+      process spawning and inconsistent ping implementations are exactly the sort of
+      small overheads that become operational noise.
+    - >
+      It also exposes the subtle packaging side of network utilities: the library itself
+      is ordinary C, but the included binaries require careful capability or setuid
+      handling to work for unprivileged users.
+  project-history:
+    - >
+      The noping.cc project page says liboping was inspired by ping, libping, and fping,
+      but differs by pinging multiple hosts in parallel while handling IPv4 and IPv6
+      transparently. The design emphasized a small object-oriented C interface,
+      simplicity, extensibility, and opaque internal data structures.
+    - >
+      The homepage documents oping as a sample application like ping, ping6, and fping
+      rolled into one. Starting with version 1.4.0, noping added an ncurses front end
+      for live ping statistics and highlighting unusual round-trip times.
+  related-projects:
+    - ping and ping6 are the traditional command-line tools whose behavior oping overlaps.
+    - fping is named by the project page as an inspiration for parallel host probing.
+    - >
+      Perl monitoring scripts are a related ecosystem because the source package
+      includes Perl bindings.
+  sources:
+    - https://formulae.brew.sh/formula/liboping
+    - https://github.com/octo/liboping
+    - https://noping.cc/
+    - https://noping.cc/liboping
+  summary:
+    - >
+      liboping is Florian Forster's ANSI C library for sending ICMP echo requests to
+      IPv4 and IPv6 hosts in parallel. It turns the basic idea behind ping into a
+      reusable network-monitoring library and ships oping and noping as practical
+      command-line examples.
+  timeline:
+    - >
+      Pre-2017: liboping develops as octo's ping library with oping as the command-line
+      sample application.
+    - 'Version 1.4.0: noping is introduced as an ncurses front end for live ping statistics.'
+    - >
+      2017: noping.cc documentation is built with copyright year 2017 and offers
+      liboping 1.10.0 tarballs.
+    - '2017: GitHub release page records release 1.10.0 on 2017-05-11.'
+  usage:
+    - >
+      Developers use liboping to construct ping objects, add hosts, send probes, and
+      iterate over results. The oping and noping binaries provide ready-made
+      command-line interfaces for parallel ping checks.
+    - >
+      The README documents the permissions issue that matters to packagers: raw sockets
+      require elevated privileges, so Linux packages may use cap_net_raw while other
+      Unix systems may need a setuid-root installation strategy.
 tags:
   - c-library
   - cli
@@ -30,6 +94,11 @@ provenance:
     - source_facts.name
   docs-sources:
     - official noping.cc homepage includes Documentation links including liboping(3)
+  history-sources:
+    - https://formulae.brew.sh/formula/liboping
+    - https://github.com/octo/liboping
+    - https://noping.cc/
+    - https://noping.cc/liboping
   repo-sources:
     - >
       official noping.cc homepage says source code is kept in a Git repository on GitHub
@@ -44,5 +113,6 @@ category-path:
   - monitoring
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

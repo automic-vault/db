@@ -6,6 +6,82 @@ docs:
   - https://www.tcpdump.org/manpages/pcap.3pcap.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      libpcap became infrastructure rather than an end-user application: tcpdump,
+      analyzers, monitors, and security tools can link against one API while relying on
+      each operating system's capture mechanism underneath. The upstream README
+      explicitly addresses Linux distributions and BSD systems that ship libpcap and
+      warns packagers not to encode release-specific sonames.
+    - >
+      Its adoption is also tied to the pcap file and filter culture around tcpdump:
+      packet captures, reproducible troubleshooting, and command-line network forensics
+      all use libpcap conventions even when users interact through higher-level tools.
+  package-nerd-significance:
+    - >
+      libpcap matters because it is a thin but durable portability layer over messy
+      kernel capture APIs. It is the package that turns packet capture from an
+      operating-system-specific problem into a linkable library dependency.
+    - >
+      It is also a classic packaging stress test: headers, shared-library ABI,
+      privileged capture behavior, optional capture backends, and security-sensitive
+      parsers all meet in one small C library.
+  project-history:
+    - >
+      The project grew out of the tcpdump and Berkeley Packet Filter lineage. Steve
+      McCanne's SharkFest 2011 talk traces the packet-capture work back to a 1988
+      Berkeley/Lawrence Berkeley Laboratory setting, while the 1993 BPF paper documents
+      the kernel/user-level filtering architecture that made efficient capture
+      practical.
+    - >
+      The Tcpdump Group later maintained libpcap as a separate library paired with
+      tcpdump. The repository and CHANGES file show long-running attention to
+      operating-system capture backends, filter syntax, savefile reading, remote capture
+      support, and ABI concerns.
+  related-projects:
+    - >
+      tcpdump is libpcap's sibling command-line analyzer and the most direct companion
+      project.
+    - >
+      BPF is the filtering architecture behind libpcap filter compilation and efficient
+      packet selection.
+    - >
+      WinPcap and Npcap are Windows-oriented relatives in the pcap ecosystem, while
+      Wireshark is a major downstream packet-analysis application in the same
+      capture-file culture.
+  sources:
+    - https://github.com/the-tcpdump-group/libpcap
+    - https://raw.githubusercontent.com/the-tcpdump-group/libpcap/master/CHANGES
+    - >
+      https://sharkfest.wireshark.org/retrospective/sfus/presentations11/McCanne-Sharkfest%2711_Keynote_Address.pdf
+    - https://www.tcpdump.org/
+    - https://www.usenix.org/legacy/publications/library/proceedings/sd93/mccanne.pdf
+  summary:
+    - >
+      libpcap is the portable packet-capture library maintained with tcpdump by The
+      Tcpdump Group. It gives programs a common C API for capturing packets and
+      compiling packet filters across Unix-like operating systems whose native capture
+      interfaces differ.
+  timeline:
+    - >
+      1988: tcpdump and BPF lineage begins in the Berkeley/Lawrence Berkeley Laboratory
+      packet-capture work described by Steve McCanne.
+    - >
+      1993: The BSD Packet Filter paper documents the efficient packet filtering
+      architecture behind the tcpdump/libpcap family.
+    - '2003-11-12: The libpcap CHANGES file records the 0.8 release summary.'
+    - '2008-10-27: The libpcap CHANGES file records the 1.0.0 release summary.'
+    - '2023-04-07: The libpcap CHANGES file records the 1.10.4 release summary.'
+  usage:
+    - >
+      Developers use libpcap to enumerate capture devices, open live or saved captures,
+      compile packet filters, and read packet records. Package-manager users usually
+      install it as a dependency of network tools or as development headers for software
+      that needs packet capture.
+    - >
+      The small `pcap-config` utility is package-nerd visible because build systems and
+      ports use it to discover compiler and linker flags for libpcap.
 tags:
   - c-library
   - cli
@@ -33,6 +109,13 @@ provenance:
       project name.
   docs-sources:
     - tcpdump.org is source_facts.homepage and hosts the official libpcap manual pages.
+  history-sources:
+    - https://github.com/the-tcpdump-group/libpcap
+    - https://raw.githubusercontent.com/the-tcpdump-group/libpcap/master/CHANGES
+    - >
+      https://sharkfest.wireshark.org/retrospective/sfus/presentations11/McCanne-Sharkfest%2711_Keynote_Address.pdf
+    - https://www.tcpdump.org/
+    - https://www.usenix.org/legacy/publications/library/proceedings/sd93/mccanne.pdf
   repo-sources:
     - >
       The official tcpdump group GitHub repository identifies itself as the libpcap
@@ -47,5 +130,6 @@ category-path:
   - packet-capture
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
