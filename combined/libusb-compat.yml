@@ -7,6 +7,49 @@ docs:
   - https://github.com/libusb/libusb-compat-0.1
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The package became useful to Unix package maintainers because many older USB tools
+      and libraries expected libusb-0.1 headers or libusb-config even after libusb-1.0
+      had become the maintained API. Keeping it packaged let distributions retire older
+      implementation details without forcing every leaf package to port at once.
+  package-nerd-significance:
+    - >
+      It is a classic transition package: small, boring, and important because it
+      absorbs API churn between a widely used hardware-access library and a long tail of
+      older consumers.
+  project-history:
+    - >
+      The project appeared during the libusb-1.0 transition as a deliberately
+      conservative bridge: keep legacy usb_* callers building and running while letting
+      distributions ship the newer libusb implementation underneath. Its release notes
+      show an initial beta in May 2008, a 0.1.0 release in December 2008, and later
+      fixes focused on endpoint-addressing compatibility, initialization behavior,
+      cross-compiling, and avoiding symbol clashes with libusb-1.0.
+  related-projects:
+    - libusb-1.0 is the implementation layer that libusb-compat targets.
+    - libusb-0.1 is the legacy API surface preserved for old consumers.
+  sources:
+    - https://github.com/libusb/libusb-compat-0.1
+    - https://libusb.info/
+    - https://raw.githubusercontent.com/libusb/libusb-compat-0.1/master/NEWS
+  summary:
+    - >
+      libusb-compat is the libusb project's compatibility layer for software written
+      against the old libusb-0.1 API while systems moved to the newer libusb-1.0 stack.
+  timeline:
+    - '2008-05-25: Initial 0.1.0 beta release.'
+    - '2008-12-13: libusb-compat-0.1.0 release.'
+    - >
+      2009: 0.1.1 through 0.1.3 refined endpoint behavior, initialization failure
+      handling, error-code compatibility, and cross-compiling.
+    - '2015: 0.1.6 added cleanup handling, libusb-1.0 dlopen handling, and MinGW updates.'
+  usage:
+    - >
+      End users rarely call libusb-compat directly. It is normally pulled in as a build
+      or runtime dependency for older USB-aware software, with libusb-config serving
+      legacy configure scripts.
 category: system
 package-manager:
   apk: libusb-compat
@@ -27,5 +70,10 @@ executables:
   - libusb-config
 provenance:
   formula: libusb-compat
+  history-sources:
+    - https://github.com/libusb/libusb-compat-0.1
+    - https://libusb.info/
+    - https://raw.githubusercontent.com/libusb/libusb-compat-0.1/master/NEWS
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

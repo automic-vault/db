@@ -8,6 +8,74 @@ docs:
   - https://www.gnu.org/software/libtasn1/reference/libtasn1-libtasn1.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GNU identifies Libtasn1 as the ASN.1 library used by GnuTLS, p11-kit, and other
+      packages. That dependency path made it part of distribution base layers for TLS
+      and certificate-processing stacks, which explains broad packaging across Alpine,
+      Homebrew, Fedora, MacPorts, Nix, Arch, and openSUSE in the input metadata.
+    - >
+      The project also reflects modern distro maintenance pressure: the NEWS file
+      includes repeated hardening and fuzzing-related fixes, oss-fuzz references,
+      reproducible tarball work in 4.20.0, and a security fix for CVE-2025-13151 in
+      4.21.0.
+  package-nerd-significance:
+    - >
+      Libtasn1 is a classic small security dependency: boring when it works, very
+      visible when it has a parser bug. Package maintainers care about it because ABI
+      stability, fuzzing fixes, CVEs, and reproducible source archives ripple into TLS
+      and authentication stacks.
+    - >
+      Its GNU packaging also gives distributions familiar release signing, mailing
+      lists, manuals, Autotools build machinery, and a GitLab development home.
+  project-history:
+    - >
+      The GNU project page says Libtasn1 was originally written by Fabio Fiorina and
+      later maintained as a GNU package. The NEWS file records an initial 0.1.0 release,
+      a 0.1.1 rename to libtasn1 with LGPL licensing, and a 3.0 release on October 28,
+      2012 that hid internal structures and normalized type names.
+    - >
+      The manual defines the package as a library for Abstract Syntax Notation One and
+      Distinguished Encoding Rules manipulation. It emphasizes online ASN.1 structure
+      management without C code generation, optional offline C array generation, DER
+      support, no global state, thread safety, and portability across Unix-like systems
+      and Windows.
+  related-projects:
+    - >
+      GnuTLS and p11-kit are explicitly named GNU-page consumers of Libtasn1. ASN.1 and
+      DER standards, X.509 certificate tooling, and PKCS-related libraries are adjacent
+      parts of the same packaging ecosystem.
+  sources:
+    - https://gitlab.com/gnutls/libtasn1
+    - https://gitlab.com/gnutls/libtasn1/-/raw/master/NEWS.md
+    - https://gitlab.com/gnutls/libtasn1/-/raw/master/README.md
+    - https://www.gnu.org/software/libtasn1/
+    - https://www.gnu.org/software/libtasn1/manual/libtasn1.html
+  summary:
+    - >
+      GNU Libtasn1 is a small ASN.1 and DER library used in security-sensitive C
+      software. It matters to package managers because it sits under TLS, PKCS#11,
+      certificate, and identity stacks while trying to stay portable and
+      dependency-light.
+  timeline:
+    - '2002: The NEWS file copyright range begins for GNU Libtasn1.'
+    - '0.1.0: Initial release.'
+    - '0.1.1: The project is renamed to libtasn1 and relicensed under the GNU Lesser GPL.'
+    - '2012: Release 3.0 hides internal structures and renames public types for consistency.'
+    - '2014: Release 4.0 adds DER decoding improvements and new APIs.'
+    - '2019: Release 4.15.0 switches to semantic versioning.'
+    - '2025: Release 4.20.0 adds reproducible release tarballs.'
+    - '2026: Release 4.21.0 fixes CVE-2025-13151 and renames NEWS to NEWS.md.'
+  usage:
+    - >
+      Applications use the library to parse ASN.1 definitions, build ASN.1 structures,
+      and encode or decode DER data. The command-line tools asn1Parser, asn1Coding, and
+      asn1Decoding expose those workflows for generating C arrays, encoding assignment
+      files, and decoding binary DER input.
+    - >
+      Its common role is not as an end-user utility but as a low-level dependency for
+      software that needs strict certificate, key, or protocol data handling.
 category: other
 package-manager:
   apk: libtasn1
@@ -29,5 +97,12 @@ executables:
   - asn1Parser
 provenance:
   formula: libtasn1
+  history-sources:
+    - https://gitlab.com/gnutls/libtasn1
+    - https://gitlab.com/gnutls/libtasn1/-/raw/master/NEWS.md
+    - https://gitlab.com/gnutls/libtasn1/-/raw/master/README.md
+    - https://www.gnu.org/software/libtasn1/
+    - https://www.gnu.org/software/libtasn1/manual/libtasn1.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
