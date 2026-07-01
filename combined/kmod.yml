@@ -12,6 +12,66 @@ config-file-location:
     - /usr/local/lib/modprobe.d/*.conf
     - /lib/modprobe.d/*.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Distributions adopted kmod as the drop-in successor to module-init-tools during
+      the early 2010s. Arch Linux announced the switch on 2012-01-21, and the kmod
+      README records that later behavior changes and features followed feedback from the
+      Linux kernel community and distributions.
+  package-nerd-significance:
+    - >
+      kmod is foundational packaging infrastructure: it is a small package whose
+      binaries often exist in `/sbin` or `/usr/bin`, but it participates in boot,
+      initramfs generation, kernel upgrades, device probing, and driver packaging. Its
+      symlinked multi-call command design also makes it a neat example of replacing
+      legacy utilities while preserving the command surface scripts expect.
+  project-history:
+    - >
+      The kmod README states the project's goal directly: handle common Linux kernel
+      module tasks and remain compatible with the tools, configurations, and indexes
+      from module-init-tools. Its early NEWS entries show that version 1 provided
+      libkmod plus module-init-tools-style command names, version 2 expanded modprobe
+      compatibility, and version 3 bundled tools through a single `kmod` binary callable
+      through symlinks.
+    - >
+      That library-centered rewrite mattered because Linux systems had grown a complex
+      set of module indexes, aliases, soft dependencies, compressed modules, and
+      initramfs constraints. kmod turned those concerns into libkmod APIs consumed by
+      command-line tools and by other system software.
+  related-projects:
+    - >
+      kmod is directly related to module-init-tools, the Linux kernel module loader
+      interfaces, udev/systemd module-loading paths, initramfs tooling, and package
+      scripts that regenerate module dependency indexes after kernel or driver installs.
+  sources:
+    - https://archlinux.org/news/kmod-replaces-module-init-tools/
+    - https://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git/tree/NEWS
+    - https://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git/tree/README.md
+    - https://git.kernel.org/pub/scm/utils/kernel/module-init-tools/module-init-tools.git/
+  summary:
+    - >
+      kmod is the Linux userspace module-management suite and library that replaced
+      module-init-tools after that project reached end of life in 2011. It provides the
+      familiar `depmod`, `insmod`, `lsmod`, `modinfo`, `modprobe`, and `rmmod` commands
+      on top of libkmod.
+  timeline:
+    - '2011: module-init-tools reached end of life, according to the kmod README.'
+    - '2011: kmod 1 shipped the first libkmod and module-init-tools-style tools.'
+    - >
+      2011: kmod 3 added depmod and the single `kmod` binary with symlink-compatible
+      tool names.
+    - '2012-01-21: Arch Linux announced kmod replacing module-init-tools.'
+    - >
+      2026: kmod 34 NEWS described Meson transition work, dlopen-based decompression
+      libraries, shell completions, CI hardening, and documentation improvements.
+  usage:
+    - >
+      Administrators and boot-time services use kmod tools to query loaded modules,
+      generate dependency indexes, inspect module metadata, load modules by alias or
+      name, and remove modules. Configuration is driven by modprobe-style `.conf` files
+      under Linux module configuration directories, while credentials are not part of
+      the tool model.
 category: system
 package-manager:
   apk: kmod
@@ -42,5 +102,11 @@ executables:
   - rmmod
 provenance:
   formula: kmod
+  history-sources:
+    - https://archlinux.org/news/kmod-replaces-module-init-tools/
+    - https://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git/tree/NEWS
+    - https://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git/tree/README.md
+    - https://git.kernel.org/pub/scm/utils/kernel/module-init-tools/module-init-tools.git/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

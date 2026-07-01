@@ -8,6 +8,67 @@ config-file-location:
   unix:
     - /etc/knockd.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      knock spread through Unix-like distributions because it solved a specific sysadmin
+      problem with a small daemon and client. Package names vary between `knock`,
+      `knockd`, and distribution-specific formula names, but the underlying model stayed
+      close to the original README example: a knock sequence opens SSH, and another
+      sequence closes it.
+  package-nerd-significance:
+    - >
+      knock is a memorable package because it embodies a whole security pattern in a
+      tiny Unix daemon. It is also a reminder of the early-2000s sysadmin style:
+      libpcap, iptables commands, config files, and a tiny client were enough to make a
+      practical layer around SSH exposure.
+  project-history:
+    - >
+      The README carries a 2004 copyright notice and describes the core design that
+      still defines the package: closed ports can receive a secret sequence because
+      knockd sniffs link-layer traffic rather than listening on those ports. The bundled
+      ChangeLog lists 0.1 as the initial release and shows later work adding TCP flag
+      handling, reload behavior, timeouts, kernel-space BPF filtering, one-time
+      sequences, interface selection, and IPv6 support.
+    - >
+      Version 0.8 was published on 2021-04-24 with multiple fixes and IPv6 support. The
+      GitHub repository retained a small C codebase, an example `knockd.conf`, and
+      manpage documentation rather than growing into a larger access-control framework.
+  related-projects:
+    - >
+      knock is related to other port-knocking and single-packet-authorization tools,
+      firewall managers such as iptables, packet crafting tools such as sendip, and SSH
+      hardening workflows.
+  sources:
+    - https://github.com/jvinet/knock
+    - https://github.com/jvinet/knock/blob/master/ChangeLog
+    - https://github.com/jvinet/knock/releases/tag/v0.8
+    - https://raw.githubusercontent.com/jvinet/knock/master/knockd.conf
+  summary:
+    - >
+      knock is Judd Vinet's port-knocking server and client. It watches network traffic
+      with libpcap for a configured sequence of port hits and runs commands, commonly
+      firewall changes, when the sequence matches.
+  timeline:
+    - "2004: README copyright identifies Judd Vinet's original project era."
+    - '0.1: ChangeLog records the initial release.'
+    - >
+      0.3: ChangeLog added PPP support, command timeout directives, SIGHUP config
+      reloads, and per-port protocols.
+    - >
+      0.5: ChangeLog added one-time sequences, interface selection, BPF filtering, and
+      security fixes.
+    - >
+      0.7: ChangeLog documented the target directive and consolidated OS-specific
+      networking code.
+    - '2021-04-24: v0.8 release published with fixes and IPv6 support.'
+  usage:
+    - >
+      A server runs `knockd` with a configuration file such as `/etc/knockd.conf`; a
+      client runs `knock` to send TCP or UDP packets to the configured sequence.
+      Commands usually add or remove firewall rules, so the tool is operationally simple
+      but security-sensitive: the sequence should be treated like a shared secret and
+      firewall commands must be written carefully.
 tags:
   - access-control
   - cli
@@ -38,6 +99,11 @@ provenance:
   docs-sources:
     - Official repository README documents purpose, building, examples, and client use.
     - Official repository contains a doc directory.
+  history-sources:
+    - https://github.com/jvinet/knock
+    - https://github.com/jvinet/knock/blob/master/ChangeLog
+    - https://github.com/jvinet/knock/releases/tag/v0.8
+    - https://raw.githubusercontent.com/jvinet/knock/master/knockd.conf
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/jvinet/knock; per
@@ -52,5 +118,6 @@ category-path:
   - port-knocking
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

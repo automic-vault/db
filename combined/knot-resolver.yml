@@ -8,6 +8,86 @@ docs:
 config-file-location:
   unix: /etc/knot-resolver/config.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      CZ.NIC presents Knot Resolver as scalable from home routers to large resolver
+      farms. The project website records operational adoption beyond CZ.NIC, including
+      CETIN using it in infrastructure since 2017 and Cloudflare describing it as a
+      cornerstone of the 1.1.1.1 public resolver service.
+    - >
+      Its adoption story is package-nerd relevant because recursive resolver software is
+      often chosen conservatively. A resolver that appears in Homebrew, Debian, Fedora,
+      Arch, Alpine, MacPorts, and Ubuntu packaging occupies a practical testing and
+      operations lane next to Unbound, BIND, PowerDNS Recursor, and systemd-resolved.
+  package-nerd-significance:
+    - >
+      Knot Resolver is interesting to package maintainers because it combines a network
+      daemon, a scripting/runtime layer, DNSSEC crypto dependencies, system service
+      integration, and changing configuration formats. Those are the things that expose
+      weak packaging: wrong paths, missing service users, broken Lua module paths, or
+      mismatched library versions show up quickly.
+    - >
+      It also represents the post-2010 shift in DNS software toward encrypted
+      transports, observability, and programmable policy. For users browsing package
+      indexes, it is the recursive counterpart to Knot DNS and one of the few widely
+      packaged alternatives that is both modern and registry-backed.
+  project-history:
+    - >
+      The project reached its first public 1.0.0 release on 2016-05-30. Its early design
+      combined a small C core with Lua/LuaJIT scripting and optional modules, a contrast
+      with larger monolithic resolver codebases. The 1.1.0 release on 2016-08-12 already
+      added features that became important to modern recursive DNS operations, including
+      DNS Cookies, DNS over TLS, Prometheus metrics, query minimisation improvements,
+      and a DNS firewall module.
+    - >
+      Knot Resolver later split from the older ReadTheDocs-hosted documentation flow
+      into CZ.NIC-controlled GitLab Pages documentation for the 6.x series, while
+      keeping a stable public website and development repository under the CZ.NIC
+      GitLab. The project remained tightly related to Knot DNS but serves the opposite
+      side of DNS: recursive/caching resolution rather than authoritative zone service.
+  related-projects:
+    - >
+      Knot DNS is the authoritative DNS server in the same CZ.NIC family. Knot Resolver
+      commonly appears in comparisons with Unbound, BIND, PowerDNS Recursor, and
+      systemd-resolved because all can occupy recursive DNS roles, though their
+      architecture and operational tradeoffs differ.
+  sources:
+    - https://knot-resolver.readthedocs.io/en/stable/NEWS.html
+    - https://www.knot-resolver.cz/
+    - https://www.knot-resolver.cz/development/
+  summary:
+    - >
+      Knot Resolver is CZ.NIC's caching, DNSSEC-validating recursive resolver, built as
+      the resolver-side member of the Knot DNS family. Its package-manager identity
+      matters because it is both a server daemon and a scriptable DNS platform: the
+      Homebrew formula installs command-line tools such as kresd, kresctl, and cache
+      maintenance utilities, while Unix packages place it beside other serious recursive
+      resolvers.
+  timeline:
+    - '2016-05-30: Knot Resolver 1.0.0 initial release.'
+    - >
+      2016-08-12: Knot Resolver 1.1.0 added DNS Cookies, DNS over TLS, Prometheus
+      metrics, and query-minimisation improvements.
+    - >
+      2017: CETIN adoption is described by CZ.NIC's project site as part of its
+      infrastructure history.
+    - >
+      2024-2025: The 5.7.x release series included KeyTrap-related DNSSEC hardening and
+      maintenance updates.
+    - '2026-06-16: CZ.NIC announced Knot Resolver 6.4.0 on the project website.'
+  usage:
+    - >
+      Users install Knot Resolver to run local, organizational, ISP, or public recursive
+      DNS service with DNSSEC validation and caching. Its module system is central to
+      usage: policy rules, forwarding, DNS-over-TLS, DNS-over-HTTPS, metrics, cache
+      behavior, and filtering can be adjusted without treating the daemon as a black
+      box.
+    - >
+      The package also exposes companion tools for control and maintenance, so it is not
+      just a background daemon formula. In package sets, that makes it useful to DNS
+      operators who want reproducible installs on laptops, CI images, lab hosts, and
+      production-like Unix systems.
 category: networking
 package-manager:
   apk: knot-resolver
@@ -35,5 +115,10 @@ executables:
   - kresd
 provenance:
   formula: knot-resolver
+  history-sources:
+    - https://knot-resolver.readthedocs.io/en/stable/NEWS.html
+    - https://www.knot-resolver.cz/
+    - https://www.knot-resolver.cz/development/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

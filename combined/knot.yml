@@ -7,6 +7,85 @@ docs:
 config-file-location:
   unix: '@config_dir@/knot.conf'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Knot DNS is associated with CZ.NIC, the .CZ registry, and was promoted early as a
+      high-performance authoritative DNS server for TLD and DNS-hosting scenarios.
+      Internet Society deployment material from 2013 described it as used by CZ.NIC for
+      the .CZ TLD and aimed at network and DNS operators.
+    - >
+      Its spread through Homebrew, Debian, Fedora, Arch, Alpine, MacPorts, Ubuntu, and
+      openSUSE matters because authoritative DNS operators often need the same tooling
+      on workstations and servers. Package availability lowers the friction for testing
+      zone signing, transfers, dynamic updates, and `kdig` diagnostics outside
+      production.
+  package-nerd-significance:
+    - >
+      Knot DNS is packaging-heavy software in the good sense: it has a daemon, config
+      files, zone storage, LMDB-backed state, DNSSEC key material, optional modules, and
+      command-line tooling. Correct packages have to get paths, service integration,
+      crypto libraries, and permissions right.
+    - >
+      For package nerds, it is also one of the names that marks the DNS ecosystem beyond
+      BIND. Seeing Knot DNS in a package index signals that a repository can support
+      production-grade authoritative DNS alternatives, not only client lookup utilities.
+  project-history:
+    - >
+      CZ.NIC developed Knot DNS for authoritative DNS service, especially the demanding
+      needs of registry and large-zone operators. The project site describes it as open
+      source, GPL 3+ licensed, and targeted at Linux, BSD, macOS, and other POSIX
+      systems.
+    - >
+      The 2.0.0 release on 2015-06-26 marked a major packaging and operations milestone:
+      DNSSEC was split into a separate library, basic KASP support was introduced,
+      configuration moved to a new YAML text format backed by LMDB storage, and
+      documentation included HTML and PDF manual pages. The 3.0.0 release on 2020-09-09
+      added XDP-based high-performance networking, catalog zones, a kzonesign utility,
+      DoH support in kdig, and other DNSSEC and operations improvements.
+  related-projects:
+    - >
+      Knot Resolver is the recursive/caching project in the Knot family. Operationally
+      related alternatives include BIND, NSD, PowerDNS Authoritative Server, YADIFA, and
+      DNS utility packages that provide dig-like clients.
+  sources:
+    - https://gitlab.nic.cz/knot/knot-dns/-/raw/v2.0.0/NEWS
+    - https://gitlab.nic.cz/knot/knot-dns/-/raw/v3.0.0/NEWS
+    - https://www.internetsociety.org/resources/deploy360/2013/knot-dns/
+    - https://www.knot-dns.cz/
+    - https://www.knot-dns.cz/development/
+  summary:
+    - >
+      Knot DNS is CZ.NIC's high-performance authoritative-only DNS server. In
+      package-manager culture it is the serious authoritative sibling to recursive
+      resolver packages: installing `knot` brings the daemon, control tool, zone
+      utilities, DNSSEC key tooling, and DNS query tools used by operators.
+  timeline:
+    - >
+      2013: Internet Society deployment material described Knot DNS as used by CZ.NIC
+      for the .CZ TLD.
+    - >
+      2015-06-26: Knot DNS 2.0.0 introduced YAML configuration, LMDB-backed
+      configuration storage, and basic KASP support.
+    - >
+      2017-06-05: Knot DNS 2.5.0 moved KASP data from JSON files to LMDB and expanded
+      dynamic module support.
+    - >
+      2020-09-09: Knot DNS 3.0.0 added XDP networking, catalog zones, kzonesign, and DoH
+      support in kdig.
+    - '2026-06-12: CZ.NIC announced Knot DNS 3.5.5 on the project website.'
+  usage:
+    - >
+      Knot DNS is used to serve authoritative zones, including DNSSEC-signed zones, with
+      zone transfers, dynamic updates, response rate limiting, automatic signing, and
+      rapid reconfiguration. The Homebrew package exposes both server components such as
+      knotd and operational utilities such as knotc, keymgr, kzonecheck, kzonesign,
+      kdig, khost, and knsupdate.
+    - >
+      A common package-level pattern is using Knot DNS tools even when the daemon is not
+      the only DNS server in an environment. Utilities such as kdig and keymgr make the
+      formula useful to DNS practitioners who need modern protocol testing or DNSSEC
+      maintenance commands on macOS and Unix workstations.
 category: networking
 package-manager:
   apk: knot
@@ -42,5 +121,12 @@ executables:
   - kzonesign
 provenance:
   formula: knot
+  history-sources:
+    - https://gitlab.nic.cz/knot/knot-dns/-/raw/v2.0.0/NEWS
+    - https://gitlab.nic.cz/knot/knot-dns/-/raw/v3.0.0/NEWS
+    - https://www.internetsociety.org/resources/deploy360/2013/knot-dns/
+    - https://www.knot-dns.cz/
+    - https://www.knot-dns.cz/development/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
