@@ -8,6 +8,58 @@ config-file-location:
   unix:
     - .gitlab-ci.yml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Release CLI's adoption followed GitLab CI/CD rather than a broad stand-alone CLI
+      community. It mattered most to teams that wanted release objects, changelog text,
+      tag metadata, and asset links produced as part of a GitLab pipeline.
+  package-nerd-significance:
+    - >
+      For package maintainers, release-cli is an example of a vendor-specific CI helper
+      that escaped the container image boundary and became a packaged binary in systems
+      such as Homebrew. Its maintenance-mode status also shows the lifecycle risk of
+      packaging a narrow integration tool after the vendor folds the workflow into a
+      larger CLI.
+  project-history:
+    - >
+      The project was introduced with GitLab 12.10 and published as a separate
+      GitLab-hosted repository in 2020. The repository documentation describes it as a
+      decoupled utility that can be invoked by GitLab Runner, third-party CI systems, or
+      directly from a shell.
+    - >
+      GitLab's documentation later moved release automation toward the broader glab CLI.
+      The Release CLI page marks the feature as deprecated in GitLab 18.0 and describes
+      a migration path from release-cli to glab for CI/CD jobs using the release
+      keyword.
+  related-projects:
+    - GitLab Runner passes CI job context to release-cli when release jobs are executed.
+    - >
+      glab is the GitLab CLI named by GitLab documentation as the migration target for
+      release workflows.
+  sources:
+    - https://docs.gitlab.com/user/project/releases/release_cli/
+    - https://formulae.brew.sh/formula/gitlab-release-cli
+    - https://gitlab.com/api/v4/projects/gitlab-org%2Frelease-cli
+    - https://gitlab.com/gitlab-org/release-cli
+    - https://gitlab.com/gitlab-org/release-cli/-/raw/master/docs/index.md
+  summary:
+    - >
+      GitLab Release CLI is a small Go command-line tool created by GitLab to bridge
+      GitLab CI/CD jobs and the GitLab Releases API. Its role is narrower than a general
+      release manager: it turns release metadata from CI jobs or command-line flags into
+      GitLab Release objects.
+  timeline:
+    - '2020: Introduced with GitLab 12.10 and released as v0.1.0.'
+    - '2025: v0.24.0 appeared in the project release stream.'
+    - 'GitLab 18.0: GitLab documentation marked release-cli as deprecated in favor of glab.'
+  usage:
+    - >
+      Practitioners use release-cli inside jobs defined in .gitlab-ci.yml, often on tag
+      pipelines, where CI-provided values such as CI_JOB_TOKEN and CI_PROJECT_ID
+      authenticate the Releases API call. The tool can also create, read, and update
+      releases from a terminal when supplied with an access token and project
+      information.
 tags:
   - ci
   - cli
@@ -36,6 +88,12 @@ provenance:
     - >
       Official GitLab Docs has a dedicated Release CLI page; official GitLab project
       README is also linked from the source repository.
+  history-sources:
+    - https://docs.gitlab.com/user/project/releases/release_cli/
+    - https://formulae.brew.sh/formula/gitlab-release-cli
+    - https://gitlab.com/api/v4/projects/gitlab-org%2Frelease-cli
+    - https://gitlab.com/gitlab-org/release-cli
+    - https://gitlab.com/gitlab-org/release-cli/-/raw/master/docs/index.md
   repo-sources:
     - >
       source_facts.repo is already set to https://gitlab.com/gitlab-org/release-cli, so
@@ -50,5 +108,6 @@ category-path:
   - release-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
