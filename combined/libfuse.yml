@@ -7,6 +7,65 @@ docs:
   - https://libfuse.github.io/doxygen
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      FUSE became a central Linux packaging dependency because it let SSH, archive,
+      cloud, virtual, encrypted, and application-specific filesystems ship as ordinary
+      user-space programs. The README states that libfuse is shipped by all major Linux
+      distributions and has been in production use across a wide range of systems for
+      many years.
+  package-nerd-significance:
+    - >
+      libfuse is one of the packages that changed what a filesystem package can be: a
+      userspace daemon, not a kernel module. Its formulae are unusually sensitive to
+      Linux-only behavior, setuid helpers, /etc/fuse.conf policy, kernel ABI
+      expectations, and the split between older FUSE 2 consumers and newer FUSE 3
+      consumers.
+  project-history:
+    - >
+      The libfuse README describes FUSE as two pieces: the kernel module maintained in
+      the regular Linux kernel repositories and the libfuse userspace library maintained
+      in the libfuse repository. The same README describes high-level synchronous and
+      low-level asynchronous APIs, mount and unmount helpers, request handling, and
+      response functions.
+    - >
+      The repository history reaches back to an imported-sources commit dated
+      2001-10-23. Its kernel interface header carries copyright notices for Miklos
+      Szeredi from 2001 onward, and the project changelog for FUSE 2.9.5 on 2016-01-14
+      thanks Szeredi while naming Nikolaus Rath as the new maintainer. libfuse 3.x later
+      moved packaging and development toward Meson/Ninja and the fuse3 command set.
+  related-projects:
+    - The Linux kernel FUSE module is the kernel-side peer of libfuse.
+    - >
+      macFUSE is the macOS-oriented related project named by the libfuse README for
+      macOS users.
+    - SSHFS and many other userspace filesystems are built on the FUSE model.
+  sources:
+    - >
+      https://api.github.com/repos/libfuse/libfuse/commits/bc22e7bec727bc72d91a3001fbda976f1adf352d
+    - https://api.github.com/repos/libfuse/libfuse/releases?per_page=100
+    - https://github.com/libfuse/libfuse
+    - https://github.com/libfuse/libfuse/blob/master/ChangeLog.rst
+    - https://libfuse.github.io/doxygen/
+  summary:
+    - >
+      libfuse is the reference userspace library for Linux FUSE, the interface that lets
+      standalone programs implement filesystems while the kernel FUSE module forwards
+      VFS requests to them.
+  timeline:
+    - >
+      2001-10-23: GitHub commit metadata records the imported-sources commit later
+      tagged start.
+    - '2016-01-14: The changelog records FUSE 2.9.5 and the maintainer change to Nikolaus Rath.'
+    - '2017-09-12: The changelog records libfuse 3.2.0 dropping autotools build support.'
+    - '2026-03-18: GitHub release metadata records fuse-3.18.2.'
+  usage:
+    - >
+      A FUSE filesystem normally links against libfuse, mounts a userspace daemon,
+      receives kernel requests through callbacks, and sends replies through the library.
+      The package also provides fusermount3 and mount.fuse3 for mounting user
+      filesystems with controlled privilege boundaries.
 category: system
 package-manager:
   brew: libfuse
@@ -25,5 +84,13 @@ executables:
   - mount.fuse3
 provenance:
   formula: libfuse
+  history-sources:
+    - >
+      https://api.github.com/repos/libfuse/libfuse/commits/bc22e7bec727bc72d91a3001fbda976f1adf352d
+    - https://api.github.com/repos/libfuse/libfuse/releases?per_page=100
+    - https://github.com/libfuse/libfuse
+    - https://github.com/libfuse/libfuse/blob/master/ChangeLog.rst
+    - https://libfuse.github.io/doxygen/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

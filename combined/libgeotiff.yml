@@ -7,6 +7,76 @@ docs:
   - https://trac.osgeo.org/geotiff
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GeoTIFF's adoption came from remote sensing, GIS, cartography, and earth-science
+      users needing a TIFF-compatible exchange format for georeferenced imagery. OGC
+      states that the format is used throughout geospatial and earth-science
+      communities, and libgeotiff follows that usage as a common implementation
+      dependency.
+    - >
+      Package managers expose libgeotiff as both a library and CLI utilities such as
+      listgeo, geotifcp, and applygeo. Its downstream footprint is strongest in
+      geospatial stacks that also involve TIFF, PROJ, GDAL, and raster-processing tools.
+  package-nerd-significance:
+    - >
+      libgeotiff sits at the dependency layer where image codecs meet
+      coordinate-reference metadata. For packagers, that means careful coordination with
+      libtiff, PROJ/EPSG data, and GDAL-like consumers.
+    - >
+      Its importance is not flashy application UX but interoperability: if GeoTIFF
+      metadata parsing breaks, many map-processing pipelines fail in ways that look like
+      bad coordinates rather than bad software.
+  project-history:
+    - >
+      The GeoTIFF format was developed in the early 1990s to add geographic metadata to
+      the mature TIFF image format. OGC records a September 1994 SPOT Image proposal, a
+      November 1995 Revision 1.0 specification by Ritter and Ruth, and a 2000 adjustment
+      to the community specification before OGC GeoTIFF 1.1 formalized the standard.
+    - >
+      The OSGeo libgeotiff repository describes the library's job as extracting and
+      parsing GeoTIFF key directories and installing GeoTIFF keys in new files. The
+      project migrated to a GitHub-hosted OSGeo repository while keeping OSGeo Trac and
+      download archives as historical project infrastructure.
+  related-projects:
+    - >
+      GeoTIFF depends conceptually on TIFF and coordinate-reference identifiers from the
+      EPSG ecosystem. In practical package graphs it often appears near libtiff, PROJ,
+      GDAL, rasterio, and other geospatial tooling.
+  sources:
+    - https://docs.ogc.org/is/19-008r4/19-008r4.html
+    - https://download.osgeo.org/geotiff/libgeotiff/
+    - https://formulae.brew.sh/formula/libgeotiff
+    - https://github.com/OSGeo/libgeotiff
+    - https://trac.osgeo.org/geotiff/
+    - https://www.ogc.org/standards/geotiff/
+  summary:
+    - >
+      libgeotiff is the OSGeo library and toolset for reading and writing GeoTIFF
+      metadata inside TIFF files. It is package-significant because GeoTIFF became a
+      standard interchange format for georeferenced raster imagery, and libgeotiff
+      provides the small C-level plumbing used by GIS stacks and command-line data
+      workflows.
+  timeline:
+    - '1994: SPOT Image Corp proposed an early GeoTIFF structure focused on UTM.'
+    - '1995: Ritter and Ruth formalized GeoTIFF Revision 1.0.'
+    - '2000: Minor adjustments to the community GeoTIFF 1.0 specification were published.'
+    - >
+      2007: OSGeo download archive entries show libgeotiff release artifacts already
+      hosted in the OSGeo geotiff area.
+    - >
+      2019: OGC GeoTIFF 1.1 documented a minor revision aligned with modern OGC practice
+      and EPSG register changes.
+  usage:
+    - >
+      Users reach for libgeotiff to inspect, copy, or attach georeferencing keys in TIFF
+      files. The tools are small but durable: listgeo reports GeoTIFF metadata, geotifcp
+      copies georeferencing into new TIFFs, and applygeo applies external metadata.
+    - >
+      Developers use the C library when they need direct access to GeoTIFF key
+      directories rather than a full GIS framework. That makes it useful as a dependency
+      under larger geospatial applications and as a command-line diagnostic package.
 category: data
 package-manager:
   apk: libgeotiff
@@ -33,5 +103,13 @@ executables:
   - listgeo
 provenance:
   formula: libgeotiff
+  history-sources:
+    - https://docs.ogc.org/is/19-008r4/19-008r4.html
+    - https://download.osgeo.org/geotiff/libgeotiff/
+    - https://formulae.brew.sh/formula/libgeotiff
+    - https://github.com/OSGeo/libgeotiff
+    - https://trac.osgeo.org/geotiff/
+    - https://www.ogc.org/standards/geotiff/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

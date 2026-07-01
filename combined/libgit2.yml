@@ -7,6 +7,88 @@ docs:
   - https://libgit2.org/docs/reference
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      libgit2's adoption followed the rise of Git as a developer platform rather than
+      only a command-line tool. The upstream README says it is used by GUI clients,
+      hosting providers, forges, utilities, and applications, with bindings for Ruby,
+      .NET, Python, Node.js, Rust, and more.
+    - >
+      Because it is a shared C library with many language bindings, package managers
+      ship libgit2 as infrastructure for other packages. Its releases matter to
+      downstreams when Git compatibility, transport security, SHA-1/SHA-256 behavior, or
+      ABI stability changes.
+  package-nerd-significance:
+    - >
+      libgit2 is one of the canonical examples of turning a famous CLI tool's behavior
+      into a stable embeddable library. For package nerds, the interesting part is not
+      just Git support; it is ABI management, language binding compatibility,
+      bundled-versus-system crypto and SSH choices, and the long path to a 1.0 library
+      release.
+    - >
+      It also explains why some packages depend on libgit2 even when Git itself is
+      installed: they need in-process repository operations and predictable APIs, not
+      subprocess output.
+  project-history:
+    - >
+      GitHub's 2010 project announcement describes libgit2 as started by Shawn Pearce a
+      few years earlier, then revived through a Google Summer of Code project by Vicent
+      Marti with Scott Chacon as mentor. The immediate motivation was practical: Git's
+      own code called die() and was not re-entrant, so GUI, web, and scripting users
+      often had to fork and parse the Git binary.
+    - >
+      The upstream README describes libgit2 as a portable pure-C implementation with a
+      solid API, usable from C directly and through bindings. By 2020, maintainer Edward
+      Thomson announced libgit2 1.0 after many years of planning and bug fixing; by late
+      2024 maintainers were publicly discussing planned ABI/API changes for libgit2 2.0
+      and SHA-256 support.
+  related-projects:
+    - >
+      Git is the reference command-line system whose repository behavior libgit2
+      implements as a library. Rugged, pygit2, NodeGit, git2-rs, and .NET bindings are
+      language-level entry points. GitHub, GitLab, Bitbucket-style forges, IDEs, and
+      desktop Git clients are common application categories cited by project material.
+  sources:
+    - https://formulae.brew.sh/formula/libgit2
+    - https://github.blog/news-insights/libgit2-a-git-linkable-library/
+    - https://github.com/libgit2/libgit2
+    - https://github.com/libgit2/libgit2/discussions/6988
+    - https://github.com/libgit2/libgit2/releases
+    - https://libgit2.org/
+    - https://libgit2.org/docs
+    - https://www.edwardthomson.com/blog
+  summary:
+    - >
+      libgit2 is a portable C implementation of Git core methods as a re-entrant,
+      linkable library. It became important because the original Git executable was not
+      designed as an embeddable library, while editors, forges, desktop clients, hosting
+      providers, and language bindings needed Git behavior inside long-running
+      applications.
+  timeline:
+    - >
+      2008: Shawn Pearce had started libgit2 by the period described in GitHub's 2010
+      announcement.
+    - >
+      2010: GitHub announced renewed libgit2 work after a Google Summer of Code effort
+      by Vicent Marti.
+    - '2020: libgit2 0.99 was released on 19 February 2020 as the project approached 1.0.'
+    - '2020: libgit2 1.0 was announced on 1 April 2020.'
+    - >
+      2024: Maintainers stated that libgit2 v1.9 was expected to be the final v1.x
+      release line.
+    - >
+      2025: libgit2 v1.9.2 release notes documented security fixes for external SSH
+      execution and SSH credential creation.
+  usage:
+    - >
+      Applications use libgit2 to open repositories, inspect objects and references,
+      read and write commits, perform network operations, and embed Git workflows
+      without shelling out to the Git CLI.
+    - >
+      The library is especially attractive for IDEs, Git GUI clients, web services, and
+      language ecosystems that want native bindings. The included git2 executable is
+      secondary; the main value is the API surface.
 category: developer-tools
 package-manager:
   apk: libgit2
@@ -32,5 +114,15 @@ executables:
   - git2
 provenance:
   formula: libgit2
+  history-sources:
+    - https://formulae.brew.sh/formula/libgit2
+    - https://github.blog/news-insights/libgit2-a-git-linkable-library/
+    - https://github.com/libgit2/libgit2
+    - https://github.com/libgit2/libgit2/discussions/6988
+    - https://github.com/libgit2/libgit2/releases
+    - https://libgit2.org/
+    - https://libgit2.org/docs
+    - https://www.edwardthomson.com/blog
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

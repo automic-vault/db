@@ -6,6 +6,58 @@ docs:
   - https://github.com/wolfcw/libfaketime/tree/master/man
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Package managers adopted libfaketime because it solves a practical test problem:
+      run one process under a fake clock while leaving the host clock alone. The README
+      names deterministic builds, expired-certificate debugging, and year-2038 testing
+      as intended use cases.
+  package-nerd-significance:
+    - >
+      libfaketime is beloved packaging glue because it gives build systems and test
+      suites a cheap fake clock without patching application code. That makes it useful
+      for reproducible builds, certificate-expiry tests, date rollover tests, and
+      awkward legacy software checks.
+  project-history:
+    - >
+      The project's NEWS file tracks changes back to version 0.1, beginning with fixes
+      around time(NULL) and growing through clock_gettime interception, wrapper scripts,
+      fractional offsets, speed changes, system-wide faketimerc files, macOS support,
+      pthread-aware builds, deterministic time, and deterministic getrandom support.
+    - >
+      Starting with libfaketime 0.9.5, the developer README says development and issue
+      handling moved completely to GitHub, with official releases tagged there.
+  related-projects:
+    - >
+      Related mechanisms include LD_PRELOAD, dyld interposing on macOS, faketimerc
+      files, reproducible-build tooling, test harnesses, and language wrappers around
+      libfaketime.
+  sources:
+    - https://formulae.brew.sh/formula/libfaketime
+    - https://github.com/wolfcw/libfaketime
+    - https://raw.githubusercontent.com/wolfcw/libfaketime/master/NEWS
+    - https://raw.githubusercontent.com/wolfcw/libfaketime/master/README
+    - https://raw.githubusercontent.com/wolfcw/libfaketime/master/README.developers
+  summary:
+    - >
+      libfaketime is a preload-based library and faketime wrapper that makes selected
+      programs see modified dates and times without changing the system clock. It is
+      packaged as a developer/testing utility because it exercises time-sensitive code
+      at the process boundary.
+  timeline:
+    - '0.1: NEWS records initial fixes around time(NULL).'
+    - '0.2: NEWS records clock_gettime interception.'
+    - '0.7: NEWS records the wrapper shell script and man page.'
+    - '0.9.5: Developer README records GitHub as the development and issue-handling home.'
+    - '2025-06: README identifies version 0.9.12 and NEWS records improved macOS compatibility.'
+  usage:
+    - >
+      Most users run the faketime wrapper or set preload-related environment variables
+      directly. The README also documents important limits: statically linked and setuid
+      binaries are not covered by the preload mechanism, some Java/JVM cases need
+      monotonic-clock care, and programs that dynamically load timing libraries can
+      bypass interception.
 tags:
   - cli
   - deterministic-builds
@@ -33,6 +85,12 @@ provenance:
     - >
       Official repository README is the primary user documentation and the repository
       includes installed man page sources.
+  history-sources:
+    - https://formulae.brew.sh/formula/libfaketime
+    - https://github.com/wolfcw/libfaketime
+    - https://raw.githubusercontent.com/wolfcw/libfaketime/master/NEWS
+    - https://raw.githubusercontent.com/wolfcw/libfaketime/master/README
+    - https://raw.githubusercontent.com/wolfcw/libfaketime/master/README.developers
   repo-sources:
     - >
       source_facts.repo already populated as https://github.com/wolfcw/libfaketime; not
@@ -48,5 +106,6 @@ category-path:
   - time-control
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

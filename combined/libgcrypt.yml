@@ -7,6 +7,90 @@ docs:
   - https://www.gnupg.org/software/libgcrypt/index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Libgcrypt's adoption follows GnuPG's split-library architecture: GnuPG and related
+      projects can share a maintained cryptographic core while packagers ship it as an
+      independent system library. Homebrew, Linux distributions, Nix, MacPorts, and
+      other package managers expose it as a separate package because many consumers need
+      the library without installing or rebuilding the whole GnuPG stack.
+    - >
+      The GnuPG release stream treats Libgcrypt security updates as first-class events.
+      Multiple GnuPG news entries call out Libgcrypt releases for side-channel fixes,
+      stable-branch compatibility, new algorithms, and random-number-generator work,
+      which is why downstream maintainers track it closely.
+  package-nerd-significance:
+    - >
+      For package maintainers, Libgcrypt is a classic shared-library dependency: small
+      on the surface, but security-critical, ABI-sensitive, and tied to CPU feature
+      detection, FIPS behavior, and distribution hardening policies. Its separate
+      release branches let downstreams apply fixes without forcing an application-level
+      GnuPG upgrade.
+    - >
+      Its long API/ABI compatibility promise since 1.2 is unusually package-friendly for
+      a cryptographic C library and helps explain why it appears broadly across
+      Unix-like package sets.
+  project-history:
+    - >
+      The GnuPG project describes Libgcrypt as a general-purpose cryptographic library
+      originally based on GnuPG code. GnuPG news and release material show the library
+      becoming a separately versioned component by the early 2000s, with a 2003
+      alpha-series announcement for Libgcrypt 1.1.42 and later 1.2.x, 1.4.x, 1.5.x,
+      1.7.x, 1.8.x, 1.10.x, and 1.12.x release lines.
+    - >
+      Its scope grew from the cryptographic code needed by GnuPG into a broad primitive
+      library covering symmetric ciphers, hashes, MACs, public-key algorithms,
+      multi-precision integers, random-number generation, S-expressions, FIPS-related
+      behavior, and helper tools. The project page also records a packaging-relevant
+      compatibility policy: Libgcrypt versions since 1.2 keep API and ABI compatibility.
+  related-projects:
+    - >
+      GnuPG is the parent ecosystem and original source of the code lineage. GPGME sits
+      at a higher level for applications that want GnuPG integration rather than raw
+      cryptographic primitives. Libgpg-error is commonly paired with GnuPG libraries for
+      shared error handling.
+  sources:
+    - https://formulae.brew.sh/formula/libgcrypt
+    - https://lists.gnupg.org/pipermail/gnupg-announce/2003q3/000155.html
+    - https://lists.gnupg.org/pipermail/gnupg-announce/2022q1/000471.html
+    - https://www.gnupg.org/documentation/manuals/gcrypt/
+    - https://www.gnupg.org/news.html
+    - https://www.gnupg.org/software/libgcrypt/index.html
+  summary:
+    - >
+      Libgcrypt is the GnuPG project's standalone cryptographic building-block library,
+      split out so applications could use GnuPG-derived primitives without embedding the
+      OpenPGP implementation itself. It matters in package ecosystems because it is a
+      low-level C library whose ABI promises, security releases, and CPU-specific
+      optimizations ripple into many security-sensitive applications.
+  timeline:
+    - >
+      2003: Libgcrypt 1.1.42 announced as a general-purpose cryptography library based
+      on GnuPG code.
+    - '2005: Libgcrypt 1.2.1 announced in the GnuPG news stream.'
+    - '2007: Libgcrypt 1.4.0 announced as a stable branch compatible with the 1.2 series.'
+    - '2011: Libgcrypt 1.5.0 announced as a stable branch compatible with the 1.4 series.'
+    - '2016: Libgcrypt 1.7.0 announced with new algorithms, curves, and performance work.'
+    - >
+      2017: Libgcrypt 1.8.0 announced with Blake2 support, XTS mode,
+      random-number-generator work, and ARM performance improvements.
+    - >
+      2022: Libgcrypt 1.10.1 announced as a stable branch with API and ABI compatibility
+      to the 1.9 series.
+    - '2026: Libgcrypt 1.12.2, 1.11.3, and 1.10.4 announced for security advisory T8211.'
+  usage:
+    - >
+      Developers link against Libgcrypt when they need a C API for cryptographic
+      primitives, MPI arithmetic, random bytes, or S-expression-based public-key
+      operations. The command-line helpers packaged with it, such as hmac256 and
+      mpicalc, are secondary to the library but useful for testing and small operational
+      tasks.
+    - >
+      The library intentionally does not provide a complete OpenPGP protocol
+      implementation; it supplies lower-level cryptographic operations. That boundary is
+      important for users choosing between Libgcrypt, GPGME, and the GnuPG command-line
+      tools.
 category: security
 package-manager:
   apk: libgcrypt
@@ -34,5 +118,13 @@ executables:
   - mpicalc
 provenance:
   formula: libgcrypt
+  history-sources:
+    - https://formulae.brew.sh/formula/libgcrypt
+    - https://lists.gnupg.org/pipermail/gnupg-announce/2003q3/000155.html
+    - https://lists.gnupg.org/pipermail/gnupg-announce/2022q1/000471.html
+    - https://www.gnupg.org/documentation/manuals/gcrypt/
+    - https://www.gnupg.org/news.html
+    - https://www.gnupg.org/software/libgcrypt/index.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
