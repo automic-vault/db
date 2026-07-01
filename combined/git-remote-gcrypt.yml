@@ -7,6 +7,65 @@ docs:
   - https://spwhitton.name/tech/code/git-remote-gcrypt
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      git-remote-gcrypt is a niche tool rather than a broad platform, but its adoption
+      pattern is typical of Unix security utilities: it is packaged for Debian and
+      Ubuntu, appears in Homebrew, and is used by practitioners who want encrypted Git
+      storage without operating a special server.
+  package-nerd-significance:
+    - >
+      The package is interesting because it combines Git's remote-helper interface with
+      GnuPG and plain file transports. It is especially relevant to people who prefer
+      auditable shell-style tooling and distribution packages over hosted secret-storage
+      services.
+  project-history:
+    - >
+      The project was originally written by bluss, then maintained de facto by Joey Hess
+      during 2013 and 2014. Sean Whitton adopted the Debian package in early 2016 and
+      took over upstream maintenance with the 1.0.0 release later that year.
+    - >
+      Its evolution has stayed close to Git and GnuPG plumbing: the 2013 packaging
+      series added git-annex interoperability fixes and participant-publishing controls,
+      the 2016 upstream handoff removed the warning that the repository format might
+      change, and later releases added backend and safety refinements such as rclone
+      support and an explicit force-push guard.
+  related-projects:
+    - >
+      Related tools and technologies include Git remote helpers, GnuPG, git-annex,
+      rsync, rclone, and Git hosting systems used as opaque storage backends.
+  sources:
+    - https://formulae.brew.sh/formula/git-remote-gcrypt
+    - https://github.com/spwhitton/git-remote-gcrypt
+    - https://raw.githubusercontent.com/spwhitton/git-remote-gcrypt/master/README.rst
+    - https://raw.githubusercontent.com/spwhitton/git-remote-gcrypt/master/debian/changelog
+    - https://spwhitton.name/tech/code/git-remote-gcrypt
+  summary:
+    - >
+      git-remote-gcrypt is a Git remote helper for storing Git repositories in a
+      GnuPG-encrypted representation. It occupies the small but durable niche of making
+      ordinary Git transports usable with untrusted storage while keeping repository
+      contents confidential.
+  timeline:
+    - '2013: Initial Debian release 0.20130908.'
+    - >
+      2014: Joey Hess maintained the package and added interoperability and
+      participant-publishing fixes.
+    - >
+      2016: Sean Whitton adopted the Debian package and took over upstream maintenance
+      with 1.0.0.
+    - '2018: Experimental rclone backend added.'
+    - '2021: `gcrypt.require-explicit-force-push` configuration added.'
+    - >
+      2022: Documentation strengthened its guidance to prefer local or rsync backends
+      for performance.
+  usage:
+    - >
+      Practitioners add remotes with the `gcrypt::` prefix and push to local paths,
+      rsync, sftp, or Git-backed storage. Access is managed through GPG keys and Git
+      config keys such as `gcrypt.participants`, so teams can use familiar Git commands
+      while encrypting the remote-side repository data.
 category: security
 package-manager:
   brew: git-remote-gcrypt
@@ -29,5 +88,12 @@ executables:
   - git-remote-gcrypt
 provenance:
   formula: git-remote-gcrypt
+  history-sources:
+    - https://formulae.brew.sh/formula/git-remote-gcrypt
+    - https://github.com/spwhitton/git-remote-gcrypt
+    - https://raw.githubusercontent.com/spwhitton/git-remote-gcrypt/master/README.rst
+    - https://raw.githubusercontent.com/spwhitton/git-remote-gcrypt/master/debian/changelog
+    - https://spwhitton.name/tech/code/git-remote-gcrypt
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

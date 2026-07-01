@@ -11,6 +11,66 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.aws/credentials
+history:
+  adoption-history:
+    - >
+      The helper matters because CodeCommit used AWS IAM rather than the
+      username/password or SSH-key flows common on public Git forges. Official AWS
+      documentation recommends git-remote-codecommit for federated, identity-provider,
+      and temporary-credential workflows, while package-manager metadata shows Homebrew
+      and Nix distribution beyond pip.
+  package-nerd-significance:
+    - >
+      git-remote-codecommit is a vendor-maintained example of Git's remote-helper
+      extension model packaged as a Python console script and redistributed by OS
+      package managers. It bridges Git's transport abstraction with AWS's credential
+      chain, making it significant to users who care about package-managed integrations
+      between generic developer tools and cloud identity systems.
+  project-history:
+    - >
+      The repository began in March 2018 with AWS template files and README setup
+      instructions. Tagged releases began with 1.0 in January 2020, and the package
+      metadata identifies Amazon Web Services as the author with an Apache-2.0 license
+      and a Python console entry point named git-remote-codecommit.
+    - >
+      The README and AWS User Guide position the helper as a way to avoid separate Git
+      credential setup, especially for federated access, temporary credentials,
+      root-account access, IAM Identity Center, and IAM users configured through the AWS
+      CLI.
+  related-projects:
+    - AWS CodeCommit is the hosted Git service the helper connects to.
+    - AWS CLI and botocore provide credential and region resolution for the helper.
+    - >
+      Git's remote-helper protocol is the extension point that makes the codecommit://
+      URL scheme work.
+  sources:
+    - >
+      https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-git-remote-codecommit.html
+    - https://github.com/aws/git-remote-codecommit
+    - https://github.com/aws/git-remote-codecommit#readme
+    - https://pypi.org/project/git-remote-codecommit/
+  summary:
+    - >
+      git-remote-codecommit is Amazon Web Services' Git remote helper for AWS
+      CodeCommit, adding codecommit:// URL handling so Git can push to and pull from
+      CodeCommit repositories through AWS credential profiles.
+  timeline:
+    - '2018: Repository initialized by AWS.'
+    - '2020: 1.0 tag published.'
+    - '2020: 1.15.1 tag published after early 1.x releases.'
+    - '2021: 1.16 tag published.'
+    - '2023: 1.17 tag published.'
+  usage:
+    - >
+      Practitioners configure AWS CLI profiles in ~/.aws/config and ~/.aws/credentials,
+      install the Python package, then clone repositories with URLs such as
+      codecommit://profile@RepositoryName or
+      codecommit::region://profile@RepositoryName. Git invokes the remote helper through
+      its remote-helper mechanism when it sees that URL scheme.
+    - >
+      The tool is used in developer workstations, CI jobs, and temporary-credential
+      environments where CodeCommit access needs to follow AWS IAM role or profile
+      resolution rather than static Git credentials.
 tags:
   - authentication
   - aws
@@ -40,6 +100,12 @@ provenance:
     - >
       AWS CodeCommit User Guide provides official setup steps for git-remote-codecommit;
       official GitHub README links to those setup and troubleshooting docs.
+  history-sources:
+    - >
+      https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-git-remote-codecommit.html
+    - https://github.com/aws/git-remote-codecommit
+    - https://github.com/aws/git-remote-codecommit#readme
+    - https://pypi.org/project/git-remote-codecommit/
   repo-sources:
     - >
       source_facts.homepage is the official AWS GitHub source-control project URL; AWS
@@ -57,5 +123,6 @@ category-path:
   - git-extension
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
