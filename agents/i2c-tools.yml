@@ -5,6 +5,75 @@ docs:
   - https://i2c.wiki.kernel.org/index.php/I2C_Tools
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Because Linux exposes many I2C adapters through /dev/i2c-* and because board
+      peripherals often need low-level checks before drivers are stable, i2c-tools
+      became a routine package in embedded Linux, server hardware, laptop diagnostics,
+      display data decoding, and sensor work. It is carried across major Linux package
+      ecosystems and Homebrew for Linux.
+    - >
+      The package's adoption is practical rather than fashionable: i2cdetect, i2cdump,
+      i2cget, i2cset, and i2ctransfer are frequently the quickest way to discover bus
+      topology, verify register behavior, or reproduce a hardware issue outside a custom
+      program.
+  package-nerd-significance:
+    - >
+      i2c-tools is a classic distribution package: small, close to the kernel, dangerous
+      if misused, and indispensable when you need it. Its source lives under kernel.org,
+      its bug and patch flow points to linux-i2c, and its release tarballs are signed
+      and mirrored from kernel infrastructure.
+    - >
+      For package maintainers, it is interesting because it combines command-line
+      utilities, scripts, library headers, optional language bindings, manpages,
+      Linux-only requirements, and architecture-neutral hardware workflows in a compact
+      source tree.
+  project-history:
+    - >
+      The Linux i2c wiki and project README both state that i2c-tools was originally
+      part of lm-sensors and was split into a separate package because not all
+      hardware-monitoring chips are I2C devices and not all I2C devices are hardware
+      monitors. That split gave generic I2C and SMBus utilities their own release stream
+      and repository.
+    - >
+      The 3.0.0 line started as an independent release in 2007. The 4.0 release in 2017
+      added libi2c, i2ctransfer, Python 3 support for py-smbus, many decode-dimms
+      improvements, and refreshed licensing notes. Later 4.x releases continued to
+      modernize bus listing, block reads, DDR memory decoding, build behavior, and
+      command help.
+  related-projects:
+    - >
+      Related projects include the Linux kernel i2c subsystem, lm-sensors, i2c-dev,
+      py-smbus, JEDEC SPD decoding work, and user-space tools such as ddcutil that also
+      depend on low-level bus access.
+  sources:
+    - https://formulae.brew.sh/formula/i2c-tools
+    - https://git.kernel.org/pub/scm/utils/i2c-tools/i2c-tools.git/plain/CHANGES
+    - https://git.kernel.org/pub/scm/utils/i2c-tools/i2c-tools.git/plain/README
+    - https://i2c.wiki.kernel.org/index.php/I2C_Tools
+  summary:
+    - >
+      i2c-tools is the standard user-space toolbox for Linux I2C and SMBus work. It
+      contains probing, dump, get, set, transfer, EEPROM, DIMM, and library pieces used
+      by hardware bring-up engineers, Linux distribution packagers, and anyone debugging
+      devices exposed through the kernel i2c-dev interface.
+  timeline:
+    - '2007: i2c-tools 3.0.0 was released as an independent package.'
+    - '2011: i2c-tools 3.1.0 added more SMBus and DIMM decoding work.'
+    - '2017: i2c-tools 4.0 added libi2c and i2ctransfer.'
+    - '2020: i2c-tools 4.2 added a libi2c manual page and DDR5-related decode-dimms work.'
+    - '2024: i2c-tools 4.4 added getopt-based help improvements and py-smbus packaging updates.'
+  usage:
+    - >
+      The core tools operate on Linux I2C buses and SMBus transactions, usually
+      requiring the i2c-dev kernel driver and appropriate permissions. decode-dimms and
+      decode-edid turn EEPROM data into readable hardware information, while i2ctransfer
+      supports custom message sequences in one transfer.
+    - >
+      The project README also documents libi2c for C and C++ access over i2c-dev,
+      py-smbus as an optional Python wrapper, and build-time control over static and
+      dynamic library variants.
 tags:
   - cli
   - hardware
@@ -33,6 +102,11 @@ provenance:
     - >
       source_facts.homepage points to the official Linux i2c wiki page; the page is
       archived but remains the project documentation and repository index.
+  history-sources:
+    - https://formulae.brew.sh/formula/i2c-tools
+    - https://git.kernel.org/pub/scm/utils/i2c-tools/i2c-tools.git/plain/CHANGES
+    - https://git.kernel.org/pub/scm/utils/i2c-tools/i2c-tools.git/plain/README
+    - https://i2c.wiki.kernel.org/index.php/I2C_Tools
   repo-sources:
     - >
       Official Linux i2c wiki gives the git.kernel.org i2c-tools repository clone URL
@@ -50,5 +124,6 @@ category-path:
   - i2c
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

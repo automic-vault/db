@@ -5,6 +5,77 @@ docs:
   - https://sourceware.org/binutils/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Binutils adoption follows the adoption of GNU compilers and Unix-like package
+      systems: assemblers and linkers are needed for building operating systems,
+      libraries, embedded firmware, and cross targets. The GNU page explicitly states
+      that Binutils' main reason for existence is giving GNU and GNU/Linux the facility
+      to compile and link programs.
+    - >
+      The i686-elf-binutils formula is part of the package-manager tradition of
+      target-prefixed toolchains. Homebrew identifies it as GNU Binutils for i686-elf
+      cross development and ships prefixed commands including i686-elf-as, i686-elf-ld,
+      i686-elf-objcopy, and i686-elf-readelf.
+  package-nerd-significance:
+    - >
+      Package nerds care about i686-elf-binutils because it is the small foundation
+      layer of a cross toolchain. A working target-prefixed Binutils package lets the
+      rest of the stack use predictable names and keeps host and target object formats
+      from being confused.
+    - >
+      It is also a good example of why package managers expose cross tools as separate
+      formulae: the upstream source is the same as GNU Binutils, but the configured
+      target changes the command names and the artifacts users can produce.
+  project-history:
+    - >
+      GNU Binutils collects the binary tools of the GNU toolchain. The GNU project page
+      names ld, as, and gold as the main programs and lists utilities such as ar, nm,
+      objcopy, objdump, readelf, strings, and strip, backed by libraries including BFD
+      and opcodes.
+    - >
+      The January 1987 GNU bulletin already described a GNU assembler, GNU ld in regular
+      use, and object-file management utilities. The later Binutils project made those
+      pieces a coherent release stream, with Sourceware-hosted documentation, release
+      branches, release tags, and the shared binutils-gdb source repository.
+  related-projects:
+    - GNU GCC commonly consumes the target assembler and linker supplied by Binutils.
+    - >
+      GDB shares the binutils-gdb repository; elfutils and LLVM tools occupy adjacent
+      object-file and linker-tooling space.
+  sources:
+    - https://formulae.brew.sh/formula/i686-elf-binutils
+    - https://sourceware.org/binutils/docs/
+    - https://sourceware.org/binutils/docs/as/GNU-Assembler.html
+    - https://www.gnu.org/bulletins/bull2.txt
+    - https://www.gnu.org/software/binutils/
+  summary:
+    - >
+      i686-elf-binutils is Homebrew's target-prefixed GNU Binutils package for i686-elf
+      cross development. It packages the assembler, linker, object-file tools, and ELF
+      inspection utilities that usually sit underneath a cross GCC.
+  timeline:
+    - >
+      1987: GNU's bulletin described GNU assembler work, GNU ld in regular use, and
+      object-file utilities.
+    - '1998: The GNU Binutils web page copyright history begins on the GNU project page.'
+    - >
+      1999: Historical Binutils mailing lists gas2 and bfd were superseded by the
+      binutils list, according to the GNU project page.
+    - '2008: gold was added to Binutils as an ELF-only linker.'
+    - >
+      2026: Homebrew packaged i686-elf-binutils as the Binutils layer for i686-elf cross
+      development.
+  usage:
+    - >
+      In an i686-elf cross toolchain, Binutils usually comes before GCC: the assembler
+      and linker are required to build or use a cross compiler, and tools such as
+      objdump, readelf, nm, and objcopy inspect or transform ELF artifacts.
+    - >
+      The package is most useful in bare-metal, kernel, bootloader, and low-level
+      systems work where output objects target i686-elf rather than the host machine's
+      native ABI.
 tags:
   - assembler
   - binutils
@@ -32,6 +103,12 @@ provenance:
     - source_facts.name is i686-elf-binutils.
   docs-sources:
     - Official Sourceware binutils documentation page contains the current release manuals.
+  history-sources:
+    - https://formulae.brew.sh/formula/i686-elf-binutils
+    - https://sourceware.org/binutils/docs/
+    - https://sourceware.org/binutils/docs/as/GNU-Assembler.html
+    - https://www.gnu.org/bulletins/bull2.txt
+    - https://www.gnu.org/software/binutils/
   repo-sources:
     - >
       Official GNU Binutils page gives sourceware.org/git/binutils-gdb.git as the
@@ -47,5 +124,6 @@ category-path:
   - cross-compilation
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
