@@ -6,6 +6,94 @@ docs:
   - https://cashapp.github.io/hermit
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Hermit's adoption path is strongest inside repositories and CI jobs that want
+      reproducible developer tools without adopting a full operating-system package
+      manager or build system. Its docs teach users to commit the generated `bin`
+      directory artifacts such as `activate-hermit`, `hermit`, and `hermit.hcl` so a
+      clone can bootstrap itself.
+    - >
+      The presence of a separate manifest repository, a GitHub Action for activating
+      Hermit, Renovate datasource support, and package-manager entries in Homebrew,
+      MacPorts, and Nix reflects a small but durable ecosystem around project-local tool
+      provisioning.
+  package-nerd-significance:
+    - >
+      Hermit occupies a pragmatic middle ground between language-specific version
+      managers and full system package managers. Package nerds care because it turns a
+      repository into its own tool-distribution boundary, but does so by downloading
+      relocatable binary tools instead of building a new universe from source.
+    - >
+      Its comparison with asdf is especially revealing: asdf focuses on switching
+      versions of languages and tools for a user, while Hermit focuses on making project
+      tooling consistent and reproducible for teams and CI. That difference explains why
+      Hermit manifests and activation scripts are part of the project workflow rather
+      than only per-user setup.
+  project-history:
+    - >
+      The Hermit and hermit-packages repositories were created on May 20, 2021. The
+      README describes the core mission as uniform tooling for Linux and Mac:
+      self-contained tool sets that travel with a software project.
+    - >
+      Hermit's design separates the environment manager from package manifests. The
+      `cashapp/hermit-packages` repository contains HCL manifests that describe how to
+      download, install, and map packages into an environment, while Hermit itself
+      provides activation, package lookup, installation, updating, and shell
+      integration.
+    - >
+      The documentation presents Hermit as intentionally narrow. The FAQ says it manages
+      development tools rather than libraries, avoids being a general-purpose package
+      manager, and differs from Nix, Homebrew, Docker, Bazel, GoFish, and asdf by
+      focusing on project-level, self-bootstrapping, binary-tool environments.
+  related-projects:
+    - >
+      asdf is the closest version-manager comparison in the official FAQ, but Hermit
+      emphasizes project-level binary tool environments rather than per-user language
+      switching.
+    - >
+      Nix, Homebrew, Docker, Bazel, and GoFish are comparison points in the FAQ. Hermit
+      deliberately avoids becoming a full OS package manager, build system, or container
+      runtime.
+    - >
+      `cashapp/hermit-packages`, `cashapp/hermit-build`, and `cashapp/activate-hermit`
+      are companion repositories for manifests, special build artifacts, and CI
+      activation.
+  sources:
+    - https://cashapp.github.io/hermit
+    - https://github.com/cashapp/hermit
+    - https://formulae.brew.sh/formula/hermit
+  summary:
+    - >
+      Hermit is a project-local toolchain manager from Cash App. It installs development
+      tools into isolated, self-bootstrapping environments so a repository, its
+      contributors, and its CI can share the same command-line tooling without asking
+      users to preconfigure a whole machine.
+  timeline:
+    - '2021-05-20: Hermit and hermit-packages repositories were created.'
+    - >
+      2021: Early documentation used Go 1.16.3 and Rust 1.51-era examples, matching
+      Hermit's initial positioning as a project toolchain manager.
+    - >
+      2026: The repository and package manifest collection remained active, with
+      documentation covering package manifests, Renovate integration, and multiple
+      shells.
+  usage:
+    - >
+      A typical workflow starts with `hermit init` in a project, then `.
+      ./bin/activate-hermit` to add the project's `bin` directory and managed
+      environment variables to the shell. Users then install tools with commands such as
+      `hermit install go-1.16.3` or `hermit install rust@nightly protoc`.
+    - >
+      Hermit packages can be selected by exact version, channel, or preferred version.
+      The management docs describe manifest sources, periodic syncs, `hermit search`,
+      `hermit list`, `hermit info`, `hermit upgrade`, explicit downgrades with `hermit
+      install`, and `hermit uninstall`.
+    - >
+      Hermit's package definitions are HCL manifests commonly retrieved from Git
+      repositories. The official packaging docs describe these manifests as the way
+      packages define source archives, installation behavior, and binary mappings.
 category: developer-tools
 package-manager:
   brew: hermit
@@ -24,5 +112,10 @@ executables:
   - hermit
 provenance:
   formula: hermit
+  history-sources:
+    - https://cashapp.github.io/hermit
+    - https://github.com/cashapp/hermit
+    - https://formulae.brew.sh/formula/hermit
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
