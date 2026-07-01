@@ -11,6 +11,72 @@ config-file-location:
     - .ocicl-lint.conf
 credentials-file-location:
   unix: ${XDG_DATA_HOME}/ocicl/ocicl-credentials.cfg
+history:
+  adoption-history:
+    - >
+      ocicl serves a narrower ecosystem than mainstream language package managers, but
+      it has package-manager distribution through Homebrew, MacPorts, and Linux RPM/DEB
+      repositories documented by the project. Homebrew's API generated on 2026-07-01
+      lists 2,787 installs over 365 days and 545 installs over 90 days.
+    - >
+      The tool's adoption story is tied to ASDF, the standard Common Lisp
+      system-definition facility. ocicl does not replace ASDF; it feeds ASDF with
+      project-local, version-pinned system locations and downloads.
+  package-nerd-significance:
+    - >
+      ocicl is interesting because it reuses the container registry and OCI artifact
+      stack for source-library distribution rather than container images. For package
+      metadata work, it is a small but sharp example of registry convergence: Common
+      Lisp libraries distributed with supply-chain features usually associated with
+      container images.
+  project-history:
+    - >
+      The upstream README presents ocicl as a modern alternative to Quicklisp for ASDF
+      system distribution and management, with extra developer-tooling features such as
+      linting, project scaffolding, dependency freshness checks, license collection,
+      SBOM generation, and self-updates.
+    - >
+      Its core design is to package Lisp code as OCI-compliant artifacts distributed
+      from mirrored OCI registries, including GitHub and Docker Hub container
+      registries. The runtime is embedded into a Lisp image and works with ASDF so
+      missing systems can be resolved through the `ocicl` command-line tool.
+    - >
+      The project deliberately borrows infrastructure patterns from the container
+      ecosystem: TLS transport, proxy-aware downloads, sigstore verification, hosted CI
+      publication, and project-local lock files through `ocicl.csv`.
+  related-projects:
+    - >
+      ocicl builds on ASDF for loading and system definition, competes conceptually with
+      Quicklisp-style Common Lisp dependency distribution, and depends on OCI registry
+      tooling, sigstore concepts, and hosted CI publication.
+  sources:
+    - https://asdf.common-lisp.dev/asdf.html
+    - https://formulae.brew.sh/api/formula/ocicl.json
+    - https://github.com/ocicl/ocicl
+    - https://raw.githubusercontent.com/ocicl/ocicl/main/README.md
+  summary:
+    - >
+      ocicl is a Common Lisp package-management and development tool that applies OCI
+      artifact distribution to ASDF systems. Its name compresses the idea into the
+      project's own formula: OCI plus Common Lisp.
+  timeline:
+    - >
+      2023-05: Project examples in the README show early ocicl registry entries for
+      Common Lisp libraries such as `str` and `cl-ppcre`.
+    - >
+      2026-07-01: Homebrew formula metadata lists stable version 2.16.14, SBCL and zstd
+      dependencies, and 2,787 installs over the previous 365-day analytics window.
+  usage:
+    - >
+      A developer runs `ocicl setup`, adds the generated runtime snippet to a Lisp
+      startup file, and then lets ASDF load systems that ocicl records in `ocicl.csv`.
+      The README recommends committing the CSV lock file while leaving downloaded source
+      directories out of the project repository.
+    - >
+      The command-line workflow includes installing systems, listing available versions,
+      updating or removing systems, comparing versions, selecting alternate registries,
+      authenticating to registries, generating SBOMs, collecting license data, and
+      scaffolding projects.
 category: developer-tools
 package-manager:
   brew: ocicl
@@ -29,5 +95,11 @@ executables:
   - ocicl
 provenance:
   formula: ocicl
+  history-sources:
+    - https://asdf.common-lisp.dev/asdf.html
+    - https://formulae.brew.sh/api/formula/ocicl.json
+    - https://github.com/ocicl/ocicl
+    - https://raw.githubusercontent.com/ocicl/ocicl/main/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

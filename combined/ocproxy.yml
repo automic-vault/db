@@ -6,6 +6,67 @@ docs:
   - https://github.com/cernekee/ocproxy#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ocproxy is niche but broadly recognizable in VPN packaging: Homebrew,
+      Debian/Ubuntu, Fedora, Nix, and related package sets carry it. Its presence in
+      these package managers reflects a practical sysadmin need rather than a large
+      application ecosystem: selective VPN routing without root-level host network
+      changes.
+  package-nerd-significance:
+    - >
+      ocproxy is a compact example of a network utility whose packaging value comes from
+      composition: OpenConnect supplies the VPN transport, lwIP supplies a userland
+      TCP/IP stack, and ocproxy exposes a Unix-friendly proxy/port-forwarding surface.
+  project-history:
+    - >
+      The project changelog lists an initial release on 2012-11-20, version 1.50 on
+      2014-07-06, and version 1.60 on 2017-01-08. The authors file credits David
+      Edmondson and Kevin Cernekee for ocproxy/vpnns work in 2012-2014 and Google Inc.
+      for 2016 contributions, with lwIP credited separately.
+    - >
+      Version 1.50 fixed stability issues seen under SOCKS browsing load, added a man
+      page, moved the build to GNU autotools, updated lwIP, and added Ubuntu PPA
+      packaging scripts. Version 1.60 added an experimental `vpnns` helper for Linux
+      network namespaces and refined SOCKS binding behavior.
+  related-projects:
+    - >
+      ocproxy is closely tied to OpenConnect, lwIP, SOCKS tooling such as tsocks and
+      Dante, and the Linux network-namespace helper `vpnns` included in the same
+      repository.
+  sources:
+    - https://github.com/cernekee/ocproxy
+    - https://manpages.ubuntu.com/manpages/bionic/man1/ocproxy.1.html
+    - https://raw.githubusercontent.com/cernekee/ocproxy/master/AUTHORS
+    - https://raw.githubusercontent.com/cernekee/ocproxy/master/CHANGES
+    - https://raw.githubusercontent.com/cernekee/ocproxy/master/README.md
+    - source_facts.executables
+    - source_facts.package-manager
+  summary:
+    - >
+      ocproxy is a user-level SOCKS and port-forwarding proxy designed for OpenConnect
+      VPN sessions. Instead of sending all host traffic through a VPN interface, it lets
+      users route only selected connections through forwarded ports or a SOCKS5 proxy.
+  timeline:
+    - '2012-11-20: initial release.'
+    - >
+      2014-07-06: version 1.50 improved SOCKS stability, added a man page, adopted
+      autotools, and refreshed lwIP.
+    - >
+      2017-01-08: version 1.60 added experimental `vpnns` and local SOCKS bind-address
+      support.
+  usage:
+    - >
+      The README says ocproxy should be started by OpenConnect with `--script-tun`,
+      commonly with `-D` for a SOCKS5 listener and `-L` for local-to-remote port
+      forwarding. Users then point SSH, RDP, SOCKS-aware tools, browser proxy rules,
+      tsocks, or Dante at the local proxy or forwarded ports.
+    - >
+      The documentation also describes use cases such as routing different applications
+      or browser profiles through different VPNs, connecting to multiple VPNs with
+      overlapping address ranges, and working on multiuser systems or machines where
+      root access is unavailable or undesirable.
 category: networking
 package-manager:
   brew: ocproxy
@@ -27,5 +88,14 @@ executables:
   - ocproxy
 provenance:
   formula: ocproxy
+  history-sources:
+    - https://github.com/cernekee/ocproxy
+    - https://manpages.ubuntu.com/manpages/bionic/man1/ocproxy.1.html
+    - https://raw.githubusercontent.com/cernekee/ocproxy/master/AUTHORS
+    - https://raw.githubusercontent.com/cernekee/ocproxy/master/CHANGES
+    - https://raw.githubusercontent.com/cernekee/ocproxy/master/README.md
+    - source_facts.executables
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

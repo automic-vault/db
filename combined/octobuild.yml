@@ -16,6 +16,81 @@ config-file-location:
     - '%ProgramData%\octobuild\octobuild.conf'
     - '%AppData%\octobuild\octobuild.conf'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      octobuild is more specialized than general compiler caches such as ccache or
+      sccache, but it is packaged in places where Unreal Engine developers can reach it:
+      Homebrew, WinGet, Chocolatey, manual MSI installers, and Debian/Ubuntu package
+      instructions from the project README. Its adoption story is tied to Unreal’s
+      expensive C++ rebuild loop rather than broad language-wide compiler caching.
+    - >
+      The README advertises 60-90% reductions in recompilation time for Unreal Engine
+      and UE-based games, and third-party Unreal developer writing describes the
+      practical value as faster branch switching and easier engine recompilation.
+  package-nerd-significance:
+    - >
+      octobuild is interesting because it is not a generic build accelerator; it encodes
+      a very specific game-engine build workflow into a packageable command suite. For
+      package nerds, it demonstrates how a niche developer tool crosses OS package
+      managers, Windows app installers, CI/build-farm concerns, and compatibility shims
+      for proprietary engine build systems.
+  project-history:
+    - >
+      The GitHub repository presents octobuild as a compiler cache for Unreal Engine,
+      with a changelog starting at version 0.1.0 as the first release. Subsequent
+      versions added cache statistics, configuration files, Linux fixes, response-file
+      support, Windows and macOS improvements, PlayStation and Xbox fixes, Android
+      support, Emscripten support, and compatibility updates for Unreal Engine 5.1
+      through 5.6-era compiler flags.
+    - >
+      The repository organization is focused and small: the main project is `octobuild`,
+      with related Rust infrastructure repositories for daemon/service wrapping and IPC.
+      Public GitHub metadata and the README identify Rust as the implementation language
+      and MIT as the license.
+  related-projects:
+    - >
+      octobuild sits next to Unreal Build Tool workflows, MSVC `cl.exe`, Clang,
+      Incredibuild-style command names, and general compiler-cache tools such as ccache
+      and sccache, but its repository is explicitly tuned for Unreal Engine
+      recompilation.
+  sources:
+    - https://formulae.brew.sh/formula/octobuild
+    - https://github.com/octobuild/octobuild
+    - https://github.com/octobuild/octobuild/blob/main/CHANGELOG.adoc
+    - https://github.com/octobuild/octobuild/releases
+    - https://rassadin.net/posts/octobuild/
+    - source_facts.config-file-location
+    - source_facts.executables
+    - source_facts.package-manager
+  summary:
+    - >
+      octobuild is a Rust-based compiler cache for Unreal Engine and Unreal Engine-based
+      game projects. It aims to speed recompilation by caching intermediate compilation
+      files and replaying cache hits instead of recompiling the same work.
+  timeline:
+    - '0.1.0: first release according to the project changelog.'
+    - >
+      0.4.0: response-file support, Unreal Engine 5.1 compatibility,
+      environment-variable configuration, and changed default cache/config paths.
+    - '0.5.0: initial macOS support.'
+    - '0.8.0: compiler identifier added to the cache key.'
+    - '1.0.0: PlayStation support for Unreal Engine 5.3 builds.'
+    - '1.5.0: Unreal Engine 5.5 support for Windows builds.'
+    - '1.8.0 and 1.8.1: Unreal Engine 5.6-era compiler flag support.'
+  usage:
+    - >
+      Users install octobuild into a development machine or build worker and let its
+      Unreal-compatible wrapper commands intercept compiler work. The executable set
+      includes `octo_builder`, `octo_agent`, `octo_coordinator`, `octo_cl`,
+      `octo_clang`, `xgConsole`, and `ib_console`, reflecting compatibility with Unreal,
+      MSVC/Clang-style compile invocations, and Incredibuild-like command surfaces.
+    - >
+      The changelog shows the operational edge cases packagers and build engineers care
+      about: response files, cache-key compiler identifiers, service permissions for
+      remote SSH users, readonly or disabled caching modes, cross-compilation,
+      platform-specific compiler flags, and default cache/config path changes on
+      Windows, Linux, and macOS.
 category: developer-tools
 package-manager:
   brew: octobuild
@@ -39,5 +114,15 @@ executables:
   - xgConsole
 provenance:
   formula: octobuild
+  history-sources:
+    - https://formulae.brew.sh/formula/octobuild
+    - https://github.com/octobuild/octobuild
+    - https://github.com/octobuild/octobuild/blob/main/CHANGELOG.adoc
+    - https://github.com/octobuild/octobuild/releases
+    - https://rassadin.net/posts/octobuild/
+    - source_facts.config-file-location
+    - source_facts.executables
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

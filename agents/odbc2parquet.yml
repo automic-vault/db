@@ -5,6 +5,61 @@ docs:
   - https://github.com/pacman82/odbc2parquet#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Distribution exists through Homebrew, Scoop, GitHub release binaries, and Cargo.
+      That footprint matches the tool's cross-platform database-export role: Windows
+      users often already have an ODBC manager, while Linux and macOS users install
+      unixODBC.
+  package-nerd-significance:
+    - >
+      odbc2parquet is a good example of modern Rust CLI packaging around old enterprise
+      plumbing. It avoids building a database-specific exporter for every engine by
+      leaning on ODBC, then emits Parquet, the interchange format expected by many
+      analytics stacks.
+  project-history:
+    - >
+      The public GitHub repository was created on 2020-08-27. The README frames the tool
+      around small memory usage, ODBC bulk reads, and flexibility across any data source
+      with an ODBC driver, including examples for SQL Server-style connection strings
+      and DSNs.
+    - >
+      The changelog shows steady maintenance and semantic versioning. Version 1.0.0
+      established semantic versioning and wrote Parquet 2.0; later releases added
+      commands such as exec, refined timestamp and decimal behavior, updated odbc-api
+      and parquet dependencies, and tuned logging.
+  related-projects:
+    - >
+      The tool is closely related to the author's odbc-api Rust bindings and to the
+      Apache Parquet Rust implementation used by downstream Parquet CLIs and data tools.
+  sources:
+    - https://api.github.com/repos/pacman82/odbc2parquet
+    - https://crates.io/crates/odbc2parquet
+    - https://formulae.brew.sh/formula/odbc2parquet
+    - https://github.com/pacman82/odbc-api
+    - https://github.com/pacman82/odbc2parquet
+    - https://raw.githubusercontent.com/pacman82/odbc2parquet/main/CHANGELOG.md
+    - https://raw.githubusercontent.com/pacman82/odbc2parquet/main/README.md
+  summary:
+    - >
+      odbc2parquet is a Rust command-line tool for extracting query results from ODBC
+      data sources into Apache Parquet files, with matching commands for inserting
+      Parquet data back through ODBC. It packages a narrow but valuable bridge between
+      older database connectivity and columnar analytics storage.
+  timeline:
+    - '2020-08-27: public GitHub repository created.'
+    - 'Version 1.0.0: changelog records Parquet 2.0 output and semantic versioning.'
+    - '2026-06-13: changelog lists version 11.0.1.'
+  usage:
+    - >
+      Users run odbc2parquet query with a connection string or DSN, an output Parquet
+      path, and SQL. The tool maps ODBC type information to Parquet physical/logical
+      types, streams batches instead of holding the full result in memory, and can list
+      drivers or data sources for troubleshooting.
+    - >
+      The insert and exec workflows make it useful in the other direction too: Parquet
+      files can become input to parameterized database writes through ODBC drivers.
 tags:
   - cli
   - data-export
@@ -31,6 +86,14 @@ provenance:
     - >
       official GitHub README provides installation, usage, query, insert, and shell
       completion documentation
+  history-sources:
+    - https://api.github.com/repos/pacman82/odbc2parquet
+    - https://crates.io/crates/odbc2parquet
+    - https://formulae.brew.sh/formula/odbc2parquet
+    - https://github.com/pacman82/odbc-api
+    - https://github.com/pacman82/odbc2parquet
+    - https://raw.githubusercontent.com/pacman82/odbc2parquet/main/CHANGELOG.md
+    - https://raw.githubusercontent.com/pacman82/odbc2parquet/main/README.md
   repo-sources:
     - >
       source_facts.repo already set to https://github.com/pacman82/odbc2parquet; per
@@ -46,5 +109,6 @@ category-path:
   - conversion
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

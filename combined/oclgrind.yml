@@ -6,6 +6,80 @@ docs:
   - https://github.com/jrprice/Oclgrind#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Oclgrind is a specialist tool, but it is recognized in OpenCL developer materials
+      as a way to debug kernels without relying on vendor-specific GPU debuggers.
+      Codeplay's SYCL/OpenCL debugging guide describes it as a go-to tool for simulating
+      OpenCL execution and investigating portability issues.
+    - >
+      Homebrew's formula API generated on 2026-07-01 lists stable version 26.03.1, the
+      `oclgrind` and `oclgrind-kernel` executables, and 67 installs over 365 days. That
+      low package-manager count fits a niche developer-debugging tool rather than a
+      runtime dependency.
+  package-nerd-significance:
+    - >
+      For package metadata, Oclgrind is notable because it is both a command-line
+      debugger and an OpenCL ICD participant. It depends on heavyweight compiler
+      infrastructure, exposes executable tools, and intersects with OpenCL loader
+      configuration rather than behaving like a simple standalone CLI.
+  project-history:
+    - >
+      The upstream README says Oclgrind was originally created by James Price and Simon
+      McIntosh-Smith at the University of Bristol. It implements a virtual OpenCL
+      device, an OpenCL runtime with ICD support, and a platform for OpenCL development
+      tools.
+    - >
+      The project's feature set grew around hard-to-debug GPU programming failures:
+      invalid memory accesses, data races, barrier divergence, instruction histograms,
+      and interactive kernel debugging. Its architecture interprets an abstract
+      intermediate representation rather than running on a particular GPU, making it
+      useful for portability and correctness checks.
+    - >
+      Release notes and build documentation show Oclgrind tracking LLVM and Clang over
+      time. The README requires LLVM and Clang 18.0 or newer for source builds, while
+      older release notes such as v15.5 mention updates to LLVM 3.6, illustrating the
+      tool's long dependency relationship with the LLVM compiler stack.
+  related-projects:
+    - >
+      Oclgrind is related to OpenCL ICD loaders, LLVM, Clang, SYCL/OpenCL developer
+      tooling, and OpenCL debugging and analysis tools such as vendor debuggers and
+      intercept layers.
+  sources:
+    - >
+      https://developer.codeplay.com/products/computecpp/ce/2.1.0/guides/sycl-guide/debugging/debugging-on-an-opencl-device.html
+    - https://formulae.brew.sh/api/formula/oclgrind.json
+    - https://github.com/OpenCL/OpenCL/blob/master/OpenCL.md
+    - https://github.com/jrprice/Oclgrind/releases
+    - https://raw.githubusercontent.com/jrprice/Oclgrind/master/README.md
+  summary:
+    - >
+      Oclgrind is an OpenCL device simulator and debugger. It runs OpenCL kernels on a
+      virtual device backed by an LLVM IR interpreter, trading speed for observability
+      and deterministic debugging.
+  timeline:
+    - >
+      University of Bristol origin: the README credits James Price and Simon
+      McIntosh-Smith as original creators.
+    - >
+      2015-05-17: v15.5 release notes mention an LLVM 3.6 update, OpenCL C compiler
+      improvements, performance work, atomic race fixes, and interactive debugger
+      behavior changes.
+    - >
+      2026-07-01: Homebrew formula metadata lists stable version 26.03.1 with
+      LLVM-related dependencies.
+  usage:
+    - >
+      The normal workflow is to prefix an OpenCL application with `oclgrind`, causing
+      the application to see Oclgrind as its OpenCL platform and device. Invalid memory
+      accesses are reported to stderr with kernel, work-item, instruction, and
+      source-line context when debug information is available.
+    - >
+      Developers can install an ICD loading point so Oclgrind appears alongside other
+      OpenCL platforms, or run it in interactive mode with a GDB-style session. The
+      README warns that interpretation and bounds checking can be orders of magnitude
+      slower than regular CPU execution, so users usually debug reduced problem sizes.
 category: developer-tools
 package-manager:
   brew: oclgrind
@@ -24,5 +98,13 @@ executables:
   - oclgrind-kernel
 provenance:
   formula: oclgrind
+  history-sources:
+    - >
+      https://developer.codeplay.com/products/computecpp/ce/2.1.0/guides/sycl-guide/debugging/debugging-on-an-opencl-device.html
+    - https://formulae.brew.sh/api/formula/oclgrind.json
+    - https://github.com/OpenCL/OpenCL/blob/master/OpenCL.md
+    - https://github.com/jrprice/Oclgrind/releases
+    - https://raw.githubusercontent.com/jrprice/Oclgrind/master/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

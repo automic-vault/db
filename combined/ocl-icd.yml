@@ -7,6 +7,77 @@ docs:
 config-file-location:
   unix: /etc/OpenCL/vendors/*.icd
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ocl-icd is packaged across Linux and Unix-like ecosystems because OpenCL
+      applications need a `libOpenCL.so` provider even when the actual compute
+      implementation comes from a GPU vendor or portable implementation such as POCL.
+      The Debian package page for `ocl-icd-opencl-dev` describes it as providing OpenCL
+      development files and ensuring the ocl-icd loader is installed.
+    - >
+      Homebrew packages ocl-icd as keg-only on macOS because macOS provides
+      OpenCL.framework, and the formula conflicts with `opencl-icd-loader` because both
+      install `lib/libOpenCL.so`. The formula API generated on 2026-07-01 lists 202
+      installs over 365 days, which is small direct Homebrew usage but consistent with a
+      low-level compatibility library that is often pulled through dependencies.
+  package-nerd-significance:
+    - >
+      ocl-icd is package-nerd infrastructure: it is a small library whose metadata has
+      outsized consequences for GPU software resolution, conflicts, keg-only status, and
+      virtual-provider behavior. Its formula caveats and conflicts explain why package
+      managers must model OpenCL loaders carefully instead of treating them as ordinary
+      leaf packages.
+  project-history:
+    - >
+      The OCL-dev README describes ocl-icd as an open source alternative to
+      vendor-specific OpenCL ICD loaders. The project was built around a practical
+      reverse-engineering and compatibility problem: the order of function pointers
+      inside loader dispatch tables was not publicly available for all cases, so ocl-icd
+      maintains a YAML database of known and guessed entries.
+    - >
+      The project also ships a skeleton of bindings that OpenCL implementations can
+      incorporate to add ICD functionality. Its `update-database` flow can install a
+      dummy OpenCL implementation and probe another loader to discover new dispatch
+      entries, reflecting the messy reality of keeping an independent loader compatible
+      with a moving GPU API surface.
+    - >
+      Khronos' official OpenCL ICD Loader documentation describes the same general ICD
+      mechanism: applications link against a loader, and the loader enumerates OpenCL
+      implementations and forwards API calls. ocl-icd is the long-running third-party
+      implementation that many Unix-like distributions packaged before or alongside the
+      Khronos-maintained loader.
+  related-projects:
+    - >
+      Related packages include KhronosGroup/OpenCL-ICD-Loader, OpenCL-Headers, POCL, GPU
+      vendor ICDs, and distribution packages such as Debian's `ocl-icd-opencl-dev`.
+  sources:
+    - https://formulae.brew.sh/api/formula/ocl-icd.json
+    - https://packages.debian.org/sid/ocl-icd-opencl-dev
+    - https://raw.githubusercontent.com/KhronosGroup/OpenCL-ICD-Loader/main/README.md
+    - https://raw.githubusercontent.com/OCL-dev/ocl-icd/master/README
+  summary:
+    - >
+      ocl-icd is a free OpenCL Installable Client Driver loader. Its job is not to
+      implement OpenCL computation itself, but to expose OpenCL entry points, discover
+      vendor implementations, and dispatch calls to the correct implementation.
+  timeline:
+    - >
+      The OCL-dev README records the original motivation: an open source replacement for
+      vendor-specific OpenCL ICD loaders.
+    - >
+      2026-07-01: Homebrew formula metadata lists stable version 2.3.5, a conflict with
+      `opencl-icd-loader`, and a keg-only reason tied to macOS OpenCL.framework.
+  usage:
+    - >
+      Users and packagers install ocl-icd so OpenCL applications can link against one
+      loader while individual vendor drivers are registered through `.icd` files,
+      commonly under `/etc/OpenCL/vendors` or the Homebrew prefix's `etc/OpenCL/vendors`
+      directory.
+    - >
+      The tool and library matter most in build farms, Linux desktop/GPU stacks,
+      scientific software, and package-manager dependency graphs, where code should not
+      have to link directly to a single vendor's OpenCL runtime.
 category: system
 package-manager:
   apk: cllayerinfo
@@ -31,5 +102,11 @@ executables:
   - cllayerinfo
 provenance:
   formula: ocl-icd
+  history-sources:
+    - https://formulae.brew.sh/api/formula/ocl-icd.json
+    - https://packages.debian.org/sid/ocl-icd-opencl-dev
+    - https://raw.githubusercontent.com/KhronosGroup/OpenCL-ICD-Loader/main/README.md
+    - https://raw.githubusercontent.com/OCL-dev/ocl-icd/master/README
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
