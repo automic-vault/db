@@ -7,6 +7,83 @@ config-file-location:
   unix:
     - trivy.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official homepage calls Trivy the most popular open-source security scanner
+      for vulnerability scanning, IaC, SBOM discovery, cloud scanning, and Kubernetes
+      security. The README lists integrations with GitHub Actions, the Trivy Kubernetes
+      operator, and a VS Code extension, while the installation docs distinguish
+      official and community install channels.
+    - >
+      Homebrew adoption fits the way Trivy is commonly used: installed as a local CLI
+      for developers and CI authors, run in Docker for pipeline isolation, and embedded
+      into GitHub Actions or Kubernetes workflows for continuous scanning. Its
+      package-manager presence is not ornamental; the package is a common entry point
+      for trying a scanner before wiring it into automation.
+  package-nerd-significance:
+    - >
+      Trivy is significant because it connects package metadata to security outcomes. It
+      reads OS packages and language dependencies, maps them to CVEs and other findings,
+      and can emit SBOM-centered views. For people who track package ecosystems, it is
+      both a user-facing CLI and a packaging/data-source stress test across distros,
+      language lockfiles, images, and repositories.
+    - >
+      It is also a good example of a security CLI becoming infrastructure: package
+      managers install it, CI systems wrap it, Kubernetes operators schedule it, and
+      downstream tools consume its reports. That makes its history more important than a
+      normal formula entry.
+  project-history:
+    - >
+      Aqua's official blog announced on August 19, 2019 that Trivy, described there as a
+      popular open-source container image vulnerability scanner, had joined the Aqua
+      open-source family. The current project README shows how the scope expanded: Trivy
+      now has multiple target types and scanners, including vulnerabilities,
+      SBOM/package inventory, IaC misconfiguration, secrets, and license scanning.
+    - >
+      That expansion mirrors the wider cloud-native security shift from image scanning
+      as a point task to supply-chain and runtime-adjacent checks in CI, repositories,
+      Kubernetes clusters, and local filesystems. Trivy's own docs and README frame it
+      as a single CLI front end for those related checks rather than a collection of
+      separate tools.
+  related-projects:
+    - >
+      Aqua Security, Trivy DB, Trivy Operator, trivy-action, Harbor scanner
+      integrations, Kubernetes, SBOM tooling
+  sources:
+    - https://github.com/aquasecurity/trivy#readme
+    - https://trivy.dev/
+    - https://trivy.dev/docs/latest/getting-started/installation/
+    - https://www.aquasec.com/blog/trivy-vulnerability-scanner-joins-aqua-family/
+  summary:
+    - >
+      Trivy is Aqua Security's open-source security scanner. It began public life in the
+      container-image vulnerability scanning niche and is now documented as a
+      comprehensive scanner for container images, filesystems, Git repositories, VM
+      images, and Kubernetes.
+  timeline:
+    - '2019-08-19: Aqua announced that Trivy had joined the Aqua open-source family.'
+    - >
+      Current README: Trivy documents targets including container images, filesystems,
+      Git repositories, VM images, and Kubernetes.
+    - >
+      Current README: Trivy documents scanners for vulnerabilities, SBOM/package
+      inventory, IaC misconfiguration, secrets, and licenses.
+    - >
+      Current docs: Installation documentation covers official and community channels
+      and points users to CI/CD, IDE, Kubernetes, and other integrations.
+  usage:
+    - >
+      The README's general pattern is `trivy <target> [--scanners <scanner1,scanner2>]
+      <subject>`. Examples include `trivy image python:3.4-alpine`, filesystem scans
+      such as `trivy fs --scanners vuln,secret,misconfig myproject/`, and Kubernetes
+      scans such as `trivy k8s --report summary cluster`.
+    - >
+      In the package-nerd niche, Trivy is often used to inspect what a package,
+      container image, repository, lockfile, or cluster would expose to a vulnerability
+      database or policy scanner. The same executable can produce quick local answers
+      and also serve as the scanner behind CI jobs, image-registry checks, and
+      Kubernetes security reports.
 tags:
   - cli
   - container-security
@@ -29,27 +106,29 @@ geiger:
     - text:vulnerability scanner
 provenance:
   category-sources:
-    - >
-      source_facts.description says Trivy scans container images, file systems, and Git
-      repositories for vulnerabilities; official README describes a comprehensive
-      security scanner.
+    - https://github.com/aquasecurity/trivy#readme
+    - source_facts.description
   display-name-sources:
-    - source_facts.name is trivy; official Trivy docs and repository use Trivy.
+    - https://github.com/aquasecurity/trivy#readme
+    - https://trivy.dev/
   docs-sources:
-    - Official Trivy documentation site is trivy.dev.
+    - current_curation.docs
+    - https://github.com/aquasecurity/trivy#readme
+  history-sources:
+    - https://github.com/aquasecurity/trivy#readme
+    - https://trivy.dev/
+    - https://trivy.dev/docs/latest/getting-started/installation/
+    - https://www.aquasec.com/blog/trivy-vulnerability-scanner-joins-aqua-family/
   repo-sources:
-    - source_facts.repo is already populated, so repo is returned as null per instruction.
+    - source_facts.repo already supplied; repo returned as null per prompt
   tags-sources:
-    - >
-      source_facts.description identifies vulnerability scanning targets; official
-      README lists vulnerabilities, misconfigurations, secrets, SBOM, and multiple scan
-      targets.
+    - https://github.com/aquasecurity/trivy#readme
+    - source_facts.description
 category-confidence: high
 category-path:
   - security
-  - scanner
-  - vulnerability
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
