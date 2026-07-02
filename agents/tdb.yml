@@ -6,6 +6,59 @@ docs:
   - https://tdb.samba.org/group__tdb.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      TDB's adoption is tied to Samba itself and to operating-system packaging of
+      Samba-related libraries and tools. The supplied package-manager facts show it
+      available across Homebrew, MacPorts, Nix, Arch, Ubuntu/Debian, Alpine, and
+      openSUSE ecosystems, often as libtdb development packages or Python bindings.
+  package-nerd-significance:
+    - >
+      For package maintainers, TDB is notable because it is not just an end-user
+      command: it is infrastructure shipped as libraries, headers, Python bindings, and
+      maintenance tools. Its presence in many package sets reflects Samba's long tail of
+      reusable C libraries and the need for consistent ABI packaging across Unix-like
+      systems.
+  project-history:
+    - >
+      The official TDB documentation explains the origin directly: Samba had multiple ad
+      hoc pieces of code that shared structures between parts of Samba, and TDB
+      consolidated that need into a simple database API. Its interface was based on
+      gdbm, but gdbm was not suitable for Samba's requirement that multiple writers be
+      able to use a database at the same time.
+    - >
+      The API documentation describes TDB as conceptually similar to GDBM and BSD DB,
+      but smaller and with internal locking for concurrent writers. It includes common
+      database operations such as open, fetch, store, delete, traverse, transactions,
+      locking, and consistency checks.
+  related-projects:
+    - Samba documentation explicitly compares TDB with gdbm and BSD DB.
+    - >
+      TDB is distributed from Samba's source archive and source tree alongside other
+      standalone Samba libraries.
+  sources:
+    - https://git.samba.org/?p=samba.git;a=tree;f=lib/tdb
+    - https://tdb.samba.org/
+    - https://tdb.samba.org/group__tdb.html
+    - source_facts.package-manager
+  summary:
+    - >
+      tdb, the Trivial DataBase from the Samba project, is a small embedded key-value
+      database library and set of command-line utilities. Samba's own documentation says
+      it grew out of several ad hoc database-like components inside Samba and was
+      designed as a compact alternative inspired by gdbm.
+  timeline:
+    - >
+      1.2.9: Official Doxygen documentation describes TDB as a Samba-origin simple
+      database API.
+    - 'Current Samba tree: TDB lives under `lib/tdb` in the official Samba source repository.'
+  usage:
+    - >
+      TDB is used as a local embedded database library, and its command-line tools
+      include `tdbtool`, `tdbdump`, `tdbbackup`, and `tdbrestore`. Samba's documentation
+      notes that `tdbtool` allows simple command-line manipulation of databases, while
+      the API is aimed at programs that need small, locked, file-backed databases.
 tags:
   - c-library
   - cli
@@ -24,29 +77,28 @@ geiger:
     - text:backup,database
 provenance:
   category-sources:
-    - >
-      source_facts.description says tdb is Trivial DataBase by the Samba project;
-      official tdb docs describe a simple database API.
+    - Official TDB API documentation describes a trivial database API.
   display-name-sources:
-    - source_facts.name gives tdb; current_curation.display-name also gives tdb.
+    - 'Official Doxygen project name: tdb.'
   docs-sources:
-    - >
-      Official tdb.samba.org documentation provides the main documentation page and API
-      reference.
+    - Official TDB homepage and Doxygen API documentation at tdb.samba.org.
+  history-sources:
+    - https://git.samba.org/?p=samba.git;a=tree;f=lib/tdb
+    - https://tdb.samba.org/
+    - https://tdb.samba.org/group__tdb.html
+    - source_facts.package-manager
   repo-sources:
+    - Official Samba gitweb shows lib/tdb in samba.git.
     - >
-      source_facts.repo is empty; official tdb documentation says latest code is fetched
-      via Samba git and then uses the source/lib/tdb subtree.
+      Official TDB documentation says to fetch latest code from Samba git and change
+      into source/lib/tdb.
   tags-sources:
-    - >
-      source_facts.description identifies Trivial DataBase by Samba; official API docs
-      describe tdb as similar to GDBM with multiple simultaneous writers and internal
-      locking.
+    - Official TDB API documentation describes a C database API with command-line tdbtool.
 category-confidence: high
 category-path:
   - data
-  - database
 display-name-confidence: high
 docs-confidence: high
-repo-confidence: medium
+history-confidence: high
+repo-confidence: high
 tags-confidence: high
