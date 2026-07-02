@@ -7,6 +7,65 @@ docs:
   - https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      testscript's adoption is mostly inside the Go developer-tools niche: Go projects
+      use it to write integration-style command tests with embedded fixture files,
+      expected stdout and stderr checks, and temporary working trees.
+    - >
+      In package-manager terms it is a niche but useful binary: installing it gives
+      developers a direct runner for .txtar or .txt scripts without embedding it into a
+      Go test harness.
+  package-nerd-significance:
+    - >
+      testscript is the kind of tool package nerds notice because it turns a testing
+      convention into a standalone command. It is especially relevant for maintainers of
+      CLIs, compilers, formatters, and other command-line programs where golden command
+      transcripts are easier to review than custom Go test code.
+    - >
+      Its use of txtar keeps test fixtures and scripts in one text file, making it
+      friendly to source-control review and reproducible bug reports.
+  project-history:
+    - >
+      The rogpeppe/go-internal repository was created in September 2018 and describes
+      itself as selected Go-internal packages factored out from the standard library.
+      The testscript package source carries Go Authors copyright notices from 2018 and
+      documents the same script-testing style used around Go command tests.
+    - >
+      The Homebrew formula packages the cmd/testscript executable from that repository
+      rather than a large standalone application. Its command README says testscript
+      runs scripts in fresh temporary work directory trees and is designed for
+      self-contained reproductions of command sequences.
+  related-projects:
+    - >
+      Go cmd/go tests, golang.org/x/tools/txtar, go-internal/goproxytest, Go module
+      proxy testing, and command-line integration test harnesses.
+  sources:
+    - https://github.com/rogpeppe/go-internal repository metadata
+    - https://github.com/rogpeppe/go-internal/tree/master/cmd/testscript README
+    - https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript
+    - input.source_facts.package-manager
+  summary:
+    - >
+      testscript is a small Go-oriented command and package for running filesystem-based
+      command scripts, often stored as txtar files, in fresh temporary work directories.
+  timeline:
+    - >
+      2018: rogpeppe/go-internal repository created and testscript package documentation
+      appears with Go Authors copyright.
+    - >
+      2018: Example txtar module proxy data in the command README uses a 2018 timestamp,
+      matching the Go modules testing era.
+    - '2026: Repository metadata shows continued updates.'
+  usage:
+    - >
+      The command runs files passed on the command line, supports environment
+      passthrough with -e, updates embedded expected files with -u, and can preserve the
+      temporary work directory with -work for debugging.
+    - >
+      The package API is used from Go tests with testscript.Run, where a testdata
+      directory contains txtar or txt scripts and each script defines a subtest.
 category: developer-tools
 package-manager:
   brew: testscript
