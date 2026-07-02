@@ -10,6 +10,85 @@ config-file-location:
     - $XDG_CONFIG_HOME/whalebrew/config.yaml
     - $XDG_DATA_DIRS/*/whalebrew/config.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Whalebrew's adoption is strongest among developers who like the isolation of
+      Docker images but want a local command UX. It maintains a set of known-compatible
+      images under the whalebrew organization and also allows arbitrary Docker Hub
+      images when their entrypoint and filesystem behavior fit the model.
+    - >
+      The project never needed to become a universal package manager to be useful. Its
+      value is narrower: it gives teams and individuals a repeatable way to distribute
+      CLIs with complex dependencies while leaving the host relatively clean.
+  package-nerd-significance:
+    - >
+      Whalebrew is package-nerd significant because it treats Docker images as package
+      artifacts for command-line tools, not only as deployable services. It also shows
+      the tension between native package managers and container packaging: native
+      commands are fast and integrated, while containerized commands are isolated and
+      portable but have startup and filesystem tradeoffs.
+    - >
+      The generated wrapper format is intentionally simple: an executable file with a
+      Whalebrew shebang and YAML describing how to run the image. That makes the package
+      boundary inspectable, which matters for users who care exactly what a packaged
+      command is doing.
+  project-history:
+    - >
+      The Whalebrew repository was created in January 2017, during the period when
+      Docker had become a common developer packaging substrate beyond server deployment.
+      The first GitHub release, 0.0.1, followed on 26 January 2017, and a 0.1.0 release
+      appeared in March 2017.
+    - >
+      The README credits Justin Cormack's dockercommand-cli as the original idea, then
+      extends that idea into a package-manager-like workflow: install an image, create a
+      command wrapper, and run Docker with the current directory mounted into the
+      container.
+    - >
+      Whalebrew releases continued over a long period, with 0.2.x releases in 2019-2020,
+      0.3.x in 2021, 0.4.x in 2022-2023, and 0.5.0 in August 2024. That slow release
+      cadence reflects a mature niche tool rather than a rapidly changing application
+      platform.
+  related-projects:
+    - dockercommand-cli is credited in the README as the original idea.
+    - Docker Hub and the whalebrew image organization provide the package substrate.
+    - Homebrew is the naming and UX analogy, while Docker is the execution substrate.
+  sources:
+    - https://github.com/justincormack/dockercommand-cli
+    - https://github.com/whalebrew/whalebrew
+    - https://github.com/whalebrew/whalebrew/blob/master/README.md
+    - https://github.com/whalebrew/whalebrew/releases
+  summary:
+    - >
+      Whalebrew is a Go command-line tool that makes Docker images behave like native
+      commands by installing executable wrappers for them. Its README summarizes the
+      idea as Homebrew, but with Docker images: package a CLI in a container, then run
+      it from the shell as though it were installed locally.
+    - >
+      The project sits at the intersection of Docker packaging and developer workstation
+      hygiene. It was designed for tools such as awscli, ffmpeg, wget, and other CLIs
+      whose dependencies can be awkward or intrusive when installed directly on a host.
+  timeline:
+    - '2017-01-22: The Whalebrew repository is created.'
+    - '2017-01-26: GitHub release metadata records Whalebrew 0.0.1.'
+    - '2017-03-23: GitHub release metadata records Whalebrew 0.1.0.'
+    - '2019-2020: GitHub release metadata records the 0.2.x line.'
+    - '2021: GitHub release metadata records Whalebrew 0.3.0 and 0.3.1.'
+    - '2022-2023: GitHub release metadata records the 0.4.x line.'
+    - '2024-08-02: GitHub release metadata records Whalebrew 0.5.0.'
+  usage:
+    - >
+      A user installs an image such as whalebrew/wget, after which Whalebrew writes an
+      executable wrapper such as /usr/local/bin/wget or another configured install path.
+      Running that command invokes Docker, binds the current working directory into
+      /workdir, sets the working directory, and forwards arguments to the container
+      entrypoint.
+    - >
+      Package authors make Whalebrew-friendly images by setting the command as the
+      Docker image entrypoint and ensuring the tool works on files under /workdir.
+      Optional Docker labels define the exposed command name, environment variables,
+      volumes, ports, networks, working directory behavior, missing-volume behavior, and
+      required Whalebrew version.
 tags:
   - cli
   - containers
@@ -26,24 +105,27 @@ geiger:
     - text:image
 provenance:
   category-sources:
-    - source_facts.description says it is Homebrew, but with Docker images.
+    - 'source_facts.description: Homebrew, but with Docker images'
   display-name-sources:
-    - source_facts.name is `whalebrew`; official repo/homepage also uses `whalebrew`.
+    - Whalebrew README heading
   docs-sources:
-    - >
-      source_facts.homepage is the official GitHub repository; README is the best
-      official documentation surface.
+    - current_curation.docs and upstream README
+  history-sources:
+    - https://github.com/justincormack/dockercommand-cli
+    - https://github.com/whalebrew/whalebrew
+    - https://github.com/whalebrew/whalebrew/blob/master/README.md
+    - https://github.com/whalebrew/whalebrew/releases
   repo-sources:
-    - source_facts.repo is already populated; per instruction repo returned null.
-  tags-sources:
     - >
-      source_facts.description mentions Homebrew and Docker images;
-      current_curation.tags includes `cli`.
+      source_facts.repo already provided; per batch instructions repo is returned as
+      null for unchanged known repo
+  tags-sources:
+    - Whalebrew README overview, usage, and package-creation sections
 category-confidence: high
 category-path:
   - developer-tools
-  - containers
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
