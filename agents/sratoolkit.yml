@@ -4,9 +4,83 @@ repo: null
 docs:
   - https://github.com/ncbi/sra-tools/wiki
   - https://github.com/ncbi/sra-tools#readme
-  - https://www.ncbi.nlm.nih.gov/sites/sra
-config-file-location: null
+  - https://www.ncbi.nlm.nih.gov/sra
+config-file-location:
+  unix:
+    - ${HOME}/.ncbi/user-settings.mkfg
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The package metadata in this batch shows SRA Toolkit packaged by Homebrew and Nix,
+      while NCBI's own wiki documents Linux, macOS, Windows, Docker, and cloud
+      workflows. In practice, package managers carry it because reproducible sequencing
+      workflows often need the same accession-download and FASTQ-conversion commands on
+      laptops, workstations, clusters, and containers.
+  package-nerd-significance:
+    - >
+      SRA Toolkit is package-nerd significant because it is a large scientific CLI suite
+      with many executables, nontrivial runtime configuration, network access, cache
+      behavior, and cloud credential paths. Packaging it well affects reproducible
+      bioinformatics pipelines, HPC modules, container images, and users who expect
+      `prefetch` and `fasterq-dump` to behave consistently across platforms.
+  project-history:
+    - >
+      The project is maintained in NCBI's `sra-tools` repository and organized around
+      many small CLI tools, including `prefetch`, `fasterq-dump`, `fastq-dump`,
+      `sam-dump`, `vdb-config`, `vdb-validate`, and related VDB utilities. Its release
+      notes show long-running 2.x and 3.x maintenance, with changes covering download
+      behavior, cloud access, build systems, and format conversion.
+    - >
+      SRA Toolkit 3.0.1 reorganized the source tree so the end-user toolkit, internal
+      tools, archive loaders, and test tools were separated into different tool
+      categories. That change made explicit the distinction between the tools ordinary
+      package users install and the broader internal machinery around NCBI's archive
+      workflows.
+  related-projects:
+    - >
+      SRA Toolkit is tied to NCBI SRA, INSDC sequence archives, NCBI VDB, dbGaP
+      controlled-access workflows, and cloud storage access patterns documented by NCBI.
+  sources:
+    - https://github.com/ncbi/sra-tools
+    - https://github.com/ncbi/sra-tools/wiki/03.-Quick-Toolkit-Configuration
+    - https://github.com/ncbi/sra-tools/wiki/08.-prefetch-and-fasterq-dump
+    - https://github.com/ncbi/sra-tools/wiki/SRA-tools-docker
+    - source_facts.executables
+    - source_facts.package-manager
+  summary:
+    - >
+      SRA Toolkit is NCBI's command-line toolkit for working with data in the INSDC
+      Sequence Read Archive. It is one of the standard bioinformatics packages that
+      turns accession identifiers into local data files and converts SRA containers into
+      FASTQ, FASTA, SAM, and related analysis formats.
+  timeline:
+    - >
+      2021: Official wiki documented toolkit configuration with `vdb-config` and
+      cache/user-repository settings.
+    - >
+      2022: SRA Toolkit 3.0.1 removed the requirement for interactive configuration and
+      reorganized repository tool categories.
+    - >
+      2023: SRA Toolkit 3.0.5 added PacBio support and reference-sequence output
+      features to `fasterq-dump`.
+    - >
+      2024: SRA Toolkit 3.1.0 added SRA Lite-related `prefetch` behavior and AlmaLinux
+      support.
+    - >
+      2025: SRA Toolkit 3.2.x release notes continued maintenance of `prefetch`,
+      `fasterq-dump`, and build behavior.
+  usage:
+    - >
+      Common usage centers on `prefetch` to download an accession and `fasterq-dump` to
+      extract FASTQ or FASTA output. The official wiki recommends the `prefetch` plus
+      `fasterq-dump` workflow, documents resumable downloads, validation with
+      `vdb-validate`, local cache configuration with `vdb-config`, and scratch-space
+      considerations for large conversions.
+    - >
+      Configuration is a real part of SRA Toolkit usage. NCBI documents `vdb-config -i`,
+      the user repository, remote-access settings, cloud identity reporting, and the
+      `${HOME}/.ncbi/user-settings.mkfg` settings file used by containerized runs.
 tags:
   - bioinformatics
   - cli
@@ -25,35 +99,35 @@ geiger:
 provenance:
   category-sources:
     - >
-      Official ncbi/sra-tools README describes SRA Toolkit as tools and libraries for
-      INSDC Sequence Read Archives.
-    - >
-      source_facts.description says it provides data tools for the INSDC Sequence Read
-      Archive.
+      source_facts.description says the package contains data tools for the INSDC
+      Sequence Read Archive; official wiki documents SRA accession download and
+      conversion workflows.
   display-name-sources:
-    - Official ncbi/sra-tools README uses the name SRA Toolkit.
-    - source_facts.name is sratoolkit.
+    - Official repository and wiki use SRA Toolkit.
   docs-sources:
-    - NCBI SRA page lists SRA Toolkit Documentation under Tools and Software.
     - >
-      Official ncbi/sra-tools README points users to the project wiki for using,
-      configuring, and building the toolkit.
+      Official repository and GitHub wiki provide README, user guides, and tool-specific
+      pages; NCBI SRA is the official archive context.
+  history-sources:
+    - https://github.com/ncbi/sra-tools
+    - https://github.com/ncbi/sra-tools/wiki/03.-Quick-Toolkit-Configuration
+    - https://github.com/ncbi/sra-tools/wiki/08.-prefetch-and-fasterq-dump
+    - https://github.com/ncbi/sra-tools/wiki/SRA-tools-docker
+    - source_facts.executables
+    - source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already contains https://github.com/ncbi/sra-tools, so repo is
-      returned as null per instruction.
+      source_facts.repo is already populated with https://github.com/ncbi/sra-tools;
+      prompt requires returning repo as null when source_facts.repo is present.
   tags-sources:
-    - Official ncbi/sra-tools README describes tools for SRA data access and use.
-    - source_facts.description mentions INSDC Sequence Read Archive data tools.
     - >
-      source_facts.executables include fastq-dump, fasterq-dump, prefetch, sam-dump, and
-      vdb utilities.
+      source_facts.executables and official wiki document bioinformatics CLI tools for
+      SRA download, validation, and FASTQ/FASTA conversion.
 category-confidence: high
 category-path:
   - science
-  - bioinformatics
-  - sequence-data
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
