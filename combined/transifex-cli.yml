@@ -8,6 +8,75 @@ config-file-location:
   unix: ~/.transifexrc
 credentials-file-location:
   unix: ~/.transifexrc
+history:
+  adoption-history:
+    - >
+      The CLI is adopted where localization is part of a software delivery workflow. The
+      official docs cover Linux and Mac install scripts, GitHub release binaries for
+      Linux, Mac, and Windows, source builds, Docker usage, and GitHub Actions
+      integration, showing that the tool is meant for both local developer use and
+      automated CI pipelines.
+    - >
+      The CLI's backwards-compatible `tx push` and `tx pull` behavior matters
+      historically because many projects already had localization sync steps in CI. The
+      migration path lets those projects keep their existing high-level workflow while
+      moving to the new config identifiers, token authentication, and APIv3-backed
+      client.
+  package-nerd-significance:
+    - >
+      For package-manager users, Transifex CLI is important because it turns
+      localization into a reproducible command-line contract. Homebrew, Nix, and pacman
+      packaging make the same `tx` binary available to developers and build agents
+      without requiring each repository to vendor an installer script.
+    - >
+      The package also represents a common CLI migration pattern: an older Python tool
+      is replaced by a Go binary for speed and distribution, while retaining the command
+      names that existing automation depends on.
+  project-history:
+    - >
+      The current Transifex CLI replaced an older client while preserving backwards
+      compatibility for the important `tx push` and `tx pull` commands. Official
+      migration documentation describes config-section changes from
+      `<project>.<resource>` to `o:<org>:p:<proj>:r:<res>` and changes to the
+      `.transifexrc` token-auth format.
+    - >
+      Transifex's docs describe the new client as a Go implementation rather than the
+      previous Python client. The stated reasons are speed, cross-platform binary
+      distribution, and a move from APIv2 to APIv3 because APIv3 is faster and APIv2 was
+      being deprecated.
+    - >
+      Official releases in the GitHub repository show the Go CLI continuing through the
+      1.6 series, with v1.6.17 published in 2024.
+  related-projects:
+    - >
+      The CLI is part of the Transifex localization platform and is paired with the
+      Transifex API, `.tx/config` project mappings, `.transifexrc` credentials, Docker
+      images, and the official Transifex GitHub Action.
+  sources:
+    - https://api.github.com/repos/transifex/cli/releases
+    - https://developers.transifex.com/docs/cli
+    - https://github.com/transifex/cli#readme
+  summary:
+    - >
+      Transifex CLI is the command-line client for syncing localization source files and
+      translations between a local project tree and Transifex. Its package-manager role
+      is to put the `tx` command on developer machines and CI runners so translation
+      updates can be scripted alongside builds and releases.
+  timeline:
+    - >
+      Pre-Go client: Transifex maintained an older Python client using APIv2 and earlier
+      local config identifiers.
+    - >
+      Current client: The official migration guide documents the Go/APIv3 client and the
+      `tx migrate` workflow.
+    - '2024: Official GitHub releases list Transifex CLI v1.6.17.'
+  usage:
+    - >
+      A typical project runs `tx init` to create `.tx/config`, uses `tx add` to map a
+      source file and translation file pattern to a Transifex organization, project, and
+      resource, then runs `tx push` and `tx pull` to send source strings and retrieve
+      translations. The docs also document `TX_TOKEN`, `TX_HOSTNAME`, and `TX_CACERT`
+      environment variables for non-interactive execution.
 category: developer-tools
 package-manager:
   brew: transifex-cli

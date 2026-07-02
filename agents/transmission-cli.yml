@@ -14,6 +14,89 @@ config-file-location:
     - '%LOCALAPPDATA%/transmission-daemon/settings.json'
     - '%LOCALAPPDATA%/transmission/settings.json'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Transmission's adoption is tied to its reputation for low overhead and easy
+      defaults. The official homepage says Ubuntu chose Transmission as its default
+      BitTorrent client in part because of its easy learning curve, and it also states
+      that Transmission has been used by Western Digital, Zyxel, and Belkin, supporting
+      its role on embedded, NAS, and appliance-like hardware.
+    - >
+      For command-line users, adoption centers on `transmission-daemon` plus
+      `transmission-remote`. The headless documentation shows the daemon running in the
+      background, exposing RPC on port 9091, and accepting commands for adding and
+      removing torrents, listing downloads, showing session information, checking
+      progress, and shutting the daemon down.
+  package-nerd-significance:
+    - >
+      For package nerds, Transmission CLI is the headless half of a well-known desktop
+      BitTorrent client. It is the package you install on a server, seedbox, router, or
+      NAS when a GUI is unnecessary but the same stable Transmission core and RPC
+      ecosystem are desired.
+    - >
+      It also has a packaging wrinkle: the historical `transmission-cli` executable is
+      deprecated, but package names such as `transmission-cli` often remain because
+      users actually want the daemon, remote controller, and helper tools bundled under
+      that long-standing CLI package identity.
+  project-history:
+    - >
+      Transmission presents itself as a multi-interface BitTorrent client: native macOS
+      GUI, GTK and Qt clients, a Windows-compatible Qt GUI, a headless daemon, and a web
+      UI. Its homepage emphasizes simple defaults, native integration, low resource use,
+      and suitability for home NAS and media servers.
+    - >
+      The CLI story has changed over time. The official README says
+      `transmission-remote` is now the preferred CLI client, while the older standalone
+      `transmission-cli` client is deprecated, limited to one torrent at a time, and
+      kept primarily for older hardware that depends on it.
+    - >
+      Transmission 4.0.0 was a major modernization release. The official release notes
+      describe more than a year of work, over a thousand commits since 3.00, a migration
+      from C90 to modern C++, a rewritten web client, stronger testing, BitTorrent v2
+      support, and better resource efficiency. Official releases continued into the 4.1
+      series, with 4.1.3 published in 2026.
+  related-projects:
+    - >
+      Transmission CLI is part of the broader Transmission project alongside the macOS,
+      GTK, Qt, Windows, daemon, web UI, RPC protocol, and torrent-metadata utility
+      surfaces.
+  sources:
+    - https://api.github.com/repos/transmission/transmission/releases
+    - https://github.com/transmission/transmission#readme
+    - https://github.com/transmission/transmission/blob/main/docs/Headless-Usage.md
+    - https://github.com/transmission/transmission/blob/main/news/news-4.0.0.md
+    - https://transmissionbt.com/
+  summary:
+    - >
+      Transmission CLI is the command-line packaging surface of Transmission, a fast,
+      lightweight, open-source BitTorrent client. The package exposes
+      `transmission-daemon`, `transmission-remote`, and torrent utility commands for
+      users who run Transmission on servers, NAS devices, routers, and other headless
+      systems.
+  timeline:
+    - >
+      Earlier CLI era: The standalone `transmission-cli` client was created before
+      `transmission-remote` and later became deprecated.
+    - >
+      3.00 era: The headless documentation examples show Transmission 3.00 daemon and
+      RPC usage.
+    - >
+      2023: Transmission 4.0.0 modernized the codebase, web client, testing, and
+      BitTorrent feature support.
+    - '2026: Official releases list Transmission 4.1.3.'
+  usage:
+    - >
+      A typical headless workflow starts `transmission-daemon`, edits
+      `~/.config/transmission-daemon/settings.json` while the daemon is stopped, then
+      controls the session with `transmission-remote`. Users add magnet links or torrent
+      files, list torrent IDs, stop or start selected torrents, remove items, inspect
+      session info, and rely on the web UI or RPC protocol for remote control.
+    - >
+      The package also includes utilities for working with torrent metadata:
+      `transmission-show` examines `.torrent` files, `transmission-create` creates them,
+      and `transmission-edit` edits them. Distribution packages may split these tools
+      differently, which is why a CLI-specific package matters.
 tags:
   - bittorrent
   - cli
@@ -34,31 +117,33 @@ geiger:
 provenance:
   category-sources:
     - >
-      Official GitHub organization describes Transmission as a fast, easy, free
-      BitTorrent client.
-    - source_facts.description says it is a lightweight BitTorrent client.
+      Official homepage and README describe a BitTorrent client and headless networking
+      daemon.
   display-name-sources:
-    - Official repository is the Transmission BitTorrent client project.
     - >
-      source_facts.name is transmission-cli and executables are Transmission
-      command-line tools.
+      source_facts.name and current_curation.display-name distinguish the Homebrew CLI
+      package from the broader Transmission project.
   docs-sources:
-    - Official Transmission repository contains a docs directory.
-    - source_facts.homepage points to the official transmissionbt.com project site.
+    - Official GitHub docs directory and README.
+  history-sources:
+    - https://api.github.com/repos/transmission/transmission/releases
+    - https://github.com/transmission/transmission#readme
+    - https://github.com/transmission/transmission/blob/main/docs/Headless-Usage.md
+    - https://github.com/transmission/transmission/blob/main/news/news-4.0.0.md
+    - https://transmissionbt.com/
   repo-sources:
     - >
-      source_facts.repo is already set to https://github.com/transmission/transmission;
-      per instruction repo is returned as null and not second-guessed.
+      source_facts.repo already provides the official repository; prompt requires repo
+      null when already populated.
   tags-sources:
-    - source_facts.description identifies a BitTorrent client.
     - >
-      source_facts.executables list transmission-cli, transmission-daemon,
-      transmission-remote, and related CLI tools.
+      Official README and docs describe BitTorrent, CLI, daemon, remote control, RPC,
+      and torrent tools.
 category-confidence: high
 category-path:
   - networking
-  - bittorrent
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
