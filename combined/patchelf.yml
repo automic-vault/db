@@ -6,6 +6,43 @@ docs:
   - https://github.com/NixOS/patchelf#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    PatchELF comes from the Nix/NixOS toolchain lineage. The source credits Eelco
+    Dolstra beginning in 2004, and the project changelog lists the initial 0.1 release
+    on October 11, 2005. Its job is unusually specific and very consequential for Linux
+    packaging: modify existing ELF executables and shared libraries after they have been
+    built.
+  - >
+    The original problem space was dynamic linking metadata, especially the ELF
+    interpreter and runtime library search paths. The README documents operations such
+    as setting the dynamic loader, setting or shrinking RPATH/RUNPATH, adding, removing,
+    or replacing DT_NEEDED entries, setting SONAME, and building Nix-specific
+    resolution-cache notes. In practice, patchelf is the tool used when rebuilding from
+    source is unavailable, undesirable, or insufficient to make a binary relocatable.
+  - >
+    Early releases track the expansion from a Nix-specific hack into a more general ELF
+    surgery tool. Version 0.2 in January 2007 was described as a hack for particular
+    binary compatibility problems; 0.3 in May 2007 added 64-bit and big-endian ELF
+    support; 0.4 in June 2008 improved RUNPATH/RPATH handling, dynamic-library RPATH
+    growth, IA-64-related fixes, and FreeBSD support. Later releases added removal of
+    needed libraries, output-file support, symbol-version clearing, add-rpath,
+    architecture support, and hardening against malformed inputs.
+  - >
+    Adoption followed the packaging ecosystems that need relocatable binaries. Nixpkgs
+    documents autoPatchelfHook for finding missing ELF shared-library dependencies and
+    adding runtime dependencies to rpaths, and the Nixpkgs fixup phase exposes
+    dontPatchELF for disabling ELF RPATH cleanup. Conda-build documents using patchelf
+    on Linux to rewrite generated executables and shared libraries to use relative
+    dynamic links, paired with install_name_tool on macOS.
+  - >
+    Practitioners use patchelf at the boundary between compiler output and distribution
+    policy: fixing vendor binaries for Nix, making conda packages relocatable, repairing
+    container images or bundled apps, changing an interpreter path for a non-FHS
+    runtime, trimming build-directory RPATHs before release, or debugging loader
+    failures by printing and rewriting dynamic-section metadata. It is powerful because
+    it edits the finished artifact; it is also treated carefully because bad edits can
+    make binaries unloadable.
 category: developer-tools
 package-manager:
   apk: patchelf
@@ -31,5 +68,12 @@ executables:
   - patchelf
 provenance:
   formula: patchelf
+  history-sources:
+    - https://raw.githubusercontent.com/NixOS/patchelf/master/README.md
+    - https://raw.githubusercontent.com/NixOS/patchelf/master/ChangeLog.md
+    - https://raw.githubusercontent.com/NixOS/patchelf/master/src/patchelf.cc
+    - https://nixos.org/manual/nixpkgs/stable/
+    - https://docs.conda.io/projects/conda-build/en/3.21.x/resources/use-shared-libraries.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

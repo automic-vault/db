@@ -5,6 +5,33 @@ docs:
   - https://launchpad.net/pbzip2
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    pbzip2 is Jeff Gilchrist's parallel implementation of bzip2 for shared-memory
+    multiprocessor machines. Its origin is tightly bound to a simple systems problem:
+    bzip2 compresses well but can be slow, while bzip2's block structure makes much of
+    the work parallelizable. pbzip2 keeps bzip2 compatibility while spreading
+    compression and decompression work across pthread workers.
+  - >
+    The compatibility guarantee drove adoption. Solaris and Debian manpage/package
+    descriptions both describe pbzip2 as a parallel implementation of the bzip2
+    block-sorting compressor that uses pthreads, achieves near-linear speedup on SMP
+    systems, and produces output compatible with bzip2 1.0.2 or newer. That meant users
+    could create `.bz2` files faster with pbzip2 while leaving existing decompression
+    tools and archive conventions alone.
+  - >
+    Package adoption followed the classic Unix utility path: small CLI, stable file
+    format, measurable benefit on multi-core hardware. The tool is packaged by Homebrew,
+    Debian, Fedora, MacPorts, Nix, Arch, Ubuntu, and openSUSE, and it ships common
+    command aliases `pbzip2`, `pbunzip2`, and `pbzcat`. Oracle Solaris documented the
+    original community source as Launchpad's pbzip2 1.1.13 tarball, and Homebrew
+    packages the same 1.1.13 line.
+  - >
+    In practice pbzip2 is used where the archive format is already bzip2 but CPU
+    parallelism matters: compressing large tar streams, decompression pipelines such as
+    `pbzip2 -dc myfile.tar.bz2 | tar x`, and batch jobs on workstations or servers with
+    multiple cores. It is not a new archive format and it is not a general compressor
+    suite; its value is being a mostly drop-in faster path for `.bz2` data.
 tags:
   - bzip2
   - cli
@@ -29,6 +56,12 @@ provenance:
     - >
       source_facts.source-archive is hosted under Launchpad; Launchpad project page is
       the official documentation and release surface.
+  history-sources:
+    - https://compression.great-site.net/
+    - https://docs.oracle.com/cd/E88353_01/html/E37839/pbzip2-1.html
+    - https://launchpad.net/pbzip2
+    - https://packages.debian.org/bookworm/pbzip2
+    - https://formulae.brew.sh/formula/pbzip2
   repo-sources:
     - Official Launchpad pbzip2 page lists Code as lp:pbzip2 with Bazaar version control.
   tags-sources:
@@ -41,5 +74,6 @@ category-path:
   - compression
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -6,6 +6,33 @@ docs:
   - https://mbsd.evolvis.org/pax.htm
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    pax grew out of the POSIX attempt to stop the long-running split between tar-style
+    and cpio-style Unix archivers. The interface combines archive listing, extraction,
+    creation, and directory-tree copying behind one command, while the archive format is
+    selected separately. BSD-derived implementations trace the utility into 4.4BSD, and
+    NetBSD documents Keith Muller as the author of its pax implementation.
+  - >
+    The standardization story matters because pax is not just another compressor
+    wrapper. POSIX.2 defined pax as a portable archive interchange tool, and the utility
+    became a common denominator for reading and writing cpio and ustar archives. Later
+    POSIX specifications also defined a pax interchange format with extended metadata,
+    though package implementations vary in which formats they actually support.
+  - >
+    The Homebrew, Debian, Fedora, Arch, Alpine, Nix, Ubuntu, and openSUSE packaging
+    footprint reflects pax's role as a small system utility rather than an application
+    platform. Debian's package is the MirBSD paxtar implementation: it exposes pax,
+    paxtar, and paxcpio-style behavior, supports many historic tar/cpio variants and ar
+    archives, but explicitly does not support ACLs, extended attributes, or the POSIX
+    format known as pax.
+  - >
+    Practitioners use pax when a script needs format-neutral archive handling or a
+    portable directory copy mode without leaning on GNU tar extensions. Common modes are
+    `pax -r` to extract, `pax -w` to write an archive, and `pax -r -w` to copy a file
+    tree while preserving metadata. In packaging work it is mostly valued for
+    predictable POSIX semantics and for handling legacy archive formats that sit between
+    tar, cpio, and ar.
 category: system
 package-manager:
   apk: pax
@@ -29,5 +56,11 @@ executables:
   - pax
 provenance:
   formula: pax
+  history-sources:
+    - https://man.netbsd.org/pax.1
+    - https://pubs.opengroup.org/onlinepubs/9799919799/utilities/pax.html
+    - https://packages.debian.org/bookworm/pax
+    - https://formulae.brew.sh/formula/pax
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
