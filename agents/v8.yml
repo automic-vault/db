@@ -5,6 +5,88 @@ docs:
   - https://v8.dev/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      V8 was designed as a standalone embeddable engine, not only as part of Chrome. The
+      V8 documentation says it can be embedded into any C++ application, and the 10-year
+      retrospective highlights Node.js as the 2009 non-browser embedder that made V8
+      central to a large JavaScript ecosystem.
+    - >
+      In 2017 the V8 team formally treated Node.js as a first-class embedder alongside
+      Chromium, with infrastructure preventing V8 patches from landing if they broke the
+      Node.js test suite. That cemented V8's role as shared infrastructure for both
+      browser and server-side JavaScript.
+  package-nerd-significance:
+    - >
+      For package nerds, V8 sits at the awkward but fascinating boundary between browser
+      engine, language runtime, C++ library, and JavaScript toolchain substrate. It
+      brings large-source-tree build systems, frequent upstream branch heads,
+      architecture-specific code generation, ICU data, and ABI-sensitive embedders into
+      ordinary package-manager work.
+    - >
+      The Homebrew `v8` formula exposes this infrastructure directly: installing it is
+      less about launching an app and more about making the V8 engine and `d8` shell
+      available for experiments, reverse dependencies, embedders, and
+      JavaScript/WebAssembly runtime testing.
+  project-history:
+    - >
+      Google began V8 as the JavaScript engine for the then-secret Chrome browser
+      project. The V8 team's own 10-year retrospective says Google hired Lars Bak in
+      autumn 2006 to build a new JavaScript engine and that the engine was named V8 as a
+      reference to a high-performance car engine.
+    - >
+      V8 was open-sourced on September 2, 2008, the same day Chrome launched, with an
+      initial public commit dated June 30, 2008. Early V8 supported ia32 and ARM and
+      used SCons; over the following decade the project moved through major compiler,
+      garbage-collector, source-control, and build-system changes.
+    - >
+      The engine's compiler history is especially important to JavaScript runtime
+      history. V8 moved from early code generators to Crankshaft, then to the Ignition
+      interpreter and TurboFan optimizing compiler, while also adding WebAssembly
+      support and a growing set of ECMAScript features.
+  related-projects:
+    - Chromium and Google Chrome are V8's original browser consumers.
+    - >
+      Node.js is the major non-browser embedder that made V8 important to server-side
+      JavaScript packaging.
+    - >
+      `d8` is V8's developer shell and the CLI most directly exposed by source builds
+      and packages.
+  sources:
+    - https://v8.dev/blog/10-years
+    - https://v8.dev/docs
+    - https://v8.dev/docs/d8
+    - https://v8.dev/docs/embed
+    - source_facts.executables
+  summary:
+    - >
+      V8 is Google's open-source JavaScript and WebAssembly engine, written in C++ and
+      used by Chrome, Node.js, and other embedders. In package-manager culture it is
+      mostly encountered as a dependency, an embeddable runtime, and the provider of the
+      `d8` developer shell rather than as an everyday end-user CLI.
+  timeline:
+    - '2006: Google starts V8 work for the secret Chrome project.'
+    - '2008: V8 is open-sourced on the same day Chrome launches.'
+    - '2009: Node.js releases and embeds V8.'
+    - '2010: Crankshaft optimizing JIT improves runtime performance.'
+    - '2015: Work starts on the Ignition interpreter; an early WebAssembly prototype lands.'
+    - >
+      2017: Ignition and TurboFan become the default pipeline; Node.js is recognized as
+      a first-class V8 embedder.
+    - >
+      2018: V8's retrospective describes its evolution from JavaScript engine to
+      JavaScript and WebAssembly engine.
+  usage:
+    - >
+      Packagers and runtime hackers use the package for the engine libraries and for
+      `d8`, V8's developer shell. The official `d8` documentation describes it as useful
+      for running JavaScript locally and debugging V8 changes, with support for loading
+      scripts, reading files, passing arguments, and inspecting flags.
+    - >
+      Embedding users follow the official embedding guide, which walks C++ developers
+      through isolates, handles, contexts, building `v8_monolith`, and running a small
+      JavaScript example from a native application.
 tags:
   - cli
   - engine
@@ -23,22 +105,32 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - source_facts.description says V8 is Google's JavaScript engine.
+    - current_curation.category_path
+    - https://v8.dev/docs
   display-name-sources:
-    - source_facts.name is v8 and source_facts.homepage points to official V8 docs.
+    - current_curation.display-name
+    - https://v8.dev/docs
   docs-sources:
-    - source_facts.homepage is the official V8 documentation URL.
+    - current_curation.docs
+    - https://v8.dev/docs
+  history-sources:
+    - https://v8.dev/blog/10-years
+    - https://v8.dev/docs
+    - https://v8.dev/docs/d8
+    - https://v8.dev/docs/embed
+    - source_facts.executables
   repo-sources:
-    - source_facts.repo is already populated, so repo was not re-determined.
-  tags-sources:
     - >
-      source_facts.description identifies Google's JavaScript engine;
-      source_facts.executables lists d8.
+      source_facts.repo is already populated with https://github.com/v8/v8; prompt
+      requires returning repo as null.
+  tags-sources:
+    - current_curation.tags
+    - https://v8.dev/docs
 category-confidence: high
 category-path:
   - language-runtime
-  - javascript
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
