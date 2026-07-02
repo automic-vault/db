@@ -12,6 +12,66 @@ config-file-location:
     - sonar-project.properties
     - ${scanner.home}/conf/sonar-scanner.properties
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The scanner is distributed as OS-specific downloads, a Docker image, a generic JVM
+      zip, and package-manager formulae. Homebrew analytics show tens of thousands of
+      yearly installs, which fits its role as a common CI dependency rather than a
+      library used inside application code.
+  package-nerd-significance:
+    - >
+      SonarScanner CLI matters to package maintainers because CI images and developer
+      machines need a reproducible scanner binary with the right Java behavior. Changes
+      such as embedded JRE updates, Docker distribution, and auto-provisioning affect
+      whether a package works in minimal runners, corporate networks, and long-lived
+      build pipelines.
+  project-history:
+    - >
+      The public GitHub repository is the official scanner CLI source tree, and its tags
+      include older 2.x releases. Current SonarSource documentation presents a
+      maintained release line from 4.x through 8.x, with the README stating that project
+      configuration is read from `sonar-project.properties` or passed on the command
+      line.
+    - >
+      Notable documented release changes include the 4.3 release using the SonarScanner
+      name in logs, the 4.4 release adding a supported Docker image, the 5.0 release
+      embedding Java 17, the 6.0 release adding a new bootstrapping mechanism and JRE
+      provisioning for SonarQube 10.6+ and SonarCloud, and the 8.0.1 release updating
+      embedded JREs to Java 21.
+  related-projects:
+    - SonarQube Server and SonarQube Cloud receive the analysis results.
+    - >
+      Dedicated SonarScanners exist for Maven, Gradle, and .NET and are recommended for
+      those ecosystems.
+    - >
+      The scanner is also distributed as the official `sonarsource/sonar-scanner-cli`
+      Docker image.
+  sources:
+    - >
+      https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/scanners/sonarscanner.md
+    - https://formulae.brew.sh/api/formula/sonar-scanner.json
+    - https://github.com/SonarSource/sonar-scanner-cli
+  summary:
+    - >
+      SonarScanner CLI is SonarSource's command-line scanner for running SonarQube
+      Server and SonarQube Cloud code analysis when there is no build-system-specific
+      scanner. It is a CI/CD staple because it turns a checked-out source tree plus
+      `sonar-project.properties` into an analysis uploaded to a Sonar service.
+  timeline:
+    - '2019: SonarScanner CLI 4.3 documents use of the SonarScanner name in logs.'
+    - '2020: Version 4.4 adds a supported Docker image.'
+    - '2023: Version 5.0 updates the embedded JRE to Java 17.'
+    - '2024: Version 6.0 adds new bootstrapping and JRE provisioning.'
+    - '2025: Version 7.3 adds z/OS support for scanner execution.'
+    - '2025: Version 8.0.1 updates embedded JREs to Java 21.'
+  usage:
+    - >
+      Users create `sonar-project.properties` in the project root, run `sonar-scanner`,
+      and provide server/project credentials through scanner parameters, CI secrets, or
+      environment configuration rather than a dedicated credentials file. SonarSource
+      warns users to prefer dedicated Maven, Gradle, or .NET scanners for those build
+      systems.
 category: developer-tools
 package-manager:
   apk: sonar-scanner
