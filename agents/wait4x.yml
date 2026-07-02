@@ -1,11 +1,73 @@
 id: brew:wait4x
 display-name: Wait4X
-repo: null
+repo: https://github.com/wait4x/wait4x
 docs:
   - https://wait4x.dev/docs
   - https://github.com/wait4x/wait4x#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Wait4X lives in the same operational niche as `wait-for-it`, `dockerize`,
+      Kubernetes readiness checks, and ad hoc shell loops, but its pitch is one static
+      cross-platform binary with service-aware checks. As of July 2, 2026, GitHub API
+      metadata showed about 1,339 stars and 54 forks, which is meaningful adoption for a
+      focused infrastructure CLI.
+  package-nerd-significance:
+    - >
+      Its package-nerd significance is the consolidation of many tiny readiness patterns
+      into one binary. It does not define a protocol or framework, but it is useful glue
+      in the places where package managers, containers, and CI systems expose race
+      conditions between service startup and test execution.
+  project-history:
+    - >
+      The GitHub repository was created on November 1, 2019, and GitHub release metadata
+      shows v0.1.0 published on February 8, 2020. The project later adopted the
+      `wait4x.dev/v3` module path and documents itself as a lightweight, zero-dependency
+      tool for modern infrastructure readiness checks.
+    - >
+      By 2025 the release series had reached v3.6.0, and the README described a broader
+      surface than simple TCP waiting: TCP, HTTP, DNS, Redis, MySQL, PostgreSQL,
+      MongoDB, Kafka, RabbitMQ, InfluxDB, Temporal, reverse checks, parallel checks,
+      exponential backoff, and command execution after checks.
+  related-projects:
+    - >
+      Related tools include `wait-for-it`, `dockerize`, and health-check mechanisms in
+      Docker Compose and Kubernetes. Wait4X differs by shipping a single CLI with
+      multiple protocol and service-specific checks rather than relying only on raw TCP
+      ports or shell scripting.
+  sources:
+    - https://api.github.com/repos/wait4x/wait4x
+    - https://api.github.com/repos/wait4x/wait4x/releases
+    - https://github.com/wait4x/wait4x
+    - https://raw.githubusercontent.com/wait4x/wait4x/main/README.md
+  summary:
+    - >
+      Wait4X is a Go-based readiness-waiting tool for scripts, CI jobs, containers, and
+      local development. Its job is deliberately narrow: block until a port, protocol
+      endpoint, database, message broker, or other service reaches the expected state,
+      then optionally run a command.
+  timeline:
+    - 'November 1, 2019: the wait4x/wait4x repository was created on GitHub.'
+    - 'February 8, 2020: v0.1.0 was published as an early GitHub release.'
+    - >
+      October 20, 2025: v3.6.0 was published, showing the project had continued into a
+      v3 line with a wider readiness-check surface.
+    - >
+      July 2, 2026: GitHub API metadata showed the project still present as a
+      moderate-sized infrastructure CLI repository.
+  usage:
+    - >
+      Typical usage is inline in automation: `wait4x tcp localhost:5432`, `wait4x http
+      https://example.com/health --expect-status-code 200`, or `wait4x postgresql
+      postgres://...` before a test suite or startup script continues. The README also
+      shows multiple targets checked in parallel and an `--invert-check` mode for
+      waiting until a service becomes unavailable.
+    - >
+      Because it can run a command after readiness succeeds, Wait4X often replaces a
+      shell loop in Docker entrypoints, CI workflow steps, and local scripts where a
+      database, cache, broker, or API needs to be up before the next process starts.
 tags:
   - ci-cd
   - cli
@@ -25,30 +87,27 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      source_facts.description: Wait for a port or a service to enter the requested
-      state; official README describes service-readiness checks for CI/CD, containers,
-      and local development.
+    - https://raw.githubusercontent.com/wait4x/wait4x/main/README.md
   display-name-sources:
-    - 'source_facts.name: wait4x; official repository README uses Wait4X.'
+    - https://github.com/wait4x/wait4x
   docs-sources:
-    - >
-      Official wait4x.dev documentation site has a /docs section; official GitHub README
-      provides CLI reference and examples.
+    - https://github.com/wait4x/wait4x#readme
+    - https://wait4x.dev/docs
+  history-sources:
+    - https://api.github.com/repos/wait4x/wait4x
+    - https://api.github.com/repos/wait4x/wait4x/releases
+    - https://github.com/wait4x/wait4x
+    - https://raw.githubusercontent.com/wait4x/wait4x/main/README.md
   repo-sources:
-    - >
-      source_facts.repo already contains https://github.com/wait4x/wait4x; per
-      instruction, repo was not re-determined.
+    - https://api.github.com/repos/wait4x/wait4x
+    - https://github.com/wait4x/wait4x
   tags-sources:
-    - >
-      source_facts.description identifies port/service waiting; official README lists
-      TCP, HTTP, DNS, database, message queue, reverse, parallel, and command execution
-      checks.
+    - https://raw.githubusercontent.com/wait4x/wait4x/main/README.md
 category-confidence: high
 category-path:
   - developer-tools
-  - automation
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

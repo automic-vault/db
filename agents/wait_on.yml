@@ -5,6 +5,50 @@ docs:
   - https://man.freebsd.org/cgi/man.cgi?query=wait_on
 config-file-location: null
 credentials-file-location: null
+history:
+  package-nerd-significance:
+    - >
+      This is a classic small Unix package: one command, one system primitive, and a
+      clean scripting use case. It is historically interesting because it predates the
+      later wave of cross-platform file-watcher tools and shows early BSD users solving
+      shell automation without periodic `stat` polling.
+  project-history:
+    - >
+      The FreeBSD manual page gives the clearest project history: `wait_on` was written
+      by Andrew Stevenson in January 2002 under FreeBSD 4.4. Its design is tied directly
+      to kqueue, the BSD kernel event-notification facility that had recently made file,
+      directory, and descriptor events available without busy polling.
+  related-projects:
+    - >
+      The closest related primitive is kqueue itself. In the broader file-watching
+      family, `wait_on` overlaps conceptually with inotify-based Linux tools and
+      higher-level cross-platform watchers, but it stays intentionally close to the
+      FreeBSD kernel interface.
+  sources:
+    - https://man.freebsd.org/cgi/man.cgi?query=kqueue&sektion=2
+    - https://man.freebsd.org/cgi/man.cgi?query=wait_on
+    - https://www.freshports.org/sysutils/wait_on/
+  summary:
+    - >
+      `wait_on` is a small FreeBSD-oriented command that exposes file and directory
+      change notifications to shell scripts. It lets scripts sleep until a watched path
+      changes instead of polling in a loop.
+  timeline:
+    - 'January 2002: `wait_on` was written under FreeBSD 4.4 by Andrew Stevenson.'
+    - >
+      2000s onward: the command remained useful as a shell-level wrapper around kqueue
+      file and directory events.
+  usage:
+    - >
+      The command waits on one or more files or directories and exits when a requested
+      event occurs. The manual gives examples such as watching a mailbox for writes,
+      waiting for files to arrive in an incoming FTP directory, or using `-i` and `-t`
+      so a script can tell which watched path changed or timed out.
+    - >
+      Internally, `wait_on` uses kqueue's vnode notifications, including events for
+      writes, extension, deletion, renames, link-count changes, attribute changes, and
+      revocation. That makes it a compact bridge between shell scripting and kernel
+      event delivery on systems with kqueue.
 tags:
   - cli
   - directory-monitoring
@@ -23,28 +67,23 @@ geiger:
     - text:shell
 provenance:
   category-sources:
-    - >
-      source_facts.description: Provides shell scripts with access to kqueue(3);
-      official FreeBSD man page describes waiting for file or directory changes.
+    - https://man.freebsd.org/cgi/man.cgi?query=wait_on
   display-name-sources:
-    - 'source_facts.name: wait_on; official FreeBSD man page name is wait_on.'
+    - https://man.freebsd.org/cgi/man.cgi?query=wait_on
   docs-sources:
-    - >
-      Official FreeBSD manual page is the authoritative documentation for wait_on usage
-      and options.
-  repo-sources:
-    - >
-      No official standalone HTTP(S) source-control repository URL found; FreeBSD
-      manpage is the official documentation surface.
+    - https://man.freebsd.org/cgi/man.cgi?query=wait_on
+  history-sources:
+    - https://man.freebsd.org/cgi/man.cgi?query=kqueue&sektion=2
+    - https://man.freebsd.org/cgi/man.cgi?query=wait_on
+    - https://www.freshports.org/sysutils/wait_on/
   tags-sources:
-    - >
-      source_facts.description mentions shell scripts and kqueue(3); official FreeBSD
-      man page describes waiting for file or directory changes without polling.
+    - https://man.freebsd.org/cgi/man.cgi?query=kqueue&sektion=2
+    - https://man.freebsd.org/cgi/man.cgi?query=wait_on
 category-confidence: high
 category-path:
   - system
-  - file-monitoring
 display-name-confidence: high
 docs-confidence: high
-repo-confidence: medium
+history-confidence: high
+repo-confidence: low
 tags-confidence: high
