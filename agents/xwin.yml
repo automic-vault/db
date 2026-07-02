@@ -1,10 +1,83 @@
 id: brew:xwin
 display-name: xwin
-repo: null
+repo: https://github.com/Jake-Shadle/xwin
 docs:
   - https://github.com/Jake-Shadle/xwin#readme
+  - https://jake-shadle.github.io/xwin
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xwin sits in the Rust cross-compilation niche: developers targeting
+      `*-pc-windows-msvc` from Linux or macOS need Windows headers and libraries but
+      often prefer cargo, clang-cl, lld-link, containers, and Linux CI. Packaging xwin
+      in Homebrew, Nix, crates.io, and GitHub releases makes that workflow scriptable.
+  package-nerd-significance:
+    - >
+      xwin is significant because it turns proprietary-platform SDK acquisition into a
+      reproducible package-style operation without redistributing Microsoft's files. It
+      collapses a painful cross-compilation prerequisite into one auditable CLI.
+    - >
+      It also captures a modern packaging pattern: acquiring upstream binary installer
+      payloads, normalizing layout, fixing filesystem case mismatches, caching
+      aggressively, and producing a sysroot other tools can consume.
+  project-history:
+    - >
+      Jake Shadle created the GitHub repository in August 2021 alongside a detailed post
+      on cross-compiling Windows binaries from Linux. The blog explains the practical CI
+      problem: producing `x86_64-pc-windows-msvc` outputs without running the whole
+      Windows toolchain on Windows, while still using clang-cl and lld-link against
+      Microsoft CRT and SDK files.
+    - >
+      The README defines xwin's core job as creating CRT and SDK root directories with
+      the includes and libraries needed by native cross-compiling toolchains, including
+      symlinks to repair Windows SDK casing problems on case-sensitive filesystems. The
+      CLI grew commands such as `download`, `unpack`, `splat`, and `minimize`.
+    - >
+      Recent releases track changes in Microsoft's installer and manifest ecosystem:
+      channel-name changes, MSI packages without cabinet references, TLS/certificate
+      handling, HTTP retry behavior, and debug-runtime inclusion.
+  related-projects:
+    - 'clang-cl, lld-link, and LLVM: the non-Windows toolchain xwin is designed to feed.'
+    - "Rust target `x86_64-pc-windows-msvc`: a primary driver for xwin's documented workflow."
+    - >
+      cargo and cc-rs: common Rust build tooling that consumes compiler/linker
+      configuration pointing at xwin output.
+    - 'winsysroot: a layout style xwin can generate for clang-cl-oriented SDK discovery.'
+  sources:
+    - https://api.github.com/repos/Jake-Shadle/xwin
+    - https://api.github.com/repos/Jake-Shadle/xwin/releases?per_page=8
+    - https://crates.io/crates/xwin
+    - https://github.com/Jake-Shadle/xwin
+    - https://jake-shadle.github.io/xwin/
+    - https://raw.githubusercontent.com/Jake-Shadle/xwin/main/README.md
+  summary:
+    - >
+      xwin is a Rust utility for downloading, unpacking, pruning, and laying out
+      Microsoft CRT and Windows SDK headers and libraries so Windows MSVC-targeted
+      builds can run from non-Windows hosts with LLVM/clang tooling.
+  timeline:
+    - '2021-08-04: GitHub repository created.'
+    - >
+      2021-08-22: Shadle publishes the cross-compiling Windows binaries from Linux
+      walkthrough describing the new utility and its CI motivation.
+    - >
+      2021: README-era workflow centers on downloading CRT/SDK payloads and `splat`
+      output for clang/LLVM Windows cross builds.
+    - >
+      2024-2025: Releases focus on Microsoft installer churn, HTTP/TLS behavior,
+      debug-runtime support, and SDK package layout changes.
+    - >
+      2026-04-20: 0.9.0 release fixes channel-name handling for newer Microsoft manifest
+      versions.
+  usage:
+    - >
+      The common flow is `xwin --accept-license splat --output /path/to/sysroot`, then
+      pointing clang-cl, lld-link, Cargo, or build scripts at the produced CRT and SDK
+      include/library directories. `download` and `unpack` expose intermediate steps,
+      while `minimize` can trace a Cargo build and produce a reduced map of files
+      actually used.
 tags:
   - cli
   - cross-compilation
@@ -22,30 +95,31 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official GitHub README describes creating a CRT and Windows SDK root for
-      non-Windows cross compilation.
-    - 'source_facts.description: Microsoft CRT and Windows SDK headers and libraries loader.'
+    - https://github.com/Jake-Shadle/xwin
+    - https://raw.githubusercontent.com/Jake-Shadle/xwin/main/README.md
   display-name-sources:
-    - source_facts.homepage repository name is Jake-Shadle/xwin.
-    - 'source_facts.name: xwin.'
+    - https://github.com/Jake-Shadle/xwin
+    - https://raw.githubusercontent.com/Jake-Shadle/xwin/main/README.md
   docs-sources:
-    - >
-      Official README is the main documentation and includes introduction, installation,
-      and command usage.
-    - source_facts.homepage points to the official GitHub repository.
+    - https://github.com/Jake-Shadle/xwin#readme
+    - https://jake-shadle.github.io/xwin/
+  history-sources:
+    - https://api.github.com/repos/Jake-Shadle/xwin
+    - https://api.github.com/repos/Jake-Shadle/xwin/releases?per_page=8
+    - https://crates.io/crates/xwin
+    - https://github.com/Jake-Shadle/xwin
+    - https://jake-shadle.github.io/xwin/
+    - https://raw.githubusercontent.com/Jake-Shadle/xwin/main/README.md
   repo-sources:
-    - source_facts.repo already has a value, so repo was not re-determined.
+    - https://github.com/Jake-Shadle/xwin
   tags-sources:
-    - >
-      Official README describes packaging headers and libraries for compiling and
-      linking Windows targets from non-Windows platforms.
-    - source_facts.description identifies Microsoft CRT and Windows SDK loading.
+    - https://github.com/Jake-Shadle/xwin
+    - https://raw.githubusercontent.com/Jake-Shadle/xwin/main/README.md
 category-confidence: high
 category-path:
   - developer-tools
-  - cross-compilation
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
