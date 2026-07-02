@@ -5,8 +5,65 @@ repo: https://gitlab.com/sstp-project/sstp-client
 docs:
   - https://gitlab.com/sstp-project/sstp-client/-/blob/master/README.md
   - https://gitlab.com/sstp-project/sstp-client/-/wikis
-config-file-location: null
-credentials-file-location: null
+config-file-location:
+  unix: /etc/ppp/peers/*
+credentials-file-location:
+  unix: /etc/ppp/chap-secrets
+history:
+  adoption-history:
+    - >
+      The release notes show the project being adapted to distribution realities early:
+      Fedora Core 15 porting fixes, Ubuntu 11.04 and Fedora packages, NetworkManager
+      SSTP plugin work, libevent2 support, Mac OS X/Darwin changes for MacPorts, OpenSSL
+      1.1 and 3.0 support, and pppd 2.5.0 compatibility. The supplied package facts show
+      availability in Homebrew, Alpine, Fedora/DNF, MacPorts, Arch, Debian, and Ubuntu.
+  package-nerd-significance:
+    - >
+      Package maintainers care about sstp-client because it bridges a Microsoft VPN
+      protocol into the pppd/OpenSSL/libevent Unix stack. Its history is largely a
+      packaging and compatibility story: keeping VPN access working as pppd, OpenSSL,
+      Linux distributions, MacPorts, and NetworkManager changed around it.
+  project-history:
+    - >
+      The official README frames the tool as an SSTP client for Linux that can establish
+      a connection to a Windows 2008 Server, with command-line behavior similar to
+      pptp-client for easier integration. The project's NEWS file records a 1.0-beta
+      release in February 2011 after implementing Windows 2008 SSTP connectivity, async
+      PPP support, IPv6, and certificate validation, followed by a 1.0 release in
+      September 2011 after six months of beta testing.
+  related-projects:
+    - >
+      The README lists pppd, OpenSSL, libevent, pptp-client, NetworkManager SSTP, and
+      Microsoft SSTP documentation as adjacent projects or protocol references.
+  sources:
+    - https://gitlab.com/sstp-project/sstp-client/-/raw/master/ChangeLog
+    - https://gitlab.com/sstp-project/sstp-client/-/raw/master/NEWS
+    - https://gitlab.com/sstp-project/sstp-client/-/raw/master/README.md
+    - source_facts.package-manager
+  summary:
+    - >
+      sstp-client is a Unix-like client for Microsoft's Secure Socket Tunneling
+      Protocol, aimed at connecting Linux and macOS systems to Windows SSTP VPN
+      endpoints through PPP over SSL.
+  timeline:
+    - >
+      2011: 1.0-beta connected to Windows 2008 SSTP servers with async PPP, IPv6, and
+      certificate validation.
+    - >
+      2011: 1.0 followed after six months of beta testing, with Ubuntu 11.04 and Fedora
+      Core 15 packages.
+    - '2012: 1.0.7 added Mac OS X/Darwin support work via MacPorts.'
+    - '2021: Project moved to GitLab under eivnaes/sstp-client.'
+    - >
+      2023: Project moved to gitlab.com/sstp-project/sstp-client and joined GitLab's
+      Open Source Program.
+    - '2024: 1.0.20 added a macOS tty speed override and static-analysis fixes.'
+  usage:
+    - >
+      Users can run sstpc directly or have pppd load it through the plugin directive.
+      The official README describes the common Unix integration path: store MSCHAP
+      credentials in /etc/ppp/chap-secrets, create a peer file under /etc/ppp/peers,
+      then use pon and poff to start and stop the tunnel.
 category: networking
 package-manager:
   apk: sstp-client
