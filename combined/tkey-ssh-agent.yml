@@ -7,6 +7,80 @@ docs:
   - https://tillitis.se/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The project is aimed at TKey users who want SSH authentication without storing
+      private keys on a general-purpose computer. Its packaging path followed both
+      source installs and OS packages: the README mentions operating-system package
+      systems, go install, manual pages, udev rules, and systemd units.
+    - >
+      The supplied package-manager facts show availability through Homebrew, Alpine/apk,
+      Debian source packaging, Nix, and winget, which is unusually broad for a
+      hardware-token-specific SSH utility.
+  package-nerd-significance:
+    - >
+      tkey-ssh-agent sits at the intersection of open hardware, SSH agent ergonomics,
+      and distro packaging. Its release notes make key continuity a packaging concern
+      because changing firmware, signer binaries, or secret handling can change the
+      generated SSH identity.
+    - >
+      It is a useful example of a niche security package where version pinning, tagged
+      releases, and release notes are operationally important rather than cosmetic.
+  project-history:
+    - >
+      The official README describes tkey-ssh-agent as an OpenSSH-compatible agent for
+      use with the Tillitis TKey USB security token. The project embeds a signer device
+      application and warns users to prefer tagged releases because changes to the
+      signer app, user-supplied secret, or user device secret can change the resulting
+      SSH key pair.
+    - >
+      The release notes show an early v0.0.1 phase focused on a revised SSH agent for
+      Linux distributions, daemon operation, udev-based TKey detection, and pinentry for
+      the user-supplied secret. Version 1.0.0 separated related apps, libraries, and
+      packages into their own repositories, embedded the binary signer to enable go
+      install, and added release/package builds with GoReleaser.
+  related-projects:
+    - Tillitis TKey is the hardware/software USB security token targeted by the agent.
+    - OpenSSH is the client ecosystem consuming the SSH agent socket.
+    - >
+      tkey-device-signer, tkeyclient, and tkeysign are related Tillitis components named
+      in the release notes.
+  sources:
+    - >
+      https://github.com/tillitis/tkey-ssh-agent README for purpose, install, usage,
+      USS, and build behavior
+    - >
+      https://github.com/tillitis/tkey-ssh-agent/blob/main/docs/release_notes.md for
+      v0.0.1, v1.0.0, and v1.1.0 history
+    - >
+      https://github.com/tillitis/tkey-ssh-agent/releases for release chronology and
+      package assets
+    - source_facts.package-manager for package availability
+  summary:
+    - >
+      tkey-ssh-agent is an OpenSSH-compatible agent for the Tillitis TKey USB security
+      token. It bridges the standard SSH agent protocol with a small open
+      hardware/software signing device.
+  timeline:
+    - >
+      v0.0.1: Release notes describe the revised SSH agent with daemon operation, udev
+      detection, and pinentry support.
+    - >
+      v1.0.0: Related apps and libraries moved to separate repositories; embedded signer
+      enabled go install; GoReleaser package builds added.
+    - >
+      2026-03-24: GitHub releases page lists v1.1.1 with updated tkeyclient handling for
+      TKey Unlocked.
+  usage:
+    - >
+      A typical use starts the agent on a chosen socket, optionally selects the serial
+      port, then points SSH_AUTH_SOCK at that socket before using OpenSSH. The README
+      also documents a public-key display mode and USS flags for user-supplied secrets.
+    - >
+      For package nerds, the interesting part is that the installed CLI is only half the
+      artifact: udev rules, systemd service files, manual pages, embedded signer
+      binaries, and reproducible release packages all matter for a usable install.
 category: security
 package-manager:
   apk: tkey-ssh-agent
