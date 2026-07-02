@@ -5,6 +5,37 @@ docs:
   - https://github.com/sstadick/perbase#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    perbase is Seth Stadick's Rust command-line toolkit for per-base sequencing metrics
+    from BAM and CRAM alignment files. The GitHub repository was created on 2020-09-18,
+    and public releases show a path from the 0.x series to v1.0.0 on 2025-07-29 and
+    v1.4.0 on 2026-02-04.
+  - >
+    The project's niche is accuracy at awkward alignment edges. Its 2026 Journal of Open
+    Source Software paper positions per-base metrics as fundamental to variant calling
+    and coverage assessment, then contrasts perbase with tools such as samtools depth,
+    sambamba depth, and bam-readcount on handling deletions, reference skips,
+    overlapping mate pairs, and base-quality behavior.
+  - >
+    The primary `base-depth` tool walks every position in a BAM/CRAM file and reports
+    depth, base composition, insertions, deletions, reference skips, failed-read counts,
+    and related flags. perbase also includes `only-depth`, inspired by mosdepth-style
+    compact depth output, plus `merge-adjacent` for merging adjacent intervals with
+    equal depth.
+  - >
+    perbase's implementation story is a Rust bioinformatics story: the JOSS paper
+    describes a multi-threaded architecture that processes genomic regions in parallel
+    with bounded memory via configurable chunk sizes and message-passing buffers.
+    Benchmarks in the paper compare `base-depth` with sambamba on a 30X whole-genome
+    dataset and report faster runtime in both standard and mate-fix modes.
+  - >
+    Adoption is specialized but well sourced. The JOSS paper reports more than 49,000
+    Bioconda downloads and notes downstream use as a dependency for tools including pbr;
+    the README also lists installation through Bioconda, Cargo, Homebrew, or precompiled
+    GitHub release binaries. Practitioners run commands such as `perbase base-depth -t
+    32 -o output.tsv input.bam`, adding an indexed reference FASTA when CRAM input
+    requires it.
 tags:
   - bam
   - bioinformatics
@@ -31,6 +62,12 @@ provenance:
     - source_facts.name is perbase.
   docs-sources:
     - Official GitHub README contains usage, memory, and subcommand documentation.
+  history-sources:
+    - https://github.com/sstadick/perbase
+    - https://api.github.com/repos/sstadick/perbase
+    - https://api.github.com/repos/sstadick/perbase/releases
+    - https://www.theoj.org/joss-papers/joss.09774/10.21105.joss.09774.pdf
+    - https://formulae.brew.sh/formula/perbase
   repo-sources:
     - source_facts.repo is already populated, so repo was intentionally not re-determined.
   tags-sources:
@@ -42,5 +79,6 @@ category-path:
   - bioinformatics
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

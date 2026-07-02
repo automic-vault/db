@@ -5,6 +5,35 @@ docs:
   - https://github.com/chaos/pdsh#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    pdsh, the Parallel Distributed Shell, comes from the high-performance computing
+    administration world rather than from general DevOps fashion. Packaging descriptions
+    trace it to Lawrence Livermore National Laboratory, where it was written as a
+    replacement for IBM's DSH on clusters. Its source tree still carries LLNL/University
+    of California provenance, and the project is maintained in the chaos/pdsh GitHub
+    repository.
+  - >
+    The tool's core idea is deliberately small: run the same command on many hosts in
+    parallel and label the results. The README describes pdsh as a multithreaded remote
+    shell client that executes commands across multiple remote hosts and can use rsh,
+    Kerberos IV, ssh, and other remote command modules. Its thread fanout model
+    conserves client resources while letting slow or unreachable hosts time out
+    independently.
+  - >
+    pdsh became part of the everyday toolbox for cluster and HPC administrators because
+    it solves unglamorous but constant work: checking kernel versions, package versions,
+    load, logs, swap, node health, and configuration drift across sets of machines.
+    ADMIN Magazine describes parallel shells as a fundamental HPC administration
+    primitive and calls pdsh one of the most popular tools in that category, with
+    SSH-only builds common for encrypted transport.
+  - >
+    Practitioners typically invoke `pdsh -w host[1-32] command`, point WCOLL at a host
+    list, or integrate pdsh with host-selection modules such as genders, dshgroups,
+    netgroups, nodeupdown, or Slurm allocations. Companion tools `pdcp` and `rpdcp` copy
+    files across nodes, while `dshbak` formats gathered output. That small suite keeps
+    pdsh relevant in places where a full configuration-management system would be too
+    slow, too stateful, or simply unnecessary for a one-shot cluster query.
 tags:
   - cli
   - cluster-management
@@ -29,6 +58,12 @@ provenance:
     - >
       source_facts.homepage is the official GitHub repository; README is the best
       official documentation surface.
+  history-sources:
+    - https://github.com/chaos/pdsh
+    - https://www.freshports.org/sysutils/pdsh/
+    - https://www.admin-magazine.com/HPC/Articles/pdsh-Parallel-Shell
+    - source_facts.executables
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/chaos/pdsh; repository
@@ -43,5 +78,6 @@ category-path:
   - cluster-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

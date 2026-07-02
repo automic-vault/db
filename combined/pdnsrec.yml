@@ -9,6 +9,38 @@ config-file-location:
     - recursor.yml
     - recursor.conf
 credentials-file-location: null
+history:
+  - >
+    PowerDNS Recursor is the recursive-resolver half of the PowerDNS lineage. PowerDNS
+    originally offered only authoritative DNS, but Bert Hubert began building a resolver
+    after concluding that existing resolver codebases were too complex for the style of
+    linear, understandable code he wanted. The resulting design used lightweight
+    cooperative multitasking so many DNS questions could be in flight while the code
+    remained closer to sequential logic than a large event-driven state machine.
+  - >
+    The Recursor's production history was shaped by ISP deployments. In 2005, XS4ALL
+    paid to bring the Recursor to production quality at a time when large operators were
+    dissatisfied with available resolver options; later, AOL-scale work added features
+    needed for millions of subscribers, with Hubert writing that AOL was able to
+    decommission about 120 servers based on the improved software. Beginning in 2007,
+    operators leaving Nominum also helped pull PowerDNS into larger resolver
+    deployments.
+  - >
+    The official Recursor documentation describes it as a high-performance DNS recursor
+    with built-in scripting capabilities, DNSSEC validation, Lua scripting, modern
+    packet parsing, source-port randomization, spoofing detection, and support for
+    multiplexing facilities such as kqueue and epoll. PowerDNS states that Recursor has
+    powered resolving needs for more than 150 million internet connections, while its
+    product page targets ISP, broadband, mobile, and enterprise DNS resolving
+    deployments.
+  - >
+    Administrators use `pdns_recursor` as a caching recursive resolver and `rec_control`
+    for operational control. In package form it is distributed separately from the
+    authoritative server on systems such as Homebrew, Debian, Fedora, Alpine, Nix, Arch,
+    Ubuntu, and openSUSE. In modern PowerDNS deployments it often sits with dnsdist in
+    front for load balancing, encrypted DNS, abuse filtering, or edge/ISP routing, while
+    Recursor itself remains the recursive engine answering subscriber or internal
+    resolver traffic.
 category: networking
 package-manager:
   apk: pdns-recursor
@@ -34,5 +66,12 @@ executables:
   - rec_control
 provenance:
   formula: pdnsrec
+  history-sources:
+    - https://berthub.eu/articles/posts/history-of-powerdns-2003-2013/
+    - https://docs.powerdns.com/recursor/index.html
+    - https://www.powerdns.com/powerdns-recursor
+    - https://berthub.eu/articles/posts/history-of-powerdns-2013-2020/
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
