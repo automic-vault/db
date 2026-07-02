@@ -11,40 +11,55 @@ history:
   adoption-history:
     - >
       NAIF describes SPICE as used throughout the life cycle of NASA planetary science
-      missions, including mission design, observation planning, science-data analysis,
-      and engineering support. The Toolkit page presents CSPICE alongside Fortran, IDL,
-      MATLAB, and alpha JNI toolkits, with third-party wrappers in languages such as
-      Python and Ruby.
+      missions: mission design, observation planning, science-data analysis, and
+      engineering support. The NAIF team also serves as the ancillary-data node of
+      NASA's Planetary Data System, leading review and archiving of SPICE products from
+      NASA planetary flight projects.
     - >
-      The packaged CSPICE distribution matters outside NASA because it gives Unix
-      package managers a stable way to install the library and utility programs used by
-      mission scientists, instrument teams, ephemeris users, and downstream wrapper
-      packages.
+      CSPICE's adoption extends beyond direct NASA use because third-party wrappers in
+      languages such as Python and Ruby build on the C Toolkit. For Unix package
+      managers, CSPICE supplies the library, headers, and utilities needed by
+      scientists, instrument teams, ephemeris users, and downstream bindings that work
+      with SPICE kernels.
   package-nerd-significance:
     - >
-      CSPICE is unusual in package-manager terms because the authoritative upstream is a
-      NASA distribution site rather than a public source-control repository. That makes
-      formulae valuable for repeatable installation, consistent binary naming, and
-      integration with other scientific software that expects SPICE kernels and NAIF
-      utilities.
+      CSPICE is unusual in package-manager culture because the authoritative upstream is
+      a NASA distribution site rather than a public source-control forge. Packaging it
+      gives scientific workflows a repeatable way to install a mission-critical library
+      and a known set of utilities from an upstream that treats documentation, kernels,
+      and binary/source Toolkit packages as the distribution unit.
+    - >
+      The package also anchors a larger ecosystem. Many users never write C directly,
+      but Python, Ruby, IDL, MATLAB, and mission-specific tools often depend on CSPICE
+      concepts, kernels, and version behavior.
   project-history:
     - >
-      SPICE grew out of NASA data-archiving work in the early 1980s after the CODMAC
-      report called attention to ancillary engineering information needed to interpret
-      space-science observations. NAIF's official history credits Hugh Kieffer with the
-      SPICE acronym and describes early proof-of-concept work around Voyager data before
-      SPICE formats stabilized into modern kernels.
+      SPICE grew out of NASA data-archiving work after the 1982 CODMAC report called
+      attention to the ancillary engineering information needed to fully interpret
+      space-science observations. NAIF's official history describes a 1983 Planetary
+      Data Workshop, later refinement under Hugh Kieffer and Charles Acton, and Kieffer
+      coining the SPICE acronym for Spacecraft, Planet, Instrument, C-matrix, and
+      Events.
     - >
-      The first official, partial use of SPICE technology was on Magellan, where
+      The first implementation efforts supported Voyager instrument teams as a proof of
+      concept, but the file formats from those demonstrations did not survive. NAIF says
+      the lessons from that work guided the design of modern SPICE kernels.
+    - >
+      The first official partial use of SPICE technology was on Magellan, where
       spacecraft orbit data was produced in SPK format. Mars Observer and Galileo then
-      evaluated SPICE as a replacement for older Supplemental Experiment Data Records,
-      after which SPICE became the de facto ancillary-data standard for NASA
+      studied SPICE as a replacement for older Supplemental Experiment Data Records,
+      after which SPICE became the de facto standard for ancillary data on NASA
       solar-system exploration missions.
+    - >
+      CSPICE is the C-language Toolkit line within that system. NAIF's Toolkit page
+      presents C alongside Fortran, IDL, MATLAB, and alpha JNI toolkits; the C
+      documentation index identifies CSPICE-specific introductory material, API
+      references, required reading documents, user guides, and release notes.
   related-projects:
     - >
-      SPICE is related to NAIF's Fortran SPICELIB, Icy for IDL, Mice for MATLAB, alpha
-      JNI tooling, mission SPICE kernel archives, and third-party wrappers built on
-      CSPICE.
+      CSPICE is related to NAIF's Fortran SPICELIB, Icy for IDL, Mice for MATLAB, the
+      alpha JNI Toolkit, WebGeocalc, Cosmographia, mission SPICE kernel archives, and
+      third-party wrappers built on the C Toolkit.
   sources:
     - https://naif.jpl.nasa.gov/naif/about.html
     - https://naif.jpl.nasa.gov/naif/spicehistory.html
@@ -54,26 +69,33 @@ history:
     - >
       CSPICE is the C implementation of NASA/JPL NAIF's SPICE Toolkit, a long-lived
       observation-geometry system used with spacecraft, planetary, instrument, pointing,
-      and event ancillary data.
+      event, and other ancillary data for space-science missions.
   timeline:
     - >
       1982: CODMAC report identifies the need to preserve ancillary engineering
-      information with space-science data.
+      information with NASA space-science data.
     - >
-      1980s: SPICE concept develops through NASA planetary data-system work and Voyager
-      proof-of-concept demonstrations.
+      1983: Planetary Data Workshop helps shape the ancillary information system that
+      becomes SPICE.
+    - '1980s: Voyager-related proof-of-concept work informs modern SPICE kernel design.'
     - 'Magellan era: SPICE SPK format receives its first official partial mission use.'
     - >
       Mars Observer/Galileo era: SPICE is selected over older SEDR-style ancillary
       records for major missions.
-    - '2022: SPICE Toolkit N0067 is released.'
+    - '2022: SPICE Toolkit N0067 is released on 2022-01-03.'
   usage:
     - >
-      The Toolkit includes source APIs, a ready-to-use library, user-focused
-      documentation, technical reference documents, and utility programs such as brief,
-      chronos, ckbrief, mkspk, spkdiff, and spkmerge. Package users commonly care about
-      matching the Toolkit version, supported platform/compiler combinations, and the
-      bundled utilities as much as the C headers and library.
+      The Toolkit includes source APIs with extensive headers, a ready-to-use library,
+      bundled utility programs, technical reference documents, examples, and user
+      guides. Package users commonly load kernels and call CSPICE APIs from C or
+      wrappers to compute observation geometry, times, reference frames, positions,
+      attitudes, and event relationships.
+    - >
+      The packaged command-line utilities are part of the practical appeal: tools such
+      as brief, chronos, ckbrief, mkspk, spkdiff, and spkmerge inspect, create, compare,
+      and merge SPICE kernel data. Matching Toolkit versions and supported
+      platform/compiler combinations matters because NAIF warns that unsupported ports
+      can encounter numerical and optimization problems.
 category: science
 package-manager:
   brew: cspice

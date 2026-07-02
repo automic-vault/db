@@ -9,31 +9,49 @@ credentials-file-location: null
 history:
   adoption-history:
     - >
-      daemontools became influential among Unix administrators who wanted supervision
-      behavior outside traditional init scripts. The official FAQ contrasts /service
-      with inittab, init.d, and rc.local, while svscan and supervise documented a
-      directory-scanning model that later service-supervision packages borrowed or
-      reacted to.
+      daemontools became influential among Unix administrators who wanted reliable
+      supervision outside traditional init scripts. Its FAQ explicitly compares /service
+      with inittab, ttys, init.d, and rc.local, arguing for easy installation and
+      removal, automatic first startup, reliable restarts, reliable signaling, clean
+      process state, and portability across Linux, BSD, Solaris, and other Unix systems.
+    - >
+      Even on systems that no longer deploy daemontools itself, its vocabulary remains
+      recognizable in later supervision systems: foreground daemons, run scripts,
+      service directories, separate supervised loggers, and small process-control
+      commands.
   package-nerd-significance:
     - >
-      For package nerds, daemontools is important because it encodes a service-manager
-      philosophy in tiny binaries and filesystem conventions rather than a large daemon.
-      Even when modern systems use other supervisors, daemontools explains much of the
-      vocabulary around run scripts, service directories, process supervision, and log
-      rotation.
+      For package nerds, daemontools is important because it expresses a service-manager
+      philosophy in tiny binaries and directories rather than a large resident manager.
+      The package is old, terse, and opinionated, but it influenced how Unix people talk
+      about supervision, foreground services, log pipelines, and avoiding fragile
+      init-script process state.
   project-history:
     - >
-      The official daemontools page presents the package as tools for managing UNIX
-      services. Its install guide distributes daemontools-0.76.tar.gz, and its upgrade
-      notes show the package evolving across the 0.53, 0.60/0.61, 0.70, and 0.75/0.76
-      lines with changes such as replacing older logging utilities with multilog and
-      installing under /package/admin/daemontools.
+      The official daemontools page describes the package as tools for managing UNIX
+      services. The install guide distributes daemontools-0.76.tar.gz under
+      /package/admin/daemontools-0.76 and documents a /package-based installation
+      layout.
+    - >
+      The upgrade notes show the package stabilizing its service model across the 0.53,
+      0.60/0.61, 0.70, and 0.75/0.76 lines. Notable changes include supervise switching
+      to a service directory and ./run script, older logging utilities being replaced by
+      multilog, accustamp and tailocal being replaced by tai64n and tai64nlocal,
+      setuidgid being renamed from setuser, setlock and envdir being added, svscan
+      accepting a service directory argument, and the package moving under
+      /package/admin/daemontools.
   related-projects:
     - >
-      daemontools is closely tied to supervise, svscan, svc, multilog, tai64n, envdir,
-      setuidgid, softlimit, and setlock.
+      daemontools includes or centers on supervise, svscan, svc, svok, svstat, fghack,
+      pgrphack, readproctitle, multilog, tai64n, tai64nlocal, setuidgid, envuidgid,
+      envdir, softlimit, and setlock.
+    - >
+      Its service-supervision ideas are related to later daemontools-family and
+      daemontools-inspired supervisors, though those projects are outside the official
+      source set used here.
   sources:
     - https://cr.yp.to/daemontools.html
+    - https://cr.yp.to/daemontools/faq/create.html
     - https://cr.yp.to/daemontools/install.html
     - https://cr.yp.to/daemontools/supervise.html
     - https://cr.yp.to/daemontools/svscan.html
@@ -41,11 +59,15 @@ history:
   summary:
     - >
       daemontools is Daniel J. Bernstein's collection of Unix service supervision and
-      logging tools. In package history it represents the compact supervision model:
-      services are directories, each service has a run script, and small utilities such
-      as supervise, svc, svscan, multilog, envdir, and setuidgid compose the system.
+      logging tools. Its model is compact and filesystem-oriented: services are
+      directories, each service has a run script, and small programs such as supervise,
+      svscan, svc, multilog, envdir, setuidgid, softlimit, setlock, tai64n, and
+      tai64nlocal compose the system.
   timeline:
-    - '0.53-0.61: supervise changes to run ./run from the service directory.'
+    - '0.53-0.61: supervise changes to run ./run from a service directory.'
+    - >
+      0.60-0.61: older logging and timestamp tools are replaced by multilog, tai64n, and
+      tai64nlocal; setuser becomes setuidgid.
     - '0.61-0.70: setlock and envdir are added; svscan gains a command-line /service argument.'
     - >
       0.70-0.76: package installs under /package/admin/daemontools; svscanboot,
@@ -53,10 +75,16 @@ history:
     - '0.76: Official install guide distributes daemontools-0.76.tar.gz.'
   usage:
     - >
-      A supervised service is a directory containing ./run; supervise starts it and
-      restarts it when it exits. svscan starts supervise for each subdirectory of the
-      scan directory and checks repeatedly for new services. multilog handles logging,
-      timestamping, filtering, rotation, and disk-full behavior.
+      A supervised service is a directory containing an executable ./run script.
+      supervise changes into that directory, starts ./run, restarts it if it exits,
+      honors a down file for initially disabled services, and writes status under the
+      service directory's supervise subdirectory.
+    - >
+      svscan starts one supervise process for each subdirectory of its scan directory,
+      checks every five seconds for new services, restarts supervise processes that
+      exit, and can also wire a service's output to a separately supervised log service.
+      multilog saves, filters, timestamps, and rotates logs, pausing safely if the disk
+      fills rather than dropping data.
 category: system
 package-manager:
   apk: daemontools
