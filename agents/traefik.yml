@@ -18,6 +18,89 @@ config-file-location:
     - ./traefik.yaml
     - ./traefik.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Traefik spread with Docker and Kubernetes because it replaced hand-maintained
+      reverse-proxy configuration with provider-driven routing. Its README lists Docker,
+      Swarm, Kubernetes, ECS, and File providers, and highlights automatic dynamic
+      configuration, Let's Encrypt integration, metrics, access logs, HTTP/2, gRPC,
+      WebSocket support, and a web UI.
+    - >
+      For package managers, Traefik became a standard single-binary infrastructure tool.
+      The input facts show packages across Homebrew, Alpine, MacPorts, Nix, Arch, Scoop,
+      and openSUSE, reflecting use by developers who want to run or test cloud-native
+      routing locally without installing a full platform stack.
+  package-nerd-significance:
+    - >
+      Traefik is package-nerd relevant because it is a large, real-world Go network
+      service that still behaves like a portable command-line binary. Formula
+      maintainers care about config-file defaults, service wrappers, shell completion,
+      reproducible builds, and keeping major-version migrations visible to local
+      developers.
+    - >
+      It is also a canonical example of a package whose usefulness is not only the
+      executable, but the integration surface: Docker labels, Kubernetes CRDs, ACME
+      storage, metrics backends, and provider configuration all make the packaging
+      boundary matter.
+  project-history:
+    - >
+      The official README describes Traefik as a modern HTTP reverse proxy and load
+      balancer that integrates with infrastructure components such as Docker, Swarm,
+      Kubernetes, Consul, Etcd, Rancher, and Amazon ECS. Its central idea is that
+      pointing Traefik at an orchestrator or service registry should be the main
+      configuration step.
+    - >
+      The GitHub repository was created on September 13, 2015. Official release metadata
+      shows v1.0.0 published on July 5, 2016, v2.0.0 on September 16, 2019, and v3.0.0
+      on April 29, 2024. The README documents semantic-versioned releases and migration
+      guidance for major upgrades.
+    - >
+      Traefik's design split static install configuration from dynamic routing
+      configuration. Official configuration docs explain that routing configuration can
+      come from providers and can be hot-reloaded without request interruption, a
+      feature that matched containerized deployments where services appear, disappear,
+      and scale frequently.
+  related-projects:
+    - >
+      Docker, Swarm, Kubernetes, Consul, Etcd, Rancher, Amazon ECS, and File providers
+      are named in the official README as integration targets.
+    - >
+      Let's Encrypt, Prometheus, Datadog, StatsD, and InfluxDB are named in the official
+      README as common operational integrations.
+  sources:
+    - >
+      https://api.github.com/repos/traefik/traefik/releases - official GitHub release
+      metadata for v1.0.0, v2.0.0, v3.0.0, and recent releases.
+    - >
+      https://doc.traefik.io/traefik/getting-started/configuration-overview/ - official
+      configuration overview.
+    - https://github.com/traefik/traefik - official README and repository metadata.
+  summary:
+    - >
+      Traefik is a Go-based reverse proxy and load balancer created for dynamic
+      infrastructure. Its package history tracks the rise of Docker, orchestrators,
+      service discovery, Kubernetes, and cloud-native ingress patterns.
+  timeline:
+    - '2015: GitHub repository created.'
+    - '2016: v1.0.0 released.'
+    - >
+      2019: v2.0.0 released with a major configuration generation change noted by the
+      official docs.
+    - '2024: v3.0.0 released.'
+    - '2026: v3.7.0 appears in official GitHub release metadata.'
+  usage:
+    - >
+      Users run traefik as a daemon or container, point it at a provider such as Docker
+      or Kubernetes, and let it derive routes from service metadata. The official README
+      examples show running a downloaded binary with a sample TOML config or running the
+      official Docker image with a mounted config file.
+    - >
+      The official configuration docs say startup configuration can be supplied by a
+      configuration file, command-line arguments, or environment variables.
+      Configuration files named traefik.yml, traefik.yaml, or traefik.toml are searched
+      in /etc/traefik, $XDG_CONFIG_HOME, $HOME/.config, and the working directory unless
+      configFile overrides the path.
 tags:
   - application-proxy
   - cli
@@ -38,30 +121,36 @@ geiger:
 provenance:
   category-sources:
     - >
-      Official Traefik docs describe Traefik as an open-source Application Proxy that
-      routes requests to services and auto-discovers configuration.
-    - source_facts.description says Modern reverse proxy.
+      https://github.com/traefik/traefik - official README describes reverse proxy and
+      load balancer.
+    - 'source_facts.description: Modern reverse proxy'
   display-name-sources:
-    - Official docs and GitHub repository use Traefik.
-    - source_facts.name is traefik.
+    - https://github.com/traefik/traefik - official README uses Traefik.
   docs-sources:
-    - Official GitHub README points to doc.traefik.io/traefik for complete documentation.
     - >
-      Official docs site provides product documentation, getting started, setup,
-      routing, security, and reference sections.
+      https://github.com/traefik/traefik - official README links complete docs at
+      https://doc.traefik.io/traefik/.
+  history-sources:
+    - >
+      https://api.github.com/repos/traefik/traefik/releases - official GitHub release
+      metadata for v1.0.0, v2.0.0, v3.0.0, and recent releases.
+    - >
+      https://doc.traefik.io/traefik/getting-started/configuration-overview/ - official
+      configuration overview.
+    - https://github.com/traefik/traefik - official README and repository metadata.
   repo-sources:
-    - source_facts.repo is already populated; repo intentionally not re-determined.
+    - >
+      source_facts.repo is already populated with https://github.com/traefik/traefik;
+      per prompt repo is returned as null.
   tags-sources:
     - >
-      Official Traefik docs mention service discovery, routing, Kubernetes, Docker, and
-      providers.
-    - source_facts.description identifies reverse proxy purpose.
+      https://github.com/traefik/traefik - official README lists Docker, Kubernetes,
+      load balancing, microservices, and proxy features.
 category-confidence: high
 category-path:
   - networking
-  - proxy
-  - load-balancer
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
