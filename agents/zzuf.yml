@@ -1,11 +1,89 @@
 id: brew:zzuf
 display-name: zzuf
-repo: null
+repo: https://github.com/samhocevar/zzuf
 docs:
   - http://caca.zoy.org/wiki/zzuf
   - https://github.com/samhocevar/zzuf#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      zzuf's own site names several adoption signals: Goatse Security used it against
+      third-party applications, Adobe security researchers used it to stress-test
+      applications and libraries, and CERT's Basic Fuzzing Framework was based on zzuf.
+      The Fuzzing Project FAQ also lists zzuf as a simple, basic fuzzing tool for random
+      input modification.
+    - >
+      Its broader adoption is the classic small security-tool pattern: package managers
+      keep a reproducible CLI available even after newer coverage-guided fuzzers became
+      dominant, because zzuf is still useful for quick black-box corruption tests and
+      deterministic reproducers.
+  package-nerd-significance:
+    - >
+      zzuf matters to package nerds because it is a compact Unix-style security tool
+      with a long tail. It exposes a single memorable command, but underneath it depends
+      on platform loader behavior, libc/file-operation interception, signal handling,
+      and resource limits, which are exactly the details package maintainers have to
+      preserve across operating systems.
+    - >
+      It also captures a pre-AFL era of fuzzing in package form: deterministic random
+      mutation, no source instrumentation, easy shell integration, and enough knobs to
+      turn a simple idea into a practical crash-finding workflow.
+  project-history:
+    - >
+      zzuf grew out of the mid-2000s security and QA fuzzing culture around media
+      parsers, image viewers, web browsers, and command-line utilities that consumed
+      untrusted files. The Caca Labs page describes the project as a multi-purpose
+      fuzzer whose goal is to make input fuzzing easier and more automated rather than
+      inventing fuzzing itself.
+    - >
+      The project had public talks and downloadable material by 2007 and 2008, including
+      FOSDEM 2007 and Hacker Space Festival 2008 slides linked from the project page.
+      The same page records early tarball attachments from 2008 and later snapshots,
+      while the current development home is GitHub.
+    - >
+      The manual-page source documents the mature command-line model: zzuf can run one
+      program many times, vary seeds and fuzzing ratios, limit time, memory, bytes, and
+      crashes, fuzz stdin when no command is given, and use preload or copy modes
+      depending on platform support.
+  related-projects:
+    - >
+      Related projects and tools include CERT Basic Fuzzing Framework, american fuzzy
+      lop, libFuzzer, honggfuzz, radamsa, Valgrind, AddressSanitizer, media players,
+      image viewers, web browsers, objdump, and other parser-heavy targets for black-box
+      fuzzing.
+  sources:
+    - http://caca.zoy.org/wiki/zzuf
+    - https://fuzzing-project.org/faq.html
+    - https://github.com/samhocevar/zzuf
+    - https://raw.githubusercontent.com/samhocevar/zzuf/master/README.md
+    - https://raw.githubusercontent.com/samhocevar/zzuf/master/doc/zzuf.1.in
+  summary:
+    - >
+      zzuf is Sam Hocevar's transparent application input fuzzer. It runs a target
+      program while intercepting file and network operations, flips bits in input data
+      deterministically, and reports crashes or other interesting behavior.
+  timeline:
+    - '2007: The project page links FOSDEM 2007 zzuf presentation slides.'
+    - >
+      2008: The project page links Hacker Space Festival 2008 slides and records early
+      zzuf tarball attachments.
+    - '2010: The Caca Labs attachment list records later zzuf and Mac OS X snapshot tarballs.'
+    - '2015-01-06: The bundled manual page source is dated 2015-01-06.'
+    - '2015-06-09: The Caca Labs zzuf page records its last modification by Sam Hocevar.'
+  usage:
+    - >
+      Typical usage is to prefix a command with zzuf, set a seed or seed range, and
+      choose a corruption ratio. If a run crashes, the same seed can reproduce the
+      mutated input; simple tools such as cat or cp can then materialize the exact
+      fuzzed file for debugging or regression tests.
+    - >
+      The manual also supports batch testing behavior: multiple jobs, maximum crash
+      counts, wall-clock and CPU limits, output byte limits, memory limits,
+      include/exclude filters, protected byte ranges, and network-fuzzing filters. That
+      made zzuf useful both as a one-off terminal tool and as a scriptable QA/security
+      harness.
 tags:
   - cli
   - fuzzer
@@ -22,25 +100,32 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - source_facts.description identifies zzuf as a transparent application input fuzzer.
+    - https://raw.githubusercontent.com/samhocevar/zzuf/master/doc/zzuf.1.in
+    - source_facts.description
   display-name-sources:
-    - source_facts.name and current_curation.display-name both give zzuf.
+    - current_curation.display-name
+    - https://raw.githubusercontent.com/samhocevar/zzuf/master/README.md
   docs-sources:
-    - source_facts.homepage is the official zzuf project wiki.
-    - >
-      source_facts.repo provides the official GitHub project, whose README is the
-      fallback documentation surface.
+    - current_curation.docs
+    - http://caca.zoy.org/wiki/zzuf
+    - https://raw.githubusercontent.com/samhocevar/zzuf/master/README.md
+  history-sources:
+    - http://caca.zoy.org/wiki/zzuf
+    - https://fuzzing-project.org/faq.html
+    - https://github.com/samhocevar/zzuf
+    - https://raw.githubusercontent.com/samhocevar/zzuf/master/README.md
+    - https://raw.githubusercontent.com/samhocevar/zzuf/master/doc/zzuf.1.in
   repo-sources:
-    - source_facts.repo is already populated, so repo is returned as null per instruction.
+    - current_curation.repo
+    - https://github.com/samhocevar/zzuf
   tags-sources:
-    - source_facts.description says transparent application input fuzzer.
-    - source_facts.executables lists command-line tools zzat and zzuf.
+    - current_curation.tags
+    - https://raw.githubusercontent.com/samhocevar/zzuf/master/doc/zzuf.1.in
 category-confidence: high
 category-path:
   - developer-tools
-  - testing
-  - fuzzing
 display-name-confidence: high
-docs-confidence: medium
+docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

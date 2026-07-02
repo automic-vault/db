@@ -1,11 +1,89 @@
 id: brew:zyre
 display-name: Zyre
-repo: null
+repo: https://github.com/zeromq/zyre
 docs:
   - https://github.com/zeromq/zyre#readme
   - https://github.com/zeromq/zyre/tree/master/doc
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Zyre adoption sits in the ZeroMQ niche rather than in general application
+      networking. The README lists use cases such as local service discovery, clustering
+      services on the same Ethernet network, smart-device control, and multi-user mobile
+      applications, which are exactly the places where brokerless local discovery is
+      useful.
+    - >
+      The ZeroMQ Guide's distributed-computing chapter frames discovery, presence, and
+      connectivity as recurring problems for room-scale, WiFi, and proximity networks.
+      Zyre packages one opinionated answer to that problem for C and ZeroMQ users, so
+      its significance is strongest for developers already comfortable with ZeroMQ
+      patterns.
+  package-nerd-significance:
+    - >
+      Zyre is package-nerd significant because it is a small leaf in a layered messaging
+      stack: libsodium, libzmq, czmq, then Zyre. Packaging it preserves a higher-level
+      ZeroMQ pattern that would otherwise be reimplemented badly in each local-discovery
+      application.
+    - >
+      It is also a good example of protocol-backed packaging. The library is not just
+      helper code; it is an implementation of a published ZeroMQ RFC, which gives
+      downstreams a stable conceptual contract even if their only visible executable is
+      zpinger.
+  project-history:
+    - >
+      The public zeromq/zyre repository was created on 2012-10-17 inside the broader
+      ZeroMQ ecosystem. Its README presents Zyre as local-area clustering for
+      peer-to-peer applications, built around UDP beacons for discovery and ZeroMQ
+      Dealer-Router messaging for reliable peer interconnection.
+    - >
+      Zyre is closely tied to ZeroMQ's RFC process. The README points to RFC 36, the
+      ZeroMQ Realtime Exchange protocol, for discovery and heartbeating; that stable RFC
+      defines how peers discover each other, organize into groups, and send events over
+      ZMTP.
+    - >
+      The project inherited common ZeroMQ community practices: MPL 2.0 source, C4-style
+      contribution process, CLASS C style guidance, generated API documentation,
+      self-tests, and example tools such as zpinger for seeing peers on a local network.
+  related-projects:
+    - >
+      Related projects and protocols include ZeroMQ/libzmq, CZMQ, libsodium, ZMTP, RFC
+      36/ZRE, RFC 22/C4, RFC 21/CLASS, zmsg, zactor, zyre_event, zpinger, and other
+      brokerless service-discovery systems such as ZeroConf-style local discovery.
+  sources:
+    - https://api.github.com/repos/zeromq/zyre
+    - https://github.com/zeromq/zyre
+    - https://raw.githubusercontent.com/zeromq/zyre/master/README.md
+    - https://rfc.zeromq.org/spec/36/
+    - https://zguide.zeromq.org/docs/chapter8/
+  summary:
+    - >
+      Zyre is a ZeroMQ-family C framework for local-area peer discovery, presence, and
+      reliable group messaging. It lets nearby processes find each other over a LAN,
+      join groups, and exchange messages without a central broker.
+  timeline:
+    - '2012-10-17: Public zeromq/zyre GitHub repository is created.'
+    - >
+      2010s: Zyre grows as the ZeroMQ local-area discovery and clustering layer, with
+      tagged public releases and generated README/API documentation.
+    - >
+      2014: RFC 36/ZRE carries 2009-2014 iMatix copyright text and is published as the
+      stable ZeroMQ Realtime Exchange protocol used by Zyre.
+    - >
+      2020s: The repository remains active and the README continues to document Linux,
+      macOS, and Windows builds plus zpinger-based local-network testing.
+  usage:
+    - >
+      A Zyre application creates a node, starts it, receives event messages, joins or
+      leaves named groups, whispers to individual peers, and shouts to groups. The
+      README describes incoming events as zmsg_t messages delivered by zyre_recv, with
+      the first frame identifying event type.
+    - >
+      The bundled zpinger utility is the package's practical command-line face: running
+      it on two or more machines is the README's smoke test for local discovery. Library
+      users build the same primitives into local clusters, device-control networks, and
+      peer-aware services.
 tags:
   - cli
   - group-messaging
@@ -25,26 +103,31 @@ geiger:
     - text:cluster
 provenance:
   category-sources:
-    - >
-      source_facts.description: Local Area Clustering for Peer-to-Peer Applications;
-      official README describes LAN group messaging without brokers.
+    - https://raw.githubusercontent.com/zeromq/zyre/master/README.md
+    - source_facts.description
   display-name-sources:
-    - Official README heading uses Zyre; source_facts.name is zyre.
+    - current_curation.display-name
+    - https://raw.githubusercontent.com/zeromq/zyre/master/README.md
   docs-sources:
-    - >
-      Official GitHub README is generated documentation and repository contains an
-      official doc directory.
+    - current_curation.docs
+    - https://raw.githubusercontent.com/zeromq/zyre/master/README.md
+  history-sources:
+    - https://api.github.com/repos/zeromq/zyre
+    - https://github.com/zeromq/zyre
+    - https://raw.githubusercontent.com/zeromq/zyre/master/README.md
+    - https://rfc.zeromq.org/spec/36/
+    - https://zguide.zeromq.org/docs/chapter8/
   repo-sources:
-    - source_facts.repo already provided; per instruction repo not re-evaluated.
+    - current_curation.repo
+    - https://github.com/zeromq/zyre
   tags-sources:
-    - >
-      source_facts.description; official README describes local area peer messaging,
-      groups, and no central brokers.
+    - current_curation.tags
+    - https://raw.githubusercontent.com/zeromq/zyre/master/README.md
 category-confidence: high
 category-path:
   - networking
-  - peer-to-peer
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

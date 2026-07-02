@@ -1,10 +1,66 @@
 id: brew:zzz
 display-name: Zzz
-repo: null
+repo: https://github.com/Orc/Zzz
 docs:
   - https://github.com/Orc/Zzz#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption appears narrow: users install it when they want a memorable terminal
+      command that sleeps a Mac immediately, especially in scripts or shell workflows
+      where a GUI sleep command is awkward. The README's explicit Homebrew instructions
+      show that package-manager installation is part of the intended usage story.
+  package-nerd-significance:
+    - >
+      Zzz is package-nerd significant as an extreme small-package case. It demonstrates
+      why package indexes contain tiny platform appliances: a few lines of C plus a
+      stable command name can be more convenient than remembering or retyping
+      lower-level system calls or scripts.
+    - >
+      It also shows the maintenance quirks of old macOS C utilities: even a sleep
+      wrapper depends on SDK headers, IOKit linkage, and small compatibility fixes over
+      time.
+  project-history:
+    - >
+      The upstream README presents Zzz as a command-line macOS sleep program similar to
+      SleepNow, with traditional make-based installation and a Homebrew installation
+      path. The source is intentionally small C code using IOMasterPort,
+      IOPMFindPowerManagement, and IOPMSleepSystem to ask macOS to sleep.
+    - >
+      There is little public narrative around the project beyond the README and source,
+      so its history is best understood as preservation of a tiny utility rather than an
+      evolving application ecosystem.
+  related-projects:
+    - >
+      Related tools and APIs include Apple's IOKit power-management APIs, pmset
+      sleepnow, SleepNow-style utilities, SleepWatcher, caffeinate as the opposite
+      keep-awake workflow, and other macOS command-line power-management helpers.
+  sources:
+    - https://github.com/Orc/Zzz
+    - https://raw.githubusercontent.com/Orc/Zzz/master/README.md
+    - https://raw.githubusercontent.com/Orc/Zzz/master/Zzz.c
+    - >
+      https://support.apple.com/guide/mac-help/schedule-your-mac-to-turn-on-or-off-mchl40376151/mac
+  summary:
+    - >
+      Zzz is a tiny macOS command-line utility that immediately requests system sleep.
+      It is essentially a packaged one-command wrapper around Apple's IOKit
+      power-management APIs.
+  timeline:
+    - >
+      Public README era: Zzz is documented as a command-line macOS sleep program with
+      make-based installation and Homebrew installation instructions.
+    - >
+      Current source: Zzz implements sleep by opening the macOS power-management
+      connection and calling IOPMSleepSystem.
+  usage:
+    - >
+      Usage is intentionally minimal: run Zzz, and the Mac sleeps immediately. The
+      program has no configuration file, credentials, long-running daemon, or visible
+      help flow; its behavior is the side effect of calling the macOS power-management
+      sleep API.
 tags:
   - cli
   - macos
@@ -21,26 +77,31 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - source_facts.description says this is a command-line tool to put Macs to sleep.
+    - https://raw.githubusercontent.com/Orc/Zzz/master/README.md
+    - source_facts.description
   display-name-sources:
-    - >
-      source_facts.executables lists Zzz and source_facts.homepage points to the
-      official Orc/Zzz repository.
-    - source_facts.name gives the package name zzz.
+    - current_curation.display-name
+    - https://raw.githubusercontent.com/Orc/Zzz/master/README.md
   docs-sources:
+    - current_curation.docs
+    - https://raw.githubusercontent.com/Orc/Zzz/master/README.md
+  history-sources:
+    - https://github.com/Orc/Zzz
+    - https://raw.githubusercontent.com/Orc/Zzz/master/README.md
+    - https://raw.githubusercontent.com/Orc/Zzz/master/Zzz.c
     - >
-      source_facts.homepage and source_facts.repo both identify the official GitHub
-      project, whose README is the best documentation surface.
+      https://support.apple.com/guide/mac-help/schedule-your-mac-to-turn-on-or-off-mchl40376151/mac
   repo-sources:
-    - source_facts.repo is already populated, so repo is returned as null per instruction.
+    - current_curation.repo
+    - https://github.com/Orc/Zzz
   tags-sources:
-    - source_facts.description says it puts Macs to sleep from the command line.
-    - source_facts.executables lists Zzz as the command executable.
+    - current_curation.tags
+    - https://raw.githubusercontent.com/Orc/Zzz/master/Zzz.c
 category-confidence: high
 category-path:
   - system
-  - power-management
-display-name-confidence: medium
+display-name-confidence: high
 docs-confidence: high
+history-confidence: low
 repo-confidence: high
 tags-confidence: high
