@@ -8,6 +8,79 @@ docs:
   - https://zsync.moria.org.uk/server
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      zsync's best-known adoption niche is large-file distribution where many users
+      already have yesterday's or last week's file: Linux installation images, daily
+      builds, virtual-machine images, and other release artifacts. The server page
+      explicitly calls out daily Linux installer or live images as a good fit.
+    - >
+      The project never became a general directory-sync replacement, and its own
+      documentation says multiple-file support is not planned. That boundary is part of
+      its packaging identity: zsync is a small CLI for one-file HTTP distribution, with
+      zsyncmake producing the metadata publishers need.
+  package-nerd-significance:
+    - >
+      zsync is package-nerd significant because it attacks bandwidth costs at the
+      distribution layer using boring web hosting. It asks maintainers to publish one
+      extra metadata file, not to operate rsync infrastructure or invent a new protocol.
+    - >
+      It is also a good example of a package whose constraints matter as much as its
+      feature list: single-file distribution, HTTP range behavior, stable target
+      content, and compression choices all determine whether the package is magic or
+      useless.
+  project-history:
+    - >
+      Colin Phipps developed zsync to solve a distribution problem rather than a private
+      synchronization problem. The original site contrasts it with rsync: rsync is
+      designed for synchronizing data between machines, while zsync is aimed at
+      distributing one file from a server to many downloaders without running a special
+      server daemon.
+    - >
+      The project was originally released in 2004. The technical paper describes the
+      core idea as client-side rsync: the server performs one-off checksum
+      precomputation into a control file, while each client uses HTTP range requests to
+      fetch only missing content.
+    - >
+      The 0.7 line is a rewrite of the program. The current site notes that it is less
+      mature than the 0.6.x line, removed older look-inside-compressed-file support, and
+      keeps development history in the GitHub repository.
+  related-projects:
+    - >
+      Related projects and technologies include rsync, rdiff, HTTP/1.1 range requests,
+      gzip --rsyncable, Linux distribution ISO publishing, update systems, and mirror
+      networks.
+  sources:
+    - https://github.com/cph6/zsync
+    - https://zsync.moria.org.uk/
+    - https://zsync.moria.org.uk/downloads
+    - https://zsync.moria.org.uk/paper/
+    - https://zsync.moria.org.uk/server
+  summary:
+    - >
+      zsync is a differential download tool that applies the rsync algorithm on the
+      client side over ordinary HTTP. It lets users update a large local file by
+      downloading only changed byte ranges from a web server that publishes a small
+      .zsync metadata file.
+  timeline:
+    - '2004: zsync originally released.'
+    - '2000s: 0.0.x through 0.6.x releases accumulated on the official download page.'
+    - >
+      0.7.0: Rewrite line introduced, with the project warning that it may be less
+      mature than 0.6.x.
+    - '0.7.2: Current version listed on the official download page.'
+  usage:
+    - >
+      Publishers run zsyncmake against a target file to generate a .zsync control file
+      containing the precomputed checksums and one or more URLs for the full content.
+      The web server must make both the .zsync metadata and the full target available,
+      and should support HTTP Range requests.
+    - >
+      Users run zsync against the .zsync URL. The client scans existing local data,
+      downloads only missing ranges from the target URL, and reconstructs the new file.
+      The design is most effective when old and new files share content and when
+      compression is piecewise or rsync-friendly.
 category: networking
 package-manager:
   brew: zsync

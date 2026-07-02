@@ -7,6 +7,68 @@ docs:
   - https://zssh.sourceforge.net/FAQ
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      zssh never became a replacement for scp, sftp, or rsync, but it remained packaged
+      because it solved a specific interactive problem: moving files during a live
+      remote shell session when re-authentication or another connection was
+      inconvenient.
+    - >
+      Its continued presence in package systems is a classic preservation case for small
+      Unix tools: the upstream release is old, the protocol it depends on is older
+      still, but a narrow workflow still exists for users who know exactly why they want
+      ZMODEM over an SSH terminal.
+  package-nerd-significance:
+    - >
+      zssh matters to package nerds as a fossil of a transitional era between
+      dial-up/BBS-style ZMODEM habits and modern encrypted remote administration. It
+      packages an old terminal file-transfer protocol as a composable Unix wrapper
+      around ssh.
+    - >
+      It is also a reminder that packaging sometimes preserves workflows rather than
+      fashionable software: a tiny C program, readline-style local prompt, and external
+      rz/sz dependency can remain useful long after the upstream website stops looking
+      modern.
+  project-history:
+    - >
+      The project was registered on SourceForge on 2000-06-27 and is credited on the
+      homepage to Matthieu Lucotte. Its public homepage and SourceForge page describe
+      zssh as Zmodem SSH: a way to transfer files to or from a remote machine while
+      staying inside an already-authenticated secure shell session.
+    - >
+      zssh's design reflects an older Unix remote-login workflow. Instead of opening a
+      second terminal and running scp, it inserts a tty/pty layer between the user and
+      local ssh process, then switches that channel between normal shell mode and local
+      file-transfer commands after an escape sequence.
+  related-projects:
+    - >
+      Related tools and protocols include OpenSSH, telnet, scp, sftp, rsync, lrzsz, rz,
+      sz, and the ZMODEM protocol.
+  sources:
+    - https://sourceforge.net/projects/zssh/
+    - https://zssh.sourceforge.net/
+    - https://zssh.sourceforge.net/FAQ
+  summary:
+    - >
+      zssh is a SourceForge-era terminal utility that wraps an interactive SSH session
+      with ZMODEM file-transfer support. Its companion command, ztelnet, applies the
+      same idea to telnet.
+  timeline:
+    - '2000-06-27: zssh project registered on SourceForge.'
+    - '2003-09-24: zssh 1.5c listed as the latest release on the project homepage.'
+    - '2013-03-21: SourceForge project page records the last project update.'
+  usage:
+    - >
+      A user starts zssh much like ssh. During the remote shell session, pressing the
+      configured escape sequence opens zssh's local prompt, where builtins such as rz
+      and sz hook local transfer programs into the SSH channel. The FAQ emphasizes that
+      ssh, sz, and rz must be available, with rz/sz required on both local and remote
+      machines.
+    - >
+      The practical failure modes are terminal-oriented: escape-key conflicts,
+      non-8-bit-clean pty chains, incompatible rz/sz versions, and programs such as
+      remote screen sessions interfering with the transparent channel.
 category: networking
 package-manager:
   brew: zssh

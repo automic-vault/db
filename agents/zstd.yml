@@ -6,6 +6,95 @@ docs:
   - https://github.com/facebook/zstd#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      zstd spread because it hit a package-maintainer sweet spot: faster decompression
+      than gzip-class tools, better ratio than many fast compressors, a stable file
+      format, and a normal Unix CLI. That combination made it attractive for source
+      archives, package payloads, container layers, log compression, backup streams, and
+      embedded compression inside larger systems.
+    - >
+      Filesystem adoption gave zstd particular visibility among system users. Btrfs
+      documentation records ZSTD support since Linux 4.14 alongside ZLIB and LZO, and
+      Meta engineering later wrote about transparent zstd compression in Btrfs as a way
+      to improve storage efficiency without a noticeable performance drop in its
+      environment.
+    - >
+      The project stayed active rather than freezing at the format layer. The changelog
+      shows continuing work through the 1.5.x series and a 1.6.0 entry in Dec 2025,
+      including CLI, API, build-system, portability, and performance improvements.
+  package-nerd-significance:
+    - >
+      zstd is one of the rare compression packages that matters at every packaging
+      layer: as a user-facing CLI, a shared library dependency, an archive format, a
+      filesystem compressor, and a performance knob inside build and distribution
+      infrastructure.
+    - >
+      For package nerds it is also a case study in successful infrastructure
+      standardization: a vendor-originated tool became a stable RFC-described format
+      with independent implementations, many bindings, and broad distribution support
+      while retaining the boring Unix ergonomics expected from gzip-era tools.
+  project-history:
+    - >
+      Zstandard was developed at Facebook by Yann Collet and collaborators as a modern
+      successor in the design space occupied by Deflate, gzip, zlib, lz4, and xz. Meta
+      announced Zstandard 1.0 on 2016-08-31, describing it as a compression algorithm
+      and implementation designed for modern CPUs, high decompression speed, and a broad
+      range of lossless-compression scenarios.
+    - >
+      The reference implementation lives in the facebook/zstd repository as a C library
+      and CLI. The README describes a stable format, the libzstd API, the zstd
+      command-line utility, support for producing and decoding .zst plus compatibility
+      with .gz, .xz, and .lz4 files, and a list of ports and bindings for other
+      languages.
+    - >
+      The format moved from a popular open-source implementation into a documented
+      Internet format. RFC 8878 describes Zstandard compression and registers the
+      application/zstd media type, content encoding, and structured syntax suffix for
+      transporting zstd-compressed content.
+  related-projects:
+    - >
+      Related projects include zlib, gzip, Deflate, lz4, xz, Brotli, Finite State
+      Entropy, Huff0, Btrfs, SquashFS, libarchive-style tooling, and language bindings
+      listed from the Zstandard homepage.
+  sources:
+    - https://btrfs.readthedocs.io/en/latest/Compression.html
+    - >
+      https://engineering.fb.com/2016/08/31/core-infra/smaller-and-faster-data-compression-with-zstandard/
+    - https://engineering.fb.com/2018/12/19/core-infra/zstandard/
+    - https://facebook.github.io/zstd/
+    - https://github.com/facebook/zstd
+    - https://raw.githubusercontent.com/facebook/zstd/dev/CHANGELOG
+    - https://raw.githubusercontent.com/facebook/zstd/dev/README.md
+    - https://www.rfc-editor.org/info/rfc8878/
+  summary:
+    - >
+      Zstandard, usually packaged as zstd, is Meta's fast general-purpose lossless
+      compression format, C library, and command-line tool. It targets zlib-class
+      compression ratios with much faster compression and decompression, plus tunable
+      levels and dictionary training.
+  timeline:
+    - '2016-08-31: Facebook announced Zstandard 1.0.'
+    - '2017: ZSTD support entered Btrfs documentation as available since Linux 4.14.'
+    - >
+      2018-12-19: Meta engineering published notes on large-scale storage improvements
+      with Zstandard.
+    - '2021: RFC 8878 documented the Zstandard format and application/zstd media type.'
+    - '2025-02: zstd 1.5.7 changelog entry records CLI, API, performance, and portability work.'
+    - '2025-12: zstd 1.6.0 changelog entry records legacy-format support disabled by default.'
+  usage:
+    - >
+      The package gives users commands such as zstd, unzstd, zstdcat, zstdgrep,
+      zstdless, pzstd, and zstdmt. Common shell usage mirrors gzip-style workflows:
+      compress a file or stream to .zst, decompress with unzstd or zstd -d, pipe through
+      zstdcat, and tune level or --fast modes for speed/ratio trade-offs.
+    - >
+      For developers, libzstd exposes one-shot compression/decompression, reusable
+      contexts, streaming APIs, dictionaries, frame inspection, and advanced
+      experimental APIs. The README also documents dictionary training with zstd --train
+      for small repeated records, a major reason zstd appears in data stores and network
+      protocols rather than only in file archivers.
 tags:
   - algorithm
   - cli
@@ -23,28 +112,30 @@ geiger:
     - text:compress
 provenance:
   category-sources:
-    - 'Official Zstandard site title: Zstandard - Real-time data compression algorithm.'
-    - 'source_facts.description: Zstandard is a real-time compression algorithm.'
+    - https://raw.githubusercontent.com/facebook/zstd/dev/README.md
   display-name-sources:
-    - Official project site uses Zstandard.
-    - >
-      source_facts.description uses Zstandard; source_facts.name is the command/package
-      name zstd.
+    - https://facebook.github.io/zstd/
+    - https://raw.githubusercontent.com/facebook/zstd/dev/README.md
   docs-sources:
-    - Official GitHub README provides repository documentation.
-    - Official Zstandard project site is hosted at facebook.github.io/zstd.
-  repo-sources:
+    - https://facebook.github.io/zstd
+    - https://github.com/facebook/zstd#readme
+  history-sources:
+    - https://btrfs.readthedocs.io/en/latest/Compression.html
     - >
-      source_facts.repo already contains https://github.com/facebook/zstd; returned null
-      per instruction not to second-guess existing repo values.
+      https://engineering.fb.com/2016/08/31/core-infra/smaller-and-faster-data-compression-with-zstandard/
+    - https://engineering.fb.com/2018/12/19/core-infra/zstandard/
+    - https://facebook.github.io/zstd/
+    - https://github.com/facebook/zstd
+    - https://raw.githubusercontent.com/facebook/zstd/dev/CHANGELOG
+    - https://raw.githubusercontent.com/facebook/zstd/dev/README.md
+    - https://www.rfc-editor.org/info/rfc8878/
   tags-sources:
-    - Official project site documents the Zstandard compression format and implementations.
-    - source_facts.description identifies a real-time compression algorithm.
+    - https://raw.githubusercontent.com/facebook/zstd/dev/README.md
 category-confidence: high
 category-path:
   - system
-  - compression
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
