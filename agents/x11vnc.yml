@@ -9,6 +9,96 @@ credentials-file-location:
   unix:
     - ~/.vnc/passwd
     - ~/.vnc/passwdfile
+history:
+  adoption-history:
+    - >
+      x11vnc became useful wherever administrators wanted to reach a live X11 session
+      without changing how the machine was logged in: workstations, lab machines,
+      kiosk-like systems, Sun Ray-style sessions, and small embedded displays. The
+      README also documents extensions beyond ordinary X displays, including Mac OS X
+      Aqua/Quartz, webcams, TV tuner devices, embedded Linux systems, and full IPv6
+      support.
+    - >
+      Its adoption is partly explained by what it did not require. A user could keep a
+      normal local desktop manager and attach VNC access to that session only when
+      needed, rather than switching to a special VNC desktop server or teaching users a
+      separate remote-login workflow.
+  package-nerd-significance:
+    - >
+      For package people, x11vnc is historically neat because it preserves the 'real
+      display' remote-control model in the X11 world. It is not a general remote-desktop
+      suite; it is the sharp tool that connects a VNC client to the framebuffer and
+      input stream of an existing X desktop.
+    - >
+      It also shows why library projects matter. LibVNCServer made it possible to build
+      specialized VNC servers, and x11vnc became the canonical example that turned the
+      library from proof-of-concept into a daily-use remote-administration command.
+  project-history:
+    - >
+      x11vnc emerged in the early 2000s as a pragmatic bridge between the X Window
+      System and the VNC remote-framebuffer protocol. Unlike Xvnc-style servers, which
+      expose a new virtual display, x11vnc polls and exports an existing X server so a
+      user or administrator can interact with the same desktop session that is visible
+      on the machine's monitor.
+    - >
+      Karl Runge's version became the recognizable x11vnc application, and copyright
+      notices in the source identify his active period on the project through 2002-2010.
+      Later maintenance moved into the LibVNC ecosystem, which is a natural home because
+      x11vnc is both a user-facing tool and a showcase for LibVNCServer's embeddable
+      server library.
+  related-projects:
+    - LibVNCServer is the library project that underpins x11vnc and other VNC servers.
+    - LibVNCClient is the companion client-side library in the same ecosystem.
+    - >
+      Xvnc and TigerVNC are related VNC server projects, but they more commonly create
+      or manage virtual VNC sessions instead of exporting the already-running physical X
+      display.
+    - >
+      KRFB is a KDE remote-desktop tool noted by LibVNCServer as an integration related
+      to x11vnc.
+  sources:
+    - >
+      https://android.googlesource.com/platform/external/libvncserver/+/bec50fdbf6ec2d61edda4f69913f8a8331b8b364^/x11vnc/help.c
+    - https://directory.fsf.org/wiki/X11vnc
+    - https://github.com/LibVNC/x11vnc
+    - https://libvnc.github.io/
+    - https://man.archlinux.org/man/x11vnc.1
+  summary:
+    - >
+      x11vnc is a VNC server for real, already-running X11 displays rather than a server
+      that creates a separate virtual desktop. Its niche is remote control of the
+      desktop that is physically attached to a Unix or Linux workstation, filling for
+      X11 the role that WinVNC historically filled on Windows.
+    - >
+      The project is closely tied to LibVNCServer. The LibVNCServer project history
+      describes x11vnc as starting from Johannes Schindelin's proof-of-concept and being
+      turned by Karl Runge into a full application; the community version is now
+      maintained in the LibVNC GitHub organization.
+  timeline:
+    - >
+      2001-2002: x11vnc appears as a VNC server for real X displays, with Karl Runge's
+      application becoming the well-known implementation.
+    - >
+      2002-2010: Karl Runge's source copyright period covers the main original x11vnc
+      development era.
+    - '2010s: x11vnc maintenance continues as part of the LibVNCServer/LibVNC ecosystem.'
+    - >
+      2019-01-05: x11vnc 0.9.16 is released, the release commonly cited by downstream
+      package histories.
+    - '2020s: The community source is hosted at `LibVNC/x11vnc` on GitHub.'
+  usage:
+    - >
+      Typical use is to run `x11vnc` on the machine with the target X session and then
+      connect with any VNC viewer, usually on a VNC display number mapped from TCP port
+      5900. The tool supports common remote-access features such as password files,
+      SSL/TLS, VeNCrypt, Unix account login, server-side scaling, Zeroconf advertising,
+      and compatibility features for TightVNC and UltraVNC viewers.
+    - >
+      Package users reach for x11vnc when they need to help a remote user, operate a
+      graphical application that is already open, close programs cleanly, inspect a
+      physical-console session, or expose a lightweight display from an embedded device.
+      It belongs to the old but still practical Unix remote-desktop toolkit: small CLI,
+      lots of flags, no new desktop session unless the user asks for one elsewhere.
 tags:
   - cli
   - remote-desktop
@@ -25,24 +115,30 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - source_facts.description says "VNC server for real X displays".
+    - https://directory.fsf.org/wiki/X11vnc
+    - https://github.com/LibVNC/x11vnc
   display-name-sources:
-    - source_facts.name is x11vnc; current_curation.display-name is x11vnc.
+    - https://github.com/LibVNC/x11vnc
   docs-sources:
+    - https://github.com/LibVNC/x11vnc
+    - https://github.com/LibVNC/x11vnc/blob/master/doc/OPTIONS.md
+  history-sources:
     - >
-      source_facts.repo identifies the official LibVNC GitHub project; official README
-      and OPTIONS.md document usage and options.
+      https://android.googlesource.com/platform/external/libvncserver/+/bec50fdbf6ec2d61edda4f69913f8a8331b8b364^/x11vnc/help.c
+    - https://directory.fsf.org/wiki/X11vnc
+    - https://github.com/LibVNC/x11vnc
+    - https://libvnc.github.io/
+    - https://man.archlinux.org/man/x11vnc.1
   repo-sources:
-    - >
-      source_facts.repo already provides https://github.com/LibVNC/x11vnc, so repository
-      redetermination was skipped as instructed.
+    - source_facts.repo
   tags-sources:
-    - source_facts.description explicitly identifies VNC server functionality for X displays.
+    - https://github.com/LibVNC/x11vnc
+    - https://man.archlinux.org/man/x11vnc.1
 category-confidence: high
 category-path:
   - networking
-  - remote-access
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -6,6 +6,104 @@ docs:
   - https://www.gnu.org/software/binutils
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The normal native GNU toolchain pairs Binutils with GCC, GDB, make, and libc to
+      build software for the host. Cross-toolchain users instead configure Binutils with
+      a target such as `x86_64-elf`, producing prefixed tools that generate ELF objects
+      and binaries for a target environment independent of the host OS.
+    - >
+      OSDev's cross-compiler guide explains the reason for this pattern: a host compiler
+      assumes the host CPU, operating system, executable format, headers, and libraries
+      unless directed otherwise, while a cross-compiler uses an explicit target and
+      avoids accidental host assumptions. Binutils is built first because GCC needs the
+      target assembler and linker.
+  package-nerd-significance:
+    - >
+      This package is significant because it turns GNU Binutils from a native developer
+      utility into a precise cross-toolchain component. For OS development and
+      bare-metal experiments, the absence of host assumptions is the feature.
+    - >
+      The `x86_64-elf` target also captures a long-running package-manager convenience:
+      many OSDev tutorials show users how to build Binutils by hand, but a packaged
+      cross Binutils gives them the target-prefixed assembler, linker, and inspection
+      tools without owning that bootstrap step.
+  project-history:
+    - >
+      GNU Binutils is one of the oldest layers of the GNU toolchain. The GNU page
+      describes it as a collection of binary tools whose main programs are `ld`, the GNU
+      linker, `as`, the GNU assembler, and `gold`, with supporting tools such as `ar`,
+      `nm`, `objcopy`, `objdump`, `readelf`, `size`, `strings`, and `strip`.
+    - >
+      Historically the suite grew around shared binary-format infrastructure. The GNU
+      page notes that most of the programs use BFD, the Binary File Descriptor library,
+      for low-level manipulation of different object formats, and many also use the
+      opcodes library for assembling and disassembling machine instructions. That
+      architecture is why one source project can support many CPU, object-format, and OS
+      targets.
+  related-projects:
+    - >
+      GCC is the compiler suite commonly paired with Binutils in both native and cross
+      toolchains.
+    - >
+      GDB shares the Sourceware `binutils-gdb.git` repository history and is often built
+      for the same target family.
+    - >
+      OSDev tutorials commonly use Binutils and GCC as the first toolchain pieces for
+      hobby operating-system development.
+    - >
+      LLVM tools such as `llvm-objdump` and `lld` are related alternatives in some cross
+      and bare-metal workflows.
+  sources:
+    - https://sourceware.org/binutils/docs/as/
+    - https://sourceware.org/binutils/docs/binutils/
+    - https://sourceware.org/binutils/docs/ld/
+    - https://wiki.osdev.org/Binutils
+    - https://wiki.osdev.org/GCC_Cross-Compiler
+    - https://wiki.osdev.org/Why_do_I_need_a_Cross_Compiler%3F
+    - https://www.gnu.org/software/binutils/
+  summary:
+    - >
+      x86_64-elf-binutils is the GNU Binutils suite built for the `x86_64-elf` target, a
+      bare-metal ELF toolchain target used for operating-system development, kernels,
+      bootloaders, freestanding programs, and other environments that should not inherit
+      the host operating system's ABI or libraries.
+    - >
+      The upstream GNU Binutils project supplies the assembler, linker, object-file
+      utilities, and shared binary-format libraries. The `x86_64-elf` package role is to
+      expose those tools with a target prefix, so commands such as `x86_64-elf-as`,
+      `x86_64-elf-ld`, `x86_64-elf-objdump`, and `x86_64-elf-readelf` operate as part of
+      a cross-development toolchain.
+  timeline:
+    - >
+      1980s-1990s: GNU assembler, linker, BFD, and related binary utilities mature as
+      core parts of the GNU build toolchain.
+    - >
+      1999: The GNU Binutils page notes older `gas2` and `bfd` lists were historical
+      discussion lists until May 1999, reflecting project consolidation under current
+      mailing lists.
+    - >
+      2000s: OS-development communities standardize on target-prefixed GNU Binutils and
+      GCC cross toolchains such as `i686-elf` and `x86_64-elf`.
+    - >
+      2020s: The GNU Binutils project continues regular releases from Sourceware and GNU
+      mirrors, with current documentation covering Binutils 2.46-era tools.
+    - >
+      2026: GNU's Binutils page lists 2.46.1 as the latest release and documents the
+      Sourceware `binutils-gdb.git` development tree.
+  usage:
+    - >
+      In a freestanding x86-64 workflow, `x86_64-elf-as` assembles startup or interrupt
+      code, `x86_64-elf-ld` links objects with a custom linker script,
+      `x86_64-elf-objcopy` converts or extracts binary images, and `x86_64-elf-objdump`
+      or `x86_64-elf-readelf` inspects ELF sections, relocations, symbols, and
+      disassembly.
+    - >
+      Package users often install x86_64-elf-binutils alongside `x86_64-elf-gcc`. The
+      useful bit is the prefix: build scripts can call target-specific tools directly
+      and avoid accidentally invoking `/usr/bin/as` or the platform linker, which may
+      default to Mach-O, PE, Linux user-space ELF, or another host-specific environment.
 tags:
   - assembler
   - binary-tools
@@ -17,23 +115,33 @@ tags:
   - x86-64-elf
 provenance:
   category-sources:
-    - 'source_facts.description: GNU Binutils for x86_64-elf cross development.'
+    - https://wiki.osdev.org/GCC_Cross-Compiler
+    - https://www.gnu.org/software/binutils/
   display-name-sources:
-    - source_facts.name and source_facts.description.
+    - https://wiki.osdev.org/GCC_Cross-Compiler
+    - https://www.gnu.org/software/binutils/
   docs-sources:
-    - Official Sourceware Binutils docs and GNU Binutils page.
+    - https://sourceware.org/binutils/docs
+    - https://www.gnu.org/software/binutils/
+  history-sources:
+    - https://sourceware.org/binutils/docs/as/
+    - https://sourceware.org/binutils/docs/binutils/
+    - https://sourceware.org/binutils/docs/ld/
+    - https://wiki.osdev.org/Binutils
+    - https://wiki.osdev.org/GCC_Cross-Compiler
+    - https://wiki.osdev.org/Why_do_I_need_a_Cross_Compiler%3F
+    - https://www.gnu.org/software/binutils/
   repo-sources:
-    - >
-      source_facts.repo is empty; official Sourceware Binutils page documents the
-      binutils-gdb git repository.
+    - https://sourceware.org/git/binutils-gdb.git
+    - https://www.gnu.org/software/binutils/
   tags-sources:
-    - >
-      source_facts.description and executables identify GNU assembler, linker, and
-      binary tools for x86_64-elf.
+    - https://wiki.osdev.org/GCC_Cross-Compiler
+    - https://www.gnu.org/software/binutils/
 category-confidence: high
 category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -6,6 +6,100 @@ docs:
   - https://gcc.gnu.org/onlinedocs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Cross compilation has been central to GCC's identity because GCC supports many
+      processors and systems. The official GCC homepage explicitly says the project aims
+      for releases that work on a variety of native and cross targets, while OSDev
+      documentation explains why hobby OS and kernel developers build target-specific
+      GCCs instead of relying on the host compiler.
+    - >
+      For `x86_64-elf`, adoption is concentrated in OSDev and freestanding x86-64 work.
+      The target prefix lets build systems call `x86_64-elf-gcc` and get code-generation
+      defaults for x86-64 ELF rather than the host triple. OSDev guidance also notes
+      that a target-specific compiler removes the need to pass host-overriding options
+      such as `-m64` for every build.
+  package-nerd-significance:
+    - >
+      x86_64-elf-gcc is important because it packages the first serious bootstrap hurdle
+      of hobby OS development. Instead of every user manually building a cross GCC, the
+      package provides a stable prefixed compiler that can be dropped into Makefiles and
+      tutorials.
+    - >
+      It is also a clear example of how package names can describe configuration rather
+      than upstream identity. The upstream is GCC; the meaningful package distinction is
+      the target triple, which changes what the compiler assumes about object format,
+      runtime, and operating-system services.
+  project-history:
+    - >
+      GCC began as the GNU C Compiler, written for the GNU operating system and first
+      released in 1987. It later expanded into the GNU Compiler Collection, with
+      official front ends for C, C++, Objective-C, Objective-C++, Fortran, Ada, Go, D,
+      Modula-2, COBOL, Rust, Algol 68, and related runtime libraries documented by the
+      GCC project.
+    - >
+      The GCC governance and release story also matters to cross packages. GCC's 2.95
+      release in July 1999 was the first after the GCC/EGCS reunification, and the
+      project has since been maintained by a global developer community under a steering
+      committee. The modern GCC site emphasizes regular releases that work across native
+      and cross targets.
+  related-projects:
+    - >
+      GNU Binutils provides the assembler, linker, and object tools required by a
+      matching `x86_64-elf` GCC toolchain.
+    - GDB is commonly built as a target-aware debugger alongside cross GCC and Binutils.
+    - >
+      Newlib and other small C libraries are used when a freestanding cross compiler
+      grows into a hosted embedded or OS-specific toolchain.
+    - >
+      LLVM/Clang can also target freestanding x86-64 ELF workflows, often with `lld` and
+      LLVM binary tools.
+  sources:
+    - https://gcc.gnu.org/
+    - https://gcc.gnu.org/gcc-2.95/
+    - https://gcc.gnu.org/onlinedocs/
+    - https://gcc.gnu.org/releases.html
+    - https://gcc.gnu.org/steering.html
+    - https://wiki.osdev.org/Bare_Bones
+    - https://wiki.osdev.org/GCC_Cross-Compiler
+    - https://wiki.osdev.org/Why_do_I_need_a_Cross_Compiler%3F
+  summary:
+    - >
+      x86_64-elf-gcc is GCC built as a cross compiler for the `x86_64-elf` target. Its
+      package role is not to be a separate compiler project, but to provide the GNU
+      Compiler Collection configured for freestanding 64-bit x86 ELF output without
+      assuming the host operating system's headers, C library, startup files, or ABI
+      conventions.
+    - >
+      That makes it a standard tool for operating-system kernels, bootloaders,
+      freestanding runtimes, and bare-metal experiments. It usually works together with
+      `x86_64-elf-binutils`, which supplies the matching target assembler, linker, and
+      object-file tools.
+  timeline:
+    - '1987-03-22: GCC 1.0 is first released as the GNU C Compiler.'
+    - >
+      1999-04: The EGCS steering committee is appointed as the official GCC maintainer
+      after the GCC/EGCS reunification process.
+    - '1999-07-31: GCC 2.95 is released as the first GCC release after GCC/EGCS reunification.'
+    - >
+      2000s: OSDev communities popularize target-prefixed GCC cross compilers such as
+      `i686-elf-gcc` and later `x86_64-elf-gcc` for freestanding kernels.
+    - >
+      2026-04-30: GCC 16.1 is released, and the GCC homepage lists ongoing support for
+      native and cross targets.
+  usage:
+    - >
+      Typical users compile freestanding C or C++ with options such as `-ffreestanding`,
+      link with a custom linker script, and provide their own runtime entry point
+      instead of relying on a hosted C library. The compiler may also be used as the
+      driver for assembly and linking so it selects the matching target Binutils tools.
+    - >
+      In kernel work, x86-64 has hardware and ABI details that package users must
+      understand beyond simply choosing this compiler. OSDev material commonly calls out
+      issues such as separate 32-bit and 64-bit toolchains, bootloader expectations, and
+      x86-64 red-zone behavior; the package gives the target compiler, but the build
+      still has to define the freestanding environment correctly.
 tags:
   - cli
   - cross-compilation
@@ -22,29 +116,34 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description says "GNU compiler collection for x86_64-elf"; official
-      GCC documentation identifies GCC as the GNU Compiler Collection.
+    - https://gcc.gnu.org/
+    - https://wiki.osdev.org/GCC_Cross-Compiler
   display-name-sources:
-    - source_facts.name is x86_64-elf-gcc; current_curation.display-name is x86_64-elf-gcc.
+    - https://gcc.gnu.org/
+    - https://wiki.osdev.org/GCC_Cross-Compiler
   docs-sources:
-    - >
-      Official GCC online documentation provides the manual set; source_facts.homepage
-      is the official GCC project site.
+    - https://gcc.gnu.org/
+    - https://gcc.gnu.org/onlinedocs/
+  history-sources:
+    - https://gcc.gnu.org/
+    - https://gcc.gnu.org/gcc-2.95/
+    - https://gcc.gnu.org/onlinedocs/
+    - https://gcc.gnu.org/releases.html
+    - https://gcc.gnu.org/steering.html
+    - https://wiki.osdev.org/Bare_Bones
+    - https://wiki.osdev.org/GCC_Cross-Compiler
+    - https://wiki.osdev.org/Why_do_I_need_a_Cross_Compiler%3F
   repo-sources:
-    - >
-      source_facts.repo is empty; official GCC Git access page gives
-      https://gcc.gnu.org/git/gcc.git as the public read-only source repository.
+    - https://gcc.gnu.org/
+    - https://gcc.gnu.org/git/gcc.git
   tags-sources:
-    - >
-      source_facts.description identifies GCC packaged for the x86_64-elf
-      cross-compilation target.
+    - https://gcc.gnu.org/
+    - https://wiki.osdev.org/GCC_Cross-Compiler
 category-confidence: high
 category-path:
   - developer-tools
-  - compilers
-  - cross-compilation
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
