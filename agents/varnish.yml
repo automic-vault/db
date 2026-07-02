@@ -6,6 +6,106 @@ docs:
   - https://www.varnish.org/docs/reference
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Varnish was adopted by high-traffic publishers, social platforms, and
+      content-heavy sites because it focused narrowly on origin-side HTTP acceleration
+      rather than general proxying. Official history material highlights adoption
+      stories including Facebook, WikiLeaks under severe traffic pressure in 2010,
+      Varnish User Group meetings, and the publication of community learning material
+      such as the Varnish Book.
+    - >
+      Its architecture reflected a package-operator culture: fast in-memory caching,
+      shared-memory logging, separately packaged observability tools, and command-line
+      administration. The administrator documentation describes the normal deployment
+      pattern as installing Varnish in front of any HTTP server, configuring cache
+      policy, and using reference tools such as `varnishadm`, `varnishlog`,
+      `varnishstat`, `varnishncsa`, `varnishhist`, and `varnishtop` to operate it.
+  package-nerd-significance:
+    - >
+      Varnish matters in package-manager culture because it is a canonical example of a
+      specialized Unix network daemon: small surface area, strong command-line tooling,
+      a DSL for runtime policy, and a BSD-licensed open-source core that distributions
+      can ship independently from commercial variants.
+    - >
+      The modern branding has become more complex. The current Varnish site describes
+      Varnish Cache as a distribution of the open-source Vinyl Cache project, with
+      native TLS, containers, Helm charts, and long-term-support cadence layered around
+      the original caching architecture. That transition is part of the stewardship
+      story package maintainers now have to track.
+  project-history:
+    - >
+      The project began from the operational needs of VG Nett, the online branch of the
+      Norwegian newspaper Verdens Gang. In 2005 the site was serving more than 45
+      million page views per week and needed twelve servers; system administrator Anders
+      Berg wrote a specification for a faster open-source HTTP accelerator. Anders
+      Nordby helped bring in Danish FreeBSD developer Poul-Henning Kamp, VG funded the
+      work, and Linpro supplied development and support infrastructure.
+    - >
+      The first code was submitted to the Varnish Cache repository on February 22, 2006.
+      Varnish 1.0 followed in September 2006 as the first production release of the
+      high-performance HTTP accelerator. By that point VG had replaced its Squid layer
+      and was reportedly running on Varnish alone, handling traffic spikes with three
+      servers instead of twelve.
+    - >
+      The project later developed a commercial ecosystem. Varnish Software was founded
+      in 2010 after spinning out from Linpro and took over development and management
+      around the open-source project while offering web-acceleration products and
+      support. The open-source line continued through major releases such as 2.0 in
+      2008, 3.0 in 2011, and 4.0 in 2014, while commercial offerings such as Varnish
+      Plus added enterprise storage, high availability, tuning, API acceleration, and
+      TLS-related products.
+  related-projects:
+    - >
+      Squid is the older cache whose reverse-proxy use case helped motivate Varnish, but
+      Varnish was designed specifically as an HTTP accelerator.
+    - >
+      Vinyl Cache is the open-source project named by the current Varnish site as the
+      base for the Varnish Cache distribution.
+    - >
+      Varnish Software provides commercial products, support, and enterprise variants
+      around the open-source cache.
+  sources:
+    - 'Administrator documentation: https://varnish-cache.readthedocs.io/'
+    - 'Official project site: https://www.varnish.org/'
+    - 'Poul-Henning Kamp Varnish presentation: https://phk.freebsd.dk/pubs/varnish.pdf'
+    - >
+      Varnish Software 10-year Q&A:
+      https://info.varnish-software.com/blog/celebrating-10-years-of-varnish-cache-qa-with-the-man-behind-the-idea
+    - >
+      Varnish Software history timeline:
+      https://varnish-software.teamtailor.com/pages/varnish-history?preview=true
+  summary:
+    - >
+      Varnish Cache is an HTTP accelerator and reverse caching proxy designed to sit in
+      front of origin servers and serve cached responses from memory. It is best known
+      for VCL, the Varnish Configuration Language, which lets operators encode cache
+      policy as programmable configuration.
+  timeline:
+    - '2005: VG Nett identifies the need for a faster open-source HTTP accelerator.'
+    - '2006-02-22: First code is submitted to the Varnish Cache repository.'
+    - '2006-09: Varnish 1.0 is released and VG is running on Varnish alone.'
+    - '2008: Varnish 2.0 is released.'
+    - '2010: Varnish Software is founded after spinning out from Linpro.'
+    - '2011: Varnish 3.0 release helps anchor a growing community and release-party culture.'
+    - '2014: Varnish Cache 4.0 and Varnish Plus-era commercial components expand the ecosystem.'
+    - >
+      2026: Official site describes Varnish Cache as a modern distribution of the
+      open-source Vinyl Cache project.
+  usage:
+    - >
+      A typical Varnish deployment places `varnishd` between clients and an origin web
+      server. Requests are answered from cache when possible and proxied to the origin
+      otherwise. Cache policy is expressed in VCL, which official documentation
+      describes as compiled into native code and run inside the worker, allowing policy
+      decisions at line rate.
+    - >
+      Package users usually care about the daemon, the default VCL path, system service
+      integration, and the tooling suite. The same package often gives operators an
+      interactive admin CLI, request logs, Apache-style access logging, real-time
+      counters, histogram views, test tooling, and VCL validation, making Varnish feel
+      more like a small HTTP-cache operating environment than a single binary.
 tags:
   - cli
   - http-cache
@@ -24,32 +124,36 @@ geiger:
     - metadata:service
 provenance:
   category-sources:
-    - >
-      source_facts.description says high-performance HTTP accelerator; official Varnish
-      docs describe Varnish Cache as an HTTP accelerator and caching reverse proxy.
+    - current_curation.category
+    - https://varnish-cache.readthedocs.io/
+    - https://www.varnish.org/
   display-name-sources:
-    - >
-      source_facts.name is varnish; official website and docs use Varnish Cache as the
-      product name.
+    - current_curation.display-name
+    - https://www.varnish.org/
   docs-sources:
+    - https://varnish-cache.readthedocs.io/
+    - https://www.varnish.org/
+  history-sources:
+    - 'Administrator documentation: https://varnish-cache.readthedocs.io/'
+    - 'Official project site: https://www.varnish.org/'
+    - 'Poul-Henning Kamp Varnish presentation: https://phk.freebsd.dk/pubs/varnish.pdf'
     - >
-      Official varnish.org documentation page links install guide, tutorials, users
-      guide, reference manual, and security information.
+      Varnish Software 10-year Q&A:
+      https://info.varnish-software.com/blog/celebrating-10-years-of-varnish-cache-qa-with-the-man-behind-the-idea
+    - >
+      Varnish Software history timeline:
+      https://varnish-software.teamtailor.com/pages/varnish-history?preview=true
   repo-sources:
-    - >
-      source_facts.repo is already populated with https://github.com/varnish/varnish, so
-      repo is returned as null per instruction.
+    - source_facts.repo
   tags-sources:
-    - >
-      source_facts.description and executables list Varnish command-line tools; official
-      docs describe HTTP caching, reverse proxy use, VCL, logging, metrics, and
-      reference tools.
+    - https://varnish-cache.readthedocs.io/
+    - https://www.varnish.org/
+    - source_facts.description
 category-confidence: high
 category-path:
   - networking
-  - http
-  - reverse-proxy
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

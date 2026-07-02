@@ -11,6 +11,52 @@ credentials-file-location:
   unix:
     - .env.local
     - .env.*
+history:
+  adoption-history:
+    - >
+      Varlock targets the pain point left by `.env.example`: example files are safe to
+      commit but often drift from real runtime requirements. Varlock instead promotes a
+      committed `.env.schema` as a single source of truth, with local or
+      environment-specific `.env.*` files supplying values.
+  package-nerd-significance:
+    - >
+      For package users, Varlock is notable as an attempt to standardize metadata around
+      environment variables without forcing a new YAML, JSON, or TypeScript schema file.
+      It is especially tuned for modern AI-assisted development, where agents need
+      configuration context but should not be handed plaintext secrets.
+  project-history:
+    - >
+      The project is built on `@env-spec`, a DSL that extends normal `.env` syntax with
+      JSDoc-style decorator comments and function-call values. The initial `@env-spec`
+      RFC was proposed on May 13, 2025 by maintainers Phil Millman and Theo Ephraim,
+      describing the goal of richer validation, type coercion, sensitive-value handling,
+      and dynamic loading while keeping the familiar `.env` format.
+  related-projects:
+    - DMNO is cited by the maintainers as the predecessor whose lessons informed Varlock.
+    - `@env-spec` is the underlying specification and parser family used by Varlock.
+  sources:
+    - 'Initial @env-spec RFC: https://github.com/dmno-dev/varlock/discussions/17'
+    - 'Official @env-spec overview: https://varlock.dev/env-spec/overview/'
+    - 'Official GitHub repository: https://github.com/dmno-dev/varlock'
+    - 'Official installation guide: https://varlock.dev/getting-started/installation/'
+  summary:
+    - >
+      Varlock is a young configuration and secrets tool for `.env`-based workflows. Its
+      project tagline frames the tool around AI-safe `.env` files: schemas are safe for
+      agents and collaborators to read, while actual secrets are resolved separately.
+  timeline:
+    - '2025-05-13: Initial `@env-spec` RFC proposed.'
+    - >
+      2026: Repository documents Varlock as a CLI, Docker image, VS Code extension
+      ecosystem, and plugin host for multiple secret backends.
+  usage:
+    - >
+      Typical usage starts with `varlock init`, which scans existing `.env` files and
+      creates a root `.env.schema`. Users then run `varlock load` to validate and
+      inspect resolved environment variables or `varlock run -- <command>` to execute a
+      process with resolved values. The tool also ships as a standalone binary, Docker
+      image, editor support, and plugins for secret backends such as 1Password, AWS,
+      Azure, Google Secret Manager, HashiCorp Vault, and others.
 tags:
   - cli
   - configuration
@@ -29,33 +75,29 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      source_facts.description says it adds declarative schema to .env files; official
-      varlock.dev introduction describes configuration, secrets, environment-variable
-      management, validation, redaction, and leak scanning.
+    - current_curation.category
+    - https://github.com/dmno-dev/varlock
   display-name-sources:
-    - >
-      source_facts.name is varlock; official varlock.dev and GitHub README use the
-      project name Varlock.
+    - https://github.com/dmno-dev/varlock
   docs-sources:
-    - >
-      Official varlock.dev documentation contains Getting Started, Guides, Integrations,
-      Plugins, and Reference sections, including CLI commands.
+    - https://github.com/dmno-dev/varlock
+    - https://varlock.dev/env-spec/overview/
+    - https://varlock.dev/getting-started/installation/
+  history-sources:
+    - 'Initial @env-spec RFC: https://github.com/dmno-dev/varlock/discussions/17'
+    - 'Official @env-spec overview: https://varlock.dev/env-spec/overview/'
+    - 'Official GitHub repository: https://github.com/dmno-dev/varlock'
+    - 'Official installation guide: https://varlock.dev/getting-started/installation/'
   repo-sources:
-    - >
-      source_facts.repo is empty; official varlock.dev header links to GitHub, and the
-      repository README links back to varlock.dev.
+    - https://github.com/dmno-dev/varlock
   tags-sources:
-    - >
-      source_facts.executables lists varlock; source_facts.description mentions .env
-      schema; official docs describe secrets, validation, type safety, plugins, and
-      TypeScript implementation.
+    - https://github.com/dmno-dev/varlock
+    - https://varlock.dev/env-spec/overview/
 category-confidence: high
 category-path:
   - security
-  - configuration
-  - secrets-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

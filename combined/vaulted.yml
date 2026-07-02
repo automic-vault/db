@@ -5,7 +5,55 @@ repo: https://github.com/miquella/vaulted
 docs:
   - https://github.com/miquella/vaulted#readme
 config-file-location: null
-credentials-file-location: null
+credentials-file-location:
+  unix:
+    - $XDG_DATA_HOME/vaulted/
+    - ~/.local/share/vaulted/
+history:
+  adoption-history:
+    - >
+      The tool belongs to the family of local developer-secret wrappers that reduce the
+      need to keep credentials permanently exported in a shell. Its adoption appears
+      niche and centered on users who want one command to switch AWS, SSH, and arbitrary
+      environment-variable contexts.
+  package-nerd-significance:
+    - >
+      For package users, `vaulted` is notable less for a large ecosystem and more for
+      being a compact Unix-style credential context switcher. It is adjacent to tools
+      such as `aws-vault`, but broader in that it also handles arbitrary environment
+      variables and SSH keys.
+  project-history:
+    - >
+      The public project history is sparse, but the official README defines the core
+      idea clearly: users create vaults of related secrets, then spawn sessions from
+      them. Vaults may hold environment variables, AWS credentials, and SSH keys, and
+      spawned environments get temporary AWS credentials and a new SSH agent.
+  related-projects:
+    - AWS CLI is a common consumer of spawned temporary AWS credentials.
+    - SSH agent tooling is part of the spawned-environment model.
+  sources:
+    - 'Official GitHub README: https://github.com/miquella/vaulted'
+  summary:
+    - >
+      `vaulted` is a small Go CLI for creating named vaults of secrets and spawning
+      commands or shells with those secrets loaded into an isolated environment.
+  timeline:
+    - >
+      2019 or earlier: Repository history and Go module packaging indicate an
+      established Go CLI project.
+    - >
+      Current README: Documents Homebrew installation, Go 1.12+ manual installation, XDG
+      storage, AWS credentials, SSH-agent isolation, and spawned command workflows.
+  usage:
+    - >
+      Typical usage starts with `vaulted add my-vault`, editing a vault interactively,
+      then running `vaulted -n my-vault -- aws s3 ls` or `vaulted shell my-vault`. The
+      README also documents an `env` subcommand intended for machine-readable
+      integration with shells and utilities.
+    - >
+      Vault files follow the XDG Base Directory Specification, with user-written vault
+      data stored under `$XDG_DATA_HOME/vaulted/`, typically `~/.local/share/vaulted/`,
+      and session caches under `$XDG_CACHE_HOME/vaulted/`.
 category: security
 package-manager:
   brew: vaulted
