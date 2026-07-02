@@ -5,6 +5,76 @@ docs:
   - https://gitlab.freedesktop.org/xorg/app/xrdb/-/blob/master/man/xrdb.man
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xrdb became a normal part of X session startup because many X Toolkit and Xlib-era
+      applications read resources from the server. It is a quiet dependency of the
+      .Xresources/.Xdefaults culture: users could keep one resource file, merge it at
+      login, and have X clients pick up consistent defaults across hosts and screens.
+    - >
+      Its adoption persisted through packaging because the resource database remains
+      relevant for traditional X clients, terminal emulators, lightweight window-manager
+      sessions, remote X workflows, and compatibility setups even as many desktop
+      applications moved to toolkit-specific configuration systems.
+  package-nerd-significance:
+    - >
+      xrdb is a classic example of a tiny package with outsized historical surface area:
+      it is not a daemon or library, but it is the bridge between a user's resource
+      files and the X server state that clients consult.
+    - >
+      It matters in package catalogs because it explains why X11 setups still ship
+      separate utilities for session glue. Without xrdb, many old-but-still-packaged X
+      applications lose the shared configuration path their manuals assume.
+  project-history:
+    - >
+      The xrdb manual carries Digital Equipment Corporation and Open Group copyright
+      dates from the 1990s and identifies Bob Scheifler and Phil Karlton as authors,
+      rewritten from Jim Gettys's original. That lineage places xrdb in the classic MIT
+      X / X11 tooling family, before the program was maintained as part of the modular
+      X.Org application set.
+    - >
+      The tool's design follows the X resource system: resources can be stored in
+      RESOURCE_MANAGER on screen 0 and SCREEN_RESOURCES on individual screens. The X(7)
+      manual describes xrdb as the program used by startup systems such as xdm and xinit
+      to put global and per-screen resources into those properties.
+  related-projects:
+    - Xlib Resource Manager and X Toolkit Intrinsics are the resource systems xrdb feeds.
+    - xinit, xdm, and display managers commonly invoke xrdb during X session startup.
+    - xterm and other X Toolkit clients are typical consumers of RESOURCE_MANAGER settings.
+    - appres and listres are companion tools for inspecting application resources.
+  sources:
+    - https://gitlab.freedesktop.org/xorg/app/xrdb/-/raw/master/man/xrdb.man
+    - https://www.x.org/releases/X11R7.5/doc/man/man1/xrdb.1.html
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man7/X.7.html
+  summary:
+    - >
+      xrdb is the small X.Org utility that loads, queries, merges, and edits the X
+      server resource database. Its importance is historical as much as practical: it is
+      the command that made per-user X resources such as colors, fonts, and application
+      defaults available through X server properties rather than only through local
+      dotfiles.
+  timeline:
+    - >
+      1991: xrdb manual copyright includes Digital Equipment Corporation, reflecting
+      early X11 resource-database tooling.
+    - '1994-1998: Open Group copyright updates appear in the manual source.'
+    - '2001: X.Org/XFree86 manual-source revision history records xrdb in the X11 utility tree.'
+    - >
+      2000s: xrdb continues as a modular X.Org application package used by
+      display-manager and xinit-style startup flows.
+    - '2025: The upstream manpage remains maintained in the X.Org xrdb repository.'
+  usage:
+    - >
+      Typical usage is `xrdb -merge ~/.Xresources` from an X startup file, followed by
+      `xrdb -query` to inspect the server-side database. Users also use `-load`,
+      `-override`, `-remove`, and `-edit` when replacing or round-tripping resource
+      settings.
+    - >
+      For package users, xrdb is most visible when installing or configuring xterm,
+      bitmap-era X applications, old app-defaults packages, or minimalist desktop
+      sessions where the user wants font, color, cursor, and widget defaults controlled
+      by X resources.
 tags:
   - cli
   - configuration
@@ -22,25 +92,29 @@ geiger:
     - text:database
 provenance:
   category-sources:
-    - >
-      source_facts.description says X resource database utility; official
-      freedesktop/xorg project is xorg/app/xrdb.
+    - current_curation.category
+    - current_curation.category_path
   display-name-sources:
-    - source_facts.name is xrdb; official GitLab project is xorg/app/xrdb.
+    - current_curation.display-name
+    - https://gitlab.freedesktop.org/xorg/app/xrdb/-/raw/master/man/xrdb.man
   docs-sources:
-    - Official xorg/app/xrdb repository contains the xrdb man page under man/xrdb.man.
+    - current_curation.docs
+  history-sources:
+    - https://gitlab.freedesktop.org/xorg/app/xrdb/-/raw/master/man/xrdb.man
+    - https://www.x.org/releases/X11R7.5/doc/man/man1/xrdb.1.html
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man7/X.7.html
   repo-sources:
-    - source_facts.homepage is the official freedesktop GitLab project URL for xorg/app/xrdb.
+    - current_curation.repo
+    - source_facts.repo is empty
   tags-sources:
-    - >
-      source_facts.description identifies an X resource database utility;
-      source_facts.executables lists xrdb.
+    - current_curation.tags
+    - https://gitlab.freedesktop.org/xorg/app/xrdb/-/raw/master/man/xrdb.man
+    - https://www.x.org/releases/X11R7.5/doc/man/man1/xrdb.1.html
 category-confidence: high
 category-path:
   - system
-  - x11
-  - utilities
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

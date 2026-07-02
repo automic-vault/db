@@ -6,6 +6,76 @@ docs:
   - https://www.vergenet.net/~conrad/software/xsel
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xsel became a standard small X11 utility because it solved a daily
+      terminal-desktop gap. The homepage says it is available in most distributions, and
+      package metadata shows it in Homebrew, Alpine, Debian, Fedora, MacPorts, Nix,
+      Arch, Ubuntu, and openSUSE ecosystems.
+    - >
+      Its closest cultural sibling is `xclip`; both became staples in scripts that move
+      text between command output, terminal multiplexers, editors, browsers, and the X
+      clipboard. xsel's options for append, follow, keep, exchange, and secondary
+      selection make it especially explicit about the underlying X selection machinery.
+  package-nerd-significance:
+    - >
+      xsel is tiny, but it teaches a core X11 lesson: clipboard-like behavior is
+      inter-client communication, not simply a global text buffer. Packaging it gives
+      shell users a reliable bridge into that model.
+    - >
+      It is also one of those utilities whose value increases in combinations: SSH
+      sessions with X forwarding, terminal multiplexers, editors, scripts, password
+      managers, build logs, and bug-report commands all benefit from being able to pipe
+      text into or out of the X selection.
+  project-history:
+    - >
+      The xsel manpage identifies Conrad Parker as author and dates the program to July
+      2001, while the license file carries a 2001 copyright. Its homepage presents the
+      core problem plainly: the X selection is normally accessible by manually
+      highlighting text and pasting with the middle mouse button, while xsel lets files,
+      pipes, and scripts participate.
+    - >
+      The project developed around X11's ICCCM selection model. The manpage notes that
+      there is no X selection buffer: xsel must own the selection and serve it on
+      demand, often by forking a background process in input, keep, and exchange modes.
+  related-projects:
+    - xclip is the closest alternative command-line X clipboard/selection utility.
+    - xclipboard is the classic X clipboard manager referenced by the xsel manpage.
+    - ICCCM defines the X selection conventions xsel follows.
+    - >
+      Wayland-native clipboard tools such as wl-clipboard fill the equivalent niche
+      outside X11.
+  sources:
+    - https://github.com/kfish/xsel
+    - https://linux.die.net/man/1/xsel
+    - https://raw.githubusercontent.com/kfish/xsel/master/COPYING
+    - https://raw.githubusercontent.com/kfish/xsel/master/xsel.1x
+    - https://www.vergenet.net/~conrad/software/xsel/
+  summary:
+    - >
+      xsel is Conrad Parker's command-line utility for reading and setting X selections.
+      It turns PRIMARY, SECONDARY, and CLIPBOARD selection ownership into a
+      pipe-friendly Unix interface, making X11 copy/paste state usable from shell
+      scripts and terminal workflows.
+  timeline:
+    - "2001-07: The xsel manpage dates Conrad Parker's authorship to July 2001."
+    - '2001: The license file records Conrad Parker copyright for xsel.'
+    - '2008-01: The distributed manpage is dated January 2008.'
+    - '2009: The homepage lists version 1.2.0 as the latest available tarball.'
+    - >
+      2020s: xsel remains packaged across Linux, BSD, macOS package-manager, and X11
+      compatibility environments.
+  usage:
+    - >
+      Common usage is `command | xsel -b` to put text on the CLIPBOARD selection, `xsel
+      -b -o` to print clipboard contents, `xsel < file` to own the PRIMARY selection
+      with file contents, and `xsel > file` to save the current selection exactly.
+    - >
+      The manpage documents PRIMARY as the default, with `--secondary` and `--clipboard`
+      selecting the other X selections. Because X selection contents are served by the
+      owner, xsel may detach in modes where it must keep supplying data after the shell
+      command exits.
 category: system
 package-manager:
   apk: xsel
