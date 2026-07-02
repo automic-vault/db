@@ -11,6 +11,33 @@ config-file-location:
     - /etc/runit/2
     - /etc/runit/3
 credentials-file-location: null
+history:
+  - >
+    runit is Gerrit Pape's Unix init and service-supervision suite, developed in the
+    early 2000s and stabilized with the 1.0.0 release in February 2004. It belongs to
+    the supervision-first lineage of Unix service management: instead of only starting
+    services at boot, it keeps a supervising process tree responsible for restarting
+    daemons, sending signals without pid files, and managing logs.
+  - >
+    Its design is intentionally small and staged. When used as PID 1, runit performs
+    boot, normal operation, and shutdown through /etc/runit/1, /etc/runit/2, and
+    /etc/runit/3. Stage 2 usually runs runsvdir, which watches a service directory and
+    starts a runsv supervisor per service. This makes service definitions simple
+    directories with executable scripts rather than a large central policy engine.
+  - >
+    Adoption has been strongest among users and distributions that prefer small,
+    inspectable init systems. The upstream site lists Debian and Ubuntu as
+    alternative-init packaging targets and Void Linux as a distribution using runit as
+    its default init scheme; Debian also packages runit-init as a way to boot with
+    /sbin/init linked to runit-init. In practice, administrators use it either as the
+    full init system, as a service supervisor under another init, or as a compact
+    supervisor for container and server processes.
+  - >
+    Package-manager behavior varies by platform. Homebrew packages runit for macOS and
+    Linux but deliberately does not install it as an init replacement; it uses a
+    Homebrew-prefix service directory and offers runsvdir for supervised services. That
+    packaging choice captures the common workstation use case: keep the supervision
+    tools available without trying to replace the host's boot system.
 category: system
 package-manager:
   apk: runit
@@ -39,5 +66,12 @@ executables:
   - utmpset
 provenance:
   formula: runit
+  history-sources:
+    - https://smarden.org/runit/
+    - https://github.com/cloux/runit/blob/master/debian/changelog
+    - https://packages.debian.org/sid/runit-init
+    - https://docs.voidlinux.org/config/services/index.html
+    - https://formulae.brew.sh/formula/runit
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

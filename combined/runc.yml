@@ -7,6 +7,37 @@ docs:
 config-file-location:
   unix: config.json
 credentials-file-location: null
+history:
+  - >
+    runc is the low-level OCI container runtime that came out of Docker's libcontainer
+    work during the formation of the Open Container Initiative in 2015. Docker donated
+    the libcontainer codebase, including nsinit and the changes needed for it to run
+    independently of Docker, to the OCI; that codebase became runc. The project
+    therefore sits at the boundary between implementation and standardization: it was
+    both running code and a reference point while the OCI runtime specification took
+    shape.
+  - >
+    The OCI released its v1.0 runtime and image specifications on July 19, 2017, turning
+    runc from a Docker-internal runtime extraction into part of a broader container
+    portability story. The runtime's job is intentionally narrow: given an OCI bundle
+    with a root filesystem and config.json, it creates, starts, manages, and tears down
+    the Linux container process. The runc README explicitly frames it as a low-level
+    tool, mostly used by higher-level container systems rather than directly by end
+    users.
+  - >
+    Adoption followed the container stack's split into layers. Docker and containerd
+    used OCI components as the runtime substrate; Cloud Foundry adopted runC as the
+    primary container runtime library for Linux-based nodes in October 2016;
+    Kubernetes-related work adopted OCI through CRI implementations such as CRI-O. For
+    practitioners, runc is usually encountered indirectly through Docker, Podman,
+    containerd, CRI-O, or Kubernetes nodes, while direct use is reserved for debugging
+    bundles, runtime development, security research, and conformance-style testing.
+  - >
+    Packaging reflects that role. Linux distributions and Homebrew package runc as a
+    system component, with Linux-only constraints and dependencies such as libseccomp.
+    Its release process emphasizes signed releases, and its security posture matters
+    because it is close to namespaces, cgroups, capabilities, seccomp, and filesystem
+    setup in the Linux container trust boundary.
 category: system
 package-manager:
   apk: runc
@@ -30,5 +61,14 @@ executables:
   - runc
 provenance:
   formula: runc
+  history-sources:
+    - https://api.github.com/repos/opencontainers/runc
+    - https://github.com/opencontainers/runc
+    - https://opencontainers.org/faq/
+    - https://opencontainers.org/posts/announcements/
+    - >
+      https://www.linuxfoundation.org/press/press-release/open-container-initiative-oci-releases-v1-0-of-container-standards
+    - https://formulae.brew.sh/formula/runc
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
