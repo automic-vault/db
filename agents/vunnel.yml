@@ -2,11 +2,66 @@ id: brew:vunnel
 display-name: Vunnel
 repo: https://github.com/anchore/vunnel
 docs:
+  - https://oss.anchore.com/docs/contributing/vunnel
   - https://github.com/anchore/vunnel/blob/main/README.md
 config-file-location:
   unix:
     - .vunnel.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Its adoption is mostly indirect: users of Grype and Anchore Enterprise benefit
+      from Vunnel through the vulnerability database those tools consume. Anchore's
+      public documentation for contributors treats Vunnel providers as the extension
+      point for adding new vulnerability-data sources.
+  package-nerd-significance:
+    - >
+      Vunnel matters because vulnerability scanners are only as good as their advisory
+      feeds. It is the small, specialized tool that turns a messy world of distro
+      trackers, NVD records, GitHub advisories, and emerging vulnerability-exchange
+      schemas into buildable database input.
+  project-history:
+    - >
+      Anchore's public repository for Vunnel was created in November 2022. The project
+      describes itself as a tool for fetching, transforming, and storing vulnerability
+      data from many sources, including Linux distribution feeds, GitHub Security
+      Advisories, NVD, and other advisory services.
+    - >
+      Vunnel sits in Anchore's Syft/Grype security-tooling ecosystem rather than being a
+      user-facing scanner itself. Anchore's product documentation explains that Anchore
+      Enterprise and Grype use multiple vulnerability sources because upstream advisory
+      data is fragmented, and that Vunnel exists to understand those source-specific
+      formats and emit a consistent form usable by the vulnerability database.
+  related-projects:
+    - >
+      Grype consumes vulnerability database data built from upstream feeds; grype-db is
+      the database-builder side of the same Anchore ecosystem; OSV, OpenVEX, and CSAF
+      are related vulnerability-data formats mentioned in Vunnel contributor guidance.
+  sources:
+    - https://api.github.com/repos/anchore/vunnel
+    - https://docs.anchore.com/5.13/docs/vulnerability_management/
+    - https://github.com/anchore/vunnel
+    - https://oss.anchore.com/docs/contributing/vunnel/
+  summary:
+    - >
+      Vunnel is Anchore's vulnerability-data collection and transformation tool: an
+      ETL-style command-line program used to fetch upstream advisory data, normalize it,
+      and store it for downstream vulnerability database construction.
+  timeline:
+    - '2022: The anchore/vunnel GitHub repository was created.'
+    - >
+      2023: Public releases in the 0.x series show Vunnel becoming a separately
+      versioned component of Anchore's vulnerability-data pipeline.
+    - >
+      2026: Anchore contributor documentation describes new-provider schema selection,
+      including preference for OSV and other externally specified formats.
+  usage:
+    - >
+      In package-nerd terms, Vunnel is the data plumbing behind a scanner database.
+      Maintainers write providers that implement source-specific update logic, choose a
+      schema such as OSV or OpenVEX where possible, and normalize feed data so later
+      matching tools can reason over it.
 tags:
   - anchore
   - cli
@@ -25,29 +80,31 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      source_facts.description says this is a tool for collecting vulnerability data
-      from various sources; official anchore/vunnel repository is for that
-      vulnerability-data collection tool.
+    - current_curation.category
+    - source_facts.description
   display-name-sources:
-    - >
-      source_facts.name is vunnel; official anchore/vunnel repository uses the Vunnel
-      project name.
+    - current_curation.display-name
+    - https://github.com/anchore/vunnel
   docs-sources:
-    - Official anchore/vunnel README is the primary project documentation surface.
+    - current_curation.docs
+    - https://github.com/anchore/vunnel
+    - https://oss.anchore.com/docs/contributing/vunnel/
+  history-sources:
+    - https://api.github.com/repos/anchore/vunnel
+    - https://docs.anchore.com/5.13/docs/vulnerability_management/
+    - https://github.com/anchore/vunnel
+    - https://oss.anchore.com/docs/contributing/vunnel/
   repo-sources:
-    - >
-      source_facts.repo is empty; source_facts.homepage points to the official
-      anchore/vunnel GitHub repository.
+    - current_curation.repo
+    - https://github.com/anchore/vunnel
   tags-sources:
-    - >
-      source_facts.description identifies vulnerability data collection;
-      source_facts.homepage identifies Anchore as the official project owner.
+    - current_curation.tags
+    - https://github.com/anchore/vunnel
 category-confidence: high
 category-path:
   - security
-  - vulnerability-data
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
