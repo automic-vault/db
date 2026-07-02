@@ -10,53 +10,66 @@ credentials-file-location: null
 history:
   adoption-history:
     - >
-      The package fits the older embedded-database tradition rather than the
-      server-database model: Oracle positions Berkeley DB products as function-call
-      libraries for custom data management, and the XML variant exposes C++, Java,
-      Python, Perl, PHP, Tcl, and other language interfaces for applications that need
-      native XML storage.
+      Berkeley DB XML belongs to the embedded-database tradition rather than the
+      client/server database tradition. Oracle's FAQ lists C++, Java, Perl, PHP, Python,
+      and Tcl interfaces, so adoption was mostly through applications that linked the
+      library or scripted it locally, not through users connecting to a network daemon.
+    - >
+      The product is also a period marker for the 2000s XML-database wave. It appealed
+      to applications with non-tabular, frequently changing, document-shaped data, where
+      an XML repository reduced the mismatch between the application model and
+      relational tables.
   package-nerd-significance:
     - >
-      As a Homebrew formula, dbxml preserves a very specific corner of database history:
-      embeddable XML databases from the era when XQuery and native XML stores were
-      first-class data-management choices, wrapped as local libraries and CLI tools
-      instead of a network service.
+      dbxml is a preserved slice of database packaging history: an embeddable XML
+      database installed as libraries plus command-line utilities. It is interesting
+      precisely because it is neither a modern document service nor a plain key-value
+      store; it packages a whole native-XML data-management worldview into a local Unix
+      toolchain.
   project-history:
     - >
-      Oracle documents Berkeley DB XML as one member of the Berkeley DB product family:
-      a C++ software library layered on Berkeley DB, using XQilla for XQuery and XML
-      support. The Programmer's Reference Guide for library version 12.1.6.0 includes
-      upgrade notes and changelogs stretching across the 1.2, 2.x, 2.5, and 6.0 lines.
+      The project grew out of the Berkeley DB family after native XML databases became a
+      practical answer to document-centric data. Oracle's Programmer's Reference Guide
+      describes Berkeley DB XML as a C++ library built around Berkeley DB storage and
+      XML/XQuery components, with documentation for Unix, Windows, language APIs,
+      upgrades, and the dbxml command-line shell.
+    - >
+      Its long manual history is visible in Oracle's upgrade and changelog sections,
+      which cover the 1.2 line, the 2.0 through 2.5 series, and 6.0.x releases. The
+      product's technical story is not only file storage: it was about storing XML
+      documents in containers, indexing nodes and metadata, and running XQuery directly
+      against those containers.
   related-projects:
     - >
-      Related projects and components include Berkeley DB, Berkeley DB Java Edition,
-      XQilla, Xerces-C, SQLite-backed Berkeley DB SQL API work, and language bindings
-      for C++, Java, Python, Perl, PHP, and Tcl.
+      Berkeley DB XML is closely tied to Berkeley DB, XQilla, Xerces-C, and the language
+      bindings documented by Oracle for C++, Java, Perl, PHP, Python, and Tcl.
   sources:
-    - https://www.oracle.com/database/technologies/related/berkeleydb.html
     - https://docs.oracle.com/cd/E17276_01/html/programmer_reference_xml/index.html
     - https://www.oracle.com/database/technologies/berkeleydb-xml-faq.html
   summary:
     - >
-      Berkeley DB XML is Oracle's embeddable XML database product, layered on Berkeley
-      DB and aimed at indexed, optimized XML storage with XQuery support.
+      Berkeley DB XML is Oracle's embeddable XML database product for applications that
+      wanted native XML storage, indexing, and XQuery without running a separate
+      database server. In package terms it sits at the intersection of Berkeley DB, XML
+      databases, and local command-line database tooling.
   timeline:
+    - "1.2 era: Oracle's guide records Berkeley DB XML 1.2.0 and 1.2.1 changelog sections."
+    - '2.x era: Upgrade notes cover 2.0, 2.1, 2.2, 2.3, 2.4, and 2.5 transitions.'
     - >
-      1.2: Programmer's Reference Guide includes Berkeley DB XML 1.2.0 and 1.2.1
-      changelog sections.
-    - >
-      2.x: Guide documents upgrade paths through Berkeley DB XML 2.0, 2.1, 2.2, 2.3,
-      2.4, and 2.5.
-    - >
-      2015: Oracle Programmer's Reference Guide for library version 12.1.6.0 is dated
-      July 10, 2015.
-    - '2018: Oracle announces Berkeley DB version 18.1 on its Berkeley DB product page.'
+      2015: Oracle's Berkeley DB XML Programmer's Reference Guide for library version
+      12.1.6.0 is dated July 10, 2015.
+    - "6.0 era: Oracle's documentation includes 6.0.17 and 6.0.18 changelog sections."
   usage:
     - >
-      Berkeley DB XML stores XML documents in containers, supports XQuery and
-      XPath-oriented access, and provides command-line utilities such as dbxml,
-      dbxml_dump, dbxml_load, and dbxml_load_container for shell-level inspection,
-      loading, and dumping.
+      Typical use is to create Berkeley DB XML containers, insert XML documents, define
+      indexes, and query them with XQuery or XPath-style expressions. The Homebrew
+      package exposes the dbxml shell and dump/load utilities, which makes it useful for
+      local inspection, export/import, and small reproducible database experiments.
+    - >
+      The FAQ emphasizes operational concerns familiar to embedded-database users: large
+      documents, node storage containers, explicit resource cleanup in Java bindings,
+      thread-sharing rules for manager/container/query objects, and careful
+      configuration of validation and external access.
 category: data
 package-manager:
   brew: dbxml

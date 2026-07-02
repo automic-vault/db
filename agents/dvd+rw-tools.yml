@@ -8,60 +8,70 @@ credentials-file-location: null
 history:
   adoption-history:
     - >
-      dvd+rw-tools was widely packaged across Unix-like systems, including Homebrew,
-      Debian, Ubuntu, Fedora, Arch, Alpine, openSUSE, and others. That broad packaging
-      footprint reflects its role as infrastructure: many users never learned a full
-      optical-media stack, but they invoked `growisofs` directly or through front ends.
+      dvd+rw-tools spread because it solved a boring hardware problem in a scriptable
+      way. Distributions, backup recipes, DVD authoring how-tos, and GUI burners could
+      rely on growisofs or the smaller media utilities instead of teaching every user
+      the low-level optical drive details.
+    - >
+      The package survived long after optical drives stopped being default laptop
+      hardware because old media workflows, lab machines, archival scripts, and
+      DVD-Video authoring chains still expected these commands to exist.
   package-nerd-significance:
     - >
-      This is a package-nerd fossil in the best sense: a small, scriptable set of
-      binaries that encoded real hardware knowledge from the DVD+-RW era. It is still
-      useful to understand because many old HOWTOs, backup scripts, and disc-authoring
-      recipes assume `growisofs` exists.
+      dvd+rw-tools is a fossil worth keeping sharp: it encodes the awkward hardware era
+      when optical media, kernel device behavior, firmware quirks, and Unix pipelines
+      all had to meet. The package is small, but many old burn scripts and HOWTOs assume
+      growisofs is in PATH.
   project-history:
     - >
-      The project is historically associated with Andy Polyakov's DVD+RW work and the
-      `growisofs` utility. Public package metadata and secondary summaries describe the
-      suite as GPL-licensed, cross-platform DVD/Blu-ray writing software, with the
-      stable 7.1 release dated 2008-03-05.
+      The project is associated with Andy Polyakov and the original DVD+RW for Linux
+      pages at Chalmers. Public source-package records and manpage references preserve
+      the original project URL even though the live page currently redirects to a 404.
+      The early packaging record dates the initial dvd+rw-tools package to November
+      2002, with the combined version number reflecting growisofs, dvd+rw-format, and
+      dvd+rw-booktype versions.
     - >
-      The toolset became especially known through `growisofs`, which pipes filesystem
-      image generation into optical-disc writing. That made it a natural companion to
-      `mkisofs` or compatible image builders and a building block for scripts that
-      needed to write DVD-Video or data DVDs.
+      growisofs became the centerpiece because it coordinated optical-disc writing with
+      ISO filesystem generation. Source and manual summaries describe it as a user-space
+      SCSI/MMC-style recording tool originally meant to grow ISO9660 filesystems on
+      DVD+RW media, later expanding across DVD formats and Blu-ray media.
   related-projects:
     - >
-      dvd+rw-tools is commonly used with mkisofs or genisoimage for filesystem image
-      generation, with dvdauthor for DVD-Video directory creation, and alongside GUI
-      burning front ends that wrap the underlying command-line tools.
+      Related projects and tools include mkisofs, genisoimage, cdrtools, cdrkit,
+      dvdauthor, cdrecord or wodim, and GUI burning front ends that wrapped growisofs
+      for everyday desktop users.
   sources:
-    - https://en.wikipedia.org/wiki/Dvd%2Brw-tools
-    - https://sourceforge.net/projects/dvd-rw-tools/files/
-    - https://formulae.brew.sh/formula/dvd+rw-tools
+    - https://fy.chalmers.se/~appro/linux/DVD+RW
+    - https://github.com/rbrito/pkg-dvd-rw-tools/blob/master/dvd%2Brw-tools.spec
+    - https://man.archlinux.org/man/dvd%2Brw-format.1.en
+    - https://man.archlinux.org/man/growisofs.1.en
   summary:
     - >
-      dvd+rw-tools is the classic Unix optical-disc toolkit around `growisofs` and
-      DVD+-RW media management. Its significance is practical: for years it was the
-      small command-line layer that let scripts format rewritable DVDs, inspect media,
-      set book type data, and burn DVD or Blu-ray-style filesystems without a GUI.
+      dvd+rw-tools is the classic Unix optical-disc toolkit around growisofs and
+      companion utilities for recordable DVD, DVD-RAM, and later Blu-ray-style media. It
+      is practical package history: a small command-line layer that let scripts burn,
+      format, and inspect discs without a GUI.
   timeline:
     - >
-      2000s: dvd+rw-tools became a common Unix toolkit for DVD+-RW/DVD+-R writing and
-      media management.
-    - '2008-03-05: Stable release 7.1 recorded in public package summaries.'
+      2002-11: Early spec history records the initial dvd+rw-tools packaging and
+      versions derived from growisofs, dvd+rw-format, and dvd+rw-booktype.
     - >
-      2010s: Continued distribution packaging kept `growisofs` available as optical
-      drives declined from everyday use.
+      2003: Release notes in package records show additions for DVD-R/RW support,
+      write-speed control, overburn protection, and BSD portability work.
+    - >
+      2004: Package records show ports and drive-compatibility fixes across Solaris,
+      HP-UX, IRIX, and specific DVD hardware behavior.
+    - '2008: Public package summaries record dvd+rw-tools 7.1 as the later stable release line.'
   usage:
     - >
-      The package exposes utilities such as `growisofs` for burning images or filesystem
-      trees, `dvd+rw-format` for formatting rewritable media, `dvd+rw-mediainfo` for
-      media inspection, `dvd+rw-booktype` for book type management, and
-      `dvd-ram-control` for DVD-RAM behavior.
+      Common commands include growisofs for burning an image or filesystem tree,
+      dvd+rw-format for formatting or blanking rewritable media, dvd+rw-mediainfo for
+      drive and disc status, dvd+rw-booktype for book type settings, and dvd-ram-control
+      for DVD-RAM behavior.
     - >
-      In DVD authoring workflows it typically appears after tools such as dvdauthor have
-      produced a VIDEO_TS directory: an image builder creates a DVD-Video-compliant
-      filesystem and dvd+rw-tools writes it to optical media.
+      In package-nerd workflows it often appears after tools such as mkisofs,
+      genisoimage, or dvdauthor: one tool builds a filesystem or VIDEO_TS tree, and
+      dvd+rw-tools writes the result to physical media.
 tags:
   - blu-ray
   - burning
@@ -79,34 +89,23 @@ geiger:
     - text:media
 provenance:
   category-sources:
-    - >
-      source_facts.description says dvd+rw-tools provides DVD+-RW/R tools; official
-      maintainer page is for DVD+RW/+R/-R[W] support.
+    - growisofs and dvd+rw-format manual pages
   display-name-sources:
-    - >
-      source_facts.name and package id use dvd+rw-tools; upstream references use the
-      same project name.
+    - dvd+rw-tools source-package records and manual pages
   docs-sources:
     - >
-      The upstream maintainer page at fy.chalmers.se/~appro/linux/DVD+RW/ is the best
-      official documentation surface for dvd+rw-tools.
+      Original dvd+rw-tools project URL referenced by growisofs documentation and
+      source-package records
   history-sources:
-    - https://en.wikipedia.org/wiki/Dvd%2Brw-tools
-    - https://sourceforge.net/projects/dvd-rw-tools/files/
-    - https://formulae.brew.sh/formula/dvd+rw-tools
-  repo-sources:
-    - >
-      source_facts.repo is empty; official project page does not expose a clear HTTP
-      source-control repository URL.
+    - https://fy.chalmers.se/~appro/linux/DVD+RW
+    - https://github.com/rbrito/pkg-dvd-rw-tools/blob/master/dvd%2Brw-tools.spec
+    - https://man.archlinux.org/man/dvd%2Brw-format.1.en
+    - https://man.archlinux.org/man/growisofs.1.en
   tags-sources:
-    - >
-      source_facts.description identifies DVD+-RW/R tooling; upstream project page
-      documents DVD and Blu-ray writing utilities such as growisofs.
+    - growisofs and dvd+rw-format manual pages
 category-confidence: high
 category-path:
   - media
-  - optical-disc
-  - dvd-burning
 display-name-confidence: high
 docs-confidence: medium
 history-confidence: medium

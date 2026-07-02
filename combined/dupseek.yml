@@ -9,50 +9,53 @@ credentials-file-location: null
 history:
   adoption-history:
     - >
-      The official platform notes report dupseek running on Debian GNU/Linux Woody and
-      Sarge, Mac OS X 10.2.6, and FreeBSD 4.7. The credits also mention outside testing
-      on Mac OS X and a patch adding batch processing and option parsing, evidence of
-      modest but real user feedback.
+      The official platform notes list reports from Debian GNU/Linux Woody and Sarge,
+      Mac OS X 10.2.6, and FreeBSD 4.7. Credits mention a contributed patch for batch
+      processing and option parsing, plus outside Mac OS X testing, which suggests
+      modest but real user feedback around a personal utility.
   package-nerd-significance:
     - >
-      For package-history purposes, dupseek is a snapshot of the Unix
-      duplicate-file-cleanup niche before later tools standardized around whole-file
-      hashing, richer safety defaults, or GUI workflows. Its chunk-comparison design is
-      the notable bit: it tries to reduce I/O before duplicate groups are fully proven.
+      dupseek is a compact example of pre-modern duplicate-file tooling: one Perl
+      script, interactive control, sparse reads, and explicit user caution. It is less
+      famous than later dedup tools, but it captures a useful design tradeoff from the
+      early-2000s Unix utility shelf.
   project-history:
     - >
-      The official page dates dupseek 1.0 to June 6, 2003, 1.1 to June 27, 2003, 1.2 to
-      March 7, 2005, and 1.3 to September 24, 2005. The page describes the tool as
-      Copyright 2003-2005 Antonio Bellezza and released under GPL v2.
+      The official Beautylabs page dates the public releases to 2003-2005, with version
+      1.0 in June 2003 and version 1.3 in September 2005. The tool was distributed as a
+      small archive containing development files and the standalone dupseek program.
     - >
-      Instead of the common size-then-checksum approach, dupseek groups files by size
-      and then compares growing chunks, stopping early when files diverge. The author
-      positioned that strategy as especially useful when many large files have the same
-      size.
+      The page contrasts dupseek with the common size-plus-fingerprint method. dupseek
+      first groups by file size, then reads and compares small chunks, increasing chunk
+      size and dropping files from consideration as soon as they differ. The author
+      presents this as especially efficient when many large files share the same size.
   related-projects:
     - >
-      The official page frames dupseek against duplicate-file finders that group by size
-      and then compute short fingerprints such as MD5 checksums, but it does not name
-      specific competing projects.
+      The official page compares dupseek's approach with duplicate finders that group by
+      file size and then compute a short fingerprint such as an MD5 checksum, but it
+      does not name a specific competing tool.
   sources:
     - http://www.beautylabs.net/software/dupseek.html
   summary:
     - >
-      dupseek is a small Perl command-line tool from Antonio Bellezza's Beautylabs
-      software page for interactively finding and removing duplicate files. Its
-      historical interest is less about broad adoption and more about an early-2000s
-      duplicate-file algorithm that avoided hashing whole files up front.
+      dupseek is Antonio Bellezza's small interactive Perl command-line tool for finding
+      and removing duplicate files. Its interest is the algorithm and workflow: it
+      compares files progressively instead of simply hashing every candidate up front.
   timeline:
     - '2003-06-06: dupseek 1.0 released.'
     - '2003-06-27: dupseek 1.1 released with automatic deletion support.'
     - '2005-03-07: dupseek 1.2 released.'
-    - '2005-09-24: dupseek 1.3 released, as listed on the official page.'
+    - '2005-09-24: dupseek 1.3 released and listed as the latest version on the official page.'
   usage:
     - >
-      dupseek is meant for interactive cleanup: users run the command, can interrupt it
-      with Ctrl-C, inspect partial results, and decide whether to continue processing
-      groups. The page warns that the program can destroy files, especially from version
-      1.1 onward where automatic deletion exists.
+      dupseek is meant for careful cleanup rather than unattended deduplication. It can
+      be interrupted with Ctrl-C to show partial results, and the user can inspect
+      groups or continue processing. The official warning is blunt because automatic
+      deletion support appeared in version 1.1.
+    - >
+      The notable operational caveat is that directories being checked should not be
+      modified while dupseek runs, and older versions had a dangerous
+      duplicate-directory bug that was later marked corrected in version 1.3.
 category: system
 package-manager:
   brew: dupseek
