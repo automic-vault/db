@@ -11,6 +11,87 @@ config-file-location:
     - $XDG_CONFIG_HOME/tsshd/sshd_config
     - ~/.config/tsshd/sshd_config
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README documents many official installation channels: apt on Ubuntu and
+      Debian, dnf/yum on Fedora, CentOS, and RHEL, yay on Arch Linux, Homebrew on macOS,
+      Scoop on Windows, conda-forge, Go install, source builds, and GitHub release
+      archives. The input metadata records Homebrew, Nix, and Scoop package-manager
+      coverage.
+    - >
+      The project is adopted alongside the trzsz `tssh` client. The README lists
+      supported clients and terminals, including trzsz-ssh (`tssh`) and Rootshell, which
+      makes tsshd part of a broader terminal/SSH mobility stack rather than a standalone
+      daemon only.
+  package-nerd-significance:
+    - >
+      For package users, tsshd is interesting because it packages an ambitious answer to
+      a long-standing terminal problem: mosh-like roaming and reconnection while keeping
+      OpenSSH compatibility features that mosh historically lacks.
+    - >
+      Its release assets and packaging matrix are unusually broad for a young network
+      tool, which matters to CLI users who want the same roaming SSH behavior on Linux
+      servers, macOS clients, Windows environments, and mobile-adjacent terminals.
+  project-history:
+    - >
+      The official README positions tsshd as an SSH server for cellular links, unstable
+      Wi-Fi, sleep/wake events, temporary network loss, and IP changes. It aims to
+      remain compatible with OpenSSH while adding roaming, reconnection, UDP forwarding,
+      QUIC/KCP transports, and low-latency behavior.
+    - >
+      The project explicitly compares itself with mosh: `tsshd` plays a role similar to
+      `mosh-server`, and `tssh --udp` is presented as the client-side analogue. The
+      difference emphasized by the README is that tssh/tsshd works like standard SSH and
+      preserves features such as X11 forwarding, agent forwarding, port forwarding,
+      scrollback, OSC52, ProxyJump, and tmux control-mode integration.
+    - >
+      Release history shows a fast 2025-2026 maturation cycle. The initial v0.1.0
+      release arrived on June 23; v0.1.1 added QUIC and fixed KCP hangs; v0.1.2 added
+      X11 and agent forwarding; v0.1.5 added connection migration; v0.1.6 was described
+      as a milestone release with ProxyJump, UDP-over-TCP, IPv4/IPv6 networking,
+      recovery, and terminal improvements; v0.1.8 fixed protocol corruption and several
+      stability issues.
+  related-projects:
+    - >
+      The README names trzsz-ssh (`tssh`) as the client designed as a drop-in OpenSSH
+      replacement, mosh as the inspiration, KCP and QUIC as transports, and
+      Wish/gliderlabs-style SSH servers as an integration path for custom services.
+  sources:
+    - https://github.com/trzsz/tsshd#readme
+    - https://github.com/trzsz/tsshd/releases
+    - https://trzsz.github.io/tsshd
+    - source_facts.package-manager
+  summary:
+    - >
+      tsshd is a UDP-based SSH server from the trzsz ecosystem, designed for unreliable
+      or high-latency networks while staying compatible with normal SSH workflows
+      through the `tssh --udp` client mode.
+  timeline:
+    - '2025-06-23: v0.1.0 initial release.'
+    - '2025-06-30: v0.1.1 added QUIC protocol support and fixed KCP hanging.'
+    - '2025-07-07: v0.1.2 added X11 forwarding and SSH agent forwarding.'
+    - '2025-10-26: v0.1.5 added connection migration and Windows terminal fixes.'
+    - >
+      v0.1.6: Milestone release added ProxyJump, UDP-over-TCP, IPv4/IPv6 networking,
+      reconnection UX, and terminal improvements.
+    - >
+      2026-05-10: v0.1.8 fixed protocol corruption and improved SSH config, QUIC, and
+      reliability behavior.
+  usage:
+    - >
+      A typical deployment installs `tssh` on the client and `tsshd` on the remote host,
+      then logs in with `tssh --udp host`. Users can also configure `UdpMode` in
+      `~/.ssh/config` to select UDP, QUIC, or KCP behavior without repeating flags.
+    - >
+      Operationally, `tssh` first opens a normal SSH session, starts a per-session
+      `tsshd` process on the server, receives a UDP port and session secrets through the
+      SSH channel, closes the original SSH connection, and then communicates with the
+      server-side process over UDP.
+    - >
+      The README also documents tsshd as a Go framework for building custom SSH
+      services. Examples show middleware-based services and integration with
+      Wish/gliderlabs-style SSH servers for hybrid TCP SSH plus UDP roaming.
 category: security
 package-manager:
   brew: tsshd

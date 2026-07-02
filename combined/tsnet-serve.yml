@@ -6,6 +6,85 @@ docs:
   - https://github.com/shayne/tsnet-serve#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Official release pages show a short but active release period, with versions such
+      as v1.1.2 through v1.3.2 carrying Funnel fixes, path allow/deny features, request
+      logging, Tailscale dependency bumps, Go toolchain updates, and GoReleaser-based
+      binary releases.
+    - >
+      The README documents several distribution surfaces: prebuilt GitHub releases, OCI
+      container images on GitHub Container Registry at `ghcr.io/shayne/tsnet-serve`, and
+      Homebrew. That made the tool easy to use in homelab and package-manager workflows
+      where a container or single binary could turn a local backend into a tailnet
+      service.
+  package-nerd-significance:
+    - >
+      tsnet-serve matters in the package-nerd niche because it turned Tailscale's
+      embedded-networking library into a one-command appliance: install the formula or
+      run the container, provide a backend, and get a tailnet hostname and certificate.
+    - >
+      Its archival is also useful metadata. The project documents a real migration path
+      from a small package-manager-friendly CLI to a successor (`tsnsrv`) once the
+      surrounding Tailscale Serve/Funnel and tsnet tooling matured.
+  project-history:
+    - >
+      The README presents tsnet-serve as a lightweight reverse proxy for a tailnet:
+      users give it a hostname, backend URL, and auth key, and the app joins the tailnet
+      as a machine with Tailscale connectivity, TLS, and the same reverse proxy behavior
+      as `tailscale serve`.
+    - >
+      The project belongs to the wave of tsnet tooling around Tailscale's Go library.
+      Tailscale's official docs describe tsnet as a way to embed Tailscale inside a Go
+      program so the program can make direct tailnet connections and appear like a
+      separate device. tsnet-serve packaged that pattern as a CLI/container app for
+      people who wanted a private service endpoint without writing Go.
+    - >
+      Development was explicitly wound down in July 2025. The repository was archived by
+      its owner on July 5, 2025, and the linked winding-down issue says maintainers were
+      switching to `tsnsrv` because it had the desired features and a complete Nix
+      module.
+  related-projects:
+    - >
+      The README links directly to Tailscale Funnel and to `tsnsrv` as the recommended
+      successor. Tailscale's own docs for tsnet, Tailscale Serve, and Funnel explain the
+      platform features that tsnet-serve wrapped.
+  sources:
+    - https://github.com/shayne/tsnet-serve#readme
+    - https://github.com/shayne/tsnet-serve/issues/10
+    - https://github.com/shayne/tsnet-serve/releases
+    - https://tailscale.com/docs/features/tailscale-funnel
+    - https://tailscale.com/docs/features/tsnet
+    - https://tailscale.com/docs/reference/tailscale-cli/serve
+  summary:
+    - >
+      tsnet-serve was a standalone Go reverse proxy that embedded Tailscale via tsnet so
+      an HTTP backend could appear as its own machine on a tailnet, roughly like
+      `tailscale serve` without being tied to an existing node.
+  timeline:
+    - '2024-07-31: v1.1.2 release fixed Funnel mode and insecure HTTPS backend support.'
+    - '2024-08-29: v1.1.4 release moved to GoReleaser and bumped the Tailscale dependency.'
+    - >
+      2025-04-19: v1.2.1 release moved the default state directory and added X-Forwarded
+      headers in Funnel mode.
+    - >
+      2025-06-22: v1.3.0 added allow/deny paths and request logs; v1.3.2 followed with a
+      Tailscale bump and signal-handling fix.
+    - >
+      2025-07-05: Winding-down issue opened and repository archived, with maintainers
+      pointing users to `tsnsrv`.
+  usage:
+    - >
+      The primary usage model was `tsnet-serve -hostname ... -backend ...`, optionally
+      setting listen port, Funnel mode, allow/deny path regular expressions, a state
+      directory, and a custom control URL for Headscale. Environment variables such as
+      `TSNS_HOSTNAME`, `TSNS_BACKEND`, `TSNS_LISTEN_PORT`, and `TSNS_FUNNEL` mirrored
+      the flags.
+    - >
+      For containers, the README shows a persistent state volume, hostname/backend
+      variables, optional Funnel and control URL variables, and `TS_AUTHKEY` for initial
+      registration. Without an auth key, the app prints a registration link.
 category: networking
 package-manager:
   brew: tsnet-serve
