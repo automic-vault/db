@@ -12,6 +12,61 @@ config-file-location:
     - ~/.config/toast/toast.yml
   windows: '%APPDATA%\toast\toast.yml'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Toast is packaged for Homebrew, MacPorts, Cargo, and Nix according to the batch
+      input and official README installation sections. Adoption appears strongest among
+      developers who want container-backed task definitions and shared CI/local caching
+      rather than a broad end-user productivity audience.
+  package-nerd-significance:
+    - >
+      For package nerds, Toast is interesting as a small, package-manager-friendly
+      alternative to bespoke Makefile-plus-Docker scripts. It sits near Docker Compose
+      and Nix in the design space, but the official README positions it as
+      lower-commitment than Nix and more task-oriented than Compose.
+  project-history:
+    - >
+      The official README presents Toast as a containerized workflow tool: users write a
+      toastfile, normally named toast.yml, and Toast runs tasks in containers based on
+      Docker images. It describes Toast as a high-level containerized build system with
+      task dependencies, input and output paths, and cache keys derived from commands
+      and task inputs.
+    - >
+      The project explicitly says Toast was inspired by an in-house tool used at Airbnb
+      for CI jobs, with its design influenced by lessons from building CI
+      infrastructure. Its changelog shows active iteration from early 2019 releases
+      through later platform work, including Windows and Apple silicon support, Podman
+      selection through a docker-cli option, and a 2026 release fixing tar-building and
+      installer behavior.
+  related-projects:
+    - Docker Compose and Nix are named in the official README as related tools.
+    - Docuum is recommended by the Toast README for Docker image eviction.
+  sources:
+    - https://github.com/stepchowfun/toast#readme
+    - https://github.com/stepchowfun/toast/blob/main/CHANGELOG.md
+    - source_facts.package-manager
+  summary:
+    - >
+      Toast is a Rust command-line task runner for defining project workflows in YAML
+      and executing them inside Docker containers. Its niche is reproducible
+      development, build, test, and CI tasks without requiring a project to adopt a full
+      alternate package manager or build system.
+  timeline:
+    - '2019: Early public releases in the official changelog.'
+    - >
+      2021: Added Podman-capable docker-cli selection and multiple cache/task control
+      features.
+    - >
+      2023: Added support for GNU Linux on AArch64, macOS on Apple silicon, and Windows
+      on AArch64.
+    - '2026: 0.48.0 fixed tar-building and installer behavior.'
+  usage:
+    - >
+      A typical Toast user keeps a toast.yml file in a repository, defines tasks such as
+      install, build, test, run, or serve, and invokes toast from any directory inside
+      the project. The README emphasizes local caching and optional remote Docker
+      registry caching so teammates and CI can share expensive build results.
 category: developer-tools
 package-manager:
   brew: toast
