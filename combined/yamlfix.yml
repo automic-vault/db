@@ -11,6 +11,70 @@ config-file-location:
     - .yamlfix.toml
     - yamlfix.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      yamlfix grew in the Python tooling lane rather than the Go single-binary lane. Its
+      docs start with `pip install yamlfix`, but the supplied package data also shows
+      packaging in Homebrew and Nix, making it available to users who curate YAML-heavy
+      repositories from system package managers.
+    - >
+      The project is especially relevant where YAML is hand-edited, reviewed, and
+      linted: repository metadata, GitHub Actions, Docker Compose, Kubernetes-adjacent
+      files, and documentation examples. Its promise to keep comments addresses a
+      practical blocker for formatter adoption in configuration files.
+  package-nerd-significance:
+    - >
+      yamlfix matters because YAML formatting is harder than it looks: comments, quotes,
+      null spellings, truthy strings, flow versus block sequences, Jinja snippets, and
+      line wrapping all affect whether a formatter is trusted in real repos.
+    - >
+      In a package catalog, yamlfix sits next to linters and formatters as the
+      Python/comment-preserving answer to the recurring question: can this YAML be
+      autoformatted without losing the parts humans care about?
+  project-history:
+    - >
+      The repository was created on 2020-11-24. The README and documentation describe
+      yamlfix as an opinionated formatter that keeps comments, fixes indentation, adds
+      or removes document starts, normalizes truthy values, adjusts line endings and
+      whitespace, and respects Jinja2 syntax.
+    - >
+      The official references section explains the project in relation to an earlier
+      yamlfmt project: yamlfix was created as a new formatter because its author wanted
+      stronger tests, CI, and documentation. It builds on ruyaml for YAML
+      parsing/round-tripping, Click for the CLI, and maison for configuration discovery.
+  related-projects:
+    - >
+      The official references name mmlb/yamlfmt, ruyaml, Click, maison, pytest, mypy,
+      Flakeheaven, Black, Autoimport, isort, PDM, MkDocs, Safety, and Bandit.
+  sources:
+    - https://api.github.com/repos/lyz-code/yamlfix
+    - https://github.com/lyz-code/yamlfix
+    - https://raw.githubusercontent.com/lyz-code/yamlfix/main/README.md
+    - https://raw.githubusercontent.com/lyz-code/yamlfix/main/docs/index.md
+  summary:
+    - >
+      yamlfix is a Python YAML formatter focused on applying a consistent style while
+      preserving comments. It is both a command-line tool and a library, aimed at making
+      YAML files more regular without stripping the human annotations that configuration
+      files often rely on.
+  timeline:
+    - '2020-11-24: GitHub repository created.'
+    - >
+      2020s: Documentation framed yamlfix as a comment-preserving alternative inspired
+      by yamlfmt.
+    - >
+      2020s: Configuration support settled around pyproject.toml, .yamlfix.toml,
+      yamlfix.toml, custom TOML files, and YAMLFIX_ environment variables.
+  usage:
+    - >
+      The documented CLI accepts files or directories: `yamlfix file.yaml file2.yml` for
+      individual files and `yamlfix .` for recursive formatting. The library API exposes
+      `fix_files` and `fix_code` for embedding the formatter in Python code.
+    - >
+      Configuration is loaded from `pyproject.toml`, `.yamlfix.toml`, or `yamlfix.toml`,
+      with optional custom TOML files via `-c` or `--config-file` and environment
+      variable overrides using the `YAMLFIX_` prefix.
 category: developer-tools
 package-manager:
   brew: yamlfix

@@ -16,6 +16,74 @@ config-file-location:
     - ~/.config/yamlfmt/.yamlfmt
   windows: '%LOCALAPPDATA%\yamlfmt\.yamlfmt'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      yamlfmt has a broad package-manager footprint in the supplied data, including
+      Homebrew, Nix, apk, pacman, and Scoop. Its README also presents Go installation,
+      release binaries, pre-commit integration, and a container image, which fits modern
+      developer-tool adoption through local hooks and CI checks.
+    - >
+      The repository lives under the Google organization but the README states that it
+      is not officially supported by Google and is maintained primarily by an individual
+      maintainer in spare time. That makes it an interesting case where a
+      high-visibility org namespace helped adoption of a still-community-paced developer
+      tool.
+  package-nerd-significance:
+    - >
+      yamlfmt is package-nerd significant because it packages the messy YAML-formatting
+      problem as a distributable Go binary with docs for hooks, containers, global
+      config, and release artifact verification.
+    - >
+      It also represents the split in YAML tooling between generic style normalization
+      and domain-specific formats such as Kubernetes KYAML, a distinction that matters
+      to maintainers choosing formatter defaults for large repositories.
+  project-history:
+    - >
+      The repository was created on 2022-08-10. The README describes the project as an
+      extensible formatter rather than only a fixed style tool: users can run the
+      `yamlfmt` command, install it as a pre-commit hook, use a container image, or
+      build on the library APIs.
+    - >
+      The project grew around formatter backends and configuration. The default `basic`
+      formatter serializes YAML through a fork of gopkg.in/yaml.v3, while the `kyaml`
+      formatter targets Kubernetes YAML style. The docs also record caveats around YAML
+      directives, anchors, aliases, line breaks, and line-length behavior, showing the
+      practical complexity behind YAML formatting.
+  related-projects:
+    - >
+      Related projects and technologies include gopkg.in/yaml.v3, Kubernetes KYAML,
+      pre-commit, bmatcuk/doublestar, cosign, and container-based CI runners.
+  sources:
+    - https://api.github.com/repos/google/yamlfmt
+    - https://github.com/google/yamlfmt
+    - https://raw.githubusercontent.com/google/yamlfmt/main/README.md
+    - https://raw.githubusercontent.com/google/yamlfmt/main/docs/config-file.md
+  summary:
+    - >
+      Google yamlfmt is a Go command-line formatter and library for YAML files. Its
+      goals are explicit: be easy to distribute as a single binary, be extensible with
+      custom formatters, and be usable as a library foundation for teams that need a
+      customized YAML formatter.
+  timeline:
+    - '2022-08-10: GitHub repository created.'
+    - >
+      2020s: Project goals documented around single-binary distribution, custom
+      formatter extension, and library use.
+    - >
+      2020s: Configuration discovery documented across local project files, ancestor
+      search, and platform config directories.
+    - '2020s: README documented pre-commit, container, and CI usage patterns.'
+  usage:
+    - >
+      Basic usage is `yamlfmt x.yaml y.yaml ...` or `yamlfmt .`, where directories are
+      searched recursively for `.yaml` and `.yml` files. The `-dstar` mode enables
+      doublestar glob matching, and `-lint` supports CI workflows that check formatting
+      without rewriting files.
+    - >
+      Configuration is discovered from a `-conf` flag, the working directory, ancestor
+      directories, or a system config directory. Supported config filenames include
+      `.yamlfmt`, `yamlfmt.yml`, `yamlfmt.yaml`, `.yamlfmt.yaml`, and `.yamlfmt.yml`.
 category: developer-tools
 package-manager:
   apk: yamlfmt
@@ -26,6 +94,7 @@ package-manager:
 package-manager-url: https://formulae.brew.sh/formula/yamlfmt
 license: Apache-2.0
 tags:
+  - ci
   - cli
   - configuration
   - formatter
