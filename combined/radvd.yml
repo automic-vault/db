@@ -7,6 +7,33 @@ docs:
 config-file-location:
   unix: /etc/radvd.conf
 credentials-file-location: null
+history:
+  - >
+    radvd, the Router Advertisement Daemon, belongs to the first generation of IPv6
+    plumbing for Unix-like systems. Its changelog records version 0.1 on 1996-11-13,
+    followed by version 0.2 on 1996-11-17 and version 0.3 on 1996-12-21, with early work
+    centered on Linux kernel IPv6 APIs, RFC 1970 behavior, manual pages, a configuration
+    file format, and the companion radvdump utility for displaying received Router
+    Advertisements.
+  - >
+    The project settled into a narrow but important network-infrastructure role: a
+    daemon for Linux and BSD routers that emits IPv6 Router Advertisement messages on a
+    local link, periodically and in response to Router Solicitation packets. Those
+    advertisements let hosts discover prefixes, default routers, and related
+    autoconfiguration parameters without using radvd as a general router configuration
+    tool. The README's FAQ makes that boundary explicit: radvd advertises routes, while
+    address assignment, routes, forwarding, and topology choices remain the
+    administrator's responsibility.
+  - >
+    Adoption followed IPv6 deployment rather than application-framework fashion. radvd
+    appears as a normal operating-system package and service in Linux distributions, BSD
+    packaging, firewall/router documentation, and Homebrew. Practitioners use it by
+    writing radvd.conf, enabling IPv6 forwarding on the router, and advertising one or
+    more /64 prefixes, RDNSS/DNSSL options, lifetimes, and related Neighbor Discovery
+    options to client networks. Later releases added support for newer Neighbor
+    Discovery extensions such as 6LoWPAN-related behavior, RDNSS/DNSSL handling,
+    NAT64/pref64 options, captive-portal options, and release-process hardening; the
+    project published v2.20 on 2024-12-31 and v2.21 on 2026-05-25.
 category: networking
 package-manager:
   apk: radvd
@@ -33,5 +60,14 @@ executables:
   - radvdump
 provenance:
   formula: radvd
+  history-sources:
+    - https://raw.githubusercontent.com/radvd-project/radvd/master/CHANGES
+    - https://radvd.litech.org/
+    - https://github.com/radvd-project/radvd
+    - https://manpages.debian.org/testing/radvd/radvd.8.en.html
+    - https://formulae.brew.sh/formula/radvd
+    - https://api.github.com/repos/radvd-project/radvd/releases?per_page=10
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

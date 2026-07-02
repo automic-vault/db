@@ -11,6 +11,42 @@ config-file-location:
     - <group>/router.db
 credentials-file-location:
   unix: ~/.cloginrc
+history:
+  - >
+    RANCID, the Really Awesome New Cisco confIg Differ, grew out of the
+    network-operations need to treat router and switch configurations as versioned
+    infrastructure. Its upstream description is intentionally simple: log in to each
+    device listed in router.db, run vendor-specific commands, normalize the output, mail
+    diffs from the previous collection, and commit the result to a revision-control
+    system. Although its name references Cisco, the manual describes support for many
+    device families, including Cisco, Juniper, F5 BIG-IP, Fortinet, HP ProCurve, Arista,
+    Extreme, Foundry, and others.
+  - >
+    The tool's original ecosystem role was network configuration backup before
+    Git-centered infrastructure workflows became common. RANCID used Expect login
+    scripts such as clogin and jlogin to automate CLI sessions, then saved filtered
+    configuration output under per-group config directories. The resulting files were
+    meant to be readable, diffable, and in many cases suitable as restoration material
+    after sensitive or unstable data was filtered out. That made RANCID part backup
+    system, part change-detection system, and part audit trail.
+  - >
+    RANCID's distribution history mirrors older Unix network-management tooling. The
+    README notes that RANCID 2.3 introduced a directory layout aligned with FHS and
+    autoconf, with the explicit benefit of making packaging easier for systems such as
+    NetBSD pkgsrc, the FreeBSD ports tree, and Linux RPM-based distributions. The same
+    README and man pages describe rancid-cvs as the bootstrap command that creates group
+    directories, router.db files, and CVS, Subversion, or Git storage. This explains why
+    package records expose many small login and parser executables rather than a single
+    monolithic command.
+  - >
+    RANCID 3.x changed the internal shape of the project without changing its
+    operational contract. The README says RANCID 3.0 began converting device scripts
+    into Perl libraries used by a single `rancid` parser, and the UPGRADING notes say
+    RANCID 3.2 added Git SCM support based on an external patch while keeping separate
+    repositories per group. Practitioners use those pieces in scheduled runs, often from
+    cron, with credentials in .cloginrc and inventory in router.db; the daily value is
+    receiving a concise diff when a device configuration, module inventory, or OS
+    version changes.
 category: networking
 package-manager:
   apk: rancid
@@ -90,5 +126,13 @@ executables:
   - xlogin
 provenance:
   formula: rancid
+  history-sources:
+    - https://www.shrubbery.net/rancid/
+    - https://linux.die.net/man/1/rancid_intro
+    - https://github.com/haussli/rancid/blob/master/README
+    - https://github.com/haussli/rancid/blob/master/UPGRADING
+    - https://www.mankier.com/1/rancid-cvs
+    - https://formulae.brew.sh/formula/rancid
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
