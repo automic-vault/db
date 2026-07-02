@@ -8,6 +8,33 @@ docs:
 config-file-location: null
 credentials-file-location:
   unix: ~/.config/containers/auth.json
+history:
+  - >
+    Skopeo is one of the core command-line tools in the Red Hat and containers/image
+    lineage, alongside the broader Podman and Buildah ecosystem. Its public repository
+    was created on March 7, 2016, and the man page carries an August 2016 date, matching
+    the period when Docker-format and OCI image tooling was separating image operations
+    from a local daemon.
+  - >
+    Red Hat's Skopeo 1.0 history describes the origin as Antonio Murdaca's side project
+    for viewing the JSON metadata of a container image stored in a registry. The
+    immediate pain point was that inspecting a remote image through Docker required
+    pulling the full image first; after a proposed `docker inspect --remote` direction
+    was rejected upstream, Skopeo became a separate utility for remote image inspection.
+  - >
+    The tool then grew from inspection into daemonless image plumbing. Its manual
+    describes copying images between registries and local image stores, converting
+    Docker schema images to OCI images, fetching manifest-style inspect output without
+    `docker pull`, signing and verifying images, and deleting remote images. Most
+    operations do not require a running container runtime and do not require root unless
+    writing into a runtime storage backend.
+  - >
+    Practitioners use Skopeo in CI/CD systems, registry migration jobs, air-gapped
+    mirror population, supply-chain verification, and release automation where pulling
+    images into Docker or Podman would waste time and disk. Its packaging footprint is
+    correspondingly infrastructure-heavy: it is distributed through Homebrew and many
+    Linux package managers, and Homebrew's formula presents it simply as a tool to work
+    with remote image registries.
 category: cloud-infrastructure
 package-manager:
   apk: skopeo
@@ -32,5 +59,14 @@ executables:
   - skopeo
 provenance:
   formula: skopeo
+  history-sources:
+    - https://api.github.com/repos/containers/skopeo
+    - https://github.com/containers/skopeo
+    - https://www.redhat.com/en/blog/skopeo-10-released
+    - https://github.com/containers/skopeo/blob/main/docs/skopeo.1.md
+    - >
+      https://developers.redhat.com/articles/2025/09/24/skopeo-unsung-hero-linux-container-tools
+    - https://formulae.brew.sh/formula/skopeo
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
