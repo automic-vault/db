@@ -6,6 +6,62 @@ docs:
   - https://github.com/KhronosGroup/SPIRV-LLVM-Translator#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The package-manager footprint in the supplied input lists the translator in
+      Homebrew, Alpine, Fedora, Nix, Arch, and openSUSE-family packaging. That
+      distribution pattern reflects its role as a low-level build dependency for
+      toolchains rather than a command most users install directly.
+  package-nerd-significance:
+    - >
+      Package maintainers care because the translator has to line up with LLVM,
+      SPIRV-Headers, and often SPIRV-Tools. Small version mismatches can break builds or
+      validation in GPU compiler stacks, so distro formulas and ports tend to encode it
+      as part of the wider Khronos/LLVM toolchain set.
+  project-history:
+    - >
+      Khronos released SPIR-V 1.0 in 2015 as a standardized intermediate language for
+      graphics shaders and compute kernels, and announced open source utilities
+      including a bidirectional LLVM-to-SPIR-V translator. The translator repository now
+      describes itself as the source for a library and command-line tool that translate
+      between LLVM IR and SPIR-V, with current support focused on the OpenCL/compute
+      `Kernel` capability.
+    - >
+      The project tracks LLVM closely: its README says the main branch is intended to
+      build against LLVM main, while release tags map to released LLVM and Clang
+      versions. That makes the package feel less like a standalone end-user app and more
+      like a bridge component in a larger compiler-toolchain graph.
+  related-projects:
+    - >
+      SPIRV-Tools provides assembler, disassembler, validator, optimizer, and related
+      processing commands that are commonly used alongside translator output.
+    - >
+      SPIRV-Headers supplies the Khronos SPIR-V headers and grammar files consumed by
+      SPIR-V tooling.
+  sources:
+    - https://github.com/KhronosGroup/SPIRV-LLVM-Translator#readme
+    - >
+      https://www.khronos.org/news/press/khronos-releases-opencl-2.1-and-spir-v-1.0-specifications-for-heterogeneous
+    - source_facts.package-manager
+  summary:
+    - >
+      SPIRV-LLVM-Translator is Khronos Group's LLVM/SPIR-V bidirectional translator,
+      packaged mainly for developers building OpenCL, SYCL, and GPU-compute compiler
+      stacks that need the `llvm-spirv` command or `LLVMSPIRVLib`.
+  timeline:
+    - >
+      2015: Khronos releases OpenCL 2.1 and SPIR-V 1.0 and announces open source SPIR-V
+      utilities, including an LLVM/SPIR-V translator.
+    - >
+      Ongoing: The translator main branch tracks LLVM main, with compatibility tags for
+      released LLVM and Clang versions.
+  usage:
+    - >
+      The central CLI is `llvm-spirv`: the README documents translating LLVM bitcode to
+      SPIR-V and using `-r` to translate SPIR-V back to LLVM bitcode. It also documents
+      version and extension controls, which matter when compiler output must match a
+      particular OpenCL or SPIR-V environment.
 category: developer-tools
 package-manager:
   apk: spirv-llvm-translator
