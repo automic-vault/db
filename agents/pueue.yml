@@ -16,6 +16,38 @@ credentials-file-location:
     - ~/.local/share/pueue/shared_secret
     - ~/.local/share/pueue/certs/daemon.cert
     - ~/.local/share/pueue/certs/daemon.key
+history:
+  - >
+    Pueue was created by Nukesor on GitHub on 4 September 2015 as a command-line queue
+    manager for shell commands. The project name reflects its core idea: processing a
+    queue of shell commands while separating task control from the terminal session that
+    launched them. A legacy Python implementation existed before the Rust implementation
+    became the main project, and the Rust version kept the same practical focus on
+    long-running local commands.
+  - >
+    Adoption came from users who needed something between shell backgrounding, terminal
+    multiplexers, `nq` or task-spooler, GNU Parallel, and heavier schedulers. Pueue's
+    README explicitly frames it as a single-user helper rather than a distributed,
+    multi-user, programmable scheduler. Package availability across Homebrew, Alpine,
+    MacPorts, Nix, Arch, Scoop, openSUSE packaging, crates.io, and release binaries made
+    the client-and-daemon pair easy to install on developer workstations and small
+    servers.
+  - >
+    The practical workflow is daemon-centered. `pueued` runs in the background, while
+    `pueue` adds tasks, inspects status, follows logs, pauses groups, changes
+    parallelism, sends input to running processes, waits for completion, and restarts or
+    kills work. Because queued commands keep running after the user closes an SSH
+    session, practitioners use it for builds, downloads, media processing, experiments,
+    test matrices, and maintenance commands where visibility and later control matter
+    more than cluster scheduling.
+  - >
+    In the ecosystem, Pueue occupies a deliberately modest niche: persistent local task
+    queues with human-friendly inspection. It stores queue state and logs on disk,
+    supports groups and dependencies, provides JSON output for integration, and
+    documents out-of-scope boundaries such as distributed execution and sophisticated
+    load balancing. That boundary is part of its adoption story, because it stays small
+    enough for interactive command-line use while avoiding the operational weight of a
+    full scheduler.
 tags:
   - cli
   - daemon
@@ -42,6 +74,17 @@ provenance:
     - source_facts.name is pueue.
   docs-sources:
     - Official GitHub repository README is the primary documentation surface.
+  history-sources:
+    - https://github.com/Nukesor/pueue
+    - https://raw.githubusercontent.com/Nukesor/pueue/main/README.md
+    - https://api.github.com/repos/Nukesor/pueue
+    - https://github.com/Nukesor/pueue-python-legacy
+    - https://crates.io/crates/pueue
+    - 'source_facts.description: Command-line tool for managing long-running shell commands.'
+    - source_facts.executables lists pueue and pueued.
+    - >
+      source_facts.package-manager lists apk, brew, macports, nix, pacman, scoop, and
+      zypper packages.
   repo-sources:
     - source_facts.repo already has a value, so repo is returned as null per instruction.
   tags-sources:
@@ -53,5 +96,6 @@ category-path:
   - task-runner
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

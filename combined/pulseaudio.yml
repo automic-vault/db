@@ -11,6 +11,50 @@ config-file-location:
     - /etc/pulse/daemon.conf
     - /etc/pulse/default.pa
 credentials-file-location: null
+history:
+  - >
+    PulseAudio is a network-capable sound server and client library stack for
+    POSIX-style systems, developed in the freedesktop.org ecosystem and written
+    primarily in C. It began in 2004 as Polypaudio under Lennart Poettering and was
+    renamed PulseAudio in 2006. The project sat above ALSA, OSS, and other low-level
+    audio interfaces, giving desktop applications a shared daemon for PCM streams,
+    per-application routing, volume control, format conversion, and network-transparent
+    audio.
+  - >
+    Its rise was bound to the Linux desktop's long transition away from older
+    sound-server models such as ESD and aRts and away from applications competing
+    directly for hardware devices. Fedora 8 was announced as the first Fedora release to
+    enable PulseAudio by default, and Poettering's Fedora interview framed the change
+    around user-visible desktop audio features: moving streams between devices,
+    hot-plugging hardware, per-application volume, and a more flexible mixing layer than
+    raw ALSA alone provided to applications.
+  - >
+    Distribution adoption spread through the late 2000s because PulseAudio solved a
+    packaging and integration problem as much as an audio problem. Desktop environments,
+    browsers, media players, telephony applications, and sound settings panels could
+    target libpulse or compatibility layers instead of each carrying their own hardware
+    policy. Packagers split the stack into the daemon, command-line tools, libraries,
+    headers, modules, and desktop integration packages; this is why package names vary
+    across ecosystems, with Homebrew shipping `pulseaudio`, Debian and Ubuntu exposing
+    development headers through `libpulse-dev`, Alpine using `libpulse`, and Fedora
+    using `pulseaudio` packages.
+  - >
+    Practitioners use PulseAudio through both the daemon and its tooling. The
+    `pulseaudio` process manages sinks, sources, cards, modules, and streams; `pactl` is
+    the common scripting interface for listing and changing server state; `pacmd`
+    historically provided an interactive command shell; `paplay`, `parec`, `parecord`,
+    and `pacat` move audio to and from the server; `pasuspender` temporarily releases
+    devices for software that needs direct access. Developers link against libpulse when
+    they want native PulseAudio behavior, while many ordinary applications reach it
+    through higher-level audio frameworks.
+  - >
+    PulseAudio also became the compatibility target for later Linux audio work. PipeWire
+    includes a PulseAudio-compatible server, commonly deployed as `pipewire-pulse`, so
+    existing libpulse applications and user scripts can keep using the PulseAudio
+    protocol while the underlying graph manager changes. That compatibility layer is
+    evidence of PulseAudio's ecosystem role: it standardized enough desktop-audio
+    behavior that replacing the implementation required preserving its client-facing
+    protocol and command-line expectations.
 category: media
 package-manager:
   apk: libpulse
@@ -45,5 +89,14 @@ executables:
   - pulseaudio
 provenance:
   formula: pulseaudio
+  history-sources:
+    - https://www.freedesktop.org/wiki/Software/PulseAudio/
+    - https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/
+    - https://www.freedesktop.org/wiki/Software/Software/PulseAudio/ReleaseLogs/
+    - https://gitlab.freedesktop.org/pulseaudio/pulseaudio
+    - https://fedoraproject.org/wiki/Interviews/LennartPoettering
+    - https://fedoraproject.org/wiki/Changes/DefaultPipeWire
+    - https://formulae.brew.sh/formula/pulseaudio
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
