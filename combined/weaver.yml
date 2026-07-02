@@ -6,6 +6,87 @@ docs:
   - https://github.com/scribd/Weaver#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Weaver's adoption was strongest in the Swift/iOS architecture community rather
+      than across general-purpose backend development. Its README links tutorials, a
+      demo video, and an SF SLUG talk about maintaining a dependency graph with Weaver.
+    - >
+      Its value proposition was compile-time safety. The Scribd blog contrasts Weaver
+      with dependency-injection containers that can crash at runtime, arguing that
+      Weaver validates the graph before the app runs and lets dependencies remain
+      non-optional.
+  package-nerd-significance:
+    - >
+      Weaver is notable as an iOS-era code-generation answer to dependency injection:
+      instead of relying on reflection-heavy runtime containers, it uses Swift source
+      scanning and compile-time generated containers to keep app wiring explicit and
+      type checked.
+    - >
+      Its deprecation also makes it useful history. It captures a period before Swift
+      macros and newer DI patterns, when SourceKit-based tooling and build-phase
+      generators were a common way to add static analysis and boilerplate generation to
+      Swift projects.
+  project-history:
+    - >
+      Scribd introduced Weaver publicly in 2018 in a technology blog post titled 'A
+      Painless Dependency Injection Framework for Swift.' The post framed Weaver as a
+      response to growing Swift applications where manual dependency passing and
+      singleton fallback patterns become hard to maintain.
+    - >
+      The original design used comment annotations such as weaver: movieManager <-
+      MovieManaging to declare dependencies in source code. The README later describes
+      both property-wrapper and comment-based declarations, SourceKitten-backed scanning
+      via Apple's SourceKit, dependency-graph linking, validation, and generated source
+      output.
+    - >
+      The project was eventually deprecated by Scribd. The current README begins with a
+      deprecation notice saying Scribd no longer uses the technology internally, has
+      decided to archive the repository, and will leave the code and resources available
+      for reference or independent forks.
+  related-projects:
+    - >
+      Weaver is related to Swift, SourceKit, SourceKitten, Xcode build phases,
+      CocoaPods, Mint, Swinject, and other dependency-injection approaches for iOS and
+      macOS applications.
+  sources:
+    - https://github.com/scribd/Weaver
+    - https://raw.githubusercontent.com/scribd/Weaver/master/README.md
+    - https://tech.scribd.com/blog/2018/introducting-weaver.html
+    - https://tech.scribd.com/blog/2019/dependency-injection-with-weaver-part-2.html
+  summary:
+    - >
+      Weaver is Scribd's declarative dependency-injection framework and command-line
+      code generator for Swift projects. It scans Swift sources for dependency
+      annotations, builds a dependency graph, validates it at compile time, and
+      generates the boilerplate needed to wire dependencies into iOS, macOS, and Linux
+      Swift code.
+    - >
+      The package's command-line identity matters: the brew formula installs the weaver
+      executable that runs in an Xcode build phase or from developer tooling to generate
+      Swift source before compilation.
+  timeline:
+    - >
+      2018: Scribd introduces Weaver as a lightweight dependency-injection framework for
+      Swift.
+    - >
+      2018-2019: Scribd publishes tutorial material showing Weaver in iOS
+      dependency-injection and unit-testing workflows.
+    - >
+      Later project history: the README gains a deprecation notice stating that Scribd
+      no longer uses Weaver internally and has archived the project for reference.
+  usage:
+    - >
+      A typical project adds Weaver to an Xcode build phase before Compile Sources, then
+      invokes weaver swift with project and output paths. The generated dependency
+      container code is compiled with the application, giving app code typed access to
+      registered dependencies.
+    - >
+      Weaver can be installed through Homebrew, CocoaPods, Mint, prebuilt release
+      binaries, or from source. The README notes that CocoaPods was useful when a
+      project needed a specific Weaver version because Homebrew did not automatically
+      install specific historical versions.
 category: developer-tools
 package-manager:
   brew: weaver
