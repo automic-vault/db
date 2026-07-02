@@ -8,6 +8,80 @@ config-file-location:
     - ./project.yml
     - ./project.json
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The repository's long-running contributor base and thousands of GitHub stars show
+      broad adoption among iOS and macOS developers who prefer a text source of truth
+      over hand-edited .xcodeproj files. Articles and community comparisons commonly
+      place XcodeGen beside Tuist as one of the main answers to generated Xcode
+      projects, with XcodeGen favoring declarative YAML or JSON configuration.
+    - >
+      The project is also distributed through multiple developer package channels,
+      including Homebrew, MacPorts, Nix, Mint, and Swift Package Manager. That spread
+      matters because XcodeGen is often run on CI or developer bootstrap scripts before
+      Xcode itself opens the generated project.
+  package-nerd-significance:
+    - >
+      XcodeGen is package-nerd significant because it treats an opaque IDE project file
+      as a generated artifact. That makes Xcode projects more like other language
+      ecosystems where build configuration is text, diffable, and reproducible, while
+      still targeting Apple's native .xcodeproj format.
+  project-history:
+    - >
+      Yonas Kolb created the XcodeGen repository on 2017-07-19, and the first 0.1
+      release followed on 2017-07-28. The README has consistently positioned the tool
+      around generating an Xcode project from a folder structure and project spec, with
+      sensible defaults for common targets, schemes, configurations, build settings, and
+      source references.
+    - >
+      Across the 2.x series, XcodeGen became a maintained part of the Swift/Xcode
+      automation ecosystem rather than a one-off generator. Its changelog shows ongoing
+      adaptation to newer Xcode project formats, Swift Package Manager integration,
+      local packages, visionOS/watchOS destinations, string catalogs, privacy manifests,
+      and Xcode 16 synchronized folders.
+  related-projects:
+    - >
+      Tuist is the most common point of comparison: both generate or manage Xcode
+      projects, but Tuist centers more of the workflow in Swift manifests and a broader
+      project automation platform, while XcodeGen stays close to YAML/JSON project
+      specifications.
+    - >
+      XcodeGen depends conceptually on the same Xcode project-file automation niche as
+      libraries such as XcodeProj, which parse and write pbxproj structures.
+  sources:
+    - https://github.com/yonaskolb/XcodeGen
+    - https://github.com/yonaskolb/XcodeGen/blob/master/CHANGELOG.md
+    - https://github.com/yonaskolb/XcodeGen/releases
+    - https://tuist.dev/blog/2025/02/25/project-generation
+    - https://yonaskolb.github.io/XcodeGen
+  summary:
+    - >
+      XcodeGen is a Swift command-line project generator that turns a YAML or JSON
+      project specification plus a source tree into an Xcode project. Its core appeal is
+      making Xcode project structure reproducible, reviewable, and less prone to merge
+      conflicts.
+  timeline:
+    - '2017-07-19: Repository created on GitHub.'
+    - '2017-07-28: 0.1 release published.'
+    - >
+      2024-06-03: 2.39.0 added support for artifact bundles, string catalogs, and
+      visionOS defaults.
+    - '2025-07-17: 2.44.0 added basic support for Xcode 16 synchronized folders.'
+    - >
+      2026-04-14: 2.45.4 released with fixes for generated project path and synchronized
+      folder behavior.
+  usage:
+    - >
+      Typical use starts with a project.yml or project.json file checked into the
+      repository. Running xcodegen generate reads that spec, scans source directories,
+      and writes an .xcodeproj. Teams may then omit generated project files from version
+      control or regenerate them in CI to avoid pbxproj churn.
+    - >
+      Advanced usage includes splitting specs into included files, sharing build setting
+      groups, generating multiple schemes, defining multi-platform frameworks, using
+      cache support to avoid unnecessary regeneration, and dumping the resolved spec for
+      inspection or automation.
 tags:
   - cli
   - project-generator
@@ -25,29 +99,29 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - Official XcodeGen documentation describes project spec based Xcode project generation.
-    - >
-      source_facts.description: Generate your Xcode project from a spec file and your
-      folder structure
+    - current_curation.category
   display-name-sources:
-    - Official repository and docs use XcodeGen capitalization.
-    - 'source_facts.name: xcodegen'
+    - current_curation.display-name
+    - https://github.com/yonaskolb/XcodeGen#readme
   docs-sources:
-    - Official XcodeGen GitHub Pages documentation at https://yonaskolb.github.io/XcodeGen/
-    - 'source_facts.repo: https://github.com/yonaskolb/XcodeGen'
+    - current_curation.docs
+    - https://yonaskolb.github.io/XcodeGen
+  history-sources:
+    - https://github.com/yonaskolb/XcodeGen
+    - https://github.com/yonaskolb/XcodeGen/blob/master/CHANGELOG.md
+    - https://github.com/yonaskolb/XcodeGen/releases
+    - https://tuist.dev/blog/2025/02/25/project-generation
+    - https://yonaskolb.github.io/XcodeGen
   repo-sources:
-    - >
-      source_facts.repo already set to https://github.com/yonaskolb/XcodeGen; returning
-      null per instruction.
+    - source_facts.repo already provided; per run instructions repo returned as null
   tags-sources:
-    - current_curation.tags includes cli
-    - source_facts.description identifies Xcode project generation from a spec file.
+    - current_curation.tags
+    - https://github.com/yonaskolb/XcodeGen#readme
 category-confidence: high
 category-path:
   - developer-tools
-  - apple-development
-  - project-generation
-display-name-confidence: medium
+display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

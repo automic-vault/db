@@ -8,6 +8,81 @@ config-file-location:
   unix: ./.xcode-version
 credentials-file-location:
   macos: macOS Keychain
+history:
+  adoption-history:
+    - >
+      xcodes is widely adopted because Xcode versions are large, slow to install
+      manually, and often need to be pinned per project or CI lane. The repository has
+      thousands of GitHub stars and a long release line, and its companion Xcodes.app
+      gives the same version-management idea a graphical macOS interface.
+    - >
+      The .xcode-version proposal ties xcodes to a broader convention already used by
+      xcode-install and fastlane. That file lets a repository declare the Xcode version
+      it expects, making xcodes useful in onboarding scripts and CI environments where
+      reproducible Apple build tooling matters.
+  package-nerd-significance:
+    - >
+      xcodes is significant in package-manager culture because it brings version-manager
+      ergonomics to a toolchain Apple distributes as a huge GUI application. It makes
+      Xcode itself scriptable: a package can select, install, and document the
+      IDE/runtime version needed for deterministic builds.
+  project-history:
+    - >
+      The repository was created on 2019-02-22 and shipped its initial 0.1.0 release on
+      2019-03-11 as an MVP for Apple developers who needed side-by-side Xcode installs.
+      The README documents commands for installing specific releases and prereleases,
+      listing available versions, selecting an active Xcode, managing runtimes, and
+      uninstalling versions.
+    - >
+      The project began under Robots and Pencils and moved into the XcodesOrg
+      organization on 2023-04-21. The maintainer note describes the move as a response
+      to growth beyond a small utility used by Apple developers around the world, while
+      keeping Matt Kiazyk as owner and maintainer.
+    - >
+      By 2024 and 2026, xcodes had adapted to changes in Apple's tooling and
+      distribution model: releases added support for iOS 18+ runtime downloads and SRP
+      Apple login changes, then 2.0.x refactored the CLI onto shared XcodesKit and
+      XcodesLoginKit packages, added architecture-aware filtering, and raised the
+      implementation baseline to Swift 6 and macOS 13.
+  related-projects:
+    - Xcodes.app is the native macOS GUI companion for the same workflow.
+    - >
+      fastlane and the legacy xcode-install gem are related because they also use or
+      recognize .xcode-version-style Xcode pinning.
+  sources:
+    - https://github.com/XcodesOrg/XcodesApp
+    - https://github.com/XcodesOrg/xcodes
+    - https://github.com/XcodesOrg/xcodes/blob/main/XCODE_VERSION.md
+    - https://github.com/XcodesOrg/xcodes/blob/main/nextstep.md
+    - https://github.com/XcodesOrg/xcodes/releases
+  summary:
+    - >
+      xcodes is a Swift command-line tool for installing, listing, selecting, and
+      removing multiple versions of Xcode. It fills the same role for Apple's IDE that
+      language version managers fill for Ruby, Node, or Python projects.
+  timeline:
+    - '2019-02-22: Repository created on GitHub.'
+    - '2019-03-11: 0.1.0 initial MVP release.'
+    - '2023-04-21: Xcodes projects moved from Robots and Pencils into XcodesOrg.'
+    - '2023-06-23: 1.4.1 release highlighted runtime download and install support.'
+    - '2024-10-30: 1.6.0 added Apple SRP login support and iOS 18+ runtime download support.'
+    - >
+      2026-06-08: 2.0.1 refactored the CLI around shared XcodesKit/XcodesLoginKit and
+      architecture-aware downloads.
+    - '2026-06-17: 2.0.2 fixed a 2FA authentication regression.'
+  usage:
+    - >
+      Common workflows include running xcodes list to discover versions, xcodes install
+      to download and install an exact Xcode version, xcodes select to switch the active
+      toolchain through xcode-select, and xcodes runtimes to install platform runtimes.
+      When authentication is required for Apple downloads, xcodes stores Apple ID
+      credentials in the macOS Keychain after prompting or reading environment
+      variables.
+    - >
+      Teams often add a .xcode-version file next to an Xcode project or workspace so
+      automation can choose the expected Xcode. The README recommends committing that
+      file for teams and CI, especially when a project depends on a specific stable
+      Xcode release.
 category: developer-tools
 package-manager:
   brew: xcodes

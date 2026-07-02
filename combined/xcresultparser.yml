@@ -6,6 +6,85 @@ docs:
   - https://github.com/a7ex/xcresultparser#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xcresultparser occupies a practical CI reporting niche for Apple platforms. Its
+      outputs target common consumers such as SonarQube, JUnit readers, Cobertura
+      coverage visualizers, Jenkins-style xUnit importers, GitLab code-quality
+      workflows, Markdown summaries, and terminal diagnostics.
+    - >
+      The changelog shows outside contributions for Cobertura support, duplicate-file
+      coverage fixes, multi-destination test handling, and multiple-failure JUnit
+      handling. That pattern suggests adoption by teams integrating Xcode test artifacts
+      into non-Xcode reporting pipelines.
+  package-nerd-significance:
+    - >
+      xcresultparser matters because .xcresult is an Apple-specific binary result bundle
+      while most CI dashboards expect open text formats. The package is a translation
+      layer between Xcode's build artifacts and the broader ecosystem of test, coverage,
+      and quality-report tooling.
+  project-history:
+    - >
+      The repository was created on 2021-06-11, with an initial 0.1 release on
+      2021-06-13 and a 1.0 release on 2021-08-02. The README explains that the tool
+      interprets binary .xcresult files and emits txt, colored CLI, XML, JUnit,
+      Cobertura, HTML, Markdown, warnings, and errors output.
+    - >
+      The project originally had a strong coverage-conversion motivation: the README
+      notes that converting Xcode coverage to Sonar-compatible XML used to require
+      repeatedly invoking xccov for each file. Xcode 13 reduced that advantage by
+      allowing broader coverage extraction at once, but xcresultparser had already grown
+      into a more general test-result, issue, and coverage reporting tool.
+    - >
+      The 1.x line added CI-oriented formats and compatibility fixes, including Markdown
+      output for Teams-style webhooks, Cobertura XML, target filters, multiple test
+      suites in JUnit XML, expected/skipped failure statuses, Jenkins xUnit
+      compatibility, and warning/error export modes. In 2026, the 2.0.0-beta line
+      removed the XCResultKit dependency and moved to direct xcresulttool and xccov
+      parsing through local Codable models.
+  related-projects:
+    - >
+      Apple's xcresulttool and xccov are core related tools because xcresultparser
+      shells out to or models their data to extract .xcresult and coverage information.
+    - >
+      SonarQube, Jenkins, GitLab, and Cobertura-style tooling are related consumers of
+      the reports produced by xcresultparser.
+  sources:
+    - https://github.com/a7ex/xcresultparser
+    - https://github.com/a7ex/xcresultparser/blob/main/CHANGELOG.md
+    - https://github.com/a7ex/xcresultparser/releases
+  summary:
+    - >
+      xcresultparser is a Swift CLI for reading binary .xcresult bundles produced by
+      Xcode builds and tests, then exporting test results, warnings, errors, summaries,
+      and coverage data in formats used by terminals and CI systems.
+  timeline:
+    - '2021-06-11: Repository created on GitHub.'
+    - '2021-06-13: 0.1 initial release.'
+    - '2021-08-02: 1.0 release published.'
+    - '2022-12-15: 1.2.0 added Cobertura XML coverage output.'
+    - >
+      2024-05-25: 1.6.0 adopted the newer Xcode 15 xccov command path for faster
+      coverage extraction.
+    - '2024-07-28: 1.7.0 updated for Xcode 16 compatibility via XCResultKit support.'
+    - >
+      2026-02-24: 2.0.0-beta replaced XCResultKit usage with direct xcresulttool and
+      xccov parsing.
+    - >
+      2026-03-14: 2.0.0 fixed reporting of session-level issues not associated with a
+      test or suite.
+  usage:
+    - >
+      A typical invocation points xcresultparser at an .xcresult bundle and chooses an
+      output format. Developers use it after xcodebuild test or CI runs to extract test
+      failures, code coverage, warning/error lists, or formatted summaries without
+      opening Xcode's result browser.
+    - >
+      Coverage workflows can select report formats, filter targets and excluded paths,
+      and output XML or Cobertura-compatible data. Test workflows can output JUnit-style
+      XML or human-readable CLI/HTML/Markdown summaries, with expected failures
+      represented differently depending on the destination format's semantics.
 category: developer-tools
 package-manager:
   brew: xcresultparser
