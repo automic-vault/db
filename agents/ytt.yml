@@ -1,12 +1,92 @@
 id: brew:ytt
 display-name: ytt
-repo: null
+repo: https://github.com/carvel-dev/ytt
 docs:
   - https://carvel.dev/ytt/docs/latest
   - https://carvel.dev/ytt
   - https://github.com/carvel-dev/ytt#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ytt adoption has been strongest in Kubernetes and Tanzu/Carvel workflows. Broadcom
+      VMware Tanzu documentation bundles ytt with other Carvel tools in Tanzu Kubernetes
+      Grid contexts, and Carvel maintains community channels, an adopter list, examples,
+      an online playground, and reusable libraries such as ytt Library for Kubernetes.
+    - >
+      Outside Tanzu, ytt is adopted by users who want more programmability than
+      Kustomize overlays but less text-fragility than Helm-style templating. Blog posts
+      and talks often present it as an alternative or complement to Helm, Kustomize,
+      Jsonnet, and Dhall in Kubernetes configuration pipelines.
+  package-nerd-significance:
+    - >
+      ytt matters to package nerds because it shows a distinct packaging philosophy: do
+      one YAML-shaping job well, compose with neighboring tools, and avoid making the
+      templater also be the package manager, deployer, and image builder.
+    - >
+      It is also one of the clearer examples of Starlark moving beyond Bazel into
+      infrastructure configuration. In dependency graphs, seeing ytt often hints at
+      Carvel-style Kubernetes delivery rather than Helm-only packaging.
+  project-history:
+    - >
+      ytt was introduced publicly in March 2019 as the YAML Templating Tool, with IBM
+      Developer describing v0.1.0 as a new approach to complex configuration management.
+      The GitHub repository was created the same month, and early releases followed
+      rapidly through spring and summer 2019.
+    - >
+      The tool emerged from the k14s/Carvel ecosystem around Kubernetes configuration.
+      Its core design responded to a common pain in Helm, Jinja, ERB, and other
+      text-templating approaches: YAML indentation, quoting, and patching errors caused
+      by treating structured configuration as strings. ytt instead embeds Starlark
+      through `#@` annotations and evaluates templates into YAML structures.
+    - >
+      As k14s became Carvel, ytt settled into a suite of small composable Kubernetes
+      tools alongside kapp, kbld, imgpkg, vendir, kapp-controller, and kctrl. The Carvel
+      site frames the suite as single-purpose, composable tools for building,
+      configuring, and deploying applications on Kubernetes.
+  related-projects:
+    - >
+      Related projects include Carvel, k14s, kapp, kbld, imgpkg, vendir,
+      kapp-controller, kctrl, Helm, Kustomize, Jsonnet, Dhall, Starlark, Kubernetes, and
+      Tanzu Kubernetes Grid.
+  sources:
+    - https://api.github.com/repos/carvel-dev/ytt
+    - https://carvel.dev/
+    - https://carvel.dev/blog/parameterizing-project-config-with-ytt/
+    - https://carvel.dev/ytt/
+    - >
+      https://developer.ibm.com/blogs/yaml-templating-tool-to-simplify-complex-configuration-management/
+    - https://github.com/carvel-dev/ytt
+    - https://github.com/carvel-dev/ytt-library-for-kubernetes
+    - >
+      https://techdocs.broadcom.com/us/en/vmware-tanzu/standalone-components/tanzu-kubernetes-grid/2-4/using-tkg/workload-carvel-tools.html
+  summary:
+    - >
+      ytt is Carvel’s structure-aware YAML templating tool, historically important
+      because it treats YAML as data structure plus Starlark annotations instead of as
+      raw text with indentation-sensitive string interpolation.
+  timeline:
+    - '2019-03-01: The carvel-dev/ytt GitHub repository is created.'
+    - '2019-03-12: IBM Developer announces ytt v0.1.0 as a new YAML templating approach.'
+    - '2019-03-20: ytt v0.4.0 appears in GitHub releases, followed by frequent early releases.'
+    - >
+      2020-2021: k14s tooling is increasingly described under the Carvel name and used
+      in Tanzu Kubernetes workflows.
+    - >
+      2020s: ytt remains one of the core Carvel tools alongside kapp, kbld, imgpkg,
+      vendir, and kapp-controller.
+  usage:
+    - >
+      Users run ytt to template, patch, validate, and compose YAML files. Common
+      patterns include data values for environment-specific configuration, overlays for
+      patching third-party YAML, Starlark functions for reusable logic, schema and
+      validations for fast feedback, and integration into GitOps or packaging flows.
+    - >
+      The package is especially useful when a team has piles of Kubernetes YAML and
+      wants programmable reuse while preserving YAML structure. Its online playground
+      and local `ytt website` mode also make examples easy to test without wiring a
+      cluster.
 tags:
   - carvel
   - cli
@@ -25,30 +105,33 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      Official Carvel page describes ytt as templating and overlaying Kubernetes
-      configuration via YAML structures.
-    - >
-      source_facts.description says ytt is a YAML templating tool that works on YAML
-      structure instead of text.
+    - https://carvel.dev/ytt
   display-name-sources:
-    - Official Carvel ytt page and GitHub repo use the display name ytt.
-    - source_facts.name is ytt.
+    - https://github.com/carvel-dev/ytt
   docs-sources:
-    - Official Carvel site provides the ytt documentation path.
-    - Official Carvel ytt page is the product homepage and links into docs.
-  repo-sources:
+    - https://carvel.dev/ytt
+    - https://carvel.dev/ytt/docs/latest
+    - https://github.com/carvel-dev/ytt#readme
+  history-sources:
+    - https://api.github.com/repos/carvel-dev/ytt
+    - https://carvel.dev/
+    - https://carvel.dev/blog/parameterizing-project-config-with-ytt/
+    - https://carvel.dev/ytt/
     - >
-      source_facts.repo already supplies https://github.com/carvel-dev/ytt; repo
-      returned null per instruction.
+      https://developer.ibm.com/blogs/yaml-templating-tool-to-simplify-complex-configuration-management/
+    - https://github.com/carvel-dev/ytt
+    - https://github.com/carvel-dev/ytt-library-for-kubernetes
+    - >
+      https://techdocs.broadcom.com/us/en/vmware-tanzu/standalone-components/tanzu-kubernetes-grid/2-4/using-tkg/workload-carvel-tools.html
+  repo-sources:
+    - https://github.com/carvel-dev/ytt
   tags-sources:
-    - source_facts.description identifies YAML templating.
-    - source_facts.homepage is the official Carvel ytt page for Kubernetes YAML configuration.
+    - https://carvel.dev/ytt
 category-confidence: high
 category-path:
   - developer-tools
-  - configuration
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -7,6 +7,93 @@ docs:
   - https://developers.yubico.com/yubico-piv-tool
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption followed enterprise and developer uses of YubiKeys as smart-card-like
+      credentials: client certificates, SSH through PKCS#11, code signing, certificate
+      requests, and hardware-backed private-key operations. Distribution packages often
+      split the command-line tool, development library, and PKCS#11 module, reflecting
+      its use both by humans and by other applications.
+    - >
+      Yubico’s own guides for SSH with PIV and PKCS#11 helped make the package a
+      standard dependency in hardware-backed SSH setups before OpenSSH’s newer FIDO2 key
+      types became widespread. Even with FIDO2 available, PIV remains relevant where
+      certificate, PKCS#11, or smart-card interoperability is required.
+  package-nerd-significance:
+    - >
+      This package is a bridge between hardware security tokens and the Unix package
+      ecosystem. It is small on the surface, but it explains why smart-card support
+      pulls in PC/SC, PKCS#11, OpenSSL, and vendor-specific libraries in real
+      deployments.
+    - >
+      It also documents the hardware reality ponytail code usually cannot ignore:
+      firmware capabilities matter, slots matter, PIN/PUK/management-key state matters,
+      and package upgrades may unlock algorithms only when the physical YubiKey supports
+      them.
+  project-history:
+    - >
+      Yubico’s PIV tooling grew from the YubiKey NEO/YubiKey 4 era when YubiKeys exposed
+      a Personal Identity Verification smart-card interface compatible with NIST SP
+      800-73 concepts. The developer documentation describes PIV as enabling RSA or ECC
+      signing and decryption with private keys stored on the smart card, exposed through
+      interfaces such as PKCS#11.
+    - >
+      The project bundles several layers: the `yubico-piv-tool` command, the libykpiv
+      library, and the YKCS11 PKCS#11 module. That combination made it useful both for
+      direct provisioning tasks and for applications that already know how to talk
+      PKCS#11.
+    - >
+      Over time, release notes show the project tracking newer YubiKey capabilities and
+      platform integration needs: improved YKCS11 behavior, Windows/minidriver
+      integration, firmware 5.7-era RSA3072/RSA4096, ED25519 and X25519 support, key
+      deletion and movement, and expanded error handling.
+  related-projects:
+    - >
+      Related projects include YubiKey Manager, YKCS11, libykpiv, OpenSC, OpenSSH,
+      OpenSSL, p11-kit, PC/SC Lite, piv-go, yubikey-agent, PIV standards, and NIST SP
+      800-73.
+  sources:
+    - https://developers.yubico.com/PIV/Guides/SSH_with_PIV_and_PKCS11.html
+    - https://developers.yubico.com/yubico-piv-tool/
+    - https://developers.yubico.com/yubico-piv-tool/Release_Notes.html
+    - https://developers.yubico.com/yubico-piv-tool/YKCS11/
+    - https://developers.yubico.com/yubico-piv-tool/YubiKey_PIV_introduction.html
+    - https://docs.yubico.com/software/yubikey/tools/pivtool/Introduction.html
+    - https://packages.debian.org/sid/i386/ykcs11
+    - https://packages.debian.org/sid/utils/yubico-piv-tool
+  summary:
+    - >
+      Yubico PIV Tool is the command-line, library, and PKCS#11 toolchain for the
+      YubiKey PIV application, packaged because it turns hardware-backed smart-card
+      identity into scriptable Unix tooling.
+  timeline:
+    - >
+      2014: Yubico copyright notices and forum activity show the PIV tool emerging in
+      the YubiKey NEO/PIV era.
+    - >
+      2016: yubico-piv-tool 2.0.0 is discussed as a major YKCS11 release with a more
+      complete PKCS#11 implementation.
+    - >
+      2017-2020: Linux distributions package yubico-piv-tool and YKCS11 for command-line
+      and PKCS#11 use.
+    - >
+      2024-01-31: Version 2.5.0 adds firmware 5.7-era support for RSA3072/RSA4096,
+      ED25519, X25519, key deletion, and key movement.
+    - >
+      2026-01-20: Version 2.7.3 release notes include X25519 ECDH work and
+      Windows/minidriver usability improvements.
+  usage:
+    - >
+      Users use `yubico-piv-tool` to generate keys on a YubiKey, import keys or
+      certificates, create certificate signing requests, read and write PIV objects,
+      inspect status, verify PINs, and test signatures. Applications can use YKCS11 when
+      they need a PKCS#11 provider for the YubiKey PIV applet.
+    - >
+      For package users, the practical pattern is often: install the tool, initialize or
+      inspect the PIV applet, provision slots such as 9a for authentication, and point
+      OpenSSH, OpenSSL, Firefox, Java keytool, or another PKCS#11-aware consumer at the
+      YKCS11 module.
 tags:
   - cli
   - piv
@@ -25,31 +112,31 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official Yubico docs describe Yubico PIV Tool as managing PIV functions on YubiKey
-      smart cards.
-    - source_facts.description says it is a command-line tool for the YubiKey PIV application.
+    - https://developers.yubico.com/yubico-piv-tool
   display-name-sources:
-    - Official Yubico docs title the product Yubico PIV Tool.
-    - source_facts.name is yubico-piv-tool, the CLI/package name.
+    - https://github.com/Yubico/yubico-piv-tool
   docs-sources:
-    - Official developers.yubico.com page is the project homepage from source_facts.homepage.
-    - Official docs.yubico.com page is the Yubico PIV Tool User Guide.
+    - https://developers.yubico.com/PIV
+    - https://developers.yubico.com/yubico-piv-tool
+    - https://docs.yubico.com/software/yubikey/tools/pivtool/index.html
+  history-sources:
+    - https://developers.yubico.com/PIV/Guides/SSH_with_PIV_and_PKCS11.html
+    - https://developers.yubico.com/yubico-piv-tool/
+    - https://developers.yubico.com/yubico-piv-tool/Release_Notes.html
+    - https://developers.yubico.com/yubico-piv-tool/YKCS11/
+    - https://developers.yubico.com/yubico-piv-tool/YubiKey_PIV_introduction.html
+    - https://docs.yubico.com/software/yubikey/tools/pivtool/Introduction.html
+    - https://packages.debian.org/sid/i386/ykcs11
+    - https://packages.debian.org/sid/utils/yubico-piv-tool
   repo-sources:
-    - >
-      Official GitHub repository https://github.com/Yubico/yubico-piv-tool identifies
-      itself as the command-line tool for the YubiKey PIV application.
-    - Official Yubico developer pages link the tool to GitHub source/releases.
+    - https://github.com/Yubico/yubico-piv-tool
   tags-sources:
-    - >
-      Official Yubico docs describe PIV, PKCS#11, smart-card, and YubiKey management
-      functionality.
-    - source_facts.description identifies YubiKey PIV command-line use.
+    - https://developers.yubico.com/yubico-piv-tool
 category-confidence: high
 category-path:
   - security
-  - hardware-authentication
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

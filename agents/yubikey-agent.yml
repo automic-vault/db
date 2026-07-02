@@ -1,10 +1,92 @@
 id: brew:yubikey-agent
 display-name: yubikey-agent
-repo: null
+repo: https://github.com/FiloSottile/yubikey-agent
 docs:
   - https://github.com/FiloSottile/yubikey-agent#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Early adoption came from security-conscious developers who wanted hardware-backed
+      SSH without the fragility of gpg-agent, manual PKCS#11 loading, or server-side
+      FIDO2 support. A Hacker News launch discussion in May 2020 framed it as a friendly
+      way to plug in a key and SSH securely with minimal setup.
+    - >
+      Packaging spread through Homebrew, AUR/Arch-style packaging, NixOS modules,
+      FreeBSD ports, Alpine testing, Debian, and Ubuntu. The README’s install
+      instructions are package-manager first, which helped the tool become a normal
+      service rather than a custom local build.
+  package-nerd-significance:
+    - >
+      yubikey-agent is a package-nerd favorite because it collapses a historically
+      fiddly stack into one daemon and one socket. It is not the only hardware-backed
+      SSH route, but it is one of the cleanest examples of wrapping smart-card behavior
+      in a familiar Unix interface.
+    - >
+      It also tells a packaging story about defaults: Homebrew services, systemd user
+      units, NixOS services, pcscd, and SSH_AUTH_SOCK all matter as much as the binary
+      itself.
+  project-history:
+    - >
+      The project appeared publicly in 2020, in the same period when OpenSSH 8.2
+      introduced native FIDO/U2F security-key support. yubikey-agent chose a different
+      compatibility path: use the YubiKey PIV applet to present ordinary SSH public keys
+      through an agent interface, so existing servers did not need support for the newer
+      `-sk` SSH key types.
+    - >
+      The README emphasizes three design goals that shaped its history: one-command
+      setup, resilience across unplugging and sleep, and keys generated on the YubiKey
+      so private material cannot be extracted. It is written in Go and built on
+      go-piv/piv-go plus Go’s SSH libraries.
+    - >
+      Its documentation also candidly records the tradeoffs: keeping a persistent PIV
+      transaction helps PIN caching and UX, but can conflict with gpg-agent, YubiKey
+      Manager, and other tools that want the same PIV applet.
+  related-projects:
+    - >
+      Related projects include go-piv/piv-go, yubico-piv-tool, YKCS11, OpenSSH,
+      gpg-agent, OpenSC, pivy-agent, Secretive, SeKey, YubiKey Manager, and OpenSSH
+      FIDO2 security-key support.
+  sources:
+    - https://deps.dev/go/filippo.io%2Fyubikey-agent/v0.1.6
+    - https://formulae.brew.sh/formula/yubikey-agent
+    - https://github.com/FiloSottile/yubikey-agent
+    - https://github.com/FiloSottile/yubikey-agent/issues/4
+    - https://news.ycombinator.com/item?id=23130053
+    - https://pkg.go.dev/filippo.io/yubikey-agent
+    - https://pkgs.alpinelinux.org/package/edge/testing/x86/yubikey-agent
+    - https://words.filippo.io/openssh-fido2/
+  summary:
+    - >
+      yubikey-agent is Filippo Valsorda’s Go ssh-agent for YubiKeys and other PIV
+      tokens, packaged because it makes hardware-backed SSH keys feel like a normal
+      SSH_AUTH_SOCK workflow.
+  timeline:
+    - >
+      2020-02: OpenSSH 8.2 introduces built-in FIDO/U2F security-key SSH support,
+      setting the context for hardware-backed SSH alternatives.
+    - >
+      2020-04: Early yubikey-agent issue traffic discusses PIV applet locking behavior
+      with YubiKey Manager.
+    - >
+      2020-05-10: yubikey-agent is discussed on Hacker News as an easy Go ssh-agent for
+      YubiKeys.
+    - '2020-06: Go module metadata shows early v0.1.x releases such as v0.1.2 and v0.1.3.'
+    - >
+      2020s: The package lands across Homebrew, NixOS/nixpkgs, FreeBSD ports, Arch/AUR,
+      Debian/Ubuntu, and Alpine testing.
+  usage:
+    - >
+      Users install the package, start the service, run `yubikey-agent -setup` to
+      generate a key on the YubiKey, and point `SSH_AUTH_SOCK` or per-host
+      `IdentityAgent` settings at the agent socket. After that, SSH sees an ordinary
+      agent while the YubiKey enforces PIN and touch policy.
+    - >
+      The tool is commonly compared with OpenSSH FIDO2 keys, gpg-agent with the OpenPGP
+      applet, raw ssh-agent PKCS#11 loading, pivy-agent, and macOS Secure Enclave tools
+      such as Secretive. Its niche is the compatibility and UX middle ground:
+      hardware-backed keys with ordinary SSH public-key compatibility.
 tags:
   - cli
   - hardware-token
@@ -25,29 +107,29 @@ geiger:
     - text:ssh
 provenance:
   category-sources:
-    - Official GitHub README describes yubikey-agent as a seamless ssh-agent for YubiKeys.
-    - >
-      source_facts.description says it is a seamless ssh-agent for YubiKeys and other
-      PIV tokens.
+    - https://github.com/FiloSottile/yubikey-agent
   display-name-sources:
-    - Official GitHub repo/README uses yubikey-agent.
-    - source_facts.name is yubikey-agent.
+    - https://github.com/FiloSottile/yubikey-agent
   docs-sources:
-    - >
-      Official GitHub README is the primary documentation surface with installation,
-      setup, and advanced topics.
+    - https://github.com/FiloSottile/yubikey-agent#readme
+  history-sources:
+    - https://deps.dev/go/filippo.io%2Fyubikey-agent/v0.1.6
+    - https://formulae.brew.sh/formula/yubikey-agent
+    - https://github.com/FiloSottile/yubikey-agent
+    - https://github.com/FiloSottile/yubikey-agent/issues/4
+    - https://news.ycombinator.com/item?id=23130053
+    - https://pkg.go.dev/filippo.io/yubikey-agent
+    - https://pkgs.alpinelinux.org/package/edge/testing/x86/yubikey-agent
+    - https://words.filippo.io/openssh-fido2/
   repo-sources:
-    - >
-      source_facts.repo already supplies https://github.com/FiloSottile/yubikey-agent;
-      repo returned null per instruction.
+    - https://github.com/FiloSottile/yubikey-agent
   tags-sources:
-    - Official README documents SSH_AUTH_SOCK setup and YubiKey-backed keys.
-    - source_facts.description identifies ssh-agent, YubiKey, and PIV token functionality.
+    - https://github.com/FiloSottile/yubikey-agent
 category-confidence: high
 category-path:
   - security
-  - ssh
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
