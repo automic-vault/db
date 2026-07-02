@@ -14,54 +14,90 @@ credentials-file-location: null
 history:
   adoption-history:
     - >
-      The project was useful in an era when small sites, mail archives, local file
-      servers, and community portals often needed self-hosted search before hosted
-      search APIs became routine. Homebrew, Fedora, and MacPorts package metadata keep
-      it installable for users maintaining legacy search stacks or old integrations.
+      Hyper Estraier was useful in the era when small sites, mail archives, local file
+      servers, and community portals often needed self-hosted search. Its official
+      introduction uses exactly those scenarios: site search, mailbox search, and
+      file-server search.
+    - >
+      The project’s adoption niche was broader than a single binary. The official site
+      provided C APIs plus Java, Ruby, and Perl bindings, while the manuals documented
+      CGI deployment, crawler-based indexing, and networked node operation. That made it
+      viable both for administrators assembling a local search service and programmers
+      embedding search into another system.
+    - >
+      Its P2P design was an ambitious adoption pitch: multiple node servers could
+      distribute indexes across machines, forward searches, merge results, and keep
+      service available even if some servers were unavailable.
   package-nerd-significance:
     - >
       Hyper Estraier is package-nerd archaeology in the best sense: a compact,
-      source-distributed Unix search system with many small executables, CGI support, C
-      APIs, language bindings, and P2P ambitions. It is a snapshot of how self-hosted
-      search was packaged before Lucene-derived stacks dominated most new deployments.
+      source-distributed Unix search system with many small executables, CGI scripts, C
+      libraries, language bindings, and distributed-search ambitions.
+    - >
+      It captures a moment before Lucene-derived stacks and hosted search APIs became
+      the default answer for many new projects. Installing it today is less about
+      chasing modern search fashion and more about preserving a runnable model of
+      mid-2000s self-hosted search infrastructure.
   project-history:
     - >
-      The official site carries a 2004-2007 copyright notice and presents Hyper Estraier
-      as a full-text search system for communities. It was distributed as source
-      packages with manuals for introduction, user operation, programming, node
-      operation, crawler use, and P2P operation.
+      The official Hyper Estraier site carries a 2004-2007 copyright window and presents
+      the project as a full-text search system for web sites, mail boxes, and file
+      servers. Its manual set covers introduction, user operation, programming, node
+      operation, crawler use, and P2P operation, which is unusually broad for a small
+      source-distributed Unix search package.
     - >
-      Hyper Estraier followed Estraier and QDBM-era search tooling from the same
-      authorial ecosystem. Its feature list reflects mid-2000s search-engine concerns:
-      N-gram recall, optional morphological analysis, phrase and regular-expression
-      search, attribute search, similarity search, repository-independent indexing, and
-      multilingual Unicode handling.
+      The project followed the Estraier and QDBM ecosystem associated with Mikio
+      Hirabayashi. Its feature list reflects mid-2000s self-hosted search concerns: high
+      recall through N-gram indexing, optional morphological analysis, phrase search,
+      regular-expression search, attribute search, similarity search,
+      repository-independent indexing, multilingual Unicode support, and an intelligent
+      crawler.
+    - >
+      Hyper Estraier had two explicit faces. One was a library/API for embedding
+      full-text search into applications; the other was an application layer with
+      commands and CGI scripts for building a usable search system without writing code.
   related-projects:
     - >
-      Hyper Estraier is related to Estraier, QDBM, Hyper Estraier Encore, local CGI
-      search systems, and Japanese Unix full-text-search tooling.
+      Hyper Estraier is related to Estraier, QDBM, MeCab-assisted Japanese text
+      analysis, local CGI search systems, and Unix full-text search tools.
+    - >
+      Its documented example application mod_estraier used the node API with Apache
+      proxying to build search over seen or proxied web content.
   sources:
-    - https://dbmx.net/hyperestraier
+    - https://dbmx.net/hyperestraier/
+    - https://dbmx.net/hyperestraier/cguide-en.html
+    - https://dbmx.net/hyperestraier/intro-en.html
     - https://dbmx.net/hyperestraier/nguide-en.html
     - https://dbmx.net/hyperestraier/pguide-en.html
     - https://dbmx.net/hyperestraier/uguide-en.html
-    - https://formulae.brew.sh/formula/hyperestraier
-    - https://github.com/fumiyas/hyperestraier-encore
   summary:
     - >
-      Hyper Estraier is Mikio Hirabayashi's LGPL full-text search system for building
-      local, site, and community search indexes, with command-line tools, a crawler,
-      APIs, Unicode support, and a documented P2P search architecture.
+      Hyper Estraier is Mikio Hirabayashi’s full-text search system for building local,
+      site, and community search indexes. It combines command-line indexing, CGI search,
+      a crawler, C APIs, language bindings, Unicode handling, and a documented
+      client/server and peer-to-peer search architecture.
   timeline:
-    - '2004: Hyper Estraier copyright period begins on the official site.'
-    - '2007: The official English site lists version 1.4.13 and a March 2007 page update.'
-    - '2010: Hyper Estraier Encore forked version 1.4.13 for continued maintenance experiments.'
+    - '2004: The official documentation copyright window begins.'
+    - '2007: The official English documentation was last updated.'
+    - >
+      2000s: The manuals documented command-line indexing, CGI search, crawler
+      operation, programming APIs, and P2P node search.
   usage:
     - >
-      The user guide centers on building an index with `estcmd` and searching through
-      either command-line administration or the `estsearch.cgi` web interface. The wider
-      toolset includes crawler and node-management commands such as `estwaver` and
-      `estmaster`.
+      The basic user workflow is to create an index with estcmd, gather documents from a
+      directory, and search through either command-line tools or the estseek CGI
+      interface. The user guide documents indexing local web content, updating an index
+      incrementally, purging deleted documents, and searching with full-text and
+      attribute conditions.
+    - >
+      For web-scale collection, estwaver crawls web sites and indexes fetched documents
+      directly, avoiding the extra storage and overhead of prefetching a site with a
+      separate crawler. For networked search, estmaster runs as a resident node master
+      and estcall acts as a client command.
+    - >
+      Programmers could use the core API to make search applications over repositories
+      other than plain files, such as records in a relational database, while keeping
+      indexing and retrieval independent of the user interface.
 category: data
 package-manager:
   brew: hyperestraier
