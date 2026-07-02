@@ -5,6 +5,85 @@ docs:
   - https://github.com/wg/wrk#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      wrk's adoption is visible in both package-manager coverage and GitHub popularity.
+      The repository has accumulated tens of thousands of stars and thousands of forks,
+      and the tool is packaged across common Unix-like ecosystems. FreeBSD has carried
+      it under `benchmarks/wrk` since 2012.
+    - >
+      Its niche adoption came from being able to generate large amounts of HTTP load
+      from one machine, which made it attractive for web-server comparisons, local
+      regression checks, and performance blog posts. The README's own example shows a
+      30-second run with 12 threads and 400 connections, a command shape that became a
+      common shorthand for quick HTTP load tests.
+  package-nerd-significance:
+    - >
+      wrk is one of the package-manager canonical HTTP benchmark binaries: short name,
+      single executable, stable README usage, and enough performance to stress real
+      services from a laptop or build host. That combination made it a frequent
+      dependency of performance-minded developers even when it is not a library
+      dependency of applications.
+    - >
+      It is also historically important as a C/LuaJIT benchmark tool in a field crowded
+      with language-specific clients. Package nerds care because it offers a compact,
+      reproducible baseline for HTTP throughput and latency testing across machines and
+      operating systems.
+  project-history:
+    - >
+      The `wg/wrk` repository was created on 20 March 2012, and FreeBSD ports metadata
+      shows wrk entering the FreeBSD ports tree on 1 August 2012. That early packaging
+      matters: wrk quickly became a Unix-packaged benchmarking binary rather than only a
+      GitHub project to build manually.
+    - >
+      The 4.x line continued the same minimal command-line design. Git tag metadata
+      places wrk 4.1.0 in January 2018 and 4.2.0 in February 2021. The README still
+      emphasizes the core model: threads, connections, duration, optional latency
+      reporting, custom headers, and optional LuaJIT scripting for request generation,
+      response processing, and custom reporting.
+  related-projects:
+    - LuaJIT is used for wrk's scripting extension point.
+    - >
+      ApacheBench, siege, vegeta, hey, and k6 are common comparison points in HTTP
+      benchmarking and load testing.
+    - >
+      go-wrk and other similarly named tools are separate implementations or derivatives
+      inspired by wrk's niche.
+  sources:
+    - https://api.github.com/repos/wg/wrk
+    - https://api.github.com/repos/wg/wrk/git/ref/tags/4.1.0
+    - https://api.github.com/repos/wg/wrk/git/ref/tags/4.2.0
+    - https://github.com/wg/wrk
+    - https://www.freshports.org/benchmarks/wrk/
+  summary:
+    - >
+      wrk is a high-performance HTTP benchmarking tool by Will Glozer. Its README
+      describes it as a modern tool capable of generating significant load from a single
+      multi-core CPU by combining a multithreaded design with scalable event
+      notification systems such as epoll and kqueue.
+    - >
+      The tool became a standard name in web-performance circles because it is small,
+      fast, scriptable with LuaJIT, and easy to invoke in repeatable local benchmarks.
+      It occupies the practical space between older ApacheBench-style smoke tests and
+      heavier distributed load-testing systems.
+  timeline:
+    - '2012-03-20: The `wg/wrk` GitHub repository is created.'
+    - '2012-08-01: FreeBSD ports adds `benchmarks/wrk`.'
+    - '2018-01-21: Git tag metadata places wrk 4.1.0 in early 2018.'
+    - '2021-02-07: Git tag metadata places wrk 4.2.0 in early 2021.'
+    - '2020s: wrk remains widely packaged and commonly cited for HTTP benchmarking.'
+  usage:
+    - >
+      The canonical invocation is `wrk -t12 -c400 -d30s URL`, where `-t` sets threads,
+      `-c` sets open HTTP connections, and `-d` sets duration. Users add `--latency` for
+      latency distributions, `-H` for headers, and `-s` for LuaJIT scripts when a static
+      GET request is not enough.
+    - >
+      wrk is best used for controlled benchmark comparisons rather than full production
+      traffic modeling. The README warns that the client machine needs enough ephemeral
+      ports and that per-request scripting or response callbacks reduce the amount of
+      load the tool can generate.
 tags:
   - benchmarking
   - cli
@@ -21,26 +100,31 @@ geiger:
     - text:http
 provenance:
   category-sources:
-    - source_facts.description identifies wrk as an HTTP benchmarking tool.
+    - https://github.com/wg/wrk
+    - source_facts.description
   display-name-sources:
-    - source_facts.name gives wrk.
+    - current_curation.display-name
+    - https://github.com/wg/wrk
   docs-sources:
-    - >
-      source_facts.homepage is the official GitHub repository; README is the best
-      official documentation surface.
+    - https://github.com/wg/wrk
+  history-sources:
+    - https://api.github.com/repos/wg/wrk
+    - https://api.github.com/repos/wg/wrk/git/ref/tags/4.1.0
+    - https://api.github.com/repos/wg/wrk/git/ref/tags/4.2.0
+    - https://github.com/wg/wrk
+    - https://www.freshports.org/benchmarks/wrk/
   repo-sources:
     - >
-      source_facts.repo is already populated; per instruction repo is returned as null
-      without second-guessing.
+      source_facts.repo already supplies https://github.com/wg/wrk; repo returned null
+      per prompt.
   tags-sources:
-    - >
-      source_facts.description says HTTP benchmarking tool; current_curation.tags
-      includes cli.
+    - https://github.com/wg/wrk
+    - source_facts.description
 category-confidence: high
 category-path:
   - developer-tools
-  - benchmarking
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

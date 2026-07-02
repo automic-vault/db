@@ -6,6 +6,84 @@ docs:
   - https://github.com/bahdotsh/wrkflw#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      wrkflw's adoption is early but nontrivial for a new CLI: GitHub metadata shows
+      thousands of stars within its first year, while crates.io records the package and
+      version history. Its niche is the developer desire to test GitHub Actions locally
+      rather than discovering workflow syntax or job-ordering problems only after a
+      push.
+    - >
+      The project also reflects a 2020s shift in CI tooling from remote-only validation
+      toward local emulation. Its README lists Docker, Podman, plain emulation, and
+      secure emulation runtimes, while the author note explains secure emulation as a
+      compromise for users without containers who still need guardrails before running
+      workflow steps locally.
+  package-nerd-significance:
+    - >
+      wrkflw is significant as a modern local-CI CLI in Rust. It packages a large slice
+      of GitHub Actions behavior into a local executable, giving developers faster
+      feedback loops and package managers another option in the same broad problem space
+      as `act`.
+    - >
+      Its package-nerd interest is also architectural: CI workflow files combine YAML,
+      expression language semantics, dependency graphs, containers, secrets, and
+      artifacts. A single binary that attempts to validate and emulate that surface is
+      useful even when users still rely on GitHub-hosted runners for final truth.
+  project-history:
+    - >
+      The `bahdotsh/wrkflw` repository and crates.io package were created on 29 March
+      2025. GitHub releases show a fast early cadence in 2025, including 0.3.0 in April,
+      0.4.0 later that month, and several 0.5 through 0.7 releases in August.
+    - >
+      By April 2026, wrkflw had reached version 0.8.0. The author's 2026 project note
+      frames wrkflw as both a serious CI-tooling project and a way to learn Rust deeply,
+      specifically citing hard parts such as the expression evaluator, async
+      executor/runtime boundaries, and error design.
+  related-projects:
+    - nektos/act is the best-known adjacent tool for running GitHub Actions locally.
+    - >
+      GitHub Actions is the workflow format and hosted CI service that wrkflw validates
+      and emulates.
+    - Docker and Podman are supported runtimes for container-backed local workflow execution.
+  sources:
+    - https://api.github.com/repos/bahdotsh/wrkflw
+    - https://api.github.com/repos/bahdotsh/wrkflw/releases
+    - https://blog.gokuls.in/posts/why-i-built-wrkflw.html
+    - https://crates.io/api/v1/crates/wrkflw
+    - https://github.com/bahdotsh/wrkflw
+  summary:
+    - >
+      wrkflw is a Rust command-line tool for validating and executing GitHub Actions
+      workflows locally. It is a young project, created in 2025, but it has enough
+      primary-source history to describe its niche: local CI workflow feedback before
+      pushing to GitHub.
+    - >
+      The project overlaps with tools such as `act`, but its README emphasizes
+      validation, a terminal UI, multiple runtimes, expression evaluation, workflow
+      dependency handling, reusable workflows, matrix builds, artifacts, cache, and
+      secrets support.
+  timeline:
+    - '2025-03-29: The GitHub repository and crates.io package are created.'
+    - '2025-04-21: wrkflw 0.3.0 is published on GitHub.'
+    - '2025-04-30: wrkflw 0.4.0 is published on GitHub.'
+    - '2025-08-13: wrkflw 0.7.0 is published on GitHub.'
+    - '2026-04-21: wrkflw 0.8.0 is published on GitHub and crates.io.'
+    - '2026: The author documents the design motivation behind secure emulation.'
+  usage:
+    - >
+      Users run wrkflw in repositories with GitHub Actions workflow files to validate
+      workflow syntax and execute jobs locally. The tool supports selecting jobs,
+      respecting `needs` dependencies, evaluating GitHub expression syntax, handling
+      matrices, watching files, and using a TUI for workflow, execution, DAG, logs,
+      trigger, secrets, and help views.
+    - >
+      For package users, the important runtime distinction is container-backed execution
+      versus emulation. The author's note is explicit that secure emulation does not
+      provide full filesystem isolation; it validates commands, strips risky environment
+      variables, applies timeouts, and blocks obvious dangerous patterns, while Docker
+      or Podman remain the stronger boundary.
 category: developer-tools
 package-manager:
   brew: wrkflw
