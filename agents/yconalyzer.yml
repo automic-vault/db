@@ -6,6 +6,68 @@ docs:
   - https://yconalyzer.sourceforge.net/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Yconalyzer appears to have had modest adoption. It is documented on SourceForge,
+      has a FreeBSD ports entry, and is packaged by Homebrew, but the available source
+      material points to a small utility with a narrow operator audience rather than a
+      large active ecosystem.
+    - >
+      Its adoption niche is server-side traffic diagnosis where tcpdump-compatible pcap
+      files are already part of the workflow and an operator wants connection
+      distributions without running a heavier analyzer.
+  package-nerd-significance:
+    - >
+      Yconalyzer matters as an example of a tiny operations tool whose packaging value
+      is preservation. The upstream is quiet, but package managers keep a buildable
+      command around for people who still want this exact pcap-to-connection-summary
+      behavior.
+    - >
+      It also demonstrates a classic Unix packaging pattern: a small C network utility,
+      libpcap as the real platform interface, text output for scripts, and compatibility
+      with tcpdump files.
+  project-history:
+    - >
+      Yconalyzer was published on SourceForge as TCP Traffic Analyzer by Subbu
+      Subramaniam. Its file feed shows early public tarballs in April 2010, followed by
+      1.0.x source archives and changelogs through June 2010.
+    - >
+      The project manual explains the core design: capture only TCP control packets with
+      SYN, FIN, or RST set, then use those comparatively small packet streams to infer
+      connection-level performance. That made it a specialized monitoring tool rather
+      than a full packet dissector.
+  related-projects:
+    - >
+      Related projects and technologies include libpcap, tcpdump, Berkeley Packet
+      Filter, Wireshark, tshark, netsniff-ng, Tranalyzer, and RFC 793 TCP tooling.
+  sources:
+    - https://sourceforge.net/projects/yconalyzer/
+    - https://sourceforge.net/projects/yconalyzer/best_release.json
+    - https://sourceforge.net/projects/yconalyzer/rss?path=/
+    - https://www.freshports.org/net/yconalyzer/
+    - https://www.gsp.com/cgi-bin/man.cgi?section=1&topic=YCONALYZER
+    - https://yconalyzer.sourceforge.net/
+  summary:
+    - >
+      Yconalyzer is a low-overhead libpcap-based TCP connection analyzer. It captures or
+      reads pcap data for a selected TCP port and summarizes connection duration, retry
+      behavior, volume, and throughput.
+  timeline:
+    - '2010-04-23: The SourceForge file feed lists an early yconalyzer.tgz upload.'
+    - '2010-05-18: A yconalyzer 1.0.2 archive is published.'
+    - '2010-06-03: A yconalyzer 1.0.3 archive and changelog are published.'
+    - '2010-06-29: A yconalyzer 1.0.4 archive and changelog are published.'
+    - '2013-04-11: SourceForge records a later project update date.'
+  usage:
+    - >
+      The manual describes three modes: capture mode with `-w`, analyze mode with `-r`,
+      and live traffic analysis. The `-p` port option is mandatory, and users can add
+      ordinary tcpdump/BPF filters to narrow the capture.
+    - >
+      Typical examples include capturing port 80 or port 25 control packets, analyzing
+      tcpdump-created pcap files, bucketing connections by duration or byte volume, and
+      piping raw output through shell scripts for cron-based monitoring or alerts.
 tags:
   - cli
   - libpcap
@@ -24,28 +86,29 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description says TCP traffic analyzer; official yconalyzer site
-      describes monitoring and analyzing TCP connections on a particular TCP port.
+    - https://yconalyzer.sourceforge.net/
+    - source_facts.description
   display-name-sources:
-    - Official documentation names the tool 'Yconalyzer'; source_facts.name is yconalyzer.
+    - current_curation.display-name
+    - https://yconalyzer.sourceforge.net/
   docs-sources:
-    - >
-      Official SourceForge project links to the TCP Traffic Analyzer website, which
-      contains introduction, usage examples, FAQ, and options documentation.
-  repo-sources:
-    - >
-      Official SourceForge project page is not an HTTP source-control repository URL:
-      https://sourceforge.net/projects/yconalyzer
+    - current_curation.docs
+    - https://yconalyzer.sourceforge.net/
+  history-sources:
+    - https://sourceforge.net/projects/yconalyzer/
+    - https://sourceforge.net/projects/yconalyzer/best_release.json
+    - https://sourceforge.net/projects/yconalyzer/rss?path=/
+    - https://www.freshports.org/net/yconalyzer/
+    - https://www.gsp.com/cgi-bin/man.cgi?section=1&topic=YCONALYZER
+    - https://yconalyzer.sourceforge.net/
   tags-sources:
-    - >
-      source_facts.description and official yconalyzer website describe TCP connection
-      analysis, capture/analyze modes, pcap compatibility, and command-line use.
+    - https://sourceforge.net/projects/yconalyzer/
+    - https://yconalyzer.sourceforge.net/
 category-confidence: high
 category-path:
   - networking
-  - traffic-analysis
 display-name-confidence: high
 docs-confidence: high
-repo-confidence: medium
+history-confidence: medium
+repo-confidence: low
 tags-confidence: high

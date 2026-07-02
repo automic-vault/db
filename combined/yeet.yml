@@ -8,6 +8,81 @@ docs:
 config-file-location:
   unix: yeetfile.js
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Yeet is a young, niche tool, so adoption evidence is necessarily light. Its README
+      links a Repology packaging-status badge, pkg.go.dev indexes the Go module,
+      Homebrew packages the command, and Techaro discussions mention using yeet while
+      testing Techaro apt/rpm repository definitions.
+    - >
+      Its likely adopters are maintainers of Go or mixed-language projects who want
+      packaging recipes to stay close to source without writing full RPM spec/deb-helper
+      machinery by hand for every simple artifact.
+  package-nerd-significance:
+    - >
+      Yeet is package-nerd significant because it is packaging tooling about package
+      production itself. It tries to make native artifacts scriptable while avoiding the
+      full dependency sprawl of a JavaScript toolchain.
+    - >
+      Its no-import/no-npm rule is also notable: for packaging, fewer moving parts can
+      be a feature. The project bakes common packaging operations into Go-backed helpers
+      and leaves the recipe file as a compact declaration of what to build.
+  project-history:
+    - >
+      The TecharoHQ/yeet repository was created on 2025-03-28. Its README presents the
+      project as a way to declare build instructions as small JavaScript snippets, with
+      a first-class `yeetfile.js` example that builds a Go program into an RPM.
+    - >
+      The API documentation explains a deliberate design boundary: yeet executes
+      JavaScript with goja, does not provide npm access, and does not allow importing
+      code or data from other files. Reusable functionality is expected to become a
+      native yeet interface instead of a local JavaScript dependency tree.
+    - >
+      The tool evolved around practical packaging helpers: `deb`, `rpm`, and
+      `tarball`-style native package builders, systemd extension and portable-service
+      images, Docker aliases, Git helpers, file helpers, Go build helpers, and package
+      upload integrations.
+  related-projects:
+    - >
+      Related projects and technologies include goja, RPM packaging, Debian packaging,
+      systemd portable services, systemd system extensions, Docker, Gitea package
+      registries, Go build tooling, npm scripts, Make, goreleaser, nfpm, and
+      project-local build recipes.
+  sources:
+    - https://api.github.com/repos/TecharoHQ/yeet
+    - https://formulae.brew.sh/formula/yeet
+    - https://github.com/TecharoHQ/anubis/discussions/567
+    - https://github.com/TecharoHQ/yeet
+    - https://pkg.go.dev/github.com/TecharoHQ/yeet
+    - https://raw.githubusercontent.com/TecharoHQ/yeet/main/README.md
+    - https://raw.githubusercontent.com/TecharoHQ/yeet/main/doc/api.md
+  summary:
+    - >
+      yeet is a Go-based packaging/build helper that runs small JavaScript `yeetfile.js`
+      recipes. It targets the gap between shell scripts and full custom programs, with
+      helpers for native packages, container operations, Git metadata, file
+      installation, and language-specific build steps.
+  timeline:
+    - '2025-03-28: The TecharoHQ/yeet repository is created.'
+    - '2025: The README documents `yeetfile.js` recipes and native package examples.'
+    - >
+      2025: The API documentation covers helpers for Debian packages, RPM packages,
+      tarballs, Docker, Git, files, Go builds, Gitea uploads, and systemd image formats.
+    - >
+      2025-05-26: A Techaro Anubis discussion references a proof-of-concept apt/rpm
+      repository for testing packages including yeet.
+  usage:
+    - >
+      A project adds a `yeetfile.js` and calls helpers such as `rpm.build` or
+      `deb.build` with descriptor objects. The build callback can invoke shell commands
+      with the `$` tagged-template helper and place compiled output in the package
+      layout paths supplied by yeet.
+    - >
+      The API docs also show uses beyond simple packages: building systemd configuration
+      extensions, system extensions, portable service images, Docker images, copying
+      files while preserving modes, reading Git tags, and uploading binary packages to
+      Gitea-backed repositories.
 category: developer-tools
 package-manager:
   brew: yeet
