@@ -6,6 +6,28 @@ docs:
   - https://github.com/rootless-containers/slirp4netns/blob/master/slirp4netns.1.md
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    slirp4netns grew out of a Linux container plumbing problem exposed by user
+    namespaces. Since Linux 3.8, unprivileged users have been able to create user and
+    network namespaces, but a useful network namespace still needed a way to connect to
+    the outside world without creating host-side veth pairs as root. slirp4netns solved
+    that by connecting a TAP device inside the network namespace to a user-mode TCP/IP
+    stack derived from slirp.
+  - >
+    The project became part of the rootless-container ecosystem because it let container
+    engines give non-root containers outbound networking and port forwarding without
+    modifying the host network namespace. The upstream README lists Podman, Buildah,
+    RootlessKit, Docker/Moby through RootlessKit, containerd/nerdctl through
+    RootlessKit, k3s, and Usernetes among consumers or adjacent integrations.
+  - >
+    Practitioners encounter slirp4netns most often through rootless Podman and related
+    tools, where it acts as the user-space network backend behind options such as TAP
+    setup, MTU, CIDR, IPv6, host-loopback filtering, and API sockets. Distribution
+    packaging reflects that low-level infrastructure role: the package appears across
+    Homebrew, Debian, Ubuntu, Fedora, Alpine, Arch, Nix, and openSUSE-style package
+    sets, with Homebrew marking it Linux-only and depending on libslirp, libcap,
+    libseccomp, and glib.
 tags:
   - cli
   - containers
@@ -34,6 +56,11 @@ provenance:
     - >
       Official README contains quick start and links the official manual page
       slirp4netns.1.md.
+  history-sources:
+    - https://github.com/rootless-containers/slirp4netns
+    - https://www.mankier.com/1/slirp4netns
+    - https://docs.solace.com/Software-Broker/Container-Tasks/Config-Container-Networking.htm
+    - https://formulae.brew.sh/formula/slirp4netns
   repo-sources:
     - >
       source_facts.repo already contains
@@ -51,5 +78,6 @@ category-path:
   - namespaces
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
