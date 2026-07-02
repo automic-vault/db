@@ -10,6 +10,48 @@ credentials-file-location:
     - $XDG_RUNTIME_DIR/containers/auth.json
     - $XDG_CONFIG_HOME/containers/auth.json
     - ~/.config/containers/auth.json
+history:
+  - >
+    Podman originated in the Red Hat container-tools ecosystem as part of the libpod
+    effort, with an early goal of providing a better debugging and management experience
+    around CRI-O and Kubernetes-style pods. The name expands to "pod manager", and the
+    design centered on managing OCI containers, images, volumes, and pods through a
+    daemonless command-line tool rather than a long-running central service.
+  - >
+    The 1.0.0 release was announced on January 16, 2019, after the project had grown
+    beyond its original CRI-O debugging role into a general-purpose container engine.
+    That release emphasized a Docker-compatible command line, regular-user operation for
+    many commands, and the absence of a daemon, making Podman a credible drop-in
+    candidate for users who already knew `docker run`, `docker build`, and `docker ps`.
+  - >
+    Adoption was driven by several pressures in the container ecosystem: interest in
+    rootless containers, demand for OCI-native tooling, and Linux distribution support
+    for container workflows that did not require the Docker daemon. Red Hat's
+    documentation and product ecosystem helped normalize Podman for enterprise Linux
+    users, while packaging in Homebrew, Debian, Ubuntu, Fedora/dnf, Arch/pacman, Nix,
+    MacPorts, Scoop, winget, apk, and zypper made it accessible across developer
+    workstations and servers.
+  - >
+    Podman's ecosystem role is broader than a Docker replacement. It sits alongside
+    Buildah, Skopeo, CRI-O, Podman Desktop, and Compose-related tooling as part of a
+    modular container toolchain. Its native pod abstraction maps naturally to Kubernetes
+    concepts, and Podman can play Kubernetes YAML or generate Kubernetes YAML from local
+    pod definitions, giving it a local-development role for teams that deploy to
+    Kubernetes.
+  - >
+    Practitioners use Podman for everyday image and container lifecycle work: pulling
+    images, building images, running rootless containers, managing pods, publishing
+    ports, mounting volumes, and authenticating to registries through containers auth
+    files. On macOS and Windows it runs containers through a Podman-managed virtual
+    machine, while on Linux it is commonly used directly with user namespaces, systemd
+    integration, and rootless storage.
+  - >
+    The practical migration story is part of its history. Podman deliberately kept a
+    familiar Docker-like CLI, so many users began by aliasing or substituting commands,
+    then moved toward Podman-specific workflows such as pods, Quadlet/systemd units,
+    `podman generate kube`, `podman play kube`, and remote management. That balance of
+    compatibility and Linux-native design is why Podman became a standard
+    package-manager entry rather than a niche container experiment.
 category: system
 package-manager:
   apk: podman
@@ -39,5 +81,14 @@ executables:
   - podmansh
 provenance:
   formula: podman
+  history-sources:
+    - https://podman.io/
+    - https://docs.podman.io/
+    - https://podman.io/release/2019/01/16/podman-release-v1.0.0
+    - https://www.redhat.com/en/topics/containers/what-is-podman
+    - https://formulae.brew.sh/formula/podman
+    - source_facts.package-manager
+    - source_facts.credentials-file-location
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

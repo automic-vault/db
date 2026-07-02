@@ -5,6 +5,30 @@ docs:
   - https://github.com/containers/podlet#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Podlet emerged from the Podman and containers ecosystem as Quadlet became the
+    preferred way to express Podman-managed containers as systemd units. Red Hat's
+    Quadlet writeup explains that Quadlet was merged into Podman 4.4, and Podman's own
+    manual documents the systemd generator that reads Quadlet files and emits regular
+    systemd units for containers, pods, volumes, networks, images, builds, and related
+    objects.
+  - >
+    Podlet's job is translation: it generates Podman Quadlet files from a Podman
+    command, a Compose file, or an existing Podman object. The README explicitly
+    cautions that it is a helper for getting started with Podman systemd units rather
+    than a complete authoring or validation system, which positions it as a bridge for
+    administrators moving from imperative `podman run` commands or Compose files into
+    reviewable `.container`, `.pod`, `.kube`, `.network`, `.volume`, `.build`, `.image`,
+    and `.artifact` unit files.
+  - >
+    Adoption follows Podman's packaging and the Rust tooling ecosystem. The project
+    lives under the GitHub `containers` organization, publishes as the `podlet` crate,
+    ships prebuilt releases and a container image, and is packaged by Homebrew, Fedora,
+    Nix, Arch, and openSUSE. Practitioners use it when converting working container
+    commands into files checked into dotfiles, server repos, or configuration-management
+    systems, then review and adjust the generated Quadlet before enabling the unit
+    through systemd or Podman's Quadlet install flow.
 tags:
   - cli
   - compose
@@ -30,6 +54,12 @@ provenance:
     - source_facts.name is podlet; official GitHub repository README uses Podlet.
   docs-sources:
     - Official containers/podlet repository README is the primary documentation surface.
+  history-sources:
+    - https://github.com/containers/podlet
+    - https://docs.podman.io/en/stable/markdown/podman-systemd.unit.5.html
+    - https://www.redhat.com/en/blog/quadlet-podman
+    - https://crates.io/crates/podlet
+    - https://formulae.brew.sh/formula/podlet
   repo-sources:
     - source_facts.repo is already populated, so repo was returned as null per instruction.
   tags-sources:
@@ -43,5 +73,6 @@ category-path:
   - systemd
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
