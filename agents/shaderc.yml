@@ -5,6 +5,32 @@ docs:
   - https://github.com/google/shaderc#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Shaderc is Google's collection of tools, libraries, and tests for Vulkan-era shader
+    compilation. Its main executable, `glslc`, wraps Khronos glslang and SPIRV-Tools to
+    compile GLSL, and historically HLSL, into SPIR-V while exposing a GCC- and
+    Clang-like command-line interface that build systems can drive predictably.
+  - >
+    The project sits in the graphics toolchain layer between shader source and Vulkan
+    runtime consumption. Game engines, rendering frameworks, CI builds, and asset
+    pipelines use `glslc` to turn shader files into SPIR-V modules ahead of time, while
+    `libshaderc` gives applications and tools an API for compiling shader strings or
+    files into SPIR-V during build steps or controlled runtime workflows.
+  - >
+    Shaderc's ecosystem role was strengthened by Android packaging: the upstream README
+    notes that Shaderc has shipped in the Android NDK since r12b, with Android's copy
+    downstream from the GitHub sources. The repository also maintains a known-good
+    dependency branch for matching tested revisions of glslang, SPIRV-Tools, and related
+    pieces, which matters because shader compilers are usually consumed as a coordinated
+    stack rather than a single standalone binary.
+  - >
+    Distribution packages expose Shaderc under both library and executable names.
+    Homebrew ships `shaderc` and the `glslc` executable, while Debian and Ubuntu package
+    the command as `glslc`; other systems ship the broader Shaderc package or shared
+    library. That packaging pattern matches practitioner usage: workstation users
+    install the compiler, build farms pin a version, and graphics projects rely on the
+    library only when they need programmable compilation inside their own tooling.
 tags:
   - cli
   - graphics
@@ -32,6 +58,10 @@ provenance:
     - >
       Official GitHub README documents glslc, libshaderc, build instructions, downloads,
       and project usage.
+  history-sources:
+    - https://github.com/google/shaderc
+    - https://raw.githubusercontent.com/google/shaderc/main/README.md
+    - https://formulae.brew.sh/formula/shaderc
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/google/shaderc, so repo is
@@ -47,5 +77,6 @@ category-path:
   - shader-compilation
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

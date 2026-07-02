@@ -6,6 +6,29 @@ docs:
   - https://github.com/cr-marcstevens/sha1collisiondetection#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    sha1dc packages Marc Stevens and Dan Shumow's SHA-1 collision-detection work as a
+    library and command-line tool. The upstream project was published in 2017 under the
+    MIT license and is designed as a near drop-in replacement for ordinary SHA-1
+    libraries and `sha1sum`: it computes the SHA-1 digest while also detecting
+    cryptanalytic SHA-1 collision attacks in the input file.
+  - >
+    The security context is the 2017 SHAttered result, where CWI Amsterdam and Google
+    demonstrated the first public full SHA-1 collision. The SHAttered site emphasized
+    that Git and Subversion-style content-addressed systems were part of the risk
+    surface, and pointed users to Stevens and Shumow's public detector, based on
+    counter-cryptanalysis, for identifying known and unknown cryptanalytic collision
+    attacks from a single member of a colliding pair.
+  - >
+    The package's practical role is defensive compatibility. Rather than pretending
+    SHA-1 is safe, sha1dc gives legacy SHA-1 workflows a collision alarm and a "safe
+    hash" behavior for detected attacks. The upstream README says `sha1dcsum` detects
+    attacks such as SHAttered and later derived attacks, while USENIX Security 2017
+    reports that the improved detection approach was deployed by Git, GitHub, Google
+    Drive, Gmail, Microsoft OneDrive, and others. Homebrew exposes the CLI programs as
+    `sha1dcsum` and `sha1dcsum_partialcoll` for scanning files and regression-testing
+    systems that still need SHA-1 interoperability.
 category: security
 package-manager:
   brew: sha1dc
@@ -23,5 +46,12 @@ executables:
   - sha1dcsum_partialcoll
 provenance:
   formula: sha1dc
+  history-sources:
+    - https://github.com/cr-marcstevens/sha1collisiondetection
+    - https://marc-stevens.nl/research/shattered.io/
+    - >
+      https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/stevens
+    - https://formulae.brew.sh/formula/sha1dc
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

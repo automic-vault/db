@@ -10,6 +10,35 @@ config-file-location:
     - /etc/shadowsocks-libev/config.json
     - /usr/local/etc/shadowsocks-libev/config.json
 credentials-file-location: null
+history:
+  - >
+    shadowsocks-libev is the libev-based C port of Shadowsocks, the encrypted
+    SOCKS5-style proxy project created by clowwindy. The libev implementation was
+    maintained by madeye and linusyang and targeted embedded devices, routers, VPS
+    instances, and low-end boxes where the original Python implementation's footprint
+    was less attractive.
+  - >
+    The package's ecosystem role comes from the way Shadowsocks is deployed: a remote
+    `ss-server` terminates the encrypted tunnel, while local clients such as `ss-local`,
+    transparent proxy mode via `ss-redir`, port forwarding via `ss-tunnel`, NAT helpers,
+    and `ss-manager` support desktop clients, router-level forwarding, and multi-user
+    service management. Debian's manual page documents both the standard SOCKS5 local
+    mode and transparent proxying through netfilter NAT or TPROXY, which is the pattern
+    used by many router and gateway setups.
+  - >
+    shadowsocks-libev became a preferred Unix server/client implementation because it is
+    pure C, event-driven through libev, and packaged broadly across Linux distributions,
+    BSD ports, Homebrew, Nix, OpenWrt-style environments, and container images. Its
+    dependency set, including libev, c-ares, libsodium, mbedTLS, and PCRE2 in Homebrew
+    packaging, reflects a network daemon tuned around asynchronous DNS, modern ciphers,
+    and small-system operation.
+  - >
+    Development context also matters for package users: the GitHub repository title
+    identifies the project as a bug-fix-only libev port with new development moved to
+    shadowsocks-rust. Practitioners still encounter shadowsocks-libev in existing
+    deployments, service files, tutorials, and router images, especially where mature
+    `ss-redir` or C-based package availability is more important than adopting the newer
+    Rust implementation.
 category: networking
 package-manager:
   apk: libshadowsocks-libev
@@ -39,5 +68,12 @@ executables:
   - ss-tunnel
 provenance:
   formula: shadowsocks-libev
+  history-sources:
+    - https://github.com/shadowsocks/shadowsocks-libev
+    - https://raw.githubusercontent.com/shadowsocks/shadowsocks-libev/master/README.md
+    - https://manpages.debian.org/unstable/shadowsocks-libev/shadowsocks-libev.8.en.html
+    - https://formulae.brew.sh/formula/shadowsocks-libev
+    - https://shadowsocks.org/
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
