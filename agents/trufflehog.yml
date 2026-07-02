@@ -5,6 +5,82 @@ docs:
   - https://github.com/trufflesecurity/trufflehog#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      TruffleHog spread because secret leakage is a concrete, recurring operational
+      problem: a key committed once may remain in Git history even after later commits
+      remove it. Truffle Security's GitHub Actions guide shows the tool used in CI to
+      scan pull requests and pushes before leaks move farther into deployment pipelines.
+    - >
+      The tool's package-manager footprint is broad: Homebrew, Docker images, binary
+      releases, install scripts, and distro packages all make it easy to drop into local
+      audits, CI jobs, pre-commit workflows, and incident response scripts.
+  package-nerd-significance:
+    - >
+      TruffleHog matters because it turned secrets scanning into a normal
+      CLI/package-manager concern. The same binary can be used interactively with
+      Homebrew, containerized through Docker, or pinned in CI, which fits how security
+      tooling actually lands in developer environments.
+    - >
+      Its distinction from simple grep-like scanners is verification. Package users care
+      because reducing false positives changes the economics of adopting a scanner in
+      every repository.
+  project-history:
+    - >
+      The original TruffleHog was written to detect API keys, passwords, and secrets
+      committed to Git. In April 2022, Truffle Security introduced TruffleHog v3 as a
+      major rewrite focused on speed, broader detector coverage, and automatic
+      validation for supported secrets.
+    - >
+      The v3 announcement positioned verification as the central change: instead of only
+      matching strings, the scanner can call provider APIs to determine whether a
+      discovered secret is live. The project also moved toward a larger open detector
+      ecosystem, with hundreds of supported key types and contribution paths for new
+      detectors.
+    - >
+      The current README describes TruffleHog as a discovery, classification,
+      validation, and analysis tool that scans Git, chats, wikis, logs, API-testing
+      platforms, object stores, filesystems, and more. It also documents enterprise
+      monitoring as a commercial layer while keeping the core scanner open source.
+  related-projects:
+    - Gitleaks is mentioned by the v3 announcement as inspiration for some Git improvements.
+    - >
+      GitHub Actions is a common integration surface for running TruffleHog on pull
+      requests and pushes.
+    - >
+      Driftwood is referenced by Truffle Security as a related technique for private
+      encryption key checks.
+  sources:
+    - https://github.com/trufflesecurity/trufflehog
+    - https://trufflesecurity.com/blog/how-trufflehog-verifies-secrets
+    - https://trufflesecurity.com/blog/introducing-trufflehog-v3
+    - https://trufflesecurity.com/blog/running-trufflehog-in-a-github-action
+  summary:
+    - >
+      TruffleHog is an open-source secrets scanner for finding, classifying, verifying,
+      and analyzing leaked credentials across Git repositories and many other sources.
+  timeline:
+    - >
+      Circa 2017: The original TruffleHog is written to find secrets committed to Git,
+      based on the 2022 v3 announcement's five-year lookback.
+    - '2022-04-04: Truffle Security introduces TruffleHog v3.'
+    - >
+      2023-05-18: Truffle Security documents the TruffleHog GitHub Action for pull
+      request and push scanning.
+    - >
+      2024-02-21: Truffle Security publishes a detailed explanation of TruffleHog secret
+      verification.
+  usage:
+    - >
+      Common CLI usage includes scanning a remote Git repository, a GitHub organization,
+      a local Git repository, S3 or GCS buckets, Docker images, filesystems, Jira,
+      Slack, and other collaboration surfaces. Security teams often run it with
+      verified-only results to prioritize active credentials.
+    - >
+      For package nerds, TruffleHog is a canonical 'install this before you publish or
+      rotate credentials' tool: it is easy to add to a shell, CI workflow, or one-off
+      audit and it returns structured JSON when automation needs to consume findings.
 tags:
   - cli
   - credentials
@@ -23,29 +99,33 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      Official Truffle Security page describes TruffleHog as a secrets scanning tool for
-      code repositories.
-    - source_facts.description says TruffleHog finds and verifies credentials.
+    - Official README describes credential discovery and validation.
+    - current_curation.category_path
+    - source_facts.description
   display-name-sources:
-    - Official Truffle Security page and GitHub repository use the display name TruffleHog.
-    - source_facts.name is trufflehog.
+    - Official README
+    - current_curation.display-name
   docs-sources:
-    - >
-      Official GitHub README is linked from the official Truffle Security page as
-      open-source docs.
+    - Official GitHub README
+    - current_curation.docs
+  history-sources:
+    - https://github.com/trufflesecurity/trufflehog
+    - https://trufflesecurity.com/blog/how-trufflehog-verifies-secrets
+    - https://trufflesecurity.com/blog/introducing-trufflehog-v3
+    - https://trufflesecurity.com/blog/running-trufflehog-in-a-github-action
   repo-sources:
-    - source_facts.repo is already populated; per instruction repo is returned as null.
-  tags-sources:
     - >
-      Official Truffle Security page describes finding secrets, passwords, and sensitive
-      keys, with detection and credential verification.
-    - source_facts.description says it finds and verifies credentials.
+      source_facts.repo already provides https://github.com/trufflesecurity/trufflehog;
+      prompt requires repo null when source_facts.repo is present.
+  tags-sources:
+    - Official README feature list
+    - current_curation.tags
+    - source_facts.description
 category-confidence: high
 category-path:
   - security
-  - secrets-scanning
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

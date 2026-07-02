@@ -6,6 +6,71 @@ docs:
   - https://github.com/curl/trurl#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      trurl was adopted in the curl ecosystem because URLs are deceptively hard to parse
+      correctly in shell. Instead of sed, awk, cut, or hand-rolled regular expressions,
+      users can ask trurl for structured URL parts, normalized URLs, redirects, query
+      edits, or JSON output.
+    - >
+      Its package-manager spread is unusually broad for a young utility: the input
+      package facts list Homebrew, Debian, Ubuntu, Fedora, Alpine, Arch, Nix, MacPorts,
+      and openSUSE-style packages, matching its role as a small Unix command that
+      distribution maintainers can ship easily.
+  package-nerd-significance:
+    - >
+      trurl is significant because it packages a common but error-prone scripting task
+      into a tiny, curl-family binary. It is the sort of tool that shows up in dotfiles,
+      release scripts, URL cleanup jobs, and packaging automation once people stop
+      trusting ad hoc regex parsing.
+    - >
+      Its libcurl dependency also matters: package maintainers can reason about its URL
+      behavior in terms of the same parser used by curl, while its compatibility table
+      documents which libcurl versions enable which features.
+  project-history:
+    - >
+      Daniel Stenberg introduced trurl in April 2023 as a small command-line tool in the
+      spirit of Unix 'tr', but for URLs. He wrote that it was created on March 31, 2023
+      to help shell script authors avoid repeatedly inventing unsafe or inconsistent URL
+      parsing.
+    - >
+      The curl project page positions trurl as a companion to curl: it uses libcurl's
+      URL parser, so it understands URLs the same way curl does. That makes it
+      especially useful in scripts that already rely on curl and need to manipulate URLs
+      before passing them to other tools.
+    - >
+      The GitHub repository stayed intentionally compact: C source, tests, a man page,
+      release notes, and compatibility notes around libcurl versions. Releases on
+      curl.se and GitHub turned it from a fresh helper into a packaged utility available
+      through Homebrew and multiple Unix distributions.
+  related-projects:
+    - curl is the command-line tool trurl is designed to complement.
+    - libcurl provides the URL parser used by trurl.
+    - wcurl is another small curl.se-listed command-line companion tool.
+  sources:
+    - https://curl.se/trurl/
+    - https://daniel.haxx.se/blog/2023/04/03/introducing-trurl/
+    - https://daniel.haxx.se/blog/2024/09/12/trurl-0-15-1/
+    - https://github.com/curl/trurl
+  summary:
+    - >
+      trurl is a curl-adjacent command-line tool for parsing, normalizing, extracting,
+      and modifying URLs using libcurl's URL parser.
+  timeline:
+    - '2023-03-31: Daniel Stenberg creates trurl.'
+    - '2023-04-03: Stenberg publishes the introductory trurl article.'
+    - '2024-09-12: Stenberg describes trurl as maturing in the 0.15.1 release notes.'
+    - '2025-05-12: curl.se lists trurl 0.16.1 as the current download.'
+  usage:
+    - >
+      trurl can change hosts, schemes, ports, paths, query strings, and fragments;
+      append path or query components; trim tracking parameters; sort query pairs;
+      handle redirects; read URLs from files or stdin; and emit JSON for scripts.
+    - >
+      For package nerds, the appeal is that trurl is a purpose-built URL transformer
+      that composes cleanly with curl, xargs, shell pipelines, package build scripts,
+      and CI jobs without pulling in a heavier language runtime.
 tags:
   - cli
   - libcurl
@@ -23,32 +88,34 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official curl.se trurl page says trurl parses and manipulates URLs for shell
-      script authors.
-    - >
-      source_facts.description says trurl is a command-line tool for URL parsing and
-      manipulation.
+    - Official curl.se page
+    - current_curation.category_path
+    - source_facts.description
   display-name-sources:
-    - Official curl.se page uses the lowercase project name trurl.
-    - source_facts.name is trurl.
+    - Official curl.se page
+    - current_curation.display-name
   docs-sources:
-    - Official GitHub README is an official documentation fallback.
-    - >
-      Official curl.se trurl page is the project page and links to the official GitHub
-      repository and man page.
+    - Official GitHub README
+    - Official curl.se trurl page
+    - current_curation.docs
+  history-sources:
+    - https://curl.se/trurl/
+    - https://daniel.haxx.se/blog/2023/04/03/introducing-trurl/
+    - https://daniel.haxx.se/blog/2024/09/12/trurl-0-15-1/
+    - https://github.com/curl/trurl
   repo-sources:
-    - source_facts.repo is already populated; per instruction repo is returned as null.
-  tags-sources:
     - >
-      Official curl.se page says trurl uses the libcurl URL parser and is a command-line
-      URL manipulation tool.
-    - source_facts.description names URL parsing and manipulation.
+      source_facts.repo already provides https://github.com/curl/trurl; prompt requires
+      repo null when source_facts.repo is present.
+  tags-sources:
+    - Official curl.se page and GitHub README
+    - current_curation.tags
+    - source_facts.description
 category-confidence: high
 category-path:
   - networking
-  - url-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
