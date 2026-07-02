@@ -8,6 +8,97 @@ config-file-location:
   unix: ~/.config/velero/config.json
 credentials-file-location:
   unix: ./credentials-velero
+history:
+  adoption-history:
+    - >
+      Velero became one of the default open-source answers for cluster-level Kubernetes
+      backup because it works at the Kubernetes API layer instead of treating etcd or a
+      storage array as the only source of truth. That let platform teams back up
+      resource definitions, restore namespaces, clone environments, and migrate
+      workloads across clusters.
+    - >
+      Its ecosystem grew around cloud-provider plugins, object stores, volume snapshot
+      integrations, Restic/Kopia-style file-system backups, and operational guides from
+      cloud vendors. AWS, Harbor, Tanzu, and many Kubernetes tutorials describe Velero
+      as a standard tool for protecting cluster resources and persistent volumes.
+    - >
+      The CNCF Sandbox move in 2026 is important historically because Kubernetes backup
+      spans vendors, clouds, and storage systems. Neutral governance makes Velero more
+      plausible as shared infrastructure rather than a VMware/Broadcom-adjacent utility.
+  package-nerd-significance:
+    - >
+      For package users, `velero` is the CLI half of a larger cluster service, but it is
+      the interface people reach for during stressful incidents. Its command surface is
+      part backup tool, part migration tool, and part Kubernetes recovery console.
+  project-history:
+    - >
+      Velero began as Heptio Ark, an open-source project from Heptio for backing up
+      Kubernetes objects and persistent volumes. The older Ark documentation described
+      the same core use cases that still define Velero: disaster recovery, pre-operation
+      snapshots, and selective restore by object type, namespace, or labels.
+    - >
+      After VMware acquired Heptio, the project was renamed from Heptio Ark to Velero in
+      the v0.11.0 release line in early 2019. The migration guide documents the
+      operational renaming: the CLI moved from `ark` to `velero`, the default namespace
+      and service account changed, CRDs moved to the `velero.io` API group, and image
+      names changed.
+    - >
+      Velero has continued as a Kubernetes-native data-protection project under VMware
+      Tanzu and later Broadcom stewardship. In 2026 Broadcom moved the project toward
+      vendor-neutral governance by donating it to the CNCF Sandbox, with CNCF and
+      Broadcom coverage presenting the move as a way to widen community trust and
+      collaboration.
+  related-projects:
+    - >
+      Velero sits next to cloud snapshot APIs, CSI VolumeSnapshot, Restic, Kopia,
+      Kasten, Portworx backup products, Trilio, Stash, and storage-native backup
+      systems. Its distinguishing role is Kubernetes API-aware recovery rather than only
+      block-storage replication.
+  sources:
+    - >
+      https://aws.amazon.com/blogs/containers/back-up-and-restore-your-amazon-eks-cluster-resources-using-velero/
+    - >
+      https://blogs.vmware.com/tanzu/velero-v0-11-delivers-an-open-source-tool-to-back-up-and-migrate-kubernetes-clusters/
+    - https://github.com/cncf/sandbox/issues/457
+    - https://github.com/vmware-tanzu/velero/blob/main/changelogs/CHANGELOG-0.11.md
+    - https://velero.io/
+    - https://velero.io/docs/v0.7.0/about/
+    - https://velero.io/docs/v1.0.0/migrating-to-velero/
+    - >
+      https://www.cncf.io/news/2026/04/02/the-new-stack-why-broadcom-gave-velero-to-the-cncf-sandbox-and-what-it-means-for-kubernetes-data-protection/
+  summary:
+    - >
+      Velero is a Kubernetes backup, restore, disaster-recovery, and migration system.
+      It runs a server component in the cluster plus a local CLI, stores backup metadata
+      in object storage, and integrates with volume snapshots or file-system backup
+      tools for persistent volume data.
+  timeline:
+    - >
+      2018: Heptio Ark documentation describes Kubernetes object and persistent-volume
+      backup and restore.
+    - >
+      December 2018: VMware acquires Heptio, bringing Ark into the VMware cloud-native
+      portfolio.
+    - '2019: Ark is renamed Velero in the v0.11.0 release line.'
+    - >
+      2020s: Velero becomes a common open-source option for Kubernetes backup,
+      migration, and disaster recovery across cloud and on-prem environments.
+    - >
+      2026: Broadcom donates Velero to the CNCF Sandbox, shifting the project toward
+      vendor-neutral governance.
+  usage:
+    - >
+      Operators install the server into a Kubernetes cluster, configure backup storage
+      and credentials, then use the `velero` CLI to create backups, schedules, restores,
+      and plugin configuration. Common workflows include scheduled namespace backups,
+      ad-hoc snapshots before upgrades, restoring deleted resources, cloning a
+      production namespace into a development cluster, and seeding migrations.
+    - >
+      Velero is strongest when users understand the boundary between Kubernetes
+      resources and application data. It captures API resources directly, while
+      persistent volumes depend on snapshot support, file-system backup, or data-mover
+      integrations. That distinction is why serious Velero runbooks also document
+      database-native backup choices and restore testing.
 category: cloud-infrastructure
 package-manager:
   brew: velero
