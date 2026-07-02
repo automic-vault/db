@@ -8,6 +8,69 @@ config-file-location:
     - cluster.yaml
     - topics/*.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Its adoption niche is infrastructure teams running Kafka who want
+      package-manager-installable tooling rather than bespoke scripts. The input package
+      facts list both Homebrew and Nix packaging, while the official README also
+      documents Go install, source build, and Docker image installation paths.
+  package-nerd-significance:
+    - >
+      topicctl matters to package-focused operators because it packages a common Kafka
+      administration pain point as a single Go CLI with declarative files, a REPL, and
+      install paths that fit Homebrew, Nix, Docker, and go install workflows. It is most
+      significant in Kafka/platform-engineering circles rather than as a general-purpose
+      end-user tool.
+  project-history:
+    - >
+      The project was created to make Kafka topic management more transparent and
+      user-friendly for Segment's operational use. The README says standard Kafka
+      tooling was tedious and error-prone for this job because it lacked a standard
+      declarative format that could be checked into Git and required multiple commands
+      with different interfaces to understand cluster state.
+    - >
+      topicctl's design borrows from kubectl-style declarative operations: users keep
+      cluster and topic definitions as YAML, run apply/check/bootstrap/rebalance style
+      commands, and inspect cluster state interactively. The README also documents a
+      later revamp from the v0 line to support direct cluster access without ZooKeeper
+      and add TLS/SSL and SASL security options.
+  related-projects:
+    - >
+      The README explicitly says topicctl was inspired by kubectl and points readers to
+      Segment's data-digger as another Kafka-oriented command-line tool.
+  sources:
+    - https://github.com/segmentio/topicctl#readme
+    - https://github.com/segmentio/topicctl/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      topicctl is Segment's command-line tool for declarative Apache Kafka topic
+      management. Its official README frames the project around applying topic changes
+      from YAML and using a REPL to inspect brokers, topics, consumer groups, messages,
+      offsets, partitions, ACLs, and related Kafka resources.
+  timeline:
+    - >
+      v0 era: Older implementation preserved on the official v0 branch for users who
+      need to revert.
+    - >
+      v1 era: README documents a revamp adding ZooKeeper-less cluster access plus
+      TLS/SSL and SASL options.
+    - >
+      2026: GitHub releases page lists the v2.0.x line, including v2.0.0 and v2.0.2,
+      with ongoing changes around placement strategy and bootstrapping.
+  usage:
+    - >
+      Common usage is to store cluster configuration in cluster.yaml and topic
+      definitions under topics/*.yaml, then use topicctl apply to create or update
+      topics so the live cluster matches the desired files. The README's quick tour also
+      shows topicctl repl for interactive exploration and commands such as get brokers,
+      get topics, get partitions, get offsets, and tail.
+    - >
+      For package-nerd workflows, topicctl is the kind of CLI that turns Kafka topic
+      state into reviewable files: bootstrap can import existing topics into configs,
+      check can validate config against cluster state, and apply/rebalance can be put
+      into operational runbooks or CI-style review gates.
 tags:
   - cli
   - declarative
@@ -25,27 +88,30 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - source_facts.description says topicctl provides declarative Kafka topic management.
+    - current_curation.category
+    - source_facts.description
   display-name-sources:
-    - source_facts.name and source_facts.homepage identify the project as topicctl.
+    - current_curation.display-name
+    - source_facts.name
   docs-sources:
-    - >
-      source_facts.homepage is the official GitHub repository; README is the best
-      official documentation surface provided.
+    - current_curation.docs
+    - https://github.com/segmentio/topicctl#readme
+  history-sources:
+    - https://github.com/segmentio/topicctl#readme
+    - https://github.com/segmentio/topicctl/releases
+    - source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already has https://github.com/segmentio/topicctl, so repo is
-      null per instructions.
+      source_facts.repo already provides https://github.com/segmentio/topicctl; per
+      prompt repo is returned as null.
   tags-sources:
-    - >
-      source_facts.description identifies declarative Kafka topic management;
-      source_facts.executables lists topicctl.
+    - current_curation.tags
+    - https://github.com/segmentio/topicctl#readme
 category-confidence: high
 category-path:
   - data
-  - streaming
-  - kafka
 display-name-confidence: high
-docs-confidence: medium
+docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

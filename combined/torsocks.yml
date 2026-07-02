@@ -1,13 +1,92 @@
 id: brew:torsocks
 display-name: torsocks
 homepage: https://gitlab.torproject.org/tpo/core/torsocks
-repo: https://gitlab.torproject.org/tpo/core/torsocks
+repo: null
 docs:
   - https://gitlab.torproject.org/tpo/core/torsocks#readme
-  - https://support.torproject.org/glossary/torsocks
+  - https://support.torproject.org/glossary
 config-file-location:
   unix: /etc/tor/torsocks.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      torsocks became a standard companion package for command-line Tor users because it
+      lets existing tools like ssh, irssi, curl-like clients, and other dynamically
+      linked libc applications attempt network access through Tor without those
+      applications adding native SOCKS support.
+    - >
+      The input package facts show torsocks packaged across Homebrew, Debian/Ubuntu via
+      libtorsocks, Fedora/dnf, Arch/pacman, Nix, MacPorts, apk, and zypper. That breadth
+      reflects its role as a small Unix privacy utility commonly installed beside tor.
+  package-nerd-significance:
+    - >
+      torsocks is a classic package-nerd tool because it is small, composable, and
+      sharp-edged: it gives ordinary commands a Tor routing context, but its README
+      clearly states the LD_PRELOAD ceiling. That makes it useful and also educational
+      for understanding where user-space wrappers stop and stronger isolation begins.
+    - >
+      Its continued relevance is visible in Tor Project's 2025 oniux announcement, which
+      presents oniux as a newer alternative for Linux isolation while using torsocks as
+      the familiar baseline.
+  project-history:
+    - >
+      torsocks exists to solve a practical gap around the tor daemon: many applications
+      speak TCP but do not know how to use Tor's SOCKS proxy safely. torsocks wraps an
+      application with LD_PRELOAD and overrides libc networking calls such as connect
+      and gethostbyname so the application's traffic is forced through Tor when the
+      mechanism is applicable.
+    - >
+      The Tor Project blog announced torsocks 1.2 in October 2011 as a Linux, BSD, and
+      Mac OS X application for using network applications such as ssh and irssi with
+      Tor. That release focused on adding a test suite, cleaning source code,
+      simplifying the build, compiling on more BSD versions, and adding leak-prevention
+      defenses.
+    - >
+      By August 2014, Tor Weekly News said torsocks 2.0 was considered stable after more
+      than a year of effort, describing it as a wrapper program that forces an
+      application's network connections through Tor. Later Tor Project writing about
+      oniux in 2025 used torsocks as the established comparison point and explained its
+      libc-overriding approach and leak limitations.
+  related-projects:
+    - >
+      torsocks is directly related to the tor daemon, Tor's SOCKS proxy, torify-style
+      workflows, and newer Tor Project isolation work such as oniux. It also overlaps
+      historically with tsocks-style SOCKS wrapping.
+  sources:
+    - https://blog.torproject.org/introducing-oniux-tor-isolation-using-linux-namespaces/
+    - https://blog.torproject.org/tor-weekly-news-august-13th-2014/
+    - https://blog.torproject.org/torsocks-12-released/
+    - https://gitlab.torproject.org/tpo/core/torsocks#readme
+    - https://support.torproject.org/glossary/
+    - source_facts.package-manager
+  summary:
+    - >
+      torsocks is a Tor Project command-line wrapper and preload library that routes
+      many ordinary network applications through Tor. The official README says it
+      handles DNS safely and rejects traffic other than TCP; the Tor support glossary
+      gives the same user-facing explanation.
+  timeline:
+    - >
+      2011: Tor Project blog announces torsocks 1.2 for Linux, BSD, and Mac OS X, with
+      leak-prevention and portability work.
+    - >
+      2014: Tor Weekly News says torsocks 2.0 is considered stable after more than a
+      year of effort.
+    - >
+      2025: Tor Project introduces oniux and compares it with torsocks' libc-overriding
+      approach.
+  usage:
+    - >
+      The README's basic usage is torsocks [application], with torsocks ssh
+      username@host as an example. It also documents direct LD_PRELOAD usage with
+      libtorsocks.so, and warns that applications using raw syscalls or bypassing libc
+      cannot be protected by this mechanism.
+    - >
+      The wrapper reads /etc/tor/torsocks.conf or a TORSOCKS_CONF_FILE override, and
+      otherwise uses sensible defaults for common Tor installations. Package nerds use
+      it for quick torification of terminal tools, circuit isolation experiments, and
+      privacy-aware testing where a full network namespace or VM would be heavier.
 category: networking
 package-manager:
   apk: torsocks
