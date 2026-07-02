@@ -7,6 +7,97 @@ config-file-location: null
 credentials-file-location:
   unix:
     - $HF_HOME/token
+history:
+  adoption-history:
+    - >
+      Hugging Face's official deployment material places TEI inside the broader
+      Inference Endpoints and embedding-container story. A Hugging Face blog on
+      embedding endpoints presents Text Embedding Inference as the managed solution used
+      to deploy open-source embedding models, and the SageMaker embedding-container
+      announcement says the container is powered by TEI for efficient deployment of
+      embedding models used in RAG applications.
+  package-nerd-significance:
+    - >
+      TEI matters to package and infrastructure nerds because it turns a fast-moving ML
+      serving stack into a versioned binary/container artifact. It pulls together model
+      formats, GPU capability constraints, batching limits, metrics, tracing, Hugging
+      Face Hub model IDs, private model tokens, and platform-specific acceleration.
+    - >
+      Its Homebrew formula is notable because it gives Mac users a native local
+      embedding server path outside Docker, useful for development, local RAG
+      experiments, and testing Hub-compatible embedding models on Apple Silicon.
+  project-history:
+    - >
+      The official repository and documentation describe TEI as a toolkit for deploying
+      and serving open source text embeddings and sequence classification models. Its
+      design emphasizes no model graph compilation step, small Docker images, fast boot
+      times, token-based dynamic batching, optimized inference with Flash Attention,
+      Candle, and cuBLASLt, Safetensors and ONNX weight loading, and production features
+      such as OpenTelemetry tracing and Prometheus metrics.
+  related-projects:
+    - >
+      Hugging Face Hub supplies model IDs, revisions, private/gated model access, and
+      compatible model tags.
+    - >
+      Text Generation Inference is the related Hugging Face serving project for
+      generative language models.
+    - >
+      Candle, Safetensors, Flash Attention, ONNX, and cuBLASLt are cited upstream as
+      core performance or loading technologies.
+    - >
+      MTEB and embedding model families such as BGE, E5, GTE, Nomic, Qwen, Jina, and
+      Snowflake Arctic shape the models TEI users package and serve.
+  sources:
+    - >
+      https://github.com/huggingface/text-embeddings-inference - official README
+      documents TEI goals, features, Docker usage, CLI, supported models, and Homebrew
+      install.
+    - >
+      https://huggingface.co/blog/inference-endpoints-embeddings - official Hugging Face
+      blog explains embedding deployment with Text Embedding Inference.
+    - >
+      https://huggingface.co/blog/sagemaker-huggingface-embedding - official Hugging
+      Face blog announces an embedding container powered by TEI.
+    - >
+      https://huggingface.co/docs/text-embeddings-inference/index - official docs
+      summarize TEI features and production deployment focus.
+    - >
+      https://huggingface.co/docs/text-embeddings-inference/quick_tour - official quick
+      tour documents Docker deployment, /embed, /rerank, /predict, batching, and
+      air-gapped usage.
+    - >
+      https://huggingface.co/docs/text-embeddings-inference/supported_models - official
+      docs list supported model families and hardware images.
+  summary:
+    - >
+      Text Embeddings Inference, usually abbreviated TEI, is Hugging Face's
+      Rust-oriented serving toolkit for text-embedding, reranking, and
+      sequence-classification models. It emerged from the operational need to serve
+      embedding models efficiently for retrieval-augmented generation, semantic search,
+      and large-scale vector indexing.
+  timeline:
+    - >
+      2023: Hugging Face blog material presents Text Embedding Inference in
+      embedding-model deployment workflows.
+    - >
+      2024: Hugging Face announces a SageMaker embedding container powered by TEI for
+      embedding models and RAG applications.
+    - >
+      2025-2026: official docs and repository list expanded model families, hardware
+      images, ONNX loading, OpenAI-compatible routes, Homebrew installation, and
+      continued releases.
+  usage:
+    - >
+      The normal package-nerd entry point is the text-embeddings-router executable or a
+      ghcr.io/huggingface/text-embeddings-inference Docker image. Users select a Hugging
+      Face model ID or local model directory with --model-id, expose HTTP endpoints such
+      as /embed, /rerank, /predict, or OpenAI-compatible embeddings routes, and tune
+      batch/request limits to match hardware.
+    - >
+      Homebrew is explicitly documented for Apple Silicon local installs: the upstream
+      README says users can brew install text-embeddings-inference and launch
+      text-embeddings-router with Metal acceleration. Docker images cover CPU, CUDA
+      architectures, ARM64, Hopper, Blackwell, and related hardware tiers.
 tags:
   - cli
   - embeddings
@@ -26,32 +117,45 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official Hugging Face docs describe text-embeddings-inference as documentation for
-      serving embedding models.
-    - source_facts.description says this is an inference solution for text embeddings models.
+    - https://huggingface.co/docs/text-embeddings-inference/index
+    - source_facts.description
   display-name-sources:
-    - >
-      Official Hugging Face docs and repository use the display name Text Embeddings
-      Inference.
-    - source_facts.name is text-embeddings-inference.
+    - current_curation.display-name
+    - https://huggingface.co/docs/text-embeddings-inference/index
   docs-sources:
+    - current_curation.docs
+    - source_facts.homepage
+  history-sources:
     - >
-      Official Hugging Face documentation is a dedicated docs site for Text Embeddings
-      Inference.
+      https://github.com/huggingface/text-embeddings-inference - official README
+      documents TEI goals, features, Docker usage, CLI, supported models, and Homebrew
+      install.
+    - >
+      https://huggingface.co/blog/inference-endpoints-embeddings - official Hugging Face
+      blog explains embedding deployment with Text Embedding Inference.
+    - >
+      https://huggingface.co/blog/sagemaker-huggingface-embedding - official Hugging
+      Face blog announces an embedding container powered by TEI.
+    - >
+      https://huggingface.co/docs/text-embeddings-inference/index - official docs
+      summarize TEI features and production deployment focus.
+    - >
+      https://huggingface.co/docs/text-embeddings-inference/quick_tour - official quick
+      tour documents Docker deployment, /embed, /rerank, /predict, batching, and
+      air-gapped usage.
+    - >
+      https://huggingface.co/docs/text-embeddings-inference/supported_models - official
+      docs list supported model families and hardware images.
   repo-sources:
-    - source_facts.repo already has a value, so repo is returned as null per instruction.
+    - source_facts.repo
   tags-sources:
-    - >
-      Official Hugging Face docs describe CLI/server usage for serving compatible
-      embedding models.
-    - source_facts.description identifies text embeddings inference.
+    - https://github.com/huggingface/text-embeddings-inference
+    - source_facts.description
 category-confidence: high
 category-path:
   - developer-tools
-  - machine-learning
-  - inference-server
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
