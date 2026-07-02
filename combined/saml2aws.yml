@@ -12,6 +12,28 @@ credentials-file-location:
     - ~/.aws/credentials
     - ~/.aws/config
     - ~/.aws/saml2aws/*
+history:
+  - >
+    saml2aws was created by Versent in 2016 as a Go command-line bridge between
+    enterprise SAML identity providers and AWS command-line credentials. Its README
+    traces the design to AWS's federated API/CLI access pattern: authenticate against an
+    IdP, collect a SAML assertion containing AWS roles, exchange it with AWS STS, and
+    write the resulting temporary credentials into an AWS profile.
+  - >
+    The tool filled a specific operations gap for teams using ADFS, PingFederate, Okta,
+    Azure AD, Google Apps, Shibboleth, Keycloak, OneLogin, Auth0, JumpCloud,
+    browser-based IdP flows, and similar systems before every cloud workflow had a
+    first-party SSO-friendly CLI path. Practitioners use `saml2aws configure` to define
+    one or more IdP accounts, `saml2aws login` to refresh short-lived credentials, and
+    `saml2aws exec` or AWS CLI profiles to run commands under the selected role.
+  - >
+    Its packaging history reflects a cross-platform enterprise-CLI audience: the project
+    ships GitHub release archives and documents Homebrew, Chocolatey, Linux tarball,
+    AUR, and Void Linux installation paths, while package indexes add MacPorts, Nix,
+    Scoop, and WinGet. Its ecosystem role is mostly glue: it does not replace AWS STS or
+    the AWS CLI, but wraps `AssumeRoleWithSAML`, MFA prompting, role selection,
+    credential caching, and the AWS CLI `credential_process` integration in a single
+    executable.
 category: security
 package-manager:
   brew: saml2aws
@@ -34,5 +56,13 @@ executables:
   - saml2aws
 provenance:
   formula: saml2aws
+  history-sources:
+    - https://github.com/Versent/saml2aws
+    - https://raw.githubusercontent.com/Versent/saml2aws/master/README.md
+    - https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithSAML.html
+    - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sourcing-external.html
+    - https://formulae.brew.sh/formula/saml2aws
+    - https://api.github.com/repos/Versent/saml2aws
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

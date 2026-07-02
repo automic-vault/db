@@ -10,6 +10,37 @@ config-file-location:
     - /usr/local/etc/sane.d/dll.conf
     - /usr/local/etc/sane.d/dll.d/*
 credentials-file-location: null
+history:
+  - >
+    SANE, short for Scanner Access Now Easy, emerged in the Unix scanning world in 1996.
+    A sane-devel history thread places the first ChangeLog entry on 1996-11-16, an early
+    SANE standard version on 1996-11-17, and SANE 0.1 around 1996-11-27. The project
+    answered a practical driver problem: scanners, cameras, and frame grabbers had
+    vendor-specific protocols, while TWAIN was tied to a different
+    application-and-driver model.
+  - >
+    `sane-backends` is the driver and plumbing half of that architecture. SANE
+    deliberately separates frontends from backends: applications talk to a stable API,
+    while each backend handles a scanner family or transport. The Ubuntu `sane(7)` page
+    describes `sane-backends` as containing many backends, documentation, networking
+    support, and the `scanimage` command-line frontend; the same documentation names
+    `saned` plus the `net` backend as the mechanism for sharing scanners across
+    machines.
+  - >
+    That separation made SANE the normal substrate for scanner support on Linux and
+    other Unix-like systems. GUI frontends, document workflows, and scripts can all use
+    the same backend inventory, while administrators debug device discovery with tools
+    such as `sane-find-scanner` and `scanimage -L`. The ecosystem also treats scanner
+    support as a packaging problem: distributions split common files, libraries,
+    daemons, and device backends differently, and Homebrew packages `sane-backends` with
+    imaging and USB/SNMP dependencies for macOS and Linux users.
+  - >
+    Practitioners reach for SANE when a scanner needs to be exposed to scripts, desktop
+    scanning apps, network clients, or PDF/OCR pipelines without writing an
+    application-specific driver. Its long tail of backend man pages reflects its role as
+    both hardware compatibility layer and operations manual: success often depends on
+    the exact scanner chipset, firmware, USB permissions, and entries in `sane.d`
+    configuration files.
 tags:
   - cli
   - drivers
@@ -39,6 +70,12 @@ provenance:
     - >
       Official SANE documentation page and official manual-page directory are dedicated
       documentation surfaces.
+  history-sources:
+    - https://sane-devel.alioth.debian.narkive.com/iwO4b2L3/history-of-sane
+    - https://manpages.ubuntu.com/manpages/focal/man7/sane.7.html
+    - https://www.linuxfromscratch.org/blfs/view/12.1/pst/sane.html
+    - https://www.mankier.com/package/sane-backends
+    - https://formulae.brew.sh/formula/sane-backends
   repo-sources:
     - >
       Official SANE git access page lists https://gitlab.com/sane-project/backends.git
@@ -56,5 +93,6 @@ category-path:
   - scanning
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
