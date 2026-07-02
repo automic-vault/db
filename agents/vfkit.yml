@@ -1,10 +1,85 @@
 id: brew:vfkit
 display-name: vfkit
-repo: null
+repo: https://github.com/crc-org/vfkit
 docs:
   - https://github.com/crc-org/vfkit#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      vfkit's first clear adoption niche was CRC and podman-machine style local
+      container virtualization on macOS. Container Plumbing Days 2023 explicitly
+      described vfkit as a good fit for crc and podman-machine because Apple's framework
+      offered modern Linux VM features on macOS while keeping the hypervisor codebase
+      small.
+    - >
+      The tool has also become visible as a standalone package in developer package
+      managers, but its main significance remains as infrastructure beneath higher-level
+      local development environments rather than as a general desktop VM application.
+  package-nerd-significance:
+    - >
+      vfkit is one of the small command-line answers to a packaging-era problem created
+      by Apple's architecture transition: how to ship local Linux VM support on macOS
+      without bundling a large cross-platform emulator stack. Its importance is mainly
+      in the Mac developer-tooling layer where container engines and Kubernetes
+      distributions need reproducible VM startup.
+  project-history:
+    - >
+      The vfkit repository was created in January 2022, during the period when local
+      VM-based developer tools were adapting to Apple Silicon. CRC had historically used
+      HyperKit on macOS, but the CRC team documented two pressures in 2022: HyperKit was
+      x86_64-only and lacked M1 support, while maintaining QEMU builds would bring a
+      much larger codebase and maintenance surface.
+    - >
+      vfkit's design uses Apple's Virtualization framework through Code-Hex/vz Go
+      bindings. Conference material from FOSDEM and Container Plumbing Days in 2023
+      described the project as a native macOS hypervisor written in Go, intended to wrap
+      Apple's framework in a long-lived CLI process and a Go configuration API.
+  related-projects:
+    - >
+      vfkit is closely related to crc-org/crc, Podman machine, Apple's Virtualization
+      framework, HyperKit, QEMU, and Code-Hex/vz. In this family, vfkit is the narrow
+      CLI layer over Apple's framework rather than a broad emulator or a full
+      user-facing VM manager.
+  sources:
+    - https://api.github.com/repos/crc-org/vfkit
+    - https://api.github.com/repos/crc-org/vfkit/releases?per_page=3
+    - >
+      https://archive.fosdem.org/2023/schedule/event/govfkit/attachments/slides/5847/export/events/attachments/govfkit/slides/5847/fosdem2023_go_devroom_vfkit.pdf
+    - https://containerplumbing.org/sessions/2023/vfkit_a_minimal_.html
+    - https://crc.dev/blog/posts/2022-06-15-vfkit/
+    - https://github.com/crc-org/vfkit
+    - https://github.com/crc-org/vfkit/blob/main/doc/usage.md
+  summary:
+    - >
+      vfkit is a small command-line virtual-machine monitor for macOS built on Apple's
+      Virtualization framework. It was created in the crc-org ecosystem to provide a
+      native, Go-oriented hypervisor path for local container and OpenShift workflows on
+      Apple Silicon Macs.
+  timeline:
+    - '2022-01: crc-org/vfkit was created on GitHub.'
+    - >
+      2022-06: CRC documented the need to move beyond HyperKit for M1 support and
+      evaluated Apple's Virtualization framework.
+    - >
+      2023-02: vfkit was presented in the FOSDEM Go devroom as a native macOS hypervisor
+      written in Go.
+    - >
+      2023: Container Plumbing Days presented vfkit as a minimal hypervisor using
+      Apple's Virtualization framework and suitable for crc and podman-machine.
+    - '2026-01: GitHub releases show vfkit v0.6.x releases.'
+  usage:
+    - >
+      Users invoke vfkit with explicit VM resources, a bootloader, disk images, and
+      devices such as virtio-serial, virtio-fs, virtio-blk, virtio-rng, and virtio-net.
+      The process starts the VM when vfkit starts and terminates it when vfkit exits,
+      which fits supervisor-driven tools that need a controllable VM process.
+    - >
+      The project also exposes github.com/crc-org/vfkit/pkg/config so Go programs can
+      generate vfkit command lines programmatically. That API is useful for tools such
+      as CRC that want to own the user workflow while delegating the macOS VM monitor
+      layer to vfkit.
 tags:
   - apple-virtualization-framework
   - cli
@@ -22,30 +97,32 @@ geiger:
     - text:virtualization
 provenance:
   category-sources:
-    - >
-      source_facts.description identifies vfkit as a command-line hypervisor using
-      Apple's Virtualization Framework.
+    - https://containerplumbing.org/sessions/2023/vfkit_a_minimal_.html
+    - https://github.com/crc-org/vfkit
   display-name-sources:
-    - >
-      source_facts.name provides vfkit; source_facts.homepage points to the official
-      vfkit project repository.
+    - https://github.com/crc-org/vfkit
   docs-sources:
+    - https://github.com/crc-org/vfkit#readme
+    - https://github.com/crc-org/vfkit/blob/main/doc/usage.md
+  history-sources:
+    - https://api.github.com/repos/crc-org/vfkit
+    - https://api.github.com/repos/crc-org/vfkit/releases?per_page=3
     - >
-      source_facts.homepage is the official GitHub repository; its README is the primary
-      official documentation surface.
+      https://archive.fosdem.org/2023/schedule/event/govfkit/attachments/slides/5847/export/events/attachments/govfkit/slides/5847/fosdem2023_go_devroom_vfkit.pdf
+    - https://containerplumbing.org/sessions/2023/vfkit_a_minimal_.html
+    - https://crc.dev/blog/posts/2022-06-15-vfkit/
+    - https://github.com/crc-org/vfkit
+    - https://github.com/crc-org/vfkit/blob/main/doc/usage.md
   repo-sources:
-    - >
-      source_facts.repo already provides https://github.com/crc-org/vfkit, so repo is
-      returned as null per instruction.
+    - https://github.com/crc-org/vfkit
   tags-sources:
-    - >
-      source_facts.description states command-line hypervisor and Apple's Virtualization
-      Framework; source_facts.executables lists vfkit as a CLI executable.
+    - https://github.com/crc-org/vfkit
+    - https://github.com/crc-org/vfkit/blob/main/doc/usage.md
 category-confidence: high
 category-path:
   - developer-tools
-  - virtualization
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
