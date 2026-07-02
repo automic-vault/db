@@ -6,6 +6,56 @@ docs:
   - https://roswell.github.io/
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Roswell is a Common Lisp implementation manager, launcher, and scripting tool. Its
+    own documentation describes `ros` as a command-line tool for installing and managing
+    Common Lisp implementations and as scripting infrastructure for templating, writing,
+    executing, compiling, distributing, downloading, and installing Roswell scripts
+    written in Common Lisp. The project describes its original aim as making
+    installation and management of Common Lisp implementations simple.
+  - >
+    Roswell filled a long-standing Common Lisp tooling gap: the language has multiple
+    serious implementations, a de facto build system in ASDF, and a library distribution
+    culture around Quicklisp, but setup historically required combining separate
+    implementation installers, init files, editor integration, Quicklisp bootstrap
+    steps, and script launchers. Roswell put much of that routine work behind one
+    executable, `ros`, with subcommands such as `install`, `use`, `run`, `init`,
+    `build`, `list`, `delete`, and `config`.
+  - >
+    Practitioners use Roswell first as a version and implementation manager. The README
+    shows `ros install` listing installable implementations, `ros install sbcl-bin`
+    installing the default SBCL binary, `ros install sbcl/1.2.0` selecting a specific
+    version, `ros list installed` reporting installations, `ros run -- --version`
+    checking the active Lisp, and `ros use` changing the default implementation. It also
+    allows use of a system-provided implementation through names such as `sbcl/system`,
+    which matters for developers who must match distribution-provided Lisp runtimes.
+  - >
+    The second adoption path is scripting and tool distribution. Roswell scripts use a
+    shell/Lisp hybrid wrapper so a `.ros` file can be executed from the command line,
+    while still loading the Lisp system through Roswell. Its scripting documentation
+    explains that library authors can place `.ros` files in a `roswell/` subdirectory,
+    after which `ros install <library name>` downloads the library through Quicklisp and
+    copies scripts into `~/.roswell/bin`; users can then run them with `ros exec` or
+    directly via PATH. That made Common Lisp CLI tools easier to ship in the style of
+    language-specific executable installers.
+  - >
+    Packaging spread across developer package managers reinforced Roswell's role as a
+    bootstrap tool. The installation guide documents Homebrew installation on macOS, AUR
+    and other Linux distribution routes, FreeBSD ports, Scoop on Windows, release
+    tarballs and Debian packages, and source builds through Autotools. FreshPorts added
+    the FreeBSD port on June 3, 2020 and describes Roswell as having evolved from a
+    simple implementation installer into a full-stack environment for testing, sharing,
+    and distributing Common Lisp applications.
+  - >
+    In the Common Lisp ecosystem, Roswell is often paired with Quicklisp and editor
+    integrations such as SLIME or SLY: it supplies the implementation and launcher
+    layer, while ASDF and Quicklisp handle system definition and library retrieval. That
+    division is why Roswell is usually presented as an environment manager rather than a
+    replacement build system. Its practical value is reducing the first-run and
+    cross-implementation friction for newcomers, library authors, CI jobs, and
+    developers who test code across SBCL, CCL, CLISP, ECL, and other supported
+    implementations.
 category: language-runtime
 package-manager:
   apk: roswell
@@ -26,5 +76,14 @@ executables:
   - ros
 provenance:
   formula: roswell
+  history-sources:
+    - https://github.com/roswell/roswell/
+    - https://github.com/roswell/roswell/blob/master/documents/ros.md
+    - https://roswell.github.io/Installation.html
+    - https://roswell.github.io/Roswell-as-a-Scripting-Environment.html
+    - https://www.freshports.org/devel/roswell/
+    - https://www.quicklisp.org/
+    - https://asdf.common-lisp.dev/asdf.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

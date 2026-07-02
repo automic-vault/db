@@ -9,6 +9,37 @@ config-file-location:
     - /etc/subuid
     - /etc/subgid
 credentials-file-location: null
+history:
+  - >
+    RootlessKit is a Linux utility from the rootless-containers ecosystem that provides
+    a user-namespace based "fake root" environment for unprivileged container stacks.
+    Its README defines the project as a Linux-native implementation of fake root using
+    `user_namespaces(7)`, created to let Docker and Kubernetes run in rootless mode so
+    that a container-runtime escape does not immediately become real host root.
+  - >
+    The project sits in the adoption path of rootless container runtimes rather than in
+    the application-container layer itself. RootlessKit creates user and mount
+    namespaces, uses `newuidmap` and `newgidmap` with `/etc/subuid` and `/etc/subgid`,
+    and can isolate network namespaces through user-space networking such as
+    slirp4netns. Docker's rootless documentation describes the same security model: both
+    daemon and containers run inside a user namespace without root privileges, except
+    for the subordinate-ID helper binaries needed for UID and GID mapping.
+  - >
+    RootlessKit became part of the container-runtime plumbing around Docker, Moby,
+    containerd, BuildKit, and nerdctl. The Rootless Containers documentation records
+    rootless Docker/Moby implementation in 2018 and upstreaming into Docker/Moby in
+    Docker 19.03, with later Docker releases improving cgroup v2 and installation
+    support. Containerd-oriented tooling also checks RootlessKit during rootless setup,
+    and BuildKit documentation commonly shows `rootlesskit buildkitd` or
+    RootlessKit-backed daemon launches for unprivileged image builds.
+  - >
+    Practitioners use RootlessKit directly when they need a shell, daemon, or build
+    service to see UID 0 inside a namespace without giving it host-root authority.
+    Common command lines create a rootless shell, make selected host paths writable
+    through copy-up mounts, create a slirp4netns-backed network namespace, and publish
+    ports from the namespace to localhost. Package availability across Homebrew, Alpine,
+    Debian/Ubuntu development packages, Fedora, Arch, Nix, and openSUSE reflects its
+    role as a low-level dependency for rootless development and CI environments.
 tags:
   - cli
   - containers
@@ -37,6 +68,13 @@ provenance:
     - >
       Official GitHub repository README contains setup, usage, CLI options, and links to
       additional documents; the repository includes an official docs directory.
+  history-sources:
+    - https://github.com/rootless-containers/rootlesskit
+    - https://docs.docker.com/engine/security/rootless/
+    - https://rootlesscontaine.rs/getting-started/docker/
+    - https://github.com/containerd/nerdctl/blob/main/docs/rootless.md
+    - https://github.com/moby/buildkit/blob/master/docs/rootless.md
+    - https://formulae.brew.sh/formula/rootlesskit
   repo-sources:
     - >
       source_facts.repo is already populated, so repo enrichment was intentionally not
@@ -52,5 +90,6 @@ category-path:
   - rootless-containers
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

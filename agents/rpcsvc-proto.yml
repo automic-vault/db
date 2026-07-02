@@ -5,6 +5,35 @@ docs:
   - https://github.com/thkukuk/rpcsvc-proto/blob/master/README.md
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    rpcsvc-proto is a small but historically important split-out package for Sun RPC/XDR
+    development on Unix-like systems. Its upstream README says it contains rpcsvc `.x`
+    protocol files from glibc that are missing in libtirpc, plus `rpcgen`, the generator
+    used to create C headers and sources from RPC protocol definitions.
+  - >
+    The package exists because glibc's bundled Sun RPC implementation was deprecated and
+    then removed from many distribution build environments. The glibc NEWS entry for
+    version 2.14 states that the RPC implementation in libc was obsoleted, that programs
+    needing RPC functionality should link against TI-RPC, and that visible effects
+    included removal of RPC headers from glibc headers. Fedora's Fedora 28 system-wide
+    change later removed Sun RPC interfaces from glibc, citing the old implementation's
+    lack of IPv6 compatibility and directing packages to libtirpc and separate `rpcgen`
+    build requirements.
+  - >
+    In that transition, rpcsvc-proto became plumbing for codebases that still had `.x`
+    files or build systems expecting `rpcgen`. Fedora's change notes told packages that
+    needed `rpcgen` to add a build requirement on a package providing it, and Linux From
+    Scratch describes rpcsvc-proto as installing the `rpcgen` program and
+    `/usr/include/rpcsvc` headers while providing no libraries of its own.
+  - >
+    Practitioners usually do not invoke rpcsvc-proto as an application; they install it
+    to satisfy build dependencies or to regenerate C bindings for legacy RPC services.
+    It is common in package-manager metadata across Linux and macOS because the
+    build-time need is broad even when direct user interaction is rare: Homebrew marks
+    it keg-only, Debian and Ubuntu package it under the same name, Fedora and openSUSE
+    expose the functionality through `rpcgen`, and the output of `rpcgen` remains part
+    of the C build pipeline for software that has not moved away from Sun RPC/XDR.
 tags:
   - cli
   - code-generation
@@ -30,6 +59,12 @@ provenance:
     - source_facts.name gives rpcsvc-proto; official repository uses the same name.
   docs-sources:
     - Official GitHub repository README is the primary documentation surface.
+  history-sources:
+    - https://github.com/thkukuk/rpcsvc-proto
+    - https://sources.debian.org/src/glibc/2.28-10/NEWS/
+    - https://fedoraproject.org/wiki/Changes/SunRPCRemoval
+    - https://www.linuxfromscratch.org/blfs/view/svn/basicnet/rpcsvc-proto.html
+    - https://formulae.brew.sh/formula/rpcsvc-proto
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/thkukuk/rpcsvc-proto, so
@@ -44,5 +79,6 @@ category-path:
   - code-generation
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
