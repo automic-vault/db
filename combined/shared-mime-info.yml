@@ -7,6 +7,35 @@ docs:
   - https://wiki.freedesktop.org/www/Software/shared-mime-info
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    shared-mime-info is the freedesktop.org shared MIME database and update tool used by
+    desktop stacks to agree on file types. The specification, authored by Thomas Leonard
+    and published as version 0.21 on 2 October 2018, explains the motivation: many
+    programs determine type by filename or content, and interoperability improves when
+    applications use one database instead of duplicating MIME rules.
+  - >
+    Historically, the project unified separate MIME database systems from GNOME, KDE,
+    and ROX. The spec says those earlier systems differed because they were separate
+    rather than because desktop developers disagreed, and it defines standard
+    installation locations, conflict handling, lookup behavior, and extension
+    mechanisms. Older README material describes the package as containing the
+    freedesktop.org shared MIME database spec, merged GNOME and KDE databases in the new
+    format, and the update-mime-database command.
+  - >
+    In practice, the package is desktop plumbing. Applications that add MIME knowledge
+    install one XML file under a packages directory below a MIME data directory, then
+    run update-mime-database on that tree. The tool scans the XML package files and
+    emits cache/index files such as globs2, magic, subclasses, aliases, icons, and
+    generic-icons, which file managers, launchers, libraries, and desktop integration
+    tools consume.
+  - >
+    Packagers treat shared-mime-info as a central data dependency rather than an
+    end-user app. Distribution pages describe it as the core database of common MIME
+    types and the update-mime-database command; MacPorts even runs a watcher daemon to
+    refresh caches when ports add or remove MIME definitions. That is why the package
+    appears broadly across Linux and Unix-like package managers: without it, desktop
+    file type recognition and application association metadata become fragmented.
 category: system
 package-manager:
   apk: shared-mime-info
@@ -32,5 +61,12 @@ executables:
   - update-mime-database
 provenance:
   formula: shared-mime-info
+  history-sources:
+    - https://specifications.freedesktop.org/shared-mime-info/latest-single/
+    - https://github.com/gcwnow/shared-mime-info
+    - https://github.com/deepin-community/shared-mime-info
+    - https://ports.macports.org/port/shared-mime-info/details/
+    - https://formulae.brew.sh/formula/shared-mime-info
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
