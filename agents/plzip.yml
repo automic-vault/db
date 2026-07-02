@@ -6,6 +6,29 @@ docs:
   - https://lzip.nongnu.org/plzip.html
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Plzip is Antonio Diaz Diaz's massively parallel implementation of lzip, the
+    LZMA-family Unix compressor that uses the `.lz` file format. The lzip family was
+    designed with gzip- and bzip2-like command-line conventions, stronger integrity
+    checking, interoperability between implementations, and recoverability as core
+    goals; plzip extends that design to multiprocessor machines by splitting input into
+    independently compressed lzip members.
+  - >
+    The program's adoption follows the lzip ecosystem rather than a standalone
+    application ecosystem. It is packaged by Homebrew and Debian, depends on lzlib, and
+    is distributed from the Nongnu/Savannah lzip release area. Debian describes it as
+    especially suited to large software distribution and large-scale data archiving
+    because sufficiently large files can use many processors while remaining compatible
+    with the lzip file format.
+  - >
+    Practitioners use plzip where single-threaded lzip is too slow for large inputs:
+    compressed tar archives, dataset archives, source release artifacts, and other bulk
+    files. Its usage remains Unix-like: compress or decompress files directly, or stream
+    `plzip -cd foo.tar.lz | tar -xf -` when unpacking tar content. The project
+    documentation also points out the boundary of the design: files produced as one lzip
+    member cannot be decompressed faster merely by switching to plzip, while
+    plzip-created multimember files can be decompressed in parallel.
 tags:
   - archive
   - cli
@@ -32,6 +55,11 @@ provenance:
     - >
       Official plzip page links an online manual at manual/plzip_manual.html and
       documents purpose, download, support, and licensing.
+  history-sources:
+    - https://www.nongnu.org/lzip/plzip.html
+    - https://lzip.nongnu.org/manual/plzip_manual.html
+    - https://packages.debian.org/sid/plzip
+    - https://formulae.brew.sh/formula/plzip
   repo-sources:
     - >
       official plzip pages document release archives but no official HTTP(S)
@@ -46,5 +74,6 @@ category-path:
   - compression
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: medium
 tags-confidence: high
