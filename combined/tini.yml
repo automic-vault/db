@@ -6,6 +6,76 @@ docs:
   - https://github.com/krallin/tini#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Tini's adoption story is unusually strong for a tiny utility because Docker
+      incorporated it. The README states that Docker 1.13 and later include Tini and
+      enable it with docker run --init; Docker's own prior release notes describe the
+      --init flag as using Tini as a zombie-reaping PID 1.
+    - >
+      The README also documents Alpine Linux, NixOS, Debian, and Arch packaging, plus
+      prebuilt Docker images. The supplied package-manager facts add Homebrew,
+      Fedora/dnf, Ubuntu, and zypper, showing that package managers treat Tini as a
+      standalone utility even after Docker embedded it.
+  package-nerd-significance:
+    - >
+      Tini is package-nerd catnip because it is almost the smallest possible program
+      that became infrastructure. It turned a subtle Linux/container semantic problem
+      into a single binary that distros, Docker images, and Docker itself could depend
+      on.
+    - >
+      Its packaging story also shows how a tool can move from GitHub release asset, to
+      distro package, to embedded runtime component, while still remaining useful as an
+      explicit package for users outside Docker's default path.
+  project-history:
+    - >
+      Tini's README defines the project in intentionally minimal terms: it spawns one
+      child process, waits for it to exit, reaps zombies, and forwards signals. That
+      narrow scope is the project's identity; it is not a process supervisor, service
+      manager, or orchestration layer.
+    - >
+      The first visible tag in the official repository is v0.1.0 in 2015, and the
+      release stream continued through v0.19.0 in 2020. Over that period the README grew
+      into a container-packaging guide: download a signed binary, verify checksums, add
+      it as an ENTRYPOINT, or install it from a distribution package.
+  related-projects:
+    - >
+      Docker is the most important downstream adopter; Docker 1.13 integrated Tini
+      behind the --init flag.
+    - dumb-init occupies a similar container-init niche.
+    - Linux subreaper behavior is part of Tini's option model when it cannot run as PID 1.
+  sources:
+    - GitHub official releases API output inspected for v0.19.0 and earlier releases.
+    - >
+      https://docs.docker.com/engine/release-notes/prior-releases/: Docker --init
+      release note using Tini.
+    - >
+      https://github.com/krallin/tini README: project purpose, Docker 1.13 note, install
+      methods, options.
+    - 'source_facts.package-manager: package availability across package managers.'
+  summary:
+    - >
+      Tini is a small init process for containers. It became widely known because it
+      solves the PID 1 problem in Docker-style containers: reaping zombie processes and
+      forwarding signals while staying transparent to the application.
+  timeline:
+    - '2015: v0.1.0 appears in the official repository tag history.'
+    - '2017: Docker 1.13 added --init support using Tini as a zombie-reaping PID 1.'
+    - '2018: The project published v0.18.0.'
+    - >
+      2020: The project published v0.19.0, the current release shown by the official
+      GitHub release list inspected for this batch.
+  usage:
+    - >
+      The common manual use is to install a Tini binary into a container image and set
+      ENTRYPOINT to run Tini before the real application. Tini then handles signal
+      forwarding and child reaping, preserving application behavior while making
+      container shutdown and cleanup more predictable.
+    - >
+      Operators can also use options for subreaping when Tini is not PID 1, exit-code
+      remapping for cases such as SIGTERM exit 143, and process-group killing for shell
+      wrappers or child process trees.
 category: cloud-infrastructure
 package-manager:
   apk: tini

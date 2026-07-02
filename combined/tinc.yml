@@ -12,6 +12,96 @@ config-file-location:
     - /usr/local/etc/tinc/<netname>/conf.d
 credentials-file-location:
   unix: /usr/local/etc/tinc/<netname>/rsa_key.priv
+history:
+  adoption-history:
+    - >
+      tinc's appeal has been strongest among Unix and network operators who want a
+      deployable mesh VPN without kernel IPsec complexity. The official FAQ contrasts
+      tinc with FreeS/WAN by emphasizing that tinc runs completely in userspace,
+      improving portability and avoiding kernel crashes from implementation errors.
+    - >
+      The official homepage lists broad platform support across Linux, BSDs, macOS,
+      Solaris, and Windows, plus IPv6 support. The supplied package-manager facts show
+      packaging in Homebrew, Debian, Ubuntu, Fedora/dnf, Alpine, Arch, MacPorts, Nix,
+      and zypper, which is consistent with a mature infrastructure daemon maintained by
+      many distributions.
+  package-nerd-significance:
+    - >
+      tinc is significant because it sits between old-school Unix daemon packaging and
+      modern overlay-network expectations. It predates the current wave of WireGuard-
+      and coordination-server-based tools, yet already offered automatic full-mesh
+      routing, NAT traversal, IPv6, and userspace portability.
+    - >
+      Its package metadata exposes a classic ops footprint: system configuration under
+      etc, per-network host files, private key material, daemon lifecycle, and
+      platform-specific interface setup. That makes it a useful reference point when
+      comparing VPN packages across Homebrew and Linux distributions.
+  project-history:
+    - >
+      The official site presents tinc as a VPN daemon using tunnelling and encryption to
+      create secure private networks over the Internet. Its design goal is practical:
+      because the VPN appears to IP networking as a normal network device, existing
+      software does not need to be adapted to use it.
+    - >
+      tinc's documented history is bound up with peer-to-peer routing and cryptographic
+      review. The manual records security work after a key-exchange issue found in
+      August 2000, a 2001 analysis of tinc 1.0pre4 that led to sequence numbers and
+      packet MACs, and a 2003 analysis of tinc 1.0.1. Later 1.1 documentation describes
+      SPTPS as an improved protocol intended to be as strong as TLS with a strong cipher
+      suite.
+    - >
+      The project has maintained a conservative 1.0 stable line and a long 1.1
+      prerelease line. The official news page listed 1.1pre18 in 2021 and 1.0.37 in
+      2026, with 1.0.37 described as likely the last 1.0 release.
+  related-projects:
+    - FreeS/WAN is named in the official FAQ as a comparison point for IPsec-style VPNs.
+    - >
+      TLS and IPsec appear in tinc's manual as security comparison points for the legacy
+      protocol.
+    - >
+      OpenSSL and LibreSSL are part of tinc's cryptographic implementation according to
+      the homepage and manual.
+  sources:
+    - >
+      https://tinc-vpn.org/: official feature overview, supported platforms, latest
+      stable release.
+    - >
+      https://tinc-vpn.org/docs/ and https://tinc-vpn.org/documentation/: official
+      manual and documentation index.
+    - 'https://tinc-vpn.org/news/: release and security history.'
+    - 'https://tinc-vpn.org/repository/: official repository clone URL.'
+    - 'source_facts.package-manager: package availability across package managers.'
+  summary:
+    - >
+      tinc is a free-software VPN daemon that creates encrypted tunnels between hosts
+      and exposes the VPN as a normal network device. Its long-term niche is small,
+      self-managed mesh VPNs where users want userspace deployment, automatic routing
+      between nodes, and Unix-style configuration files.
+  timeline:
+    - >
+      2000: The manual records a key-exchange security issue affecting versions up to
+      1.0pre2 and subsequent authentication work.
+    - >
+      2001: The manual records analysis of tinc 1.0pre4 and later replay-protection
+      improvements.
+    - '2003: The manual records security analysis of tinc 1.0.1.'
+    - >
+      2018: Official news announced 1.0.35 and 1.1pre17 with fixes for CVE-2018-16737,
+      CVE-2018-16738, and CVE-2018-16758.
+    - '2021: Official news announced 1.1pre18.'
+    - '2026: Official news announced 1.0.37, likely the last 1.0 release.'
+  usage:
+    - >
+      tinc is configured per VPN network name with a main tinc.conf, a hosts directory
+      containing peer configuration, optional conf.d snippets, and node private keys.
+      Operators use it to connect hosts, bridge Ethernet segments, route private
+      subnets, or create full-mesh peer networks across NAT where at least one node is
+      reachable.
+    - >
+      For package users, tinc is usually installed as a daemon plus manpages and
+      examples, then wired into init systems or service managers. Its value is not a
+      flashy CLI but a stable network primitive that package managers can ship for
+      administrators who need private overlay networking.
 category: networking
 package-manager:
   apk: tinc
