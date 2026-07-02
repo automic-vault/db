@@ -7,6 +7,72 @@ docs:
   - https://wiki.tox.chat/users/toxcore
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      toxcore's adoption is mostly indirect: it is the shared protocol library and
+      bootstrap tooling that downstream Tox clients and bots build on. Homebrew packages
+      the library and its bootstrap executables, while the source facts also show
+      packages in Alpine, Fedora, MacPorts, and Arch/pacman.
+    - >
+      GitHub Releases record a 'First Stable API' release at v0.1.0 in December 2016.
+      The later changelog shows an active 0.2.x line focused on hardening, testing,
+      ToxAV fixes, group chat work, network profiling, and preserving public API
+      compatibility across releases.
+  package-nerd-significance:
+    - >
+      toxcore is significant to package nerds because it is a packaged C protocol
+      library with security-sensitive dependencies, ABI/API concerns, and downstream
+      clients. Packaging it correctly matters for encrypted-messaging clients that rely
+      on shared system libraries instead of vendored snapshots.
+    - >
+      The project also illustrates the package-maintainer tension around cryptographic
+      software: widely packaged, useful to privacy-oriented users, but officially
+      documented as experimental and unaudited.
+  project-history:
+    - >
+      The current official repository is maintained under the TokTok organization and is
+      identified on GitHub as forked from the earlier irungentoo/toxcore repository.
+      That lineage reflects the transition from the early Tox implementation into the
+      current TokTok-maintained C core.
+    - >
+      The repository has treated toxcore as a low-level cryptographic networking library
+      rather than an end-user chat client. Its README includes a prominent warning that
+      the library is experimental, has not been independently audited by cryptography
+      specialists, and should be used at the user's risk.
+  related-projects:
+    - >
+      The repository includes toxcore, toxav, and toxencryptsave components, and the
+      README points readers to Tox clients, the Tox wiki, and example bots such as
+      minitox.
+  sources:
+    - https://api.github.com/repos/TokTok/c-toxcore/releases
+    - https://github.com/TokTok/c-toxcore#readme
+    - https://github.com/TokTok/c-toxcore/blob/master/CHANGELOG.md
+    - source_facts.package-manager
+  summary:
+    - >
+      toxcore is the C implementation of the Tox peer-to-peer encrypted messaging
+      protocol. The official repository describes Tox as a serverless instant messenger
+      intended to make security and privacy easier for regular users, using
+      libsodium-based encryption and authentication.
+  timeline:
+    - "2016: GitHub Releases publish v0.1.0 as 'First Stable API'."
+    - '2024: v0.2.20 changelog includes security and ToxAV fixes.'
+    - '2025: v0.2.21 changelog adds DNS-disable support and a network profiler.'
+    - >
+      2026: v0.2.22 and v0.2.23 changelog entries emphasize hardening, architectural
+      refinement, and security fixes.
+  usage:
+    - >
+      Developers embed toxcore by creating a Tox instance, registering callbacks for
+      events such as friend requests and messages, and repeatedly calling the event-loop
+      function `tox_iterate` at the interval returned by `tox_iteration_interval`.
+    - >
+      For package users, the Homebrew-visible executables `DHT_bootstrap` and
+      `tox-bootstrapd` represent toxcore's infrastructure side: maintaining bootstrap
+      nodes and helping peers enter the decentralized Tox network rather than launching
+      a full chat UI.
 category: security
 package-manager:
   apk: toxcore

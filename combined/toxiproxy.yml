@@ -9,6 +9,72 @@ docs:
 config-file-location:
   unix: config/toxiproxy.json
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Toxiproxy spread because it packaged a distributed-systems testing trick into a
+      repeatable developer tool. Instead of requiring root-only Linux networking tools
+      such as tc or iptables, developers could install a user-space proxy, declare
+      upstream services, and manipulate faults from tests through HTTP or client
+      libraries.
+    - >
+      The official README lists clients for Ruby, Go, Python, .NET, PHP, Node.js, Java,
+      Haskell, Rust, and Elixir. Homebrew, MacPorts, Nix, and Fedora packaging in the
+      source facts show it being distributed as a standalone CLI/server tool rather than
+      just as a Ruby testing helper.
+  package-nerd-significance:
+    - >
+      For package nerds, Toxiproxy is a high-signal example of infrastructure testing
+      becoming a simple package install. It turns failure injection into `brew install
+      toxiproxy`, a server process, and a CLI/API surface that can be scripted from test
+      suites.
+    - >
+      It also helped normalize resilience testing in ordinary application repositories:
+      package maintainers and application developers could add fault-injection checks
+      without privileged networking setup or specialized chaos-testing platforms.
+  project-history:
+    - >
+      Shopify created Toxiproxy during its 2014 resiliency work, when the infrastructure
+      team needed automated ways to test behavior under slow or unavailable dependencies
+      before the holiday traffic season. The official README says Shopify had been using
+      it in all development and test environments since October 2014.
+    - >
+      The first public GitHub release, v1.0.0, was published in January 2015 as 'Public
+      Release'. The project later moved through a 2.x line with a Go TCP proxy server,
+      HTTP API, command-line client, metrics documentation, and multiple client
+      libraries.
+  related-projects:
+    - >
+      The README positions Toxiproxy as a safer test/CI alternative to nc, tc, iptables,
+      and similar low-level networking tools. Shopify engineering articles also connect
+      it to resiliency work and circuit-breaker testing.
+  sources:
+    - https://api.github.com/repos/Shopify/toxiproxy/releases
+    - https://github.com/Shopify/toxiproxy#readme
+    - https://shopify.engineering/building-and-testing-resilient-ruby-on-rails-applications
+    - source_facts.package-manager
+  summary:
+    - >
+      Toxiproxy is Shopify's TCP proxy for simulating network conditions in tests, CI,
+      and development. It lets applications route connections through a local proxy and
+      then apply deterministic or randomized failures such as latency, bandwidth limits,
+      timeouts, packet loss, resets, and disabled links.
+  timeline:
+    - '2014: Shopify begins using Toxiproxy in development and test environments.'
+    - "2015: v1.0.0 'Public Release' published on GitHub Releases."
+    - >
+      2.x: README documents cross-platform binaries, Docker/GitHub container registry
+      usage, HTTP API, metrics, toxics, and multiple language clients.
+  usage:
+    - >
+      A typical test setup starts `toxiproxy-server`, populates proxy definitions for
+      dependencies such as Redis or MySQL, points the application at the proxy listen
+      ports, and uses a client or `toxiproxy-cli` to apply toxics around a test case.
+    - >
+      The README's Rails example demonstrates taking down Redis or adding latency to
+      MySQL to verify fallback behavior. The same model applies to any TCP dependency,
+      which is why Toxiproxy fits CI and local development better than manually editing
+      host networking rules.
 category: developer-tools
 package-manager:
   brew: toxiproxy
