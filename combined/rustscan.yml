@@ -8,6 +8,34 @@ docs:
 config-file-location:
   unix: ~/.rustscan.toml
 credentials-file-location: null
+history:
+  - >
+    RustScan is a Rust-written port scanner from the Bee-san/RustScan project, packaged
+    around the promise of finding open TCP ports quickly and then handing the discovered
+    port list to Nmap or to user scripts. Its README frames the tool as "The Modern Port
+    Scanner" and emphasizes scanning all 65k ports, IPv6 and CIDR support, file input, a
+    scripting engine for Python, Lua, and shell, and automatic piping into Nmap. That
+    design made it less a replacement for Nmap than a fast discovery front end for
+    practitioners who still want Nmap's service detection and script ecosystem after the
+    initial port sweep.
+  - >
+    The project's adoption story is tied to pentesting workflows and distribution
+    packaging. The installation guide says Nmap is required unless users install through
+    Docker, and it recommends package-manager installs for system integration while
+    treating Cargo as the official source-of-truth installation path. Homebrew packages
+    it as `rustscan`, depends on `nmap`, and distributes bottles for macOS and Linux;
+    the upstream README also points to Arch and Cargo installation paths. In practice,
+    security users run RustScan to reduce the slow manual step of discovering open ports
+    before launching deeper Nmap scans, or to trigger custom scripts when particular
+    services are exposed.
+  - >
+    RustScan's ecosystem role is also shaped by its performance and accessibility
+    claims. The README describes CI checks that fail if the scanner becomes
+    significantly slower than the previous version, Hyperfine-based benchmarking,
+    adaptive tuning for the host OS, and CI work around accessibility. That combination
+    explains why it appears in security package sets: it is a high-concurrency Rust
+    binary meant to make the common `scan everything, then enumerate interesting ports`
+    loop faster without discarding the rest of the Unix and Nmap tooling stack.
 category: security
 package-manager:
   apk: rustscan
@@ -30,5 +58,12 @@ executables:
   - rustscan
 provenance:
   formula: rustscan
+  history-sources:
+    - https://github.com/bee-san/RustScan
+    - https://github.com/bee-san/RustScan/wiki/Installation-Guide
+    - https://formulae.brew.sh/formula/rustscan
+    - https://crates.io/crates/rustscan/1.8.0
+    - https://docs.rs/crate/rustscan/1.5.2
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

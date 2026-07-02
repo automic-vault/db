@@ -6,6 +6,43 @@ docs:
   - https://rustpython.github.io/
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    RustPython is an implementation of Python 3 written in Rust, with the public
+    repository created in May 2018. The project emerged at a time when the Rust and
+    Python ecosystems were already converging through extension-module work such as PyO3
+    and maturin, but RustPython took the more ambitious route described at FOSDEM 2019:
+    reimplement the Python language itself in Rust rather than embed Rust components
+    inside CPython.
+  - >
+    The 2019 FOSDEM talk framed RustPython as a young project whose goal was a Python
+    interpreter written entirely in Rust. That context is important: RustPython is not a
+    faster drop-in CPython replacement for the entire Python package universe. It is a
+    clean-room interpreter project that exposes Python parsing, compilation, bytecode
+    execution, object model, import mechanics, and parts of the standard library as Rust
+    code, while aiming at broad Python 3 compatibility over time.
+  - >
+    RustPython's architecture makes it useful in places where CPython's C runtime is not
+    the desired substrate. The project documentation describes it as both a shell
+    environment and a library; rustpython-vm contains much of the interpreter logic,
+    including interpreter machinery, import mechanics, base objects, and bytecode
+    support. That split lets Rust developers embed Python as an application scripting
+    language without binding to CPython internals.
+  - >
+    WebAssembly is the other major ecosystem role. The project homepage highlights
+    compiling RustPython to WebAssembly so Python code can run in the browser, and the
+    public site includes an online demo and notebook. This gives RustPython a different
+    adoption path from CPython, PyPy, Jython, or MicroPython: it is especially
+    interesting for Rust applications, browser-hosted Python experiments, educational
+    interpreters, and environments where distributing a Rust-built interpreter is
+    simpler than carrying a native CPython runtime.
+  - >
+    Packaging follows both Python-implementation and Rust-crate conventions. Users can
+    install a rustpython executable from system package managers such as Homebrew,
+    MacPorts, and Nix, while developers can consume crates such as rustpython-vm through
+    docs.rs and crates.io. In practice, practitioners treat RustPython as an interpreter
+    to experiment with, a VM to embed, and a source base for studying Python
+    implementation techniques in Rust.
 tags:
   - cli
   - interpreter
@@ -32,6 +69,15 @@ provenance:
   docs-sources:
     - Official RustPython project site is the primary documentation and project surface.
     - Official repository README is an additional official documentation surface.
+  history-sources:
+    - https://github.com/RustPython/RustPython
+    - https://api.github.com/repos/RustPython/RustPython
+    - https://rustpython.github.io/
+    - https://archive.fosdem.org/2019/schedule/event/rust_python/
+    - https://github.com/RustPython/RustPython/blob/main/architecture/architecture.md
+    - https://docs.rs/rustpython-vm
+    - https://crates.io/crates/rustpython
+    - https://formulae.brew.sh/formula/rustpython
   repo-sources:
     - >
       source_facts.repo is already populated with
@@ -46,5 +92,6 @@ category-path:
   - interpreter
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

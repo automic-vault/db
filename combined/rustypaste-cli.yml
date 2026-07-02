@@ -15,6 +15,30 @@ config-file-location:
     - ~/Library/Application Support/rustypaste/config.toml
     - ~/.rustypaste/config.toml
 credentials-file-location: null
+history:
+  - >
+    rustypaste-cli is the `rpaste` command-line client for Orhun Parmaksiz's rustypaste
+    pastebin server. The 2023 rustypaste project post presents `curl` as the easiest way
+    to interact with a rustypaste server, then introduces `rpaste` as the Rust-written
+    CLI for the same workflow. The CLI exists because rustypaste's HTTP API is simple
+    enough for shell use, but regular users need saved server addresses, authentication
+    tokens, URL shortening, remote upload, expiration, one-shot links, listing,
+    deletion, and nicer output.
+  - >
+    The package is deliberately separate from the server package. The
+    `orhun/rustypaste-cli` README documents installation from crates.io, Arch Linux,
+    Alpine Edge, binary releases, and source builds, and it lists configuration-file
+    locations plus token-file support so users can avoid putting credentials on the
+    command line. Homebrew packages the client as `rustypaste-cli`, installs an example
+    config, and exposes only the `rpaste` executable, while the server package exposes
+    `rustypaste`.
+  - >
+    In use, `rpaste` is the ergonomic companion for a self-hosted paste service: `rpaste
+    file.txt` uploads local files, `echo text | rpaste -` uploads standard input,
+    `rpaste -u` shortens URLs, `rpaste -r` asks the server to fetch a remote file, and
+    flags can request expiring or one-shot links. That makes the package useful to
+    developers who already run a rustypaste instance and want a small, scriptable
+    uploader rather than a browser UI or a hand-written `curl -F` wrapper.
 category: developer-tools
 package-manager:
   apk: rustypaste-cli
@@ -34,5 +58,12 @@ executables:
   - rpaste
 provenance:
   formula: rustypaste-cli
+  history-sources:
+    - https://blog.orhun.dev/blazingly-fast-file-sharing/
+    - https://github.com/orhun/rustypaste-cli
+    - https://github.com/orhun/rustypaste
+    - https://formulae.brew.sh/formula/rustypaste-cli
+    - https://docs.rs/rustypaste-cli
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
