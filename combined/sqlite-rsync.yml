@@ -6,6 +6,50 @@ docs:
   - https://www.sqlite.org/rsync.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The input identifies a Homebrew formula named `sqlite-rsync`, reflecting the
+      tool's packaging as a standalone command. SQLite's own documentation says the
+      executable must be on PATH locally and, for remote synchronization, on the remote
+      system's SSH PATH as well.
+  package-nerd-significance:
+    - >
+      Package nerds care because sqlite3_rsync fills a sharp operational gap: it gives
+      SQLite users an installable CLI for safe, efficient database copies where generic
+      rsync may produce inconsistent or corrupt results against a changing database.
+  project-history:
+    - >
+      The SQLite documentation describes sqlite3_rsync as a tool that makes a replica
+      database become a copy of an origin database. It is part of the SQLite ecosystem
+      and uses a bandwidth-efficient protocol similar to rsync while preserving SQLite
+      consistency semantics.
+  related-projects:
+    - >
+      sqlite3_rsync is related to SQLite itself and to rsync conceptually, but its
+      protocol and consistency behavior are SQLite-specific.
+  sources:
+    - https://www.sqlite.org/rsync.html - official sqlite3_rsync documentation.
+    - https://www.sqlite.org/src - official SQLite source repository.
+    - source_facts.package-manager.brew - Homebrew formula name supplied in input.
+  summary:
+    - >
+      sqlite3_rsync is SQLite's database remote-copy tool. It exists for a
+      package-manager audience that knows ordinary file synchronization is not
+      automatically safe for live database files.
+  timeline:
+    - >
+      2025: SQLite 3.50.0 removed earlier WAL-mode and same-page-size limitations from
+      sqlite3_rsync.
+    - >
+      2025: SQLite documentation notes protocol improvements in 3.50.0 that reduce
+      bandwidth when origin and replica are already similar.
+    - 'Current: Homebrew packages the tool as `sqlite-rsync`.'
+  usage:
+    - >
+      The basic command shape is `sqlite3_rsync ORIGIN REPLICA`. One side can use
+      `USER@HOST:PATH`, SSH is used for communication, and the tool can copy from a live
+      origin database while producing a consistent snapshot.
 category: data
 package-manager:
   brew: sqlite-rsync

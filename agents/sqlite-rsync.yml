@@ -5,6 +5,50 @@ docs:
   - https://www.sqlite.org/rsync.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The input identifies a Homebrew formula named `sqlite-rsync`, reflecting the
+      tool's packaging as a standalone command. SQLite's own documentation says the
+      executable must be on PATH locally and, for remote synchronization, on the remote
+      system's SSH PATH as well.
+  package-nerd-significance:
+    - >
+      Package nerds care because sqlite3_rsync fills a sharp operational gap: it gives
+      SQLite users an installable CLI for safe, efficient database copies where generic
+      rsync may produce inconsistent or corrupt results against a changing database.
+  project-history:
+    - >
+      The SQLite documentation describes sqlite3_rsync as a tool that makes a replica
+      database become a copy of an origin database. It is part of the SQLite ecosystem
+      and uses a bandwidth-efficient protocol similar to rsync while preserving SQLite
+      consistency semantics.
+  related-projects:
+    - >
+      sqlite3_rsync is related to SQLite itself and to rsync conceptually, but its
+      protocol and consistency behavior are SQLite-specific.
+  sources:
+    - https://www.sqlite.org/rsync.html - official sqlite3_rsync documentation.
+    - https://www.sqlite.org/src - official SQLite source repository.
+    - source_facts.package-manager.brew - Homebrew formula name supplied in input.
+  summary:
+    - >
+      sqlite3_rsync is SQLite's database remote-copy tool. It exists for a
+      package-manager audience that knows ordinary file synchronization is not
+      automatically safe for live database files.
+  timeline:
+    - >
+      2025: SQLite 3.50.0 removed earlier WAL-mode and same-page-size limitations from
+      sqlite3_rsync.
+    - >
+      2025: SQLite documentation notes protocol improvements in 3.50.0 that reduce
+      bandwidth when origin and replica are already similar.
+    - 'Current: Homebrew packages the tool as `sqlite-rsync`.'
+  usage:
+    - >
+      The basic command shape is `sqlite3_rsync ORIGIN REPLICA`. One side can use
+      `USER@HOST:PATH`, SSH is used for communication, and the tool can copy from a live
+      origin database while producing a consistent snapshot.
 tags:
   - cli
   - database
@@ -23,26 +67,31 @@ geiger:
 provenance:
   category-sources:
     - >
-      Official docs https://www.sqlite.org/rsync.html describe sqlite3_rsync as a
-      database remote-copy tool
-    - 'source_facts.description: SQLite remote copy tool'
+      source_facts.description and official docs describe a SQLite database
+      copy/synchronization tool.
   display-name-sources:
-    - Official docs https://www.sqlite.org/rsync.html use sqlite3_rsync
-    - source_facts.executables includes sqlite3_rsync
+    - >
+      Official SQLite documentation uses `sqlite3_rsync`; source_facts.executables lists
+      `sqlite3_rsync`.
   docs-sources:
-    - 'Official SQLite sqlite3_rsync documentation: https://www.sqlite.org/rsync.html'
+    - https://www.sqlite.org/rsync.html is the official SQLite database remote-copy tool page.
+  history-sources:
+    - https://www.sqlite.org/rsync.html - official sqlite3_rsync documentation.
+    - https://www.sqlite.org/src - official SQLite source repository.
+    - source_facts.package-manager.brew - Homebrew formula name supplied in input.
   repo-sources:
-    - 'Official SQLite source repository: https://www.sqlite.org/src'
-    - source_facts.repo is empty
+    - >
+      https://www.sqlite.org/index.html links SQLite source code to sqlite.org/src;
+      sqlite-rsync is documented by the SQLite project.
   tags-sources:
-    - Official docs describe copying an origin database to a replica, including remote paths
-    - source_facts.description says SQLite remote copy tool
+    - >
+      Official sqlite3_rsync documentation describes remote copy, SSH use, and
+      rsync-like synchronization.
 category-confidence: high
 category-path:
   - data
-  - database
-  - replication
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
