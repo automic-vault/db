@@ -7,6 +7,74 @@ docs:
   - https://codeberg.org/sox_ng/sox_ng/wiki
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      SoX_ng is young compared with SoX, but it is packaged in several channels in the
+      input facts, including Homebrew, Nix, and winget. The README also names Homebrew
+      installation on macOS and winget installation on Windows.
+    - >
+      The fork's packaging story is part of its design: by installing as `sox_ng`,
+      `play_ng`, `rec_ng`, `soxi_ng`, `libsox_ng`, and related names, it can coexist
+      with the older SoX package unless configured to replace it.
+  package-nerd-significance:
+    - >
+      SoX_ng matters to package nerds because it turns distro-patched audio-tool
+      maintenance into an upstream fork. Its README explicitly frames the project as
+      collecting fixes from many software distributions and forks, which is exactly the
+      kind of long-tail maintenance package maintainers care about.
+    - >
+      The coexistence naming scheme also lowers adoption risk: package managers can
+      offer the fork without breaking scripts that depend on classic `sox`, while users
+      who want replacement behavior can opt in at configure time.
+  project-history:
+    - >
+      The official README defines `sox_ng` as a hard fork of `sox-14.4.2` aiming to
+      sanitize SoX. It says the project imports, compares, and refines bug fixes and new
+      work from software distributions that package SoX and from forks on GitHub and
+      elsewhere.
+    - >
+      The Codeberg repository was created in October 2024. Its README describes a
+      six-monthly cadence for micro and minor releases and explicitly states that a
+      major release with incompatible changes is not planned.
+  related-projects:
+    - SoX is the upstream project and command-line model from which SoX_ng forked.
+    - >
+      ffmpeg is documented as an optional runtime dependency for reading additional
+      audio and video formats.
+    - >
+      Homebrew, Nix, and winget are package channels documented in input facts or the
+      official README.
+  sources:
+    - https://codeberg.org/api/v1/repos/sox_ng/sox_ng
+    - https://codeberg.org/api/v1/repos/sox_ng/sox_ng/releases
+    - https://codeberg.org/sox_ng/sox_ng/src/branch/main/ChangeLog
+    - https://codeberg.org/sox_ng/sox_ng/src/branch/main/README.md
+    - source_facts.package-manager
+  summary:
+    - >
+      SoX_ng is a hard fork of SoX 14.4.2 that keeps the command-line audio-processing
+      model while allowing the fork to coexist with traditional SoX. It is mainly
+      interesting to package users as a maintained, separately named SoX lineage with
+      its own binaries, libraries, releases, wiki, and issue tracker.
+  timeline:
+    - '2024: Codeberg repository created.'
+    - '2024: README describes SoX_ng as a hard fork of SoX 14.4.2.'
+    - >
+      2026: SoX_ng 14.8.0 released with new effects, formats, bug fixes, and
+      documentation changes.
+    - '2026: README schedules regular micro and minor releases.'
+  usage:
+    - >
+      The `sox_ng` command follows the SoX model of reading and writing audio files,
+      applying effects, combining input sources, synthesizing audio, playing, recording,
+      and querying headers. The README documents source builds through `./configure` and
+      `make` and explains optional integration with ffmpeg for additional audio and
+      video formats.
+    - >
+      The project documents a replacement mode through `./configure --enable-replace`,
+      but the default package-facing behavior is separate command and library names so
+      users can install both SoX and SoX_ng.
 tags:
   - audio
   - audio-conversion
@@ -24,31 +92,32 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      source_facts.description says Sound eXchange NG; source_facts.homepage points to
-      the official Codeberg project for sox_ng.
+    - Official README and man page describe SoX_ng as command-line audio processing.
   display-name-sources:
-    - >
-      Official project URL and source_facts.name identify the project as sox_ng;
-      official README terminology uses SoX_ng for the project.
+    - Official README uses SoX_ng for the project and sox_ng for the command/fork.
   docs-sources:
     - >
-      source_facts.homepage is the official Codeberg project; official README describes
-      the code base, wiki, and issue tracker as the project surfaces.
+      Official Codeberg README documents releases, builds, commands, dependencies, and
+      community links.
+    - Official Codeberg wiki is linked from the README as part of the project.
+  history-sources:
+    - https://codeberg.org/api/v1/repos/sox_ng/sox_ng
+    - https://codeberg.org/api/v1/repos/sox_ng/sox_ng/releases
+    - https://codeberg.org/sox_ng/sox_ng/src/branch/main/ChangeLog
+    - https://codeberg.org/sox_ng/sox_ng/src/branch/main/README.md
+    - source_facts.package-manager
   repo-sources:
-    - >
-      source_facts.homepage is an official Codeberg source-control project URL and
-      source_facts.repo is empty.
+    - Official README states that sox_ng lives at https://codeberg.org/sox_ng/sox_ng.
   tags-sources:
     - >
-      source_facts.description says Sound eXchange NG; source_facts.executables lists
-      sox_ng, play_ng, rec_ng, and soxi_ng command-line tools.
+      Official README and man page document audio conversion, effects, playback,
+      recording, and header inspection.
 category-confidence: high
 category-path:
   - media
   - audio
-  - cli
 display-name-confidence: high
-docs-confidence: medium
+docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
