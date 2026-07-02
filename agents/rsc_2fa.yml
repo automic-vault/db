@@ -8,6 +8,28 @@ config-file-location: null
 credentials-file-location:
   unix:
     - ~/.2fa
+history:
+  - >
+    rsc_2fa is the Homebrew packaging name for Russ Cox's `rsc.io/2fa`, a small Go
+    command whose GitHub repository was created on November 22, 2017. The program
+    belongs to the Unix-style security-tool tradition: it does one job, generating
+    two-factor authentication codes from locally stored secrets, and exposes that job
+    through a terse command-line interface.
+  - >
+    The package documentation describes `2fa -add` for adding named secrets, `2fa -list`
+    for listing key names, and `2fa name` for printing a code. It supports the
+    time-based TOTP mode by default, counter-based HOTP with `-hotp`, six-, seven-, and
+    eight-digit codes, and clipboard copying with `-clip`. The keychain is intentionally
+    simple and stored unencrypted in `$HOME/.2fa`, making the tool convenient for
+    trusted local developer machines but unsuitable as a hardened secret vault without
+    external filesystem protections.
+  - >
+    Distribution follows the Go command pattern. pkg.go.dev records version v1.2.0 as a
+    tagged, stable module published on January 15, 2021, and Homebrew packages it as
+    `rsc_2fa` with the executable name `2fa`. Practitioners use it when they want 2FA
+    codes in scripts, terminal workflows, SSH sessions, or password-manager-adjacent
+    setups, especially for services that expose a text secret during enrollment instead
+    of requiring a QR-only mobile authenticator.
 tags:
   - authentication
   - cli
@@ -33,6 +55,12 @@ provenance:
     - >
       source_facts.homepage is the official Go package documentation for rsc.io/2fa;
       official GitHub README is also an official documentation surface.
+  history-sources:
+    - https://api.github.com/repos/rsc/2fa
+    - https://github.com/rsc/2fa
+    - https://raw.githubusercontent.com/rsc/2fa/master/README.md
+    - https://pkg.go.dev/rsc.io/2fa
+    - https://formulae.brew.sh/formula/rsc_2fa
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/rsc/2fa, so repo is
@@ -48,5 +76,6 @@ category-path:
   - two-factor
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

@@ -6,6 +6,39 @@ docs:
   - https://github.com/raspberrypi/usbboot/blob/master/Readme.md
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    rpiboot is the host-side utility from Raspberry Pi's usbboot project, the USB
+    device-boot software used to provision Raspberry Pi boards and Compute Modules. The
+    tool acts as a file server for the Raspberry Pi boot ROM and firmware, loading code
+    into memory so the target can expose storage back to the host. Its default workflow
+    turns the target into a USB mass-storage device, after which operators write an
+    operating-system image with ordinary imaging tools such as Raspberry Pi Imager.
+  - >
+    The utility grew out of the Compute Module production and development model. The
+    first Raspberry Pi Compute Module was announced in April 2014 for industrial and
+    embedded users, with on-module eMMC flash rather than a removable microSD card. That
+    hardware made a USB slave-boot provisioning path important: developers put the
+    module or carrier board into the documented boot mode, run rpiboot on a host, and
+    then flash or inspect the module's storage as if it were an attached drive.
+  - >
+    The usbboot repository expanded beyond the original Compute Module eMMC flashing
+    workflow. Raspberry Pi's documentation describes rpiboot use for Compute Module 4
+    and newer devices to update bootloader SPI EEPROM, and the repository includes
+    provisioning extensions for recovery, secure-boot setup, EEPROM metadata extraction,
+    mass-storage gadget boot images, and embedded Raspberry Pi Imager. The
+    supported-device list spans early Compute Modules and Pi Zero-era boards through
+    Compute Module 5 and Raspberry Pi 5-class hardware, with newer devices using a
+    Linux-based mass-storage gadget and older ones using the legacy MSD firmware path.
+  - >
+    Practitioners use rpiboot in manufacturing benches, carrier-board bring-up,
+    classroom labs, and field recovery whenever the normal boot medium is inaccessible
+    or blank. The common command-line pattern is to install libusb and build tools,
+    clone the usbboot repository, build with make, set the board's nRPIBOOT or
+    EMMC-DISABLE jumper or equivalent carrier-board switch, and run sudo rpiboot. The
+    tool is packaged by operating-system distributions and Homebrew, but many hardware
+    guides still build from the Raspberry Pi repository because the bundled boot images
+    and EEPROM recovery payloads are part of the practical value.
 category: system
 package-manager:
   brew: rpiboot
@@ -24,5 +57,13 @@ executables:
   - rpiboot
 provenance:
   formula: rpiboot
+  history-sources:
+    - https://github.com/raspberrypi/usbboot
+    - https://www.raspberrypi.com/documentation/computers/compute-module.html
+    - >
+      https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/2517/Flashing_the_Compute_Module_EMMC_Web.pdf
+    - https://www.wired.com/story/raspberry-pi-compute-module
+    - https://formulae.brew.sh/formula/rpiboot
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

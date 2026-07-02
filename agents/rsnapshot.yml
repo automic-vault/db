@@ -7,6 +7,45 @@ config-file-location:
   unix:
     - /etc/rsnapshot.conf
 credentials-file-location: null
+history:
+  - >
+    rsnapshot is one of the long-running Unix backup utilities built around rsync's
+    efficient file transfer model and the filesystem trick of representing repeated
+    snapshots with hard links. Its HOWTO credits Mike Rubel's rsync snapshot shell
+    scripts as the practical ancestor, and the AUTHORS file names Mike Rubel as creator
+    of the original scripts on which the project was based. Nathan Rosenquist was the
+    primary author and maintained rsnapshot until 2005; later maintainers included David
+    Cantrell, David Keegel, and Benedikt Heine.
+  - >
+    The project shaped a reusable form of the rsync snapshot pattern: instead of
+    hand-edited shell scripts per machine, administrators configure snapshot roots,
+    retention intervals, local and remote backup points, and optional helper commands in
+    rsnapshot.conf. The 2005 HOWTO explains the motivation as making automated remote
+    snapshots easy enough to avoid sporadic manual backups, with rsync and SSH doing the
+    transfer work and hard links making many point-in-time trees consume roughly one
+    full copy plus changed files.
+  - >
+    In use, rsnapshot is typically run from cron as root or as a dedicated backup user,
+    with /etc/rsnapshot.conf naming cmd_rsync, optional cmd_ssh, retain levels such as
+    alpha, beta, or gamma, and backup entries for local paths, rsync servers, SSH paths,
+    LVM snapshots, or backup scripts. The man page documents the operational model: the
+    lowest retention level performs the rsync, higher levels rotate existing snapshot
+    directories, and rsync options such as include, exclude, --delete, --numeric-ids,
+    and --relative are exposed through configuration.
+  - >
+    rsnapshot's ecosystem role is the conservative sysadmin wrapper around rsync: Perl,
+    minimal module dependencies, cron-friendly output, and distribution through
+    operating-system package managers. The upstream README lists Linux, BSD, Solaris,
+    macOS, and other Unix-like systems in its compatibility history, while Ubuntu and
+    Homebrew package it as a command-line filesystem snapshot utility with rsnapshot and
+    rsnapshot-diff executables.
+  - >
+    The project continued to receive maintenance after its SourceForge-era origins. The
+    changelog records the 1.3.0 release on 2006-10-21, the 1.3.1 release on 2008-08-31
+    with changes such as rsync_numtries, Linux LVM support, stop_on_stale_lockfile, and
+    the retain terminology, and the 1.5.0 and 1.5.1 releases on 2025-01-27 with
+    workflow, documentation, and rotation fixes. That history makes rsnapshot a durable
+    middle layer between raw rsync scripts and larger backup systems.
 tags:
   - backup
   - cli
@@ -34,6 +73,14 @@ provenance:
     - >
       Official rsnapshot.org HOWTO is a dedicated documentation page for installation
       and configuration.
+  history-sources:
+    - https://raw.githubusercontent.com/rsnapshot/rsnapshot/master/AUTHORS
+    - https://raw.githubusercontent.com/rsnapshot/rsnapshot/master/README.md
+    - >
+      https://raw.githubusercontent.com/rsnapshot/rsnapshot/master/docs/HOWTOs/rsnapshot-HOWTO.en.md
+    - https://raw.githubusercontent.com/rsnapshot/rsnapshot/master/ChangeLog
+    - https://manpages.ubuntu.com/manpages/jammy/man1/rsnapshot.1.html
+    - https://formulae.brew.sh/api/formula/rsnapshot.json
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/rsnapshot/rsnapshot, so
@@ -49,5 +96,6 @@ category-path:
   - filesystem
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

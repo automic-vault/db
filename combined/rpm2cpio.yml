@@ -6,6 +6,34 @@ docs:
   - https://svnweb.freebsd.org/ports/head/archivers/rpm2cpio
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    rpm2cpio is the small extraction bridge between RPM packages and the traditional
+    cpio archive format used inside RPM payloads. The upstream RPM manual page says
+    rpm2cpio converts an .rpm file to a cpio archive on standard output, or reads an RPM
+    stream from standard input when passed a dash. Its authorship is credited in the
+    manual page to Erik Troan, matching RPM's early Red Hat lineage.
+  - >
+    The command became a standard troubleshooting and forensics tool because it lets
+    users inspect or extract files from an RPM without installing the package. Maximum
+    RPM documents the classic pattern: pipe rpm2cpio output directly into cpio to list
+    archive contents or extract selected paths. That workflow is especially useful on
+    non-RPM systems, in build scripts, in package review, and when a user needs one file
+    from a package without changing the host package database.
+  - >
+    There are two related packaging stories behind the name. RPM itself ships an
+    rpm2cpio utility, while FreeBSD and other ports collections also carry a lightweight
+    rpm2cpio package whose description says it exists because the full RPM-linked
+    version can require many dependencies and that the FreeBSD version is a tiny wrapper
+    around bsdtar. The FreeBSD port was added on March 20, 2001, gained RPM v4 support
+    in December 2003, support for newer xz/lzma-compressed RPMs in July 2010, and was
+    simplified into a shell script around bsdtar in December 2015.
+  - >
+    rpm2cpio's practical importance has narrowed but not disappeared. The RPM manual
+    notes that cpio cannot host individual files larger than 4 GB and directs users to
+    rpm2archive for that case. For ordinary packages, however, the old pipeline remains
+    muscle memory: rpm2cpio package.rpm | cpio -tv to inspect, or rpm2cpio package.rpm |
+    cpio -idmv to extract into a scratch directory.
 category: developer-tools
 package-manager:
   apk: rpm2cpio
@@ -25,5 +53,12 @@ executables:
   - rpm2cpio
 provenance:
   formula: rpm2cpio
+  history-sources:
+    - https://man7.org/linux/man-pages/man8/rpm2cpio.8.html
+    - https://manpages.ubuntu.com/manpages/noble/man8/rpm2cpio.8.html
+    - https://ftp.osuosl.org/pub/rpm/max-rpm/s1-rpm-miscellania-rpm2cpio.html
+    - https://www.freshports.org/archivers/rpm2cpio/
+    - https://formulae.brew.sh/formula/rpm2cpio
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

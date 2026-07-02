@@ -5,6 +5,54 @@ docs:
   - https://oss.oetiker.ch/rrdtool/doc/index.en.html
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    RRDtool, the Round Robin Database Tool, was created by Tobias Oetiker as the
+    time-series storage and graphing component that MRTG needed after MRTG outgrew its
+    original log format and graph-generation model. Oetiker announced RRDtool 1.0.0 on
+    July 16, 1999, describing it as the data storage, management, and graphing part of
+    MRTG broken out and done as a separate tool. The announcement emphasized compact
+    fixed-size storage, faster operation than MRTG, configurable graphing, Unix
+    portability, and use from shell or Perl wrappers.
+  - >
+    The design is based on round-robin archives: fixed-size circular data stores that
+    overwrite old samples instead of letting log files grow without bound. RRDtool
+    stores numerical time-series data, consolidates samples over several resolutions,
+    and can generate graph images from the stored archives. That model fit network
+    counters especially well, but the tutorial and project documentation describe uses
+    for temperatures, voltages, server load averages, power use, visitor counts, and
+    other sensor-like measurements.
+  - >
+    RRDtool became tightly linked with MRTG deployment history. The MRTG integration
+    documentation explains that setting `LogFormat: rrdtool` causes MRTG to convert old
+    `.log` files into `.rrd` databases, update those databases with RRDtool, and stop
+    generating all graph pages on each polling cycle. The documented benefit was a large
+    runtime reduction because data collection and storage became separate from graph
+    rendering, with CGI front ends such as 14all.cgi, routers2.cgi, and mrtg-rrd
+    generating graphs on demand.
+  - >
+    Its ecosystem role expanded beyond MRTG into a general embedded time-series engine
+    for monitoring systems. The official site calls RRDtool an open-source
+    industry-standard data logging and graphing system for time-series data, usable from
+    shell scripts and from Perl, Python, Ruby, Lua, or Tcl applications. The GitHub
+    repository continues the 1.x line in C and describes RRDtool as a program for
+    maintaining a database of time-series data plus a charting program for graphing
+    stored data.
+  - >
+    The 1.x release line accumulated the features expected from a long-lived monitoring
+    primitive: language bindings, command-line tools such as `rrdcreate`, `rrdupdate`,
+    `rrdinfo`, `rrdcached`, and `rrdcgi`, graphing back ends, and distribution packages
+    across Unix-like systems. Homebrew packages RRDtool with dependencies such as cairo,
+    pango, libpng, glib, gettext, and harfbuzz, which mirrors the tool's dual identity
+    as both database library and graph renderer.
+  - >
+    Practitioners use RRDtool less like a general database and more like a durable file
+    format plus graphing engine for bounded telemetry. A typical workflow creates an
+    `.rrd` file with data-source and archive definitions, feeds it from cron jobs,
+    daemons, SNMP pollers, or monitoring systems, and generates graphs for dashboards or
+    diagnostics. Its enduring appeal is operational predictability: disk use is defined
+    when the database is created, old data is consolidated rather than manually pruned,
+    and graph generation can be separated from collection.
 tags:
   - cli
   - graphing
@@ -33,6 +81,15 @@ provenance:
     - >
       Official oss.oetiker.ch RRDtool documentation index is the dedicated documentation
       surface.
+  history-sources:
+    - https://lists.oetiker.ch/pipermail/rrd-announce/1999-July/000007.html
+    - https://oss.oetiker.ch/rrdtool/
+    - https://oss.oetiker.ch/rrdtool/tut/rrdtutorial.en.html
+    - https://oss.oetiker.ch/mrtg/doc/mrtg-rrd.en.html
+    - https://github.com/oetiker/rrdtool-1.x
+    - https://raw.githubusercontent.com/oetiker/rrdtool-1.x/master/README.md
+    - https://github.com/oetiker/rrdtool-2.x
+    - https://formulae.brew.sh/formula/rrdtool
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/oetiker/rrdtool-1.x, so
@@ -48,5 +105,6 @@ category-path:
   - time-series
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

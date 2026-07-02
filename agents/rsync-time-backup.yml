@@ -5,6 +5,36 @@ docs:
   - https://github.com/laurent22/rsync-time-backup#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    rsync-time-backup is Laurent Cozic's single-script rsync snapshot backup tool, from
+    the laurent22/rsync-time-backup repository that GitHub records as created on
+    2013-10-27. Its README describes the project as Time Machine-style backup using
+    rsync: each run creates a timestamped directory, unchanged files are hard-linked to
+    the previous backup, and users can restore files directly with a file manager or
+    rsync.
+  - >
+    The project belongs to the same rsync-and-hard-links backup lineage as Mike
+    Rubel-style snapshot scripts and rsnapshot, but it chooses a smaller surface area.
+    Instead of a Perl program with a central configuration file and named retention
+    intervals, rsync-time-backup is a shell script invoked as rsync_tmbackup.sh with
+    source, destination, optional exclude file, and flags for SSH port, SSH key, rsync
+    options, logging, expiration strategy, and automatic cleanup.
+  - >
+    Practitioners use it for personal or lightweight server backups where the desired
+    model is transparent snapshot folders rather than a backup database. The README
+    documents local backups, backups to remote drives over SSH, backups from remote
+    machines, cron scheduling to mimic Time Machine's periodic behavior, a symlink to
+    the last successful backup, a built-in lock to avoid overlapping runs, and a restore
+    flow based on copying files out of the snapshot directory.
+  - >
+    Its ecosystem role is a portable, inspectable alternative to platform-specific
+    backup systems. The README explicitly compares it with macOS Time Machine:
+    rsync-time-backup gives flexibility across Linux, macOS, and Windows through WSL or
+    Cygwin, but does not provide Time Machine's automatic drive-triggered runs or
+    graphical restore UI. Homebrew packages it as rsync-time-backup and installs the
+    rsync_tmbackup.sh executable, making the script available through the same package
+    manager used for rsnapshot and rsync-adjacent tools.
 tags:
   - backup
   - cli
@@ -31,6 +61,12 @@ provenance:
     - source_facts.name is rsync-time-backup.
   docs-sources:
     - Official GitHub README is the primary documentation surface for usage and configuration.
+  history-sources:
+    - https://api.github.com/repos/laurent22/rsync-time-backup
+    - https://github.com/laurent22/rsync-time-backup
+    - https://raw.githubusercontent.com/laurent22/rsync-time-backup/master/README.md
+    - https://formulae.brew.sh/api/formula/rsync-time-backup.json
+    - https://formulae.brew.sh/formula/rsync-time-backup
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/laurent22/rsync-time-backup,
@@ -44,5 +80,6 @@ category-path:
   - backup
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
