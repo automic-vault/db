@@ -5,6 +5,56 @@ docs:
   - https://github.com/libfuse/sshfs#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README states that SSHFS is shipped by all major Linux distributions and has
+      been used in production across many systems for years. It also notes a period of
+      limited maintenance: release 3.7.3 in 2022 said SSHFS was no longer maintained or
+      developed, while later changelog entries show new maintainers and renewed
+      releases.
+  package-nerd-significance:
+    - >
+      SSHFS is a packaging staple because it bridges SSH, SFTP, FUSE, desktop workflows,
+      and server administration with one small command. Its cross-distro presence,
+      kernel/filesystem dependency surface, macOS/BSD differences, and long maintenance
+      arc make it exactly the kind of package that exposes the practical edges of
+      package-manager ecosystems.
+  project-history:
+    - >
+      The official changelog records SSHFS 1.0 as the initial release and then tracks
+      years of compatibility, caching, performance, and portability work. The project
+      later moved through the libfuse ecosystem, adopted Meson builds, required libfuse
+      3 in the 3.x series, and continued to follow OpenSSH and FUSE behavior changes.
+  related-projects:
+    - >
+      SSHFS is related to libfuse, OpenSSH, SFTP, osxfuse/macFUSE, FUSE mount helpers,
+      and package-manager integration for filesystem utilities.
+  sources:
+    - https://github.com/libfuse/sshfs#readme
+    - https://raw.githubusercontent.com/libfuse/sshfs/master/ChangeLog.rst
+    - source_facts.package-manager
+  summary:
+    - >
+      SSHFS is a FUSE-based filesystem client that mounts remote directories over SFTP.
+      It became a classic Unix package-manager utility because it turns ordinary SSH
+      access into a mountable filesystem without requiring special server-side software.
+  timeline:
+    - '1.0: Initial release recorded in the official changelog.'
+    - '2015: Release 2.6 introduced Nikolaus Rath as new maintainer.'
+    - '2016: Release 2.7 integrated the osxfuse copy so SSHFS worked on OS X out of the box.'
+    - '2017: Release 3.0 required libfuse 3.1.0 or newer and added Meson build support.'
+    - >
+      2022: Release 3.7.3 announced the project was no longer actively maintained or
+      developed.
+    - '2025: Release 3.7.5 added new maintainers and updated Windows and macOS support.'
+    - '2026: Release 3.7.6 fixed security issues and added another maintainer.'
+  usage:
+    - >
+      The canonical command is `sshfs [user@]hostname:[directory] mountpoint`, followed
+      by `fusermount -u mountpoint` on Linux or `umount mountpoint` on BSD and macOS.
+      The README emphasizes that most SSH servers already provide SFTP, so the remote
+      side usually needs no extra package.
 tags:
   - cli
   - filesystem
@@ -23,29 +73,26 @@ geiger:
     - text:ssh,client
 provenance:
   category-sources:
-    - >
-      source_facts.description says sshfs is a file system client based on SSH File
-      Transfer Protocol.
+    - Official README describes mounting a remote filesystem using SFTP.
   display-name-sources:
-    - source_facts.name gives sshfs; source_facts.repo is the official libfuse SSHFS project.
+    - Official README heading uses SSHFS.
   docs-sources:
-    - >
-      source_facts.homepage and source_facts.repo point to the official repository
-      README, the best official documentation surface supplied.
+    - Official README documents purpose, usage, installation, support, and packaging status.
+  history-sources:
+    - https://github.com/libfuse/sshfs#readme
+    - https://raw.githubusercontent.com/libfuse/sshfs/master/ChangeLog.rst
+    - source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already contains https://github.com/libfuse/sshfs, so repo is
-      returned as null per instruction.
+      source_facts.repo already provides https://github.com/libfuse/sshfs, so repo is
+      returned as null per prompt.
   tags-sources:
-    - >
-      source_facts.description identifies SFTP and filesystem-client functionality;
-      source_facts.executables lists sshfs mount commands.
+    - Official README documents FUSE, SFTP, SSH, remote filesystem mounting, and CLI usage.
 category-confidence: high
 category-path:
   - system
-  - filesystems
-  - ssh
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
