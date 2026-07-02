@@ -3,8 +3,59 @@ display-name: solc-select
 repo: https://github.com/crytic/solc-select
 docs:
   - https://github.com/crytic/solc-select#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - ~/.solc-select/global-version
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The supplied package-manager facts list solc-select in Homebrew and Nix,
+      reflecting its role as a developer convenience package for Ethereum and Solidity
+      workstations. Homebrew marks it as conflicting with the `solidity` formula, which
+      matches its job of supplying the `solc` wrapper executable.
+  package-nerd-significance:
+    - >
+      solc-select is package-nerd bait because Solidity projects often pin old compiler
+      versions in source pragmas. Instead of forcing the OS package manager to carry
+      many parallel `solc` packages, solc-select acts like a language-specific shim
+      manager for the compiler.
+  project-history:
+    - >
+      The project README describes solc-select as a tool for quickly switching between
+      Solidity compiler versions. Its setup metadata identifies Trail of Bits as the
+      author and publishes the project from the official Crytic GitHub organization.
+    - >
+      The tool downloads compiler binaries from Solidity's official binary distribution
+      and stores them under `~/.solc-select/artifacts/`, keeping local compiler
+      selection separate from system package-manager versions.
+  related-projects:
+    - >
+      Solidity provides the compiler binaries that solc-select downloads. Crytic and
+      Trail of Bits security tooling often need repeatable Solidity compiler selection
+      for analysis workflows.
+  sources:
+    - >
+      Input package-manager facts: source_facts.package-manager and
+      source_facts.package-manager-url
+    - 'Official README: https://github.com/crytic/solc-select#readme'
+    - 'Official setup metadata: https://github.com/crytic/solc-select/blob/master/setup.py'
+  summary:
+    - >
+      solc-select is a small command-line version manager for the Solidity compiler. It
+      provides a `solc-select` management command and a `solc` wrapper so developers can
+      install and switch among Solidity compiler releases.
+  timeline:
+    - '2020: The official setup metadata on the master branch identifies version 0.2.1.'
+    - '2021: Git tags include the 1.0.x series.'
+    - >
+      2026: The Homebrew formula in the supplied facts packages solc-select for current
+      macOS and Linux users.
+  usage:
+    - >
+      Typical use is to install a compiler version with `solc-select install <version>`,
+      choose a global version with `solc-select use <version>`, or override the selected
+      compiler for one command with the `SOLC_VERSION` environment variable.
 tags:
   - cli
   - compiler
@@ -23,31 +74,34 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      source_facts.description says solc-select manages multiple Solidity compiler
-      versions; official README at https://github.com/crytic/solc-select describes
-      switching between Solidity compiler versions.
+    - Official README describes a compiler-version switching CLI.
+    - 'source_facts.description: Manage multiple Solidity compiler versions'
   display-name-sources:
-    - >
-      source_facts.name is solc-select; official repository
-      https://github.com/crytic/solc-select uses the same display name.
+    - 'Official README heading: solc-select'
+    - source_facts.name
   docs-sources:
+    - Official GitHub README is the project documentation surface.
+    - current_curation.docs
+  history-sources:
     - >
-      Official GitHub README is the primary documentation for solc-select installation,
-      usage, version management, and FAQ.
+      Input package-manager facts: source_facts.package-manager and
+      source_facts.package-manager-url
+    - 'Official README: https://github.com/crytic/solc-select#readme'
+    - 'Official setup metadata: https://github.com/crytic/solc-select/blob/master/setup.py'
   repo-sources:
     - >
-      source_facts.repo is empty; source_facts.homepage is the official GitHub
-      repository https://github.com/crytic/solc-select.
+      source_facts.repo is empty; official setup metadata and homepage point to
+      https://github.com/crytic/solc-select.
   tags-sources:
     - >
-      source_facts.description identifies Solidity compiler version management; official
-      README documents solc-select and solc wrapper behavior for compiler versions.
+      Official README documents solc-select, solc wrapper, Solidity compiler versions,
+      and SOLC_VERSION.
+    - source_facts.executables includes solc-select
 category-confidence: high
 category-path:
   - developer-tools
-  - blockchain
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
