@@ -11,6 +11,36 @@ credentials-file-location:
   unix:
     - /etc/shibboleth/sp-signing-key.pem
     - /etc/shibboleth/sp-encrypt-key.pem
+history:
+  - >
+    Shibboleth Service Provider is the web-server-facing half of the Shibboleth identity
+    stack, rooted in the early-2000s higher-education federated identity work around
+    SAML. The Shibboleth Consortium describes the software as open-source
+    identity-management infrastructure adopted by academic institutions, identity
+    federations, and commercial organizations, with a membership model funding long-term
+    maintenance.
+  - >
+    The SP's ecosystem role is deliberately different from an application framework. It
+    sits beside Apache HTTP Server, IIS, or other supported web-serving environments,
+    handles SAML protocol work, consumes federation metadata, manages service-provider
+    entity identifiers, and exposes released identity attributes to protected web
+    applications. Berkeley's CalNet documentation describes the IdP/SP split, with shibd
+    acting as the daemon that handles attribute-related SAML back-channel work.
+  - >
+    Operational practice is configuration-heavy and federation-heavy. Deployers create
+    or receive SP metadata, choose a persistent entityID, maintain shibboleth2.xml and
+    attribute maps or policies, provision signing and encryption keys, register the
+    service with an institutional identity team or federation registry, test with shibd
+    -t or platform equivalents, and then move from staging to production metadata.
+    SWITCH and University of Michigan deployment guides show this pattern in
+    institutional SSO workflows.
+  - >
+    Packaging mirrors the C++ and web-server integration stack. Homebrew distributes
+    shibboleth-sp with dependencies such as httpd, OpenSAML, XMLTooling-C,
+    XML-Security-C, Xerces-C, OpenSSL, APR, and log4shib; Debian and Ubuntu commonly
+    expose it through libapache2-mod-shib. For practitioners, the package is less a
+    standalone CLI than a daemon, web-server module, and metadata toolchain used to
+    'Shibbolize' services inside university, research, and federation environments.
 tags:
   - authentication
   - cli
@@ -41,6 +71,15 @@ provenance:
     - >
       Official Shibboleth Service Provider 3 Confluence space is the current
       documentation surface for all 3.x releases.
+  history-sources:
+    - https://www.shibboleth.net/
+    - https://shibboleth.atlassian.net/wiki/spaces/SP3/overview
+    - https://shibboleth.atlassian.net/wiki/spaces/CONCEPT/pages/928645134/EntityNaming
+    - >
+      https://calnet.berkeley.edu/calnet-technologists/single-sign/shibbolethsaml-overview-and-terminology
+    - https://help.switch.ch/aai/guides/sp/configuration/
+    - https://documentation.its.umich.edu/node/766
+    - https://formulae.brew.sh/formula/shibboleth-sp
   repo-sources:
     - >
       Official Shibboleth Source Code Access page says public repositories moved to
@@ -56,5 +95,6 @@ category-path:
   - saml
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: medium
 tags-confidence: high

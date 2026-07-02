@@ -6,6 +6,35 @@ docs:
   - https://github.com/projectdiscovery/shuffledns#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    shuffleDNS is a ProjectDiscovery reconnaissance tool written in Go as a wrapper
+    around MassDNS. Its README positions it as a way to enumerate valid subdomains using
+    active bruteforce and to resolve supplied subdomain lists while filtering wildcard
+    DNS, with stdin/stdout support for automation pipelines.
+  - >
+    The project belongs to the DNS reconnaissance stage of penetration testing and
+    bug-bounty workflows. ProjectDiscovery’s reconnaissance material separates passive
+    subdomain discovery from active enumeration: passive tools collect public records,
+    while active bruteforcing sends DNS queries for candidate names. shuffleDNS fits
+    after or beside tools such as subfinder: it can take passively discovered names on
+    stdin and resolve them, or combine a target domain, resolver list, and wordlist to
+    brute-force candidate subdomains.
+  - >
+    Its core dependency explains its ecosystem role. MassDNS is a high-performance DNS
+    stub resolver built for bulk lookups and reconnaissance, capable of huge lookup
+    volumes but prone to false positives when public resolvers, wildcard domains, or DNS
+    poisoning contaminate results. shuffleDNS packages that speed into a
+    ProjectDiscovery-style CLI and adds wildcard handling, modes for bruteforce,
+    resolve, and filter, NDJSON output, resolver and trusted-resolver inputs, and
+    examples that chain cleanly with other recon tools.
+  - >
+    Distribution follows the Go security-tool pattern: upstream documents Go-module
+    installation from `github.com/projectdiscovery/shuffledns/cmd/shuffledns`, while
+    Homebrew and Nix provide package-manager installs. Practitioners use it with
+    resolver lists, wordlists such as commonspeak or Assetnote-style lists, and
+    downstream probes to turn candidate DNS names into a cleaner set of valid subdomains
+    for asset inventory, exposure mapping, and authorized security testing.
 category: security
 package-manager:
   brew: shuffledns
@@ -23,5 +52,11 @@ executables:
   - shuffledns
 provenance:
   formula: shuffledns
+  history-sources:
+    - https://github.com/projectdiscovery/shuffledns
+    - https://github.com/blechschmidt/massdns
+    - https://projectdiscovery.io/blog/recon-series-2
+    - https://formulae.brew.sh/formula/shuffledns
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
