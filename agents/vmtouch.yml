@@ -5,6 +5,61 @@ docs:
   - https://github.com/hoytech/vmtouch#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      vmtouch's adoption story is mostly that of a niche tool spreading across Unix-like
+      operating systems because it maps directly to common performance investigations.
+      The manual lists confirmed support for Linux, FreeBSD, Solaris, OS X, and HP-UX,
+      while noting that eviction support varies by kernel API.
+  package-nerd-significance:
+    - >
+      vmtouch is significant in package-manager culture because it gives administrators
+      a repeatable way to demonstrate and manipulate the otherwise invisible filesystem
+      cache. It is especially handy for benchmarking, warming hot datasets, testing
+      cold-cache behavior, and explaining why a second run of a workload is faster than
+      the first.
+  project-history:
+    - >
+      The upstream README identifies vmtouch as Doug Hoyte's project, with copyright
+      years 2009-2017 and contributors tracked in the CHANGES file. The changelog
+      records 0.7.1 as the first public release, followed by portability work for
+      Solaris, OS X, and HP-UX by the 0.8.0 release in December 2012.
+    - >
+      The 2015-2018 releases show the tool maturing from a cache-inspection utility into
+      a more scriptable systems tool. Version 1.0.1 added page-range support, version
+      1.1.0 improved large-value checking and Linux block-device handling, version 1.2.0
+      added include/exclude filename patterns, version 1.3.0 added batch input mode, and
+      version 1.3.1 added PID-file support for daemonized memory locking.
+  related-projects:
+    - >
+      vmtouch is conceptually adjacent to `vmstat`, `touch`, and OS primitives such as
+      `mincore`, `mlock`, `msync`, `madvise`, and `posix_fadvise`; the upstream manual
+      lists those interfaces as related references.
+  sources:
+    - 'vmtouch CHANGES: https://raw.githubusercontent.com/hoytech/vmtouch/master/CHANGES'
+    - 'vmtouch README: https://raw.githubusercontent.com/hoytech/vmtouch/master/README.md'
+    - 'vmtouch manual: https://raw.githubusercontent.com/hoytech/vmtouch/master/vmtouch.pod'
+  summary:
+    - >
+      vmtouch, the Virtual Memory Toucher, is a portable Unix tool for seeing and
+      influencing which file pages are resident in the filesystem cache. It exposes
+      low-level virtual-memory primitives such as `mmap`, `mincore`, `mlock`, `msync`,
+      and `posix_fadvise` through a compact command-line interface.
+  timeline:
+    - '2009: Doug Hoyte begins vmtouch, according to the upstream copyright range.'
+    - '0.7.1: First public release, per the CHANGES file.'
+    - '2012-12-04: Version 0.8.0 adds full OS X support and HP-UX support.'
+    - '2015-10-16: Version 1.0.1 adds page-range mode.'
+    - '2017-03-16: Version 1.3.0 adds batch mode and filesystem-boundary traversal control.'
+    - '2018-11-16: Version 1.3.1 adds PID-file support for daemon mode.'
+  usage:
+    - >
+      With no options, vmtouch reports cache residency by mapping files read-only and
+      querying resident pages with `mincore`. Operators use `-t` to fault pages into
+      cache, `-e` to ask the OS to evict pages, and `-l` or `-L` to lock pages in
+      physical memory for as long as the process runs. Directory recursion, page ranges,
+      ignore/include patterns, and batch lists make it usable against large trees.
 tags:
   - cli
   - diagnostics
@@ -22,24 +77,28 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - 'source_facts.description: Portable file system cache diagnostics and control.'
+    - current_curation.category
+    - https://raw.githubusercontent.com/hoytech/vmtouch/master/vmtouch.pod
   display-name-sources:
-    - >
-      source_facts.name is vmtouch; source_facts.homepage and repo identify the official
-      vmtouch project.
+    - current_curation.display-name
+    - https://raw.githubusercontent.com/hoytech/vmtouch/master/README.md
   docs-sources:
-    - Official GitHub repository README is the primary documentation surface for vmtouch.
+    - current_curation.docs
+    - https://raw.githubusercontent.com/hoytech/vmtouch/master/README.md
+  history-sources:
+    - 'vmtouch CHANGES: https://raw.githubusercontent.com/hoytech/vmtouch/master/CHANGES'
+    - 'vmtouch README: https://raw.githubusercontent.com/hoytech/vmtouch/master/README.md'
+    - 'vmtouch manual: https://raw.githubusercontent.com/hoytech/vmtouch/master/vmtouch.pod'
   repo-sources:
-    - >
-      source_facts.repo is already set to https://github.com/hoytech/vmtouch; per
-      instruction, repo was not re-determined.
+    - source_facts.repo
   tags-sources:
-    - source_facts.description identifies file system cache diagnostics and control.
+    - current_curation.tags
+    - https://raw.githubusercontent.com/hoytech/vmtouch/master/vmtouch.pod
 category-confidence: high
 category-path:
   - system
-  - performance
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
