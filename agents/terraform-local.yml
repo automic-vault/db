@@ -6,6 +6,75 @@ docs:
   - https://github.com/localstack/terraform-local#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      terraform-local's adoption is tied to LocalStack's broader use as a local AWS
+      emulator. Developers install `tflocal` when they want Terraform plans and applies
+      to provision local AWS-like resources without rewriting normal Terraform modules
+      for a test environment.
+    - >
+      The input package facts list Homebrew and Nix packaging, while the official README
+      recommends pipx and also documents virtualenv installation. That split is typical
+      for Python CLIs that are useful both to Python package users and to infrastructure
+      engineers who prefer system package managers.
+  package-nerd-significance:
+    - >
+      terraform-local is package-nerd significant because it is deliberately a wrapper
+      rather than a fork or provider. It preserves the user's Terraform CLI muscle
+      memory while interposing just enough endpoint configuration to make LocalStack
+      work as a local target.
+    - >
+      For users curating developer machines, CI images, or reproducible test
+      environments, `tflocal` is the installable bridge between Terraform's upstream
+      binary and LocalStack's AWS emulation.
+  project-history:
+    - >
+      The localstack/terraform-local repository was created on GitHub in March 2022. Its
+      README describes a small wrapper script that uses Terraform's override mechanism
+      to create a temporary `localstack_providers_override.tf` file, causing AWS
+      provider endpoints to point to LocalStack, usually at `http://localhost:4566`.
+    - >
+      The README's changelog starts at v0.1 and records a steady series of practical
+      compatibility fixes: custom endpoints, `-chdir` support, provider aliases, local
+      S3 backend handling, AWS provider version compatibility, multi-account support,
+      semantic versioning, `AWS_ENDPOINT_URL`, dry-run behavior, additional override
+      locations, and Terraform AWS provider 6 beta support.
+  related-projects:
+    - >
+      The official documentation and README tie terraform-local to LocalStack,
+      Terraform, the Terraform AWS provider, Terraform override files, and local S3
+      backend workflows.
+  sources:
+    - https://api.github.com/repos/localstack/terraform-local
+    - https://docs.localstack.cloud/aws/integrations/infrastructure-as-code/terraform
+    - https://github.com/localstack/terraform-local#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      terraform-local provides `tflocal`, a wrapper that runs Terraform against
+      LocalStack by temporarily configuring AWS provider endpoints to point at the local
+      LocalStack API.
+  timeline:
+    - '2022: GitHub repository created.'
+    - '2022: README changelog records v0.1 as the initial release.'
+    - >
+      2023: Changelog entries added provider aliases, S3 backend support, and
+      multi-account support.
+    - '2024: Changelog records semantic versioning and `AWS_ENDPOINT_URL` support in v0.16.0.'
+    - '2025: Changelog records Terraform AWS provider 6.0.0-beta2 compatibility in v0.23.1.'
+    - '2026: Repository remained active during research.'
+  usage:
+    - >
+      The main usage model is intentionally simple: run `tflocal` with the same
+      arguments one would pass to `terraform`. The wrapper writes temporary provider
+      override files, sets LocalStack service endpoints, and then invokes the configured
+      Terraform command.
+    - >
+      The README exposes most behavior through environment variables such as `DRY_RUN`,
+      `TF_CMD`, `AWS_ENDPOINT_URL`, `S3_HOSTNAME`, `USE_EXEC`, service-specific endpoint
+      variables, `AWS_DEFAULT_REGION`, `AWS_ACCESS_KEY_ID`, `SKIP_ALIASES`, and
+      `ADDITIONAL_TF_OVERRIDE_LOCATIONS`.
 tags:
   - aws
   - cli
@@ -23,30 +92,34 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      source_facts.description describes deploying Terraform applications directly to
-      LocalStack.
+    - current_curation.category_path
+    - https://github.com/localstack/terraform-local#readme
+    - source_facts.description
   display-name-sources:
-    - >
-      source_facts.name is terraform-local; official GitHub README brands the command as
-      tflocal for Terraform with LocalStack.
+    - current_curation.display-name
+    - source_facts.name
   docs-sources:
-    - >
-      Official LocalStack docs have a Terraform integration page covering tflocal;
-      official GitHub README is the project documentation surface.
+    - current_curation.docs
+    - https://docs.localstack.cloud/aws/integrations/infrastructure-as-code/terraform
+    - https://github.com/localstack/terraform-local#readme
+  history-sources:
+    - https://api.github.com/repos/localstack/terraform-local
+    - https://docs.localstack.cloud/aws/integrations/infrastructure-as-code/terraform
+    - https://github.com/localstack/terraform-local#readme
+    - source_facts.package-manager
   repo-sources:
     - >
-      Official GitHub repository localstack/terraform-local describes the Terraform CLI
-      wrapper for LocalStack; source_facts.repo was empty.
+      source_facts.repo is empty; official repository confirmed from
+      current_curation.repo and GitHub API metadata at
+      https://api.github.com/repos/localstack/terraform-local.
   tags-sources:
-    - >
-      source_facts.description supplies Terraform and LocalStack context; official
-      README describes the tflocal CLI wrapper.
+    - current_curation.tags
+    - https://github.com/localstack/terraform-local#readme
 category-confidence: high
 category-path:
   - cloud-infrastructure
-  - infrastructure-as-code
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

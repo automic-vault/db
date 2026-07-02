@@ -5,7 +5,64 @@ repo: https://github.com/awslabs/terraform-iam-policy-validator
 docs:
   - https://github.com/awslabs/terraform-iam-policy-validator#readme
 config-file-location: null
-credentials-file-location: null
+credentials-file-location:
+  unix:
+    - ~/.aws/credentials
+    - ~/.aws/config
+history:
+  adoption-history:
+    - >
+      The project is narrower than general Terraform linters because it focuses
+      specifically on AWS IAM policy semantics. The input package facts list Homebrew
+      and Nix packaging, while the official README documents Python installation with
+      `pip install tf-policy-validator`, indicating use both as a Python CLI and as a
+      packaged security tool.
+  package-nerd-significance:
+    - >
+      For package-manager users, terraform-iam-policy-validator represents the
+      compliance side of Terraform packaging: it is a standalone executable meant to be
+      dropped into CI after `terraform plan`, with policy behavior controlled by command
+      flags and config files. Its importance is strongest in AWS-heavy shops that want
+      IAM policy review before apply.
+  project-history:
+    - >
+      The awslabs/terraform-iam-policy-validator repository was created on GitHub in
+      August 2022. Its README describes a command-line tool that parses Terraform
+      templates for IAM identity-based and resource-based policies, then runs them
+      through IAM Access Analyzer policy validation checks and optional custom policy
+      checks.
+  related-projects:
+    - >
+      The README ties the tool to AWS IAM Access Analyzer, boto3 credential handling,
+      Terraform plan JSON, and AWS sample material for IAM Access Analyzer custom policy
+      checks.
+  sources:
+    - https://api.github.com/repos/awslabs/terraform-iam-policy-validator
+    - https://github.com/awslabs/terraform-iam-policy-validator#readme
+    - https://github.com/awslabs/terraform-iam-policy-validator/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      terraform-iam-policy-validator is an AWS Labs security CLI, installed as
+      `tf-policy-validator`, that checks IAM policies extracted from Terraform plan
+      output with IAM Access Analyzer validation and custom policy checks.
+  timeline:
+    - '2022: GitHub repository created.'
+    - '2024: v0.0.6 and v0.0.7 releases published.'
+    - '2024: v0.0.8 release added custom-check changes including check-no-public-access.'
+    - '2025: v0.0.9 listed as the latest GitHub release during research.'
+  usage:
+    - >
+      The documented workflow is to run Terraform, convert a plan to JSON with
+      `terraform show -json`, and pass that file to `tf-policy-validator validate` with
+      an AWS region and config file. The tool can fail a pipeline when findings of
+      selected severity levels are treated as blocking.
+    - >
+      The README also documents custom checks for no-new-access, access-not-granted, and
+      no-public-access. Because those checks call AWS IAM Access Analyzer APIs through
+      boto3, the tool uses normal AWS credential resolution, including environment
+      variables, shared credentials, AWS config, assume-role providers, and EC2 instance
+      metadata.
 category: security
 package-manager:
   brew: terraform-iam-policy-validator

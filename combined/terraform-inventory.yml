@@ -6,6 +6,77 @@ docs:
   - https://github.com/adammck/terraform-inventory#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      terraform-inventory reflects an important early Terraform adoption pattern:
+      Terraform handled infrastructure creation, while Ansible still handled
+      configuration management. Before provider ecosystems, cloud-init practices, and
+      Terraform-native workflows matured, bridging Terraform state into Ansible
+      inventory solved a practical day-two automation problem.
+    - >
+      The input package facts list Homebrew, Nix, and zypper packaging, and the README
+      includes a Homebrew badge and Homebrew installation instructions. That packaging
+      footprint is notable for an older Go utility whose primary interface is simply
+      being executable by `ansible-playbook` as an inventory script.
+  package-nerd-significance:
+    - >
+      terraform-inventory matters historically because it captures the moment when
+      Terraform and Ansible were commonly paired rather than treated as competing tools.
+      For package nerds, it is a compact example of how early infrastructure CLIs were
+      distributed: a static-ish Go binary, release archives, Homebrew formula, and
+      distro packages.
+    - >
+      It is less central in newer Terraform workflows, but its design remains
+      recognizable: read Terraform state, produce another tool's expected
+      machine-readable interface, and make the glue installable from a package manager.
+  project-history:
+    - >
+      The adammck/terraform-inventory repository was created on GitHub in September
+      2014, making it one of the older Terraform-adjacent tools in this batch. Its
+      README describes it as a small Go app that generates a dynamic Ansible inventory
+      from a Terraform state file so users can spawn instances with Terraform and then
+      reprovision them with Ansible.
+    - >
+      The project released v0.1 and v0.2 in September 2014 and continued adding provider
+      support across cloud and virtualization platforms, including AWS, DigitalOcean,
+      Google Compute Engine, OpenStack, Docker, VMware, Hetzner Cloud, Linode, Proxmox,
+      and others. By the README's own note, the library was stable but had been
+      neglected because the maintainer no longer used Ansible at work.
+  related-projects:
+    - >
+      The README positions terraform-inventory between Terraform and Ansible. It also
+      names many supported Terraform providers, reflecting the project's role as a
+      provider-state adapter rather than a Terraform provider itself.
+  sources:
+    - https://api.github.com/repos/adammck/terraform-inventory
+    - https://github.com/adammck/terraform-inventory#readme
+    - https://github.com/adammck/terraform-inventory/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      terraform-inventory is an early Terraform companion CLI that generates dynamic
+      Ansible inventory from Terraform state. It let teams provision infrastructure with
+      Terraform and then immediately target those resources from Ansible playbooks.
+  timeline:
+    - '2014: GitHub repository created.'
+    - '2014: v0.1 and v0.2 releases published.'
+    - '2015: v0.3 through v0.6 pre-releases published.'
+    - '2019: v0.9 released.'
+    - '2021: v0.10 listed as the latest GitHub release during research.'
+    - '2025: Repository still showed recent push activity during research.'
+  usage:
+    - >
+      The basic usage is to point Ansible at the `terraform-inventory` executable with
+      `--inventory-file`; the tool discovers `terraform.tfstate`, pulls remote state
+      from a Terraform directory, or honors environment variables such as `TF_STATE` and
+      `TI_TFSTATE`. It maps Terraform resource names, provider metadata, and selected IP
+      fields into Ansible host groups.
+    - >
+      The README documents additional environment variables such as `TF_KEY_NAME` and
+      `TF_HOSTNAME_KEY_NAME` for choosing private IPs or alternate hostnames. That
+      interface is very much of the Unix CLI style: no daemon, no central service, just
+      state in and inventory JSON out.
 category: developer-tools
 package-manager:
   brew: terraform-inventory
