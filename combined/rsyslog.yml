@@ -10,6 +10,49 @@ config-file-location:
     - /etc/rsyslog.conf
     - /etc/rsyslog.d/*.conf
 credentials-file-location: null
+history:
+  - >
+    rsyslog grew out of the older Unix syslog tradition. BSD syslogd established
+    facility-and-priority routing, a central system logging service, and a compact
+    configuration language in 1983; Linux later adopted sysklogd, which preserved that
+    model but remained limited in filtering, transformation, reliable transport, and
+    extensibility. By the early 2000s, production logging needed TCP transport, better
+    timestamp handling, database output, formatting control, and performance
+    characteristics that the older daemons did not provide.
+  - >
+    The rsyslog project began in 2004 as a fork of sysklogd. Its early goal was
+    conservative in one sense and ambitious in another: keep compatibility with existing
+    syslog behavior and configuration expectations, while adding the transport,
+    formatting, and output features required by larger Linux deployments. Work in 2005
+    and 2006 added templates, early TCP support, stronger timestamp handling, and the
+    first modularity concepts.
+  - >
+    Adoption accelerated in 2007 when Fedora 8 selected rsyslog as its default syslog
+    daemon, Red Hat contributed packaging and IPv6 work, BSD ports appeared, and the
+    project built out community infrastructure. In 2008 rsyslog introduced two features
+    that shaped its later identity: a multi-threaded queue engine released on 31 January
+    2008, and RainerScript introduced on 28 February 2008. Queues let inputs, rulesets,
+    and actions be decoupled with memory, disk, and disk-assisted buffering;
+    RainerScript gave administrators a more expressive configuration language for
+    conditional routing and pipeline logic.
+  - >
+    By 2010 rsyslog had matured into a modular log-processing framework rather than only
+    a syslog daemon. Its module families separated inputs, parsers, message modifiers,
+    and outputs; configurations could route from local files, kernel logs, sockets, TCP,
+    UDP, RELP, or journald-style sources into files, databases, message brokers, search
+    systems, and forwarding targets. That modular architecture also explains the
+    packaging model: distributions ship a core daemon plus optional modules, while
+    Homebrew exposes the daemon and diagnostic/helper executables in a single formula.
+  - >
+    The project became a common default or near-default component in Linux logging
+    stacks because it sat between two worlds. It could accept traditional
+    `/etc/rsyslog.conf` and `/etc/rsyslog.d/*.conf` syslog rules, making migration from
+    sysklogd straightforward, but it could also act as a high-throughput
+    event-processing pipeline with per-action queues, disk spooling, TLS, RELP
+    acknowledgements, JSON templates, and outputs for systems such as Elasticsearch and
+    Kafka. Operators use it to collect host logs, normalize or enrich messages, fan out
+    streams to local retention and central collectors, and keep forwarding resilient
+    when remote destinations fail.
 category: system
 package-manager:
   apk: rsyslog
@@ -35,5 +78,15 @@ executables:
   - rsyslogd
 provenance:
   formula: rsyslog
+  history-sources:
+    - https://docs.rsyslog.com/doc/about/origins.html
+    - https://docs.rsyslog.com/doc/about/history.html
+    - https://docs.rsyslog.com/doc/index.html
+    - https://docs.rsyslog.com/doc/concepts/queues.html
+    - https://docs.rsyslog.com/doc/whitepapers/reliable_logging.html
+    - https://github.com/rsyslog/rsyslog
+    - https://man7.org/linux/man-pages/man5/rsyslog.conf.5.html
+    - https://formulae.brew.sh/formula/rsyslog
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

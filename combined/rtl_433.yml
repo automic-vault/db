@@ -12,6 +12,33 @@ config-file-location:
     - ~/.config/rtl_433/rtl_433.conf
     - /usr/local/etc/rtl_433/rtl_433.conf
 credentials-file-location: null
+history:
+  - >
+    rtl_433 grew out of the RTL-SDR ecosystem around cheap Realtek RTL2832-based DVB-T
+    receivers repurposed as software-defined radios. Its mailing-list description
+    attributes the software to Benjamin Larsson, known as merbanan, and the project
+    README describes it as a generic data receiver despite the 433-centric name. The
+    supported bands extend beyond 433.92 MHz to 868 MHz SRD, 315 MHz, 345 MHz, and 915
+    MHz ISM devices, with RTL-SDR and SoapySDR support covering hardware such as RTL2832
+    dongles, LimeSDR, PlutoSDR, HackRF One, and SoapyRemote.
+  - >
+    The project became a catalog of small wireless-device decoders: weather stations,
+    temperature and humidity sensors, rain gauges, power monitors, security contacts,
+    remote controls, leak sensors, and utility-related transmitters appear in the
+    protocol list. That gives rtl_433 a distinctive ecosystem role: it is less a radio
+    experimentation GUI and more a packet-to-structured-data bridge for inexpensive
+    unidirectional ISM-band devices. The README emphasizes portable C, low dependencies,
+    embedded-friendly builds, and distribution through Debian and Ubuntu packages,
+    FreeBSD pkg, Homebrew, Docker images, and other package managers.
+  - >
+    Practitioners commonly run rtl_433 as plumbing. A typical setup chooses a frequency
+    and one or more decoder protocol IDs, then emits decoded data as key-value text,
+    JSON, CSV, MQTT, InfluxDB line protocol, syslog, HTTP, or rtl_tcp passthrough. The
+    examples and integration docs show the downstream pattern: send JSON or MQTT into
+    Home Assistant, Node-RED, Domoticz, InfluxDB, Graphite, collectd, statsd, SQL
+    relays, or custom scripts. Home Assistant add-ons wrap the same model by running
+    rtl_433 under the supervisor and asking users to publish sensor events into MQTT so
+    entities can be manually configured or discovered through helper scripts.
 category: networking
 package-manager:
   apk: rtl_433
@@ -37,5 +64,14 @@ executables:
   - rtl_433
 provenance:
   formula: rtl_433
+  history-sources:
+    - https://github.com/merbanan/rtl_433
+    - https://github.com/merbanan/rtl_433/blob/master/README.md
+    - https://github.com/merbanan/rtl_433/blob/master/docs/INTEGRATION.md
+    - https://github.com/merbanan/rtl_433/blob/master/examples/README.md
+    - https://github.com/pbkhrv/rtl_433-hass-addons/blob/main/rtl_433/README.md
+    - https://groups.google.com/g/rtl_433
+    - https://formulae.brew.sh/formula/rtl_433
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

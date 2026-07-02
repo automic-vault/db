@@ -7,6 +7,37 @@ docs:
   - https://rbenv.org/man/ruby-build.1
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    ruby-build grew out of the rbenv style of Ruby version management that became
+    visible in the Ruby community in 2011. Sam Stephenson created rbenv and ruby-build
+    to simplify installing and switching between multiple Ruby versions, and a December
+    2011 Debian intent-to-package note described ruby-build version 20111030 as a small
+    Bash tool for compiling and installing different Ruby implementations that worked
+    well with rbenv.
+  - >
+    The package occupies the installer half of the rbenv design. rbenv selects a Ruby
+    for a shell or project; ruby-build downloads source archives, runs the configure and
+    make install flow, verifies the resulting interpreter, and installs into a requested
+    prefix or into the rbenv versions directory through the rbenv install command. It
+    also operates as a standalone ruby-build command, which made it useful outside rbenv
+    for CI images, custom prefixes, and systems where developers wanted a repeatable
+    source build without adopting a full version-manager workflow.
+  - >
+    Its ecosystem role comes from definition files: ruby-build ships recipes for CRuby
+    and alternative implementations such as JRuby, mruby, PicoRuby, and TruffleRuby.
+    That makes the package a moving index of Ruby release tarballs, checksums, and build
+    quirks. Practitioners use it when system Ruby is too old, when a project pins
+    .ruby-version, when Rails applications need parallel runtime lines, or when OpenSSL,
+    libyaml, readline, and compiler details must be handled consistently across
+    developer machines and build hosts.
+  - >
+    Distribution-wise, ruby-build is packaged both as an rbenv plugin and as an ordinary
+    command-line tool. Homebrew exposes it as the ruby-build formula, while the input
+    record also maps it to Linux distribution packages such as Debian, Fedora, Arch,
+    Alpine, openSUSE, and MacPorts. Because ruby-build only knows the definitions
+    bundled with the installed package, users upgrade ruby-build when a newly published
+    Ruby release needs to become installable through rbenv install.
 tags:
   - build-tool
   - cli
@@ -32,6 +63,13 @@ provenance:
   docs-sources:
     - Official manual notes link the README and wiki.
     - source_facts.homepage is the official ruby-build manual page.
+  history-sources:
+    - https://github.com/rbenv/ruby-build
+    - https://rbenv.org/man/ruby-build.1
+    - https://rbenv.org/
+    - https://groups.google.com/g/linux.debian.devel/c/K1ues4M7CLw
+    - https://sls.name/
+    - https://formulae.brew.sh/formula/ruby-build
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/rbenv/ruby-build; per
@@ -48,5 +86,6 @@ category-path:
   - version-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
