@@ -6,6 +6,81 @@ docs:
   - https://www.gnu.org/software/grub/manual/grub/grub.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GRUB Legacy's last release was 0.97 in 2005, while GRUB 2 gradually replaced it.
+      The GNU manual records limited GNU/Linux distribution use of GRUB 2 by about 2007
+      and default installation by multiple major distributions by the end of 2009.
+    - >
+      GRUB also became important in the OS development community because it can load
+      Multiboot-compliant kernels and can be used to create bootable ISO, disk, USB,
+      BIOS, and UEFI images for test kernels. OSDev documentation treats GRUB 2 as a
+      standard way to avoid writing a bootloader before testing a kernel.
+  package-nerd-significance:
+    - >
+      This is a niche but meaningful package for people building operating systems on
+      macOS or another non-target host. It pairs naturally with x86_64-elf-gcc and
+      x86_64-elf-binutils, because GRUB builds for a target platform need target-aware
+      compiler and binary utilities rather than host-default tools.
+  project-history:
+    - >
+      GRUB originated in 1995 when Erich Boleyn was trying to boot GNU Hurd with the
+      University of Utah's Mach 4 microkernel, now GNU Mach. Boleyn and Brian Ford
+      designed the Multiboot Specification to avoid adding yet another incompatible PC
+      boot method, and Boleyn began from FreeBSD boot-loader work before deciding to
+      write a new boot loader.
+    - >
+      In 1999 Gordon Matzigkeit and Yoshinori K. Okuji adopted GRUB as an official GNU
+      package and opened development via anonymous CVS. Around 2002 Okuji began PUPA, a
+      rewrite intended to make GRUB cleaner, safer, more robust, and more powerful; PUPA
+      became GRUB 2, while the original line became GRUB Legacy.
+  related-projects:
+    - >
+      The Multiboot and Multiboot2 specifications define the kernel-loading contract
+      many hobby OS kernels use with GRUB.
+    - >
+      GNU Binutils and GCC cross toolchains provide the target-aware build tools used
+      alongside x86_64-elf GRUB.
+    - QEMU is commonly used to boot and test the images GRUB creates.
+  sources:
+    - https://wiki.osdev.org/GCC_Cross-Compiler
+    - https://wiki.osdev.org/GRUB
+    - https://www.gnu.org/software/grub/manual/grub/html_node/History.html
+    - https://www.gnu.org/software/grub/manual/grub/html_node/Overview.html
+  summary:
+    - >
+      GNU GRUB is the GNU Project boot loader used to load operating-system kernels and
+      chain-load other boot paths. It is closely associated with the Multiboot
+      specification and is a common bootloader for GNU/Linux and hobby operating-system
+      development.
+    - >
+      The x86_64-elf variant is useful when building GRUB tools and images for an x86-64
+      ELF target from a different host environment. Users reach for it when producing
+      bootable images for kernels, teaching OS development, or assembling freestanding
+      boot artifacts rather than managing the host's own boot loader.
+  timeline:
+    - '1995: GRUB begins while Erich Boleyn works on booting GNU Hurd with Mach.'
+    - >
+      1999: GRUB becomes an official GNU package under Gordon Matzigkeit and Yoshinori
+      K. Okuji.
+    - 'Around 2002: PUPA begins as a major rewrite that becomes GRUB 2.'
+    - '2005: GRUB Legacy 0.97 is released as the last Legacy release.'
+    - >
+      2007-2009: GRUB 2 moves from limited distribution use to defaults in multiple
+      major GNU/Linux distributions.
+  usage:
+    - >
+      The cross-target GRUB package is not about changing the host's boot configuration.
+      It supplies target-prefixed GRUB utilities such as grub-mkimage, grub-mkrescue,
+      and grub-mkstandalone for creating x86-64 ELF boot artifacts from a development
+      machine.
+    - >
+      Typical users build a kernel with a Multiboot or Multiboot2 header, create a
+      grub.cfg, and use GRUB image-building commands to produce an ISO, disk image, or
+      UEFI binary that can be tested in an emulator or on hardware. The target-prefixed
+      tools keep that flow separate from any GRUB installation that might boot the
+      developer's own machine.
 category: system
 package-manager:
   brew: x86_64-elf-grub

@@ -7,6 +7,78 @@ docs:
   - https://sourceware.org/gdb/current/onlinedocs/gdb
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      GDB became the standard debugger in much of the GNU, Unix-like, and
+      embedded-toolchain world because it runs on common host systems while targeting
+      many architectures and languages. Its command-line interface, machine interface,
+      Python scripting, remote protocol, and IDE integrations made it useful both as a
+      standalone tool and as plumbing underneath graphical debuggers and editors.
+    - >
+      Remote debugging is central to its adoption outside ordinary user-space programs.
+      The GDB manual describes remote debugging for systems that cannot run GDB
+      normally, such as operating-system kernels and small systems without a
+      general-purpose OS; OS development guides commonly pair GDB with QEMU, Bochs,
+      serial stubs, or kernel stubs.
+  package-nerd-significance:
+    - >
+      For package users, the important bit is the GNU target tuple in the executable
+      name. x86_64-elf-gdb belongs with x86_64-elf-gcc and x86_64-elf-binutils in the
+      classic bare-metal cross-toolchain stack used by OSDev tutorials and hobby
+      kernels.
+  project-history:
+    - >
+      GDB was first written by Richard Stallman in 1986 as part of the GNU system, after
+      GNU Emacs had become reasonably stable. It was modeled after the dbx debugger from
+      Berkeley Unix and released as free software under the GNU General Public License.
+    - >
+      From 1990 to 1993 GDB was maintained by John Gilmore; it is now maintained by the
+      GDB Steering Committee appointed by the Free Software Foundation. Development
+      lives in the shared sourceware binutils-gdb repository, reflecting GDB's long
+      technical relationship with BFD, object-file formats, assemblers, linkers, and the
+      rest of the GNU toolchain.
+  related-projects:
+    - GNU Binutils supplies the object-file and disassembly ecosystem GDB depends on.
+    - GCC commonly emits the debug information that GDB consumes.
+    - QEMU and Bochs are common emulator partners for x86_64-elf remote debugging.
+  sources:
+    - https://en.wikipedia.org/wiki/GNU_Debugger
+    - https://sourceware.org/gdb/current/onlinedocs/gdb.html/Configure-Options.html
+    - https://sourceware.org/gdb/current/onlinedocs/gdb.html/Remote-Debugging.html
+    - https://wiki.osdev.org/GDB
+    - https://www.gnu.org/software/gdb/
+  summary:
+    - >
+      GNU GDB is the GNU Project's portable source-level debugger. It is used to inspect
+      a program while it runs, examine crashes, set breakpoints and watchpoints, inspect
+      memory and registers, and change state during a debugging session.
+    - >
+      The x86_64-elf variant packages GDB as a cross-debugger for bare-metal or
+      freestanding x86-64 ELF targets rather than for the host operating system. That
+      matters in OS development, firmware, kernels, and emulator workflows where the
+      program being debugged cannot run a full debugger locally.
+  timeline:
+    - '1986: Richard Stallman writes the first GDB as part of the GNU system.'
+    - '1990-1993: John Gilmore maintains GDB.'
+    - >
+      2000s: GDB's remote debugging and machine-interface roles become core to embedded,
+      IDE, and kernel workflows.
+    - >
+      2020s: GDB continues in the sourceware binutils-gdb repository with active support
+      for many languages, architectures, and remote targets.
+  usage:
+    - >
+      Users install x86_64-elf-gdb when their target binary is an x86-64 ELF image
+      independent of the host ABI. The target-prefixed executable keeps the debugger
+      configured for cross-debugging and avoids accidentally treating a freestanding
+      kernel, boot component, or emulator-loaded image as a native macOS or Linux
+      process.
+    - >
+      Typical sessions load symbols from a kernel or firmware ELF file, connect to a
+      remote target with commands such as target remote localhost:1234, set breakpoints
+      in early boot or kernel code, inspect registers and memory, and single-step code
+      running under QEMU, Bochs, hardware stubs, or another simulator.
 category: developer-tools
 package-manager:
   brew: x86_64-elf-gdb
