@@ -9,6 +9,64 @@ config-file-location:
   linux:
     - '@SYSCONFIG_DIR@/sysstat'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      sysstat packages long-running system activity collection into small commands and
+      scheduled jobs, so it became a common package-manager install for administrators
+      who want historical sar data without deploying a larger monitoring stack.
+    - >
+      The supplied package-manager facts list sysstat or split binary packages across
+      Homebrew, Alpine, Debian, Ubuntu, Fedora/dnf, Nix, Arch, and openSUSE.
+  package-nerd-significance:
+    - >
+      sysstat is beloved package-manager material because it is small, scriptable,
+      old-school Unix tooling that answers production questions quickly after a machine
+      has already been collecting data.
+    - >
+      It also matters to distro maintainers because its value depends on cron or systemd
+      timers, log/data retention paths, and kernel metric compatibility rather than just
+      shipping one binary.
+  project-history:
+    - >
+      The upstream CHANGES file records version 1.0 on 1999-03-06 as the initial
+      revision by Sebastien Godard, tested on Linux kernel 2.0.36. The current README
+      carries a 1999-2025 copyright line and describes the package as system performance
+      tools for Linux.
+    - >
+      The package grew by adding SMP support, localization, daily activity-file
+      rotation, binary collection and replay, RPM packaging, and additional reporting
+      utilities. The README now describes scheduled collection through cron or systemd
+      and export formats including CSV, XML, JSON, and SVG.
+  related-projects:
+    - >
+      sysstat packages Linux counterparts to classic commercial-Unix performance
+      utilities, with sar as the historical anchor and sadf as the interchange/export
+      companion.
+  sources:
+    - https://github.com/sysstat/sysstat
+    - https://raw.githubusercontent.com/sysstat/sysstat/master/CHANGES
+    - https://sysstat.github.io/
+    - source_facts.package-manager
+  summary:
+    - >
+      sysstat is a Linux performance-monitoring package centered on familiar Unix-style
+      commands such as sar, iostat, mpstat, pidstat, sadf, and related collectors.
+  timeline:
+    - '1999: Version 1.0 initial revision by Sebastien Godard.'
+    - '1999: Version 2.1 noted availability in RPM format.'
+    - >
+      2025: sysstat 12.7.7 made JSON output available across all sysstat commands,
+      according to the official home-page news.
+  usage:
+    - >
+      Users run iostat for device I/O, mpstat for processor statistics, pidstat for
+      process-level activity, and sar/sadf to collect, report, save, exchange, or graph
+      historical activity data.
+    - >
+      The package is often installed because it creates a lightweight local performance
+      history: sa1 stores daily binary data, sa2 creates daily reports, and sadf makes
+      that data scriptable.
 tags:
   - cli
   - linux
@@ -26,26 +84,31 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description says performance monitoring tools for Linux; official
-      sysstat homepage describes sysstat as performance monitoring tools for Linux
+    - current_curation.category_path
+    - source_facts.description
   display-name-sources:
-    - source_facts.name; official homepage and GitHub repository use sysstat
+    - https://github.com/sysstat/sysstat
+    - source_facts.name
   docs-sources:
-    - >
-      official homepage says it contains news, information, documentation, and links for
-      sysstat utilities; official GitHub README documents the tools
+    - current_curation.docs
+    - https://sysstat.github.io/
+  history-sources:
+    - https://github.com/sysstat/sysstat
+    - https://raw.githubusercontent.com/sysstat/sysstat/master/CHANGES
+    - https://sysstat.github.io/
+    - source_facts.package-manager
   repo-sources:
-    - source_facts.repo is already populated; per instruction repo was not re-evaluated
-  tags-sources:
     - >
-      source_facts.description and executables; official homepage lists sar, sadf,
-      mpstat, iostat, tapestat, pidstat, cifsiostat, and sa tools
+      source_facts.repo already supplies https://github.com/sysstat/sysstat; prompt
+      requires repo null when source_facts.repo is present.
+  tags-sources:
+    - current_curation.tags
+    - https://github.com/sysstat/sysstat
 category-confidence: high
 category-path:
   - system
-  - monitoring
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
