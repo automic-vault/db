@@ -6,6 +6,93 @@ docs:
   - https://gitlab.freedesktop.org/wayland/wayland/-/blob/main/README.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Wayland adoption was gradual because it replaces a core desktop substrate and
+      depends on graphics drivers, compositors, toolkits, screen capture paths, remote
+      desktop flows, and XWayland compatibility. GNOME's 3.22 release notes in 2016
+      framed Wayland as the next-generation display/input technology for GNU/Linux, and
+      Fedora's Fedora 25 change moved GNOME's display manager/session default to Wayland
+      with Xorg fallback.
+    - >
+      KDE followed a slower route through Plasma and KWin. Fedora's Plasma
+      Wayland-by-default change for Fedora 34 stated that KDE Plasma Desktop would use
+      Wayland while X applications continued through XWayland, and KDE's Plasma 6
+      mega-release in 2024 made Wayland the preferred modern Plasma path.
+  package-nerd-significance:
+    - >
+      Wayland is package-nerd significant because it changed Linux desktop dependency
+      graphs. Installing a graphical application stack now often pulls in
+      libwayland-client, libwayland-server, wayland-protocols, xdg-desktop-portal, and
+      XWayland rather than assuming an Xorg-only world.
+    - >
+      It also turned protocol XML into a build-time artifact: packages commonly use
+      `wayland-scanner` to generate source from protocol definitions, which makes the
+      small `wayland` package important even on systems that never launch Weston.
+  project-history:
+    - >
+      The official Wayland site describes Wayland as a replacement for the X11 protocol
+      and architecture, intended to be easier to develop, extend, and maintain. Its
+      architecture page explains the core shift: under X, the X server sits between
+      clients, compositors, input, and rendering; under Wayland, the compositor receives
+      input, manages the scene, and accepts client buffers directly.
+    - >
+      Wayland and Weston reached 1.0.0 on 2012-10-22, a release the project says marked
+      stable protocol and client-side APIs. The core stack later split into a family of
+      release streams: Wayland for the protocol and C libraries, Weston as a reference
+      compositor, wayland-protocols for shared extensions, and wayland-utils for
+      inspection/debugging.
+    - >
+      The first wayland-protocols 1.0 release appeared on 2015-11-24. That extension
+      repository became the place where desktop and application protocols could be
+      reviewed and staged, including stable, staging, deprecated, and legacy unstable
+      protocol phases.
+  related-projects:
+    - >
+      Closely related projects include Weston, wayland-protocols, wayland-utils,
+      XWayland, Mesa, Linux DRM/KMS, GNOME Shell/Mutter, KDE KWin/Plasma, wlroots, Sway,
+      xdg-desktop-portal, GTK, and Qt.
+  sources:
+    - https://fedoraproject.org/wiki/Changes/WaylandByDefault
+    - https://fedoraproject.org/wiki/Changes/WaylandByDefaultForPlasma
+    - https://kde.org/announcements/megarelease/6/
+    - https://release.gnome.org/3-22/
+    - https://wayland.freedesktop.org/
+    - https://wayland.freedesktop.org/architecture.html
+    - https://wayland.freedesktop.org/docs/html/
+    - https://wayland.freedesktop.org/releases.html
+  summary:
+    - >
+      Wayland is a display protocol, C IPC library, and Linux graphics architecture that
+      moves the display server role into the compositor. It is the long-running
+      successor architecture to X11 in modern Linux desktops, while `wayland-scanner`
+      and libwayland remain the package-manager-facing pieces developers install.
+  timeline:
+    - >
+      2012-10-22: Wayland and Weston 1.0.0 are released, marking stable protocol and
+      client-side APIs.
+    - '2015-11-24: wayland-protocols 1.0 is released.'
+    - >
+      2016-09-20: Wayland and Weston 1.12 are released around the Fedora 25/GNOME
+      Wayland default transition period.
+    - '2018-04-09: Wayland 1.15 and Weston 4.0 are released.'
+    - >
+      2024-02-28: KDE Plasma 6 ships as part of KDE's MegaRelease 6 with Wayland as the
+      modern default path.
+    - '2026-03-19: Wayland 1.25.0 is released.'
+  usage:
+    - >
+      For application and compositor developers, the Homebrew-visible tool is
+      `wayland-scanner`, which turns XML protocol descriptions into C headers and glue
+      code. Runtime use is usually indirect: a toolkit such as GTK, Qt, SDL, GLFW, or a
+      compositor such as GNOME Shell, KWin, Sway, Weston, or gamescope links against
+      libwayland and speaks the protocol.
+    - >
+      For users and packagers, Wayland is not a command-line application so much as a
+      foundational runtime component. It is installed because compositors, toolkits,
+      screen portals, XWayland, and protocol extension packages need a shared ABI and
+      protocol generator.
 tags:
   - cli
   - compositor
@@ -23,30 +110,33 @@ geiger:
     - text:client
 provenance:
   category-sources:
-    - >
-      source_facts.description says Wayland is a protocol for a compositor to talk to
-      its clients.
-    - source_facts.homepage points to the official Wayland site.
+    - Official Wayland site describes a system display protocol and architecture.
   display-name-sources:
-    - Official homepage is the Wayland site and uses the Wayland project name.
-    - source_facts.name gives wayland.
+    - Official site uses Wayland.
   docs-sources:
-    - Official Wayland site hosts generated API documentation under /docs/html/.
-    - >
-      source_facts.repo points to the official GitLab repository whose README provides
-      source-adjacent documentation.
+    - Official Wayland protocol docs and official freedesktop GitLab README.
+  history-sources:
+    - https://fedoraproject.org/wiki/Changes/WaylandByDefault
+    - https://fedoraproject.org/wiki/Changes/WaylandByDefaultForPlasma
+    - https://kde.org/announcements/megarelease/6/
+    - https://release.gnome.org/3-22/
+    - https://wayland.freedesktop.org/
+    - https://wayland.freedesktop.org/architecture.html
+    - https://wayland.freedesktop.org/docs/html/
+    - https://wayland.freedesktop.org/releases.html
   repo-sources:
     - >
-      source_facts.repo already provides https://gitlab.freedesktop.org/wayland/wayland,
-      so repo is returned as null per instructions.
+      source_facts.repo already provides the official freedesktop GitLab repository, so
+      this history-only result leaves repo as null.
   tags-sources:
-    - source_facts.description identifies the compositor/client protocol role.
-    - source_facts.executables lists wayland-scanner, a Wayland protocol development tool.
+    - >
+      Official docs describe the protocol, compositor/client model, C libraries, and
+      wayland-scanner.
 category-confidence: high
 category-path:
   - system
-  - display-server
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
