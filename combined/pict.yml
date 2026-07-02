@@ -7,6 +7,38 @@ docs:
   - https://github.com/microsoft/pict/blob/main/doc/pict.md
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    PICT, the Pairwise Independent Combinatorial Testing tool, is Microsoft's
+    command-line generator for compact combinatorial test suites. Its documentation is
+    credited to jacekcz@microsoft.com and frames the central idea as replacing an
+    exhaustive Cartesian product of parameter values with coverage of all value pairs,
+    or higher-order combinations when requested.
+  - >
+    The tool's model-file workflow made it portable across testing domains: users write
+    plain-text parameter definitions, optional sub-models, and constraints, then run
+    `pict model` to produce tab-separated test rows on standard output. The
+    documentation covers pairwise defaults, higher-order `/o:N` generation,
+    seeded/randomized runs, constraints, invariants, aliases, negative testing, and
+    sub-models for controlling expensive configuration dimensions.
+  - >
+    PICT became part of Microsoft's broader test tooling story through TAEF. Microsoft
+    Learn documents a `pict:` data source for TAEF tests, where native or managed test
+    metadata points at a PICT model file and TAEF invokes the test once for each
+    generated row. That integration explains why PICT is both a standalone CLI and a
+    building block inside larger Windows-driver and API test suites.
+  - >
+    The GitHub repository was created on October 16, 2015 under Microsoft and later
+    releases kept the historical Windows executable while making the code easier to
+    consume outside Visual Studio. The v3.7.4 release on March 31, 2022 added
+    CMake-based building and stricter compiler settings on Unix-like platforms, which
+    helped package managers ship it as a normal cross-platform CLI.
+  - >
+    Package users typically keep `.txt` model files beside tests or requirements,
+    generate a smaller table of test inputs, review or seed it for reproducibility, and
+    feed the rows into a test harness. Its ecosystem role is similar to `jq` or
+    `shellcheck` for a narrower crowd: a small, scriptable executable that encodes a
+    testing technique practitioners would rather not reimplement.
 category: developer-tools
 package-manager:
   brew: pict
@@ -23,5 +55,13 @@ executables:
   - pict
 provenance:
   formula: pict
+  history-sources:
+    - https://github.com/microsoft/pict
+    - https://raw.githubusercontent.com/microsoft/pict/main/README.md
+    - https://raw.githubusercontent.com/microsoft/pict/main/doc/pict.md
+    - https://learn.microsoft.com/en-us/windows-hardware/drivers/taef/pict-data-source
+    - https://github.com/microsoft/pict/releases/tag/v3.7.4
+    - https://api.github.com/repos/microsoft/pict
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

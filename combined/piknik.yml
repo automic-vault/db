@@ -10,6 +10,34 @@ config-file-location:
 credentials-file-location:
   unix: ~/.piknik.toml
   windows: piknik.toml
+history:
+  - >
+    Piknik is a small Go command-line tool by Frank Denis for copying arbitrary data
+    through a networked clipboard. Its upstream README frames the problem as copy/paste
+    between arbitrary hosts: URLs, code snippets, documents, and files can move between
+    machines without SSH, including hosts behind NAT or on different networks.
+  - >
+    The design is pipe-friendly and Unix-shaped. Users put standard input into the
+    shared clipboard with copy-style commands and retrieve it from another host,
+    including file-transfer patterns such as redirecting a binary file or piping a tar
+    stream through Piknik. To cross firewalls and NAT, data transits via a TCP staging
+    server, but the README states that content is end-to-end encrypted so the server
+    cannot read the clipboard contents.
+  - >
+    Piknik's configuration history is security-centered rather than feature-platform
+    centered. Setup revolves around `piknik -genkeys`, separate server and client
+    sections in `piknik.toml`, and a default config path of `~/.piknik.toml` on
+    Unix-like systems. Its ChangeLog shows the 0.1 release as the initial public
+    release, then protocol changes, precompiled binaries, password-derived key
+    generation for temporary setups, connection and timeout limits, TTL support for
+    clipboard age, and compatibility cleanup across the 0.x line.
+  - >
+    In the package ecosystem, Piknik fills the gap between local clipboards, ad hoc
+    netcat pipelines, and SSH/scp. It is useful when operators or developers need a
+    temporary cross-machine paste buffer or one-shot file transfer without setting up
+    accounts, tunnels, or shared storage. Package-manager entries in Homebrew, Alpine,
+    and Nix reflect that role as a compact networking utility rather than a broad
+    application platform.
 category: networking
 package-manager:
   apk: piknik
@@ -28,5 +56,11 @@ executables:
   - piknik
 provenance:
   formula: piknik
+  history-sources:
+    - https://github.com/jedisct1/piknik
+    - https://github.com/jedisct1/piknik/blob/master/ChangeLog
+    - https://github.com/jedisct1/piknik/releases
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

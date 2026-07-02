@@ -5,6 +5,31 @@ docs:
   - https://github.com/GPGTools/pinentry#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    pinentry-mac is the macOS-specific member of the Pinentry family: a Cocoa interface
+    for GnuPG passphrase entry based on upstream pinentry. The public GPGTools
+    repository for this fork was created on 2015-02-21, and a GnuPG development-list
+    post the next day described it as GPGTools' pinentry-mac code copied into a macosx
+    subdirectory as a test of integrating it with upstream pinentry.
+  - >
+    The macOS variant exists because the generic terminal and Unix toolkit prompts are
+    awkward in the Mac desktop workflow. GPGTools' 2015 discussion highlighted
+    Xcode-based builds, a Cocoa UI, optional storage of passphrases in the Mac OS X
+    Keychain via a cache-id option, custom messages using PINENTRY_USER_DATA, and custom
+    icons matching the platform's security-dialog conventions.
+  - >
+    Packaging made pinentry-mac the common answer for Homebrew and MacPorts GnuPG users
+    who want a native dialog. Homebrew describes it as 'Pinentry for GPG on Mac' and
+    tells users to set `pinentry-program $HOMEBREW_PREFIX/bin/pinentry-mac` in
+    `~/.gnupg/gpg-agent.conf`; MacPorts similarly documents the app-bundle path and the
+    need to reload or restart gpg-agent after switching.
+  - >
+    Operationally, pinentry-mac remains a drop-in gpg-agent prompt. It speaks the same
+    Assuan-based Pinentry protocol as other implementations, but its value is platform
+    integration: native macOS UI behavior and Keychain-oriented passphrase handling for
+    command-line GPG, Git commit signing, Mail workflows, and other OpenPGP tools on
+    macOS.
 tags:
   - cli
   - gnupg
@@ -32,6 +57,13 @@ provenance:
     - >
       Official GPGTools GitHub repository README is the primary documentation surface
       for this macOS Pinentry implementation
+  history-sources:
+    - https://api.github.com/repos/GPGTools/pinentry
+    - https://github.com/GPGTools/pinentry
+    - https://lists.gnupg.org/pipermail/gnupg-devel/2015-February/029529.html
+    - https://ports.macports.org/port/pinentry-mac/details/
+    - https://formulae.brew.sh/formula/pinentry-mac
+    - https://www.gnupg.org/related_software/pinentry/index.html
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/GPGTools/pinentry; per
@@ -44,5 +76,6 @@ category-path:
   - authentication
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

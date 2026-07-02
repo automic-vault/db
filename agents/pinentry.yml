@@ -5,6 +5,30 @@ docs:
   - https://www.gnupg.org/related_software/pinentry/index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Pinentry is part of the GnuPG toolchain rather than a standalone end-user
+    application. GnuPG describes it as a small collection of dialog programs that let
+    GnuPG read passphrases and PINs securely, with graphical GTK and Qt frontends plus
+    terminal-oriented curses and tty frontends.
+  - >
+    Its lineage is deliberately protocol-centered. The Pinentry README says the dialogs
+    use the Assuan protocol specified by Libassuan, and also notes that some code came
+    from Robert Bihlmeyer's Quintuple-Agent. That design lets gpg-agent act as the
+    caller while the actual prompt can be swapped for the user's desktop, terminal, or
+    platform policy.
+  - >
+    Pinentry became especially important with the gpg-agent architecture. The GnuPG
+    gpg-agent manual tells users to make sure a proper pinentry program is installed or
+    to set `pinentry-program` to the full path of the desired implementation;
+    distributions often expose that choice through package variants or alternatives.
+  - >
+    For practitioners, pinentry is the piece that decides where a secret-key passphrase
+    is typed: a Qt dialog on KDE, a GTK dialog on GNOME, a curses prompt over SSH, a
+    simple tty prompt in minimal environments, or a platform-specific implementation
+    such as pinentry-mac. Its package-manager reach across Linux distributions,
+    BSD-style ports, Homebrew, and MacPorts reflects that it is infrastructure for GnuPG
+    workflows, not an app users normally launch by hand.
 tags:
   - assuan
   - cli
@@ -30,6 +54,11 @@ provenance:
     - source_facts.name and official GnuPG Pinentry page use pinentry
   docs-sources:
     - Official GnuPG related-software page documents Pinentry and its role
+  history-sources:
+    - https://www.gnupg.org/related_software/pinentry/index.html
+    - https://raw.githubusercontent.com/GPGTools/pinentry/master/README
+    - https://www.gnupg.org/%28en%29/documentation/manuals/gnupg24/gpg-agent.1.html
+    - source_facts.package-manager
   repo-sources:
     - >
       Official GnuPG Pinentry page says development takes place in a Git repository and
@@ -44,5 +73,6 @@ category-path:
   - authentication
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

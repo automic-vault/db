@@ -6,6 +6,33 @@ docs:
   - https://zlib.net/pigz
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    pigz is Mark Adler's parallel implementation of gzip, written for multi-processor
+    and multi-core machines. Its name expands to Parallel Implementation of GZip; the
+    official zlib-hosted page describes it as a fully functional gzip replacement that
+    uses zlib and pthreads, and the upstream README identifies Adler as the author.
+  - >
+    The tool's lineage is intentionally conservative: it preserves gzip-compatible
+    output while parallelizing the expensive compression work. The manual describes pigz
+    splitting input into 128 KB chunks, compressing those chunks in parallel, and
+    writing compressed data back in order as gzip, zlib, or single-entry zip data using
+    deflate. That design made pigz useful as a drop-in accelerator for existing gzip
+    workflows instead of a new archive format.
+  - >
+    In day-to-day use, pigz is most often found in shell pipelines and batch jobs where
+    gzip is a bottleneck: compressing tar streams, database dumps, container or VM
+    images, genomics and log files, backups, and CI artifacts. `pigz` handles
+    compression, while `unpigz` provides the decompression-side command name; arbitrary
+    gzip streams cannot be decompressed across many processors in the same simple way,
+    so pigz's major win is compression throughput.
+  - >
+    pigz's ecosystem role comes from being small, portable C rather than from a large
+    framework. It builds on Unix-style systems with zlib and pthreads, is packaged
+    broadly across Linux distributions and macOS package managers, and remains
+    attractive because it changes very little about scripts: many users can replace
+    `gzip` with `pigz -p N` or set tar's compressor to pigz and keep the same `.gz`
+    interoperability.
 category: developer-tools
 package-manager:
   apk: pigz
@@ -31,5 +58,11 @@ executables:
   - unpigz
 provenance:
   formula: pigz
+  history-sources:
+    - https://zlib.net/pigz/
+    - https://github.com/madler/pigz
+    - https://man.archlinux.org/man/pigz.1
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
