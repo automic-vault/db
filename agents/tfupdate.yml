@@ -5,6 +5,68 @@ docs:
   - https://github.com/minamijoyo/tfupdate#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README documents installation through Homebrew, MacPorts, compiled releases,
+      Go install, and Docker. The input metadata also records apk, Homebrew, MacPorts,
+      Nix, and zypper packaging.
+    - >
+      The README explicitly suggests integrating tfupdate with CI or a scheduler to
+      check releases daily and create pull requests automatically, and links a CircleCI
+      example and orb.
+  package-nerd-significance:
+    - >
+      tfupdate is a dependency-maintenance tool for infrastructure code. It fills the
+      same niche as language package updaters, but for Terraform/OpenTofu version
+      constraints, provider locks, and module versions.
+    - >
+      Its support across several Unix package managers makes it useful in automated
+      developer environments where Terraform version bumps are handled by scheduled jobs
+      rather than manual edits.
+  project-history:
+    - >
+      The README explains the design motivation: Terraform estates are often split
+      across many directories, while best practice is to pin versions of core,
+      providers, and modules. tfupdate was written to parse configuration and update
+      version constraints across those scattered files.
+    - >
+      The tool later grew beyond simple constraint editing. The README documents
+      `release` subcommands for checking versions, `lock` support for updating
+      `.terraform.lock.hcl` without the Terraform or OpenTofu CLI, and OpenTofu registry
+      support through `TFREGISTRY_BASE_URL`.
+  related-projects:
+    - >
+      tfupdate works with Terraform, OpenTofu, GitHub and GitLab releases, Terraform
+      Registry modules and providers, OpenTofu Registry data, CircleCI automation, and
+      `.terraform.lock.hcl`.
+  sources:
+    - https://github.com/minamijoyo/tfupdate README
+    - https://github.com/minamijoyo/tfupdate/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      tfupdate is a CLI for updating version constraints in Terraform and OpenTofu
+      configurations. Its README documents support for Terraform core, OpenTofu core,
+      providers, modules, dependency lock files, recursive updates, and release lookups
+      from GitHub, GitLab, the Terraform Registry, and the OpenTofu Registry.
+  timeline:
+    - '2024-08-01: The GitHub releases page lists tfupdate v0.8.4.'
+    - '2025-05-03: The GitHub releases page lists tfupdate v0.9.0.'
+    - '2026-05-05: The GitHub releases page lists tfupdate v0.9.4.'
+    - >
+      2026: The input metadata records tfupdate packaging in apk, Homebrew, MacPorts,
+      Nix, and zypper.
+  usage:
+    - >
+      Package users run subcommands such as `tfupdate terraform`, `tfupdate opentofu`,
+      `tfupdate provider`, `tfupdate module`, `tfupdate release`, and `tfupdate lock`.
+      The recursive flag lets teams update many directories in one pass, which is the
+      core package-nerd use case.
+    - >
+      For lock files, tfupdate can download provider packages, calculate hashes, and
+      cache calculated values in memory, which the README calls out as a performance
+      advantage when updating multiple directories recursively.
 tags:
   - cli
   - infrastructure-as-code
@@ -22,30 +84,28 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - Official GitHub repository describes updating Terraform/OpenTofu version constraints.
-    - >
-      source_facts.description says it updates version constraints in Terraform
-      configurations.
+    - current_curation.category
+    - source_facts.description
   display-name-sources:
-    - Official GitHub repository title uses minamijoyo/tfupdate.
-    - source_facts.name is tfupdate.
+    - current_curation.display-name
+    - source_facts.name
   docs-sources:
-    - >
-      source_facts.homepage and source_facts.repo both point to the official GitHub
-      repository; README is the best official documentation surface found.
+    - current_curation.docs
+    - source_facts.homepage
+  history-sources:
+    - https://github.com/minamijoyo/tfupdate README
+    - https://github.com/minamijoyo/tfupdate/releases
+    - source_facts.package-manager
   repo-sources:
-    - >
-      source_facts.repo is already populated with
-      https://github.com/minamijoyo/tfupdate, so repo is returned as null per
-      instruction.
+    - source_facts.repo
   tags-sources:
-    - Official GitHub repository description includes Terraform/OpenTofu configurations.
-    - source_facts.description names Terraform configuration version constraint updates.
+    - current_curation.tags
+    - source_facts.description
 category-confidence: high
 category-path:
   - developer-tools
-  - infrastructure-as-code
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

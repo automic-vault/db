@@ -8,6 +8,86 @@ config-file-location:
     - .tfsec/config.json
     - .tfsec/config.yml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official README documents package-manager and binary distribution through
+      Homebrew/Linuxbrew, Chocolatey, Scoop, Go install, release binaries, and Docker
+      images. The input metadata also records Homebrew, Chocolatey, MacPorts, Nix, and
+      Scoop packaging.
+    - >
+      The README cites Thoughtworks Tech Radar's Adopt rating and describes tfsec as a
+      default static-analysis tool for Terraform in Thoughtworks projects. Aqua's 2023
+      announcement shows the adoption inflection point: the Terraform scanning engine
+      moved into the wider Trivy product and community path while tfsec stayed
+      available.
+  package-nerd-significance:
+    - >
+      For Homebrew and other package-manager users, tfsec was a compact example of an
+      IaC security tool that could be installed as a single CLI and dropped into
+      editors, hooks, and CI without a service dependency.
+    - >
+      Its later migration into Trivy is significant for package catalogs because it
+      marks a common lifecycle for niche security CLIs: first a focused Terraform
+      scanner, then an engine folded into a broader multi-surface scanner while the old
+      binary remains packaged for existing automation.
+  project-history:
+    - >
+      The project grew around Terraform-specific static analysis: scanning local and
+      remote modules, evaluating HCL expressions and Terraform functions, checking
+      relationships between Terraform resources, supporting Terraform CDK, and allowing
+      user-defined Rego policies.
+    - >
+      Aqua's tfsec-to-Trivy migration material frames tfsec as one of the foundations of
+      Trivy's infrastructure-as-code and misconfiguration scanning support. The
+      migration guide maps common tfsec commands to Trivy equivalents, such as replacing
+      `tfsec <dir>` with `trivy config <dir>`.
+  related-projects:
+    - >
+      Trivy is the successor path recommended by Aqua for Terraform and broader
+      misconfiguration scanning.
+    - >
+      The README links related tfsec integrations including tfsec-pr-commenter-action,
+      tfsec-sarif-action, the official Azure DevOps task, and editor plugins for
+      JetBrains, VS Code, and Vim.
+  sources:
+    - https://aquasecurity.github.io/tfsec/v0.63.1/getting-started/configuration/config/
+    - https://github.com/aquasecurity/tfsec README
+    - https://github.com/aquasecurity/tfsec/blob/master/tfsec-to-trivy-migration-guide.md
+    - https://github.com/aquasecurity/tfsec/discussions/1994
+    - source_facts.package-manager
+  summary:
+    - >
+      tfsec is an Aqua Security command-line scanner for finding security
+      misconfigurations in Terraform code. Its official README describes it as a
+      static-analysis tool for Terraform and lists broad cloud-provider coverage,
+      hundreds of built-in rules, multiple report formats, CI usage, Docker images,
+      editor integrations, GitHub Actions, and Azure DevOps integration.
+    - >
+      In 2023 Aqua announced that tfsec was joining the Trivy family. The project
+      remained available, but Aqua directed users toward Trivy for ongoing engineering
+      attention and a broader scanner ecosystem.
+  timeline:
+    - >
+      2023-02-18: Aqua announced that tfsec was joining the Trivy family and encouraged
+      the community to transition to Trivy.
+    - >
+      2024-2025: The GitHub releases page shows continuing tfsec maintenance releases in
+      the v1.28 series, including v1.28.14 on 2025-05-02.
+    - >
+      2026: The input metadata still records tfsec in multiple package managers,
+      including Homebrew, Chocolatey, MacPorts, Nix, and Scoop.
+  usage:
+    - >
+      The usual package-nerd workflow was `brew install tfsec` followed by `tfsec .` in
+      a Terraform repository. The tool exits non-zero when it finds problems, which made
+      it natural for CI gates.
+    - >
+      tfsec supported machine-readable output such as JSON, SARIF, CSV, Checkstyle, and
+      JUnit, plus GitHub Security Alerts via SARIF upload. It also supported inline
+      ignore comments such as `tfsec:ignore:<rule>`, expiry dates for ignores, tfvars
+      input, custom checks under `.tfsec`, and a root `.tfsec/config.json` or
+      `.tfsec/config.yml` config file.
 tags:
   - cli
   - iac-scanning
@@ -25,30 +105,30 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - Official tfsec documentation is organized around guides and security checks.
-    - >
-      source_facts.description says it is a static analysis security scanner for
-      Terraform code.
+    - current_curation.category
+    - source_facts.description
   display-name-sources:
-    - Official documentation page title is tfsec.
-    - source_facts.name is tfsec.
+    - current_curation.display-name
+    - source_facts.name
   docs-sources:
-    - >
-      Official tfsec docs page links to aquasecurity/tfsec and contains Guides and
-      Checks sections.
-    - source_facts.homepage points to the official tfsec documentation site.
+    - current_curation.docs
+    - source_facts.homepage
+  history-sources:
+    - https://aquasecurity.github.io/tfsec/v0.63.1/getting-started/configuration/config/
+    - https://github.com/aquasecurity/tfsec README
+    - https://github.com/aquasecurity/tfsec/blob/master/tfsec-to-trivy-migration-guide.md
+    - https://github.com/aquasecurity/tfsec/discussions/1994
+    - source_facts.package-manager
   repo-sources:
-    - >
-      source_facts.repo is already populated with https://github.com/aquasecurity/tfsec,
-      so repo is returned as null per instruction.
+    - source_facts.repo
   tags-sources:
-    - Official documentation has checks and guides for tfsec.
-    - source_facts.description identifies static analysis security scanning for Terraform.
+    - current_curation.tags
+    - source_facts.description
 category-confidence: high
 category-path:
   - security
-  - static-analysis
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
