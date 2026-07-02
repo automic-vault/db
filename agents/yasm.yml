@@ -5,6 +5,81 @@ docs:
   - https://www.tortall.net/projects/yasm/manual/html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Yasm became a common build dependency during the period when multimedia and codec
+      projects leaned heavily on hand-written x86 assembly. FFmpeg's own development log
+      records a later switch of the default x86 assembler from Yasm to NASM while
+      preserving an option to use Yasm, which is a good marker of how central Yasm had
+      been to that ecosystem.
+    - >
+      Its adoption was strongest where projects wanted NASM-style source compatibility
+      plus portable output: ELF for Unix, Mach-O for macOS, COFF/Win32/Win64 for
+      Windows, and debug information for platform debuggers. That combination made it
+      show up in package managers less as an end-user tool and more as the thing that
+      quietly made optimized native packages build.
+  package-nerd-significance:
+    - >
+      Yasm is package-nerd plumbing: a small command-line tool whose importance is
+      measured by how many other packages used to need it. It is also a useful example
+      of a compatibility tool that gained adoption by matching an existing language,
+      NASM syntax, while being friendlier to license and portability requirements.
+    - >
+      Its later displacement by newer NASM releases in some projects is part of the
+      story. Package collections keep Yasm because old build systems still ask for it,
+      while newer projects may prefer NASM; knowing which assembler a package wants can
+      explain otherwise opaque native-build failures.
+  project-history:
+    - >
+      The Yasm manual says the project started in 2001 as a rewrite of the Netwide
+      Assembler under the BSD license. Rather than being a drop-in clone only, Yasm was
+      designed around modules for assembler syntaxes, object formats, debug formats, and
+      instruction sets, which let it support NASM syntax while also adding GNU as
+      syntax, AMD64 support, and multiple platform object formats.
+    - >
+      Yasm's public GitHub repository describes itself as the mainline development tree
+      and was created there in 2011, after the project had already been established
+      through its own site and release tarballs. The current manual still presents the
+      core command as yasm, with vsyasm for Visual Studio integration and ytasm as part
+      of the toolkit.
+  related-projects:
+    - NASM is the assembler whose syntax and role Yasm originally reimplemented.
+    - GNU as is another supported syntax target in Yasm's parser model.
+    - >
+      FFmpeg is a prominent downstream multimedia project whose build history reflects
+      Yasm's adoption and later partial replacement by NASM.
+  sources:
+    - https://api.github.com/repos/yasm/yasm
+    - https://ffmpeg.org/pipermail/ffmpeg-cvslog/2017-June/108045.html
+    - https://github.com/yasm/yasm
+    - https://www.tortall.net/projects/yasm/manual/html/manual.html
+  summary:
+    - >
+      Yasm is a modular assembler for x86 and AMD64 that began as a BSD-licensed rewrite
+      of NASM. Its package-manager identity is unusually clear: it exists because build
+      systems needed a portable NASM-like assembler that could emit the object formats,
+      debug formats, and 64-bit code used by Unix, Windows, and macOS projects.
+  timeline:
+    - '2001: Yasm begins as a BSD-licensed rewrite of NASM.'
+    - >
+      2006-2009: The Yasm user manual documents the modular assembler architecture and
+      supported syntaxes, formats, and debug outputs.
+    - '2011: The yasm/yasm GitHub repository is created as the mainline development tree.'
+    - >
+      2017: FFmpeg changes its default x86 assembler preference from Yasm to NASM while
+      keeping Yasm selectable.
+  usage:
+    - >
+      Typical use is direct assembly of NASM- or GAS-style input into an object file,
+      often from a larger configure or make build. Users select output formats with
+      flags such as -f, target machines with -m, parser syntax with -p, and debug
+      formats with -g.
+    - >
+      In practical packaging, Yasm is important when a source tree contains x86 assembly
+      tuned for codecs, emulators, runtimes, or low-level libraries. A build may not
+      expose Yasm to the final user at all, but failure to find it can disable assembly
+      optimizations or stop old release branches from building.
 tags:
   - amd64
   - assembler
@@ -23,25 +98,28 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - official Yasm repository describes Yasm as an assembler
-    - source_facts.description says it is a modular BSD reimplementation of NASM
+    - current_curation.category
   display-name-sources:
-    - official Yasm manual and repository branding
-    - source_facts.name
+    - current_curation.display-name
+    - https://www.tortall.net/projects/yasm/manual/html/manual.html
   docs-sources:
-    - source_facts.homepage points to the official Yasm manual
+    - https://www.tortall.net/projects/yasm/manual/html/manual.html
+  history-sources:
+    - https://api.github.com/repos/yasm/yasm
+    - https://ffmpeg.org/pipermail/ffmpeg-cvslog/2017-June/108045.html
+    - https://github.com/yasm/yasm
+    - https://www.tortall.net/projects/yasm/manual/html/manual.html
   repo-sources:
-    - official Yasm GitHub repository; source_facts.repo is empty
-    - source_facts.source-archive is from the official tortall.net Yasm project
+    - https://api.github.com/repos/yasm/yasm
+    - https://github.com/yasm/yasm
   tags-sources:
-    - official Yasm repository description
-    - source_facts.description
-    - source_facts.executables
+    - current_curation.tags
+    - https://www.tortall.net/projects/yasm/manual/html/manual.html
 category-confidence: high
 category-path:
   - developer-tools
-  - assemblers
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
