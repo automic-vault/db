@@ -7,6 +7,73 @@ config-file-location:
   unix:
     - .sops.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      SOPS became a standard secrets-management CLI in infrastructure repositories
+      because it encrypts values in structured files while leaving enough metadata for
+      automated decryption by CI, deployment tools, and operators with the right
+      identities.
+    - >
+      The package-manager metadata in this batch shows broad adoption across Homebrew,
+      Alpine, Chocolatey, MacPorts, Nix, Arch, Scoop, winget, and openSUSE. That
+      cross-platform packaging reflects how often SOPS is used both on developer laptops
+      and in automation.
+  package-nerd-significance:
+    - >
+      SOPS is package-nerd significant because it solved a painful operational gap with
+      a small CLI instead of a central secrets service: encrypted structured files could
+      live in Git and still be edited safely.
+    - >
+      Its package spread also shows the modern DevOps pattern of one portable binary
+      becoming shared workflow glue across macOS laptops, Linux CI runners, Windows
+      machines, and Kubernetes-oriented tooling.
+  project-history:
+    - >
+      The official README and docs say SOPS was initially launched at Mozilla in 2015 by
+      Adrian Utrilla and Julien Vehent. The project later moved under the `getsops`
+      organization and was donated to the Cloud Native Computing Foundation as a Sandbox
+      project in 2023.
+    - >
+      SOPS grew out of operational pain around hand-managed PGP-encrypted files. Its
+      official credits name hiera-eyaml, credstash, sneaker, password-store, and years
+      of manual PGP management as inspirations.
+  related-projects:
+    - >
+      hiera-eyaml, credstash, sneaker, and password-store are named by the SOPS project
+      as inspirations.
+    - >
+      age, PGP, AWS KMS, GCP KMS, Azure Key Vault, HashiCorp Vault, OpenBao, and other
+      KMS integrations are central to SOPS usage.
+    - >
+      Kubernetes secret workflows and GitOps repositories are common operational
+      contexts for SOPS, even though SOPS itself remains a standalone CLI.
+  sources:
+    - https://api.github.com/repos/getsops/sops
+    - https://api.github.com/repos/getsops/sops/releases
+    - https://getsops.io/docs/
+    - https://getsops.io/docs/usage/identities/config-file/
+    - https://github.com/getsops/sops
+    - input.json source_facts.package-manager
+  summary:
+    - >
+      SOPS, Secrets OPerationS, is a command-line editor for encrypted files. It is
+      widely used to keep YAML, JSON, ENV, INI, and binary files encrypted while
+      integrating with key systems such as AWS KMS, GCP KMS, Azure Key Vault, age, and
+      PGP.
+  timeline:
+    - '2015: SOPS launched as a Mozilla project.'
+    - '2023: SOPS donated to CNCF as a Sandbox project.'
+    - '2026: SOPS v3.13.2 released on GitHub.'
+  usage:
+    - >
+      A typical SOPS workflow is to create or edit an encrypted file with `sops`, commit
+      the encrypted file, and decrypt or publish it only where the configured KMS, age,
+      PGP, Vault/OpenBao, or cloud identity allows access.
+    - >
+      Projects commonly keep `.sops.yaml` at a repository root to define
+      `creation_rules` for new files. The official docs say SOPS recursively looks for
+      `.sops.yaml` and that other names require an explicit `--config` option.
 tags:
   - cli
   - encrypted-files
@@ -25,28 +92,36 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      source_facts.description says it is an editor of encrypted files; official SOPS
-      docs describe secrets and encrypted-file management.
+    - current_curation.category_path
+    - https://getsops.io/docs/
+    - source_facts.description
   display-name-sources:
-    - >
-      Official getsops.io site expands SOPS as Secrets OPerationS and uses the uppercase
-      display name.
+    - current_curation.display-name
+    - https://getsops.io/docs/
+    - https://github.com/getsops/sops
   docs-sources:
-    - Official SOPS documentation is hosted on getsops.io/docs/.
+    - current_curation.docs
+    - https://getsops.io/docs/
+  history-sources:
+    - https://api.github.com/repos/getsops/sops
+    - https://api.github.com/repos/getsops/sops/releases
+    - https://getsops.io/docs/
+    - https://getsops.io/docs/usage/identities/config-file/
+    - https://github.com/getsops/sops
+    - input.json source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already supplies https://github.com/getsops/sops; per
-      instruction, not re-evaluated.
+      source_facts.repo is already populated; prompt requires repo to be null when
+      source_facts.repo has a value
   tags-sources:
-    - >
-      source_facts.description and official SOPS docs/README describe editing encrypted
-      files and managing secrets through a command-line tool.
+    - current_curation.tags
+    - https://api.github.com/repos/getsops/sops
+    - https://getsops.io/docs/
 category-confidence: high
 category-path:
   - security
-  - secrets-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

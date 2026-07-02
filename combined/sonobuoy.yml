@@ -3,10 +3,74 @@ display-name: Sonobuoy
 homepage: https://sonobuoy.io/
 repo: https://github.com/vmware-tanzu/sonobuoy
 docs:
-  - https://sonobuoy.io/docs/v0.57.4
+  - https://sonobuoy.io/docs/v0.57.5
   - https://github.com/vmware-tanzu/sonobuoy#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Sonobuoy became part of the practical Kubernetes certification and troubleshooting
+      toolkit because its default workflow runs Kubernetes conformance tests and
+      produces artifacts that can be checked with `sonobuoy results`. The official docs
+      also document Homebrew installation and direct binary downloads.
+    - >
+      The package-manager metadata in this batch shows Sonobuoy packaged by Homebrew,
+      Nix, and openSUSE. Its audience is narrower than everyday developer CLIs, but
+      important in Kubernetes infrastructure circles where conformance and repeatable
+      cluster diagnostics are routine.
+  package-nerd-significance:
+    - >
+      For package people, Sonobuoy is a good example of cloud-native tooling becoming a
+      normal local executable: it is installed with `brew install sonobuoy`, talks to a
+      cluster through kubeconfig, creates temporary in-cluster resources, and leaves
+      behind a results archive.
+    - >
+      It also represents the Kubernetes ecosystem's preference for composable CLIs
+      around declarative infrastructure: package the runner locally, execute work in the
+      cluster, retrieve machine-readable artifacts, and make conformance auditable.
+  project-history:
+    - >
+      The public GitHub repository was created in July 2017 and is maintained under the
+      VMware Tanzu organization. The repository and documentation describe Sonobuoy as a
+      cluster-agnostic, extensible way to run diagnostic plugins and gather Kubernetes
+      resource and node data.
+    - >
+      Sonobuoy's documented release model changed at v0.20: the project decoupled its
+      releases from Kubernetes releases while continuing to track functional
+      compatibility across Kubernetes versions. That matters for operators because the
+      CLI can be updated on its own cadence while still running conformance workflows
+      against supported clusters.
+  related-projects:
+    - Kubernetes is the target platform and source of the e2e conformance tests Sonobuoy runs.
+    - KinD is documented as a suggested local cluster option for getting started.
+    - kubectl remains the adjacent CLI used for Kubernetes access and some advanced workflows.
+  sources:
+    - https://api.github.com/repos/vmware-tanzu/sonobuoy
+    - https://api.github.com/repos/vmware-tanzu/sonobuoy/releases
+    - https://github.com/vmware-tanzu/sonobuoy
+    - https://sonobuoy.io/docs/v0.57.5/
+    - input.json source_facts.package-manager
+  summary:
+    - >
+      Sonobuoy is a Kubernetes diagnostics and conformance tool. It runs plugins,
+      including Kubernetes end-to-end conformance tests, and packages the results into
+      reports that cluster operators can retrieve and inspect from the command line.
+  timeline:
+    - '2017: Public GitHub repository created.'
+    - >
+      2020: v0.20 release line documented a release cadence independent from Kubernetes
+      releases.
+    - '2026: v0.57.5 released on GitHub.'
+  usage:
+    - >
+      A common Sonobuoy session is `sonobuoy run --wait`, then `sonobuoy retrieve`, then
+      `sonobuoy results` on the returned archive. Advanced users add custom plugins,
+      registry overrides, private image handling, or alternate e2e test selections.
+    - >
+      The tool expects an administrator's Kubernetes context through `kubeconfig` and
+      `KUBECONFIG`, but it does not define a standalone Sonobuoy credentials file. Its
+      configuration is mostly command-line and Kubernetes-resource driven.
 category: cloud-infrastructure
 package-manager:
   brew: sonobuoy
