@@ -7,6 +7,99 @@ docs:
   - https://zeromq.org/get-started
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ZeroMQ adoption followed from a practical promise: applications could get
+      high-performance asynchronous messaging and common distributed-systems patterns
+      without deploying a separate broker. The official site emphasizes use from many
+      languages and platforms, multiple transports, and a large open source community.
+    - >
+      Its ecosystem also spread through protocol compatibility. ZMTP gave ZeroMQ a
+      documented wire protocol, while JeroMQ, NetMQ, and other native stacks could offer
+      similar APIs without binding directly to libzmq. That matters for package users
+      because the installed core library is only one piece of a larger
+      protocol-and-bindings family.
+  package-nerd-significance:
+    - >
+      ZeroMQ is package-nerd infrastructure: one small native library changes the
+      dependency graph of many higher-level packages because Python, Node, C++, Java,
+      C#, Rust, and other ecosystems can build bindings or compatible implementations
+      around the same messaging patterns.
+    - >
+      It is also a useful counterexample to queue-server assumptions. The package
+      installs a library and a small utility surface, but the operational effect is
+      architectural: message routing, fan-out, fan-in, and service topologies move into
+      application code rather than a separately managed broker.
+  project-history:
+    - >
+      ZeroMQ grew out of iMatix and Pieter Hintjens work on messaging systems. Hintjens
+      later wrote that the original 2007 ZeroMQ white paper had two goals: build a
+      better messaging system and build a community that could carry it to broad
+      success. FOSDEM material credits Hintjens with founding the project in 2007, while
+      the ZeroMQ Guide credits Martin Sustrik with writing the bulk of the early libzmq
+      code.
+    - >
+      By summer 2010, ZeroMQ was still a niche library with a terse reference manual and
+      sparse wiki. Hintjens and Sustrik responded by planning a simpler website and
+      beginner guide; that guide became one of the project artifacts that made ZeroMQ
+      unusually approachable for a systems messaging library.
+    - >
+      The project evolved into a small core plus a wide surrounding ecosystem. The Guide
+      describes libzmq as the C++ core with a low-level C API, surrounded by roughly 50
+      language bindings, native reimplementations such as JeroMQ and NetMQ, and
+      higher-level projects including CZMQ, Zyre, Malamute, and Majordomo-style brokers.
+  related-projects:
+    - CZMQ provides a higher-level C binding and convenience layer around libzmq.
+    - >
+      PyZMQ is one of the long-standing, influential language bindings named in the
+      ZeroMQ Guide.
+    - JeroMQ and NetMQ are native Java and C# implementations in the ZeroMQ family.
+    - >
+      nanomsg and NNG are related messaging-library descendants/rethinks often discussed
+      alongside ZeroMQ.
+    - >
+      Malamute, Zyre, and Majordomo are examples of higher-level ZeroMQ community
+      patterns or projects.
+  sources:
+    - https://archive.fosdem.org/2017/schedule/event/pieter_hintjens/
+    - https://hintjens.gitbooks.io/social-architecture/content/chapter3.html
+    - https://rfc.zeromq.org/spec/25/
+    - https://rfc.zeromq.org/spec/37/
+    - https://www.oreilly.com/library/view/zeromq/9781449334437/pr03s03.html
+    - https://zeromq.org/
+    - https://zeromq.org/get-started/
+    - https://zguide.zeromq.org/docs/chapter6/
+  summary:
+    - >
+      ZeroMQ is the classic brokerless messaging library for distributed and concurrent
+      programs. It gives applications socket-like APIs for request/reply,
+      publish/subscribe, pipeline, and related patterns while avoiding the
+      always-central broker model of traditional message queues.
+  timeline:
+    - >
+      2007: Pieter Hintjens and the ZeroMQ community frame the project around both a
+      better messaging system and an intentional open source community model.
+    - >
+      2010: Hintjens describes ZeroMQ as still little-known and begins the guide effort
+      with Martin Sustrik to make the library easier to learn.
+    - >
+      2010s: libzmq becomes the core of a larger ecosystem of bindings,
+      reimplementations, RFCs, and higher-level projects.
+    - >
+      2010s onward: ZMTP and CURVE-related RFCs document interoperable wire-level
+      behavior and security mechanisms for ZeroMQ-style stacks.
+  usage:
+    - >
+      In practice, developers use ZeroMQ when they want messaging patterns inside an
+      application: REQ/REP for service calls, PUB/SUB for data distribution, PUSH/PULL
+      for work pipelines, ROUTER/DEALER for asynchronous routing, and inproc, IPC, TCP,
+      UDP, multicast, WebSocket, or related transports depending on deployment shape.
+    - >
+      The library is often embedded as infrastructure inside larger tools rather than
+      run as a standalone daemon. Packaging libzmq gives downstream language bindings
+      and applications a shared native engine, while protocol specs and
+      reimplementations let some ecosystems speak ZeroMQ without linking to that engine.
 category: developer-tools
 package-manager:
   apk: libzmq

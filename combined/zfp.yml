@@ -6,6 +6,97 @@ docs:
   - https://zfp.readthedocs.io/en/release1.0.0
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      zfp adoption is tied to scientific data reduction. LLNL and Exascale Computing
+      Project material describe zfp as part of the ALPINE/zfp effort, aimed at reducing
+      I/O and storage pressure in exascale simulations by compressing floating-point
+      arrays while preserving user-controlled error bounds.
+    - >
+      The library also spread through integration points. zfp documentation lists
+      application support in ADIOS, BLOSC, HDF5 through H5Z-ZFP, Intel IPP,
+      MVAPICH2-GDR, OpenInventor, and OpenZGY; the H5Z-ZFP docs describe a registered
+      HDF5 filter using zfp for bitrate, accuracy, and precision targets.
+  package-nerd-significance:
+    - >
+      zfp is significant because it packages a research-grade numerical representation
+      as normal developer infrastructure: a C/C++ library, CLI, language bindings, HDF5
+      plugin ecosystem, and HPC distribution target all orbit the same compressed-array
+      format.
+    - >
+      For package catalogs, it sits at the intersection of compression, numerical
+      correctness, and hardware-aware performance. Unlike general compressors, zfp
+      exposes scientific knobs such as rate, precision, and accuracy, so the installed
+      package is a policy surface for data fidelity as much as a space-saving tool.
+  project-history:
+    - >
+      zfp was originally developed by Peter Lindstrom at Lawrence Livermore National
+      Laboratory. Its foundational publication is Lindstroms 2014 IEEE TVCG paper on
+      fixed-rate compressed floating-point arrays, which addressed a key limitation of
+      variable-length floating-point compression: difficult memory management and poor
+      random access.
+    - >
+      The software grew from an algorithmic compressor into a broader compressed-array
+      package. The documentation describes four main components: the zfp number format
+      for fixed-size blocks, C++ compressed-array classes, a C library for streaming
+      compression of whole or partial arrays, and a command-line executable for binary
+      numeric array files.
+    - >
+      Modern zfp keeps both lossy and lossless use cases in view. The LLNL project page
+      describes high-throughput read/write random access, optional error-bounded
+      compression, CPU and GPU execution back ends, and bindings for Python, Fortran,
+      and other environments.
+  related-projects:
+    - H5Z-ZFP is the HDF5 compression filter built on zfp.
+    - zfPy is the Python interface to zfp.
+    - >
+      ALPINE is the ECP visualization and analysis effort paired with zfp for exascale
+      data reduction.
+    - >
+      SZ and MGARD are neighboring scientific lossy-compression projects often discussed
+      alongside zfp.
+  sources:
+    - https://computing.llnl.gov/projects/zfp
+    - https://github.com/LLNL/zfp
+    - https://h5z-zfp.readthedocs.io/en/latest/
+    - https://software.llnl.gov/news/2022/08/01/zfp-1.0.0/
+    - >
+      https://www.exascaleproject.org/highlight/alpine-zfp-addresses-analysis-visualization-and-data-reduction-needs-for-exascale-science-applications/
+    - https://www.osti.gov/biblio/1228014
+    - https://zfp.readthedocs.io/en/release1.0.0/modes.html
+    - https://zfp.readthedocs.io/en/release1.0.1/introduction.html
+  summary:
+    - >
+      zfp is an LLNL-developed compressed-array library and command-line tool for
+      multidimensional floating-point and integer data. Its niche is scientific and HPC
+      data where users want lower memory, storage, or bandwidth costs while retaining
+      fast random access and explicit error or rate controls.
+  timeline:
+    - >
+      2014: Peter Lindstrom publishes the fixed-rate compressed floating-point arrays
+      paper that underpins zfp.
+    - >
+      2016: H5Z-ZFP documentation appears with LLNL-CODE-707197, reflecting zfp use as
+      an HDF5 compression filter.
+    - >
+      2022: LLNL announces zfp 1.0.0, describing the package as a compressed numerical
+      array library with C/C++, Python, and Fortran surfaces.
+    - >
+      2020s: Exascale Computing Project material places zfp in the ALPINE/zfp data
+      reduction and visualization workflow for large simulations.
+  usage:
+    - >
+      Users choose compression modes according to workflow constraints. Fixed-rate mode
+      gives predictable size and block random access; fixed-precision and fixed-accuracy
+      modes trade fixed size for precision or absolute-error control; reversible mode
+      supports bit-for-bit reconstruction for supported data and execution paths.
+    - >
+      In application code, zfp arrays can act as compressed replacements for native
+      C/C++ arrays or std::vector-like storage when random element access matters. For
+      file or stream workflows, the C API and CLI compress integer or floating-point
+      array data, while Python and Fortran bindings make the same compressor reachable
+      from scientific scripting and simulation environments.
 category: data
 package-manager:
   brew: zfp
