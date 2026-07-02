@@ -10,6 +10,97 @@ config-file-location:
     - etc/config.properties
     - etc/catalog/*.properties
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Trino's adoption was driven by organizations that wanted a single SQL access layer
+      over many storage systems rather than a database tied to one engine. The official
+      overview defines Trino as a distributed SQL query engine for data distributed
+      across one or more heterogeneous data sources.
+    - >
+      The 2021 migration guide shows the practical adoption surface: users' SQL and
+      stored queries continued to work, while administrators and client maintainers had
+      to account for the rename in CLI/JDBC headers, driver prefixes, Docker image
+      names, RPM package names, installation directories, JMX names, and SPI packages.
+    - >
+      The official 2021 growth post says the renamed project gained substantial
+      visibility during its first year as Trino, including thousands of new GitHub
+      stars, Slack members, merged pull requests, issues, and regular releases. That
+      made the package-name transition from `presto` to `trino` a real operational
+      concern for users and packagers.
+  package-nerd-significance:
+    - >
+      Trino is package-nerd significant because its rename was not just branding; it
+      changed executable names, Docker image names, RPM names, configuration
+      directories, protocol headers, JDBC URLs, Java packages, and monitoring
+      identifiers. Formulae and downstream integrations had to encode those choices
+      cleanly.
+    - >
+      It is also a heavyweight example of a package-manager entry that represents a
+      distributed system rather than one binary. Installing Trino gives a local
+      CLI/server entry point, but the real package surface spans connectors, catalog
+      files, JVM configuration, TLS/authentication, client drivers, and cluster
+      operations.
+  project-history:
+    - >
+      The Trino project traces its technical ancestry to Presto, created at Facebook in
+      2012 by Dain Sundstrom, David Phillips, Martin Traverso, and Eric Hwang to support
+      low-latency interactive analytics over Facebook's large Hadoop data warehouse. The
+      Trino rebranding announcement says open source was a non-negotiable condition of
+      the original project.
+    - >
+      After several years of Presto community growth, the founders left Facebook in 2018
+      and formed an independent Presto Software Foundation in January 2019 to continue
+      community-led development. The official Trino rebranding post says the project
+      consolidated under that home and expanded its community, users, and contributors.
+    - >
+      In December 2020, the PrestoSQL community announced it was rebranding as Trino
+      after trademark conflict around the Presto name. Trino 351, released on January 3,
+      2021, was the first release to use the Trino name internally and externally.
+  related-projects:
+    - >
+      Related projects and surfaces include Presto/PrestoSQL, the Trino CLI, JDBC
+      driver, Docker image `trinodb/trino`, Hive/Iceberg/Elasticsearch connectors, Trino
+      Software Foundation, and the broad SQL-on-data-lake ecosystem.
+  sources:
+    - https://trino.io/blog/2020/12/27/announcing-trino.html
+    - https://trino.io/blog/2021/01/04/migrating-from-prestosql-to-trino.html
+    - https://trino.io/blog/2021/12/31/trino-2021-a-year-of-growth.html
+    - https://trino.io/docs/current/client/cli.html
+    - https://trino.io/docs/current/installation/deployment.html
+    - https://trino.io/docs/current/overview.html
+    - https://trino.io/docs/current/release/release-351.html
+  summary:
+    - >
+      Trino is a distributed SQL query engine for querying large datasets across
+      heterogeneous data sources. In package-manager culture it is both a CLI/server
+      package and a gateway into a large data-platform ecosystem of connectors,
+      catalogs, JDBC clients, Docker images, and cluster configuration.
+  timeline:
+    - >
+      2012: Presto is created at Facebook for low-latency analytics over a large Hadoop
+      data warehouse.
+    - '2018: The Presto creators leave Facebook to focus on an open, independent community.'
+    - '2019: The Presto Software Foundation starts as an independent home for the project.'
+    - '2020: PrestoSQL is rebranded as Trino.'
+    - >
+      2021: Trino 351 is released as the first version using the Trino name internally
+      and externally.
+    - >
+      2021: Migration guidance documents client, server, Docker, RPM, JDBC, JMX,
+      connector, and SPI rename impacts.
+  usage:
+    - >
+      A Trino deployment is configured through files such as `etc/node.properties`,
+      `etc/jvm.config`, `etc/config.properties`, and connector-specific catalog
+      properties in `etc/catalog`. Catalog files define connectors that expose external
+      data sources as SQL catalogs.
+    - >
+      The Homebrew package exposes both `trino` and `trino-server`, matching Trino's
+      dual identity as a client and a server. The CLI connects to a coordinator with
+      options such as `--server`, `--user`, `--catalog`, `--schema`, and
+      authentication/TLS flags; server operators use launcher commands such as `run`,
+      `start`, `stop`, `restart`, and `status`.
 tags:
   - analytics
   - big-data
@@ -30,23 +121,32 @@ geiger:
     - text:sql,server
 provenance:
   category-sources:
-    - source_facts.description says Trino is a distributed SQL query engine for big data.
-  display-name-sources:
-    - source_facts.name is trino; official trino.io documentation uses the display name Trino.
-  docs-sources:
-    - Official Trino documentation is hosted at trino.io/docs/current/.
-  repo-sources:
     - >
-      source_facts.repo is empty; official Trino project documentation and public
-      project metadata identify trinodb/trino as the source repository.
+      Official overview describes Trino as a distributed SQL query engine for large
+      datasets across heterogeneous data sources.
+  display-name-sources:
+    - Official Trino docs and rebranding announcement use the display name Trino.
+  docs-sources:
+    - 'Official Trino documentation: https://trino.io/docs/current'
+  history-sources:
+    - https://trino.io/blog/2020/12/27/announcing-trino.html
+    - https://trino.io/blog/2021/01/04/migrating-from-prestosql-to-trino.html
+    - https://trino.io/blog/2021/12/31/trino-2021-a-year-of-growth.html
+    - https://trino.io/docs/current/client/cli.html
+    - https://trino.io/docs/current/installation/deployment.html
+    - https://trino.io/docs/current/overview.html
+    - https://trino.io/docs/current/release/release-351.html
+  repo-sources:
+    - 'Official Trino rebranding announcement lists GitHub: https://github.com/trinodb/trino.'
   tags-sources:
-    - source_facts.description directly states distributed SQL query engine for big data.
+    - >
+      Official overview, deployment docs, and CLI docs document analytics, distributed
+      query, query engine, SQL, CLI, and big-data usage.
 category-confidence: high
 category-path:
   - data
-  - query-engine
-  - sql
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

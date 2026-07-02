@@ -3,8 +3,82 @@ display-name: trezor-agent
 repo: https://github.com/romanz/trezor-agent
 docs:
   - https://github.com/romanz/trezor-agent#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - ~/.ssh/agent.conf
+    - ~/.gnupg/trezor
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The project was adopted by users who wanted hardware-backed developer identity
+      without changing their normal SSH, Git, GPG, or password-store workflows. Its
+      README lists signing email, Git commits, and software packages, managing passwords
+      with `pass` or `passage`, and authenticating web tunnels and file transfers as
+      representative uses.
+    - >
+      Package-manager availability through Homebrew and Nix made it installable in the
+      same way as other command-line security tools, which mattered because trezor-agent
+      is usually used from shells, SSH subprocesses, Git commands, GPG, and systemd user
+      units rather than as a standalone application.
+  package-nerd-significance:
+    - >
+      trezor-agent is interesting to package nerds because it turns a cryptocurrency
+      hardware wallet into a Unix authentication primitive. It bridges hardware-wallet
+      APIs into the ecosystem of `ssh-agent`, GnuPG, Git signing, `pass`, systemd user
+      sockets, and age plugins.
+    - >
+      The package is also a good example of Homebrew packaging for a tool whose value is
+      not a daemon or GUI, but a collection of small executables that plug into existing
+      developer workflows: `trezor-agent`, `trezor-gpg`, `trezor-gpg-agent`,
+      `trezor-signify`, and `age-plugin-trezor`.
+  project-history:
+    - >
+      Trezor firmware 1.3.4, announced in September 2015, credited Roman Zeyde's work
+      and introduced NIST P-256 support so a Trezor could be used for SSH login. The
+      official instructions in that announcement installed `trezor_agent`, generated a
+      public key with `trezor-agent`, and used the result in `authorized_keys`.
+    - >
+      Firmware 1.3.6 extended the same idea beyond SSH by adding GPG key generation for
+      signing email or documents and by pointing users to Trezor Agent for the
+      user-space tooling. The repository later generalized the model into a shared
+      `libagent` plus device-specific agents for Trezor, Blockstream Jade, and OnlyKey.
+  related-projects:
+    - >
+      Related components include `libagent`, `jade_agent`, `onlykey-agent`, GnuPG,
+      OpenSSH, age, pass, and Trezor firmware features for SSH/GPG operations.
+  sources:
+    - https://blog.trezor.io/trezor-firmware-1-3-4-enables-ssh-login-86a622d7e609
+    - https://blog.trezor.io/trezor-firmware-1-3-6-20a7df6e692
+    - https://github.com/romanz/trezor-agent#readme
+    - https://github.com/romanz/trezor-agent/blob/master/doc/README-GPG.md
+    - https://github.com/romanz/trezor-agent/blob/master/doc/README-SSH.md
+  summary:
+    - >
+      trezor-agent is a hardware-backed SSH, GPG, and age agent that grew out of early
+      Trezor firmware support for using a hardware wallet as an identity and signing
+      device. In package-manager culture it sits in the security-tools niche: a small
+      CLI package that lets developers keep authentication and signing keys on a
+      hardware device while still using familiar Unix tools.
+  timeline:
+    - '2015: Trezor firmware 1.3.4 announcement documents SSH login with `trezor-agent`.'
+    - >
+      2016: Trezor firmware 1.3.6 announcement adds GPG signing support and references
+      Trezor Agent.
+    - '2022: Official SSH guide documents Git commit signing with SSH signatures.'
+    - '2026: GitHub repository lists `libagent/0.16.1` as the latest release on March 1, 2026.'
+  usage:
+    - >
+      For SSH, users derive a public key from an identity string, add that public key to
+      remote access controls, and run commands or shells with `SSH_AUTH_SOCK` pointed at
+      the agent. The official SSH guide also documents Git and Mercurial repository
+      access, Git commit signing through SSH signatures, and optional systemd socket
+      activation.
+    - >
+      For GPG, users initialize a dedicated `GNUPGHOME` such as `~/.gnupg/trezor`, then
+      continue using normal GPG-aware software while the agent asks the hardware device
+      to sign or decrypt. The GPG guide covers commit and tag signing, password-store
+      integration, file signing/decryption, and email use.
 tags:
   - cli
   - gpg-agent
@@ -23,25 +97,34 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - source_facts.description says this is a hardware SSH/GPG agent for Trezor and Ledger.
+    - >
+      Official README describes hardware security devices used to operate GPG, SSH, and
+      age while keys stay on-device.
   display-name-sources:
-    - source_facts.name is trezor-agent; official GitHub repository is romanz/trezor-agent.
+    - Official README and PyPI component list use the name trezor-agent.
   docs-sources:
-    - Official GitHub README is the main project documentation surface.
+    - >
+      Official repository README links installation, SSH, GPG, age, PIN entry, and
+      Windows documentation under the repo doc directory.
+  history-sources:
+    - https://blog.trezor.io/trezor-firmware-1-3-4-enables-ssh-login-86a622d7e609
+    - https://blog.trezor.io/trezor-firmware-1-3-6-20a7df6e692
+    - https://github.com/romanz/trezor-agent#readme
+    - https://github.com/romanz/trezor-agent/blob/master/doc/README-GPG.md
+    - https://github.com/romanz/trezor-agent/blob/master/doc/README-SSH.md
   repo-sources:
     - >
-      source_facts.repo is empty; source_facts.homepage points to the official GitHub
-      repository.
+      Official README and GitHub repository page identify
+      https://github.com/romanz/trezor-agent as the project repository.
   tags-sources:
     - >
-      source_facts.description names SSH/GPG agent support and Trezor/Ledger hardware
-      wallet targets.
+      Official README and SSH/GPG docs document SSH agent, GPG agent, hardware-wallet,
+      Trezor, age, and CLI workflows.
 category-confidence: high
 category-path:
   - security
-  - cryptography
-  - hardware-wallet
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

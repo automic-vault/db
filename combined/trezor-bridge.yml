@@ -6,6 +6,93 @@ docs:
   - https://github.com/trezor/trezord-go#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Bridge adoption came from a practical browser gap: hardware-wallet users needed a
+      local transport that browser wallet applications could call, especially as Chrome
+      apps were being phased out and Firefox did not expose WebUSB. That made the daemon
+      part of the normal setup story for browser-based Trezor workflows.
+    - >
+      For package managers, Trezor Bridge is unusual because it packages a vendor
+      communication daemon rather than a general-purpose CLI. Homebrew users install it
+      to make local wallet/browser interactions work; developers and advanced users may
+      also build `trezord-go` from source, install Linux udev rules, or run it in debug
+      mode for local development.
+  package-nerd-significance:
+    - >
+      Trezor Bridge matters because it is a concrete example of the browser/device
+      boundary leaking into package managers. A small local HTTP daemon became the
+      compatibility layer between USB HID/WebUSB realities, browser security decisions,
+      and cryptocurrency wallet UX.
+    - >
+      It also explains why some packages are important despite having little interactive
+      surface: the executable `trezord-go` is infrastructure for other tools. In
+      Homebrew, its value is that it makes a hardware wallet visible to web and desktop
+      wallet workflows without requiring users to understand the transport details.
+  project-history:
+    - >
+      The `trezord-go` README describes Trezor Bridge as a tiny HTTP server that allows
+      webpages such as Trezor Suite in web mode to communicate directly with a Trezor
+      device. It explains that newer devices support WebUSB, but the Bridge remains
+      relevant for Firefox, older firmware that only supports HID, and synchronization
+      of USB access between domains.
+    - >
+      In February 2018, Trezor announced a new Bridge that was rewritten from scratch in
+      more modern code and positioned it as the first part of the transition away from
+      Chrome apps. The announcement told existing Bridge users to update, new users to
+      install it through the wallet, and Trezor Connect users of applications such as
+      MyEtherWallet, MyCrypto, and NEM NanoWallet to update so those applications could
+      keep communicating with Trezor devices.
+    - >
+      Later in 2018, Trezor described WebUSB as the answer for Chrome users who did not
+      want a separate communication tool. Trezor Model T supported WebUSB from its
+      initial release, and Trezor One firmware 1.7.1 added WebUSB support for Trezor
+      Wallet and Trezor Password Manager so Chrome users could connect without Trezor
+      Bridge.
+  related-projects:
+    - >
+      Related projects and technologies include Trezor Suite, Trezor Connect, the older
+      Trezor Chrome extension, WebUSB, HID transport, Trezor firmware, and the Trezor
+      udev rules.
+  sources:
+    - >
+      https://blog.trezor.io/announcing-a-redesigned-and-refreshed-user-interface-for-your-trezor-wallet-f31220d8917e
+    - >
+      https://blog.trezor.io/firmware-updates-2-0-9-and-1-7-1-developed-by-the-community-for-the-community-c4b965741ca3
+    - https://blog.trezor.io/introducing-the-new-trezor-bridge-2b7ea5478d65
+    - https://github.com/trezor/trezord-go#readme
+  summary:
+    - >
+      Trezor Bridge, implemented by the `trezord-go` communication daemon, is the small
+      local service that historically let browser-based Trezor software talk to a USB
+      hardware wallet. Its history is tied to the migration from Chrome apps and browser
+      extensions toward WebUSB and later toward Trezor Suite's built-in bridge behavior.
+  timeline:
+    - >
+      2018: Trezor announces a rewritten Trezor Bridge as part of the move away from
+      Chrome apps.
+    - >
+      2018: Trezor Wallet redesign notes that the Chrome extension will no longer be
+      offered to new users and that Bridge/WebUSB are the transition path.
+    - >
+      2018: Trezor One firmware 1.7.1 adds WebUSB support, allowing Chrome users to
+      connect without Bridge for supported workflows.
+    - >
+      Current: `trezord-go` README still documents Bridge as needed for Firefox, older
+      firmware, and cross-domain USB synchronization.
+  usage:
+    - >
+      At runtime, Bridge listens locally and mediates communication between supported
+      webpages and the USB device. The official README frames it as needed for Firefox,
+      for devices with 2018-and-older firmware that support HID but not WebUSB, and for
+      coordinating USB access across domains.
+    - >
+      From a package-nerd perspective, `trezor-bridge` is mostly a background
+      dependency: install it, ensure the daemon is running, and then use Trezor Suite
+      web mode or compatible Trezor Connect applications. Source users build
+      `trezord-go`, run `./trezord-go -h`, and on Linux install the official Trezor udev
+      rules when not using pre-built packages.
 category: security
 package-manager:
   brew: trezor-bridge
