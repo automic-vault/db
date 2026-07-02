@@ -6,6 +6,89 @@ docs:
   - https://uvicorn.dev/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Uvicorn's adoption followed the rise of ASGI frameworks. The official docs
+      explicitly link Uvicorn's purpose to the lack of a minimal low-level async
+      server/application interface in Python before ASGI, and the deployment docs
+      document common production use under Gunicorn with a Uvicorn worker.
+    - >
+      The installation documentation presents both minimal installation and a
+      `uvicorn[standard]` extra. That extra became an important packaging convention
+      because it grouped performance and developer-experience dependencies such as
+      uvloop, httptools, websockets, watchfiles, and colorama without forcing every
+      installation to carry them.
+  package-nerd-significance:
+    - >
+      Uvicorn is significant because it turned ASGI from a framework-level abstraction
+      into a package-manager-friendly executable. Installing one package gives Python
+      projects a standard `uvicorn` command, while extras let maintainers choose between
+      small dependency closure and a faster, fuller runtime stack.
+    - >
+      Its release notes also show the kind of details package maintainers care about:
+      optional dependency boundaries, security fixes for headers and logging, Windows
+      process behavior, Unix socket handling, proxy header defaults, and Python-version
+      support.
+  project-history:
+    - >
+      Uvicorn's official documentation frames the project around ASGI, the interface
+      that let Python async frameworks share a low-level server/application contract.
+      The docs describe Uvicorn as an ASGI web server implementation for Python with
+      HTTP/1.1 and WebSocket support.
+    - >
+      The release notes show an active public release stream by at least October 2019,
+      with Uvicorn 0.10.0 adding Python 3.8 support, separated access/error logs,
+      colorized terminal logs, logging configuration, trusted forwarded headers, worker
+      configuration from `WEB_CONCURRENCY`, and `.env` support. Later releases refined
+      optional dependency handling, reload behavior, WebSocket support, logging, and
+      deployment ergonomics.
+  related-projects:
+    - ASGI is the server/application interface that Uvicorn implements.
+    - FastAPI and Starlette are common ASGI framework companions in Uvicorn deployments.
+    - >
+      uvloop, httptools, h11, websockets, wsproto, watchfiles, and Gunicorn are related
+      runtime or deployment packages documented by Uvicorn.
+  sources:
+    - >
+      https://uvicorn.dev/ - Official documentation describes Uvicorn as an ASGI web
+      server for Python and links the official source repository.
+    - >
+      https://uvicorn.dev/deployment/ - Official deployment docs describe Gunicorn
+      worker usage.
+    - >
+      https://uvicorn.dev/installation/ - Official installation docs describe optional
+      dependencies and the `standard` extra.
+    - >
+      https://uvicorn.dev/release-notes/ - Official release notes provide release
+      chronology and packaging changes such as optional dependency handling.
+  summary:
+    - >
+      Uvicorn is a Python ASGI web server. It became one of the standard command-line
+      servers for async Python web applications, especially FastAPI and Starlette
+      deployments, by pairing ASGI support with event-loop and protocol implementations
+      such as uvloop, httptools, h11, and websockets.
+  timeline:
+    - >
+      2019-10: Uvicorn 0.10.0 release notes list Python 3.8 support, logging changes,
+      trusted proxy header handling, worker environment integration, and `.env` support.
+    - >
+      2020-09: Uvicorn 0.12.0 stopped shipping uvloop, websockets, and httptools by
+      default and moved them behind `uvicorn[standard]`.
+    - '2026-06: Official release notes list Uvicorn 0.49.0, showing continued maintenance.'
+  usage:
+    - >
+      The normal package-nerd usage is `uvicorn module:app`, often with `--reload` in
+      development and worker/process manager integration in production. It can be
+      installed as a plain package or with the `standard` extra depending on whether the
+      user wants the faster optional event loop, HTTP parser, WebSocket implementation,
+      and file watcher.
+    - >
+      Uvicorn also matters in containers and platform-as-a-service deployments because
+      it exposes common server knobs as CLI flags, Python config, environment variables,
+      and Gunicorn worker integration. That makes it easy for packaging systems and
+      deployment recipes to express process counts, proxy headers, logging, and reload
+      behavior.
 category: developer-tools
 package-manager:
   apk: uvicorn

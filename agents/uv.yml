@@ -7,6 +7,99 @@ config-file-location: null
 credentials-file-location:
   unix:
     - ~/.local/share/uv/credentials/credentials.toml
+history:
+  adoption-history:
+    - >
+      uv's adoption path was shaped by compatibility and speed rather than by a new
+      packaging format alone. Astral emphasized that the first release was
+      production-ready for existing pip and pip-tools workflows and required little
+      configuration for those users.
+    - >
+      Package-manager adoption followed the same low-friction pattern. The official
+      installation documentation lists standalone installers, PyPI installation,
+      Homebrew, MacPorts, WinGet, Scoop, Docker images, and other distribution routes,
+      making uv easy to place in developer laptops, CI images, and reproducible build
+      environments.
+  package-nerd-significance:
+    - >
+      uv matters in package-manager culture because it compressed several long-standing
+      Python packaging pain points into one fast executable: resolution, installation,
+      environment creation, lockfile generation, tool execution, and Python runtime
+      management. Its significance is not just that it is fast, but that it made speed
+      available through familiar pip-shaped entry points before asking users to adopt
+      its fuller project model.
+    - >
+      It also accelerated the Rust-based rewrite trend in Python infrastructure. Like
+      Ruff for linting and formatting, uv made performance a central product argument
+      and forced comparisons with older Python-native tools such as pip-tools, Poetry,
+      PDM, pipx, and virtualenv.
+  project-history:
+    - >
+      Astral announced uv in February 2024 as the next tool in the same high-performance
+      Python-tooling line as Ruff. The initial public framing was deliberately
+      pragmatic: support common pip and pip-tools APIs under `uv pip`, provide a
+      resolver, virtual environment creator, installer, sync command, and do so without
+      requiring projects to rewrite their packaging workflow.
+    - >
+      In August 2024 Astral announced a larger expansion of uv, describing it as moving
+      beyond a pip alternative into an end-to-end solution for Python projects,
+      command-line tools, single-file scripts, and Python itself. The official
+      documentation later presented uv as a single tool replacing or overlapping pip,
+      pip-tools, pipx, poetry, pyenv, twine, virtualenv, and related pieces of the
+      Python packaging stack.
+  related-projects:
+    - >
+      Ruff is Astral's earlier Rust-written Python linter and formatter and is the
+      closest sibling in toolchain philosophy.
+    - >
+      pip, pip-tools, pipx, Poetry, PDM, pyenv, twine, and virtualenv are the tools uv
+      explicitly overlaps with or replaces in common Python packaging workflows.
+  sources:
+    - >
+      https://astral.sh/blog/uv - Astral's February 2024 uv announcement describes the
+      initial pip and pip-tools replacement goal, Rust implementation,
+      resolver/installer focus, and production-use framing.
+    - >
+      https://astral.sh/blog/uv-unified-python-packaging - Astral's August 2024
+      announcement describes the expansion from pip alternative to unified Python
+      packaging.
+    - >
+      https://docs.astral.sh/uv/ - Official uv documentation summarizes the tool,
+      supported platforms, cache, workspaces, and installation routes.
+    - >
+      https://docs.astral.sh/uv/getting-started/installation/ - Official installation
+      docs list package-manager and installer distribution routes.
+    - >
+      https://docs.astral.sh/uv/pip/ - Official docs describe the `uv pip` interface as
+      a drop-in surface for pip, pip-tools, and virtualenv workflows.
+  summary:
+    - >
+      uv is Astral's Rust-written Python package and project manager. It began as a fast
+      installer and resolver for pip and pip-tools workflows, then expanded into a
+      unified interface for dependency resolution, virtual environments, project
+      management, scripts, tools, and Python installation.
+  timeline:
+    - >
+      2024-02: Astral announced uv as a fast Python package installer and resolver
+      written in Rust.
+    - >
+      2024-08: Astral announced uv's expansion into unified Python packaging, including
+      projects, tools, scripts, and Python installation.
+    - >
+      2024-2026: Official docs list uv across standalone installers, PyPI, Homebrew,
+      MacPorts, WinGet, Scoop, Docker, and CI integrations.
+  usage:
+    - >
+      For package-nerd workflows, uv is commonly used as a faster `pip install`, `pip
+      compile`, `pip sync`, `venv`, and `pipx`-style tool runner. In project mode, it
+      centers dependency state around `pyproject.toml` and `uv.lock`, while retaining a
+      `uv pip` interface for requirements-file and environment-oriented workflows.
+    - >
+      The official docs call out a global cache, Cargo-style workspaces, cross-platform
+      installation, and integrations for Docker, GitHub Actions, GitLab CI/CD,
+      pre-commit, PyTorch, FastAPI, Bazel, and several private package registries. Those
+      are the surfaces that made uv especially interesting to people who care about
+      resolver behavior, lockfiles, build reproducibility, and CI runtime.
 tags:
   - cli
   - package-manager
@@ -24,24 +117,47 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      source_facts.description says uv is a Python package installer and resolver
-      written in Rust.
+    - current_curation.category
+    - source_facts.description
   display-name-sources:
-    - source_facts.name is uv and the official Astral docs use uv.
+    - current_curation.display-name
+    - https://docs.astral.sh/uv/
+    - source_facts.name
   docs-sources:
-    - source_facts.homepage is the official Astral uv documentation site.
-  repo-sources:
-    - source_facts.repo is already populated, so repo was not re-determined.
-  tags-sources:
+    - current_curation.docs
+    - https://docs.astral.sh/uv/
+    - source_facts.homepage
+  history-sources:
     - >
-      source_facts.description identifies a Python package installer/resolver written in
-      Rust; source_facts.executables lists uv and uvx.
+      https://astral.sh/blog/uv - Astral's February 2024 uv announcement describes the
+      initial pip and pip-tools replacement goal, Rust implementation,
+      resolver/installer focus, and production-use framing.
+    - >
+      https://astral.sh/blog/uv-unified-python-packaging - Astral's August 2024
+      announcement describes the expansion from pip alternative to unified Python
+      packaging.
+    - >
+      https://docs.astral.sh/uv/ - Official uv documentation summarizes the tool,
+      supported platforms, cache, workspaces, and installation routes.
+    - >
+      https://docs.astral.sh/uv/getting-started/installation/ - Official installation
+      docs list package-manager and installer distribution routes.
+    - >
+      https://docs.astral.sh/uv/pip/ - Official docs describe the `uv pip` interface as
+      a drop-in surface for pip, pip-tools, and virtualenv workflows.
+  repo-sources:
+    - >
+      source_facts.repo is already populated with https://github.com/astral-sh/uv;
+      prompt requires repo:null rather than re-answering.
+  tags-sources:
+    - https://astral.sh/blog/uv
+    - source_facts.description
+    - source_facts.executables
 category-confidence: high
 category-path:
   - developer-tools
-  - package-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
