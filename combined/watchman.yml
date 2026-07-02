@@ -9,6 +9,105 @@ config-file-location:
     - /etc/watchman.json
     - .watchmanconfig
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Watchman's adoption is strongest where file watching must scale across large repos
+      and developer tools. The official docs describe recursive roots, subscriptions,
+      queries since a clock, triggers, and conservative handling of uncertain state. The
+      Jest CLI still exposes a `--watchman` option for file crawling, defaulting to
+      true, which is a visible example of Watchman becoming infrastructure under
+      JavaScript test tooling.
+    - >
+      The installation docs also reflect a split between Meta's upstream releases and
+      community packaging. Homebrew and MacPorts are documented for macOS, Chocolatey
+      for Windows, and upstream release packages for Fedora and Ubuntu are recommended
+      over stale distro packages. That history fits Watchman's role: users often install
+      it not because they plan to call it directly every day, but because another tool
+      wants a reliable file-change indexer.
+  package-nerd-significance:
+    - >
+      Watchman matters to package nerds because it is a serious answer to the
+      unreliable, platform-specific, resource-limited world of filesystem notifications.
+      It sits underneath build systems, test runners, source-control tooling, and
+      editor-adjacent workflows, exposing stable APIs while hiding inotify, FSEvents,
+      Windows, recrawl, overflow, and large-tree behavior behind a service boundary.
+  project-history:
+    - >
+      The Watchman documentation says the project has been used in production since a
+      few weeks after it was first written, which explains its emphasis on backward
+      compatibility and conservative behavior. The README states that Watchman is
+      primarily maintained by Meta's source control team and supports Windows, macOS,
+      Linux on recent Ubuntu and Fedora releases, and Python, Rust, and JavaScript
+      clients.
+    - >
+      Release notes show a mature 3.x and 4.x era by 2015. In 2015, Watchman added
+      relative-root query support, BSER support for the Node client, official PyPI
+      release machinery for pywatchman, server capabilities, recursive glob query
+      improvements, and significant macOS and Linux recrawl/crawl-speed improvements. In
+      2016, the 4.x line continued with configuration and performance work, including
+      source-control-settling behavior and the 4.7 release's shared-lock queries and
+      Buck-oriented glob-generator integration.
+    - >
+      The 4.8 notes describe a major internal transition: Watchman was converted from C
+      to C++, subscriptions and triggers became more concurrent, BSERv2 was implemented,
+      Python 3 support improved, and macOS launchd socket-activation behavior changed
+      for Homebrew users. The 4.9.0 release in 2017 added content SHA-1 hashing,
+      experimental source-control-aware query mode, Windows beta status, and several
+      Windows reliability improvements. Since May 2020, the compatibility docs say
+      Watchman is continuously deployed inside Facebook/Meta and public tags became
+      date-based rather than manually versioned.
+  related-projects:
+    - >
+      Watchman is related to Sapling and Meta source-control infrastructure, Jest's file
+      crawling, Buck-style build tooling, React Native and Metro-era watch workflows,
+      pywatchman, fb-watchman for Node, and simpler file-watching command runners such
+      as watchexec and entr.
+  sources:
+    - https://facebook.github.io/watchman/
+    - https://facebook.github.io/watchman/docs/config
+    - https://facebook.github.io/watchman/docs/install
+    - https://facebook.github.io/watchman/docs/scm-query
+    - https://jestjs.io/docs/cli
+    - https://raw.githubusercontent.com/facebook/watchman/main/README.markdown
+    - https://raw.githubusercontent.com/facebook/watchman/main/website/docs/compatibility.md
+    - https://raw.githubusercontent.com/facebook/watchman/main/website/docs/release-notes.md
+  summary:
+    - >
+      Watchman is Meta's file-watching service for recording file changes, querying
+      watched roots, and triggering actions. Unlike single-shot command rerunners,
+      Watchman is a daemon-like service with clients, subscriptions, clocks, queries,
+      triggers, and source-control-aware behavior for very large working trees.
+  timeline:
+    - '2015-06: Watchman 3.3.0 adds relative-root query and subscription support.'
+    - '2015-08: pywatchman 1.0.0 and Node fb-watchman BSER support appear in release notes.'
+    - '2015-09: Watchman 3.8.0 adds capabilities and client capability checks.'
+    - >
+      2016-09: Watchman 4.7.0 reduces memory use, adds shared-lock queries, and notes
+      Buck integration with the glob generator.
+    - >
+      2017-08-24: Watchman 4.9.0 adds content SHA-1 fields, experimental
+      source-control-aware query mode, and promotes Windows support to beta.
+    - >
+      2020-05: Compatibility docs describe the move to continuous deployment and
+      date-based tags.
+    - >
+      2023: Watchman documentation site identifies Meta Platforms as the site owner and
+      README names Meta's source control team as primary maintainer.
+  usage:
+    - >
+      A basic Watchman workflow establishes a watch root and then adds a trigger, for
+      example watching a source directory and running a minifier when CSS files change.
+      More advanced users issue file queries, subscribe to changes, configure roots with
+      `/etc/watchman.json` or `.watchmanconfig`, and tune OS-specific limits such as
+      Linux inotify watch counts.
+    - >
+      The service model is the key distinction. Clients ask what changed since a clock,
+      subscribe to a stream, or defer events during source-control operations.
+      Source-control-aware subscriptions can defer during Mercurial updates, and the 4.9
+      release notes describe source-control-aware queries as a way to keep responses
+      closer to the size of the user's changes rather than the size of the entire
+      repository.
 category: developer-tools
 package-manager:
   brew: watchman

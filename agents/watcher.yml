@@ -5,6 +5,77 @@ docs:
   - https://github.com/e-dant/watcher#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Watcher remains a modest project compared with older file watching services, but
+      its adoption signals are visible in developer packaging channels. The GitHub
+      project page shows hundreds of stars, the README badges point to Conan, Cargo,
+      PyPI, Go modules, Homebrew, Nix, and GNU Guix, and release artifacts are published
+      for multiple operating systems and architectures.
+  package-nerd-significance:
+    - >
+      Watcher is significant to package nerds because it tackles a famously awkward
+      portability problem: every major OS exposes different filesystem event semantics,
+      and correctness around renames, recursive trees, symlinks, and editor save
+      patterns is full of edge cases. A small, dependency-minimal C++17 implementation
+      with pkg-config, CMake, C ABI, and language bindings is exactly the sort of
+      library packagers scrutinize for ABI surface, portability, testability, and
+      platform-specific behavior.
+  project-history:
+    - >
+      Watcher appeared publicly as a Show HN post on October 18, 2022, where the author
+      described it as a simple, efficient, dependency-free, header-only filesystem event
+      watcher. In that launch discussion, the author explained the early implementation
+      tradeoff: a baseline standard-library watcher, OS-specific support where useful,
+      and attention to correctness on large trees rather than simply wrapping one kernel
+      notification API.
+    - >
+      The repository's release history shows the project maturing from the 0.9 and 0.10
+      series into 0.12, 0.13, and 0.14. By the 0.14.0 release, the project had added a
+      Go package, refined Windows DLL exports for the C interface, and improved CMake
+      behavior for subproject use. The 0.13.7 and later releases also show the kind of
+      maintenance expected from filesystem tools: inotify rename fixes, Darwin/FSEvents
+      fixes, pkg-config files, version flags, C++17 portability, and test/CI updates.
+  related-projects:
+    - >
+      Watcher sits near fsnotify-style libraries,
+      kqueue/inotify/FSEvents/ReadDirectoryChangesW wrappers, Watchman, watchexec, entr,
+      and language-specific file-watching packages. Its closest distinction is being an
+      embeddable C++ library with a CLI, rather than a long-running service or a command
+      rerunner.
+  sources:
+    - https://conan.io/center/recipes/watcher
+    - https://github.com/e-dant/watcher
+    - https://github.com/e-dant/watcher/releases
+    - https://news.ycombinator.com/item?id=33247155
+  summary:
+    - >
+      Watcher is e-dant's cross-platform filesystem event watcher, exposed both as a C++
+      library and as a CLI that prints filesystem events. Its niche is deliberately
+      small and systems-oriented: a dependency-minimal watcher that can be embedded from
+      C++ or reached through C, Python, Rust, Node.js, and Go bindings.
+  timeline:
+    - '2022-10-18: Watcher is introduced on Hacker News as a filesystem watcher.'
+    - '2023-2024: 0.10 through 0.12 release tags mark early public library and CLI maturation.'
+    - >
+      2025-09-01: 0.13.7 adds pkg-config files, a CLI version flag, C++17 portability
+      fixes, and inotify rename fixes.
+    - '2025-12-08: 0.14.0 adds a Go package and improves C/CMake integration.'
+    - '2026-02-23: 0.14.5 fixes cross-directory path-name caching and inotify/Linux reporting.'
+  usage:
+    - >
+      The README presents Watcher as both a library and a program. Library users call a
+      `watch` function or class with a path and callback, then receive event objects
+      containing path name, path type, effect type, event time, and an associated path
+      for rename-style events. CLI users can run the bundled watcher program and pipe
+      the resulting JSON stream into other tools.
+    - >
+      The project is unusually binding-heavy for its size. The README includes quick
+      starts for C++, C, Python, Rust, Node.js, and Go, which positions Watcher less as
+      an end-user automation command like watchexec and more as a portable event
+      substrate for developers who want file-change events inside their own
+      applications.
 tags:
   - cli
   - cpp
@@ -22,27 +93,26 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - Official README describes Watcher as a portable filesystem watcher.
-    - source_facts.description says watcher is a filesystem watcher that works anywhere.
+    - current_curation.category_path
   display-name-sources:
-    - Official repository README heading uses Watcher.
-    - source_facts.name is watcher.
+    - current_curation.display-name
   docs-sources:
-    - Official GitHub README is the primary documentation surface for e-dant/watcher.
+    - https://github.com/e-dant/watcher#readme
+  history-sources:
+    - https://conan.io/center/recipes/watcher
+    - https://github.com/e-dant/watcher
+    - https://github.com/e-dant/watcher/releases
+    - https://news.ycombinator.com/item?id=33247155
   repo-sources:
-    - >
-      source_facts.repo already has https://github.com/e-dant/watcher; per instruction,
-      repo is returned as null.
+    - https://formulae.brew.sh/formula/watcher
+    - https://github.com/e-dant/watcher
   tags-sources:
-    - >
-      Official README documents C++ library usage, CLI programs, and Linux, Darwin,
-      Windows, and BSD support.
-    - source_facts.description identifies filesystem watching and portability.
+    - current_curation.tags
 category-confidence: high
 category-path:
   - developer-tools
-  - file-watching
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

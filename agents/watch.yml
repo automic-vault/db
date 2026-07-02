@@ -5,6 +5,77 @@ docs:
   - https://gitlab.com/procps-ng/procps/-/blob/master/man/watch.1
 config-file-location: null
 credentials-file-location: null
+history:
+  package-nerd-significance:
+    - >
+      watch matters because it is the minimal repeat loop with terminal ergonomics. It
+      occupies the space between a one-off command and writing a monitoring script: no
+      daemon, no UI framework, no config, just a refresh interval, a screen, and a shell
+      command. That makes it a fixture in build troubleshooting, service bring-up,
+      kernel and container debugging, and package maintainer workflows where quick
+      visual feedback beats a permanent monitoring stack.
+  project-history:
+    - >
+      The current procps-ng source keeps a compact lineage in the watch source header:
+      it is based on Tony Rems's original 1991 watch, with later modifications by
+      Francois Pinard; Mike Coleman, Albert Cahalan, Morty Abzug, Jarrod Lowe, Sami
+      Kerola, Jim Warner, Craig Small, and Roman Zilka appear in the copyright and
+      feature history. That lineage explains why a tiny command has accumulated
+      practical terminal behavior over decades rather than becoming a new standalone
+      project.
+    - >
+      watch is maintained today as part of procps/procps-ng, the Linux /proc-oriented
+      utility collection that also includes ps, top, free, vmstat, pgrep, pkill, uptime,
+      w, and related tools. The procps-ng NEWS file records the 3.3.0 fork by Debian,
+      Fedora, and openSUSE maintainers from procps, followed by steady watch-specific
+      work such as Unicode and ANSI color handling, no-wrap mode, precise intervals,
+      no-rerun-on-resize, equal-output exit behavior, 256-color support, and the more
+      recent follow mode.
+  related-projects:
+    - >
+      watch is related to procps/procps-ng tools such as ps, top, vmstat, uptime, w,
+      pgrep, and free; to shell loops such as `while true; do ...; sleep ...; done`; and
+      to file/event-oriented rerun tools such as entr, watchexec, and Watchman, though
+      watch itself is polling command output rather than subscribing to file changes.
+  sources:
+    - https://gitlab.com/procps-ng/procps/-/raw/master/NEWS
+    - https://gitlab.com/procps-ng/procps/-/raw/master/README.md
+    - https://gitlab.com/procps-ng/procps/-/raw/master/src/watch.c
+    - https://man7.org/linux/man-pages/man1/watch.1.html
+  summary:
+    - >
+      watch is the small terminal utility that reruns a command at an interval and
+      redraws the first screenful of output. In practice it is a Unix operator's ad-hoc
+      dashboard: useful for repeatedly inspecting process state, kernel values, logs,
+      queues, counters, or any shell pipeline whose output changes over time.
+  timeline:
+    - '1991: Original watch by Tony Rems, later noted in the procps-ng source header.'
+    - >
+      1999-2009: Later source-header credits record Mike Coleman work, Morty Abzug's
+      stderr/exec/beep additions, and Jarrod Lowe's Unicode support.
+    - >
+      2011: procps-ng 3.3.0 is described in NEWS as the Debian, Fedora, and openSUSE
+      fork of procps.
+    - >
+      2014-2026: procps-ng NEWS shows continuing watch maintenance, including interval,
+      Unicode, ANSI/color, resize, line wrapping, and output-change behavior.
+    - >
+      2025: The man-pages copy of watch(1) documents modern options such as --follow,
+      --equexit, --precise, --exec, and WATCH_INTERVAL.
+  usage:
+    - >
+      The standard manual describes watch as running a command repeatedly, defaulting to
+      a two-second interval, until interrupted. Its core options cover interval control,
+      highlighting differences between refreshes, exiting when output changes or
+      stabilizes, treating the command as exec rather than shell text, preserving or
+      suppressing the title header, interpreting color, and reacting to non-zero command
+      exits.
+    - >
+      Typical package-nerd use is not limited to process monitoring. Users wrap
+      arbitrary shell fragments: `watch -d ls -l`, `watch uname -r`, a pipeline over
+      `/proc/cpuinfo`, a ping loop, a queue-depth check, or a package-build directory
+      listing. Because the command is usually passed through `sh -c`, watch composes
+      naturally with shell quoting, pipes, redirects, and text filters.
 tags:
   - cli
   - command-runner
@@ -22,31 +93,26 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - Official procps-ng source tree contains watch source and manual documentation.
-    - >
-      source_facts.description says watch executes a program periodically and shows
-      output fullscreen.
+    - current_curation.category_path
   display-name-sources:
-    - Official procps-ng repository contains the watch utility and watch manual page.
-    - source_facts.name is watch.
+    - current_curation.display-name
   docs-sources:
-    - Official procps-ng GitLab repository contains the watch(1) manual page at man/watch.1.
+    - https://gitlab.com/procps-ng/procps/-/blob/master/man/watch.1
+  history-sources:
+    - https://gitlab.com/procps-ng/procps/-/raw/master/NEWS
+    - https://gitlab.com/procps-ng/procps/-/raw/master/README.md
+    - https://gitlab.com/procps-ng/procps/-/raw/master/src/watch.c
+    - https://man7.org/linux/man-pages/man1/watch.1.html
   repo-sources:
-    - Official GitLab project hosts procps-ng source including src/watch.c and man/watch.1.
-    - >
-      source_facts.repo is empty, and source_facts.homepage points to the official
-      procps-ng GitLab project.
+    - https://formulae.brew.sh/formula/watch
+    - https://gitlab.com/procps-ng/procps
   tags-sources:
-    - Official watch(1) manual is part of the procps-ng system utilities source tree.
-    - >
-      source_facts.description identifies periodic command execution and fullscreen
-      terminal output.
+    - current_curation.tags
 category-confidence: high
 category-path:
   - system
-  - process-tools
-  - terminal
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
