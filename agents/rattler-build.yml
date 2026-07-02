@@ -5,6 +5,38 @@ docs:
   - https://rattler-build.prefix.dev/latest
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    rattler-build is Prefix.dev's Rust-based builder for conda packages, built on the
+    broader rattler stack of Rust crates for conda metadata, solving, package handling,
+    and environment operations. Prefix.dev introduced it publicly in a May 10, 2023
+    article as a cross-platform conda-build replacement focused on faster builds, a
+    single-binary developer experience, and a recipe format that remained familiar to
+    conda maintainers while being easier to parse as YAML.
+  - >
+    The tool sits in the packaging lineage after conda-build and boa. Its README
+    describes recipes inspired by both projects, producing relocatable `.conda` packages
+    installable by pixi, mamba, or conda. Practitioners write a `recipe.yaml`, declare
+    source archives, build scripts, host and run dependencies, tests, and metadata, then
+    run `rattler-build build --recipe ...`; the `test` subcommand validates
+    already-built packages. For binary packages it performs the usual conda relocation
+    work, including prefix replacement and platform-specific library path rewriting
+    through tools such as `patchelf` and `install_name_tool`.
+  - >
+    Adoption is especially important in conda-forge. Prefix.dev wrote about bringing
+    rattler-build into conda-forge workflows in 2024, and conda-forge announced support
+    for the new v1 recipe format on February 27, 2025, naming rattler-build as the
+    default build tool for that format. That connects rattler-build to feedstock
+    maintenance, staged-recipes review, and the gradual transition from `meta.yaml`
+    recipes to parseable `recipe.yaml` recipes under the Conda Enhancement Proposal
+    process.
+  - >
+    Distribution spans the conda ecosystem and general-purpose package managers. The
+    README documents installation from conda-forge with pixi or micromamba, GitHub
+    release binaries, Homebrew, Arch Linux, and Alpine. For package maintainers, its
+    ecosystem role is not just speed: it gives the conda community a Rust implementation
+    of build plumbing that can be used locally, in CI, and in conda-forge automation
+    while preserving compatibility with the conda artifact model.
 tags:
   - cli
   - conda
@@ -31,6 +63,14 @@ provenance:
     - >
       Official rattler.build homepage redirects to rattler-build.prefix.dev, and
       repository README links to the documentation book.
+  history-sources:
+    - https://prefix.dev/blog/the_new_rattler_build
+    - https://github.com/prefix-dev/rattler-build
+    - https://rattler-build.prefix.dev/
+    - https://prefix.dev/blog/rattler_build_on_conda_forge
+    - https://conda-forge.org/blog/2025/02/27/conda-forge-v1-recipe-support/
+    - https://github.com/conda-forge/rattler-build-feedstock
+    - https://formulae.brew.sh/formula/rattler-build
   repo-sources:
     - >
       source_facts.repo already has https://github.com/prefix-dev/rattler-build, so repo
@@ -45,5 +85,6 @@ category-path:
   - package-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

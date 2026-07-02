@@ -5,6 +5,41 @@ docs:
   - https://github.com/mxmlnkn/ratarmount#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    ratarmount is a Python/FUSE archive-mounting tool by mxmlnkn for exposing archives
+    as ordinary directory trees without extracting them. PyPI release history records
+    version 0.1.0 on November 14, 2019, with rapid 0.2 and 0.3 releases in the following
+    days; the project reached 1.0.0 on November 1, 2024. Its README frames the project
+    around the cost of random access in large tar archives and the limitations of
+    earlier approaches such as direct tar extraction, archivemount-like tools, and
+    tarindexer-style indexing without a general FUSE interface.
+  - >
+    The central design is an index. ratarmount records filenames, ownership,
+    permissions, and byte offsets in a sidecar index, stored beside the archive or under
+    ~/.ratarmount, and then uses that index to serve files through FUSE. The README's
+    benchmark narrative emphasizes large archives and recursive archives: an early
+    ImageNet-sized test involved a 1.31 TB tar with nested tars, while later
+    SQLite-backed indexes reduced subsequent mount startup to a fast metadata load. This
+    made the tool useful for archives that are too large or too inconvenient to unpack
+    just to inspect a few files.
+  - >
+    Distribution broadened beyond PyPI source and wheel installs. The project documents
+    AppImages, Homebrew packages it with libfuse and compression dependencies, and Nix
+    packaging is listed in the package metadata. The README also describes a split
+    between the command-line FUSE tool and ratarmountcore, a library for direct Python
+    access without FUSE, plus fsspec integration for archive-like access through local
+    files and remote URL-backed storage.
+  - >
+    Practitioners use ratarmount by mounting an archive path at a mount point, then
+    using normal filesystem tools such as ls, find, shell scripts, build systems, or
+    data-analysis programs against the mounted tree. The tool supports tar and several
+    compressed or archive formats through built-in and optional backends, recursive
+    mounting of archives inside archives, read-only access by default, and write
+    overlays for staging changes outside the original archive. HPC documentation and
+    user reports show the same pattern: pack many files for storage or transfer, mount
+    the archive on a compute node or workstation, and avoid a full extraction step when
+    only filesystem-style access is needed.
 tags:
   - archives
   - cli
@@ -35,6 +70,14 @@ provenance:
     - >
       source_facts.homepage is the official GitHub repository; README contains usage and
       command-line options.
+  history-sources:
+    - https://github.com/mxmlnkn/ratarmount
+    - https://pypi.org/project/ratarmount/
+    - https://api.github.com/repos/mxmlnkn/ratarmount/releases
+    - https://formulae.brew.sh/formula/ratarmount
+    - https://compendium.hpc.tu-dresden.de/software/utilities/
+    - >
+      https://stackoverflow.com/questions/23388731/transparently-mount-a-tar-gz-archive-with-python
   repo-sources:
     - Official GitHub repository is the source-control project for ratarmount.
     - source_facts.homepage is the official GitHub repository.
@@ -50,5 +93,6 @@ category-path:
   - archives
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

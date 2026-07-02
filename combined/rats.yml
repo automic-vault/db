@@ -6,6 +6,28 @@ docs:
   - https://security.web.cern.ch/security/recommendations/en/codetools/rats.shtml
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    RATS, the Rough Auditing Tool for Security, is an early free static-analysis scanner
+    developed by Secure Software Inc. and later associated with Fortify after
+    acquisition. The tool scans C, C++, Perl, PHP, Python, and in maintained mirrors
+    Ruby source code, flagging common security-sensitive patterns such as buffer
+    overflows, time-of-check/time-of-use races, and risky library or language built-ins.
+  - >
+    Its name describes its contract: RATS performs a rough audit, not a proof of safety.
+    The original documentation and downstream manpages stress that it can miss real
+    defects and report non-defects, so the output is meant to guide manual code review.
+    That made it useful in the era before heavier SAST platforms became normal in CI: a
+    developer could run a fast command-line scanner over a source tree, get
+    severity-ranked findings, and decide where a human audit should begin.
+  - >
+    CERN's security guidance highlights the same practical usage pattern, noting that
+    RATS is fast enough to integrate into a build process with little overhead. Typical
+    invocations include `rats --resultsonly <path>` for terse output or `rats --quiet
+    --xml -w 3 <path>` for machine-readable reporting at a higher warning level. Package
+    availability in Homebrew, Fedora/DNF, MacPorts, Gentoo, and historical Ubuntu
+    manpages shows how it remained a small packaged security utility even after the
+    original Google Code distribution aged out.
 category: security
 package-manager:
   brew: rats
@@ -24,5 +46,15 @@ executables:
   - rats
 provenance:
   formula: rats
+  history-sources:
+    - https://security.web.cern.ch/security/recommendations/en/codetools/rats.shtml
+    - https://github.com/andrew-d/rough-auditing-tool-for-security
+    - https://code.google.com/archive/p/rough-auditing-tool-for-security/
+    - https://manpages.ubuntu.com/manpages/trusty/man1/rats.1.html
+    - >
+      https://www.nist.gov/itl/csd/secure-systems-and-applications/source-code-security-analyzers
+    - https://packages.gentoo.org/packages/dev-util/rats
+    - https://formulae.brew.sh/formula/rats
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
