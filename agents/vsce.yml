@@ -10,6 +10,83 @@ config-file-location:
   windows:
     - package.json
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      VSCE's adoption is effectively tied to VS Code's extension marketplace. Because
+      the Marketplace is the standard distribution channel for VS Code extensions,
+      extension authors commonly use VSCE locally or in CI whenever they need to turn a
+      `package.json`-based extension project into a publishable artifact.
+    - >
+      The npm registry records both the older `vsce` package and the newer scoped
+      `@vscode/vsce` package. The older package is marked deprecated with guidance to
+      install `@vscode/vsce`, while the scoped package continues to receive releases.
+  package-nerd-significance:
+    - >
+      VSCE is package-nerd-significant because it is the release valve for one of the
+      largest editor-extension ecosystems. It encodes Marketplace rules into a CLI that
+      can run on a maintainer laptop or in CI, making extension publication scriptable
+      and repeatable.
+  project-history:
+    - >
+      The VSCE repository was created in September 2015, the same year Visual Studio
+      Code's extension ecosystem emerged publicly. The original npm package name was
+      `vsce`, created in October 2015, and the CLI command remained `vsce` even after
+      the package name later changed.
+    - >
+      In the November 2022 VS Code 1.74 release notes, Microsoft announced that the VS
+      Code extension manager had been renamed from `vsce` to `@vscode/vsce`. The note
+      called the rename a breaking change for library consumers, while preserving the
+      command-line executable name and documenting installation with `npm install -g
+      @vscode/vsce`.
+    - >
+      The official publishing documentation continues to put `vsce` at the center of
+      extension release workflows: authors package a local extension into a `.vsix`,
+      publish it to the Marketplace, and can also retrieve metadata, search, or
+      unpublish through the CLI. The same documentation now also reflects Marketplace
+      security constraints and the move toward Microsoft Entra ID based automated
+      publishing as long-lived Azure DevOps PATs are retired.
+  related-projects:
+    - >
+      VSCE is related to Visual Studio Code, the VS Code Extension Marketplace, VSIX
+      packaging, Azure DevOps Marketplace services, extension signing, and VS Code
+      extension CI workflows.
+  sources:
+    - 'GitHub repository API metadata: https://api.github.com/repos/microsoft/vscode-vsce'
+    - 'Microsoft VSCE GitHub repository: https://github.com/microsoft/vscode-vsce'
+    - 'VS Code 1.74 release notes: https://code.visualstudio.com/updates/v1_74'
+    - >
+      VS Code publishing documentation:
+      https://code.visualstudio.com/api/working-with-extensions/publishing-extension
+    - 'npm registry metadata for @vscode/vsce: https://registry.npmjs.org/@vscode/vsce'
+    - 'npm registry metadata for legacy vsce: https://registry.npmjs.org/vsce'
+  summary:
+    - >
+      @vscode/vsce is Microsoft's command-line tool for packaging, publishing, and
+      managing Visual Studio Code extensions. It produces VSIX packages, publishes
+      extensions to the Visual Studio Marketplace, and handles publisher-oriented
+      operations such as metadata lookup and unpublishing.
+  timeline:
+    - >
+      2015: Microsoft creates the VSCE repository and publishes the original `vsce` npm
+      package.
+    - >
+      2022: VS Code 1.74 announces the rename from `vsce` to `@vscode/vsce`; the CLI
+      command remains `vsce`.
+    - >
+      2026: The official docs warn that global Azure DevOps PATs are retired on December
+      1, 2026, and recommend Entra ID based automated publishing.
+  usage:
+    - >
+      A typical extension author works from an extension directory containing
+      `package.json`, runs `vsce package` to create a VSIX, and runs `vsce publish` to
+      publish to the Visual Studio Marketplace. The CLI also enforces Marketplace
+      constraints, such as restrictions on untrusted SVG content and image URLs in
+      README and CHANGELOG files.
+    - >
+      For package users, VSCE is the canonical bridge between a VS Code extension source
+      tree and the Marketplace. It is not a language tool; it is release tooling for the
+      VS Code extension ecosystem.
 tags:
   - cli
   - extensions
@@ -27,35 +104,34 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official Microsoft GitHub README calls @vscode/vsce the Visual Studio Code
-      Extension Manager.
-    - source_facts.description says vsce packages, publishes, and manages VS Code extensions.
+    - https://code.visualstudio.com/api/working-with-extensions/publishing-extension
+    - https://github.com/microsoft/vscode-vsce
   display-name-sources:
-    - Official Microsoft repository README uses @vscode/vsce as the package name.
-    - source_facts.name is vsce.
+    - https://code.visualstudio.com/updates/v1_74
+    - https://github.com/microsoft/vscode-vsce
   docs-sources:
+    - https://code.visualstudio.com/api/working-with-extensions/publishing-extension
+    - https://github.com/microsoft/vscode-vsce#readme
+  history-sources:
+    - 'GitHub repository API metadata: https://api.github.com/repos/microsoft/vscode-vsce'
+    - 'Microsoft VSCE GitHub repository: https://github.com/microsoft/vscode-vsce'
+    - 'VS Code 1.74 release notes: https://code.visualstudio.com/updates/v1_74'
     - >
-      Official Microsoft GitHub README documents usage and points to the VS Code
-      documentation.
-    - >
-      source_facts.homepage is the official Visual Studio Code documentation for
-      publishing extensions.
+      VS Code publishing documentation:
+      https://code.visualstudio.com/api/working-with-extensions/publishing-extension
+    - 'npm registry metadata for @vscode/vsce: https://registry.npmjs.org/@vscode/vsce'
+    - 'npm registry metadata for legacy vsce: https://registry.npmjs.org/vsce'
   repo-sources:
-    - >
-      source_facts.repo is empty; official Microsoft GitHub repository is
-      microsoft/vscode-vsce for @vscode/vsce.
+    - https://api.github.com/repos/microsoft/vscode-vsce
+    - https://github.com/microsoft/vscode-vsce
   tags-sources:
-    - >
-      Official Microsoft README says the tool assists in packaging and publishing Visual
-      Studio Code extensions.
-    - source_facts.description identifies VS Code extension packaging and publishing.
+    - https://code.visualstudio.com/api/working-with-extensions/publishing-extension
+    - https://github.com/microsoft/vscode-vsce
 category-confidence: high
 category-path:
   - developer-tools
-  - visual-studio-code
-  - extension-publishing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

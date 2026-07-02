@@ -7,6 +7,90 @@ docs:
   - https://github.com/VROOM-Project/vroom/wiki/Usage
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      VROOM's adoption niche is logistics and geospatial routing rather than
+      general-purpose optimization. A 2019 HeiGIT/openrouteservice article described
+      collaboration with the VROOM project to add an ORS routing backend, letting VROOM
+      optimize fleets using shortest paths computed by openrouteservice on OpenStreetMap
+      data.
+    - >
+      The project is commonly used with routing engines rather than as a standalone map
+      service. Its README lists OSRM, OpenRouteService, and Valhalla as supported
+      routing engines, and the wiki documents OSRM as the default backend while allowing
+      user-supplied cost matrices.
+  package-nerd-significance:
+    - >
+      The formula matters because it packages a specialized native VRP optimizer as a
+      normal CLI tool. For developers building routing stacks, that means a local,
+      scriptable solver can be paired with self-hosted OSRM, ORS, Valhalla, or a custom
+      matrix without adopting a hosted optimization service.
+  project-history:
+    - >
+      The GitHub repository was created in September 2015, and the upstream changelog
+      shows the project beginning with v0.1 as a TSP-oriented solver that used OSRM for
+      matrix computation and emitted JSON solutions. Early releases added TSPLIB input,
+      asymmetric local-search improvements, OSRM v5 support, a new JSON API, and a
+      switch to the BSD 2-clause license.
+    - >
+      VROOM grew from a route-ordering tool into a broader vehicle-routing solver across
+      the 2018-2021 releases. Version 1.3.0 added VRP with time windows, v1.4.0 added
+      OpenRouteService as a routing engine, v1.6.0 added pickup-and-delivery shipments,
+      v1.10.0 added heterogeneous routing profiles and Valhalla support, and v1.11.0
+      added custom cost matrices and user-defined starting solutions. Later releases
+      continued to expose more business constraints such as fixed costs, cost per hour,
+      max travel time, max distance, and per-vehicle task times.
+    - >
+      The current upstream README says the open-source project is maintained by Verso,
+      while the public project remains usable by organizations that want to run route
+      optimization on their own infrastructure and integrate their own map and routing
+      data.
+  related-projects:
+    - >
+      VROOM is usually discussed alongside OSRM, OpenRouteService, Valhalla,
+      OpenStreetMap, pyvroom, and VROOM's Docker/API wrappers.
+  sources:
+    - 'GitHub repository API metadata: https://api.github.com/repos/VROOM-Project/vroom'
+    - >
+      HeiGIT openrouteservice collaboration article:
+      https://heigit.org/solve-routing-optimization-with-vroom-openrouteservice-2/
+    - 'VROOM GitHub README: https://github.com/VROOM-Project/vroom'
+    - >
+      VROOM changelog:
+      https://raw.githubusercontent.com/VROOM-Project/vroom/master/CHANGELOG.md
+    - 'VROOM usage wiki: https://github.com/VROOM-Project/vroom/wiki/Usage'
+  summary:
+    - >
+      VROOM, the Vehicle Routing Open-source Optimization Machine, is a C++
+      route-optimization engine for vehicle-routing problems. Its upstream project
+      describes it as an engine for solving complex VRP instances in milliseconds, with
+      support for TSP, capacitated VRP, VRP with time windows, multi-depot heterogeneous
+      vehicle-routing, and pickup-and-delivery with time windows.
+  timeline:
+    - >
+      2015: GitHub repository created; v0.1 starts with TSP solving, OSRM-based matrix
+      computation, and JSON output.
+    - '2018: v1.3.0 adds VRP with time windows and large CVRP/TSP speedups.'
+    - '2019: v1.4.0 adds OpenRouteService support; HeiGIT announces ORS backend collaboration.'
+    - >
+      2021: v1.10.0 adds Valhalla support and heterogeneous routing profiles; v1.11.0
+      adds custom cost matrices.
+    - >
+      2024: v1.14.0 switches the codebase to C++20 and adds vehicle cost-per-kilometer
+      and max-distance constraints.
+    - '2026: v1.15.0 adds per-vehicle-type task times and task-time cost modeling.'
+  usage:
+    - >
+      Users model vehicles, jobs, shipments, time windows, skills, capacities, breaks,
+      start/end locations, and related constraints as JSON, then run the `vroom` CLI
+      against standard input or an input file. VROOM returns optimized routes as JSON
+      and can include route geometry and distance when connected to a routing backend.
+    - >
+      In package-nerd terms, VROOM is the small, fast native executable sitting between
+      map-routing backends and last-mile planning software. It is especially useful when
+      an application already has location data and needs a deterministic CLI/API-style
+      optimizer it can host itself.
 category: science
 package-manager:
   brew: vroom
