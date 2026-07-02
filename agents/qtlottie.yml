@@ -5,6 +5,38 @@ docs:
   - https://doc.qt.io/qt-6/qtlottieanimation-index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Qt Lottie Animation brings the Lottie and Bodymovin animation format into Qt Quick.
+    Lottie files are JSON-based vector animation files that grew out of the Bodymovin
+    Adobe After Effects exporter and Airbnb's cross-platform Lottie player work. Qt
+    announced Qt Lottie as a technology preview for Qt 5.13, describing it as a way for
+    engineers and UI designers to embed Adobe After Effects animations into Qt Quick
+    applications without rebuilding the animation by hand in code.
+  - >
+    Qt 5.15 promoted Qt Lottie from technology preview to a supported module. The
+    module's practical value is in designer-developer handoff: designers export motion
+    graphics from After Effects via Bodymovin or compatible Lottie tooling, and Qt
+    developers load those assets through QML. The QML API exposes a LottieAnimation item
+    with playback controls such as starting, pausing, reversing, and changing sources,
+    while the module remains separate from Qt Quick itself so applications can avoid the
+    dependency when they do not need Lottie support.
+  - >
+    The implementation has two main workflows. LottieAnimation renders through an
+    intermediate buffer using the QPainter software renderer, which can be acceptable
+    for modest animations but can impose size and hardware limits. The lottietoqml
+    command-line tool and qt_target_qml_from_lottie CMake helper convert known Lottie
+    files into QML so the Qt Quick renderer can handle them with hardware acceleration;
+    later Qt Quick VectorImage integration also uses lottietoqml functionality to load
+    Lottie files through the vector-image path.
+  - >
+    Package managers expose qtlottie as a small graphics add-on above qtbase and
+    qtdeclarative. Homebrew describes the formula as displaying graphics and animations
+    exported by Bodymovin and depends on the Qt base and QML stack. The module is useful
+    in application splash screens, onboarding flows, product UIs, embedded displays, and
+    other places where teams want compact vector animation assets, with the caveat that
+    Qt documents unsupported Lottie features such as expressions, some text/assets, and
+    several layer, shape, and effect properties.
 tags:
   - animation
   - bodymovin
@@ -21,6 +53,13 @@ provenance:
     - Official Qt documentation uses Qt Lottie Animation.
   docs-sources:
     - Official Qt Lottie Animation documentation.
+  history-sources:
+    - https://www.qt.io/blog/2019/02/22/qt-roadmap-2019
+    - https://www.qt.io/blog/qt-5.15-released
+    - https://doc.qt.io/qt-6/qtlottieanimation-index.html
+    - https://github.com/qt/qtlottie
+    - https://formulae.brew.sh/formula/qtlottie
+    - https://en.wikipedia.org/wiki/Lottie_%28file_format%29
   repo-sources:
     - Official Qt code browser page for qt/qtlottie.git.
   tags-sources:
@@ -30,5 +69,6 @@ category-path:
   - media
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

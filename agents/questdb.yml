@@ -8,6 +8,54 @@ config-file-location:
   unix:
     - <questdb-root>/conf/server.conf
 credentials-file-location: null
+history:
+  - >
+    QuestDB is an Apache-2.0 time-series database whose origin story is tied to
+    low-latency operational data rather than to the PostgreSQL-extension branch of the
+    time-series database world. In QuestDB's Launch HN thread on July 28, 2020,
+    co-founder Vlad Ilyushchenko wrote that the project began in 2012, when an energy
+    trading company hired him to rebuild a real-time vessel-tracking system and existing
+    database options did not fit the workload or downtime constraints.
+  - >
+    The database was released as open source on December 4, 2019. In that announcement,
+    the team described it as a lightweight relational database with native time-series
+    support, SQL, Influx line protocol, PostgreSQL wire protocol, and HTTP interfaces,
+    originally developed for low-latency trading applications. The same discussion
+    explains the architectural premise that QuestDB uses Java for JIT and avoids garbage
+    allocation along data pipelines to prevent GC interruptions in latency-sensitive
+    ingestion and query paths.
+  - >
+    QuestDB's public adoption story accelerated through Y Combinator's Summer 2020
+    batch. The July 2020 Launch HN post presented QuestDB as an open source database for
+    time series, events, and analytical workloads with performance as the main design
+    goal. A 2021 Series A announcement described the project as having more than 10,000
+    developers in its community, growing deployed instances, and users such as Airbus,
+    Yahoo, and Kepler Cheuvreux, which positioned it as an open-source alternative to
+    proprietary real-time analytics systems.
+  - >
+    Technically, QuestDB sits in the columnar, append-heavy, SQL-facing part of the
+    time-series ecosystem. Its repository describes a storage engine built around
+    write-ahead logging, native columnar storage, and Parquet on object storage, with
+    vectorized execution, SIMD, SQL extensions such as ASOF JOIN, SAMPLE BY, LATEST ON,
+    and a PostgreSQL-compatible protocol surface. That makes it approachable for teams
+    that want SQL and Postgres drivers while still ingesting telemetry, market ticks,
+    events, or metrics at time-series rates.
+  - >
+    Practitioners use QuestDB as a single-node or clustered store for streaming
+    analytics, market data, telemetry, and dashboard backends. Official examples show
+    Kafka Connect feeding QuestDB, Grafana and Jupyter consuming it, data queried
+    through SQL or REST, and CSV uploads through the web console. The trading-data
+    materials emphasize tick storage, OHLC bars, order-book analysis, real-time
+    dashboards, and backtesting workflows, with Parquet and Python data tooling used for
+    historical analysis outside the hot ingestion path.
+  - >
+    Distribution reflects that mixed database and developer-tool identity. Homebrew
+    packages QuestDB as a command-line formula that depends on OpenJDK, while the
+    project also documents Docker-style and client-library workflows. In package indexes
+    it appears alongside databases and observability infrastructure rather than as an
+    application framework: users install the server, ingest via ILP, Kafka, REST, or
+    PostgreSQL-compatible clients, then query with SQL tools already present in data and
+    operations stacks.
 tags:
   - cli
   - database
@@ -37,6 +85,16 @@ provenance:
     - >
       Official QuestDB documentation introduction states it covers QuestDB Open Source
       and Enterprise.
+  history-sources:
+    - https://news.ycombinator.com/item?id=23975807
+    - https://forums.raspberrypi.com/viewtopic.php?t=258475
+    - >
+      https://dev.to/questdb/questdb-raises-12m-series-a-as-the-adoption-of-its-time-series-database-grows-1j26
+    - https://github.com/questdb/questdb
+    - https://github.com/questdb/time-series-streaming-analytics-template
+    - >
+      https://github.com/questdb/questdb-trading-data-demo/blob/main/docs/QuestDB-For-Tick-Data.md
+    - https://formulae.brew.sh/formula/questdb
   repo-sources:
     - >
       source_facts.repo already has https://github.com/questdb/questdb; per instruction,
@@ -53,5 +111,6 @@ category-path:
   - time-series
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

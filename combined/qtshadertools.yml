@@ -6,6 +6,34 @@ docs:
   - https://doc.qt.io/qt-6/qtshadertools-index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Qt Shader Tools is the producer side of Qt's cross-platform shader pipeline. In Qt
+    6, Qt Quick and Qt Quick 3D run over graphics APIs such as Vulkan, Metal, Direct3D,
+    OpenGL, and OpenGL ES through Qt's Rendering Hardware Interface. Shader Tools
+    supplies the qsb command-line tool, CMake integration, QShader, and QShaderBaker so
+    shaders can be compiled, translated, reflected, serialized, and bundled before they
+    are consumed at run time.
+  - >
+    The module builds on the SPIR-V ecosystem. The qsb tool integrates glslang and
+    SPIRV-Cross, can invoke external tools such as fxc or spirv-opt, emits .qsb
+    packages, and can inspect those packages. The official overview describes the
+    workflow as producing serializable QShader containers, usually stored as .qsb files
+    in the Qt resource system; at run time, Qt chooses the shader variant appropriate
+    for the graphics API in use.
+  - >
+    Practitioners encounter Qt Shader Tools both directly and indirectly. In CMake
+    projects, qt6_add_shaders invokes qsb and adds the generated .qsb files to
+    resources. Qt Quick 3D uses the module internally for shader conditioning and can
+    pre-generate shaders to avoid shipping runtime shader compilers. Developers who
+    write custom ShaderEffect code or custom rendering paths use the toolchain to author
+    in Vulkan-style GLSL, package variants for multiple backends, and keep deployment
+    independent of one graphics API.
+  - >
+    Homebrew packages Qt Shader Tools as qtshadertools with qsb as the visible
+    executable, matching Qt 6's split-module distribution. That packaging matters
+    because many consumers install only the shader compiler pipeline needed by a Qt
+    Quick, Qt Quick 3D, or build-system workflow rather than a full monolithic Qt SDK.
 category: developer-tools
 package-manager:
   brew: qtshadertools
@@ -27,5 +55,13 @@ executables:
   - qsb
 provenance:
   formula: qtshadertools
+  history-sources:
+    - https://doc.qt.io/qt-6/qtshadertools-index.html
+    - https://doc.qt.io/qt-6/qtshadertools-overview.html
+    - https://doc.qt.io/qt-6/qtshadertools-qsb.html
+    - https://doc.qt.io/qt-6/qtshadertools-build.html
+    - https://github.com/qt/qtshadertools
+    - https://formulae.brew.sh/formula/qtshadertools
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
