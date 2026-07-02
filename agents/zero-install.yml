@@ -11,6 +11,112 @@ config-file-location:
     - '%APPDATA%\0install.net\injector'
     - '%PROGRAMDATA%\0install.net\injector'
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Zero Install has always been adoption-challenged in the interesting way
+      decentralized package systems are: it reduces the need for central distro
+      blessing, but depends on upstreams publishing feeds and users trusting the model.
+      Its docs explicitly describe the chicken-and-egg problem where distributions may
+      not package software until popular, while software cannot become popular until it
+      is easy to install.
+    - >
+      The supplied package data shows Zero Install available from Homebrew, Chocolatey,
+      Debian, Ubuntu, Fedora-related OCaml packaging, and winget. That breadth reflects
+      a mature cross-platform tool, even if it never displaced mainstream OS package
+      managers.
+    - >
+      The project also spread into related implementations and tools, including Zero
+      Install for Windows, .NET components, feed/publishing utilities, and docs for
+      integrating with native distribution package managers.
+  package-nerd-significance:
+    - >
+      Zero Install is historically important because it explored a serious alternative
+      to both central distro repositories and ad hoc upstream installers. It tried to
+      preserve package-manager virtues such as dependency solving, shared libraries,
+      signatures, updates, and rollbacks while decentralizing publication.
+    - >
+      For package nerds, it is also a case study in bootstrapping and trust. The C
+      kernel-helper origin, Python redesign, OCaml rewrite, XML feed model, digest-based
+      caches, and native package-manager integration all show the tradeoffs of building
+      a package ecosystem that spans distributions without owning them.
+    - >
+      Even where Zero Install did not become the default installation path, many of its
+      concerns are now familiar: per-user installs without root, content-addressed
+      caches, reproducible metadata, side-by-side versions, and upstream-controlled
+      distribution.
+  project-history:
+    - >
+      Thomas Leonard traces Zero Install's goal back to 2003: secure, cross-platform,
+      decentralized software installation. The earliest implementation was written in C
+      as a Linux kernel module plus user-space helper, but that made Zero Install itself
+      hard to distribute. In 2005 it was redesigned and reimplemented in Python to make
+      bootstrapping easier.
+    - >
+      The system's model deliberately complements rather than replaces the operating
+      system package manager. The official docs say 0install packages do not interfere
+      with distribution packages, and that developers publish XML metadata pointing at
+      ordinary tarballs or zip files rather than inventing a new archive format.
+    - >
+      The 1.0 release was made on May 23, 2011, and the 2.0 release followed on March 5,
+      2013. The 2.0 announcement emphasized backwards compatibility with 1.0 feeds while
+      adding more expressive dependencies, native package integration for systems
+      including Arch, Cygwin, Darwin, Fink, and MacPorts, an apps system for rollback,
+      better diagnostics, shell completion, and improved headless support.
+    - >
+      In 2013 Leonard migrated the core from Python to OCaml, finishing a 29,215-line
+      port intended to preserve behavior while gaining static typing and faster startup.
+      His 2014 retrospective reports similar code size, around 10x faster operations in
+      simple benchmarks, and improved type-checking reliability.
+  related-projects:
+    - >
+      ROX Desktop is historically associated with Zero Install as a desktop environment
+      that used decentralized application installation.
+    - 0install-win and 0install-dotnet provide Windows/.NET-side Zero Install functionality.
+    - >
+      0release, 0repo, 0publish, and 0compile are related tools in the Zero Install
+      packaging and release workflow.
+  sources:
+    - https://0install.net/
+    - https://docs.0install.net/
+    - https://docs.0install.net/about/features/
+    - https://github.com/0install/0install#readme
+    - https://lwn.net/Articles/541676/
+    - https://roscidus.com/blog/blog/2014/06/06/python-to-ocaml-retrospective/
+    - source_facts.package-manager
+  summary:
+    - >
+      Zero Install is a decentralized, cross-platform software installation system that
+      lets upstream developers publish programs from their own websites while users keep
+      dependency solving, updates, signatures, rollbacks, and native package-manager
+      integration.
+  timeline:
+    - >
+      2003: Zero Install's goal of secure, cross-platform, decentralized software
+      installation begins.
+    - '2005: Project is redesigned and reimplemented in Python to simplify distribution.'
+    - '2011-05-23: Zero Install 1.0 is released.'
+    - >
+      2013-03-05: Zero Install 2.0 is released with backwards-compatible feeds, richer
+      dependency metadata, native package integration, apps/rollback, diagnostics,
+      completion, and headless improvements.
+    - '2013: Core implementation is migrated from Python toward OCaml.'
+    - '2014-06-06: Thomas Leonard publishes a retrospective on the Python-to-OCaml migration.'
+  usage:
+    - >
+      Users typically invoke the `0install` family of commands to select and run
+      applications from feed files, create aliases, manage cached implementations, or
+      integrate desktop/menu entries. The model caches each version of a package
+      separately rather than unpacking into system directories.
+    - >
+      For developers, the work is feed publication: write XML metadata describing
+      available implementations, dependencies, signatures, and platform constraints,
+      then host it next to upstream software. 0install can use source or binary archives
+      and can satisfy some dependencies from native package managers when appropriate.
+    - >
+      Its practical appeal is strongest for cross-platform tools, research software, and
+      upstream-controlled distribution where the author wants updates and dependency
+      metadata without waiting for every distro repository.
 tags:
   - cli
   - cross-platform
@@ -28,27 +134,33 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official docs describe Zero Install as a decentralized cross-platform software
-      installation system.
-    - >
-      source_facts.description says Zero Install is a decentralised cross-platform
-      software installation system.
+    - https://docs.0install.net/
+    - https://github.com/0install/0install#readme
   display-name-sources:
-    - Official documentation title is Zero Install Docs.
-    - source_facts.homepage is 0install.net for Zero Install.
+    - https://0install.net/
+    - https://docs.0install.net/
   docs-sources:
-    - Official Zero Install documentation is hosted at docs.0install.net.
+    - https://docs.0install.net/
+  history-sources:
+    - https://0install.net/
+    - https://docs.0install.net/
+    - https://docs.0install.net/about/features/
+    - https://github.com/0install/0install#readme
+    - https://lwn.net/Articles/541676/
+    - https://roscidus.com/blog/blog/2014/06/06/python-to-ocaml-retrospective/
+    - source_facts.package-manager
   repo-sources:
-    - source_facts.repo is already populated, so repo was not re-determined.
+    - >
+      source_facts.repo already provides https://github.com/0install/0install; prompt
+      requires repo:null when source_facts.repo is present.
   tags-sources:
-    - Official docs describe publishing, feeds, dependencies, updates, and signatures.
-    - source_facts.description identifies decentralized cross-platform installation.
+    - https://0install.net/
+    - https://docs.0install.net/about/features/
 category-confidence: high
 category-path:
   - system
-  - package-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
