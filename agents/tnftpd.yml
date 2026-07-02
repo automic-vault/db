@@ -13,6 +13,83 @@ config-file-location:
     - /etc/ftpwelcome
     - /etc/motd
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      tnftpd has a narrower adoption footprint than tnftp because running FTP servers is
+      a more specialized task than fetching files. The supplied package facts list
+      Homebrew and MacPorts, which fits the niche: developers and administrators may
+      install it when they specifically want NetBSD's ftpd behavior on a non-NetBSD
+      Unix-like system.
+    - >
+      Its documentation emphasizes traditional FTP server operations: daemon or inetd
+      startup, anonymous login chroots, syslog/xferlog logging, virtual FTP server
+      configuration, access checks through `ftpusers`, and class-based behavior through
+      `ftpd.conf`.
+  package-nerd-significance:
+    - >
+      For package nerds, tnftpd is a portable slice of BSD base-system networking. It is
+      significant because it exposes a well-documented NetBSD server implementation as
+      an installable package for systems that do not ship that exact daemon.
+    - >
+      Its smaller package footprint also reflects protocol history: FTP service is less
+      commonly deployed now, but a maintained BSD ftpd remains useful for compatibility
+      labs, legacy environments, and people comparing base-system daemons across Unix
+      lineages.
+  project-history:
+    - >
+      The NetBSD ftpd manual page shows Berkeley Regents ancestry from 1985, 1988, 1991,
+      and 1993, plus NetBSD Foundation work beginning in 1997 contributed by Luke
+      Mewburn. The current NetBSD source tree continues to host the server under
+      `libexec/ftpd`, and its version header identifies a `NetBSD-ftpd 20230930`
+      version.
+    - >
+      The portable archive history mirrors tnftp but is smaller. NetBSD's directory
+      message says tnftpd is a port of the enhanced NetBSD ftp server to other systems
+      and notes that `lukemftpd` was renamed to `tnftpd`. Archived releases begin with
+      `lukemftpd-1.0` in 2001, move through `tnftpd-2.0` beta tarballs in 2002 and 2003,
+      and continue as date-stamped tnftpd tarballs through 2023.
+  related-projects:
+    - Related to NetBSD's base-system `ftpd` server in `libexec/ftpd`.
+    - >
+      Closely paired in the portable archive with tnftp, the corresponding NetBSD FTP
+      client port.
+  sources:
+    - https://cdn.netbsd.org/pub/NetBSD/misc/tnftp/
+    - https://cdn.netbsd.org/pub/NetBSD/misc/tnftp/.message
+    - https://cdn.netbsd.org/pub/NetBSD/misc/tnftp/archive/
+    - https://github.com/NetBSD/src/tree/trunk/libexec/ftpd
+    - https://man.netbsd.org/ftpd.8
+    - https://man.netbsd.org/ftpd.conf.5
+    - https://raw.githubusercontent.com/NetBSD/src/trunk/libexec/ftpd/version.h
+    - input source_facts.package-manager
+  summary:
+    - >
+      tnftpd is the portable packaging of NetBSD's FTP server. It packages the NetBSD
+      `ftpd` userland daemon for non-NetBSD systems, carrying both Berkeley ftpd
+      heritage and NetBSD configuration features.
+  timeline:
+    - >
+      1985-1994: Berkeley ftpd ancestry appears in the NetBSD manual page copyrights and
+      SCCS marker.
+    - '1997: NetBSD Foundation ftpd work begins in the manual page copyright range.'
+    - '2001: `lukemftpd-1.0.tar.gz` appears in the NetBSD archive.'
+    - '2002-2003: `tnftpd-2.0` beta tarballs appear after the rename from lukemftpd to tnftpd.'
+    - '2019-2020: NetBSD archive publishes date-stamped tnftpd tarballs.'
+    - >
+      2023: NetBSD source identifies `FTPD_VERSION` as `NetBSD-ftpd 20230930`, and the
+      archive contains `tnftpd-20231001.tar.gz`.
+  usage:
+    - >
+      Administrators use tnftpd as an FTP server process, either run under inetd or as a
+      daemon. The man page documents options for IPv4/IPv6 binding, anonymous directory
+      selection, alternate configuration roots, advertised hostnames, transfer logs,
+      session logging, privilege dropping, and version banners.
+    - >
+      The companion `ftpd.conf` manual documents `/etc/ftpd.conf` as the
+      post-authentication configuration file, with class-based directives for guest,
+      chrooted, and real users. The server also consults files such as `/etc/ftpusers`,
+      `/etc/ftpchroot`, `/etc/ftpwelcome`, and `/etc/motd`.
 tags:
   - cli
   - ftp
@@ -21,21 +98,39 @@ tags:
   - server
 provenance:
   category-sources:
-    - "source_facts.description: NetBSD's FTP server."
+    - current_curation.category_path
+    - https://man.netbsd.org/ftpd.8
+    - source_facts.description
   display-name-sources:
-    - source_facts.name.
+    - current_curation.display-name
+    - https://cdn.netbsd.org/pub/NetBSD/misc/tnftp/.message
+    - source_facts.name
   docs-sources:
-    - >
-      source_facts.homepage is the NetBSD tnftp/tnftpd release area; NetBSD ftpd(8) and
-      ftpd.conf(5) are official manuals.
+    - current_curation.docs
+    - https://cdn.netbsd.org/pub/NetBSD/misc/tnftp/
+    - https://man.netbsd.org/ftpd.8
+    - https://man.netbsd.org/ftpd.conf.5
+  history-sources:
+    - https://cdn.netbsd.org/pub/NetBSD/misc/tnftp/
+    - https://cdn.netbsd.org/pub/NetBSD/misc/tnftp/.message
+    - https://cdn.netbsd.org/pub/NetBSD/misc/tnftp/archive/
+    - https://github.com/NetBSD/src/tree/trunk/libexec/ftpd
+    - https://man.netbsd.org/ftpd.8
+    - https://man.netbsd.org/ftpd.conf.5
+    - https://raw.githubusercontent.com/NetBSD/src/trunk/libexec/ftpd/version.h
+    - input source_facts.package-manager
   repo-sources:
-    - Official NetBSD source tree contains libexec/ftpd for tnftpd.
+    - https://github.com/NetBSD/src/tree/trunk/libexec/ftpd
+    - https://raw.githubusercontent.com/NetBSD/src/trunk/libexec/ftpd/version.h
   tags-sources:
-    - Official NetBSD ftpd(8) manual describes the FTP server and related configuration files.
+    - current_curation.tags
+    - https://cdn.netbsd.org/pub/NetBSD/misc/tnftp/.message
+    - https://man.netbsd.org/ftpd.8
 category-confidence: high
 category-path:
   - networking
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
