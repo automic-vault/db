@@ -7,6 +7,47 @@ docs:
 config-file-location:
   unix: .rr.yaml
 credentials-file-location: null
+history:
+  - >
+    RoadRunner is a Go-based PHP application server and process manager whose public
+    repository was created on December 26, 2017. It was developed and maintained by
+    Spiral Scout to address a long-standing PHP deployment cost: the repeated
+    bootstrapping of framework code, database connections, and application state under
+    the traditional request-per-process model used with PHP-FPM and similar setups.
+  - >
+    By September 9, 2019, Spiral Scout was presenting RoadRunner as a high-performance
+    PHP application server, load balancer, and process manager written in Go. That
+    article framed it as a way to build a PHP application once and reuse it across
+    requests, communicate through PSR-7, integrate Go libraries via Goridge, serve
+    static files without Nginx in simpler containers, and run gRPC or queue workloads
+    alongside HTTP. Spiral Scout also reported 12,000 GitHub downloads and cited public
+    benchmarks claiming 10-20 times higher performance than PHP-FPM for some
+    applications.
+  - >
+    RoadRunner 2 broadened the project from a fast HTTP worker manager into a
+    plugin-oriented PHP runtime. The RoadRunner 2.4.0 announcement on September 16, 2021
+    described queue drivers for RabbitMQ, Amazon SQS, Beanstalk, in-memory queues, and
+    local BoltDB, along with KeyValue storage and Temporal workflow integration. That
+    expansion explains why RoadRunner is often described as an application server rather
+    than only an HTTP accelerator: it routes HTTP, gRPC, jobs, TCP,
+    WebSocket/Centrifugo, Temporal, metrics, logging, locks, and cache-like services
+    into long-running PHP workers.
+  - >
+    RoadRunner's adoption history is tied to the performance-server wave in the PHP
+    ecosystem. Its own documentation lists integrations for Spiral Framework, Yii,
+    Symfony, Laravel, and ChubbyPHP, and Laravel Octane documents RoadRunner alongside
+    FrankenPHP and Swoole as an application server that boots Laravel once, keeps it in
+    memory, and feeds requests to it. That placement made RoadRunner visible to
+    mainstream Laravel teams, not only Spiral users.
+  - >
+    Practitioners usually install the `rr` binary from GitHub releases, Docker images,
+    Composer's `spiral/roadrunner-cli`, OS packages, Homebrew, Chocolatey, or
+    distribution packages, then run it with a `.rr.yaml` configuration such as `rr serve
+    -c .rr.yaml`. Production use revolves around worker-pool sizing, memory limits,
+    max-jobs restarts, OPcache for CLI PHP, health checks, reverse proxies, Docker
+    images, and avoiding state pollution in long-lived workers. The operational model
+    feels closer to running a service process than deploying classic stateless PHP
+    scripts.
 category: cloud-infrastructure
 package-manager:
   brew: roadrunner
@@ -32,5 +73,18 @@ executables:
   - rr
 provenance:
   formula: roadrunner
+  history-sources:
+    - https://api.github.com/repos/roadrunner-server/roadrunner
+    - https://github.com/roadrunner-server/roadrunner
+    - https://roadrunner.dev/
+    - https://docs.roadrunner.dev/docs
+    - https://docs.roadrunner.dev/docs/general/install
+    - https://docs.roadrunner.dev/docs/app-server/production
+    - >
+      https://spiralscout.com/blog/new-dedicated-application-server-revs-php-to-peak-performance
+    - https://spiralscout.com/blog/roadrunner-2-4-0
+    - https://laravel.com/docs/12.x/octane
+    - https://formulae.brew.sh/formula/roadrunner
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

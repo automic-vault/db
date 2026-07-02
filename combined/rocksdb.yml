@@ -7,6 +7,43 @@ docs:
   - https://github.com/facebook/rocksdb/wiki
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    RocksDB was created inside Facebook in 2012 as a fork of Google's LevelDB, led by
+    Dhruba Borthakur and the Facebook database engineering team. The project kept
+    LevelDB's embedded sorted key-value model but redirected the implementation toward
+    server workloads: many CPU cores, large data sets, high write rates, and fast
+    storage such as flash and SSDs.
+  - >
+    Facebook open-sourced RocksDB on November 21, 2013 as an embeddable, persistent
+    key-value store for fast storage. The design is based on a log-structured merge-tree
+    and exposes keys and values as byte arrays, leaving data modeling to the embedding
+    application. Compared with LevelDB, the project emphasized tunable compaction,
+    background parallelism, write/read/space amplification tradeoffs, snapshots,
+    backups, column families, Bloom filters, merge operators, and other features needed
+    by large services.
+  - >
+    RocksDB became infrastructure rather than an end-user database product. Applications
+    link it as a C++ library, use C and Java bindings or third-party bindings, and build
+    their own server, database, cache, stream processor, or metadata layer around it.
+    The command-line tools shipped by packages, such as ldb and sst_dump variants, are
+    mostly inspection, repair, benchmark, and stress-test utilities rather than the
+    primary interface.
+  - >
+    Adoption spread through systems that needed local durable state with predictable
+    write performance. Facebook used RocksDB in backend systems including ZippyDB, while
+    MyRocks put RocksDB under MySQL to improve compression and write amplification for
+    production MySQL workloads. Other projects and companies adopted it as a storage
+    engine or state store; Apache Flink documented RocksDB as a built-in state backend,
+    and CockroachDB used RocksDB as its storage layer for the project's early releases
+    because of its feature set.
+  - >
+    Practitioners usually approach RocksDB as a tunable storage engine. Operational work
+    centers on choosing column-family layouts, comparator behavior, write buffers,
+    compaction style, block cache size, filter policy, compression, WAL behavior, and
+    backup/checkpoint strategy. That makes it powerful for database implementers and
+    infrastructure engineers, but less convenient than a standalone SQL or document
+    database for application developers who want a network protocol and query language.
 category: data
 package-manager:
   apk: rocksdb
@@ -39,5 +76,18 @@ executables:
   - rocksdb_write_stress
 provenance:
   formula: rocksdb
+  history-sources:
+    - >
+      https://engineering.fb.com/2013/11/21/core-infra/under-the-hood-building-and-open-sourcing-rocksdb/
+    - https://rocksdb.blogspot.com/2013/11/the-history-of-rocksdb.html
+    - https://github.com/facebook/rocksdb
+    - https://github.com/facebook/rocksdb/wiki
+    - https://rocksdb.org/docs/support/faq.html
+    - >
+      https://flink.apache.org/2021/01/18/using-rocksdb-state-backend-in-apache-flink-when-and-how/
+    - https://www.cockroachlabs.com/blog/cockroachdb-on-rocksd/
+    - https://myrocks.io/
+    - https://formulae.brew.sh/formula/rocksdb
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

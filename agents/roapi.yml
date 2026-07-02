@@ -7,6 +7,39 @@ config-file-location:
   unix:
     - ./roapi.yml
 credentials-file-location: null
+history:
+  - >
+    ROAPI is a Rust API server for static or slowly moving datasets. Its GitHub
+    repository was created on December 11, 2020, and a 2021 technical write-up
+    attributes the project to Qingping Hou, an Apache Airflow and Arrow committer. The
+    project sits at the intersection of data engineering and API tooling: it exposes
+    CSV, JSON, Parquet, and other tabular sources without requiring users to write an
+    application server.
+  - >
+    The project's design is built around Apache Arrow and DataFusion. Official
+    documentation describes query frontends that translate SQL, GraphQL, and REST
+    requests into DataFusion plans, a data layer that loads datasets from several
+    sources with schema inference, and a response layer that serializes Arrow record
+    batches. This made ROAPI different from small JSON-file servers: it borrowed
+    analytical-query infrastructure from the Rust data ecosystem and wrapped it in a
+    no-code HTTP service.
+  - >
+    ROAPI's early public adoption came through data-tooling circles. Mark Litwintschik's
+    October 7, 2021 post benchmarked it, showed installation through a Python package
+    containing a precompiled binary, and demonstrated the `--table` flag for serving CSV
+    and JSON data. A Hacker News discussion on October 8, 2021 clarified the project's
+    intended role through comments by Hou: compared with Datasette, ROAPI targeted
+    production online serving of static datasets with high query rates, using DataFusion
+    rather than SQLite as the execution layer.
+  - >
+    Practitioners use ROAPI to turn files, object-storage-backed datasets, Google
+    Sheets, or Delta Lake-style data into read-only REST, GraphQL, and SQL endpoints. A
+    typical workflow is to point `roapi` at one or more tables through flags or
+    `roapi.yml`, expose schema and table endpoints, and put the service behind normal
+    HTTP infrastructure. Homebrew and MacPorts packaging made it a convenient local and
+    server-side CLI, while the project remains most valuable for teams that need a
+    quick, typed, read-only API over analytical files rather than a mutable
+    database-backed service.
 tags:
   - apache-arrow
   - api
@@ -37,6 +70,13 @@ provenance:
     - >
       source_facts.homepage is the official ROAPI documentation site; official docs
       describe overview, architecture, and query frontends.
+  history-sources:
+    - https://api.github.com/repos/roapi/roapi
+    - https://github.com/roapi/roapi
+    - https://roapi.github.io/docs/
+    - https://tech.marksblogg.com/roapi-rust-data-api.html
+    - https://news.ycombinator.com/item?id=28798360
+    - https://formulae.brew.sh/formula/roapi
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/roapi/roapi; per
@@ -52,5 +92,6 @@ category-path:
   - query-engine
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
