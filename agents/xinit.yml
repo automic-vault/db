@@ -11,6 +11,87 @@ config-file-location:
     - /usr/lib/X11/xinit/xinitrc
     - /usr/lib/X11/xinit/xserverrc
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xinit was historically central for users who logged into a console and then
+      started X manually. Display managers such as xdm, gdm, and kdm became the common
+      desktop login path, but xinit/startx remained the minimal, packageable fallback
+      for custom window-manager setups, recovery environments, lightweight desktops, and
+      multi-server experiments.
+    - >
+      The Linux Documentation Project's X Window User HOWTO captures the traditional
+      split: X sessions are usually started either by a display manager at graphical
+      login or manually from a text console with startx, which is a wrapper around
+      xinit. That is the adoption pattern that kept xinit packaged even after full
+      desktop environments hid it from most users.
+  package-nerd-significance:
+    - >
+      xinit is a perfect package-nerd system utility: tiny, old, boring, and still the
+      glue for a whole class of X11 sessions. It encodes decades of Unix desktop
+      convention in a couple of executable entry points and dotfiles.
+    - >
+      Its significance is also diagnostic. When an X session fails before the desktop
+      stack is running, xinit/startx gives maintainers and users a narrow, inspectable
+      path through server arguments, client startup, environment variables, and
+      foreground process lifetime.
+  project-history:
+    - >
+      xinit belongs to the old X client/server world where starting a graphical session
+      meant launching the server and one controlling client. The X.Org manual defines it
+      as the X Window System initializer for systems not using a display manager such as
+      xdm, or for environments that use multiple window systems. When the first client
+      exits, xinit kills the X server and terminates.
+    - >
+      The tool's behavior has remained intentionally simple: if no client is given it
+      looks for `~/.xinitrc`, otherwise it falls back to a default xterm; if no server
+      is given it looks for `~/.xserverrc`, otherwise it runs `X :0`. `startx` adds a
+      friendlier shell-script layer, choosing `.xinitrc` and `.xserverrc` files and
+      passing server options after `--`.
+  related-projects:
+    - startx is the user-facing wrapper script shipped with xinit.
+    - Xorg or another X server is the server process xinit starts.
+    - >
+      xdm, gdm, and kdm are display-manager alternatives that start X sessions without
+      the user manually invoking xinit.
+    - >
+      twm, xterm, and lightweight window managers are classic clients used in `.xinitrc`
+      examples and fallback sessions.
+  sources:
+    - https://gitlab.freedesktop.org/api/v4/projects/xorg%2Fapp%2Fxinit
+    - https://gitlab.freedesktop.org/xorg/app/xinit
+    - https://tldp.org/HOWTO/XWindow-User-HOWTO/runningx.html
+    - https://xorg.freedesktop.org/archive/X11R6.7.0/doc/startx.1.html
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xinit.1.html
+  summary:
+    - >
+      xinit is the small X.Org session bootstrapper that starts an X server and an
+      initial client program. Its companion script `startx` wraps xinit for the common
+      case of manually starting a single X session from a text login instead of using a
+      display manager.
+  timeline:
+    - >
+      X11 era: xinit becomes the manual initializer pattern for starting an X server and
+      first client outside a display manager.
+    - >
+      X11R6/X11R7 documentation era: `startx` is documented as a front end to xinit for
+      a single X Window System session.
+    - >
+      2018-07-29: the xorg/app/xinit project appears in freedesktop.org GitLab metadata,
+      reflecting the modern X.Org hosting location.
+    - '2026: freedesktop.org GitLab metadata still shows activity on the xinit project.'
+  usage:
+    - >
+      Users normally run `startx`, customize `~/.xinitrc` to start clients and leave the
+      final long-lived program, usually a window manager or session manager, in the
+      foreground, and optionally customize `~/.xserverrc` for server startup. Direct
+      `xinit` usage is for explicit client/server combinations, alternate displays,
+      Xvnc-style servers, or low-level troubleshooting.
+    - >
+      The package is small but important because it owns the conventional files and
+      shell behavior around manual X startup. Without it, a minimal X.Org install may
+      have an X server and window manager but no standard way for a non-display-manager
+      login to tie them together.
 tags:
   - cli
   - display-server
@@ -31,26 +112,28 @@ geiger:
     - text:server
 provenance:
   category-sources:
-    - Official X.Org man page describes xinit as the X Window System initializer.
-    - source_facts.description says xinit starts the X Window System server.
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xinit.1.html
   display-name-sources:
-    - Official X.Org man page name is xinit.
-    - source_facts.name
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xinit.1.html
   docs-sources:
-    - Official X.Org xinit and startx manual pages.
+    - https://xorg.freedesktop.org/archive/X11R6.7.0/doc/startx.1.html
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xinit.1.html
+  history-sources:
+    - https://gitlab.freedesktop.org/api/v4/projects/xorg%2Fapp%2Fxinit
+    - https://gitlab.freedesktop.org/xorg/app/xinit
+    - https://tldp.org/HOWTO/XWindow-User-HOWTO/runningx.html
+    - https://xorg.freedesktop.org/archive/X11R6.7.0/doc/startx.1.html
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xinit.1.html
   repo-sources:
-    - source_facts.homepage is the official freedesktop GitLab xorg/app/xinit repository URL.
+    - https://gitlab.freedesktop.org/xorg/app/xinit
   tags-sources:
-    - >
-      Official X.Org man page documents xinit starting an X server and first
-      client/session script.
-    - source_facts.description
+    - https://xorg.freedesktop.org/archive/X11R6.7.0/doc/startx.1.html
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xinit.1.html
 category-confidence: high
 category-path:
   - system
-  - x11
-  - session-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

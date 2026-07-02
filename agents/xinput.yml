@@ -5,6 +5,85 @@ docs:
   - https://www.x.org/releases/X11R7.5/doc/man/man1/xinput.1.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xinput became a standard troubleshooting and configuration tool for X11 desktops
+      because input hardware became more complex than a keyboard and three-button mouse.
+      Touchpads, tablets, external mice, button remaps, acceleration settings, device
+      enable/disable state, and driver properties all created a need for a scriptable
+      inspection tool.
+    - >
+      Its adoption is mostly operational rather than glamorous: distribution wikis,
+      support answers, and user dotfiles use xinput to discover device ids, list
+      properties, change button maps, test event delivery, and patch input behavior at
+      session startup. Under Wayland/XWayland its role is narrower, but for real Xorg
+      sessions it remains the canonical package.
+  package-nerd-significance:
+    - >
+      xinput matters because it packages a complicated display-server protocol into a
+      small CLI that can be pasted into bug reports and startup scripts. That is exactly
+      the sort of utility package that keeps old subsystems maintainable.
+    - >
+      It also marks the transition from the core X pointer/keyboard model to modern
+      multi-device input. XI2 concepts such as device hierarchy, raw events, smooth
+      scrolling, and multitouch are abstract protocol features; xinput is how many users
+      first see them as concrete device ids and properties.
+  project-history:
+    - >
+      The xinput manpage records a 1996-1997 copyright for Frederic Lepied, with later
+      authors including Philip Langdale, Peter Hutterer, Julien Cristau, Thomas Jaeger,
+      and others. That places the utility in the X Input extension lineage: a CLI
+      companion to the protocol/library work that let X clients distinguish devices
+      beyond the core keyboard and pointer.
+    - >
+      The underlying X Input Extension was created to support additional input devices
+      beyond the pointer and keyboard defined by the core X protocol. X Input 2 changed
+      the model again: the XI2 specification lists the initial XI2 protocol release in
+      October 2009, smooth scrolling/raw-event changes in December 2011, and multitouch
+      support in March 2012. xinput's `--test_xi2` and property commands expose that
+      newer input stack to users and maintainers.
+  related-projects:
+    - libXi is the X Input extension client library documented by X.Org.
+    - >
+      The X Input Extension and XI2 protocol are the underlying protocol layers xinput
+      exercises.
+    - Xorg is the server whose input devices and properties xinput queries and changes.
+    - >
+      xinput-gui is a small graphical wrapper around xinput for users who want immediate
+      property editing.
+  sources:
+    - https://gitlab.freedesktop.org/api/v4/projects/xorg%2Fapp%2Fxinput
+    - https://gitlab.freedesktop.org/xorg/app/xinput
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xinput.1.html
+    - https://xorg.freedesktop.org/archive/X11R7.7/doc/inputproto/XI2proto.txt
+    - https://xorg.freedesktop.org/releases/X11R7.7/doc/libXi/inputlib.html
+  summary:
+    - >
+      xinput is the X.Org command-line utility for inspecting, testing, and changing X
+      Input extension devices. It is the terminal user's bridge to X11 keyboards, mice,
+      touchpads, tablets, buttons, valuators, feedbacks, properties, and XI2 event
+      testing.
+  timeline:
+    - "1996-1997: the xinput manpage records Frederic Lepied's copyright."
+    - '2008: later xinput authorship/copyright credits include Philip Langdale.'
+    - >
+      2009-10: X Input Extension 2.0 is initially released, according to the XI2
+      protocol specification.
+    - '2011-12: XI2.1 adds new raw event behavior and smooth scrolling support.'
+    - '2012-03: XI2.2 adds multitouch support.'
+    - '2018-07-29: the xorg/app/xinput project appears in freedesktop.org GitLab metadata.'
+  usage:
+    - >
+      Common commands include listing devices, querying a device's long information,
+      listing properties, setting a property, changing a button map, switching
+      absolute/relative mode, watching property changes, and testing events. Device
+      arguments may be names or X ids, and properties may be names or Atom values.
+    - >
+      Package users reach for xinput when a touchpad is too sensitive, a mouse button
+      needs remapping, a tablet reports unexpected axes, a device needs disabling for a
+      session, or an X client is not receiving expected input events. It is both an
+      everyday workaround tool and a developer diagnostic for the X Input extension.
 tags:
   - cli
   - input-devices
@@ -21,24 +100,27 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - Official X.Org GitLab project URL in source_facts.homepage
-    - 'source_facts.description: Utility to configure and test X input devices'
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xinput.1.html
   display-name-sources:
-    - Official X.Org GitLab project page
-    - source_facts.name
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xinput.1.html
   docs-sources:
-    - Official X.Org xinput manual page
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xinput.1.html
+  history-sources:
+    - https://gitlab.freedesktop.org/api/v4/projects/xorg%2Fapp%2Fxinput
+    - https://gitlab.freedesktop.org/xorg/app/xinput
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xinput.1.html
+    - https://xorg.freedesktop.org/archive/X11R7.7/doc/inputproto/XI2proto.txt
+    - https://xorg.freedesktop.org/releases/X11R7.7/doc/libXi/inputlib.html
   repo-sources:
-    - source_facts.homepage is the official X.Org GitLab source project
+    - https://gitlab.freedesktop.org/xorg/app/xinput
   tags-sources:
-    - Official X.Org xinput manual page
-    - source_facts.description
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xinput.1.html
+    - https://xorg.freedesktop.org/releases/X11R7.7/doc/libXi/inputlib.html
 category-confidence: high
 category-path:
   - system
-  - x11
-  - input-devices
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
