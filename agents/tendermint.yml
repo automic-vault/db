@@ -11,6 +11,97 @@ credentials-file-location:
   unix:
     - $TMHOME/config/priv_validator_key.json
     - $TMHOME/config/node_key.json
+history:
+  adoption-history:
+    - >
+      Tendermint's adoption is closely tied to Cosmos. Its ABCI model allowed the Cosmos
+      SDK and other applications to build application-specific blockchains while relying
+      on Tendermint for networking, mempool, consensus, and block replication.
+    - >
+      The later CometBFT project identifies itself as a fork and successor to Tendermint
+      Core, showing how the consensus engine continued under a new project identity
+      while preserving the Tendermint consensus lineage.
+    - >
+      Homebrew and Nix package coverage reflects a developer and operator audience:
+      people install the `tendermint` binary to initialize nodes, inspect configuration,
+      run local chains, or support blockchain development environments.
+  package-nerd-significance:
+    - >
+      Tendermint is significant in package-manager culture because it packages a full
+      consensus node as a normal CLI formula. Installing it pulls a complex
+      distributed-systems runtime into the same workflows as Go tools, local daemons,
+      and blockchain testnets.
+    - >
+      Its long pre-1.0 versioning and explicit upgrade warnings are also a packaging
+      lesson: patch versions were intended to preserve blockchain histories, while minor
+      bumps could require chain migration or restarts. That matters to maintainers
+      because the binary's version is part of network compatibility, not just local
+      tooling.
+  project-history:
+    - >
+      The Tendermint repository was created in May 2014. The project developed as a Go
+      implementation of BFT consensus with a generic application interface, later
+      documented as Tendermint Core and the Application Blockchain Interface.
+    - >
+      Official documentation describes Tendermint as two chief components: the
+      Tendermint Core consensus engine, which orders transactions consistently across
+      machines, and ABCI, which lets application logic be implemented in any programming
+      language. This separation made Tendermint a reusable engine rather than a
+      single-purpose blockchain.
+    - >
+      The README says Tendermint had been used in production in private and public
+      environments, most notably in blockchains of the Cosmos Network. It also notes
+      that the Tendermint Core feature set was later frozen for long-term support, with
+      v0.34.24 used by cosmoshub-4.
+  related-projects:
+    - >
+      Cosmos SDK is the most prominent related application framework in the Tendermint
+      ecosystem.
+    - CometBFT is the successor fork that implements the Tendermint consensus algorithm.
+    - >
+      Related libraries and applications named in the README include tendermint-rs, ABCI
+      Tower, Cosmos Hub, Terra, Celestia, Anoma, and Vocdoni.
+  sources:
+    - https://api.github.com/repos/tendermint/tendermint
+    - https://docs.tendermint.com/v0.33/introduction/what-is-tendermint.html
+    - https://docs.tendermint.com/v0.34/app-dev/getting-started.html
+    - https://docs.tendermint.com/v0.34/tendermint-core/configuration.html
+    - https://github.com/cometbft/cometbft#readme
+    - https://github.com/tendermint/tendermint#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      Tendermint Core is a Byzantine Fault Tolerant state-machine replication engine
+      used as blockchain consensus middleware. Its README describes it as software that
+      takes a state transition machine written in any programming language and securely
+      replicates it across many machines.
+  timeline:
+    - '2014: Tendermint GitHub repository created.'
+    - >
+      2018: The Tendermint BFT consensus paper was linked from the README as protocol
+      analysis.
+    - >
+      2020s: README described production use in private and public environments,
+      especially Cosmos Network blockchains.
+    - >
+      2020s: Tendermint Core feature set frozen for LTS, with v0.34.24 identified as the
+      stable release used by cosmoshub-4.
+    - '2020s: CometBFT became the fork and successor to Tendermint Core.'
+  usage:
+    - >
+      The official configuration docs say Tendermint Core uses
+      `$TMHOME/config/config.toml` and that `tendermint init` creates a default
+      configuration. The same configuration references `config/genesis.json`,
+      `config/priv_validator_key.json`, and `config/node_key.json`, which are central
+      files for running a node.
+    - >
+      The getting-started docs present Tendermint as one process paired with a separate
+      application process. Tendermint handles P2P and consensus, then forwards
+      transactions to the application for validation and commit through ABCI.
+    - >
+      For package users, this makes the command both a node daemon and a development
+      tool: it can bootstrap config directories, run local test networks, and connect
+      arbitrary ABCI applications to a BFT consensus layer.
 tags:
   - abci
   - bft
@@ -30,31 +121,37 @@ geiger:
     - text:programming language,repl
 provenance:
   category-sources:
-    - >
-      Official Tendermint Core docs describe a blockchain application platform and BFT
-      state machine replication.
-    - >
-      source_facts.description says Tendermint provides BFT state machine replication
-      for applications in any programming language.
+    - current_curation.category
+    - https://github.com/tendermint/tendermint#readme
+    - source_facts.description
   display-name-sources:
-    - Official documentation is titled Tendermint Core documentation.
-    - source_facts.name is tendermint.
+    - current_curation.display-name
+    - https://github.com/tendermint/tendermint#readme
   docs-sources:
-    - Official Tendermint Core documentation is hosted at docs.tendermint.com.
+    - current_curation.docs
+    - https://docs.tendermint.com/
+    - https://github.com/tendermint/tendermint#readme
+  history-sources:
+    - https://api.github.com/repos/tendermint/tendermint
+    - https://docs.tendermint.com/v0.33/introduction/what-is-tendermint.html
+    - https://docs.tendermint.com/v0.34/app-dev/getting-started.html
+    - https://docs.tendermint.com/v0.34/tendermint-core/configuration.html
+    - https://github.com/cometbft/cometbft#readme
+    - https://github.com/tendermint/tendermint#readme
+    - source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo is already populated with
-      https://github.com/tendermint/tendermint, so repo is returned as null per
-      instruction.
+      source_facts.repo already supplies https://github.com/tendermint/tendermint;
+      prompt requires repo null when already supplied.
   tags-sources:
-    - Official Tendermint docs describe blockchain applications, BFT SMR, and ABCI.
-    - source_facts.description mentions BFT state machine replication.
+    - current_curation.tags
+    - https://docs.tendermint.com/v0.33/introduction/what-is-tendermint.html
+    - https://github.com/tendermint/tendermint#readme
 category-confidence: high
 category-path:
   - developer-tools
-  - blockchain
-  - consensus
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

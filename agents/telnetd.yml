@@ -10,6 +10,76 @@ config-file-location:
     - /etc/gettytab
     - /etc/iptos
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      telnetd was historically the server counterpart to the ubiquitous telnet client
+      and was commonly launched from an internet super-server. As secure shell became
+      the expected remote-login mechanism, telnetd moved from default infrastructure to
+      an optional package used for legacy environments, labs, embedded-device testing,
+      and protocol compatibility.
+    - >
+      Its narrower package-manager footprint compared with the telnet client reflects
+      that shift: installing a TELNET server is operationally riskier and less common
+      than keeping a TELNET client for diagnostics.
+  package-nerd-significance:
+    - >
+      telnetd is significant as the daemon half of one of the Internet's oldest terminal
+      protocols. Its optional packaging documents the post-SSH fate of insecure network
+      daemons: retained for compatibility and testing, but separated from default
+      installs.
+    - >
+      The formula is also useful to people studying inetd-era service activation,
+      terminal negotiation, and the historical relationship between network daemons,
+      `/etc/services`, and login programs.
+  project-history:
+    - >
+      Like the client, telnetd belongs to the BSD TCP/IP remote-command family, with
+      University of California copyright dates beginning in 1983. Its manual history and
+      FreeBSD provenance show the daemon as operating-system infrastructure rather than
+      a new standalone application.
+    - >
+      The daemon implements the protocol standardized by RFC 854 and the option
+      negotiation system documented by RFC 855. The manpage describes support for line
+      mode, authentication modes when compiled in, optional encryption debugging, TCP
+      keep-alives, TOS settings, alternate login programs, and manual debug startup.
+  related-projects:
+    - telnet is the companion client.
+    - >
+      inetd and login are part of the traditional operating-system context in which
+      telnetd runs.
+    - sshd replaced telnetd for secure interactive remote login on modern systems.
+  sources:
+    - https://github.com/apple-oss-distributions/remote_cmds/blob/main/telnetd/telnetd.8
+    - https://www.rfc-editor.org/rfc/rfc854.txt
+    - https://www.rfc-editor.org/rfc/rfc855.txt
+    - source_facts.package-manager
+  summary:
+    - >
+      telnetd is the server-side daemon for the TELNET virtual terminal protocol. The
+      Apple-distributed BSD manpage describes it as a DARPA TELNET protocol server
+      normally invoked by `inetd` for requests to the TELNET port listed in
+      `/etc/services`.
+  timeline:
+    - '1983: RFC 854 standardized TELNET.'
+    - '1983: RFC 855 specified TELNET option documentation and assignment.'
+    - >
+      1983-1994: BSD telnetd manpage lineage records University of California copyrights
+      and Berkeley manual revisions.
+    - >
+      2005: FreeBSD provenance in the manpage reflects continued maintenance of the
+      BSD-derived daemon.
+  usage:
+    - >
+      The manpage says telnetd is normally invoked by `inetd`, but can be started
+      manually with debugging enabled and an alternate TCP port. It delegates user
+      verification to `login` unless authentication support and stricter modes are
+      configured.
+    - >
+      In the package-nerd niche, telnetd is mostly used to recreate old Unix
+      remote-login behavior, test TELNET option negotiation, exercise clients, or run
+      controlled legacy services. It is rarely a recommended production remote-access
+      daemon.
 tags:
   - cli
   - daemon
@@ -20,29 +90,34 @@ tags:
   - telnet
 provenance:
   category-sources:
-    - Official Apple telnetd manual describes a DARPA TELNET protocol server.
-    - source_facts.description says telnetd is a TELNET server.
+    - current_curation.category
+    - https://github.com/apple-oss-distributions/remote_cmds/blob/main/telnetd/telnetd.8
+    - source_facts.description
   display-name-sources:
-    - Official Apple source tree and man page use the command name telnetd.
-    - source_facts.name is telnetd.
+    - current_curation.display-name
+    - https://github.com/apple-oss-distributions/remote_cmds/blob/main/telnetd/telnetd.8
   docs-sources:
-    - >
-      Official Apple source distribution includes telnetd/telnetd.8, whose DESCRIPTION
-      and FILES sections document telnetd and related system files.
+    - current_curation.docs
+    - https://github.com/apple-oss-distributions/remote_cmds/blob/main/telnetd/telnetd.8
+  history-sources:
+    - https://github.com/apple-oss-distributions/remote_cmds/blob/main/telnetd/telnetd.8
+    - https://www.rfc-editor.org/rfc/rfc854.txt
+    - https://www.rfc-editor.org/rfc/rfc855.txt
+    - source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo is already populated with
-      https://github.com/apple-oss-distributions/remote_cmds, so repo is returned as
-      null per instruction.
+      source_facts.repo already supplies
+      https://github.com/apple-oss-distributions/remote_cmds; prompt requires repo null
+      when already supplied.
   tags-sources:
-    - Official Apple source tree contains telnetd daemon source and manual page.
-    - source_facts.description identifies a TELNET server.
+    - current_curation.tags
+    - https://github.com/apple-oss-distributions/remote_cmds/blob/main/telnetd/telnetd.8
+    - https://www.rfc-editor.org/rfc/rfc854.txt
 category-confidence: high
 category-path:
   - networking
-  - remote-access
-  - protocol-server
 display-name-confidence: high
-docs-confidence: medium
+docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
