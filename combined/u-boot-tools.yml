@@ -1,11 +1,102 @@
 id: brew:u-boot-tools
 display-name: U-Boot Tools
 homepage: https://www.denx.de/wiki/U-Boot/
-repo: https://source.denx.de/u-boot/u-boot.git
+repo: https://source.denx.de/u-boot/u-boot
 docs:
   - https://docs.u-boot.org/en/latest
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      U-Boot became a de facto standard boot loader for embedded Linux devices because
+      it covers many CPU architectures and board families. The current project site
+      describes it as available for ARM, MIPS, PowerPC, RISC-V, x86, and x86_64, and
+      says its purpose is hardware initialization and booting the operating-system
+      kernel.
+    - >
+      Package-manager adoption splits the full firmware tree from host-side utilities.
+      The batch input lists u-boot-tools packages for Homebrew, Debian, Ubuntu, Alpine,
+      and openSUSE, reflecting the common distribution pattern of shipping mkimage-style
+      utilities as developer tools on ordinary Unix workstations.
+  package-nerd-significance:
+    - >
+      For package nerds, u-boot-tools is a classic example of extracting useful host
+      programs from a much larger cross-compiled firmware project. It matters because
+      the artifacts it creates sit at the boundary between OS packaging, embedded-board
+      bring-up, and boot-chain reproducibility.
+    - >
+      The package is also a useful dependency in build farms: it lets a normal macOS or
+      Linux package manager provide the same image-building primitives expected by
+      embedded Linux build systems, without asking the user to build or flash U-Boot
+      itself.
+  project-history:
+    - >
+      U-Boot began in the PowerPC embedded Linux world as an MPC 8xx boot loader. DENX
+      describes the project as having started more than 20 years ago under Wolfgang
+      Denk, with the early PPCBoot line renamed to U-Boot when the project expanded
+      beyond PowerPC.
+    - >
+      The DENX project history records PPCBoot 2.0.0 as the last PPCBoot release on
+      October 31, 2002, followed by U-Boot 0.1.0 in November 2002 with x86 support.
+      Architecture support then broadened through MIPS32, MIPS64, Nios II, ColdFire, and
+      MicroBlaze, and by the May 2004 U-Boot 1.1.2 release the tree supported products
+      from 216 board manufacturers.
+    - >
+      The packaged u-boot-tools subset follows from U-Boot's own build system. Current
+      U-Boot documentation explicitly documents a tools-only defconfig and tools-only
+      make target so distributions can build generic host utilities without a
+      target-specific board build.
+  related-projects:
+    - PPCBoot and ARMBoot are direct historical relatives named in the DENX project history.
+    - >
+      FIT, device tree tooling, embedded Linux build systems, and board-support packages
+      are the practical ecosystem around the packaged host tools.
+  sources:
+    - >
+      https://docs.u-boot.org/en/latest/build/tools.html documents tools-only builds for
+      distribution-style host utilities.
+    - >
+      https://docs.u-boot.org/en/latest/usage/fit/index.html documents FIT as U-Boot's
+      standard image packaging format.
+    - >
+      https://u-boot-project.org/ describes U-Boot's current purpose, architectures,
+      source, documentation, release, and community resources.
+    - >
+      https://www.denx.de/project/u-boot/ documents the PPCBoot-to-U-Boot history,
+      architecture expansion, and broad board adoption.
+    - >
+      source_facts.executables and source_facts.package-manager identify the packaged
+      host commands and package-manager availability.
+  summary:
+    - >
+      U-Boot Tools is the host-utility packaging surface for Das U-Boot, the widely used
+      open source boot loader for embedded systems. Package managers expose tools such
+      as mkimage, dumpimage, and mkenvimage so developers and release engineers can
+      create or inspect bootable images without installing a board-specific firmware
+      build.
+  timeline:
+    - '1999: The precursor project starts in the MPC 8xx PowerPC boot-loader lineage.'
+    - >
+      2002: PPCBoot 2.0.0 is released and the project transitions to U-Boot 0.1.0 as
+      architecture support expands.
+    - >
+      2004: U-Boot 1.1.2 supports products from 216 board manufacturers, according to
+      DENX's project history.
+    - >
+      2026: The U-Boot project site lists v2026.04 as the latest stable release and
+      links the current source, downloads, documentation, and mailing list.
+  usage:
+    - >
+      U-Boot documentation says host tools are built with make tools-only_defconfig
+      followed by make tools-only. In package form, those utilities are used to build
+      and inspect images, environment blobs, and related artifacts from CI systems,
+      cross-build hosts, and developer laptops.
+    - >
+      The U-Boot FIT documentation describes FIT as a standard file format used by
+      U-Boot for packaging images it reads and boots. That makes mkimage and dumpimage
+      especially important outside the firmware tree: they let package builders, board
+      vendors, and distro maintainers prepare boot assets reproducibly.
 category: system
 package-manager:
   apk: u-boot-tools

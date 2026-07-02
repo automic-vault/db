@@ -5,6 +5,73 @@ docs:
   - https://github.com/houseabsolute/ubi#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ubi is adopted in package-nerd workflows where users want a lightweight installer
+      for GitHub-release binaries without writing a custom curl, tar, and grep script
+      for each tool. The batch input lists Homebrew and winget availability, reflecting
+      its cross-platform installer niche.
+    - >
+      Release notes show the project responding to real packaging edge cases: asset
+      names that contain misleading numbers, Android targets, musl versus glibc Linux
+      assets, private repositories, and minimum release age to reduce supply-chain risk.
+  package-nerd-significance:
+    - >
+      ubi matters because GitHub Releases became an unofficial binary distribution layer
+      for many small CLIs. A generic installer for those releases sits between full
+      package managers and one-off install scripts.
+    - >
+      For Homebrew users, the amusing recursion is that a package manager can install
+      ubi, and ubi can then install tools that are not packaged or are wanted directly
+      from upstream release artifacts.
+  project-history:
+    - >
+      The official repository describes ubi as the Universal Binary Installer. Its
+      release page shows a 0.x project with signed tags, many platform-specific release
+      assets, and continuing changes around asset selection, platform matching, Android
+      support, libc matching, private-repository downloads, and supply-chain safety.
+    - >
+      The project is maintained by Dave Rolsky under the houseabsolute namespace and is
+      distributed under Apache-2.0 OR MIT in the batch input. Its own releases are
+      themselves a demonstration of the problem it solves: the v0.9.0 release publishes
+      many per-platform archives and checksum assets.
+  related-projects:
+    - GitHub Releases are the primary ecosystem surface for ubi's installer model.
+    - >
+      Homebrew and winget provide native package-manager distribution for ubi itself
+      according to the batch input.
+  sources:
+    - >
+      https://github.com/houseabsolute/ubi identifies the project as The Universal
+      Binary Installer.
+    - >
+      https://github.com/houseabsolute/ubi/releases documents release history, platform
+      assets, asset-matching changes, private-repository handling, Android support, libc
+      matching, and the --min-age-days supply-chain feature.
+    - source_facts.package-manager identifies Homebrew and winget availability.
+  summary:
+    - >
+      ubi, the Universal Binary Installer, is a small CLI for installing prebuilt
+      binaries from GitHub releases and similar release pages. It belongs to the newer
+      generation of package-helper tools that automate the common shell-script pattern
+      of selecting the right OS and CPU asset, downloading it, and putting the binary on
+      PATH.
+  timeline:
+    - >
+      2024-2026: The visible release history is in the 0.x series, with repeated changes
+      around release-asset matching and platform support.
+    - '2026: v0.9.0 is released with --min-age-days for release-age filtering.'
+  usage:
+    - >
+      ubi is used to pick a matching release artifact for the current platform, download
+      it, and install the contained binary. Its package-nerd use case is bootstrapping
+      CLI tools from upstream release assets when a native package does not exist or
+      when the user wants upstream's current binary.
+    - >
+      The v0.9.0 release added a --min-age-days flag to consider only releases at least
+      a specified age, explicitly framed by the project as useful for mitigating
+      supply-chain attacks.
 tags:
   - binary-installer
   - cli
@@ -21,26 +88,36 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description says Universal Binary Installer; official GitHub homepage
-      is https://github.com/houseabsolute/ubi.
+    - current_curation.category_path
+    - 'source_facts.description: Universal Binary Installer'
   display-name-sources:
-    - source_facts.name and official GitHub repository identify the project as ubi.
+    - current_curation.display-name
+    - source_facts.name
   docs-sources:
-    - Official GitHub README is the primary documentation surface for ubi.
+    - current_curation.docs
+    - source_facts.homepage
+  history-sources:
+    - >
+      https://github.com/houseabsolute/ubi identifies the project as The Universal
+      Binary Installer.
+    - >
+      https://github.com/houseabsolute/ubi/releases documents release history, platform
+      assets, asset-matching changes, private-repository handling, Android support, libc
+      matching, and the --min-age-days supply-chain feature.
+    - source_facts.package-manager identifies Homebrew and winget availability.
   repo-sources:
     - >
-      source_facts.repo already provides https://github.com/houseabsolute/ubi; per
-      instruction repo is returned as null.
+      source_facts.repo is already https://github.com/houseabsolute/ubi; per prompt,
+      repo is returned as null instead of re-determining it.
   tags-sources:
-    - >
-      source_facts.description says Universal Binary Installer; current_curation.tags
-      includes cli.
+    - current_curation.tags
+    - source_facts.description
+    - source_facts.executables
 category-confidence: high
 category-path:
   - developer-tools
-  - installers
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
