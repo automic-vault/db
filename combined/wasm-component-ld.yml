@@ -7,6 +7,57 @@ docs:
   - https://github.com/bytecodealliance/wasm-component-ld#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      wasm-component-ld follows the broader Bytecode Alliance push around WASI and the
+      component model. The official component-model documentation frames components as a
+      way to build interoperable WebAssembly libraries, applications, and environments,
+      with user documentation for building, using, composing, and distributing
+      components.
+  package-nerd-significance:
+    - >
+      Its significance is not broad end-user adoption but toolchain plumbing. For
+      package maintainers, it marks the arrival of component-model-specific linker
+      binaries as installable system tools, similar to how `wasm-ld`, `wasm-tools`, and
+      `wit-bindgen` occupy distinct slots in a modern Wasm toolchain.
+  project-history:
+    - >
+      The repository was created on December 12, 2023, as the component model was
+      becoming a practical build target rather than only a specification. Its README
+      describes the binary as a wrapper around two operations: invoking the LLVM
+      `wasm-ld` linker driver and then using `wit_component::ComponentEncoder` to
+      produce a final component.
+    - >
+      The project is intentionally small and specialized. It exists because
+      component-model artifacts need more than a core Wasm link step: metadata, WIT
+      interfaces, adapters, and component encoding have to line up with the component
+      model's interoperability contract.
+  related-projects:
+    - >
+      Related Bytecode Alliance tooling includes wasm-tools for inspecting and
+      manipulating modules and components, wit-bindgen for interface bindings,
+      cargo-component for Rust component builds, and LLVM's wasm-ld linker.
+  sources:
+    - https://api.github.com/repos/bytecodealliance/wasm-component-ld
+    - https://component-model.bytecodealliance.org/
+    - https://github.com/bytecodealliance/wasm-component-ld
+  summary:
+    - >
+      wasm-component-ld is a Bytecode Alliance command-line linker for producing
+      WebAssembly components. It sits at the boundary between traditional object linking
+      and the WebAssembly component model, wrapping LLVM's `wasm-ld` flow and then
+      componentizing the result.
+  timeline:
+    - '2023-12-12: Public GitHub repository created.'
+    - '2024-2026: Releases track ongoing component-model tooling work.'
+    - '2026-06-12: GitHub releases list v0.5.25 as the latest release at research time.'
+  usage:
+    - >
+      The package is used by developers and language toolchain authors who need a
+      command-line linker that emits a component rather than only a core module. In
+      practice it belongs near C, C++, and other non-Rust workflows where LLVM already
+      produces Wasm object files and the final artifact must become a component.
 category: developer-tools
 package-manager:
   apk: wasm-component-ld

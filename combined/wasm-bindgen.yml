@@ -7,6 +7,89 @@ docs:
   - https://wasm-bindgen.github.io/wasm-bindgen/reference/cli.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      wasm-bindgen became the base layer for the higher-level Rust/Wasm web workflow.
+      The 2019 Rust and WebAssembly roadmap treated the ecosystem as moving from usable
+      to stable and production-ready, with wasm-pack, testing, profiling, debugging, and
+      library work all depending on reliable JavaScript interop.
+    - >
+      Its adoption spread because it matched JavaScript packaging expectations:
+      generated ECMAScript modules, optional TypeScript declarations, browser, bundler,
+      and Node-oriented output targets, and integration through wasm-pack. MDN's
+      Rust-to-Wasm guide still teaches Rust WebAssembly by using wasm-pack and
+      wasm-bindgen together.
+  package-nerd-significance:
+    - >
+      wasm-bindgen matters because it turned Rust-generated Wasm from a numeric
+      foreign-function interface into something that could be packaged like JavaScript.
+      It is also a snapshot of WebAssembly ecosystem history: before the component model
+      matures everywhere, it acts as a practical polyfill-like bridge for high-level
+      interop.
+  project-history:
+    - >
+      The wasm-bindgen repository was created on December 18, 2017, during the early
+      Rust and WebAssembly working-group push to make Rust a first-class WebAssembly
+      language. In April 2018, Alex Crichton introduced it on Mozilla Hacks as the
+      bridge that hid the boilerplate needed for strings, exceptions, objects, DOM APIs,
+      and JavaScript imports or exports.
+    - >
+      The project was built around the `#[wasm_bindgen]` annotation and a CLI
+      postprocessing step. The design let Rust libraries describe binding metadata in
+      the Wasm output, after which the CLI generated JavaScript wrappers and adjusted
+      imports. Its own guide still describes it as both a Rust library and a CLI for
+      high-level interactions between Wasm modules and JavaScript.
+    - >
+      In July 2025, the Rust project announced that the old `rustwasm` GitHub
+      organization would be archived after a long inactive period, but wasm-bindgen
+      would be transferred into a dedicated `wasm-bindgen` organization with additional
+      maintainers. That made wasm-bindgen the survivor of the first Rust/Wasm
+      working-group wave rather than only a historical artifact.
+  related-projects:
+    - >
+      wasm-pack wraps wasm-bindgen for npm-oriented packages. `js-sys`, `web-sys`, and
+      `wasm-bindgen-futures` provide adjacent bindings and async support in the same
+      ecosystem.
+  sources:
+    - https://api.github.com/repos/wasm-bindgen/wasm-bindgen
+    - https://blog.rust-lang.org/inside-rust/2025/07/21/sunsetting-the-rustwasm-github-org/
+    - https://developer.mozilla.org/en-US/docs/WebAssembly/Guides/Rust_to_Wasm
+    - https://hacks.mozilla.org/2018/04/javascript-to-rust-and-back-again-a-wasm-bindgen-tale/
+    - https://rustwasm.github.io/rfcs/007-2019-roadmap.html
+    - https://wasm-bindgen.github.io/wasm-bindgen/
+    - https://wasm-bindgen.github.io/wasm-bindgen/reference/cli.html
+  summary:
+    - >
+      wasm-bindgen is the central Rust-to-JavaScript binding generator for WebAssembly.
+      It pairs a Rust crate and procedural macro with a command-line postprocessor that
+      emits JavaScript glue, TypeScript declarations, and a processed `.wasm` artifact
+      so Rust code can interact with richer JavaScript values than core WebAssembly's
+      numeric ABI.
+  timeline:
+    - '2017-12-18: Public GitHub repository created.'
+    - '2018-04-04: Mozilla Hacks publishes a detailed wasm-bindgen introduction.'
+    - >
+      2019-01-23: Rust/Wasm roadmap calls for a production-ready, batteries-included
+      ecosystem around the tooling.
+    - >
+      2025-07-21: Rust announces rustwasm sunsetting and wasm-bindgen transfer to a
+      dedicated organization.
+    - >
+      2026-06-24: GitHub releases show active 0.2.x releases continuing under the new
+      organization.
+  usage:
+    - >
+      A developer writes Rust functions, structs, imports, or exports annotated with
+      `#[wasm_bindgen]`, compiles the crate for `wasm32-unknown-unknown`, then runs
+      `wasm-bindgen` against the `.wasm` file. The CLI's `--out-dir` and `--target`
+      options control where generated bindings go and whether the output is intended for
+      bundlers, the browser, or Node.js.
+    - >
+      For package maintainers, wasm-bindgen is often invisible behind wasm-pack, but it
+      is the piece that decides the JavaScript surface area: it emits the `.js` shim,
+      `.d.ts` declarations, processed Wasm file, imports, exports, and metadata needed
+      by downstream JavaScript tooling.
 category: developer-tools
 package-manager:
   apk: wasm-bindgen
