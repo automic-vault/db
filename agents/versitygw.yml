@@ -8,6 +8,73 @@ config-file-location:
   linux:
     - /etc/versitygw.d/*.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      VersityGW's adoption story is mostly early and infrastructure-specific. Its GitHub
+      project has grown into an active repository with substantial commit history,
+      issues, discussions, and a wiki, while Versity positions it for hybrid storage
+      environments where S3 clients need access to file-based systems.
+  package-nerd-significance:
+    - >
+      For infrastructure packagers, VersityGW is interesting because it packages a
+      narrow but useful bridge: S3 semantics over ordinary or existing storage. It is
+      the kind of tool that matters in labs, archives, and HPC environments where
+      applications increasingly speak S3 but the durable storage estate may still be
+      POSIX, NAS, tape-adjacent, or otherwise non-cloud-native.
+  project-history:
+    - >
+      The public repository was created on May 5, 2023, with early v0.x releases
+      following in June and July 2023. Versity describes the gateway as built from
+      scratch in Go and designed to meet a community need for a reliable,
+      high-performance object-to-file translation layer.
+    - >
+      The project is tied to Versity's storage product ecosystem but is presented as a
+      community-oriented open-source gateway. Official materials name Los Alamos
+      National Laboratory and the Pawsey Supercomputing Research Centre as
+      collaborators, which places the tool in the research/HPC storage world rather than
+      only in generic cloud emulation.
+  related-projects:
+    - 'AWS S3: the object API model VersityGW implements for clients.'
+    - >
+      POSIX filesystems and Versity ScoutFS: important backend targets described by the
+      project.
+    - >
+      Azure Blob Storage and other S3 servers: additional backends listed in the
+      official README.
+  sources:
+    - https://api.github.com/repos/versity/versitygw
+    - https://api.github.com/repos/versity/versitygw/releases?per_page=100
+    - https://github.com/versity/versitygw
+    - https://github.com/versity/versitygw/wiki
+    - https://www.versity.com/products/versitygw/
+    - https://www.versity.com/versity-s3-gateway-posix-backend/
+  summary:
+    - >
+      VersityGW is an Apache-2.0 open-source S3 gateway written in Go. Its purpose is to
+      translate S3 object requests into operations on existing storage backends,
+      especially POSIX file storage, so S3-oriented applications can use non-object or
+      hybrid storage systems.
+  timeline:
+    - '2023-05-05: GitHub repository created.'
+    - '2023-06-07: First GitHub release, v0.1, published.'
+    - '2026-02-09: GitHub wiki home page revised with project goals and background.'
+    - >
+      2026-04-07: Versity published POSIX-backend guidance describing transparent
+      object-key to path mapping.
+  usage:
+    - >
+      Typical use is to run `versitygw` as an S3-compatible HTTP service in front of a
+      backend such as a local POSIX filesystem, Versity ScoutFS, Azure Blob Storage, or
+      another S3 server. The README emphasizes single-command local filesystem serving,
+      S3 proxying, static website hosting, and stateless clustered deployment behind
+      load balancers.
+    - >
+      A central design point for the POSIX backend is transparent object-to-file
+      mapping: object keys are represented as predictable filesystem paths rather than
+      opaque internal objects. That makes the gateway attractive to administrators who
+      want S3 API compatibility without giving up direct filesystem access for backup,
+      inspection, or migration workflows.
 tags:
   - cli
   - filesystem
@@ -25,31 +92,29 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description says Versity S3 Gateway; official repository describes a
-      high-performance S3 translation service and object storage gateway.
+    - current_curation.category
   display-name-sources:
-    - >
-      source_facts.name is versitygw; official repository and product page use
-      VersityGW/Versity Gateway branding.
+    - current_curation.display-name
   docs-sources:
-    - >
-      Official repository README says project documentation is on the GitHub wiki and
-      links to README documentation sections.
+    - current_curation.docs
+    - https://github.com/versity/versitygw/wiki
+  history-sources:
+    - https://api.github.com/repos/versity/versitygw
+    - https://api.github.com/repos/versity/versitygw/releases?per_page=100
+    - https://github.com/versity/versitygw
+    - https://github.com/versity/versitygw/wiki
+    - https://www.versity.com/products/versitygw/
+    - https://www.versity.com/versity-s3-gateway-posix-backend/
   repo-sources:
-    - >
-      source_facts.repo already populated with https://github.com/versity/versitygw; per
-      instruction, repo returned as null.
+    - source_facts.repo
   tags-sources:
-    - >
-      source_facts.description identifies S3 Gateway; official README topics include
-      filesystem, s3, s3-storage, and object-storage.
+    - current_curation.tags
+    - https://www.versity.com/products/versitygw/
 category-confidence: high
 category-path:
   - cloud-infrastructure
-  - storage
-  - object-storage
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
