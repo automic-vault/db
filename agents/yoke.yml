@@ -1,10 +1,79 @@
 id: brew:yoke
 display-name: yoke
-repo: null
+repo: https://github.com/yokecd/yoke
 docs:
   - https://yokecd.github.io/docs
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Yoke is still pre-1.0, and its changelog explicitly says backwards compatibility
+      is not guaranteed before v1.0.0. Adoption should therefore be read as early
+      platform-engineering experimentation rather than mature cluster-standard tooling.
+    - >
+      Its visible niche is among Kubernetes users frustrated with raw YAML and text
+      templating, especially teams interested in wasm as a portable package format and
+      code-first GitOps workflows.
+  package-nerd-significance:
+    - >
+      Yoke is package-nerd interesting because it reframes a Kubernetes package as an
+      executable artifact instead of a directory of templates. That pulls together
+      package managers, wasm runtimes, language module ecosystems, GitOps, and
+      Kubernetes apply semantics in one CLI.
+    - >
+      The project is also a good example of a pre-1.0 package where Homebrew
+      availability can precede broad stability: useful for early adopters, but the
+      package history should preserve the compatibility caveat.
+  project-history:
+    - >
+      The `yokecd/yoke` repository was created on 2024-02-14. The project documentation
+      presents Yoke as infrastructure as code for Kubernetes resource management, built
+      around real programming languages, native control flow, type checking, compiler
+      guarantees, testing, linters, and normal software-engineering tooling.
+    - >
+      Yoke's central abstraction is the Flight, explicitly analogous to a Helm Chart. A
+      Flight is both the code that describes Kubernetes resources and the packaged wasm
+      executable that emits the desired resources for deployment. The docs also describe
+      related pieces including a client-side CLI, Helm compatibility, an ArgoCD
+      config-management plugin, a server-side controller, Air Traffic Controller, and a
+      Go SDK.
+  related-projects:
+    - Helm is the comparison point for Charts and release management.
+    - >
+      Timoni, CUE, Jsonnet, PKL, and other structured-data/IaC tools are named in Yoke's
+      docs as neighboring approaches.
+    - Wazero is the Go wasm runtime embedded by Yoke.
+    - ArgoCD integration and Air Traffic Controller are part of the wider Yoke project.
+  sources:
+    - https://api.github.com/repos/yokecd/yoke
+    - https://github.com/yokecd/yoke
+    - https://raw.githubusercontent.com/yokecd/yoke/main/CHANGELOG.md
+    - https://yokecd.github.io/docs/
+    - https://yokecd.github.io/docs/concepts/flights/
+  summary:
+    - >
+      Yoke is a newer Kubernetes package-management-as-code tool. It is Helm-inspired,
+      but instead of treating packages primarily as YAML templates, it treats packages,
+      called Flights, as programs compiled to WebAssembly that generate Kubernetes
+      resources.
+  timeline:
+    - '2024-02-14: `yokecd/yoke` GitHub repository created.'
+    - >
+      2025-2026: Changelog shows rapid pre-1.0 iteration across the CLI, Air Traffic
+      Controller, YokeCD, ArgoCD integration, checksum support, signing, and module
+      verification.
+    - '2026-04-08: Changelog records v0.20.12 and related atc/yokecd component releases.'
+  usage:
+    - >
+      Users install the `yoke` CLI from source, binaries, Homebrew, or Scoop, then
+      deploy a package with commands such as `yoke takeoff my-release
+      https://.../main.wasm.gz`. Flights output one resource, a list of resources, or
+      staged lists of resources to be applied as a single release.
+    - >
+      The package is most relevant when a team wants Helm-like release management but
+      wants package definitions authored in general-purpose languages and distributed
+      through language package ecosystems or wasm artifacts.
 tags:
   - cli
   - helm
@@ -22,31 +91,27 @@ geiger:
     - text:infrastructure
 provenance:
   category-sources:
-    - >
-      official yoke docs describe deploying code packages directly to Kubernetes with
-      the yoke CLI
-    - source_facts.description says Helm-inspired infrastructure-as-code package deployer
+    - https://yokecd.github.io/docs/
   display-name-sources:
-    - official docs title is yoke
-    - source_facts.name is yoke
+    - https://yokecd.github.io/docs/
   docs-sources:
-    - >
-      official yoke docs provide install, getting started, concepts, examples, and
-      ArgoCD plugin documentation
-    - source_facts.homepage is the official docs site
+    - https://yokecd.github.io/docs
+  history-sources:
+    - https://api.github.com/repos/yokecd/yoke
+    - https://github.com/yokecd/yoke
+    - https://raw.githubusercontent.com/yokecd/yoke/main/CHANGELOG.md
+    - https://yokecd.github.io/docs/
+    - https://yokecd.github.io/docs/concepts/flights/
   repo-sources:
-    - >
-      source_facts.repo already provides https://github.com/yokecd/yoke, so repo is
-      returned as null per instruction
+    - https://github.com/yokecd/yoke
   tags-sources:
-    - official docs describe Kubernetes package deployment and Helm compatibility
-    - source_facts.description mentions Helm-inspired IaC deployment
+    - https://yokecd.github.io/docs/
+    - https://yokecd.github.io/docs/concepts/flights/
 category-confidence: high
 category-path:
   - cloud-infrastructure
-  - kubernetes
-  - package-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

@@ -7,6 +7,89 @@ docs:
   - https://developers.yubico.com/yubikey-personalization
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      `ykpers` spread widely because early YubiKey deployments needed local programming
+      and inspection tools for OTP slots. The package appears across Homebrew,
+      Debian/Fedora-family packaging, Arch as `yubikey-personalization`, MacPorts, and
+      openSUSE naming, reflecting the normal Unix distribution path for a hardware-token
+      provisioning library.
+    - >
+      Its adoption later became legacy adoption. As YubiKeys gained FIDO U2F/FIDO2, PIV,
+      OATH, OpenPGP, and richer management surfaces, administrators increasingly needed
+      `ykman` and related newer tools, while `ykpers` remained important for old OTP
+      workflows and historical compatibility.
+  package-nerd-significance:
+    - >
+      `ykpers` is a useful package-history marker for the YubiKey ecosystem: it shows
+      the original OTP personalization model before modern multi-application YubiKey
+      management became the norm.
+    - >
+      For package nerds, it is also a concrete example of hardware support as distro
+      infrastructure: libusb access, udev rules, manpages, C libraries, and CLI tools
+      had to be packaged correctly so security hardware could be administered outside
+      vendor GUIs.
+  project-history:
+    - >
+      The yubikey-personalization repository was created on 2010-12-21 and describes the
+      package as a cross-platform library and command-line tool used to personalize,
+      meaning set an AES key on, YubiKeys. Its README documents a classic Autoconf C
+      project using libusb, optional JSON output, udev rules, manpages generated from
+      AsciiDoc, and companion tools such as `ykpersonalize`, `ykchalresp`, and `ykinfo`.
+    - >
+      The tool's documentation is intentionally low level. It warns that using
+      `ykpersonalize` can destroy the AES key in a YubiKey and make it unusable against
+      Yubico's validation server unless a new key is uploaded. That warning captures the
+      package's historical role: it was not just a viewer, but a provisioning utility
+      for the OTP secrets embedded in physical tokens.
+    - >
+      Yubico has since moved the ecosystem forward. The GitHub repository is archived,
+      and Yubico's developer page says the YubiKey Personalization package was announced
+      for end of life on 2025-02-19 and will reach end of life on 2026-02-19.
+  related-projects:
+    - >
+      YubiKey Manager (`ykman`) is the maintained successor-style CLI for broader
+      YubiKey configuration.
+    - >
+      yubico-c provides related YubiKey OTP parsing/support pieces referenced by the
+      personalization README.
+    - >
+      ykneomgr and u2f-host appear in older workflows for modes outside OTP on earlier
+      YubiKey generations.
+  sources:
+    - https://api.github.com/repos/Yubico/yubikey-personalization
+    - https://developers.yubico.com/yubikey-personalization/
+    - https://developers.yubico.com/yubikey-personalization/Manuals/ykpersonalize.1.html
+    - https://github.com/Yubico/yubikey-personalization
+    - https://raw.githubusercontent.com/Yubico/yubikey-personalization/master/README
+  summary:
+    - >
+      YubiKey Personalization, packaged as `ykpers`, is Yubico's older C library and
+      command-line toolset for programming YubiKey OTP slots. Its commands, especially
+      `ykpersonalize`, belong to the era when setting AES keys, public identities,
+      private identities, static passwords, and challenge-response behavior was the
+      central local administration task for YubiKey tokens.
+  timeline:
+    - '2010-12-21: Yubico creates the yubikey-personalization GitHub repository.'
+    - >
+      2010s: `ykpersonalize`, `ykchalresp`, and `ykinfo` are packaged across Unix-like
+      systems for OTP slot provisioning and inspection.
+    - '2023-12-22: Last recorded push in the archived GitHub repository metadata.'
+    - '2025-02-19: Yubico announces end of life for the YubiKey Personalization package.'
+    - "2026-02-19: Yubico's developer page states the package will reach end of life."
+  usage:
+    - >
+      The core command is `ykpersonalize`, used to write OTP-slot configuration such as
+      fixed identity, private identity, AES key, ticket flags, static-ticket mode,
+      strong-password options, access codes, and challenge-response behavior.
+      `ykchalresp` and `ykinfo` cover adjacent challenge-response and device-information
+      workflows.
+    - >
+      Because it programs token secrets, `ykpers` is a trust-boundary tool. It requires
+      local device permissions and can permanently alter how a YubiKey authenticates,
+      which is why its README and manpages are more like provisioning documentation than
+      ordinary CLI help.
 category: security
 package-manager:
   apk: ykpers
