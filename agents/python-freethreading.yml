@@ -6,6 +6,29 @@ docs:
   - https://docs.python.org/3/howto/free-threading-python.html
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Python Free-Threading is Homebrew's packaging of the free-threaded CPython build,
+    the CPython variant produced from the long-running effort to make the global
+    interpreter lock optional. The upstream work is tied to PEP 703 and entered public
+    Python releases with Python 3.13, where the Python documentation describes a build
+    that can run with the GIL disabled so threads may execute Python code in parallel on
+    multiple cores.
+  - >
+    Its adoption story is mostly an ecosystem-porting story rather than the launch of a
+    separate language. Package maintainers, especially maintainers of native extension
+    modules, have had to audit assumptions around interpreter state, locking, reference
+    handling, and wheel tagging. The community free-threading guide and compatibility
+    tracker grew around that need, giving maintainers and users a shared place to test
+    package support and document migration practices.
+  - >
+    In packaging terms, the formula sits beside the normal Python interpreter instead of
+    replacing it. Homebrew exposes versioned executables such as python3.14t, pip3.14t,
+    pydoc3.14t, idle3.14t, and wheel3.14t, letting practitioners create virtual
+    environments, install wheels, and run experiments against the free-threaded ABI
+    without disturbing their default Python. That makes it useful for concurrency
+    experiments, extension-porting work, CI jobs that probe free-threaded compatibility,
+    and early performance investigations for threaded workloads.
 tags:
   - cli
   - cpython
@@ -36,6 +59,13 @@ provenance:
     - >
       Official Python documentation has a dedicated Python support for free threading
       HOWTO and the main Python 3 documentation.
+  history-sources:
+    - https://docs.python.org/3/howto/free-threading-python.html
+    - https://peps.python.org/pep-0703/
+    - https://py-free-threading.github.io/
+    - https://github.com/python/cpython
+    - https://formulae.brew.sh/formula/python-freethreading
+    - source_facts.executables
   repo-sources:
     - >
       Official CPython repository README lists source code as
@@ -51,5 +81,6 @@ category-path:
   - free-threading
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

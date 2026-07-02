@@ -10,6 +10,33 @@ config-file-location:
     - $XDG_CONFIG_HOME/.pythranrc
     - .pythranrc
 credentials-file-location: null
+history:
+  - >
+    Pythran grew out of the scientific-Python need for fast numeric kernels without
+    rewriting whole modules in C, C++, or Fortran. By the time of its SciPy 2013 paper,
+    it was described as a young open source static compiler that turns modules written
+    in a subset of Python into native extension modules, deliberately trading some of
+    Python's dynamic flexibility for interprocedural optimization on array-heavy code.
+  - >
+    The project positioned itself as an ahead-of-time compiler for annotated Python and
+    NumPy code: users keep ordinary importable Python source, add Pythran export
+    declarations for the functions and signatures they want compiled, and receive native
+    modules with the same interface. Its documentation emphasizes scientific computing,
+    C++ generation, multi-core execution, SIMD use, and package-build integration,
+    including generating C++ that can be folded into a normal extension build.
+  - >
+    Adoption stayed specialized rather than broad application-framework adoption. A
+    FOSDEM 2018 talk framed Pythran as a six-year-old open source niche compiler, while
+    later SciPy documentation shows the project becoming part of the mainstream
+    scientific-Python build toolchain: SciPy 1.7 made Pythran a build dependency with an
+    opt-out path, and SciPy build notes document Pythran alongside Cython and
+    compiled-language dependencies.
+  - >
+    Practitioners use Pythran when a hot loop is already expressible as clean
+    Python/NumPy but needs native-code performance. It fits library maintainers who can
+    tolerate an ahead-of-time build step and users who want distribution through PyPI,
+    distro packages, or Homebrew without asking downstream users to call a JIT compiler
+    at runtime.
 category: developer-tools
 package-manager:
   apk: pythran
@@ -32,5 +59,13 @@ executables:
   - pythran-config
 provenance:
   formula: pythran
+  history-sources:
+    - https://proceedings.scipy.org/articles/Majora-8b375195-008
+    - https://archive.fosdem.org/2018/interviews/serge-guelton/
+    - https://pythran.readthedocs.io/
+    - https://pythran.readthedocs.io/en/latest/MANUAL.html
+    - https://docs.scipy.org/doc/scipy-1.15.3/dev/toolchain.html
+    - https://formulae.brew.sh/formula/pythran
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
