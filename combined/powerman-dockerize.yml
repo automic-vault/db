@@ -6,6 +6,28 @@ docs:
   - https://github.com/powerman/dockerize#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    dockerize is a small container-entrypoint utility maintained in the
+    `powerman/dockerize` repository and packaged by Homebrew as `powerman-dockerize` to
+    distinguish it from similarly named software. It belongs to the early Docker-era
+    class of helper binaries that made twelve-factor-style container startup less
+    awkward: render configuration from environment variables, wait for dependent
+    services, tail logs, and then exec the main process.
+  - >
+    The tool's README describes the canonical use case as an application with
+    configuration files whose values should be controlled by container environment
+    variables. That placed dockerize alongside utilities such as `docker-gen`, `gosu`,
+    and wait-for scripts: not an orchestrator, but glue code for images that need a
+    predictable startup sequence before Kubernetes init containers, Compose health
+    checks, or application-native readiness handling are enough.
+  - >
+    Practitioners use dockerize in Dockerfiles and entrypoint commands to template
+    config files, block startup until TCP, HTTP(S), Unix-socket, or database endpoints
+    are reachable, and forward multiple log files to stdout or stderr. Packaging through
+    Homebrew, Alpine, and MacPorts makes the binary easy to install for local image
+    builds and CI jobs, while container image distribution supports direct use inside
+    Docker-based workflows.
 category: developer-tools
 package-manager:
   apk: dockerize
@@ -23,5 +45,11 @@ executables:
   - dockerize
 provenance:
   formula: powerman-dockerize
+  history-sources:
+    - https://github.com/powerman/dockerize
+    - https://formulae.brew.sh/formula/powerman-dockerize
+    - https://hub.docker.com/r/powerman/dockerize/tags
+    - https://github.com/veggiemonk/awesome-docker
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium
