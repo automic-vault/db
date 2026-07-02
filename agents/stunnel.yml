@@ -1,12 +1,76 @@
 id: brew:stunnel
 display-name: stunnel
-repo: null
+repo: https://github.com/mtrojnar/stunnel
 docs:
   - https://www.stunnel.org/docs.html
 config-file-location:
   unix:
     - <config-folder>/stunnel.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The input package facts list stunnel in Homebrew, Alpine, Fedora/DNF, MacPorts,
+      Nix, Arch, Chocolatey, Scoop, WinGet, and openSUSE/Zypper. That breadth reflects
+      stunnel's role as a portable operational tool rather than a single-platform
+      utility.
+    - >
+      The official downloads page publishes source tarballs, Windows installers, Android
+      builds, signatures, checksums, and rsync-accessible code archives, showing a
+      release process designed for downstream packagers and administrators.
+  package-nerd-significance:
+    - >
+      stunnel matters to package nerds because it is a classic tiny Unix tool with a
+      huge compatibility surface: C code, OpenSSL linkage, service-manager integration,
+      certificate file handling, Windows installers, and distribution patches all meet
+      in one package.
+    - >
+      It is also a practical example of packaging security middleware. The package is
+      not exciting because it owns an application protocol; it is important because it
+      lets old or simple services survive in TLS-required environments.
+  project-history:
+    - >
+      The official changelog records stunnel 0.1 as a testing skeleton on 1998-02-10 and
+      stunnel 1.0 on 1998-02-11 as the first version with SSL support. That makes it one
+      of the older still-packaged command-line TLS utilities in Unix and Windows
+      ecosystems.
+    - >
+      The project has remained focused on wrapping arbitrary TCP services with SSL/TLS
+      rather than replacing the underlying application protocol. Its manual and HOWTO
+      present configuration as service sections that accept local connections and
+      connect or execute another service behind the encrypted layer.
+  related-projects:
+    - OpenSSL is the cryptographic library stunnel relies on for TLS functionality.
+    - TCP Wrappers/libwrap appears in the manual as an optional access-control integration.
+  sources:
+    - https://www.stunnel.org/
+    - https://www.stunnel.org/NEWS.html
+    - https://www.stunnel.org/downloads.html
+    - https://www.stunnel.org/manual.html
+    - https://www.stunnel.org/versions.html
+    - input.source_facts.package-manager
+  summary:
+    - >
+      stunnel is a long-running TLS wrapper proxy used to add TLS encryption to clients
+      and servers that do not speak TLS themselves.
+  timeline:
+    - >
+      1998: stunnel 0.1 testing skeleton and stunnel 1.0 with SSL support appeared in
+      the official changelog.
+    - >
+      2014: stunnel 5-era releases continued active OpenSSL security updates, including
+      OpenSSL DLL updates during major vulnerability periods.
+    - '2026: The official release list shows stunnel 5.79 released on 2026-06-29.'
+  usage:
+    - >
+      Administrators use stunnel to put TLS in front of non-TLS-aware services or to
+      create encrypted client-side tunnels to remote services. The manual describes
+      global options plus per-service sections containing options such as accept,
+      connect, certificates, keys, and verification settings.
+    - >
+      Common package usage is configuration-file driven: install the package, write
+      stunnel.conf service blocks, provide certificates or keys where needed, and
+      supervise stunnel as a daemon or service.
 tags:
   - cli
   - encryption
@@ -25,26 +89,35 @@ geiger:
 provenance:
   category-sources:
     - >
-      source_facts.description says stunnel is an SSL tunneling program; official
-      stunnel homepage describes a proxy that adds TLS encryption.
+      Official homepage describes stunnel as a TLS encryption proxy for existing clients
+      and servers.
   display-name-sources:
-    - source_facts.name is stunnel and source_facts.homepage is the official stunnel site.
+    - Official homepage and documentation use the name stunnel.
   docs-sources:
-    - Official stunnel homepage links to https://www.stunnel.org/docs.html as Documentation.
+    - 'Official documentation index: https://www.stunnel.org/docs.html'
+  history-sources:
+    - https://www.stunnel.org/
+    - https://www.stunnel.org/NEWS.html
+    - https://www.stunnel.org/downloads.html
+    - https://www.stunnel.org/manual.html
+    - https://www.stunnel.org/versions.html
+    - input.source_facts.package-manager
   repo-sources:
     - >
-      Official stunnel documentation/download pages do not expose a public HTTP
-      source-control repository
+      Maintainer GitHub repository describes itself as a public repository based on
+      official releases: https://github.com/mtrojnar/stunnel
+    - >
+      Official downloads page lists stunnel code repositories and release archives:
+      https://www.stunnel.org/downloads.html
   tags-sources:
     - >
-      source_facts.description identifies SSL tunneling; official homepage describes
-      adding TLS encryption to existing clients and servers.
+      Official homepage and manual describe TLS/SSL wrapping, proxying, and
+      command/service operation.
 category-confidence: high
 category-path:
   - security
-  - tls
-  - proxy
 display-name-confidence: high
 docs-confidence: high
-repo-confidence: low
+history-confidence: high
+repo-confidence: medium
 tags-confidence: high

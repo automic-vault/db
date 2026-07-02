@@ -7,6 +7,70 @@ config-file-location:
   unix:
     - /usr/local/etc/stubby/stubby.yml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The input package facts list Stubby across Homebrew, Debian, Ubuntu, Fedora/DNF,
+      Alpine, Arch, MacPorts, and Nix, which reflects its adoption as a normal
+      operating-system package rather than only a source build.
+    - >
+      Its common packaging shape is a daemon plus a YAML configuration file, making it
+      fit the Unix service model used by Linux distributions and Homebrew services.
+  package-nerd-significance:
+    - >
+      Stubby matters to package nerds because it is a compact example of post-Snowden
+      privacy infrastructure becoming a packaged background service. It turns a protocol
+      feature, DNS-over-TLS, into something a user can install, configure, and supervise
+      with the same tools used for other Unix daemons.
+    - >
+      It is also useful as a comparison point with Unbound, dnscrypt-proxy, and system
+      resolver integrations: each solves private DNS with a different packaging,
+      service, and configuration tradeoff.
+  project-history:
+    - >
+      Stubby was developed by the getdns project and documented by the DNS Privacy
+      Project as a daemon for encrypted DNS stub resolution. The official Stubby
+      documentation says that as of August 2017 Stubby moved into its own repository
+      while getdns became the library dependency.
+    - >
+      The project grew out of DNS privacy work around DNS-over-TLS, standardized as RFC
+      7858. NLnet describes Stubby as an open source project intended to put
+      DNS-over-TLS protection on client devices.
+  related-projects:
+    - getdns provides the library functionality used by Stubby.
+    - >
+      Unbound and DNSCrypt are discussed in the Stubby FAQ as related approaches to
+      encrypted or privacy-preserving DNS.
+  sources:
+    - https://dnsprivacy.org/dns_privacy_daemon_-_stubby/
+    - https://dnsprivacy.org/dns_privacy_daemon_-_stubby/about_stubby/
+    - https://dnsprivacy.org/dns_privacy_daemon_-_stubby/configuring_stubby/
+    - https://nlnet.nl/project/stubby/
+    - input.source_facts.package-manager
+  summary:
+    - >
+      Stubby is a local DNS Privacy stub resolver that sends client DNS queries over
+      DNS-over-TLS. In package-manager terms it is the small daemon people install when
+      they want encrypted first-hop DNS without running a full recursive resolver.
+  timeline:
+    - >
+      2017: Stubby moved to its own GitHub repository while using getdns as a library
+      dependency.
+    - >
+      2022: DNS Privacy Project documentation noted the decommissioning of older
+      dnsovertls*.sinodun.com test nameservers.
+    - >
+      2026: Input package facts list Stubby in multiple Unix-like package managers,
+      including Homebrew, Debian, Ubuntu, Fedora, Alpine, Arch, MacPorts, and Nix.
+  usage:
+    - >
+      Stubby listens on loopback addresses, accepts local DNS queries, and forwards them
+      to DNS Privacy resolvers over TLS. The official docs describe strict and
+      opportunistic privacy profiles, upstream resolver configuration, EDNS0 padding,
+      and round-robin upstream behavior.
+    - >
+      Users typically install it beside system DNS configuration, point local DNS at
+      Stubby, and edit stubby.yml to choose upstream resolvers and privacy mode.
 tags:
   - cli
   - dns
@@ -24,31 +88,32 @@ geiger:
     - metadata:service
 provenance:
   category-sources:
-    - >
-      source_facts.description says Stubby is a DNS privacy enabled stub resolver
-      service based on getdns.
+    - Official Stubby docs describe a local DNS Privacy stub resolver.
+    - 'source_facts.description: DNS privacy enabled stub resolver service based on getdns'
   display-name-sources:
-    - >
-      source_facts.name is stubby; official DNS Privacy page names it DNS Privacy Daemon
-      - Stubby.
+    - Official DNS Privacy Project documentation uses the name Stubby.
   docs-sources:
     - >
-      source_facts.homepage points to the official DNS Privacy Stubby page; current
-      official page is dnsprivacy.org/dns_privacy_daemon_-_stubby/.
+      Official DNS Privacy Project Stubby documentation:
+      https://dnsprivacy.org/dns_privacy_daemon_-_stubby/
+  history-sources:
+    - https://dnsprivacy.org/dns_privacy_daemon_-_stubby/
+    - https://dnsprivacy.org/dns_privacy_daemon_-_stubby/about_stubby/
+    - https://dnsprivacy.org/dns_privacy_daemon_-_stubby/configuring_stubby/
+    - https://nlnet.nl/project/stubby/
+    - input.source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo is already populated with https://github.com/getdnsapi/stubby,
-      so repo was not re-determined.
+      source_facts.repo is already set to https://github.com/getdnsapi/stubby; per
+      prompt, repo returned as null.
   tags-sources:
-    - >
-      source_facts.description identifies a DNS privacy stub resolver; official DNS
-      Privacy page says Stubby encrypts DNS queries.
+    - Official Stubby docs describe DNS-over-TLS, privacy modes, and stub resolver behavior.
+    - source_facts.executables
 category-confidence: high
 category-path:
   - networking
-  - dns
-  - privacy
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
