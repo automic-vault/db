@@ -1,10 +1,93 @@
 id: brew:xnvme
 display-name: xNVMe
-repo: null
+repo: https://github.com/xnvme/xnvme
 docs:
   - https://xnvme.io/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xNVMe adoption is strongest in storage systems, benchmarking, and research
+      workflows rather than general desktop use. The official docs include tools such as
+      xnvme, lblk, zoned, xdd, xnvmeperf, and a fio I/O engine, which makes the package
+      useful both as a library and as a command-line toolbox for NVMe experiments.
+    - >
+      The integration story is important. SPDK documents an xNVMe bdev module that can
+      issue I/O through mechanisms such as libaio, io_uring, asynchronous IOCTL with
+      io_uring passthrough, POSIX aio, and emulated aio, while fio documents an xnvme
+      engine for accessing NVMe devices through xNVMe's C API and backend choices.
+  package-nerd-significance:
+    - >
+      xNVMe is significant because it packages a hard systems-programming problem as
+      installable infrastructure. It does not hide NVMe; it standardizes the messy edge
+      between applications, kernel APIs, userspace drivers, DMA-safe buffers, and
+      benchmark tools.
+    - >
+      For package nerds, it is also a marker of modern storage packaging: a formula can
+      ship a library plus multiple expert CLIs, and those binaries matter to developers
+      working on databases, file systems, benchmarks, zoned storage, and SPDK/io_uring
+      experiments.
+  project-history:
+    - >
+      The GitHub repository was created in April 2020. The documentation presents
+      libxnvme as the foundation: it provides memory-management helpers, synchronous and
+      asynchronous NVMe command submission, convenience functions, command-line tools,
+      and backend retargeting over drivers such as Linux IOCTL, libaio, io_uring, SPDK,
+      FreeBSD IOCTL, and others.
+    - >
+      The project's research framing was published in the 2022 paper 'I/O interface
+      independence with xNVMe', which argues that modern storage programmers face too
+      many idiosyncratic high-performance I/O interfaces and presents xNVMe as a thin
+      abstraction over those choices.
+  related-projects:
+    - >
+      SPDK is a key adjacent userspace storage stack; its bdev_xnvme module uses xNVMe
+      as an I/O mechanism abstraction.
+    - fio includes an xnvme I/O engine for benchmarking NVMe devices through xNVMe.
+    - >
+      io_uring, libaio, NVMe IOCTLs, and SPDK drivers are backend paths xNVMe helps
+      applications target.
+    - >
+      nvme-cli is an adjacent command-line NVMe administration tool, while xNVMe focuses
+      on programmable I/O and backend independence.
+  sources:
+    - https://api.github.com/repos/xnvme/xnvme
+    - https://dl.acm.org/doi/10.1145/3534056.3534936
+    - https://fio.readthedocs.io/en/latest/fio_doc.html
+    - https://github.com/xnvme/xnvme
+    - https://xnvme.io/
+    - https://xnvme.io/tools/fio/index.html
+    - https://xnvme.io/tutorial/bdev_xnvme/index.html
+  summary:
+    - >
+      xNVMe is a low-level storage toolkit and C library for programming NVMe devices
+      from user space across multiple platforms and I/O backends. Its central promise is
+      I/O-interface independence: code against libxnvme and retarget the actual path
+      through Linux kernel interfaces, io_uring, SPDK, FreeBSD, Windows-style paths, or
+      other backends.
+  timeline:
+    - '2020-04-02: The xnvme/xnvme GitHub repository is created.'
+    - >
+      2022: 'I/O interface independence with xNVMe' is published, documenting the
+      project's design and performance motivation.
+    - >
+      2022-2024: GitHub releases show the public 0.x line maturing through storage
+      tools, documentation, and backend work.
+    - >
+      2020s: xNVMe appears in SPDK and fio documentation as a backend/engine for NVMe
+      I/O across multiple mechanisms.
+  usage:
+    - >
+      Developers use libxnvme when they need to allocate suitable buffers, submit NVMe
+      commands, choose synchronous or asynchronous completion models, and switch between
+      backend implementations without rewriting the application for every platform or
+      driver stack.
+    - >
+      Operators and researchers use the packaged tools for direct device experiments:
+      querying devices, issuing commands, working with logical blocks and zoned
+      namespaces, exercising xdd-style data movement, and running fio jobs through the
+      xnvme engine.
 tags:
   - cli
   - cross-platform
@@ -24,28 +107,33 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description says xNVMe provides cross-platform libraries and tools
-      for efficient I/O and low-level control; official docs title describes
-      cross-platform libraries and tools for NVMe devices.
+    - current_curation.category
+    - https://xnvme.io/
   display-name-sources:
-    - official documentation title and source_facts.name use xNVMe/xnvme.
+    - current_curation.display-name
+    - https://xnvme.io/
   docs-sources:
-    - official xnvme.io site is the dedicated documentation site for xNVMe.
+    - https://xnvme.io/
+  history-sources:
+    - https://api.github.com/repos/xnvme/xnvme
+    - https://dl.acm.org/doi/10.1145/3534056.3534936
+    - https://fio.readthedocs.io/en/latest/fio_doc.html
+    - https://github.com/xnvme/xnvme
+    - https://xnvme.io/
+    - https://xnvme.io/tools/fio/index.html
+    - https://xnvme.io/tutorial/bdev_xnvme/index.html
   repo-sources:
-    - >
-      source_facts.repo already contains https://github.com/xnvme/xnvme, so repo was not
-      re-determined.
+    - https://github.com/xnvme/xnvme
+    - https://xnvme.io/
   tags-sources:
-    - >
-      source_facts.description names libraries, tools, efficient I/O, and low-level
-      control; official docs identify the target as NVMe devices.
+    - current_curation.tags
+    - https://github.com/xnvme/xnvme
+    - https://xnvme.io/
 category-confidence: high
 category-path:
   - system
-  - storage
-  - nvme
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

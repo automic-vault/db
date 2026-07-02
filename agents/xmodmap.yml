@@ -6,6 +6,88 @@ docs:
   - https://www.x.org/releases/current/doc
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Historically, xmodmap became part of the personal Unix desktop toolkit. Its own
+      manual says it is usually run from a user's session startup script, and the
+      examples document common workstation-era irritations: swapping Caps Lock and
+      Control, making Alt act as Meta, fixing Backspace/Delete behavior, adding
+      less-than and greater-than bindings, and reversing pointer buttons for left-handed
+      use.
+    - >
+      Its adoption later became more situational as XKB, desktop-environment keyboard
+      panels, libinput, Wayland compositors, and per-application shortcuts took over
+      many layout tasks. Even so, package collections still carry xmodmap because remote
+      X sessions, minimal window managers, old documentation, and quick one-line remaps
+      still need the original X11-level tool.
+  package-nerd-significance:
+    - >
+      xmodmap is package archaeology that is still runnable. It is tiny, scriptable,
+      X11-specific, and exposes the desktop stack at a level that newer settings panels
+      hide. For package nerds, it is the difference between shipping an entire
+      input-configuration layer and shipping one classic command that can still fix a
+      weird keyboard in a minimal X session.
+    - >
+      It also marks a useful boundary in platform history: when a package depends on
+      xmodmap, it is probably assuming X11 semantics, not Wayland compositor settings or
+      cross-platform shortcut APIs.
+  project-history:
+    - >
+      The X11R6.8.2 manual credits Jim Fulton of the MIT X Consortium, rewritten from an
+      earlier version by David Rosenthal of Sun Microsystems, which places xmodmap
+      squarely in the classic vendor-and-consortium X Window System toolset. The X.Org
+      GitLab repository is the modern maintenance home for that small utility,
+      describing it as a tool for modifying keymaps and pointer button mappings in X.
+    - >
+      xmodmap persisted because X11 exposed keycodes, keysyms, modifier maps, and
+      MappingNotify events as user-visible machinery. The utility is intentionally close
+      to those primitives: it reads expressions such as keycode, keysym, add, remove,
+      clear, and pointer assignments, parses them first, then applies the resulting map
+      changes to the running X server.
+  related-projects:
+    - xev is commonly used with xmodmap to discover keycodes and keysyms.
+    - >
+      XKB and setxkbmap cover broader X keyboard layout configuration that often
+      supersedes xmodmap for full layouts.
+    - >
+      xinput, libinput, and compositor-specific settings cover much of the modern
+      pointer/input space outside xmodmap's narrow X11 map-editing role.
+  sources:
+    - https://gitlab.freedesktop.org/xorg/app/xmodmap
+    - https://www.x.org/X11R6/
+    - https://xorg.freedesktop.org/archive/X11R6.8.2/doc/xmodmap.1.html
+  summary:
+    - >
+      xmodmap is one of the old X11 session-shaping utilities: it edits and prints the
+      keyboard modifier map, the keymap table used to translate keycodes into keysyms,
+      and pointer button mappings. Its package-manager role is narrow but durable:
+      install it when an X session needs per-user key remapping without changing a
+      system keyboard layout.
+  timeline:
+    - >
+      X11 consortium era: xmodmap is authored by Jim Fulton of the MIT X Consortium,
+      based on an earlier Sun Microsystems version by David Rosenthal.
+    - >
+      1990s: X11R6-era documentation records xmodmap as a standard X utility for user
+      startup scripts and key/pointer remapping.
+    - >
+      2018-07-29: The freedesktop.org GitLab project for xorg/app/xmodmap is created as
+      part of the modern X.Org source hosting layout.
+    - >
+      2020s: xmodmap remains packaged mainly for X11 sessions, minimal desktops, remote
+      X usage, and compatibility with old remapping recipes.
+  usage:
+    - >
+      Typical usage is either ad hoc, such as xmodmap -e "pointer = 3 2 1", or
+      startup-driven through a file such as ~/.xmodmaprc. Users inspect the current
+      state with -pm, -pk, -pke, or -pp, then feed expressions back to the server to
+      change modifier keys, keysyms, keycodes, or pointer buttons.
+    - >
+      The main practical caveat is also in the old manual: mapping changes generate
+      MappingNotify events, and clients that ignore those events may not notice changes.
+      That is why xmodmap remains best suited to simple X11 session customization rather
+      than full modern keyboard-layout management.
 tags:
   - cli
   - input
@@ -25,29 +107,28 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description says it modifies keymaps and pointer button mappings in
-      X; official X.Org GitLab project is xorg/app/xmodmap.
+    - current_curation.category
   display-name-sources:
-    - source_facts.name is xmodmap; official X.Org GitLab project path is xorg/app/xmodmap.
+    - current_curation.display-name
+    - https://gitlab.freedesktop.org/xorg/app/xmodmap
   docs-sources:
-    - >
-      source_facts.homepage is the official X.Org GitLab project; X.Org publishes
-      current documentation/manpage collection at x.org/releases/current/doc/.
+    - https://gitlab.freedesktop.org/xorg/app/xmodmap
+    - https://www.x.org/releases/current/doc
+  history-sources:
+    - https://gitlab.freedesktop.org/xorg/app/xmodmap
+    - https://www.x.org/X11R6/
+    - https://xorg.freedesktop.org/archive/X11R6.8.2/doc/xmodmap.1.html
   repo-sources:
-    - >
-      source_facts.homepage is the official freedesktop.org GitLab source-control
-      project for xmodmap.
+    - https://gitlab.freedesktop.org/xorg/app/xmodmap
   tags-sources:
-    - >
-      source_facts.description and executable identify X keymap/pointer mapping utility;
-      official X.Org project context supports X11/X.Org tags.
+    - current_curation.tags
+    - https://gitlab.freedesktop.org/xorg/app/xmodmap
+    - https://xorg.freedesktop.org/archive/X11R6.8.2/doc/xmodmap.1.html
 category-confidence: high
 category-path:
   - system
-  - x11
-  - input
 display-name-confidence: high
-docs-confidence: medium
+docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

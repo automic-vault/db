@@ -1,11 +1,96 @@
 id: brew:xmount
 display-name: xmount
-repo: null
+repo: https://code.sits.lu/foss/xmount
 docs:
   - https://code.sits.lu/foss/xmount/-/blob/1.3.1/README
   - https://www.sits.lu/xmount
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xmount's adoption is forensic-practitioner adoption rather than mass developer
+      adoption. It entered Debian/Ubuntu packaging, which the SITS page explicitly
+      acknowledges, and it appears in security distributions such as Kali because
+      investigators frequently need to bridge evidence-image formats and virtualization
+      tools.
+    - >
+      SANS Internet Storm Center coverage captures the practical appeal: xmount is handy
+      when a workflow needs DD, EWF, or AFF input and a format that can be consumed by
+      analysis or virtualization tooling. The SITS page makes the same point with
+      booting acquired images in QEMU, KVM, VirtualBox, or VMware while redirecting
+      writes to a cache file.
+  package-nerd-significance:
+    - >
+      xmount is a good example of a package that exists because copying giant images is
+      the wrong abstraction. The package value is not a new archive format; it is the
+      Unix move of presenting a virtual filesystem facade over messy real-world evidence
+      formats.
+    - >
+      For package nerds, it also sits at the crossroads of FUSE, forensic image
+      libraries, and VM disk formats. Installing one CLI can remove several slow, lossy,
+      or storage-heavy conversion steps from an incident-response workstation.
+  project-history:
+    - >
+      The original project page at pinguin.lu describes the older xmount line, credits
+      Guy Voncken for the idea and bug help, and notes that the project later moved to
+      SITS. The current SITS page is the maintained project home and points to the SITS
+      Git repository and releases.
+    - >
+      The SITS README documents a modernized 1.x architecture with external input
+      libraries and morphing libraries. That design lets xmount support forensic formats
+      through libraries such as libewf and AFF/AFF4 implementations while also handling
+      operations such as combining multiple images, RAID0 reconstruction, byte swapping,
+      and extraction of unallocated sectors.
+  related-projects:
+    - >
+      Guymager is the forensic acquisition tool credited by xmount's project pages and
+      linked from the acknowledgments.
+    - >
+      libewf and afflib provide support for common forensic evidence image formats used
+      by xmount.
+    - >
+      FUSE is the user-space filesystem layer that lets xmount present virtual converted
+      disk images without writing a full output copy.
+    - >
+      QEMU, KVM, VirtualBox, and VMware are common consumers of xmount's virtual output
+      images.
+  sources:
+    - https://code.sits.lu/foss/xmount
+    - https://code.sits.lu/foss/xmount/-/raw/1.3.1/README
+    - https://isc.sans.edu/diary/28002
+    - https://pinguin.lu/xmount
+    - https://www.kali.org/tools/xmount/
+    - https://www.sits.lu/xmount
+  summary:
+    - >
+      xmount is a digital-forensics utility for exposing one disk-image format as
+      another through FUSE. Its core trick is on-the-fly conversion: a raw, EWF, AFF,
+      VDI, or QCOW-style evidence image can be mounted as a virtual raw, DMG, VHD, VDI,
+      or VMDK-like image without first making a full converted copy.
+  timeline:
+    - >
+      Pre-2024: The original pinguin.lu project page documents xmount 0.7-era features
+      such as CMake, multiple input images, image morphing, and internal EWF support.
+    - '2024-03-13: The current SITS GitLab project is created.'
+    - >
+      2024-2026: The SITS README copyright span and releases document the maintained 1.x
+      line under SITS.
+    - >
+      2020s: xmount remains packaged in forensic/security-oriented distributions for
+      mounting and converting evidence disk images through FUSE.
+  usage:
+    - >
+      A typical xmount workflow mounts an acquired disk image read-mostly through FUSE,
+      exposes a virtual output image in the requested format, and then attaches that
+      output to forensic tools or a virtual machine. Virtual write support redirects
+      changes into a cache file so the original evidence image is not modified.
+    - >
+      More advanced usage uses morphing: multiple image segments can be combined, RAID0
+      member disks can be reconstructed, and selected filesystem regions can be
+      presented as a derived virtual image. That makes xmount useful in the awkward
+      middle of a case, where evidence format, analysis tool, and hypervisor all expect
+      different disk-image conventions.
 tags:
   - aff
   - cli
@@ -27,30 +112,33 @@ geiger:
     - text:image
 provenance:
   category-sources:
-    - >
-      source_facts.description says it converts between multiple disk image types;
-      official SITS xmount page describes FUSE-based disk image conversion, write cache,
-      and forensic-style formats.
+    - current_curation.category
+    - https://www.kali.org/tools/xmount/
   display-name-sources:
-    - source_facts.name is xmount; official SITS page title and repository use xmount/Xmount.
+    - current_curation.display-name
+    - https://www.sits.lu/xmount
   docs-sources:
-    - >
-      source_facts.homepage is the official SITS xmount page with supported formats and
-      usage context; official repository README is available in the SITS GitLab project.
+    - https://code.sits.lu/foss/xmount/-/blob/1.3.1/README
+    - https://www.sits.lu/xmount
+  history-sources:
+    - https://code.sits.lu/foss/xmount
+    - https://code.sits.lu/foss/xmount/-/raw/1.3.1/README
+    - https://isc.sans.edu/diary/28002
+    - https://pinguin.lu/xmount
+    - https://www.kali.org/tools/xmount/
+    - https://www.sits.lu/xmount
   repo-sources:
-    - >
-      source_facts.repo already has https://code.sits.lu/foss/xmount, so per instruction
-      repo is returned as null and not second-guessed.
+    - https://code.sits.lu/foss/xmount
+    - https://www.sits.lu/xmount
   tags-sources:
-    - >
-      source_facts.description and official SITS page identify disk image conversion,
-      FUSE, supported forensic/image formats, and command-line usage.
+    - current_curation.tags
+    - https://code.sits.lu/foss/xmount/-/raw/1.3.1/README
+    - https://www.sits.lu/xmount
 category-confidence: high
 category-path:
   - security
-  - digital-forensics
-  - disk-images
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
