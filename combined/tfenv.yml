@@ -10,6 +10,81 @@ config-file-location:
     - ~/.terraform-version
 credentials-file-location:
   unix: $TFENV_NETRC_PATH
+history:
+  adoption-history:
+    - >
+      tfenv is one of the more visible Terraform helper tools in package-manager
+      culture: the repository shows thousands of GitHub stars, Homebrew packages it
+      directly, and the input metadata also records MacPorts and Nix packages. Its name
+      and workflow match the pattern used by language/runtime version managers such as
+      rbenv and pyenv.
+    - >
+      Adoption is driven by team reproducibility. A repository can include
+      `.terraform-version`, and developers or CI jobs that use tfenv get the intended
+      Terraform version instead of relying on a manually managed global binary.
+  package-nerd-significance:
+    - >
+      tfenv matters because it makes Terraform behave like a language runtime in a
+      polyversion codebase. Package managers install tfenv once; tfenv then mediates the
+      actual Terraform binaries needed by individual repositories.
+    - >
+      For infrastructure engineers, this avoids a class of subtle plan/apply drift
+      caused by the wrong Terraform CLI version. For package catalogs, it is a canonical
+      example of a version-manager formula rather than a Terraform distribution itself.
+  project-history:
+    - >
+      The README presents tfenv as a Terraform version manager inspired by rbenv, with a
+      shell-script installation model: clone the repository into `~/.tfenv`, add its
+      `bin` directory to PATH, or install it through Homebrew or other package managers.
+    - >
+      Its history follows Terraform's own growth as teams moved from one global
+      Terraform binary to many project-specific versions. tfenv added project version
+      files, automatic installation, `latest` and regex-like selectors, minimum-required
+      and latest-allowed resolution, checksum/signature verification paths, custom
+      remotes, and private mirror support.
+    - >
+      The release history shows long maintenance rather than a one-off wrapper. The
+      v2.2.0 notes in 2021 included CI migration to GitHub Actions and macOS/Homebrew
+      grep handling. v3.0.0 in 2022 was described as a major update with bashlog
+      refactoring, Mac fixes, auto-install/use fixes, and netrc/private mirror support.
+      v3.1.0 in 2026 was the first release since v3.0.0 and added more constraint
+      handling, locks, custom remote compatibility, and broader tests.
+  related-projects:
+    - `rbenv` is the version-manager pattern explicitly cited by tfenv.
+    - Terraform is the binary managed by tfenv.
+    - >
+      HashiCorp release servers and private mirrors are the remote sources tfenv
+      installs from.
+  sources:
+    - https://github.com/tfutils/tfenv
+    - https://github.com/tfutils/tfenv/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      tfenv is a Terraform version manager modeled after `rbenv`. It installs Terraform
+      versions, switches the active version, and lets projects pin versions with
+      `.terraform-version` files.
+  timeline:
+    - >
+      2021: v2.2.0 release notes mention GitHub Actions migration and Homebrew-related
+      macOS grep handling.
+    - >
+      2022: v3.0.0 major update adds Mac, auto-install/use, netrc, and private mirror
+      improvements.
+    - >
+      2026: v3.1.0 is described as the first release since v3.0.0, with constraint,
+      locking, and testing improvements.
+    - '2026: v3.2.2 is listed as the latest release on the official releases page.'
+  usage:
+    - >
+      Common commands include `tfenv install`, `tfenv use`, `tfenv uninstall`, `tfenv
+      list`, and `tfenv list-remote`. If no explicit version is passed, `tfenv install`
+      and `tfenv use` resolve from `TFENV_TERRAFORM_VERSION`, `.terraform-version`, or
+      defaults such as `latest`.
+    - >
+      The `TFENV_NETRC_PATH` setting supports credentials for custom remotes, and
+      `TFENV_REMOTE` lets users install Terraform from mirrors such as internal artifact
+      repositories rather than HashiCorp's default release host.
 category: developer-tools
 package-manager:
   brew: tfenv

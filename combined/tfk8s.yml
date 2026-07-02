@@ -6,6 +6,66 @@ docs:
   - https://github.com/jrhouston/tfk8s
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The repository shows about a thousand GitHub stars and is packaged by Homebrew,
+      Debian, Ubuntu, MacPorts, and Nix according to the input metadata. That is broad
+      packaging for a narrow converter, suggesting sustained utility for users moving
+      between Kubernetes-native and Terraform-native representations.
+    - >
+      Its adoption niche is migration and copy-paste ergonomics: developers can bring
+      Kubernetes examples, Helm output, or live-cluster YAML into Terraform code review
+      without manually mapping every object into HCL.
+  package-nerd-significance:
+    - >
+      tfk8s is package-nerd interesting because it is a format converter with a very
+      clear boundary: Kubernetes YAML in, Terraform HCL out. It reduces a boring
+      migration chore and fits naturally as a small CLI installed from a system package
+      manager.
+    - >
+      Its presence in multiple package ecosystems makes it easier to use in CI and
+      migration scripts without vendoring a custom converter into every repository.
+  project-history:
+    - >
+      The project occupies the bridge between Kubernetes YAML workflows and
+      Terraform-managed Kubernetes resources. The README focuses on practical
+      conversions: YAML files to `.tf`, `kubectl get ... -o yaml` piped through tfk8s,
+      Helm template output converted to Terraform, and recursive conversion of manifest
+      trees.
+    - >
+      The release history is compact but focused. GitHub lists v0.1.10 as the latest
+      release, with v0.1.x releases adding fixes such as stripping generated fields,
+      supporting `generateName`, handling heredoc strings, ignoring empty YAML
+      documents, and removing a dependency on the Terraform project.
+  related-projects:
+    - Terraform Kubernetes Provider is the target provider named by the README.
+    - `kubectl` and Helm are documented input producers for tfk8s conversion workflows.
+  sources:
+    - https://github.com/jrhouston/tfk8s
+    - https://github.com/jrhouston/tfk8s/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      tfk8s is a Go CLI for converting Kubernetes YAML manifests into Terraform HCL for
+      the Terraform Kubernetes provider. Its README frames the tool around copying
+      examples from Kubernetes documentation or migrating existing YAML manifests
+      without hand-converting them to HCL.
+  timeline:
+    - '2022: Repository page lists v0.1.10 as the latest release.'
+    - >
+      2022: v0.1.x release notes record support and cleanup for generated fields,
+      `generateName`, heredoc strings, empty YAML documents, and Terraform dependency
+      removal.
+  usage:
+    - >
+      The standard workflow is `tfk8s -f input.yaml -o output.tf` or piping YAML into
+      stdin and redirecting HCL. Flags include input/output file selection, map-only
+      output, provider alias population, stripping server-side fields, quote-stripping
+      for map keys, and version display.
+    - >
+      The README documents use with `kubectl`, Helm, and `find`, making it useful in
+      shell pipelines rather than only as an interactive conversion tool.
 category: developer-tools
 package-manager:
   brew: tfk8s

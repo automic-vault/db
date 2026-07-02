@@ -7,6 +7,74 @@ docs:
 config-file-location:
   unix: .tfmigrate.hcl
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The repository shows more than a thousand GitHub stars and is packaged by
+      Homebrew, MacPorts, and Nix in the input metadata. That adoption profile fits a
+      tool used by infrastructure teams with long-lived Terraform states and CI-based
+      review.
+    - >
+      tfmigrate's appeal is strongest for teams that already use GitOps: it lets state
+      migrations travel with the configuration change they support, instead of being
+      performed manually before or after a merge.
+  package-nerd-significance:
+    - >
+      tfmigrate is important in package metadata because it solves a lifecycle problem
+      that plain Terraform intentionally leaves low-level. It turns one-off state
+      surgery into reviewable, repeatable migration files.
+    - >
+      As a package-manager tool, it is most useful when installed in CI images and
+      developer machines beside Terraform/OpenTofu, making the same state migration
+      command available during local rehearsal and automated review.
+  project-history:
+    - >
+      The project was created to address a common production Terraform problem: state
+      manipulations are unavoidable during refactoring, but raw `terraform state`
+      commands are error-prone and do not fit well into pull-request and CI/CD
+      workflows. tfmigrate's README explicitly argues that state operations should be
+      committed to git.
+    - >
+      The tool wraps Terraform or OpenTofu under the hood rather than reimplementing
+      their state mechanics. It supports dry-run planning with temporary local state,
+      migration history, local/S3/GCS storage for applied migration records,
+      monorepo-style state splits and merges, and migration files written as HCL.
+    - >
+      Recent release notes show continuing maintenance for the changing Terraform
+      ecosystem, including support for OpenTofu versions, Terraform 1.11 through 1.15,
+      Terragrunt CLI redesign handling, configurable environment injection into
+      `.tfmigrate.hcl`, and GitHub Actions and Go toolchain updates.
+  related-projects:
+    - Terraform and OpenTofu are the execution engines tfmigrate invokes.
+    - Terragrunt is supported through `TFMIGRATE_EXEC_PATH` with version-specific guidance.
+    - Digger is mentioned in recent release notes as an integration example.
+  sources:
+    - https://github.com/minamijoyo/tfmigrate
+    - https://github.com/minamijoyo/tfmigrate/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      tfmigrate is a Terraform and OpenTofu state migration tool for GitOps. Its README
+      frames Terraform state operations as code: write state moves, removals, imports,
+      and related operations in HCL, review them in git, then plan and apply them in
+      sequence.
+  timeline:
+    - >
+      2025: v0.4.2 release notes add OpenTofu 1.9, Terraform 1.11, Terragrunt CLI
+      redesign handling, and environment injection into `.tfmigrate.hcl`.
+    - '2025: v0.4.3 release notes add OpenTofu 1.10 and Terraform 1.12 support.'
+    - '2025: v0.4.4 release notes add OpenTofu 1.11 and Terraform 1.14 support.'
+    - '2026: v0.4.5 is listed as the latest release and includes Terraform 1.15 support.'
+  usage:
+    - >
+      The documented workflow is to write a migration file such as `state_mv.hcl`, run
+      `tfmigrate plan` to verify the state operation against Terraform plan output
+      without updating remote state, and then run `tfmigrate apply` to push the migrated
+      state when the plan is clean.
+    - >
+      tfmigrate can invoke `terraform`, `tofu`, or Terragrunt via `TFMIGRATE_EXEC_PATH`,
+      and the README recommends trying the included sandbox before using the tool on
+      production state.
 category: developer-tools
 package-manager:
   brew: tfmigrate

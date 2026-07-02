@@ -11,6 +11,73 @@ config-file-location:
     - .tfcmt.yaml
     - .tfcmt.yml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README includes a public 'Who uses tfcmt?' list naming organizations such as
+      Recruit, Cybozu, READYFOR, CADDi, ZOZO, SAKURA internet, Unipos, HMCTS, LayerX,
+      and others. That list is an unusually direct adoption signal for a Terraform niche
+      tool.
+    - >
+      Homebrew packages `tfcmt` as a formula, and the repository shows hundreds of
+      GitHub stars. In package-manager terms, it is not a general Terraform frontend; it
+      is a specialized CI companion used by teams that review infrastructure changes
+      through pull requests.
+  package-nerd-significance:
+    - >
+      For package-nerd catalogs, `tfcmt` is significant because it represents a
+      second-generation Terraform notifier: a fork maintained specifically to keep pace
+      with Terraform CLI changes and modern pull-request automation. It sits in the
+      small but important class of tools that make infrastructure-as-code review
+      readable without requiring developers to open CI logs.
+    - >
+      Its value is operational rather than architectural: teams install it with Homebrew
+      or other release tooling, wire it into GitHub Actions or another CI runner, and
+      get stable, templated pull-request feedback for Terraform workflows.
+  project-history:
+    - >
+      The project grew out of the `tfnotify` lineage: the README and documentation
+      identify `tfcmt` as a fork of `mercari/tfnotify` v0.7.0 and preserve the original
+      Mercari MIT license notice for the inherited code. Its own documentation copyright
+      begins in 2021, which matches its role as a post-Terraform-0.15 replacement for
+      teams that had outgrown the original notifier.
+    - >
+      The repository has a large commit history and a long release line, reflecting
+      ongoing maintenance around Terraform output formatting, GitHub comment behavior,
+      masking, Terragrunt support, GitHub Enterprise support, and related CI workflow
+      details.
+  related-projects:
+    - `mercari/tfnotify` is the upstream project from which `tfcmt` was forked.
+    - `tfcmt-gitlab` is the GitLab-oriented fork suggested by the `tfcmt` README.
+    - `github-comment` is documented as a companion tool for hiding stale comments.
+  sources:
+    - https://github.com/suzuki-shunsuke/tfcmt
+    - https://suzuki-shunsuke.github.io/tfcmt/
+    - source_facts.package-manager.brew
+  summary:
+    - >
+      tfcmt is a Terraform CI comment tool that posts the results of `terraform plan`
+      and `terraform apply` to GitHub pull requests. The official documentation
+      describes it as a fork of Mercari's `tfnotify`, expanded for Terraform 0.15 and
+      later and for more configurable formatting.
+  timeline:
+    - '2018: Original `tfnotify` code carried Mercari copyright and MIT licensing.'
+    - >
+      2021: Official tfcmt documentation copyright begins and documents the fork's
+      Terraform 0.15+ motivation.
+    - >
+      2026: GitHub repository page lists v4.14.15 as the latest release and shows more
+      than one hundred releases.
+  usage:
+    - >
+      Typical use is in CI: run Terraform, let `tfcmt` parse the command output, render
+      it through Go templates, update pull request labels, and post or patch a GitHub
+      comment. The documentation emphasizes cleaner PR comment streams, hiding stale
+      comments with `github-comment`, filtering noisy refresh output, and separating
+      Terraform changes from non-Terraform output.
+    - >
+      The tool is GitHub-focused. The README explicitly points GitLab users to
+      `tfcmt-gitlab`, a separate fork.
 category: developer-tools
 package-manager:
   brew: tfcmt
