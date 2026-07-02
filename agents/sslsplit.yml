@@ -6,6 +6,86 @@ docs:
   - https://www.roe.ch/SSLsplit
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official project page lists package or port availability across FreeBSD,
+      OpenBSD, NetBSD, DragonFly BSD, Homebrew, Arch Linux, Debian, Ubuntu, Gentoo,
+      Fedora/RHEL/CentOS, openSUSE, Mageia, BlackArch, Kali Linux, and related security
+      distributions or appliances. The supplied package metadata also shows Homebrew,
+      Debian, Fedora, Nix, Arch, and Ubuntu packaging.
+    - >
+      Its packaging footprint follows from its role in labs and security distributions:
+      users need a reproducible build of a sensitive interception tool with OpenSSL,
+      libevent, libpcap, libnet, NAT engine support, and platform-specific behavior
+      aligned.
+  package-nerd-significance:
+    - >
+      SSLsplit is package-nerd significant because it is deeply coupled to OS networking
+      facilities. A useful package is not only the binary; it is the right combination
+      of OpenSSL compatibility, NAT-engine support, privilege behavior, man pages,
+      sample configuration, and logging defaults.
+    - >
+      It also belongs to the family of security tools whose value is inseparable from
+      ethical context. Distributions package it for legitimate forensics, testing, and
+      education, but its capability is explicitly man-in-the-middle interception.
+  project-history:
+    - >
+      The official project page says SSLsplit is developed by Daniel Roethlisberger and
+      contributors and was first publicly released as 0.4.2 in 2012. Its README says it
+      was inspired by Claes M. Nyberg's mitm-ssl and Moxie Marlinspike's sslsniff, while
+      sharing no source code with them.
+    - >
+      SSLsplit is designed to transparently terminate NAT-redirected connections, create
+      a new SSL/TLS connection to the original destination, and log transmitted data.
+      Over time it added defenses against mechanisms that complicate interception,
+      including OCSP handling, HSTS and HPKP header mangling, Expect-CT suppression, and
+      prevention of protocol upgrades such as QUIC, SPDY, HTTP/2, and WebSockets.
+  related-projects:
+    - Official README names mitm-ssl and sslsniff as inspirations.
+    - >
+      Related operational tools include OpenSSL, libevent, libpcap, libnet, platform NAT
+      engines, Wireshark via PCAP or SSLKEYLOGFILE-style outputs, and security
+      distributions such as Kali and BlackArch.
+  sources:
+    - https://github.com/droe/sslsplit#readme
+    - https://github.com/droe/sslsplit/blob/master/NEWS.md
+    - https://www.roe.ch/SSLsplit
+    - input source_facts.package-manager
+  summary:
+    - >
+      SSLsplit is a transparent SSL/TLS interception tool for network forensics,
+      application security analysis, and penetration testing. It is packaged because it
+      combines low-level NAT integration, forged-certificate TLS interception, and
+      forensic logging in a single Unix-style command.
+  timeline:
+    - '2012: SSLsplit 0.4.2 was the first public release.'
+    - >
+      2013: Version 0.4.7 filtered HPKP headers and added HTTP status and content length
+      to connection logs.
+    - >
+      2014: Versions 0.4.8 through 0.4.10 improved pf support on macOS, added protocol
+      forcing options, and added separate file logging with process information.
+    - >
+      2016: Version 0.5.0 added generic STARTTLS support through the autossl proxy
+      specification and introduced privilege separation.
+    - >
+      2018: Version 0.5.4 added PCAP and packet-mirroring content log modes and the
+      sslsplit.conf manual page.
+    - >
+      2019: Version 0.5.5 fixed packaging and install-path behavior, including
+      SYSCONFDIR-controlled installation of sample config files.
+  usage:
+    - >
+      Typical usage requires redirecting traffic with a platform NAT engine, then
+      running sslsplit with proxy specifications such as http, https, tcp, ssl, or
+      autossl, CA certificate/key material, and logging destinations. The tool can write
+      connection logs, content logs, PCAP output, mirrored packets, generated
+      certificates, master secrets, and local process information.
+    - >
+      Supported NAT mechanisms in official documentation include FreeBSD pf rdr and
+      divert-to, ipfw fwd, ipfilter rdr; OpenBSD pf rdr-to and divert-to; Linux
+      netfilter REDIRECT and TPROXY; and macOS pf rdr and ipfw fwd.
 tags:
   - cli
   - interception
@@ -26,25 +106,32 @@ geiger:
 provenance:
   category-sources:
     - >
-      source_facts.description: man-in-the-middle attacks against SSL encrypted network
-      connections.
+      Official homepage and README describe SSLsplit as transparent SSL/TLS interception
+      for network forensics, application security analysis, and penetration testing.
   display-name-sources:
-    - source_facts.homepage uses the project name SSLsplit; source_facts.name is sslsplit.
+    - Official project homepage uses SSLsplit.
   docs-sources:
-    - >
-      source_facts.homepage is the official SSLsplit project page; source_facts.repo
-      points to the official GitHub README.
+    - Official project homepage and official GitHub README.
+  history-sources:
+    - https://github.com/droe/sslsplit#readme
+    - https://github.com/droe/sslsplit/blob/master/NEWS.md
+    - https://www.roe.ch/SSLsplit
+    - input source_facts.package-manager
   repo-sources:
-    - source_facts.repo is already set, so repo is returned as null per instruction.
+    - >
+      source_facts.repo already provides https://github.com/droe/sslsplit; prompt
+      requires returning repo null when source_facts.repo is populated.
   tags-sources:
     - >
-      source_facts.description describes SSL encrypted connection interception;
-      source_facts.executables lists sslsplit.
+      Official README documents man-in-the-middle TLS interception, NAT redirection,
+      forged certificates, logging, and protocol support.
 category-confidence: high
 category-path:
   - security
-  - network-analysis
+  - tls
+  - interception
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -6,6 +6,75 @@ docs:
   - https://www.ssllabs.com/projects/ssllabs-apis
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is tied to SSL Labs itself: the command gives administrators and security
+      teams a packaged way to call the same assessment backend they already know from
+      the web service. The official APIs page also lists product integrations and
+      third-party libraries in several languages, showing that ssllabs-scan sits inside
+      a wider API ecosystem rather than being only a standalone scanner.
+    - >
+      The supplied package metadata shows Homebrew packaging for the CLI, making it
+      especially convenient for macOS-based security engineers and CI users who want the
+      official reference client available through a standard package manager.
+  package-nerd-significance:
+    - >
+      Package nerds care about ssllabs-scan because it packages a public SaaS security
+      assessment as a repeatable CLI. That makes it fit naturally into shell scripts,
+      cron jobs, release checks, and fleet audits.
+    - >
+      It also illustrates a common packaging pattern for security tools: a small
+      official client around a remote service, where the important compatibility surface
+      is the API version and output format rather than local cryptographic library
+      behavior.
+  project-history:
+    - >
+      SSL Labs describes its APIs as exposing the SSL/TLS server testing functionality
+      programmatically so site operators can perform scheduled and bulk assessment. The
+      same official page says SSL Labs maintains ssllabs-scan as an open-source
+      command-line scanning tool that doubles as the reference API client.
+    - >
+      The README presents the tool as a command-line client for the SSL Labs APIs,
+      designed for automated and bulk testing. Current usage is centered on the API v4
+      client and registration helper, with an email address required for API v4 use.
+  related-projects:
+    - >
+      Related official surfaces include the SSL Labs APIs, the SSL Labs web assessment
+      service, and SSL Labs API documentation.
+    - >
+      The SSL Labs API page lists integrations and libraries such as Metasploit modules
+      and language bindings, but states that third-party tools are not part of SSL Labs.
+  sources:
+    - https://github.com/ssllabs/ssllabs-scan#readme
+    - https://www.ssllabs.com/projects/ssllabs-apis
+    - input source_facts.package-manager
+  summary:
+    - >
+      ssllabs-scan is the official command-line client and reference implementation for
+      the Qualys SSL Labs APIs. In package-manager culture it represents a scriptable
+      bridge from the public SSL Labs server test to bulk assessment, CI checks,
+      inventories, and scheduled TLS hygiene.
+  timeline:
+    - >
+      2014: The SSL Labs APIs feed identifies the changelog namespace from 2014,
+      matching the era when SSL Labs API automation became a public integration surface.
+    - >
+      2015: The SSL Labs APIs page lists integrations such as Metasploit and libraries
+      in multiple languages around the API ecosystem.
+    - >
+      2026: The official SSL Labs page continues to describe ssllabs-scan as the
+      open-source command-line reference API client.
+  usage:
+    - >
+      Typical usage is to run ssllabs-scan against one hostname or a host file,
+      optionally requesting cached or live results, JSON output, flat JSON, or
+      grade-only output. API v4 usage requires registration and passing the registered
+      organization email.
+    - >
+      Because it calls a hosted API, ssllabs-scan is different from local TLS scanners:
+      it is useful when the desired signal is the SSL Labs external assessment model
+      rather than exactly what a local OpenSSL build can negotiate.
 tags:
   - cli
   - scanner
@@ -23,24 +92,32 @@ geiger:
     - text:client
 provenance:
   category-sources:
-    - 'source_facts.description: command-line client for the SSL Labs APIs.'
-  display-name-sources:
-    - source_facts.name is ssllabs-scan; current_curation.display-name is ssllabs-scan.
-  docs-sources:
     - >
-      source_facts.repo points to the official GitHub README; source_facts.homepage is
-      the official SSL Labs APIs project page.
+      Official README says the tool is a command-line client for SSL Labs APIs for
+      automated and bulk testing.
+  display-name-sources:
+    - Official README heading uses ssllabs-scan.
+  docs-sources:
+    - Official GitHub README and official SSL Labs APIs project page.
+  history-sources:
+    - https://github.com/ssllabs/ssllabs-scan#readme
+    - https://www.ssllabs.com/projects/ssllabs-apis
+    - input source_facts.package-manager
   repo-sources:
-    - source_facts.repo is already set, so repo is returned as null per instruction.
+    - >
+      source_facts.repo already provides https://github.com/ssllabs/ssllabs-scan; prompt
+      requires returning repo null when source_facts.repo is populated.
   tags-sources:
     - >
-      source_facts.description identifies it as an SSL Labs API command-line client;
-      source_facts.executables lists ssllabs-scan.
+      Official README and SSL Labs APIs page describe a CLI scanner for SSL/TLS server
+      testing via the SSL Labs API.
 category-confidence: high
 category-path:
   - security
-  - tls-scanner
+  - tls
+  - scanner
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

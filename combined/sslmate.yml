@@ -6,9 +6,88 @@ docs:
   - https://sslmate.com/help
   - https://sslmate.com/help/reference/cli1
 config-file-location:
-  unix: ~/.sslmate
+  unix:
+    - /etc/sslmate.conf
+    - ~/.sslmate
 credentials-file-location:
   unix: ~/.sslmate
+history:
+  adoption-history:
+    - >
+      SSLMate's own homepage markets the service around automation and shows the
+      terminal command sslmate buy www.example.com as a first-class product interaction.
+      It also lists customer logos and testimonials, including users praising
+      command-line certificate purchase.
+    - >
+      The supplied package metadata shows Homebrew and Nix packaging. That limited but
+      meaningful package footprint matches the tool's audience: administrators and
+      developers who want certificate issuance and renewal to be scriptable from
+      Unix-like systems.
+  package-nerd-significance:
+    - >
+      SSLMate matters to package nerds because it packages certificate issuance as an
+      installable CLI, not just a web dashboard. That made it fit naturally into cron,
+      configuration management, and server provisioning long before every certificate
+      workflow was expected to be ACME-native.
+    - >
+      It also shows why credential-file documentation matters in package databases: the
+      same file can be both a user config and an API-key store, so package metadata
+      should distinguish ordinary config from secret-bearing state.
+  project-history:
+    - >
+      The SSLMate 1 CLI reference describes sslmate as the command-line client for
+      SSLMate, a service for purchasing and managing SSL certificates. The tool
+      automates certificate busy work such as generating a private key, generating a
+      CSR, building a certificate bundle, renewing certificates, and downloading renewed
+      certificates from scripts or cron.
+    - >
+      The current SSLMate help system presents the older Basic SSLMate service, the
+      SSLMate command-line interface, APIv2, and newer SaaS-oriented surfaces such as
+      sslmate-agent and APIv3. The changelog shows ongoing service evolution around
+      certificate approval, API keys, DNS integrations, Cert Spotter, and Certificate
+      Transparency search.
+  related-projects:
+    - >
+      Related SSLMate surfaces include Cert Spotter, the Certificate Transparency Search
+      API, sslmate-agent, APIv2, APIv3, and DNS provider integrations.
+    - >
+      The tool lives in the same operational space as ACME clients and certificate
+      deployment automation, but SSLMate's official documentation frames it as a managed
+      certificate purchasing and monitoring service with a CLI.
+  sources:
+    - https://sslmate.com/
+    - https://sslmate.com/help
+    - https://sslmate.com/help/changelog
+    - https://sslmate.com/help/reference/cli1
+    - input source_facts.package-manager
+  summary:
+    - >
+      SSLMate is a certificate-management service with a command-line client for buying,
+      renewing, revoking, downloading, and configuring SSL/TLS certificates. Its
+      package-manager identity is the rare commercial PKI workflow that intentionally
+      feels like a Unix command.
+  timeline:
+    - '2014: SSLMate changelog feed identifies the service changelog namespace from 2014.'
+    - '2021: SSLMate changelog records per-domain authorized CA configuration for Cert Spotter.'
+    - '2022: SSLMate changelog records flexible API key permissions and prefixed API keys.'
+    - >
+      2023: SSLMate changelog records expanded Cert Spotter APIs, webhooks, DNS
+      integrations, Slack notifications, and CT Search API improvements.
+    - >
+      2024: SSLMate changelog records additional DNS integrations and changes driven by
+      CA/Browser Forum certificate-approval policy.
+    - '2026: SSLMate changelog records simpler DNS approval record names.'
+  usage:
+    - >
+      The CLI is organized into subcommands such as buy, renew, reissue, rekey, revoke,
+      download, list, show, edit, test, mkconfig, retry-approval, and link. The link
+      command writes API credentials to the personal SSLMate configuration file so later
+      commands can run without prompting.
+    - >
+      On startup the CLI reads /etc/sslmate.conf and ~/.sslmate when present, with the
+      personal file overriding global options. The SSLMATE_CONFIG environment variable
+      can point to a different personal configuration file, and profiles can produce
+      alternate global configuration and certificate directories.
 category: security
 package-manager:
   brew: sslmate

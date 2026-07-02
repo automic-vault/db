@@ -10,6 +10,98 @@ config-file-location:
     - /etc/sslh.cfg
     - /etc/sslh/sslh.cfg
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official download page notes that sslh has been packaged for Debian, Gentoo,
+      FreeBSD, and many other operating systems, while the supplied package metadata
+      shows it in Homebrew, apk, Debian, Fedora, MacPorts, Nix, Arch, Ubuntu, and
+      openSUSE package sets. That broad packaging footprint is the main sign of
+      adoption: it is the kind of small network utility distributions carry because it
+      solves a recurring administrator problem.
+    - >
+      Upstream also maintains a mailing list for announcements, usage discussion, and
+      feature requests, and directs development to GitHub, where patches and features
+      may appear before formal releases.
+  package-nerd-significance:
+    - >
+      sslh is package-nerd material because it sits at the boundary between networking
+      policy, init systems, and distro defaults. Small differences in config paths,
+      capabilities, service files, and compile flags decide whether it works cleanly on
+      a stock server.
+    - >
+      It also preserves an old but still useful Unix pattern: one focused daemon, a
+      readable config file, init/systemd integration, and behavior that can be composed
+      with sshd, httpd, OpenVPN, stunnel, fail2ban, and container runtimes.
+  project-history:
+    - >
+      The upstream changelog records basic functionality in version 1.0, with privilege
+      dropping and configurable targets already present, followed by daemon behavior in
+      1.1 in 2007. Through the late 2000s and early 2010s sslh accumulated the
+      operational traits expected of a packaged system service: libwrap support, init
+      scripts, a manual page, inetd mode, FreeBSD fixes, IPv6 support, foreground mode,
+      a test suite, and systemd-friendly behavior.
+    - >
+      The project later expanded from an SSL/SSH splitter into a general protocol
+      demultiplexer. Upstream documentation now describes probes for HTTP, TLS/SSL
+      including SNI and ALPN, SSH, WireGuard, OpenVPN, tinc, XMPP, SOCKS5, syslog, and
+      regular-expression based protocols, plus transparent proxying, proxyprotocol
+      support, Docker examples, and several process models including fork, select, and
+      libev.
+  related-projects:
+    - >
+      sslh is commonly used alongside sshd, web servers, OpenVPN, WireGuard, stunnel,
+      proxytunnel, corkscrew, fail2ban, and systemd socket activation.
+    - >
+      It overlaps conceptually with reverse proxies and TLS terminators, but it is
+      focused on early protocol detection rather than HTTP routing or TLS certificate
+      management.
+  sources:
+    - https://github.com/yrutschle/sslh/blob/master/ChangeLog
+    - https://github.com/yrutschle/sslh/blob/master/doc/config.md
+    - https://www.rutschle.net/tech/sslh/README.html
+    - https://www.rutschle.net/tech/sslh/download.html
+    - input source_facts.package-manager
+  summary:
+    - >
+      sslh is a small Unix daemon for sharing one public port among several backend
+      protocols by looking at the first bytes sent by a client. Its classic
+      package-manager appeal is that it lets administrators keep SSH, HTTPS, OpenVPN,
+      WireGuard, XMPP, SOCKS5, and similar services reachable in constrained networks
+      without deploying a full reverse-proxy stack.
+  timeline:
+    - >
+      2007: Version 1.1 added more daemon-like behavior such as PID-file support and
+      startup forking.
+    - >
+      2008: Versions 1.3 through 1.5 added local listen-interface parsing, syslog
+      logging, libwrap support, support scripts, and Makefile work.
+    - '2009: Version 1.6 added a man page and install targets.'
+    - >
+      2011: Version 1.8 added OpenVPN probing, a select-based implementation, foreground
+      mode, tests, and Mac OS X documentation; version 1.9 added IPv6 support.
+    - >
+      2012: Version 1.11 changed defaults to better fit systemd and launchd and added an
+      HTTP probe.
+    - >
+      2020: Version 1.21 moved configuration and command-line handling to conf2struct
+      and changed TLS naming and config defaults.
+    - '2021: Version 1.22 added UDP protocol support.'
+    - >
+      2025: Versions 2.2.4 and later addressed SUSE security-review findings and added
+      connection-limit controls.
+  usage:
+    - >
+      Common usage is to listen on a public address and port, often 443, then forward
+      traffic to local services such as sshd, an HTTPS server, OpenVPN, or other
+      backends based on protocol detection. The configuration guide says packaged
+      scripts read configuration from /etc/sslh.cfg, and the systemd generator can also
+      read /etc/sslh/sslh.cfg if present.
+    - >
+      Package users care about build-time and runtime options because sslh can be
+      compiled with libconfig, systemd socket activation, POSIX capabilities, libwrap,
+      transparent proxying support, and different event models. Those knobs determine
+      whether a distro package feels like a drop-in service or just a source build.
 category: networking
 package-manager:
   apk: sslh

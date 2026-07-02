@@ -6,6 +6,86 @@ docs:
   - https://github.com/rbsec/sslscan#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The supplied package metadata shows sslscan across apk, Homebrew, Debian, Fedora,
+      MacPorts, Nix, Arch, Scoop, Ubuntu, and openSUSE. That breadth reflects its role
+      as a common local TLS triage tool in Unix and cross-platform security toolboxes.
+    - >
+      The changelog records a long stream of packaging-relevant changes: static OpenSSL
+      builds, OS X and Windows support, OpenBSD fixes, Docker builds, XML output
+      changes, and build-system work. Those details matter to distributors because TLS
+      scanner behavior can change when the linked OpenSSL version changes.
+  package-nerd-significance:
+    - >
+      sslscan is interesting to package nerds because the package is not just a wrapper
+      around OpenSSL; the exact build strategy influences what the scanner can see.
+      Static versus system OpenSSL linking, minimum OpenSSL versions, and legacy
+      protocol support are part of the package's user-visible behavior.
+    - >
+      It is also a canonical example of security tooling that survived through forks:
+      original utility, ioerror fork, rbsec-maintained fork, and then a version 2
+      rewrite to keep up with TLS 1.3 and post-quantum group reporting.
+  project-history:
+    - >
+      The current rbsec README identifies the project as a fork of ioerror's sslscan,
+      which itself was a fork of Ian Ventura-Whiting's original sslscan.c and was
+      influenced by OpenSSL s_client setup code. The rbsec fork added extensive
+      highlighting and checks for weak protocol and cipher behavior, certificate issues,
+      IPv6, STARTTLS modes, Heartbleed, RDP, PostgreSQL, MySQL, and other protocol
+      contexts.
+    - >
+      Version 2 was a major rewrite of the backend scanning code. The README says this
+      made sslscan less dependent on the OpenSSL version for many checks, allowing
+      support for legacy protocols such as SSLv2 and SSLv3 and newer TLS 1.3 behavior
+      regardless of the OpenSSL version used for compilation.
+  related-projects:
+    - >
+      Related tools and references include OpenSSL s_client, the earlier ioerror sslscan
+      fork, Ian Ventura-Whiting's original sslscan.c, and TLS assessment tools such as
+      ssllabs-scan.
+    - >
+      The README also highlights Docker builds and Windows cross-compiled releases as
+      related distribution surfaces.
+  sources:
+    - https://github.com/rbsec/sslscan#readme
+    - https://github.com/rbsec/sslscan/blob/master/Changelog
+    - input source_facts.package-manager
+  summary:
+    - >
+      sslscan is a command-line SSL/TLS scanner used to enumerate protocol support,
+      cipher suites, certificates, key exchange groups, and related server properties.
+      It is a package-manager staple because it gives admins and security testers a fast
+      local check without relying on a hosted assessment service.
+  timeline:
+    - >
+      2013: rbsec changelog records version 1.9 with highlighting for SSLv2, weak
+      ciphers, RC4, anonymous ciphers, TLS 1.1 and 1.2 support, IPv6, and TLS
+      compression checks.
+    - '2014: Version 1.9.2 added the OpenSSL Heartbleed check.'
+    - >
+      2015: Version 1.11.0 rewrote the ciphersuite scanning engine to be faster and
+      ordered results by server preference.
+    - >
+      2020: Version 2.0.0-alpha1 introduced a major backend rewrite, TLS 1.3 support,
+      legacy protocol detection independent of OpenSSL, and key exchange and
+      signature-algorithm checks.
+    - '2023: Version 2.1.0 moved builds to OpenSSL 3.0.'
+    - >
+      2025: Version 2.2.0 made OpenSSL 3.5 the minimum build target and added
+      post-quantum group support.
+    - '2026: Version 2.2.2 fixed build behavior respecting the -j option when building OpenSSL.'
+  usage:
+    - >
+      Typical usage is to point sslscan at a host or target list and inspect supported
+      protocols, cipher suites, certificate metadata, weak keys, compression, STARTTLS
+      support, XML output, and optional checks. Users often install it through a package
+      manager when they need quick TLS visibility from the machine they are on.
+    - >
+      Version 2's static-build guidance is important operationally: upstream recommends
+      ignoring the system OpenSSL and statically building against a chosen OpenSSL for
+      additional checks and predictable behavior.
 category: security
 package-manager:
   apk: sslscan
