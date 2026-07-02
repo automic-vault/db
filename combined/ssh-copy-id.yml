@@ -5,13 +5,63 @@ repo: https://github.com/openssh/openssh-portable
 docs:
   - https://www.openssh.org/manual.html
   - https://github.com/openssh/openssh-portable#readme
-  - https://man.openbsd.org/ssh-copy-id
 config-file-location: null
 credentials-file-location:
   unix:
     - ${HOME}/.ssh/id*.pub
     - ${HOME}/.ssh/id*
     - .ssh/authorized_keys
+history:
+  adoption-history:
+    - >
+      ssh-copy-id became common Unix CLI glue because it automates the manual public-key
+      setup described by ssh documentation: place a public key in the remote user's
+      authorized_keys file. Homebrew packages it separately from the main OpenSSH
+      formula for macOS users, while the input facts also list Nix and winget package
+      names.
+  package-nerd-significance:
+    - >
+      ssh-copy-id is package-manager folklore: a tiny shell script that saves users from
+      remembering the exact ssh, mkdir, chmod, and cat incantation for public-key login
+      setup. It is also a reminder that small contrib utilities can become first-class
+      packages when operating systems omit them or users want them independently.
+  project-history:
+    - >
+      OpenSSH itself began in 1999 when OpenBSD developers forked the free SSH
+      1.2.12/OSSH lineage, cleaned up licensing and portability issues, and shipped
+      OpenSSH 1.2.2 with OpenBSD 2.6 on December 1, 1999. The portable OpenSSH tree was
+      split out almost immediately for Linux and other Unix systems.
+    - >
+      The ssh-copy-id script in the OpenSSH portable repository carries Philip Hands
+      copyright from 1999 onward and describes itself as a shell script to install
+      public keys on a remote machine. Over time it gained contributions for options
+      such as force mode, dry-run mode, SFTP mode, alternate target paths, SSH config
+      files, and port handling.
+  related-projects:
+    - >
+      Related commands and files include ssh, ssh-keygen, ssh-agent, ssh-add, sshd,
+      OpenSSH portable, ${HOME}/.ssh/id*.pub, and .ssh/authorized_keys.
+  sources:
+    - https://api.github.com/repos/openssh/openssh-portable
+    - https://formulae.brew.sh/api/formula/ssh-copy-id.json
+    - https://github.com/openssh/openssh-portable/blob/master/contrib/ssh-copy-id
+    - https://www.openssh.com/history.html
+    - input.source_facts.package-manager
+  summary:
+    - >
+      ssh-copy-id is the small OpenSSH-adjacent shell utility that installs a user's
+      public SSH key into a remote account's authorized_keys file.
+  timeline:
+    - '1999: OpenSSH project began and OpenSSH 1.2.2 shipped with OpenBSD 2.6.'
+    - '1999: ssh-copy-id copyright begins with Philip Hands in the portable script.'
+    - '2014: openssh/openssh-portable mirror repository created on GitHub.'
+    - '2026: Homebrew formula tracks OpenSSH portable 10.3p1 for ssh-copy-id.'
+  usage:
+    - >
+      The usual workflow is to run ssh-copy-id [-i identity_file] [user@]host. The
+      script selects public keys from ssh-agent or from ${HOME}/.ssh/id*.pub, checks
+      which keys are not already accepted, and appends the selected public keys to the
+      remote .ssh/authorized_keys path unless a different target path is requested.
 category: security
 package-manager:
   brew: ssh-copy-id
