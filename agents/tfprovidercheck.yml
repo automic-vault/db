@@ -2,11 +2,56 @@ id: brew:tfprovidercheck
 display-name: tfprovidercheck
 repo: null
 docs:
-  - https://github.com/suzuki-shunsuke/tfprovidercheck
+  - https://github.com/suzuki-shunsuke/tfprovidercheck#readme
+  - https://github.com/suzuki-shunsuke/tfprovidercheck/blob/main/INSTALL.md
 config-file-location:
   unix:
     - .tfprovidercheck.yaml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption appears concentrated in CI and platform-engineering contexts. Homebrew
+      packages tfprovidercheck as a bottled formula, while the README emphasizes GitHub
+      Actions usage and environment-variable configuration for workflows where pull
+      requests should not be able to tamper with the policy.
+  package-nerd-significance:
+    - >
+      For package-focused infrastructure users, tfprovidercheck is notable because it
+      treats Terraform providers as executable dependencies that need admission control.
+      It packages that check as a small CLI suitable for CI images, Homebrew installs,
+      and repository policy workflows.
+  project-history:
+    - >
+      The project was built around a simple policy model: read `terraform version
+      -json`, compare provider names and optional version constraints against a YAML
+      allow list, and fail when a disallowed provider appears. The README contrasts this
+      with `.terraform.lock.hcl` and `required_providers`, arguing that those mechanisms
+      do not provide the same centralized provider allow-list control.
+  related-projects:
+    - Terraform CLI
+    - .terraform.lock.hcl
+    - Terraform required_providers
+    - GitHub Actions
+  sources:
+    - https://formulae.brew.sh/api/formula/tfprovidercheck.json
+    - https://github.com/suzuki-shunsuke/tfprovidercheck#readme
+    - https://github.com/suzuki-shunsuke/tfprovidercheck/tags
+  summary:
+    - >
+      tfprovidercheck is a Terraform provider allow-list checker intended to prevent
+      disallowed or malicious Terraform providers from being executed. Its README
+      positions it as a security and governance tool to run after terraform init and
+      before commands such as validate, plan, or apply.
+  timeline:
+    - '2025: GitHub tags list v1.0.6 in July and v1.0.7 in December.'
+    - '2026: Homebrew formula metadata lists stable version 1.0.7 with bottled builds.'
+  usage:
+    - >
+      Typical usage pipes `terraform version -json` into `tfprovidercheck`, optionally
+      passing `-config`. Configuration can come from a command-line path,
+      `TFPROVIDERCHECK_CONFIG_BODY`, `TFPROVIDERCHECK_CONFIG`, or
+      `.tfprovidercheck.yaml` in the current directory.
 tags:
   - cli
   - infrastructure-as-code
@@ -25,29 +70,28 @@ geiger:
 provenance:
   category-sources:
     - >
-      source_facts.description identifies tfprovidercheck as a CLI to prevent malicious
-      Terraform providers from being executed.
+      source_facts.description and official README describe preventing malicious or
+      disallowed Terraform providers.
   display-name-sources:
-    - source_facts.name and source_facts.homepage identify the project as tfprovidercheck.
+    - source_facts.name and official README title both use tfprovidercheck.
   docs-sources:
-    - >
-      source_facts.homepage is the official GitHub project page and README documentation
-      surface.
+    - Official GitHub README links Install, Usage, and Config sections.
+  history-sources:
+    - https://formulae.brew.sh/api/formula/tfprovidercheck.json
+    - https://github.com/suzuki-shunsuke/tfprovidercheck#readme
+    - https://github.com/suzuki-shunsuke/tfprovidercheck/tags
   repo-sources:
     - >
-      source_facts.repo is already set to
-      https://github.com/suzuki-shunsuke/tfprovidercheck, so repo is returned as null
-      per instruction.
+      source_facts.repo is already populated with
+      https://github.com/suzuki-shunsuke/tfprovidercheck; prompt requires repo=null in
+      that case.
   tags-sources:
-    - >
-      source_facts.description mentions preventing malicious Terraform Providers from
-      being executed; current_curation.tags includes cli.
+    - Official README describes Terraform provider allow-list security checks and CI usage.
 category-confidence: high
 category-path:
   - security
-  - infrastructure
-  - terraform
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
