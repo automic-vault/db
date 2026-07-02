@@ -6,6 +6,57 @@ docs:
   - https://github.com/lima-vm/socket_vmnet#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Official installation docs cover binary tarballs, source installs under
+      /opt/socket_vmnet, Homebrew, and MacPorts. The supplied package-manager facts list
+      Homebrew and MacPorts, reflecting a macOS-only tool aimed at virtualization users
+      rather than a cross-platform daemon.
+  package-nerd-significance:
+    - >
+      Package nerds care about socket_vmnet because it is a small package with unusually
+      sharp install semantics: root-owned prefixes, launchd service files, Homebrew
+      service behavior, MacPorts service behavior, QEMU integration, and Lima
+      integration all affect whether rootless virtual machines get usable bridged or
+      shared networking.
+  project-history:
+    - >
+      The official README says socket_vmnet was forked from vde_vmnet v0.6.0 and removes
+      the dependency on VDE. The git history begins in July 2021, and the first tagged
+      alpha release appeared in May 2022 before the 1.0.0 tag in November 2022.
+    - >
+      The README positions the project around a precise operational tradeoff:
+      socket_vmnet itself usually runs as root, but QEMU does not need to. This kept
+      vmnet.framework networking usable for rootless QEMU workflows before and after
+      QEMU added its own vmnet support.
+  related-projects:
+    - >
+      socket_vmnet is forked from vde_vmnet, is designed for QEMU, and is documented as
+      integrated with Lima. The README also contrasts it with QEMU's built-in vmnet
+      support, which requires running the whole QEMU process as root.
+  sources:
+    - Official git metadata from https://github.com/lima-vm/socket_vmnet.git
+    - https://github.com/lima-vm/socket_vmnet#readme
+    - https://raw.githubusercontent.com/lima-vm/socket_vmnet/master/README.md
+    - source_facts.package-manager
+  summary:
+    - >
+      socket_vmnet is a macOS networking daemon and client for giving unmodified,
+      rootless QEMU access to Apple's vmnet.framework. It is closely associated with
+      Lima and the Mac virtualization tooling ecosystem.
+  timeline:
+    - '2021: Initial git commit.'
+    - '2022: v1.0.0-alpha.0 first tagged alpha release.'
+    - '2022: v1.0.0 tagged.'
+    - '2022: Lima v0.12.0 and later documented built-in support for socket_vmnet.'
+    - '2024: v1.2.0 tagged after the 1.1 series.'
+    - '2025: v1.2.2 tagged.'
+  usage:
+    - >
+      The documented workflow starts the socket_vmnet daemon with a gateway and socket
+      path, then runs QEMU through socket_vmnet_client. The README also documents Lima
+      integration, noting that Lima has built-in support for socket_vmnet since v0.12.0.
 category: networking
 package-manager:
   brew: socket_vmnet
