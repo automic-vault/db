@@ -5,6 +5,35 @@ docs:
   - https://gitlab.com/sequoia-pgp/sequoia-sqv/-/blob/main/README.md
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    `sqv` is Sequoia-PGP's small OpenPGP signature verifier, carved out for the
+    verification-only side of the ecosystem where tools need a simple, policy-aware
+    substitute for `gpgv`. Its README describes it as a program for verifying detached
+    OpenPGP signatures and explicitly calls it a replacement for `gpgv`, with the
+    important addition that it can apply extra constraints to signatures.
+  - >
+    The motivation is closely tied to software distribution. The Sequoia project page
+    says `sqv` was designed for distribution systems such as Debian, and points to
+    Debian bug 872271, where Daniel Kahn Gillmor requested a simple validation binary
+    able to check signatures against curated keyrings while enforcing constraints such
+    as signing capability, validity windows, key expiry, revocation, and algorithm
+    strength. That lineage explains why `sqv` is smaller and stricter than a general
+    OpenPGP frontend.
+  - >
+    In practice, `sqv` checks that one or more signatures are valid and issued by
+    certificates in supplied keyrings. Its man page documents detached signatures,
+    inline-signed messages, and cleartext signatures, plus controls such as
+    `--not-before`, `--not-after`, signature counts, keyring inputs, output extraction,
+    and cryptographic policy selection. Package maintainers and release engineers use it
+    where a script wants verification semantics without importing a user's full
+    mail/key-management environment.
+  - >
+    The packaging story follows that focused executable model. Homebrew ships
+    `sequoia-sqv`; Debian and Ubuntu expose the shorter `sqv` package name; Alpine,
+    Fedora, Nix, Arch, and openSUSE-style packaging carry Sequoia-branded packages. This
+    makes it a natural dependency for build, release, and archive tooling that wants
+    OpenPGP verification but not a full interactive PGP suite.
 tags:
   - cli
   - cryptography
@@ -28,6 +57,12 @@ provenance:
     - source_facts.name is sequoia-sqv.
   docs-sources:
     - Official GitLab README is the best official documentation surface found for sqv.
+  history-sources:
+    - https://gitlab.com/sequoia-pgp/sequoia-sqv/-/raw/main/README.md
+    - https://sequoia-pgp.org/projects/
+    - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=872271
+    - https://www.mankier.com/1/sqv
+    - https://formulae.brew.sh/formula/sequoia-sqv
   repo-sources:
     - >
       source_facts.repo already provides https://gitlab.com/sequoia-pgp/sequoia-sqv; per
@@ -42,5 +77,6 @@ category-path:
   - openpgp
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

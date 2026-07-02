@@ -7,6 +7,25 @@ docs:
   - https://monome.org/docs/serialosc/osc
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    serialosc is the service layer that lets monome hardware speak Open Sound Control.
+    It runs in the background, watches for monome grid and arc devices over USB serial,
+    and exposes each connected device through OSC so music, visual, and live-coding
+    applications can treat the hardware as a networked controller instead of a raw
+    serial device.
+  - >
+    The daemon model is deliberately device-oriented: `serialoscd` monitors connections,
+    launches a `serialosc-device` process with its own port for each device, and
+    advertises `_monome-osc._udp` over Zeroconf/Bonjour. Practitioners often reach it
+    through environment-specific wrappers such as Max objects or SuperCollider
+    libraries, while the OSC reference documents the lower-level messages for custom
+    integrations.
+  - >
+    Distribution follows the niche-hardware workflow. The upstream README points to Mac
+    and Windows installers, and Homebrew packages the Unix build with libmonome, liblo,
+    and libuv so users can install the daemon and its helper programs without building
+    the monome support stack by hand.
 category: media
 package-manager:
   brew: serialosc
@@ -25,5 +44,11 @@ executables:
   - serialoscd
 provenance:
   formula: serialosc
+  history-sources:
+    - https://monome.org/docs/serialosc/
+    - https://monome.org/docs/serialosc/osc/
+    - https://github.com/monome/serialosc
+    - https://formulae.brew.sh/formula/serialosc
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -8,6 +8,36 @@ credentials-file-location:
   unix:
     - $GNUPGHOME
     - $GNUPGHOME/pubring.cert.d
+history:
+  - >
+    Sequoia Chameleon GnuPG is Sequoia-PGP's compatibility layer for the GnuPG
+    command-line interface. It builds `gpg-sq` and `gpgv-sq`, reimplementing the
+    familiar `gpg` and `gpgv` entry points on top of Sequoia's Rust OpenPGP
+    implementation. That role matters because GnuPG is deeply embedded in package
+    managers, mail clients, password-store workflows, release verification scripts, and
+    wrapper libraries such as GPGME.
+  - >
+    The Chameleon grew out of Sequoia's broader attempt to modernize OpenPGP tooling:
+    Sequoia began as a Rust implementation focused on safety, correctness, and
+    library-first integration, with its first public release in 2018 and `sq` following
+    as a general CLI in 2021. The Chameleon 0.1 release was announced in December 2022,
+    with support from NLnet's NGI Assure program, specifically to make migration
+    possible for software that expects GnuPG-compatible command behavior.
+  - >
+    `gpgv-sq` is positioned as the low-risk path: it is stateless and intended as a
+    replacement for `gpgv` in verification-only workflows. `gpg-sq` covers a growing
+    subset of common GnuPG commands, relies on `gpg-agent` for secret-key operations,
+    and can use an overlay certificate store under `$GNUPGHOME/pubring.cert.d` so GnuPG
+    state is not directly rewritten. The project also documents deliberate divergences
+    from GnuPG, including stricter weak-algorithm handling, no short key IDs, no
+    `--use-embedded-filename`, and Sequoia-specific trust models.
+  - >
+    Packaging reflects its bridge role. Homebrew ships it as `sequoia-chameleon-gnupg`;
+    Fedora documents installing the package and using an activation script or PATH shim
+    so `gpg` and `gpgv` resolve to the Sequoia implementations in a user session;
+    Debian, Arch, Nix, Alpine, MacPorts, and other systems carry corresponding packages.
+    Practitioners use it when they want Sequoia's OpenPGP engine while keeping scripts,
+    tests, or applications that still shell out to GnuPG-style commands.
 tags:
   - cli
   - cryptography
@@ -34,6 +64,13 @@ provenance:
     - source_facts.name is sequoia-chameleon-gnupg.
   docs-sources:
     - Official GitLab README is the best official documentation surface found for the package.
+  history-sources:
+    - https://gitlab.com/sequoia-pgp/sequoia-chameleon-gnupg/-/raw/main/README.md
+    - https://sequoia-pgp.org/projects/
+    - https://sequoia-pgp.org/blog/2018/11/26/initial-release/
+    - https://sequoia-pgp.org/blog/2022/12/19/202212-chameleon-0.1/
+    - https://sequoia-pgp.org/blog/2024/12/13/202412-sequoia-fedora/
+    - https://formulae.brew.sh/formula/sequoia-chameleon-gnupg
   repo-sources:
     - >
       source_facts.repo already provides
@@ -49,5 +86,6 @@ category-path:
   - openpgp
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
