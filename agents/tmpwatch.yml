@@ -5,6 +5,56 @@ docs:
   - https://pagure.io/tmpwatch/blob/master/f/tmpwatch.8
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Red Hat Enterprise Linux 6 technical notes still documented tmpwatch in 2011 as an
+      updated package for RHEL 6, and Fedora package metadata describes the same
+      temporary-directory cleanup role. In this batch input, the package is also present
+      through Homebrew, dnf, Nix, and zypper names, showing that the utility survived
+      outside its original Red Hat context as a portable admin tool.
+  package-nerd-significance:
+    - >
+      For package-manager users, tmpwatch is interesting because it represents the
+      pre-systemd era of distribution-specific housekeeping tools: tiny, scriptable,
+      predictable, and packaged under the same name across several Unix-like ecosystems.
+  project-history:
+    - >
+      The upstream man page carries Red Hat copyright years from 1997 through 2009 and
+      lists Red Hat authors including Erik Troan, Preston Brown, Nalin Dahyabhai, and
+      Miloslav Trmac. That places tmpwatch in the older Linux distribution tooling
+      tradition: focused utilities shipped by distributions to solve recurring
+      operational problems with minimal ceremony.
+  related-projects:
+    - >
+      cron and rm are referenced by the upstream man page as related commands in the
+      cleanup workflow.
+    - >
+      Distribution package metadata positions tmpwatch as a filesystem and
+      temporary-file maintenance tool.
+  sources:
+    - >
+      https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/6.2_technical_notes/tmpwatch
+    - https://packages.fedoraproject.org/pkgs/tmpwatch/tmpwatch/index.html
+    - https://pagure.io/tmpwatch/raw/master/f/tmpwatch.8
+    - input.json source_facts.package-manager
+  summary:
+    - >
+      tmpwatch is a small Red Hat-originated system administration utility for
+      recursively deleting files that have not been accessed for a configured period.
+      Its historical niche is simple, cron-friendly hygiene for temporary directories
+      such as /tmp.
+  timeline:
+    - '1997-2009: Upstream man page copyright range records Red Hat maintenance of tmpwatch.'
+    - '2009: The upstream man page is dated 2009-10-15.'
+    - '2011: Red Hat Enterprise Linux 6 technical notes documented a tmpwatch bug-fix update.'
+  usage:
+    - >
+      tmpwatch is normally run against one or more directories with an age threshold,
+      commonly from cron or equivalent scheduled maintenance. Its safety details matter
+      to administrators: the man page documents race-condition checks, avoiding
+      filesystem crossings, ignoring symlinks in cleaned directories, and using atime by
+      default with options for mtime and ctime.
 tags:
   - cleanup
   - cli
@@ -22,32 +72,31 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official Fedora package page describes tmpwatch as recursively removing old files
-      from directories such as /tmp.
-    - >
-      source_facts.description says tmpwatch finds and removes files not accessed in a
-      specified time.
+    - current_curation.category_path
+    - source_facts.description
   display-name-sources:
-    - source_facts.homepage is the official Pagure project for tmpwatch.
-    - source_facts.name is tmpwatch.
+    - current_curation.display-name
+    - source_facts.name
   docs-sources:
+    - current_curation.docs
+    - official upstream man page at Pagure
+  history-sources:
     - >
-      Official Pagure repository contains the tmpwatch.8 manual page; Pagure access was
-      partially protected, but Fedora identifies Pagure as upstream.
+      https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/6.2_technical_notes/tmpwatch
+    - https://packages.fedoraproject.org/pkgs/tmpwatch/tmpwatch/index.html
+    - https://pagure.io/tmpwatch/raw/master/f/tmpwatch.8
+    - input.json source_facts.package-manager
   repo-sources:
-    - Official Fedora package page lists https://pagure.io/tmpwatch as upstream.
-    - source_facts.homepage is https://pagure.io/tmpwatch.
-    - source_facts.repo is empty.
+    - 'current_curation.repo: https://pagure.io/tmpwatch'
+    - 'source_facts.homepage: https://pagure.io/tmpwatch'
   tags-sources:
-    - Official Fedora package page says tmpwatch removes files based on last access time.
-    - source_facts.description supports cleanup and filesystem tags.
+    - current_curation.tags
+    - source_facts.description
 category-confidence: high
 category-path:
   - system
-  - maintenance
-  - temporary-files
 display-name-confidence: high
-docs-confidence: medium
+docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
