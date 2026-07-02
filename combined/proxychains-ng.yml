@@ -12,6 +12,38 @@ config-file-location:
     - $(sysconfdir)/proxychains.conf
     - /etc/proxychains.conf
 credentials-file-location: null
+history:
+  - >
+    proxychains-ng is the "new generation" continuation of the ProxyChains idea: use
+    dynamic-loader interposition to make programs that do not know about proxies send
+    their TCP connections through SOCKS4a, SOCKS5, or HTTP proxy chains. Its README
+    describes the mechanism plainly: it hooks network-related libc calls in dynamically
+    linked programs through `dlsym()` and `LD_PRELOAD`, with platform support spanning
+    Linux, BSD, macOS, and Haiku.
+  - >
+    The 4.x series moved the tool from the older ProxyChains model into a maintained C
+    codebase with its own `proxychains4` executable, simpler build machinery,
+    command-line/config-file selection, remote DNS handling, Tor onion-name usefulness,
+    macOS support, OpenBSD/FreeBSD/Solaris/Haiku portability work, IPv6 and DNS fixes,
+    and compatibility work for OpenSSH and other dynamically linked clients. That
+    history made it a durable Unix package: distributions package it as `proxychains-ng`
+    or, on Debian-family systems, expose the runtime library as `libproxychains4`.
+  - >
+    Its ecosystem role is narrow and durable: it is a last-mile proxy adapter for tools
+    that lack proxy settings, for restrictive networks, and for chained proxy/Tor
+    workflows. Security testers, operators, and network engineers use `proxychains4
+    command ...` or `proxychains4 -f other.conf command ...` to run telnet, curl-like
+    clients, scanners that use ordinary libc sockets, SSH clients, or other TCP programs
+    through a configured chain; the README warns that raw packet techniques, UDP/ICMP,
+    static binaries, scripts that load native modules, and some system-protected macOS
+    binaries are outside its reliable operating model.
+  - >
+    Packaging reflects that mature Unix role. The input metadata lists APK, Homebrew,
+    Debian/Ubuntu, DNF, MacPorts, Nix, pacman, and zypper packages, and its
+    configuration search path allows an environment-selected file, a local
+    `./proxychains.conf`, a per-user file under `~/.proxychains/`, and a system file
+    under the configured sysconf directory. That makes it easy to install globally while
+    swapping proxy chains per command or per project.
 category: networking
 package-manager:
   apk: proxychains-ng
@@ -38,5 +70,13 @@ executables:
   - proxychains4-daemon
 provenance:
   formula: proxychains-ng
+  history-sources:
+    - https://github.com/rofl0r/proxychains-ng
+    - https://raw.githubusercontent.com/rofl0r/proxychains-ng/master/README
+    - https://formulae.brew.sh/formula/proxychains-ng
+    - source_facts.config-file-location
+    - source_facts.__source_record.package-manager
+    - source_facts.executables
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

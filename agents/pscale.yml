@@ -7,6 +7,40 @@ config-file-location:
   unix:
     - ~/.config/planetscale/pscale.yml
 credentials-file-location: null
+history:
+  - >
+    pscale is the official command-line client for PlanetScale, the database platform
+    built around branching, deploy requests, and managed database workflows. The CLI
+    repository describes its purpose as bringing PlanetScale concepts to the terminal,
+    and the documentation presents it as the way to interact with PlanetScale databases
+    from the command line.
+  - >
+    The tool appeared as PlanetScale's developer workflow matured around database
+    branching: a May 2021 PlanetScale discussion already referred to the CLI as `pscale`
+    and pointed users to installation instructions for macOS, Linux, and Windows. That
+    cross-platform framing mattered because PlanetScale's model asks developers to treat
+    database changes more like code changes, with branch creation, connection, schema
+    review, and deploy requests exposed as repeatable commands.
+  - >
+    Adoption expanded through both local developer use and automation. PlanetScale
+    documentation lists commands for creating, deleting, and listing databases and
+    branches, opening secure MySQL shell sessions, and managing deploy requests; later
+    PlanetScale material showed pscale in GitHub Actions workflows for creating
+    branches, managing branch passwords, opening deploy requests, and commenting schema
+    diffs on pull requests.
+  - >
+    In practice, pscale is used by developers and platform teams as a thin operational
+    interface over PlanetScale: logging in, selecting organizations, creating database
+    branches, connecting local clients through secure tunnels, inspecting schema
+    changes, and driving deploy-request workflows from CI. Its `api` command also gives
+    scripts a lower-level way to call PlanetScale API endpoints when a dedicated
+    high-level command is not available.
+  - >
+    The package is distributed as the `pscale` executable through Homebrew and Nix in
+    the input record, while PlanetScale also supports installation in CI through its
+    setup action. Its configuration path under `~/.config/planetscale/pscale.yml`
+    reflects its role as a developer-authenticated infrastructure CLI rather than a
+    library embedded in applications.
 tags:
   - cli
   - database
@@ -31,6 +65,17 @@ provenance:
     - source_facts.name is pscale; official docs refer to the pscale CLI.
   docs-sources:
     - Official PlanetScale CLI documentation page.
+  history-sources:
+    - https://github.com/planetscale/cli
+    - https://planetscale.com/docs/cli
+    - https://github.com/planetscale/discussion/discussions/10
+    - https://planetscale.com/blog/using-the-planetscale-cli-with-github-actions-workflows
+    - https://planetscale.com/blog/announcing-the-planetscale-github-actions
+    - https://github.com/planetscale/setup-pscale-action
+    - https://github.com/planetscale/docs/blob/main/docs/reference/cli-api.md
+    - source_facts.description
+    - source_facts.package-manager
+    - source_facts.repo
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/planetscale/cli; per
@@ -46,5 +91,6 @@ category-path:
   - cli
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
