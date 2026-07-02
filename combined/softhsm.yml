@@ -8,6 +8,77 @@ docs:
 config-file-location:
   unix: /etc/softhsm2.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      SoftHSM spread beyond OpenDNSSEC because PKCS#11 is a shared interface used by
+      many cryptographic applications. The README explicitly notes that SoftHSM can work
+      with other cryptographic products through that interface.
+    - >
+      The package is carried by Homebrew, Alpine, Fedora, MacPorts, Nix, Arch, and
+      openSUSE according to the input package facts, which fits its role as a test and
+      development HSM substitute on Unix-like systems.
+  package-nerd-significance:
+    - >
+      SoftHSM is important to package maintainers because it makes PKCS#11 integration
+      testable without special hardware. That matters for DNSSEC software, TLS tooling,
+      signing infrastructure, CI systems, and applications that support smart cards or
+      hardware security modules.
+    - >
+      It is also a classic dependency-package artifact: most users care that the shared
+      module, config file, utility commands, crypto backend, and p11-kit integration
+      land in expected filesystem locations.
+  project-history:
+    - >
+      The official SoftHSM site and README both state that SoftHSM began as part of the
+      OpenDNSSEC project. OpenDNSSEC needed to store and handle cryptographic keys
+      through PKCS#11, but requiring a physical hardware security module would have
+      limited who could test or deploy the system.
+    - >
+      SoftHSM answered that problem with a software implementation of a generic
+      cryptographic device. Version 2 became the current line, adding stronger handling
+      of sensitive material, unswappable memory support, and a more general crypto
+      backend that can use Botan or OpenSSL.
+    - >
+      The SoftHSMv2 GitHub repository was created in 2013 and remains active under the
+      softhsm organization, while the project website points users to GitHub for source
+      code and bug reporting.
+  related-projects:
+    - 'OpenDNSSEC: the project SoftHSM was originally built to support.'
+    - 'PKCS#11: the cryptographic token interface SoftHSM implements.'
+    - 'Botan and OpenSSL: supported cryptographic backends.'
+    - 'p11-kit: system integration layer relevant to installing PKCS#11 modules.'
+  sources:
+    - current_curation.config-file-location
+    - https://api.github.com/repos/softhsm/SoftHSMv2
+    - https://opendnssec.readthedocs.io/en/latest/softhsm2/
+    - https://raw.githubusercontent.com/softhsm/SoftHSMv2/develop/README.md
+    - https://www.softhsm.org/
+    - https://www.softhsm.org/background.html
+    - source_facts.package-manager
+  summary:
+    - >
+      SoftHSM is a software implementation of a cryptographic token store exposed
+      through PKCS#11, originally created for OpenDNSSEC and later maintained as a
+      standalone security project.
+  timeline:
+    - '2000s: SoftHSM is developed as part of OpenDNSSEC to provide a software PKCS#11 device.'
+    - '2013: SoftHSMv2 GitHub repository is created.'
+    - >
+      2010s: SoftHSM version 2 becomes the main documented line with Botan/OpenSSL
+      backend support.
+    - >
+      2020s: SoftHSM continues as a standalone project with packages across Unix-like
+      package managers.
+  usage:
+    - >
+      Users install the library and command-line utilities, configure the token storage
+      path in softhsm2.conf, initialize tokens with softhsm2-util --init-token, and then
+      point PKCS#11-aware software at the SoftHSM module.
+    - >
+      The default configuration file is /etc/softhsm2.conf, and the README documents
+      SOFTHSM2_CONF as an override. Token backup is ordinary file backup of the
+      configured token storage location.
 category: security
 package-manager:
   apk: softhsm
