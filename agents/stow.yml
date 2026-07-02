@@ -1,9 +1,9 @@
 id: brew:stow
 display-name: GNU Stow
-repo: https://git.savannah.gnu.org/git/stow.git
+repo: https://git.savannah.gnu.org/cgit/stow.git
 docs:
   - https://www.gnu.org/software/stow/manual/stow.html
-  - https://www.gnu.org/software/stow/stow.html
+  - https://www.gnu.org/software/stow
 config-file-location:
   unix:
     - ~/.stowrc
@@ -11,6 +11,72 @@ config-file-location:
     - ~/.stow-global-ignore
     - .stow-local-ignore
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The Stow manual notes that more sophisticated system and language package managers
+      reduced its role as a general software installer, naming rpm, dpkg, Nix, Guix,
+      gem, pip, and npm as examples. It also records Stow's continued use for per-user
+      configuration management, especially when paired with version control.
+    - >
+      Homebrew, Debian, Fedora, Arch, Nix, MacPorts, and other package-manager entries
+      in the supplied source facts show that Stow remains widely packaged as a small
+      Unix tool rather than as an application platform.
+  package-nerd-significance:
+    - >
+      Stow matters to package-manager culture because it is a minimal, inspectable
+      alternative to database-backed ownership tracking: the filesystem layout is the
+      metadata. That makes it attractive for source-built /usr/local trees,
+      home-directory dotfiles, and users who want reversible installs without a full
+      package manager.
+    - >
+      It also gives package nerds a classic example of Unix composition: symlinks,
+      predictable directory structure, and version control cover most of the workflow
+      without a daemon, registry, or lockfile format.
+  project-history:
+    - >
+      GNU's people page identifies Bob Glickstein as the author of GNU Stow. The Stow
+      manual explains the original problem: administrators commonly built software such
+      as Perl and Emacs under /usr/local, then needed a reliable way to upgrade or
+      remove one package without confusing its files with another package's files.
+    - >
+      Stow's design keeps each package in its own private tree and makes the files
+      appear in a common tree through symbolic links. The manual says Stow was inspired
+      by Carnegie Mellon's Depot, but deliberately avoided Depot's database state and
+      destructive synchronization risks.
+  related-projects:
+    - >
+      Carnegie Mellon Depot influenced Stow's problem space, but Stow's manual contrasts
+      its stateless symlink approach with Depot's database-based synchronization.
+    - >
+      Modern package managers such as rpm, dpkg, Nix, Guix, pip, gem, and npm cover many
+      software-installation cases that Stow once addressed, while Stow remains common in
+      dotfile-manager workflows.
+  sources:
+    - https://www.gnu.org/people/people.html
+    - https://www.gnu.org/software/stow/
+    - https://www.gnu.org/software/stow/manual/stow.html
+    - source_facts.package-manager
+  summary:
+    - >
+      GNU Stow is a long-running GNU command-line tool for managing software or data
+      trees by creating symlink farms into a shared target directory. Its modern
+      package-manager interest comes from the way it preserves package ownership without
+      a package database, and from its later adoption by dotfile users.
+  timeline:
+    - '1990s: Bob Glickstein authored GNU Stow.'
+    - '2024-04-07: GNU Stow 2.4.0 released with dotfiles-related fixes.'
+    - '2024-09-08: GNU Stow 2.4.1 released with additional --dotfiles and ignore-list fixes.'
+  usage:
+    - >
+      Users arrange package directories under a stow directory and run the stow CLI to
+      create, delete, or restow symlinks into the target tree. In dotfile workflows, the
+      target is commonly the user's home directory, and Stow's --dotfiles behavior
+      supports package trees that avoid hidden filenames internally.
+    - >
+      The official manual documents resource files in .stowrc and ~/.stowrc, plus
+      package-local and global ignore files, making it convenient to encode repeated CLI
+      options and ignore rules.
 tags:
   - cli
   - dotfiles
@@ -30,29 +96,29 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description says it organizes software under one directory tree; GNU
-      page describes Stow as a symlink farm manager.
+    - GNU Stow manual describes filesystem symlink-farm package management.
   display-name-sources:
-    - Official GNU project page uses GNU Stow as the project name.
+    - GNU Stow homepage and manual title.
   docs-sources:
     - >
-      Official GNU Stow page links online documentation; official manual is hosted under
-      gnu.org/software/stow/manual.
+      GNU Stow homepage links official online manual; manual documents resource files
+      and ignore files.
+  history-sources:
+    - https://www.gnu.org/people/people.html
+    - https://www.gnu.org/software/stow/
+    - https://www.gnu.org/software/stow/manual/stow.html
+    - source_facts.package-manager
   repo-sources:
-    - >
-      Official GNU Stow page states there is a git repository containing latest
-      development code; GNU Savannah hosts the project git repository.
+    - GNU Stow homepage links the Savannah git repository for development sources.
   tags-sources:
     - >
-      source_facts.description and official GNU page describe symlink farm management
-      for organized software trees and configuration files.
+      GNU Stow manual and homepage describe CLI, symlink, package-management, dotfiles,
+      and Perl implementation.
 category-confidence: high
 category-path:
   - system
-  - file-management
-  - symlink-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
