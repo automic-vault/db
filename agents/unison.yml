@@ -14,6 +14,90 @@ config-file-location:
     - '%HOME%\.unison\*.prf'
     - C:\.unison\*.prf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Unison has remained useful because it solved a stubborn workstation problem:
+      keeping home directories, source trees, and personal data synchronized across
+      laptops, servers, and operating systems without requiring a central always-on
+      service. Its upstream README notes more than 25 years of use, and its
+      package-manager footprint in the input spans Homebrew, Debian, Ubuntu, Fedora,
+      Arch, Nix, MacPorts, Windows package managers, and others.
+    - >
+      In package-manager culture, Unison also became a compatibility cautionary tale.
+      Users often need compatible versions on both ends of a sync, so distribution lag,
+      OCaml compiler changes, and remote-server availability can matter as much as the
+      local binary itself.
+  package-nerd-significance:
+    - >
+      Unison is package-nerd interesting because it is both old and operationally picky:
+      a small package upgrade can affect interoperability with a remote host, archive
+      migration, GUI availability, and OCaml runtime compatibility. That makes it a
+      favorite example when discussing why reproducible package sets, pinned versions,
+      and cross-platform binary availability matter.
+    - >
+      It also sits in the same practical toolbox as rsync while making a different
+      tradeoff: rsync excels at one-way copy and deployment, while Unison tracks two
+      replicas and asks the user to resolve real conflicts. That distinction keeps it
+      relevant for dotfiles, laptops, research workstations, and mixed Unix/Windows
+      environments.
+  project-history:
+    - >
+      The original Unison web site at the University of Pennsylvania describes the tool
+      as free software with a precise specification, support for Windows and many Unix
+      variants, and transfer optimizations for small changes in large files. That site
+      is now archival, and the project is hosted on GitHub.
+    - >
+      Unison's implementation history matters to packagers because the executable, wire
+      protocol, and archive format have historically been tied to OCaml details. The
+      project addressed much of that pain in the 2.52 line by adding feature
+      negotiation, a new OCaml-independent archive format, and a new wire protocol;
+      later 2.53 releases continued modernizing build, GUI, Windows, extended attribute,
+      and ACL support.
+  related-projects:
+    - >
+      Unison is commonly compared with rsync, mirroring utilities,
+      configuration-management tools, distributed filesystems such as Coda, and
+      platform-specific sync tools. Its own documentation highlights these comparisons
+      to explain why bidirectional reconciliation is its central feature.
+    - >
+      The project is implemented in OCaml, so OCaml compiler and runtime evolution have
+      been unusually visible in its packaging and compatibility story.
+  sources:
+    - https://github.com/bcpierce00/unison
+    - https://github.com/bcpierce00/unison/wiki/OCaml-versions
+    - https://raw.githubusercontent.com/bcpierce00/unison/master/NEWS.md
+    - https://www.cis.upenn.edu/~bcpierce/unison/
+    - source_facts.package-manager
+  summary:
+    - >
+      Unison is a long-running bidirectional file synchronizer for Unix-like systems,
+      macOS, and Windows. It occupies a different niche from one-way mirroring tools: it
+      lets two independently changed replicas converge while detecting conflicts, using
+      a normal user account rather than a kernel filesystem or privileged service.
+  timeline:
+    - >
+      1990s-2000s: Unison developed as a cross-platform bidirectional file synchronizer
+      at the University of Pennsylvania.
+    - '2010s: The project moved from older hosting to GitHub after an SVN-to-Git transition.'
+    - >
+      2022: Version 2.52 introduced feature negotiation plus OCaml-independent archive
+      and wire formats.
+    - >
+      2022-2023: Version 2.53 added GTK3 GUI work, extended attributes, ACL support,
+      Windows build improvements, and modernized build instructions.
+    - '2026: Version 2.54 dropped the old wire protocol and pre-2.52 archive support.'
+  usage:
+    - >
+      Typical CLI usage is to synchronize two roots, either local paths or a local path
+      and a remote path reached over ssh. The official manual emphasizes running the
+      remote copy as the file owner, using ssh rather than insecure socket modes for
+      ordinary remote synchronization, and reviewing conflicts before propagation.
+    - >
+      Profiles stored as .prf files let users capture roots, paths, ignore rules,
+      preferences, and repeat/watch behavior. For package users, the important
+      executable split is the main unison CLI plus unison-fsmonitor, which supports
+      watch-oriented workflows on platforms where it is available.
 tags:
   - bidirectional-sync
   - cli
@@ -30,25 +114,33 @@ geiger:
     - text:sync
 provenance:
   category-sources:
-    - >
-      source_facts.description: File synchronization tool; official homepage describes
-      Unison as a file-synchronization tool
+    - current_curation.category
+    - source_facts.description
   display-name-sources:
-    - 'official homepage title: Unison File Synchronizer'
-    - 'source_facts.name: unison'
+    - https://www.cis.upenn.edu/~bcpierce/unison/
+    - source_facts.name
   docs-sources:
-    - official GitHub wiki lists documentation and user manual links
+    - current_curation.docs
+    - https://github.com/bcpierce00/unison/wiki
+  history-sources:
+    - https://github.com/bcpierce00/unison
+    - https://github.com/bcpierce00/unison/wiki/OCaml-versions
+    - https://raw.githubusercontent.com/bcpierce00/unison/master/NEWS.md
+    - https://www.cis.upenn.edu/~bcpierce/unison/
+    - source_facts.package-manager
   repo-sources:
-    - source_facts.repo already provided; per instruction repo is returned as null
+    - >
+      source_facts.repo already provides https://github.com/bcpierce00/unison; repo
+      returned null per prompt.
   tags-sources:
-    - official homepage notes bidirectional synchronization across OS X, Unix, and Windows
+    - current_curation.tags
     - source_facts.description
     - source_facts.executables
 category-confidence: high
 category-path:
   - developer-tools
-  - sync
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -11,6 +11,90 @@ config-file-location:
     - /etc/odbc.ini
     - ~/.odbc.ini
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      unixODBC became infrastructure rather than an end-user application: databases,
+      language bindings, BI tools, office suites, and proprietary drivers could target a
+      common ODBC manager on Unix-like systems. The official documentation includes
+      guides for DB2, FreeTDS, Informix, Perl DBD::ODBC, PHP, OpenOffice/StarOffice,
+      connection pooling, and other integration scenarios.
+    - >
+      Its package-manager footprint reflects that infrastructure role. The input shows
+      it packaged across Homebrew, Alpine, Debian and Ubuntu libraries, Fedora,
+      MacPorts, Nix, Arch, and openSUSE, often as the dependency that makes higher-level
+      database connectors work.
+  package-nerd-significance:
+    - >
+      unixODBC is package-nerd significant because it is the quiet shared ABI beneath
+      many database packages. A broken driver-manager path, SQLLEN size mismatch,
+      missing ini file, or loader issue can make unrelated database clients fail.
+    - >
+      It is also a classic Unix packaging problem: libraries, headers, CLI diagnostics,
+      driver registration, dynamic loading, and vendor drivers all have to agree. That
+      is why tools such as odbc_config, odbcinst, dltest, and slencheck matter even
+      though most users only wanted an application to connect to a database.
+  project-history:
+    - >
+      The upstream README describes unixODBC as an open source ODBC subsystem and SDK
+      for Linux, Mac OSX, and UNIX, including a driver manager, installer library and
+      command-line tool, plus command-line tools for driver installation and SQL work.
+      Its web documentation describes it as a complete, free/open ODBC solution for
+      UNIX/Linux.
+    - >
+      unixODBC grew around the need to reproduce the Windows ODBC environment on
+      non-Windows platforms. The official odbcinst guide explains that Windows ODBC used
+      .ini-style configuration historically, and unixODBC implements the same
+      configuration model and APIs through ini files and libodbcinst.
+  related-projects:
+    - >
+      Related projects and ecosystems include Microsoft ODBC, database-specific ODBC
+      drivers, FreeTDS, DB2, Informix, PostgreSQL and MySQL ODBC drivers, Perl
+      DBD::ODBC, PHP ODBC integrations, OpenOffice/StarOffice data access, and vendor
+      Unix database clients.
+    - >
+      The repository also points to SourceForge, GitHub, and the unixODBC web site as
+      project resources, reflecting its long life across older and newer open source
+      hosting.
+  sources:
+    - https://raw.githubusercontent.com/lurcher/unixODBC/master/ChangeLog
+    - https://raw.githubusercontent.com/lurcher/unixODBC/master/README
+    - https://www.unixodbc.org/doc/
+    - https://www.unixodbc.org/doc/UserManual/
+    - https://www.unixodbc.org/odbcinst.html
+    - source_facts.package-manager
+  summary:
+    - >
+      unixODBC is a free ODBC subsystem and SDK for Linux, macOS, and Unix. Its central
+      role is the driver manager: the layer that lets applications use ODBC APIs while
+      loading and configuring database-specific drivers on non-Windows systems.
+  timeline:
+    - >
+      Late 1990s-early 2000s: unixODBC developed as an ODBC subsystem for Unix and Linux
+      platforms.
+    - >
+      2001: ChangeLog entries show the 2.1.x line adding packaging and platform work,
+      including Mac install/package directories.
+    - >
+      2002: The 2.2.x line added iusql, odbcinst options, DataManager updates,
+      MySQL/PostgreSQL driver work, and platform fixes.
+    - >
+      2004: Version 2.2.10 continued portability, driver-manager, VMS, AIX, PostgreSQL,
+      and setup improvements.
+    - >
+      2015: Version 2.3.4 included driver-manager fixes, man pages, slencheck, mingw-w64
+      handling, and more ODBC 3.8 work.
+  usage:
+    - >
+      Package users encounter unixODBC through tools such as isql, iusql, odbcinst,
+      odbc_config, dltest, and slencheck. isql tests DSNs and runs SQL from a shell;
+      odbcinst registers drivers and data sources; odbc_config exposes build/link flags
+      for software compiling against the installed driver manager.
+    - >
+      The practical admin workflow is ini-file driven. System configuration typically
+      lives in odbcinst.ini and odbc.ini under an etc directory, while user DSNs can
+      live in ~/.odbc.ini. The README notes that ODBCSYSINI can override where unixODBC
+      looks for system configuration.
 tags:
   - cli
   - database-connectivity
@@ -28,26 +112,32 @@ geiger:
     - text:sql
 provenance:
   category-sources:
-    - >
-      official documentation describes unixODBC as a complete free/open ODBC solution
-      for UNIX/Linux
-    - 'source_facts.description: ODBC 3 connectivity for UNIX'
+    - https://raw.githubusercontent.com/lurcher/unixODBC/master/README
+    - source_facts.description
   display-name-sources:
-    - 'official documentation branding: unixODBC'
-    - 'source_facts.name: unixodbc'
+    - https://raw.githubusercontent.com/lurcher/unixODBC/master/README
+    - source_facts.name
   docs-sources:
-    - official unixODBC documentation path lists user manuals and guides
+    - current_curation.docs
+    - https://www.unixodbc.org/doc/
+  history-sources:
+    - https://raw.githubusercontent.com/lurcher/unixODBC/master/ChangeLog
+    - https://raw.githubusercontent.com/lurcher/unixODBC/master/README
+    - https://www.unixodbc.org/doc/
+    - https://www.unixodbc.org/doc/UserManual/
+    - https://www.unixodbc.org/odbcinst.html
+    - source_facts.package-manager
   repo-sources:
-    - official unixODBC download page states public git access via github.com/lurcher/unixODBC
+    - https://raw.githubusercontent.com/lurcher/unixODBC/master/README
   tags-sources:
-    - official documentation description
+    - https://raw.githubusercontent.com/lurcher/unixODBC/master/README
     - source_facts.description
     - source_facts.executables
 category-confidence: high
 category-path:
   - developer-tools
-  - database
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
