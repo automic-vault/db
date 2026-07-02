@@ -4,12 +4,18 @@ homepage: https://syncthing.net/
 repo: https://github.com/syncthing/syncthing
 docs:
   - https://docs.syncthing.net/
+  - https://docs.syncthing.net/intro/getting-started.html
+  - https://docs.syncthing.net/users/config.html
 config-file-location:
+  macos: ~/Library/Application Support/Syncthing/config.xml
   unix:
     - $XDG_STATE_HOME/syncthing/config.xml
     - ~/.local/state/syncthing/config.xml
   windows: '%LOCALAPPDATA%\Syncthing\config.xml'
 credentials-file-location:
+  macos:
+    - ~/Library/Application Support/Syncthing/cert.pem
+    - ~/Library/Application Support/Syncthing/key.pem
   unix:
     - $XDG_STATE_HOME/syncthing/cert.pem
     - $XDG_STATE_HOME/syncthing/key.pem
@@ -18,6 +24,65 @@ credentials-file-location:
   windows:
     - '%LOCALAPPDATA%\Syncthing\cert.pem'
     - '%LOCALAPPDATA%\Syncthing\key.pem'
+history:
+  adoption-history:
+    - >
+      The official getting-started guide assumes users may install on multiple machines
+      and points to community flavors for cross-platform GUI and platform-specific
+      integrations while noting that they share the same core. The input package
+      metadata lists broad packaging across Homebrew, Debian, Ubuntu, Fedora/DNF,
+      Alpine, Arch, Chocolatey, Scoop, winget, MacPorts, Nix, and zypper.
+  package-nerd-significance:
+    - >
+      Syncthing matters to package-manager culture because it is a serious long-running
+      network service distributed as a normal user-installable binary. Packagers care
+      about service units, config and state paths, crypto key storage, upgrade behavior,
+      cross-platform builds, and whether GUI wrappers can share a stable core.
+  project-history:
+    - >
+      The official site describes Syncthing as synchronizing files between two or more
+      computers in real time while keeping data on users' own machines. It emphasizes
+      encrypted communication, authenticated devices, documented protocols, open source
+      code, and open development.
+    - >
+      Syncthing's v1.0.0 release notes say the major release recognized that the
+      software was widely used and no longer really in beta, without introducing a
+      breaking change. Its v2.0.0 release notes later introduced major internal and
+      CLI-facing changes, including a switch from LevelDB to SQLite, structured logging,
+      modernized command-line option parsing, and multiple default connections between
+      v2 devices.
+  related-projects:
+    - >
+      The official getting-started guide mentions community flavors such as
+      Syncthing-GTK and platform-specific wrappers for Windows and Android, all sharing
+      the core Syncthing engine.
+  sources:
+    - https://docs.syncthing.net/intro/getting-started.html
+    - https://docs.syncthing.net/users/config.html
+    - https://github.com/syncthing/syncthing/releases/tag/v1.0.0
+    - https://github.com/syncthing/syncthing/releases/tag/v2.0.0
+    - https://syncthing.net/
+    - input source_facts.package-manager
+  summary:
+    - >
+      Syncthing is an open source continuous file synchronization program built around
+      direct device-to-device syncing, documented protocols, and local ownership of
+      data. It is one of the canonical modern examples of a daemon-plus-CLI package that
+      users install from system package managers on many operating systems.
+  timeline:
+    - 'v1.0.0: Release notes state that Syncthing was widely used and no longer really in beta.'
+    - >
+      v1.27.0: Documentation records the Unix-like default config and database location
+      changing to XDG state paths.
+    - >
+      v2.0.0: First 2.0 release switched the database backend to SQLite and modernized
+      command-line option parsing.
+  usage:
+    - >
+      Common use starts by launching the `syncthing` binary, which creates configuration
+      and crypto keys on first start, opens or serves the local web GUI on localhost,
+      and identifies each machine by a device ID. Users exchange device IDs, add remote
+      devices, and share folders; the daemon then keeps files synchronized continuously.
 category: productivity
 package-manager:
   apk: syncthing
