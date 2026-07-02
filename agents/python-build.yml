@@ -7,6 +7,31 @@ config-file-location:
   unix:
     - pyproject.toml
 credentials-file-location: null
+history:
+  - >
+    The `build` project belongs to the post-PEP 517 Python packaging era. PEP 517
+    standardized the split between build frontends, which users run, and build backends,
+    which implement hooks such as building wheels and source distributions. That split
+    let projects declare build requirements and backend choice in `pyproject.toml`
+    instead of relying on direct `setup.py` invocation.
+  - >
+    `build` was created under the Python Packaging Authority as a deliberately small,
+    correct build frontend for that model. Its job is not to replace setuptools, flit,
+    hatchling, meson-python, or other backends; it reads `pyproject.toml`, creates an
+    isolated build environment, installs declared build requirements, calls the
+    backend's standardized hooks, and produces distribution artifacts.
+  - >
+    The tool became a packaging-workflow staple because it gave maintainers a neutral
+    command for producing both sdists and wheels: `python -m build`, exposed by some
+    system packages as `pyproject-build`. It fits naturally before `twine upload`,
+    inside release automation, and in distribution packaging checks where maintainers
+    want to verify that a source tree can build through the standardized PEP 517 path.
+  - >
+    Distribution names vary by channel, which is typical for Python packaging
+    infrastructure. PyPI uses the project name `build`, Homebrew packages it as
+    `python-build`, and Linux distributions commonly use names such as `python3-build`
+    or `python-build`. That packaging spread reflects its role as plumbing shared by
+    application authors, library maintainers, release tooling, and downstream packagers.
 tags:
   - build-frontend
   - cli
@@ -36,6 +61,12 @@ provenance:
     - >
       Official PyPA build documentation is hosted at build.pypa.io and includes API
       documentation for build.
+  history-sources:
+    - https://build.pypa.io/en/latest/
+    - https://build.pypa.io/en/latest/explanation/build-backends.html
+    - https://peps.python.org/pep-0517/
+    - https://github.com/pypa/build
+    - https://formulae.brew.sh/formula/python-build
   repo-sources:
     - >
       source_facts.homepage is https://github.com/pypa/build; Read the Docs project
@@ -51,5 +82,6 @@ category-path:
   - build-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

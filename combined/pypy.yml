@@ -6,6 +6,48 @@ docs:
   - https://doc.pypy.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    PyPy began in late 2002 and early 2003 as an ambitious language-implementation
+    project: write a Python interpreter in a restricted, analyzable subset of Python and
+    use a translation toolchain to generate an efficient runtime. That architecture
+    separated the Python implementation from the RPython translation framework, a
+    distinction the documentation later emphasized because the project name had been
+    used for both ideas.
+  - >
+    The early project was not only an alternative Python interpreter but also a research
+    vehicle for language implementation. Its European-funded period pushed the RPython
+    toolchain, garbage collection experiments, and just-in-time compilation work. By
+    2007 the JIT generator could produce machine code for a PyPy VM, but the
+    retrospective records that the generated code was not yet especially fast.
+  - >
+    PyPy's ecosystem role solidified as a fast, compatible alternative to CPython,
+    especially for long-running pure-Python programs. The tracing JIT is generated from
+    annotations and refactorings in the RPython interpreter rather than being
+    hand-written for every Python operation, so PyPy became both a runtime and a
+    demonstration of meta-tracing JIT techniques.
+  - >
+    Adoption was shaped by both performance wins and compatibility boundaries. For code
+    that mostly uses Python objects and the standard library, PyPy can be close to a
+    drop-in replacement; for projects built around CPython C-extension internals,
+    compatibility requires extra work or different extension strategies such as CFFI,
+    HPy, or PyPy-specific wheels. That tradeoff defined how practitioners evaluated PyPy
+    for web services, scientific code, command-line programs, and performance-sensitive
+    workloads.
+  - >
+    The `brew:pypy` package represents the Python 2.7 line of PyPy. Even after the wider
+    Python ecosystem moved to Python 3, PyPy kept a PyPy2.7 interpreter line with
+    CPython 2.7.18 standard-library compatibility plus security backports, giving legacy
+    Python 2 applications a JIT-enabled runtime option. Package managers such as
+    Homebrew, Alpine, Fedora, MacPorts, Nix, and Arch expose this runtime through the
+    `pypy` command.
+  - >
+    Practitioners use PyPy by running the `pypy` executable or creating environments
+    against that interpreter, then installing packages specifically for PyPy rather than
+    assuming CPython site-packages are shared. In performance work it is commonly paired
+    with benchmark suites such as pyperformance, while in production it is selected when
+    the JIT's warm-up and memory profile fit the workload better than CPython's
+    C-extension ecosystem advantages.
 category: language-runtime
 package-manager:
   apk: pypy
@@ -28,5 +70,15 @@ executables:
   - pypy
 provenance:
   formula: pypy
+  history-sources:
+    - https://www.pypy.org/posts/2018/09/the-first-15-years-of-pypy-3412615975376972020.html
+    - https://www.pypy.org/
+    - https://doc.pypy.org/faq.html
+    - https://doc.pypy.org/introduction.html
+    - https://doc.pypy.org/architecture.html
+    - https://doc.pypy.org/extending.html
+    - https://www.pypy.org/posts/2025/02/pypy-v7319-release.html
+    - https://formulae.brew.sh/formula/pypy
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
