@@ -5,6 +5,47 @@ docs:
   - https://re2c.org/manual/manual.html
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    re2c began as a scanner generator by Peter Bumbulis in 1993 and was described with
+    Donald D. Cowan in the paper "RE2C: a more versatile scanner generator." Its
+    original idea was deliberately close to systems programming practice: compile
+    regular-expression specifications into direct-coded recognizers rather than table
+    interpreters, so generated scanners could compete with carefully hand-written C
+    scanners.
+  - >
+    The project was later developed by volunteer maintainers, with Marcus Boerger and
+    Dan Nuffer among the people credited in manpages for turning the original work into
+    a production-ready code generator, and Ulya Trofimovich serving as a later
+    maintainer in the GitHub-era project. re2c kept a permissive, toolchain-friendly
+    posture: users embed re2c blocks inside host-language source files, run the
+    generator as a preprocessing step, and check in or build the generated lexer
+    depending on project policy.
+  - >
+    Its adoption history is unusually strong for a small compiler tool. PHP's
+    development build requires re2c to regenerate the lexer from a Git checkout, and PHP
+    build documentation lists re2c alongside autoconf, bison, and the C toolchain.
+    SpamAssassin's `sa-compile` uses re2c to turn site-wide rules into C code for faster
+    matching through native object code. The re2c project also lists usage by Ninja,
+    Yasm, BRL-CAD, wake, and other open-source projects, which shows its role as a quiet
+    dependency in build systems, language runtimes, CAD tooling, and mail filtering.
+  - >
+    The technical role of re2c is narrower and lower-level than parser generators such
+    as Bison: it is a lexer and recognizer generator for codebases that need fast
+    tokenization without a fixed runtime framework. Its generated code encodes
+    deterministic finite automata as conditional jumps and comparisons, which the
+    project documents as easier to debug and often faster or smaller than table-driven
+    lexers. That made it attractive to maintainers who wanted generated scanners but did
+    not want the scanner generator to own the shape of their input loop, buffer
+    management, or integration code.
+  - >
+    The project broadened beyond its C and C++ roots. Project documentation lists
+    support for D, Go, Haskell, Java, JavaScript, OCaml, Python, Rust, Swift, V, Zig,
+    and extension through syntax files, while release notes for 3.0 on 2022-01-27 added
+    Rust code generation and the `re2rust` binary. In packaging terms, re2c is a
+    build-time developer tool: it appears in mainstream Unix package repositories and is
+    installed by language-runtime builders, distro maintainers, and parser authors when
+    a source checkout needs lexer regeneration.
 tags:
   - cli
   - code-generation
@@ -27,6 +68,16 @@ provenance:
     - 'source_facts.name: re2c'
   docs-sources:
     - Official re2c user manual hosted at re2c.org/manual
+  history-sources:
+    - https://re2c.org/
+    - https://github.com/skvadrik/re2c
+    - https://github.com/skvadrik/re2c/blob/master/CONTRIBUTING.md
+    - https://dl.acm.org/doi/10.1145/176454.176487
+    - https://www.phpinternalsbook.com/php7/build_system/building_php.html
+    - https://spamassassin.apache.org/full/4.0.x/doc/sa-compile.html
+    - https://re2c.org/releases/changelog/changelog.html
+    - https://man.archlinux.org/man/re2c.1.en
+    - https://formulae.brew.sh/formula/re2c
   repo-sources:
     - source_facts.repo is already populated; per instruction, repo not re-evaluated
   tags-sources:
@@ -39,5 +90,6 @@ category-path:
   - lexer-generator
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

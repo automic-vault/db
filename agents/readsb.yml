@@ -7,6 +7,31 @@ config-file-location:
   linux:
     - /etc/default/readsb
 credentials-file-location: null
+history:
+  - >
+    readsb sits in the ADS-B decoder lineage that began with Salvatore Sanfilippo's
+    dump1090 and then passed through community forks. The Debian manpage credits antirez
+    for original dump1090, Malcolm Robb for work on his fork, mutability for
+    dump1090-mutability and dump1090-fa lineage, Mictronics for readsb as a fork of
+    dump1090-fa, and wiedehopf for the maintained readsb fork represented by this
+    package.
+  - >
+    Its ecosystem role is practical aircraft-tracking infrastructure for
+    software-defined radio users rather than a general-purpose networking tool. readsb
+    receives Mode-S, ADS-B, and TIS messages from receivers such as RTL-SDR based
+    setups, decodes aircraft data, and writes JSON or binary output consumed by web
+    interfaces and feeder stacks. The companion tar1090 project explicitly supports
+    readsb and dump1090-fa as backends and provides an improved web interface with
+    adjustable history, faster multi-aircraft views, track display, and map controls.
+  - >
+    Practitioners use readsb on Raspberry Pi, Debian, Ubuntu, and other Unix-like
+    receivers to feed local visualizations and network aggregation services. Forum
+    discussion by the maintainer describes readsb as a different flavor from dump1090-fa
+    with features useful for combined displays and higher message rates, including
+    outbound network connections, range outlines, historic replay, heatmaps, persistent
+    traces, and tar1090 integration. Configuration is often done through service
+    defaults such as `/etc/default/readsb`, command-line flags for receiver location and
+    JSON output, and nginx or tar1090 paths for exposing aircraft history.
 tags:
   - ads-b
   - aircraft-tracking
@@ -32,6 +57,13 @@ provenance:
     - source_facts.name is readsb; official GitHub repository is wiedehopf/readsb.
   docs-sources:
     - Official repository README is the primary documentation surface for readsb.
+  history-sources:
+    - https://github.com/wiedehopf/readsb
+    - https://manpages.debian.org/testing/readsb/readsb.1.en.html
+    - https://github.com/wiedehopf/tar1090
+    - https://discussions.flightaware.com/t/readsb-vs-dump1090-fa/79295
+    - https://formulae.brew.sh/formula/readsb
+    - https://github.com/NixOS/nixpkgs/issues/300833
   repo-sources:
     - source_facts.repo already has a value, so repo is returned as null per instruction.
   tags-sources:
@@ -45,5 +77,6 @@ category-path:
   - ads-b
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
