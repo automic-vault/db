@@ -13,6 +13,30 @@ config-file-location:
     - ~/.my.cnf
 credentials-file-location:
   unix: ~/.my.cnf
+history:
+  - >
+    Percona XtraBackup is Percona's physical hot-backup tool for MySQL-family databases.
+    Percona describes it as open-source MySQL hot backup software for InnoDB and XtraDB
+    databases, designed to perform non-blocking backups so transaction processing can
+    continue during backup windows.
+  - >
+    The project dates back to the MySQL 5.x/InnoDB era. Percona announced XtraBackup 1.0
+    on December 10, 2009, with a changelog that included a Windows port and packaging
+    work. The older 2.4 documentation shows its long role across MySQL 5.1, 5.5, 5.6,
+    and 5.7, including InnoDB, XtraDB, MyISAM, and Percona Server with XtraDB.
+  - >
+    Its adoption came from a practical gap: logical dumps such as `mysqldump` are
+    portable but slow for large databases and can impose painful locks or restore times.
+    XtraBackup copies physical data files and redo information, supports full and
+    incremental backups, compression/encryption workflows, streaming via `xbstream`, and
+    cloud-oriented helpers such as `xbcloud`. Backup locks in Percona Server reduce the
+    need for disruptive global read locks when copying non-transactional data.
+  - >
+    Operationally, DBAs use `xtrabackup` in backup jobs, replication provisioning,
+    disaster-recovery drills, and Percona XtraDB Cluster state snapshot transfers. The
+    common workflow is to take a hot backup, prepare it by applying logs into a
+    consistent state, then restore or stream it elsewhere; the surrounding commands
+    handle encryption, compression, streaming, and object-storage transfer.
 category: data
 package-manager:
   brew: percona-xtrabackup
@@ -36,5 +60,15 @@ executables:
   - xtrabackup
 provenance:
   formula: percona-xtrabackup
+  history-sources:
+    - https://docs.percona.com/percona-xtrabackup/8.0/about-xtrabackup.html
+    - https://www.percona.com/blog/xtrabackup-1-0/
+    - https://docs.percona.com/percona-xtrabackup/2.4/index.html
+    - https://docs.percona.com/percona-xtrabackup/8.4/release-notes/release-notes.html
+    - https://github.com/percona/percona-xtrabackup
+    - https://manpages.ubuntu.com/manpages/noble/man1/xtrabackup.1.html
+    - >
+      https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-large-mysql-mariadb-databases/percona-xtrabackup.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
