@@ -6,6 +6,27 @@ docs:
   - https://github.com/ankane/pgslice#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    pgslice is Andrew Kane's command-line tool for PostgreSQL table partitioning. The
+    GitHub repository was created on April 24, 2016, and the changelog lists v0.1.0 on
+    the same date as the first release. Its early releases focused on generating and
+    executing the SQL needed to split an existing table into time-based partitions, with
+    dry-run output and batch filling so operators could see and control the migration.
+  - >
+    The project evolved alongside PostgreSQL's partitioning story. pgslice added
+    declarative partitioning support in v0.4.0 on October 7, 2017, followed by
+    PostgreSQL 11 index and foreign-key improvements in 2018, generated-column support
+    in v0.6.0 in April 2023, and a support floor of PostgreSQL 13 and Ruby 3 in v0.7.0
+    in May 2025.
+  - >
+    In practice, pgslice sits in the operational gap between raw DDL and a full
+    migration framework. Users point it at a database with PGSLICE_URL, create an
+    intermediate partitioned table with pgslice prep, add partitions, copy data in
+    batches with pgslice fill, analyze, then swap the partitioned table into the
+    original name with a short lock timeout. The README also documents recurring
+    partition creation via cron, archiving old partitions with pg_dump, Rails
+    primary-key considerations, and a no-partition mode for table slimming.
 category: data
 package-manager:
   brew: pgslice
@@ -21,5 +42,12 @@ executables:
   - pgslice
 provenance:
   formula: pgslice
+  history-sources:
+    - https://github.com/ankane/pgslice
+    - https://raw.githubusercontent.com/ankane/pgslice/master/CHANGELOG.md
+    - https://rubygems.org/gems/pgslice
+    - https://api.github.com/repos/ankane/pgslice
+    - https://formulae.brew.sh/formula/pgslice
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

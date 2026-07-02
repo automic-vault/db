@@ -11,6 +11,44 @@ config-file-location:
     - ./.phive/phars.xml
 credentials-file-location:
   unix: auth.xml
+history:
+  - >
+    PHIVE, the PHAR Installation and Verification Environment, grew out of a PHP tooling
+    problem: many command-line PHP developer tools are distributed as PHAR archives, but
+    installing them manually means finding the right archive, choosing a compatible
+    version, checking hashes and GPG signatures, making the file executable, and
+    repeating that work per project. The phar.io homepage positions PHIVE as a way to
+    manage tools such as PHPUnit, PHPMD, phpDox, PHP_CodeSniffer, PHPStan, Psalm,
+    Composer, and others without mixing those tools and their dependencies into a
+    project's Composer dependency graph.
+  - >
+    The public changelog records PHIVE 0.1.0 on September 23, 2015 as the initial
+    release. Early follow-up work added the signature-verification path, alias listing,
+    global PHAR installation, and saving installed PHAR metadata to `phive.xml`. By
+    version 0.3.0, PHIVE supported GitHub Releases as a PHAR distribution source,
+    provided releases included both a `.phar` asset and a matching `.phar.asc`
+    signature.
+  - >
+    PHIVE's core mechanism is deliberately supply-chain oriented. It resolves a
+    requested alias, GitHub project, or direct URL to a PHAR download, verifies TLS
+    certificate information, checks SHA1/SHA256/SHA512 hashes, and verifies
+    OpenPGP/GnuPG signatures. Downloaded archives are cached in `~/.phive` and project
+    directories usually get symlinks plus a `.phive/phars.xml` manifest, with `--copy`
+    available when a repository should carry the PHAR file itself.
+  - >
+    The tool became part of the PHP quality-tooling ecosystem as an alternative to
+    Composer `require --dev` for executable tools. PHPUnit's own documentation shows
+    `phive install phpunit` creating a project-local `tools/phpunit` symlink and records
+    PHIVE's automatic PGP verification as part of the installation story. PHPUnit's
+    release-verification page explicitly says PHIVE was created to automate tedious
+    manual PGP verification for PHAR downloads.
+  - >
+    Later PHIVE releases track shifts in PHP and OpenPGP infrastructure. The changelog
+    notes PHP version floor increases, support for GitLab alias resolution and
+    authenticated PHAR locations, removal of dead keyservers after the SKS pool failure,
+    fingerprint support for `--trust-gpg-keys`, and private GitHub repository downloads
+    in 0.16.0 on April 10, 2025. That history keeps PHIVE narrowly focused:
+    reproducible, project-local installation of signed PHP tool binaries.
 category: developer-tools
 package-manager:
   brew: phive
@@ -27,5 +65,13 @@ executables:
   - phive
 provenance:
   formula: phive
+  history-sources:
+    - https://phar.io/
+    - https://phar.io/how-it-works.html
+    - https://phar.io/distribute-your-own.html
+    - https://github.com/phar-io/phive/blob/master/CHANGELOG.md
+    - https://docs.phpunit.de/en/12.5/installation.html
+    - https://phpunit.de/verify.html
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

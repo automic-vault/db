@@ -10,6 +10,27 @@ config-file-location:
     - php.ini
     - .user.ini
 credentials-file-location: null
+history:
+  - >
+    `php@8.1` packages the PHP 8.1 branch for projects that need that runtime line
+    instead of Homebrew's unversioned `php` formula. It inherits the PHP/FI-to-Zend
+    lineage of the main PHP package, but the versioned formula matters because PHP
+    applications, extensions, and CI matrices often pin a minor branch while frameworks
+    and dependencies catch up to language changes.
+  - >
+    PHP 8.1.0 was released on 25 Nov 2021. Its release announcement highlighted
+    enumerations, readonly properties, first-class callable syntax, fibers, intersection
+    types, and performance improvements. Those features made 8.1 an important adoption
+    target for typed domain models, async/coroutine libraries built around fibers, and
+    codebases replacing class-constant enum patterns with native enums.
+  - >
+    Homebrew's `php@8.1` formula is marked deprecated and keg-only, with stable version
+    8.1.34 listed on the formula page. The package still exposes the same operational
+    surface as PHP itself: `php` for CLI execution, `php-fpm` and `php-cgi` for web
+    runtimes, `phpize` and `php-config` for native extensions, PEAR/PECL tooling, and
+    PHAR commands. Its practical role is compatibility: reproducing older production
+    stacks, running legacy test suites, or building extensions against the exact 8.1 ABI
+    while newer PHP branches are installed beside it.
 tags:
   - cli
   - php
@@ -25,6 +46,15 @@ provenance:
     - 'source_facts.name: php@8.1'
   docs-sources:
     - official PHP documentation and manual
+  history-sources:
+    - https://www.php.net/manual/en/history.php.php
+    - https://www.php.net/releases/index.php
+    - https://www.php.net/releases/8.1/en.php
+    - https://php.watch/versions/8.1/releases
+    - https://formulae.brew.sh/formula/php%408.1
+    - source_facts.executables
+    - source_facts.config-file-location
+    - source_facts.package-manager
   repo-sources:
     - official php.net Git Access page points to https://github.com/php/php-src
   tags-sources:
@@ -35,5 +65,6 @@ category-path:
   - language-runtime
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

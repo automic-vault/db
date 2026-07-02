@@ -11,6 +11,26 @@ config-file-location:
     - php.ini
     - .user.ini
 credentials-file-location: null
+history:
+  - >
+    `php@8.2` packages the PHP 8.2 branch as a parallel-installable runtime for
+    applications that target that minor release. Like other versioned PHP formulae, it
+    is less about a separate project history than about preserving a specific
+    language/runtime contract while the unversioned `php` formula advances.
+  - >
+    PHP 8.2.0 was released on 8 Dec 2022. The release announcement emphasized readonly
+    classes, standalone `null`, `false`, and `true` types, deprecated dynamic
+    properties, and performance improvements; PHP's history page also identifies
+    Disjunctive Normal Form types as part of the 8.2 series. In practice, 8.2 continued
+    PHP 8's type-system cleanup while giving library authors better tools for immutable
+    value objects and more precise signatures.
+  - >
+    PHP.net's support table lists PHP 8.2 with active support ending on 31 Dec 2024 and
+    security support ending on 31 Dec 2026. Homebrew's `php@8.2` formula is keg-only and
+    lists stable version 8.2.31, so it is designed to coexist with other PHP branches
+    instead of owning the default `php` command unconditionally. Developers use it for
+    production parity, CI jobs, extension builds with `phpize`, and web runtimes through
+    `php-fpm` or Apache module configuration tied to the 8.2 prefix.
 category: language-runtime
 package-manager:
   apk: php82
@@ -53,5 +73,15 @@ executables:
   - phpize
 provenance:
   formula: php@8.2
+  history-sources:
+    - https://www.php.net/manual/en/history.php.php
+    - https://www.php.net/releases/index.php
+    - https://www.php.net/releases/8.2/en.php
+    - https://www.php.net/supported-versions.php
+    - https://formulae.brew.sh/formula/php%408.2
+    - source_facts.executables
+    - source_facts.config-file-location
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
