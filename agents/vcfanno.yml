@@ -5,6 +5,79 @@ docs:
   - https://brentp.github.io/vcfanno
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The Genome Biology paper reported strong performance on whole-genome annotation
+      workloads, including roughly 85,000 variants per second with 50 attributes from 17
+      commonly used annotation resources. That performance claim helped establish
+      vcfanno as a practical tool for large human variant datasets as well as non-human
+      species.
+    - >
+      The project README asks users to cite the paper and shows active maintenance
+      through many GitHub releases, including v0.3.9 in June 2026. It is also packaged
+      by Bioconda and distribution package managers, which places it in the standard
+      bioinformatics command-line ecosystem.
+  package-nerd-significance:
+    - >
+      vcfanno matters to package people because it turns a pile of tabix-indexed
+      genomics resources into a reproducible, reviewable config file and one CLI
+      invocation. That is exactly the shape package managers like: a small binary that
+      composes with bgzip/tabix, pipes, VCF validators, and downstream filters.
+    - >
+      It also represents the post-VCF-standard tooling wave: once VCF became the lingua
+      franca, the hard day-to-day problem shifted to attaching the right outside
+      evidence to millions of variants quickly and repeatably.
+  project-history:
+    - >
+      The first GitHub release, v0.0.1, was published on April 29, 2015. Early 2015
+      releases quickly added support for annotating variant ends, BED files, custom
+      scripting, and an API, which matches the project's focus on flexible annotation
+      rather than a fixed database.
+    - >
+      Pedersen, Layer, and Quinlan published the vcfanno software paper in Genome
+      Biology on June 1, 2016. The paper framed the problem as integrating genome
+      annotations from diverse file formats and described vcfanno as extracting and
+      summarizing attributes from multiple annotation files into the INFO column of the
+      original VCF.
+  related-projects:
+    - >
+      VCFtools and HTSlib provide the broader VCF and indexed-file ecosystem that
+      vcfanno workflows build on.
+    - >
+      vcflib is a companion VCF-processing toolkit; the 2022 vcflib paper also points to
+      vcfanno as a related tool for adding annotations from VCFs and BED files.
+    - >
+      GATK, FreeBayes, ExAC-style resources, ClinVar-style resources, and tabix-indexed
+      annotation files are common upstream or companion inputs in vcfanno pipelines.
+  sources:
+    - https://api.github.com/repos/brentp/vcfanno/releases
+    - https://github.com/brentp/vcfanno
+    - https://link.springer.com/article/10.1186/s13059-016-0973-5
+    - https://pubmed.ncbi.nlm.nih.gov/27250555/
+  summary:
+    - >
+      vcfanno is a Go command-line tool for annotating VCF records with fields from
+      other VCF, BED, BAM, or tabix-indexed files. It became notable in genomics
+      workflows because it treats annotation as a configurable stream-processing
+      problem: many external resources can be summarized and added to the INFO field of
+      a query VCF.
+  timeline:
+    - '2015-04-29: vcfanno v0.0.1 is published as the initial GitHub release.'
+    - '2015-05-04: v0.0.2 adds support for annotating ends of variants such as CNVs and SVs.'
+    - '2016-06-01: The Genome Biology vcfanno paper is published.'
+    - '2026-06-16: GitHub lists v0.3.9 as the latest release.'
+  usage:
+    - >
+      Users write a TOML configuration with one or more `[[annotation]]` blocks that
+      name source files, fields or columns, operations, and output INFO names. vcfanno
+      then streams a query VCF and writes an annotated VCF, commonly with `-p` for
+      parallelism and optional Lua scripts for custom reductions.
+    - >
+      Common tasks include overlaying population allele frequencies, conservation
+      scores, ClinVar or ExAC-like annotations, BED-derived regional scores, BAM-derived
+      coverage summaries, and structural-variant endpoint annotations onto a study VCF
+      before filtering or interpretation.
 tags:
   - bed
   - bioinformatics
@@ -24,30 +97,31 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      source_facts.description says annotate a VCF with VCFs/BEDs/tabixed files;
-      official vcfanno docs describe annotating VCFs with INFO fields from VCF, BED, and
-      BAM files.
+    - current_curation.category_path
+    - source_facts.description
   display-name-sources:
-    - source_facts.name is vcfanno; official documentation and GitHub repository use vcfanno.
+    - current_curation.display-name
+    - source_facts.name
   docs-sources:
-    - >
-      Official brentp.github.io vcfanno documentation includes overview, usage,
-      examples, operations, installation, and multi-allelic guidance.
+    - current_curation.docs
+    - https://github.com/brentp/vcfanno
+  history-sources:
+    - https://api.github.com/repos/brentp/vcfanno/releases
+    - https://github.com/brentp/vcfanno
+    - https://link.springer.com/article/10.1186/s13059-016-0973-5
+    - https://pubmed.ncbi.nlm.nih.gov/27250555/
   repo-sources:
     - >
-      source_facts.repo is already populated with https://github.com/brentp/vcfanno, so
-      repo is returned as null per instruction.
+      source_facts.repo is already populated; prompt requires repo to be null when
+      source_facts.repo has a value
   tags-sources:
-    - >
-      source_facts.description and official docs describe VCF annotation using
-      VCF/BED/BAM inputs; docs state vcfanno is written in Go.
+    - current_curation.tags
+    - https://github.com/brentp/vcfanno
 category-confidence: high
 category-path:
   - science
-  - bioinformatics
-  - genomics
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
