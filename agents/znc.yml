@@ -11,6 +11,85 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.znc/configs/znc.conf
+history:
+  adoption-history:
+    - >
+      ZNC became a standard answer to IRC's ephemerality. IRC clients traditionally only
+      see messages while connected; a bouncer keeps the server-side session alive and
+      lets one or more clients attach later. Opensource.com describes ZNC as a
+      relatively popular and well-understood IRC bouncer for this problem.
+    - >
+      ZNC's history is tied to changes in IRC client expectations. As clients and
+      extensions improved buffer playback and timestamps, ZNC moved from simply keeping
+      a nickname online toward preserving a multi-client chat session that felt less
+      transient. It also remained relevant for bridges, where users wanted Matrix or
+      other systems to connect through an existing IRC identity.
+  package-nerd-significance:
+    - >
+      ZNC is one of the archetypal always-on Unix userland daemons: small enough for a
+      shell account or VPS, old enough to carry IRC culture, and modular enough to
+      become personal infrastructure.
+    - >
+      It matters to package nerds because it captures the pre-SaaS habit of solving chat
+      persistence with a daemon you own, a config file in your home directory, and a
+      client protocol that still works with many front ends.
+  project-history:
+    - >
+      ZNC's own history page records an early commit date of 2004-07-20, and secondary
+      summaries describe it as developing from July 2004 as an alternative to psyBNC.
+      The GitHub repository was created later, in 2010, as the project moved into the
+      modern public-forge era.
+    - >
+      The project is written primarily in C++ and presents itself as an advanced IRC
+      bouncer. Its README documents the core operating model: data under ~/.znc by
+      default, znc.conf under configs, module data below the data directory, and extra
+      modules loadable from user or installation paths.
+    - >
+      ZNC's module system became one of its defining features. The README documents C++
+      modules built with znc-buildmod plus Perl and Python module support through
+      ModPerl and ModPython. That gave administrators a way to extend a bouncer into web
+      administration, logging, notifications, and network-specific behavior.
+  related-projects:
+    - psyBNC is the older IRC bouncer ZNC is often compared with historically.
+    - >
+      soju, IRCCloud, Quassel, The Lounge, and Heisenbridge occupy adjacent
+      persistent-chat, bouncer, or bridge roles.
+    - >
+      HexChat, WeeChat, mIRC, and other IRC clients are common front ends that can
+      connect through ZNC.
+  sources:
+    - https://api.github.com/repos/znc/znc
+    - https://en.wikipedia.org/wiki/ZNC
+    - https://github.com/znc/znc
+    - https://opensource.com/article/21/6/irc-matrix-bridge-znc
+    - https://wiki.znc.in/History
+    - https://wiki.znc.in/Introduction
+  summary:
+    - >
+      ZNC is a long-running IRC bouncer: it stays connected to IRC networks on a user's
+      behalf, lets clients disconnect and reconnect, replays buffers, and exposes a
+      module system and web administration interface around that persistent session.
+  timeline:
+    - '2004-07-20: ZNC history records the first commit timestamp.'
+    - '2000s: ZNC develops as an alternative to earlier IRC bouncers such as psyBNC.'
+    - '2010-01-09: The znc/znc GitHub repository is created.'
+    - >
+      2010s: ZNC's module ecosystem, web administration, SSL/TLS use, and client buffer
+      behavior become central to everyday IRC bouncer use.
+    - >
+      2020s: ZNC remains a maintained IRC bouncer and a common bridge point for
+      persistent IRC sessions.
+  usage:
+    - >
+      A user runs znc as a daemon, creates one or more users and networks, then points
+      IRC clients at the ZNC listener instead of directly at the IRC network. The client
+      authenticates to ZNC, and ZNC connects onward, maintains channels, and replays
+      buffered messages after reconnects.
+    - >
+      Administrators commonly manage it through webadmin or controlpanel rather than
+      editing znc.conf while the daemon is live. The same config file may contain
+      network credentials, which is why the package's configuration and credential
+      locations overlap.
 tags:
   - bouncer
   - chat
@@ -29,27 +108,31 @@ geiger:
     - metadata:service
 provenance:
   category-sources:
-    - source_facts.description says znc is an advanced IRC bouncer.
-    - source_facts.homepage is the official ZNC wiki page.
+    - current_curation.category
   display-name-sources:
-    - source_facts.homepage is the official ZNC wiki and uses the ZNC name.
-    - source_facts.name gives znc.
+    - current_curation.display-name
+    - https://github.com/znc/znc
   docs-sources:
-    - Official ZNC wiki provides installation and FAQ documentation pages.
-    - source_facts.homepage is the official ZNC wiki page.
+    - current_curation.docs
+    - https://wiki.znc.in/ZNC
+  history-sources:
+    - https://api.github.com/repos/znc/znc
+    - https://en.wikipedia.org/wiki/ZNC
+    - https://github.com/znc/znc
+    - https://opensource.com/article/21/6/irc-matrix-bridge-znc
+    - https://wiki.znc.in/History
+    - https://wiki.znc.in/Introduction
   repo-sources:
-    - >
-      source_facts.repo is empty; official GitHub repository znc/znc identifies itself
-      as the official repository for the ZNC IRC bouncer.
+    - current_curation.repo
+    - https://github.com/znc/znc
   tags-sources:
-    - source_facts.description identifies ZNC as an advanced IRC bouncer.
-    - source_facts.executables lists znc and znc-buildmod commands.
+    - current_curation.tags
+    - https://github.com/znc/znc
 category-confidence: high
 category-path:
   - networking
-  - chat
-  - irc
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

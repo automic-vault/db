@@ -1,11 +1,75 @@
 id: brew:znapzend
 display-name: ZnapZend
-repo: null
+repo: https://github.com/oetiker/znapzend
 docs:
   - https://github.com/oetiker/znapzend#readme
   - https://www.znapzend.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ZnapZend found a niche among ZFS administrators who wanted scheduled snapshots,
+      retention policy, and replication without writing their own shell scripts. Its
+      adoption is visible mostly through systems-administration packaging, ZFS community
+      discussion, and deployment guides rather than high-profile papers.
+    - >
+      Its main appeal has been pragmatic: it automates native ZFS primitives while
+      preserving the administrator's mental model of datasets, snapshots, send streams,
+      ssh, and mbuffer.
+  package-nerd-significance:
+    - >
+      ZnapZend is classic storage-admin package material: small enough to install as a
+      daemon, opinionated enough to encode a retention model, and close enough to native
+      ZFS that experienced users can reason about the data path.
+    - >
+      It matters because it packages the tedious but essential parts of ZFS backup
+      hygiene: schedule, retention, replication, and transfer buffering.
+  project-history:
+    - >
+      The oetiker/znapzend repository was created in 2013, during the period when ZFS
+      users were building higher-level automation around native snapshots and zfs
+      send/receive. Its README describes a tool that relies on the existing ZFS
+      snapshot, send, and receive commands rather than inventing a backup format.
+    - >
+      ZnapZend's design stores configuration in custom ZFS properties on datasets. That
+      makes the backup policy travel with the fileset structure and lets the daemon
+      manage local snapshots and remote copies while thinning them as they age.
+    - >
+      The project also invested in transfer mechanics. The website highlights ssh and
+      optional mbuffer support for remote destinations, and the setup documentation
+      includes detailed mbuffer behavior and cautions, reflecting real-world ZFS
+      replication tuning rather than a generic backup wrapper.
+  related-projects:
+    - OpenZFS provides the snapshot and send/receive primitives ZnapZend orchestrates.
+    - mbuffer is commonly used with ZnapZend to smooth and speed replication streams.
+    - sanoid/syncoid and pve-zsync are adjacent ZFS snapshot and replication automation tools.
+  sources:
+    - https://api.github.com/repos/oetiker/znapzend
+    - https://github.com/oetiker/znapzend
+    - https://github.com/oetiker/znapzend/blob/master/doc/znapzendzetup.pod
+    - https://www.znapzend.org/
+  summary:
+    - >
+      ZnapZend is a ZFS-centric backup and replication daemon by Tobias Oetiker that
+      automates snapshots, local retention, and remote send/receive workflows with
+      optional mbuffer acceleration.
+  timeline:
+    - '2013-09-22: The oetiker/znapzend GitHub repository is created.'
+    - '2010s: ZnapZend establishes a model of ZFS-property-based backup configuration.'
+    - >
+      2010s-2020s: Documentation grows around recursive datasets, mbuffer paths,
+      transfer behavior, and pre/post snapshot hooks.
+    - '2020s: ZnapZend remains a maintained option for ZFS snapshot and replication automation.'
+  usage:
+    - >
+      Users define backup plans per dataset with znapzendzetup, then run znapzend as a
+      service. The daemon creates scheduled snapshots, sends them to configured
+      destinations, and expires older snapshots according to thinning rules.
+    - >
+      Typical deployments use local retention for quick rollback and one or more remote
+      ZFS destinations for disaster recovery. Pre- and post-snapshot hooks can quiet
+      databases or other writers before the snapshot is taken.
 tags:
   - backup
   - cli
@@ -26,29 +90,29 @@ geiger:
     - text:backup
 provenance:
   category-sources:
-    - >
-      source_facts.description says znapzend provides ZFS backup with remote
-      capabilities and mbuffer integration.
+    - current_curation.category
   display-name-sources:
-    - source_facts.homepage is the official ZnapZend project site.
-    - source_facts.name gives znapzend.
+    - current_curation.display-name
+    - https://www.znapzend.org/
   docs-sources:
-    - Official GitHub README is an additional official documentation surface.
-    - source_facts.homepage is the official ZnapZend project and documentation site.
+    - current_curation.docs
+    - https://www.znapzend.org/
+  history-sources:
+    - https://api.github.com/repos/oetiker/znapzend
+    - https://github.com/oetiker/znapzend
+    - https://github.com/oetiker/znapzend/blob/master/doc/znapzendzetup.pod
+    - https://www.znapzend.org/
   repo-sources:
-    - >
-      source_facts.repo already contains https://github.com/oetiker/znapzend, so repo is
-      returned as null per instruction.
+    - current_curation.repo
+    - https://github.com/oetiker/znapzend
   tags-sources:
-    - >
-      source_facts.description identifies ZFS backup, remote capabilities, and mbuffer
-      integration.
-    - source_facts.executables lists znapzend administration commands.
+    - current_curation.tags
+    - https://www.znapzend.org/
 category-confidence: high
 category-path:
   - system
-  - backup
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
