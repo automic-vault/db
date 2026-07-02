@@ -5,6 +5,67 @@ docs:
   - https://www.pjrc.com/teensy/loader_cli.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The tool was adopted by embedded developers who needed to flash Teensy boards
+      without opening the desktop loader. Its package-manager presence matters because
+      headless or scripted development environments need a reliable `teensy_loader_cli`
+      binary plus platform setup such as Linux udev rules.
+    - >
+      The README also records automation patterns beyond local Makefiles, including a
+      hard reboot option using a second Teensy and a note that PlatformIO includes
+      support for loading via `teensy_loader`.
+  package-nerd-significance:
+    - >
+      Teensy Loader CLI is a small but important hardware-adjacent package: it bridges
+      package-managed build tools and an actual USB bootloader. Its significance is not
+      breadth but reliability at the final step of embedded development, where a script
+      must put bytes onto a board.
+  project-history:
+    - >
+      PJRC documents the CLI as the command-line counterpart to the graphical Teensy
+      Loader. The official page says it is for advanced users who want to automate
+      programming, typically with a Makefile, while the GUI in automatic mode is easier
+      for most use.
+    - >
+      The README and PJRC page preserve an older cross-platform development history:
+      version 2.0 was tested on Ubuntu 9.04, Mac OS X 10.5, Windows XP, FreeBSD 8.0,
+      OpenBSD snapshots, and NetBSD 5.0.1. Later version 2.1 added Teensy 3.5 and 3.6
+      support and Windows support for all Teensy boards, while the Git tags show
+      releases through 2.3.
+  related-projects:
+    - >
+      Related projects include Teensyduino, the graphical Teensy Loader, PlatformIO,
+      AVR/ARM Makefile workflows, and PJRC Teensy hardware boards.
+  sources:
+    - https://github.com/PaulStoffregen/teensy_loader_cli/blob/master/README.md
+    - https://github.com/PaulStoffregen/teensy_loader_cli/releases
+    - https://www.pjrc.com/teensy/loader_cli.html
+    - source_facts.description
+  summary:
+    - >
+      Teensy Loader CLI is the command-line loader for PJRC Teensy development boards.
+      It exists for advanced users who want to automate firmware programming from
+      Makefiles, scripts, CI jobs, or other non-GUI workflows.
+  timeline:
+    - >
+      2010: Version 2.0-era documentation lists testing on Ubuntu 9.04, Mac OS X 10.5,
+      Windows XP, FreeBSD 8.0, OpenBSD, and NetBSD.
+    - >
+      Version 2.1: Added Teensy 3.5 and 3.6 support plus Windows support for all Teensy
+      boards.
+    - 'Version 2.3: Latest tag shown in the official Git repository.'
+  usage:
+    - >
+      Typical usage is invoking `teensy_loader_cli --mcu=<target> -w firmware.hex` after
+      building a `.hex` file. Users select the target MCU or logical Teensy board,
+      optionally wait for a board to appear, reboot or avoid rebooting, and use verbose
+      output for troubleshooting.
+    - >
+      Package users care because it turns physical board programming into a scriptable
+      post-build step. It is especially useful for command-line-only setups, repeatable
+      firmware workflows, and build systems that already know the board's MCU name.
 tags:
   - cli
   - embedded
@@ -22,22 +83,25 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - 'source_facts.description: command-line integration for Teensy USB development boards'
+    - source_facts.description and official PJRC docs describe embedded firmware loading.
   display-name-sources:
-    - 'source_facts.homepage: PJRC Teensy Loader CLI page'
-    - 'source_facts.name: teensy_loader_cli'
+    - Official PJRC page title and README.
   docs-sources:
-    - 'source_facts.homepage: official PJRC Teensy Loader CLI documentation'
+    - Official PJRC Teensy Loader CLI page.
+  history-sources:
+    - https://github.com/PaulStoffregen/teensy_loader_cli/blob/master/README.md
+    - https://github.com/PaulStoffregen/teensy_loader_cli/releases
+    - https://www.pjrc.com/teensy/loader_cli.html
+    - source_facts.description
   repo-sources:
-    - source_facts.repo already populated; per instructions repo returned as null
+    - source_facts.repo is populated; prompt requires repo=null rather than re-declaring it.
   tags-sources:
-    - 'source_facts.description: command-line integration for Teensy USB development boards'
-    - source_facts.executables includes teensy_loader_cli
+    - Official PJRC docs and README usage examples.
 category-confidence: high
 category-path:
   - developer-tools
-  - embedded
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
