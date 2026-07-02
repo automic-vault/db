@@ -12,51 +12,78 @@ credentials-file-location: null
 history:
   adoption-history:
     - >
-      Dante earned long-lived Unix packaging because it supplies both a network service
-      and a compatibility trick: socksify can run many dynamically linked applications
-      through SOCKS without rebuilding those applications. The official site also says
-      Dante is used by Fortune 100 companies and large international organizations.
+      Dante earned durable Unix adoption because it supplies both a network service and
+      a compatibility trick. The official site says it is used by Fortune 100 companies
+      and large international organizations as both a forward and reverse proxy server.
+    - >
+      The socksify wrapper is a major part of that adoption story: it can make many
+      dynamically linked networking programs use SOCKS by setting LD_PRELOAD to
+      libdsocks, so older programs can be proxied without source changes or
+      recompilation.
+    - >
+      The documentation is operator-oriented rather than tutorial-only. It covers
+      access-control rules, authentication methods such as PAM, GSSAPI, username, and
+      ident-style checks, client route selection, logging, and stress testing for
+      production capacity.
   package-nerd-significance:
     - >
-      Dante is a classic infrastructure package: a daemon, a preload-style client
-      wrapper, manpage-heavy configuration, and distro-scale usefulness for proxying old
-      and new Unix network programs through SOCKS.
+      Dante is a classic infrastructure package: daemon, client library, preload-style
+      wrapper, manpage-heavy configuration, and real production tuning material.
+    - >
+      For package nerds, it represents the kind of Unix network plumbing that remains
+      valuable because it can sit under applications rather than asking every
+      application to grow its own SOCKS support.
   project-history:
     - >
       Inferno Nettverk describes Dante as a complete source-available SOCKS
-      client/server product rather than a small shim around a single daemon. Its
-      documentation covers the sockd server, socksify client wrapper, server and client
-      configuration files, and optional commercial modules.
+      client/server product rather than a single daemon. The documentation covers server
+      configuration, client routing, authentication methods, commercial modules, and
+      operational topics such as capacity estimation and fault-tolerant deployments.
+    - >
+      The public site shows a long production history. Its copyright footer begins in
+      1998, advisories go back to 2005, and recent news records major 1.3.x and 1.4.x
+      maintenance, performance, and security work across the 2010s and 2020s. The
+      development roadmap updated in December 2025 describes the 1.5.x line as under
+      testing with planned improvements to server-chaining scalability, monitoring, and
+      client IPv6 support.
   related-projects:
     - >
       Dante sits beside SOCKS-aware applications, firewall and proxy setups,
-      LDAP/GSSAPI/PAM authentication infrastructure, and older client wrappers used when
-      applications have no native SOCKS support.
+      LDAP/GSSAPI/PAM authentication infrastructure, LD_PRELOAD client wrappers, and
+      older applications with no native SOCKS support.
   sources:
     - https://www.inet.no/dante/
+    - https://www.inet.no/dante/doc/latest/config/capacity.html
+    - https://www.inet.no/dante/doc/latest/config/client.html
     - https://www.inet.no/dante/doc/latest/sockd.conf.5.html
     - https://www.inet.no/dante/doc/latest/socks.conf.5.html
-    - https://www.inet.no/dante/doc/latest/config/client.html
     - https://www.inet.no/dante/doc/latest/socksify.1.html
-    - https://www.inet.no/dante/doc/latest/config/capacity.html
   summary:
     - >
-      Dante is Inferno Nettverk's BSD-licensed SOCKS client and server package,
-      implementing RFC 1928 and related standards for proxying and network access
-      control.
+      Dante is Inferno Nettverk's SOCKS client and server package, implementing RFC 1928
+      and related standards for proxying and network access control. It includes the
+      sockd server, the socks client library, and the socksify wrapper for already
+      compiled dynamic binaries.
   timeline:
-    - '1996: SOCKS5 was standardized in RFC 1928, the protocol family Dante implements.'
-    - >
-      2010s: Dante 1.4.x documentation and performance material show the project in
-      mature production use.
-    - >
-      2026: Current official documentation still publishes detailed server, client,
-      module, and capacity guides.
+    - '1998: The official Dante site copyright range begins.'
+    - '2005-01-28: Inferno Nettverk records an early Dante advisory.'
+    - '2011-06-14: The site records the first full 1.3.x release.'
+    - '2013-11-18: The site records the full 1.4.0 release and configuration upgrade material.'
+    - '2015-03-11: Dante capacity-estimation documentation was added.'
+    - '2017-11-08: Fault-tolerant and load-balanced deployment documentation was added.'
+    - '2024-12-15: Dante 1.4.4 was announced with a security fix.'
+    - '2025-12: The official roadmap describes the 1.5.x line as finished and under testing.'
   usage:
     - >
       Operators normally configure sockd.conf for server rules, routes, access control,
-      logging, and authentication methods, while socks.conf or SOCKS_* environment
-      variables steer client-side socksify behavior.
+      logging, and authentication methods. The sockd.conf manual separates client-rules,
+      which decide whether a client may connect, from socks-rules, which evaluate the
+      actual SOCKS request.
+    - >
+      Client-side use is controlled through socks.conf routes or through environment
+      variables such as SOCKS_SERVER and SOCKS_CONF. The socksify command can prefix an
+      existing program, for example socksify ftp ftp.example.org, and route its
+      networking calls through the Dante client library.
 category: networking
 package-manager:
   apk: dante
