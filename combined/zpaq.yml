@@ -6,6 +6,82 @@ docs:
   - https://mattmahoney.net/dc/zpaq.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ZPAQ never became as mainstream as zip, 7-Zip, or RAR, but it earned a durable
+      niche among compression and backup users because it solved repeated-backup storage
+      differently from one-shot archivers. The official page compares it against backup
+      and archiving tools and emphasizes realistic backup workloads with duplicate and
+      already-compressed files.
+    - >
+      The batch package metadata shows ZPAQ packaged in Homebrew, Debian, Ubuntu,
+      Fedora, Alpine, MacPorts, Nix, and openSUSE. That broad Unix packaging footprint
+      reflects a tool valued by technically minded users even after upstream development
+      slowed.
+  package-nerd-significance:
+    - >
+      ZPAQ matters to package nerds because it is both a CLI and a format study:
+      append-only backups, content-defined chunking, SHA-1 fragment deduplication,
+      optional encryption, multipart remote archive workflows, and a published decoder
+      specification in one small tool.
+    - >
+      It is also a good example of a high-compression research lineage surviving as a
+      practical package. Users install `zpaq` not because it is fashionable, but because
+      no ordinary archive format quite has the same combination of journaling history
+      and deduplicated backup behavior.
+  project-history:
+    - >
+      The official ZPAQ page traces readable archive compatibility back to version 1.00
+      in March 2009. The early format was a streaming archive format; version 5.00 in
+      August 2012 added a level-2 format for compression with pre/post processing,
+      version 6.00 in September 2012 introduced the journaling format with deduplication
+      and rollback, and January 2014 versions added encryption and multipart archives.
+    - >
+      ZPAQ belongs to Matt Mahoney's broader PAQ compression lineage. Its distinctive
+      format design stores decompression code in a sandboxed virtual machine language
+      called ZPAQL, which helps newer compression methods remain extractable by older
+      readers when the archive only needs supported format features.
+    - >
+      The final upstream package advertised on the official page is zpaq v7.15, released
+      in August 2016, containing C++ source, libzpaq, documentation, Windows binaries,
+      and a Makefile for Unix-like systems. The page presents ZPAQ as public-domain
+      software and an open standard rather than a proprietary backup container.
+  related-projects:
+    - >
+      PAQ, PAQ8, LPAQ, and related Matt Mahoney compression projects are the research
+      family around ZPAQ.
+    - libzpaq is the C++ compression/decompression library shipped with ZPAQ.
+    - >
+      zpaqfranz is a later fork that extends the ZPAQ backup idea for more operational
+      disaster-recovery use cases.
+  sources:
+    - https://mattmahoney.net/dc/
+    - https://mattmahoney.net/dc/zpaq.html
+    - input.json source_facts.package-manager
+  summary:
+    - >
+      ZPAQ is Matt Mahoney's incremental, journaling command-line archiver and backup
+      format. It combines append-only archive history, deduplication, rollback by date
+      or version, and a published archive specification with reference decoder.
+  timeline:
+    - '2009-03: ZPAQ v1.00 establishes the level-1 streaming archive format.'
+    - '2012-08: ZPAQ v5.00 adds the level-2 format with pre/post processing.'
+    - '2012-09: ZPAQ v6.00 adds the journaling format with deduplication and rollback.'
+    - '2014-01: ZPAQ v6.44 adds encrypted archives.'
+    - '2014-01: ZPAQ v6.47 adds multipart archive support.'
+    - '2016-08-17: ZPAQ v7.15 is released on the official site.'
+  usage:
+    - >
+      Typical usage is `zpaq add archive.zpaq files` for incremental backups and `zpaq
+      extract archive.zpaq path -until DATE_OR_VERSION` to restore old states. Updates
+      append new archive data instead of overwriting old versions, and interrupted
+      transacted updates are ignored or overwritten on the next update.
+    - >
+      ZPAQ is best understood as a user-level backup and archival tool. The official
+      documentation warns against using it for complete operating-system backups and
+      lists filesystem metadata that it does not preserve, such as ACLs, owner/group
+      IDs, registry data, and special device files.
 category: developer-tools
 package-manager:
   apk: zpaq

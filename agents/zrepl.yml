@@ -8,6 +8,86 @@ config-file-location:
     - /etc/zrepl/zrepl.yml
     - /usr/local/etc/zrepl/zrepl.yml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      zrepl's audience is narrower than general backup tools because it requires ZFS,
+      but it is significant inside that ecosystem. The official package documentation
+      lists installation paths through GitHub release binaries, FreeBSD packages,
+      Homebrew on macOS, Arch AUR, Fedora/RHEL/openSUSE RPM repositories, Debian/Ubuntu
+      APT repositories, OmniOS, Void Linux, and source builds.
+    - >
+      GitHub metadata showed more than 1,100 stars by mid-2026, consistent with an
+      infrastructure tool used by ZFS administrators rather than casual desktop users.
+      Its adoption is also reflected in docs that address distro maintainers, service
+      files, platform tests that exercise ZFS, and package repository operations.
+  package-nerd-significance:
+    - >
+      zrepl is package-nerd significant because it is not another tar-like backup
+      archive; it is packaging the operational discipline around ZFS itself. It turns a
+      powerful but manual storage primitive into a service with config files, system
+      packages, status UI, metrics, and reproducible deployment patterns.
+    - >
+      It is also a good example of a small infrastructure package whose real value is
+      coordination: snapshots, bookmarks, holds, pruning, send/receive flags, daemon
+      supervision, and distro defaults all have to line up or backups quietly become
+      unsafe.
+  project-history:
+    - >
+      The public `zrepl/zrepl` repository was created in April 2017, and the
+      documentation copyright identifies Christian Schwarz as the project author. The
+      README and official site describe zrepl as a one-stop ZFS backup and replication
+      solution, with user documentation published through Sphinx at zrepl.github.io.
+    - >
+      zrepl developed around the hard parts of reliable ZFS replication rather than
+      around a generic backup format. The documentation lists push and pull replication,
+      TCP, TLS, and SSH transports, retries, resumable send/receive, ZFS holds,
+      bookmarks, raw encrypted sends, properties/compressed/large-block sends, bandwidth
+      limiting, periodic snapshots, pruning rules, structured logging, Prometheus
+      metrics, and `zrepl status` progress reporting.
+    - >
+      The changelog shows the project maturing through operational features: Prometheus
+      metrics and receiver-side pruning behavior in early releases, automatic bookmark
+      and hold management, configurable send/receive flags, bandwidth limiting,
+      encrypted-send fixes, and later 0.6 and 0.7 maintenance releases.
+  related-projects:
+    - OpenZFS is the underlying filesystem and send/receive substrate.
+    - >
+      syncoid and sanoid are adjacent ZFS snapshot and replication tools in the same
+      administrator niche.
+    - Prometheus is relevant because zrepl exposes metrics for monitoring replication health.
+  sources:
+    - https://api.github.com/repos/zrepl/zrepl
+    - https://github.com/zrepl/zrepl
+    - https://zrepl.github.io/
+    - https://zrepl.github.io/changelog.html
+    - https://zrepl.github.io/installation/packages.html
+    - https://zrepl.github.io/quickstart.html
+  summary:
+    - >
+      zrepl is a Go daemon and CLI for ZFS snapshot management, backup, and replication.
+      It wraps ZFS send/receive workflows with configuration, scheduling, pruning,
+      monitoring, status reporting, and transport handling.
+  timeline:
+    - '2017-04-13: The public `zrepl/zrepl` repository is created.'
+    - '2020-08-21: zrepl 0.3.0 is published on GitHub.'
+    - '2021-04-18: zrepl 0.4.0 is published.'
+    - >
+      2022-01-09: zrepl 0.5.0 is published, with changelog entries including bandwidth
+      limiting and send/receive-related fixes.
+    - '2022-11-01: zrepl 0.6.0 is published.'
+    - '2026-02-15: zrepl 0.7.0 is published.'
+  usage:
+    - >
+      Typical use is to write a YAML configuration at `/etc/zrepl/zrepl.yml`, validate
+      it with `zrepl configcheck`, run zrepl as a daemon, and use `zrepl status` or
+      `zrepl signal wakeup JOBNAME` to monitor or trigger work. The quick-start docs
+      cover continuous server backup, local snapshots with offline external-disk backup,
+      and fan-out replication.
+    - >
+      zrepl is most useful when native ZFS snapshots and `zfs send` are already the
+      desired backup primitive, but the operator wants automated policy, pruning,
+      transport, monitoring, and safety checks around them.
 tags:
   - backup
   - cli
@@ -28,32 +108,33 @@ geiger:
     - text:repl
 provenance:
   category-sources:
-    - >
-      Official zrepl docs describe zrepl as an integrated solution for ZFS replication
-      with snapshots, pruning, and monitoring.
-    - 'source_facts.description: One-stop ZFS backup & replication solution.'
+    - current_curation.category_path
+    - source_facts.description
   display-name-sources:
-    - Official documentation heading uses zrepl.
-    - 'source_facts.name: zrepl.'
+    - current_curation.display-name
+    - https://github.com/zrepl/zrepl
   docs-sources:
-    - >
-      Official zrepl documentation site linked from source_facts.homepage and from the
-      official GitHub repository.
+    - current_curation.docs
+    - https://zrepl.github.io/
+  history-sources:
+    - https://api.github.com/repos/zrepl/zrepl
+    - https://github.com/zrepl/zrepl
+    - https://zrepl.github.io/
+    - https://zrepl.github.io/changelog.html
+    - https://zrepl.github.io/installation/packages.html
+    - https://zrepl.github.io/quickstart.html
   repo-sources:
     - >
-      source_facts.repo already contains https://github.com/zrepl/zrepl; returned null
-      per instruction not to second-guess existing repo values.
+      source_facts.repo already provides https://github.com/zrepl/zrepl; repo returned
+      null per prompt.
   tags-sources:
-    - >
-      Official docs list filesystem replication, automatic snapshot management, pruning,
-      and monitoring features.
-    - source_facts.description identifies ZFS backup and replication.
+    - current_curation.tags
+    - https://zrepl.github.io/
 category-confidence: high
 category-path:
   - system
-  - storage
-  - backup
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
