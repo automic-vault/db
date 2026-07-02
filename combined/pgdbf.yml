@@ -6,6 +6,34 @@ docs:
   - https://github.com/kstrauser/pgdbf#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    PgDBF is a small C converter for moving XBase and FoxPro DBF tables into PostgreSQL.
+    The README says it was originally written by Kirk Strauser, released under GPLv3
+    with company approval from Brandon Day, and later co-maintained by Philipp
+    Wollermann around the 0.6.2 release. GitHub records the public repository creation
+    date as February 1, 2011, while upstream release notes show earlier 0.5.x releases
+    in 2009 and 2010.
+  - >
+    Its role is intentionally narrow: read DBF files, optionally read FoxPro memo files,
+    and emit SQL plus `\COPY` data that PostgreSQL's `psql` client can import. The tool
+    generates `CREATE TABLE`, optional `DROP TABLE`, `TRUNCATE`, transaction wrappers,
+    indexes from command-line arguments, and encoding conversion through iconv. That
+    makes it useful in legacy-data migrations where the source is a filesystem full of
+    DBF/FPT files rather than a live database server.
+  - >
+    PgDBF's development history is mostly about correctness and throughput for awkward
+    legacy formats. Release notes mention changes such as safer memo-file handling,
+    64-bit file offsets, a progress bar, NUMERIC-vs-TEXT behavior for numeric fields,
+    UTF-8 conversion, and FoxPro autoindex field identifiers. The README and Ubuntu
+    manpage both emphasize no nonstandard dependencies, portability across endian and
+    word-size differences, and performance bounded by disk throughput for large DBF plus
+    memo-file inputs.
+  - >
+    Adoption evidence is thinner than for mainstream PostgreSQL tools, but the project
+    is packaged in Debian/Ubuntu, Homebrew, and FreeBSD ports, and SourceForge remains
+    the numbered-release download channel. It occupies a durable niche for one-time or
+    repeatable migrations from dBase/FoxPro-era applications into PostgreSQL.
 category: developer-tools
 package-manager:
   brew: pgdbf
@@ -26,5 +54,13 @@ executables:
   - pgdbf
 provenance:
   formula: pgdbf
+  history-sources:
+    - https://api.github.com/repos/kstrauser/pgdbf
+    - https://github.com/kstrauser/pgdbf
+    - https://manpages.ubuntu.com/manpages/focal/man1/pgdbf.1.html
+    - https://sourceforge.net/projects/pgdbf/
+    - https://www.freshports.org/databases/pgdbf/
+    - https://formulae.brew.sh/formula/pgdbf
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

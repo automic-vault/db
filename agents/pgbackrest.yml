@@ -10,6 +10,57 @@ config-file-location:
     - /etc/pgbackrest/pgbackrest.conf
     - /etc/pgbackrest.conf
 credentials-file-location: null
+history:
+  - >
+    Origin and lineage: pgBackRest is a PostgreSQL backup, restore, and WAL-archive tool
+    whose GitHub repository was created on 2013-11-11. It grew as an alternative to
+    simpler file-copy and rsync-style backup scripts, with PostgreSQL-specific
+    repository metadata, manifests, checksums, archiving commands, and point-in-time
+    recovery workflows.
+  - >
+    Stabilization: The first stable 1.00 release was announced on 2016-04-14. Its
+    release notes describe a flag-day repository and configuration change: new manifest
+    format, on-disk structure, configuration scheme, executable/path names, simpler
+    stanza/global configuration, `pgbackrest.conf`, `/var/lib/pgbackrest`,
+    `/var/log/pgbackrest`, and the `pgbackrest` executable name. Those conventions
+    shaped the package's long-lived operational footprint.
+  - >
+    Version 2 era: Version 2.00 was released on 2018-02-23 and moved the executable from
+    Perl to a C binary, with time-critical archive-push work partially coded in C. The
+    release notes also record the option-name migration from `db-*` and `backup-*` to
+    `pg-*` and `repo-*`, while stating that v2 repositories and options remained
+    compatible with v1. This was a major packaging and performance milestone without
+    forcing repository conversion.
+  - >
+    Adoption history: pgBackRest became a standard PostgreSQL backup component in
+    self-managed and vendor-managed stacks because it combines full, differential,
+    incremental, and later block-incremental backups with WAL archiving, retention,
+    delta restore, repository verification, remote operation, and object-storage
+    repositories. It is packaged by Homebrew, Alpine, Debian/Ubuntu, Arch, Nix, and
+    SUSE-family systems, and is integrated into PostgreSQL operator ecosystems such as
+    Crunchy Data's Kubernetes tooling.
+  - >
+    How it is used: Administrators define one or more stanzas in
+    `/etc/pgbackrest/pgbackrest.conf` or `/etc/pgbackrest.conf`, configure PostgreSQL
+    `archive_command`/restore behavior, create a repository, run `stanza-create` and
+    `check`, schedule `backup`, inspect `info`, expire old backups through retention
+    settings, and use `restore` for disaster recovery, point-in-time recovery, or
+    creating standbys. Repository targets can be local, remote over SSH/TLS, or
+    S3/Azure/GCS-compatible object stores.
+  - >
+    Operational role: pgBackRest's importance comes from treating backup as a
+    database-specific protocol rather than a generic copy job. It validates page
+    checksums when enabled, fsyncs repository state, waits for required WAL, supports
+    asynchronous WAL push/get for high-write systems, deduplicates identical WAL
+    segments, resumes interrupted backups, and can perform delta restores by comparing
+    manifest checksums to files already present.
+  - >
+    Maintenance history: The project README records a 2026 maintenance transition:
+    notices on 2026-04-27, 2026-05-07, and 2026-05-18 moved from a no-longer-maintained
+    announcement to a continuation plan supported by sponsors. That episode is part of
+    pgBackRest's package history because the tool is infrastructure-critical and depends
+    on sustained maintenance for new PostgreSQL releases, object-storage APIs, and
+    recovery correctness.
 tags:
   - backup
   - cli
@@ -36,6 +87,17 @@ provenance:
     - >
       Official pgbackrest.org documentation includes the user guide, configuration
       reference, and command reference.
+  history-sources:
+    - https://github.com/pgbackrest/pgbackrest
+    - https://raw.githubusercontent.com/pgbackrest/pgbackrest/main/README.md
+    - https://pgbackrest.org/release.html
+    - https://pgbackrest.org/user-guide.html
+    - https://pgbackrest.org/command.html
+    - https://pgbackrest.org/configuration.html
+    - https://www.postgresql.org/about/news/pgbackrest-10-released-1661/
+    - https://www.postgresql.org/about/news/pgbackrest-233-released-2206/
+    - https://api.github.com/repos/pgbackrest/pgbackrest
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already has an official repository URL; per instruction repo is
@@ -52,5 +114,6 @@ category-path:
   - backup-restore
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

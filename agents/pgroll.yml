@@ -6,6 +6,37 @@ docs:
   - https://github.com/xataio/pgroll#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    pgroll is Xata's open-source PostgreSQL schema-migration tool for zero-downtime,
+    reversible changes. Its repository describes the central idea: serve multiple schema
+    versions at the same time so old and new application versions can keep working while
+    a database migration is in progress.
+  - >
+    The tool packages the expand/contract migration pattern for PostgreSQL. Xata's
+    write-up explains that pgroll grew from the need to apply schema changes without
+    interrupting applications, turning expand/contract into an explicit command-line
+    workflow rather than a hand-written production playbook.
+  - >
+    Internally, pgroll uses versioned schemas, views, triggers, and backfills to bridge
+    old and new shapes of the same data. Xata's 2025 project update says pgroll creates
+    virtual schemas with views over physical tables, stores migration history in a
+    pgroll schema, uses search_path so clients choose a schema version, and relies on
+    up/down trigger expressions to keep old and new columns synchronized during active
+    migrations.
+  - >
+    Practitioners use pgroll by writing declarative migrations, then running commands
+    such as init, start, complete, rollback, status, and migrate. The start phase
+    applies additive changes and prepares compatibility machinery; the complete phase
+    drops the previous schema version; rollback can abandon an active migration before
+    completion.
+  - >
+    Adoption spread through the PostgreSQL operations and developer-tooling community
+    because pgroll attacks a common production problem: ALTER TABLE and related DDL can
+    require strong locks, while application rollouts often need old and new code to
+    coexist. Xata reported that pgroll passed 5,000 GitHub stars on July 18, 2025, and
+    noted outside contributors, outside-filed issues, conference feedback, and
+    integration into Xata's platform.
 tags:
   - cli
   - command-line-tool
@@ -35,6 +66,14 @@ provenance:
       official GitHub README links to pgroll.com Documentation for advanced usage,
       tutorials, and references
     - source_facts.homepage is official pgroll website
+  history-sources:
+    - https://github.com/xataio/pgroll
+    - https://xata.io/blog/pgroll-expand-contract
+    - https://pgroll.com/docs/latest/getting-started
+    - https://pgroll.com/docs/latest/concepts
+    - https://pgroll.com/docs/latest/cli
+    - https://pgroll.com/docs/latest/cli/complete
+    - https://xata.io/blog/pgroll-5k-stars-on-github
   repo-sources:
     - source_facts.repo already present; per instruction repo not re-evaluated
   tags-sources:
@@ -48,5 +87,6 @@ category-path:
   - migration
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

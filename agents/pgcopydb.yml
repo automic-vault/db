@@ -6,6 +6,37 @@ docs:
   - https://github.com/dimitri/pgcopydb/blob/main/README.md
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    pgcopydb is Dimitri Fontaine's PostgreSQL database-copying tool, started as a
+    purpose-built way to automate what operators often want from `pg_dump | pg_restore`
+    between two running servers. GitHub records the repository creation date as December
+    20, 2021, and the README describes the goal as streaming a database copy quickly
+    while retaining parallelism.
+  - >
+    The tool's core lineage is PostgreSQL's native dump, restore, COPY, snapshot, and
+    logical-decoding machinery. pgcopydb uses `pg_dump` and `pg_restore` for schema
+    work, implements its own multi-process streaming for table data to avoid
+    directory-format intermediate files, and drives index creation internally so indexes
+    can be built in parallel. Later documentation frames the feature set as both base
+    copy and change data capture, with CDC implemented through PostgreSQL logical
+    decoding using `pgoutput` by default and optional `test_decoding` or `wal2json`
+    plugins.
+  - >
+    In practice, pgcopydb is a migration and cloning CLI. Users provide source and
+    target PostgreSQL URIs, then run commands such as `pgcopydb clone --table-jobs 8
+    --index-jobs 2`; the tool exports a consistent snapshot, dumps and restores schema
+    sections, copies table data, rebuilds indexes and constraints, resets sequences, and
+    can compare source and target data. Its command tree also exposes lower-level steps
+    such as `copy`, `dump`, `restore`, `list`, `stream`, `follow`, and `compare` for
+    scripted migrations.
+  - >
+    Its ecosystem role is a specialist tool between simple logical dumps and full
+    replication systems. It is attractive when a team needs an offline copy, a
+    major-version migration, a hardware or architecture move, or an online migration
+    path with `clone --follow`, but still wants PostgreSQL-native formats and semantics.
+    Homebrew packages versioned releases, and the upstream repository carries Debian
+    packaging, documentation, tests, and a PostgreSQL license.
 tags:
   - cli
   - copy
@@ -30,6 +61,12 @@ provenance:
     - source_facts.name and source_facts.homepage identify the project as pgcopydb.
   docs-sources:
     - Official GitHub README and docs directory are the upstream documentation surfaces.
+  history-sources:
+    - https://api.github.com/repos/dimitri/pgcopydb
+    - https://github.com/dimitri/pgcopydb
+    - https://pgcopydb.readthedocs.io/en/latest/
+    - https://pgcopydb.readthedocs.io/en/latest/ref/pgcopydb_clone.html
+    - https://formulae.brew.sh/formula/pgcopydb
   repo-sources:
     - >
       source_facts.repo already has an official repository URL; per instruction repo is
@@ -46,5 +83,6 @@ category-path:
   - migration
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

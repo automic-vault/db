@@ -8,6 +8,44 @@ docs:
   - https://pg_top.gitlab.io/
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Origin and lineage: pg_top is "top for PostgreSQL": a PostgreSQL-oriented descendant
+    of Unix Top. A 2007 PostgreSQL hackers thread records Mark Wong experimenting with
+    converting the FreeBSD/unixtop code to show PostgreSQL processes from
+    `pg_stat_activity`, and the manpage credits William LeFebvre and Mark Wong.
+  - >
+    Early releases: The 3.6.1 release notes from 2008-03-05 document the tool's early
+    PostgreSQL shape: `ptop` was renamed from `top`, libpq connection support was added,
+    PostgreSQL-style `-p`, `-U`, and `-d` options were introduced, and interactive
+    commands appeared for showing queries, locks, and EXPLAIN output. The 3.6.2 release
+    on 2008-05-03 renamed `ptop` to `pg_top` to fit PostgreSQL naming conventions and
+    avoid a conflict with Free Pascal's `ptop` source formatter.
+  - >
+    Adoption history: pg_top filled a practical monitoring gap before web dashboards and
+    `pg_stat_activity` wrappers became common. It was packaged for Unix-like systems,
+    appears in Homebrew, Alpine, Fedora-family, Nix, and SUSE-family package sets, and
+    retained the familiar top-style interactive loop while adding PostgreSQL details
+    such as active SQL, lock display, and query plans.
+  - >
+    Later development: Version 3.7.0 on 2013-07-31 added remote database monitoring,
+    Linux I/O statistics, PostgreSQL 9.2 compatibility updates, database activity
+    monitoring, disk activity, disk space, and long options. Version 4.0.0 on 2020-08-05
+    moved the build to CMake, removed table and index stats in favor of pg_systat, added
+    replication-process display, and showed PostgreSQL backend state and database
+    usernames rather than only operating-system process state.
+  - >
+    How it is used: Operators run `pg_top` much like `top`, sorting and filtering
+    PostgreSQL backend processes, hiding idle sessions, showing per-process I/O where
+    supported, inspecting active SQL for a backend, displaying locks, and asking
+    PostgreSQL for EXPLAIN or EXPLAIN ANALYZE of a running statement. Remote monitoring
+    uses the companion `pg_proctab` extension on the monitored database host.
+  - >
+    Package-nerd significance: pg_top is a classic C terminal utility: small, packaged
+    broadly, and useful because it maps a familiar Unix interface onto PostgreSQL
+    internals. Its history also shows PostgreSQL tooling splitting responsibilities over
+    time, with pg_top focusing on process/activity views while related tools such as
+    pg_systat and pg_proctab cover statistics and remote process access.
 category: developer-tools
 package-manager:
   apk: pg_top
@@ -28,5 +66,15 @@ executables:
   - pg_top
 provenance:
   formula: pg_top
+  history-sources:
+    - https://gitlab.com/pg_top/pg_top
+    - https://gitlab.com/pg_top/pg_top/-/blob/main/README.rst
+    - https://gitlab.com/pg_top/pg_top/-/blob/main/HISTORY.rst
+    - https://gitlab.com/pg_top/pg_top/-/blob/main/pg_top.1.rst.in
+    - https://gitlab.com/api/v4/projects/pg_top%2Fpg_top
+    - https://www.postgresql.org/message-id/46F9D47E.1070002%40nttdata.co.jp
+    - https://manpages.debian.org/testing/pgtop/pg_top.1
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -7,6 +7,51 @@ docs:
   - https://github.com/pgpartman/pg_partman/tree/master/doc
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Origin and lineage: pg_partman, short for PostgreSQL Partition Manager, is Keith
+    Fiske's extension for creating and maintaining partition sets. Its GitHub repository
+    was created on 2012-09-05, during the era when PostgreSQL partitioning was commonly
+    built from inheritance tables, CHECK constraints, and trigger routing rather than
+    the declarative partitioning syntax added later to core PostgreSQL.
+  - >
+    Early development: The pre-5.0 changelog shows pg_partman growing from automatic
+    time/id partition creation into a full maintenance extension: retention management
+    appeared in 0.2.0, privilege propagation in 0.3.x, undo/repartitioning functions in
+    1.0.0, batched data movement scripts in 1.1.0, archival workflows with
+    `dump_partition.py` in 1.3.0, and name-truncation/index-maintenance improvements in
+    1.4.0. This history explains why the package ships both SQL extension code and
+    helper scripts.
+  - >
+    Shift to declarative partitioning: PostgreSQL 10 introduced native declarative
+    partitioning, and pg_partman gradually followed. The 4.x line supported native
+    partitioning while preserving older trigger-based methods, but the 5.0.0/5.0.1
+    release removed trigger-based partitioning support, required PostgreSQL 14 or newer,
+    and made built-in declarative partitioning the only supported method. The project
+    documentation includes migration guidance for moving old trigger/inheritance
+    partition sets to declarative partitioning.
+  - >
+    Adoption history: pg_partman became one of the standard operational tools for large
+    time-series, event, audit, and ID-range tables in PostgreSQL installations. Its
+    README says PGDG maintainers provide community OS packages, and the input package
+    data records Homebrew, Debian/Ubuntu, and Fedora-family packaging. Amazon RDS made
+    the extension available beginning with PostgreSQL 12.5, which broadened its use in
+    managed PostgreSQL environments.
+  - >
+    How it is used: DBAs create a partitioned parent table, install `CREATE EXTENSION
+    pg_partman`, call `partman.create_parent()` with the control column and interval,
+    then run maintenance to premake future partitions and enforce retention. Many
+    installations load `pg_partman_bgw` through `shared_preload_libraries` so
+    maintenance runs from a background worker instead of cron. The extension also
+    handles default partitions, template-table properties, retention schemas, gap
+    filling, data migration, and monitoring values such as `maintenance_last_run`.
+  - >
+    Package-nerd significance: pg_partman is a good example of a database extension
+    whose package is not just an executable: it installs extension SQL, upgrade scripts,
+    optional background-worker code, and helper scripts that must match the target
+    PostgreSQL major version. Its 5.x transition also shows how ecosystem packages track
+    core PostgreSQL feature maturity: once declarative partitioning became capable
+    enough, the extension shed its older trigger-routing implementation.
 category: developer-tools
 package-manager:
   brew: pg_partman
@@ -29,5 +74,18 @@ executables:
   - vacuum_maintenance.py
 provenance:
   formula: pg_partman
+  history-sources:
+    - https://github.com/pgpartman/pg_partman
+    - https://raw.githubusercontent.com/pgpartman/pg_partman/master/README.md
+    - https://raw.githubusercontent.com/pgpartman/pg_partman/master/CHANGELOG.md
+    - https://raw.githubusercontent.com/pgpartman/pg_partman/master/CHANGELOG-pre-5.0.0.txt
+    - >
+      https://raw.githubusercontent.com/pgpartman/pg_partman/master/doc/migrate_to_declarative.md
+    - https://raw.githubusercontent.com/pgpartman/pg_partman/master/doc/pg_partman_howto.md
+    - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/PostgreSQL_Partitions.html
+    - https://www.crunchydata.com/blog/native-partitioning-with-postgres
+    - https://api.github.com/repos/pgpartman/pg_partman
+    - source_facts.package-manager
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

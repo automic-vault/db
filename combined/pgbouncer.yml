@@ -10,6 +10,47 @@ config-file-location:
   unix: pgbouncer.ini
 credentials-file-location:
   unix: userlist.txt
+history:
+  - >
+    PgBouncer came out of Skype's PostgreSQL tooling. Marko Kreen announced PgBouncer
+    1.0 on the PostgreSQL announce list on March 13, 2007 as a lightweight connection
+    pooler with special support for PL/Proxy 2, low overhead, online reconfiguration,
+    and upgrade without dropping client connections. The copyright headers in upstream
+    source files also tie the early project to Marko Kreen and Skype Technologies OU in
+    2007-2009.
+  - >
+    The project's niche became the standard PostgreSQL answer to connection churn: sit
+    between applications and PostgreSQL, accept many client sessions, and multiplex them
+    onto a smaller set of server connections. Its three pooling modes define its
+    operational trade-offs. Session pooling preserves PostgreSQL session behavior;
+    transaction pooling reuses server connections after each transaction but requires
+    applications to avoid session-bound features; statement pooling is the most
+    aggressive mode and was explicitly aimed at PL/Proxy-style autocommit workloads.
+  - >
+    PgBouncer's design stayed deliberately small. Its feature documentation emphasizes
+    low memory use, destination databases on different hosts, online reconfiguration,
+    and restart/upgrade without dropping clients. Its configuration file is an ini-style
+    `pgbouncer.ini`, with defaults such as port 6432, `pool_mode = session`,
+    `max_client_conn = 100`, and `default_pool_size = 20`; operators usually tune these
+    alongside OS file-descriptor limits, authentication files, TLS settings, and
+    PostgreSQL session-reset behavior.
+  - >
+    Adoption followed PostgreSQL's growth in web and SaaS deployments, where application
+    worker counts can exceed the practical number of backend PostgreSQL processes.
+    PgBouncer is packaged by Homebrew and major Unix distributions, documented by hosted
+    Postgres platforms such as Heroku as a way to stay within database connection
+    limits, and shipped by enterprise PostgreSQL vendors. That ecosystem role is closer
+    to infrastructure plumbing than an application library: teams place it near the app,
+    near the database, or both, then monitor pools through its admin console and `SHOW`
+    commands.
+  - >
+    Feature work has mostly tracked real production friction in the PostgreSQL wire
+    protocol. For example, PgBouncer 1.21 added prepared-statement tracking for
+    transaction pooling through `max_prepared_statements`, reducing one of the
+    long-standing incompatibilities between transaction pooling and modern client
+    drivers. The changelog also records security releases, protocol fixes, and platform
+    improvements, reflecting its role as a network-facing daemon rather than a
+    convenience CLI.
 category: developer-tools
 package-manager:
   apk: pgbouncer
@@ -35,5 +76,16 @@ executables:
   - pgbouncer
 provenance:
   formula: pgbouncer
+  history-sources:
+    - >
+      https://www.postgresql.org/message-id/54333.194.126.108.9.1173801248.squirrel%40mail.skype.net
+    - https://github.com/pgbouncer/pgbouncer/blob/master/src/proto.c
+    - https://www.pgbouncer.org/features.html
+    - https://www.pgbouncer.org/config.html
+    - https://www.pgbouncer.org/faq.html
+    - https://www.pgbouncer.org/changelog.html
+    - https://devcenter.heroku.com/articles/best-practices-pgbouncer-configuration
+    - https://formulae.brew.sh/formula/pgbouncer
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
