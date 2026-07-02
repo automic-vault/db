@@ -6,6 +6,79 @@ docs:
   - https://github.com/joewalnes/websocketd#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      websocketd spread through developer communities as a prototyping and integration
+      tool. Its 2015 Hacker News discussion focused on the exact tradeoff that defined
+      its adoption: process-per-connection overhead is not ideal for every high-scale
+      service, but the model is attractive when rapid composition, debuggability with
+      `ps` and `top`, and reuse of existing scripts matter more than squeezing every
+      byte of memory.
+    - >
+      By July 2026, the GitHub repository had accumulated more than seventeen thousand
+      stars and was packaged for multiple Unix-like systems. That longevity reflects a
+      durable niche: websocketd is not a general application framework, but it remains a
+      convenient bridge between browser WebSockets and existing command-line programs.
+  package-nerd-significance:
+    - >
+      websocketd is significant because it made WebSockets feel like inetd or CGI for
+      the browser era. For package-manager users, it is the archetypal small binary that
+      lets shell scripts and one-off programs cross a protocol boundary without becoming
+      web servers.
+  project-history:
+    - >
+      The repository was created in February 2013, when WebSockets were becoming
+      practical for browser/server applications but many command-line and scripting
+      languages still lacked simple server tooling. websocketd framed the problem as a
+      Unix composition issue: if a program can read stdin and write stdout, it can
+      become a WebSocket endpoint.
+    - >
+      The README and man page describe the same core design that made the project
+      notable: websocketd listens on a port, forks a configured process for each
+      connection, sends incoming WebSocket messages to the process with newline framing,
+      and turns lines printed to stdout into outgoing WebSocket messages. The project
+      wiki expanded this idea into language-specific examples for Bash, Python, Ruby,
+      Perl, PHP, C, Rust, Node.js, and other runtimes.
+  related-projects:
+    - >
+      websocketd belongs with inetd, CGI-style process launchers, and WebSocket CLIs
+      such as websocat and wscat. Its closest conceptual ancestor is inetd: a small
+      daemon accepts network connections and delegates each session to a normal
+      executable.
+  sources:
+    - https://api.github.com/repos/joewalnes/websocketd
+    - https://api.github.com/repos/joewalnes/websocketd/releases?per_page=10
+    - https://github.com/joewalnes/websocketd
+    - https://github.com/joewalnes/websocketd/blob/master/release/websocketd.man
+    - https://github.com/joewalnes/websocketd/wiki/Ten-second-tutorial
+    - https://news.ycombinator.com/item?id=9050970
+  summary:
+    - >
+      websocketd is Joe Walnes's "WebSockets the Unix way" daemon. Instead of asking
+      every language ecosystem to grow a WebSocket server stack, it launches ordinary
+      programs, wires WebSocket messages to their standard input and output, and lets
+      the operating system process model do the rest.
+  timeline:
+    - '2013-02: GitHub repository created.'
+    - '2014-05: v0.2.9 release published.'
+    - '2014-07: Official wiki tutorial pages edited with quick-start examples.'
+    - >
+      2015-02: Public Hacker News discussion highlights the Unix-process model and
+      scaling tradeoffs.
+    - '2021-01: v0.4.1 release published.'
+  usage:
+    - >
+      The canonical example is a short shell script that prints a count once per second,
+      launched with `websocketd --port=8080 ./count.sh`, and consumed from browser
+      JavaScript with `new WebSocket('ws://localhost:8080/')`. The same pattern applies
+      to scripts that stream logs, expose system metrics, wrap REPL-like tools, or
+      create lightweight dashboards.
+    - >
+      Because websocketd delegates application logic to child processes, users choose it
+      when they want language neutrality and operational transparency. They avoid it
+      when the application needs shared in-memory state, very high connection density,
+      or a long-running event-loop architecture.
 tags:
   - cli
   - server
@@ -23,24 +96,27 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - 'source_facts.description: WebSockets the Unix way.'
+    - current_curation.category_path
   display-name-sources:
-    - source_facts.name is websocketd; source_facts.homepage is the official websocketd site.
+    - current_curation.display-name
   docs-sources:
-    - >
-      source_facts.homepage is the official project site; source_facts.repo is the
-      official repository README used as secondary documentation.
+    - current_curation.docs
+  history-sources:
+    - https://api.github.com/repos/joewalnes/websocketd
+    - https://api.github.com/repos/joewalnes/websocketd/releases?per_page=10
+    - https://github.com/joewalnes/websocketd
+    - https://github.com/joewalnes/websocketd/blob/master/release/websocketd.man
+    - https://github.com/joewalnes/websocketd/wiki/Ten-second-tutorial
+    - https://news.ycombinator.com/item?id=9050970
   repo-sources:
-    - source_facts.repo is already populated; per instruction repo is returned as null.
+    - source_facts.repo
   tags-sources:
-    - >
-      source_facts.description identifies WebSockets the Unix way;
-      source_facts.executables lists websocketd.
+    - current_curation.tags
 category-confidence: high
 category-path:
   - networking
-  - websocket
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

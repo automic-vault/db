@@ -6,6 +6,74 @@ docs:
   - https://github.com/weggli-rs/weggli#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      weggli's adoption is strongest in vulnerability research and manual code-review
+      circles rather than general developer search. A 2024 HN Security article described
+      converting C/C++ vulnerability patterns from Semgrep into weggli queries and using
+      the tool to identify hotspots such as buffer overflows, integer issues, format
+      strings, memory-management mistakes, and command-injection patterns.
+    - >
+      By July 2026, the repository had about 2.5 thousand GitHub stars, which is sizable
+      for a specialized security CLI. Its package-manager niche is clear: it gives
+      reviewers a fast semantic grep for C and C++ without requiring a full CodeQL
+      database, compiler build, or heavyweight SAST workflow.
+  package-nerd-significance:
+    - >
+      weggli is package-nerd significant because it is the small, installable middle
+      ground between `grep` and heavyweight static-analysis platforms. It makes
+      AST-aware C/C++ searching feel like a fast CLI habit rather than an infrastructure
+      project.
+  project-history:
+    - >
+      The current GitHub repository was created in September 2021, and crates.io
+      metadata shows package publication beginning in October 2021. The README states
+      that weggli is inspired by Semgrep, Coccinelle, joern, and CodeQL, but
+      intentionally makes different tradeoffs for C/C++ review.
+    - >
+      Those tradeoffs define the project: first-class support for modern C++ constructs,
+      minimal setup without requiring a successful build, interactive performance, and
+      greedy matching that finds useful variants even at the cost of false positives.
+      The implementation is built on tree-sitter C and C++ grammars, with queries
+      translated into tree-sitter query machinery plus weggli-specific behavior.
+  related-projects:
+    - >
+      The README names Semgrep, Coccinelle, joern, and CodeQL as inspirations. In use,
+      weggli is closest to a semantic grep for C/C++ reviewers, while those related
+      tools cover broader rule management, program analysis, source transformation, or
+      database-backed code queries.
+  sources:
+    - https://api.github.com/repos/weggli-rs/weggli
+    - https://api.github.com/repos/weggli-rs/weggli/releases?per_page=5
+    - https://crates.io/api/v1/crates/weggli
+    - https://github.com/weggli-rs/weggli
+    - >
+      https://hnsecurity.it/blog/a-collection-of-weggli-patterns-for-c-cpp-vulnerability-research/
+  summary:
+    - >
+      weggli is a Rust semantic-search tool for C and C++ codebases, designed for
+      security researchers who want fast, code-shaped queries over large or incomplete
+      source trees. Its README says it matches user-provided patterns on abstract syntax
+      trees and uses a query language that resembles C and C++.
+  timeline:
+    - '2021-09: GitHub repository created.'
+    - '2021-10: crates.io package created and early 0.2.x releases began.'
+    - '2022-05: v0.2.4 release published.'
+    - >
+      2024-01: HN Security published a practitioner pattern collection and workflow
+      article for C/C++ vulnerability research.
+  usage:
+    - >
+      A typical invocation is `weggli <PATTERN> <PATH>`, where the pattern is written in
+      a C/C++-like language with metavariables and wildcards. For example, patterns can
+      look for a stack buffer followed by a `memcpy` call, suspicious arithmetic before
+      allocation, or API-specific call sequences.
+    - >
+      In practice, users run weggli interactively while reading source: write a pattern,
+      inspect matches, refine the query, and then manually audit nearby code. It is
+      especially useful for variant analysis after one bug is found and for quickly
+      mapping attack-surface idioms in unfamiliar C/C++ projects.
 category: security
 package-manager:
   apk: weggli
