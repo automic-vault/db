@@ -6,6 +6,75 @@ docs:
   - https://ziglang.org/learn
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      0.15 is the generation many Zig users remember as the compiler-speed payoff
+      release. The release notes report around a 5x decrease in compilation time
+      compared with LLVM in most cases when the self-hosted x86 backend is selected, and
+      also describe parallelizing semantic analysis, code generation, and linking.
+    - >
+      For downstream packages, 0.15 also brought churn. Projects using std.io, async
+      keywords, or build-system features often needed source changes, making a versioned
+      package useful for consumers who had already migrated to 0.15 but were not ready
+      for later releases.
+  package-nerd-significance:
+    - >
+      zig@0.15 captures the moment Zig's own backend stopped being only future
+      architecture and became the default development path for many x86_64 users. That
+      matters for package builds because compile-time ergonomics directly affect CI
+      time, local rebuild loops, and willingness to maintain Zig dependencies.
+    - >
+      The package also documents why language-runtime formulae sometimes need multiple
+      active lines even without a 1.0 stable ABI or API: the compiler is the build
+      system, so compiler churn is build-tool churn.
+  project-history:
+    - >
+      Zig 0.15.1 was described in the release notes as a 647-commit release. The
+      headline practical change was Debug compilation becoming much faster through the
+      self-hosted x86 backend, while the standard library saw a major I/O interface
+      transition around std.Io.Reader and std.Io.Writer and the language removed the
+      async and await keywords pending a new async I/O design.
+    - >
+      The 0.15 cycle followed directly from 0.14's roadmap, where the Zig team named
+      compilation speed as the major theme for the next release. In 0.15, the
+      self-hosted x86_64 backend became the default for x86_64 Debug mode except on
+      platforms where the LLVM backend was still selected.
+  related-projects:
+    - brew:zig is the unversioned Homebrew entry that tracks the current Zig line.
+    - >
+      brew:zig@0.14 is the previous versioned Homebrew entry for projects pinned before
+      the 0.15 API changes.
+    - >
+      zigup and anyzig are adjacent compiler-version tools for switching or
+      auto-selecting Zig versions outside a package manager.
+  sources:
+    - https://ziglang.org/
+    - https://ziglang.org/download/
+    - https://ziglang.org/download/0.14.0/release-notes.html
+    - https://ziglang.org/download/0.15.1/release-notes.html
+  summary:
+    - >
+      brew:zig@0.15 is a versioned package entry for the Zig 0.15 compiler generation,
+      not a separate upstream project. It is historically useful because 0.15 was the
+      line where Zig's self-hosted x86_64 backend became the default for most Debug-mode
+      x86_64 builds, making compiler speed a central adoption story.
+  timeline:
+    - '2025-03-05: Zig 0.14.0 sets compilation speed as the major theme for the 0.15 cycle.'
+    - '2025-08-19: Zig 0.15.1 is released, with release notes reporting 647 commits.'
+    - >
+      2025-08-19: The self-hosted x86_64 backend becomes the default for most x86_64
+      Debug-mode targets.
+    - '2025-10-11: Zig 0.15.2 appears on the Zig download page as a later 0.15 patch release.'
+  usage:
+    - >
+      Use zig@0.15 for Zig projects whose build.zig.zon, build.zig, or README calls for
+      the 0.15 compiler generation. It is especially relevant when a project expects the
+      newer std.Io APIs or has been updated after 0.14-era build-system deprecations.
+    - >
+      From a package recipe perspective, zig@0.15 avoids one of the classic Zig
+      ecosystem problems: a project may be healthy and maintained, but only for a narrow
+      compiler band because Zig is still pre-1.0.
 tags:
   - c-interoperability
   - cli
@@ -15,25 +84,28 @@ tags:
   - toolchain
 provenance:
   category-sources:
-    - https://ziglang.org/
-    - source_facts.description
+    - current_curation.category
   display-name-sources:
-    - https://ziglang.org/download/
-    - source_facts.name
+    - current_curation.display-name
+    - https://ziglang.org/download/0.15.1/release-notes.html
   docs-sources:
-    - https://ziglang.org/documentation/0.15.2/
+    - https://ziglang.org/documentation/0.15.2
+    - https://ziglang.org/learn
+  history-sources:
+    - https://ziglang.org/
     - https://ziglang.org/download/
-    - source_facts.homepage
+    - https://ziglang.org/download/0.14.0/release-notes.html
+    - https://ziglang.org/download/0.15.1/release-notes.html
   repo-sources:
     - https://codeberg.org/ziglang/zig
-    - https://ziglang.org/
   tags-sources:
-    - https://ziglang.org/
-    - source_facts.description
+    - current_curation.tags
+    - https://ziglang.org/download/0.15.1/release-notes.html
 category-confidence: high
 category-path:
   - language-runtime
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

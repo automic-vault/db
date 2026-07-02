@@ -6,6 +6,146 @@ docs:
   - https://ziglang.org/learn
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Zig's adoption has been strongest where a small, reproducible native toolchain
+      matters: cross-compiling C/C++, shipping static command-line programs, language
+      runtimes, databases, terminal tools, game-adjacent systems code, and embedded or
+      freestanding experiments. The language's package-manager story lagged behind the
+      compiler for years, so early ecosystem practice often involved vendoring, git
+      submodules, or third-party tools before build.zig.zon became the official path.
+    - >
+      One important adoption path was zig cc rather than Zig-the-language. Motiejus
+      Jakstys' write-up of Uber's usage describes Uber using Zig to compile C/C++ code
+      in its Go monorepo, attracted by configurable glibc versions and macOS
+      cross-compilation. This made Zig visible to package and build-system people even
+      in places where no application code was written in Zig.
+    - >
+      The 0.14 and 0.15 release cycles show the project trying to turn interest into
+      daily usability. Zig 0.14 emphasized long-term investments in incremental
+      compilation and the x86 backend, while 0.15 enabled the self-hosted x86_64 backend
+      by default for most Debug-mode x86_64 targets and reported roughly 5x faster Debug
+      compilation than LLVM in most cases.
+  package-nerd-significance:
+    - >
+      Zig is one of the clearest modern examples of a language package doubling as a
+      distribution primitive. It collapses compiler, build system, package manager,
+      C/C++ cross toolchain, and linker driver into one installable binary, which
+      changes how downstream packages think about bootstrapping and cross-platform
+      builds.
+    - >
+      The official package manager is package-nerd interesting precisely because it
+      avoids a central registry. The package is a source tree plus build.zig.zon
+      metadata and a hashable fetched dependency, so the ecosystem's trust, cache, and
+      reproducibility questions look more like Go modules and source archives than
+      npm-style registry publication.
+    - >
+      Zig's versioned packages are also a live reminder that pre-1.0 languages are not
+      just semver labels in package managers. Keeping 0.14 and 0.15 installable gives
+      downstream recipes a way to survive build.zig API churn while still letting the
+      main zig formula move.
+  project-history:
+    - >
+      The public Zig repository dates to August 2015 on GitHub, and the project grew
+      around the idea that a C-like systems language could make compile-time execution,
+      explicit allocation, error handling, cross-compilation, and C interop feel like
+      one coherent toolchain instead of a pile of external build machinery. The Zig home
+      page still presents that philosophy through simple-language constraints such as no
+      hidden control flow, no hidden allocations, and no preprocessor or macros.
+    - >
+      A major internal evolution was the self-hosted compiler. Loris Cro described the
+      0.10-era switch as shipping a new compiler written in Zig, cutting compiler-build
+      memory use from 9.6 GB to 2.8 GB in one example and opening the door to custom
+      backends and the official package manager. Zig 0.11 then removed the old stage1
+      path from normal use, bootstrapped through a small WebAssembly compiler artifact,
+      and described the compiler as 100% Zig code apart from LLVM libraries.
+    - >
+      Zig 0.11 was also the debut of the official package manager. Instead of creating a
+      central package registry, the release notes describe packages as arbitrary
+      directory trees, local directories, or archives fetched from URLs, with metadata
+      in build.zig.zon and integration through the Zig build system. That design kept
+      package management close to zig build and reinforced Zig's identity as a toolchain
+      rather than only a language front end.
+    - >
+      In November 2025, the Zig project made its canonical repository Codeberg instead
+      of GitHub. Andrew Kelley's migration post says the GitHub mirror was made
+      read-only and origin/master moved to https://codeberg.org/ziglang/zig.git, a
+      governance and infrastructure milestone for a project funded through the Zig
+      Software Foundation.
+  related-projects:
+    - >
+      Zigmod was an independent third-party Zig package manager before and alongside the
+      official build.zig.zon package-manager work.
+    - >
+      zigup and anyzig are version-management tools used to install or select Zig
+      compilers across projects.
+    - >
+      LLVM, LLD, and Clang are central to Zig's historical implementation and
+      cross-compilation story, even as Zig works toward making LLVM optional for more
+      paths.
+    - >
+      bazel-zig-cc packages Zig's C/C++ toolchain behavior for Bazel users, notably in
+      the Uber case study.
+  sources:
+    - https://jakstys.lt/2022/how-uber-uses-zig/
+    - https://kristoff.it/blog/zig-self-hosted-now-what/
+    - https://ziglang.org/
+    - https://ziglang.org/download/
+    - https://ziglang.org/download/0.11.0/release-notes.html
+    - https://ziglang.org/download/0.14.0/release-notes.html
+    - https://ziglang.org/download/0.15.1/release-notes.html
+    - https://ziglang.org/news/migrating-from-github-to-codeberg/
+  summary:
+    - >
+      Zig is a general-purpose systems programming language and toolchain created by
+      Andrew Kelley, aimed at robust, optimal, and reusable software. For package nerds
+      it is unusually important because the packaged artifact is not just a language
+      compiler: the zig executable is also a build runner, cross C/C++ compiler driver,
+      linker front-end, test runner, formatter, documentation generator, and, since
+      0.11, the home of Zig package management.
+  timeline:
+    - >
+      2015-08-06: The public ziglang/zig GitHub repository is created; the project later
+      records this era as the original git init period.
+    - >
+      2020: The Zig Software Foundation is founded by Andrew Kelley to support
+      development of the language.
+    - >
+      2022: The self-hosted compiler ships in the 0.10 era, replacing the old C++
+      bootstrap compiler for most development work.
+    - >
+      2023-08-04: Zig 0.11.0 is released with the debut of official package management
+      and build.zig.zon.
+    - >
+      2025-03-05: Zig 0.14.0 is released, emphasizing incremental compilation work,
+      build-system changes, and the self-hosted x86 backend.
+    - >
+      2025-08-19: Zig 0.15.1 is released with the self-hosted x86_64 backend enabled by
+      default for most Debug-mode x86_64 targets.
+    - '2025-11-26: Zig moves canonical development from GitHub to Codeberg.'
+    - >
+      2026-04-13: Zig 0.16.0 becomes the latest stable release listed on the Zig
+      download page.
+  usage:
+    - >
+      Typical package-manager usage starts with installing the single zig command, then
+      using zig build, zig test, zig fmt, zig cc, zig c++, zig run, and zig fetch-style
+      package workflows depending on project age. Zig projects conventionally use
+      build.zig as executable build logic and, for modern package-manager integration,
+      build.zig.zon for package metadata and dependencies.
+    - >
+      Zig is also frequently installed as a hermetic C/C++ toolchain. A package
+      maintainer can reach for zig cc to cross-compile without separately installing
+      target libc headers, linker bits, and SDK fragments, which is why Zig appears in
+      build farms and language-package recipes even when the upstream project is C or
+      C++.
+    - >
+      Because Zig has not reached 1.0, package users often pin compiler versions
+      tightly. Formulae such as zig@0.14 and zig@0.15 exist because build-system APIs,
+      standard-library APIs, and language details can change enough that downstream
+      projects need a known compiler generation rather than whatever the latest zig
+      package currently provides.
 tags:
   - c-interoperability
   - cli
@@ -24,34 +164,32 @@ geiger:
     - text:programming language
 provenance:
   category-sources:
-    - >
-      Official Zig homepage describes Zig as a general-purpose programming language and
-      toolchain.
-    - >
-      source_facts.description says Zig is a programming language designed for
-      robustness, optimality, and clarity.
+    - current_curation.category
   display-name-sources:
-    - Official homepage title and documentation use Zig as the project name.
-    - source_facts.name is zig.
+    - current_curation.display-name
+    - https://ziglang.org/
   docs-sources:
-    - >
-      Official Zig documentation page is the Zig Language Reference and lists versioned
-      documentation including 0.16.0.
-    - Official Zig homepage links Documentation and Learn sections.
+    - https://ziglang.org/documentation/0.16.0
+    - https://ziglang.org/learn
+  history-sources:
+    - https://jakstys.lt/2022/how-uber-uses-zig/
+    - https://kristoff.it/blog/zig-self-hosted-now-what/
+    - https://ziglang.org/
+    - https://ziglang.org/download/
+    - https://ziglang.org/download/0.11.0/release-notes.html
+    - https://ziglang.org/download/0.14.0/release-notes.html
+    - https://ziglang.org/download/0.15.1/release-notes.html
+    - https://ziglang.org/news/migrating-from-github-to-codeberg/
   repo-sources:
-    - Official Zig homepage states the Zig repository is at https://codeberg.org/ziglang/zig.
-    - source_facts.repo is empty, so repo was determined from the official Zig homepage.
+    - https://codeberg.org/ziglang/zig
   tags-sources:
-    - Official documentation is the Zig Language Reference.
-    - >
-      Official homepage says Zig is a language and toolchain and highlights C/C++
-      interoperability and cross-compilation.
-    - source_facts.description identifies Zig as a programming language.
+    - current_curation.tags
+    - https://ziglang.org/
 category-confidence: high
 category-path:
   - language-runtime
-  - programming-language
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
