@@ -6,6 +6,35 @@ docs:
   - https://www.skarnet.org/software/s6-rc
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    s6-rc is the service-manager component of the skarnet.org s6 ecosystem. It is not an
+    init system by itself; the project documentation describes it as a suite of programs
+    for starting and stopping long-running daemons and one-time initialization scripts
+    in dependency order, while relying on the s6 supervision infrastructure for
+    supervised longruns.
+  - >
+    Its design comes from a gap between supervision suites and full service managers.
+    Pure supervision trees keep daemons alive but do not express all boot-time
+    dependencies or one-shot state changes; monolithic init systems solve more of the
+    lifecycle problem but carry integration and complexity costs. s6-rc's answer is a
+    modular manager on top of s6, with correct dependency handling, readiness-aware
+    service ordering, reproducible script execution, and small code paths.
+  - >
+    The package is especially interesting to system builders because it splits service
+    management into an offline compilation phase and a live phase. Administrators or
+    distribution tooling write source service definitions for longruns, oneshots, and
+    bundles; s6-rc-compile turns them into a compiled service database; s6-rc-init and
+    s6-rc change apply that database to the running system; s6-rc-update handles live
+    database replacement. That makes it fit systems that want s6 supervision plus
+    deterministic dependency management without adopting a single large init framework.
+  - >
+    Distribution is intentionally old-school Unix: ISC-licensed source tarballs from
+    skarnet.org, the canonical skarnet git repository, and mirrors on Codeberg, GitHub,
+    and SourceHut. Homebrew and Alpine packaging make it available outside source
+    builds, but its main audience remains admins, distribution maintainers, container
+    builders, and embedded-system users who already understand the s6/skarnet style of
+    small cooperating tools.
 category: system
 package-manager:
   apk: s6-rc
@@ -41,5 +70,12 @@ executables:
   - s6-rc-update
 provenance:
   formula: s6-rc
+  history-sources:
+    - https://skarnet.org/software/s6-rc/
+    - https://skarnet.org/software/s6-rc/overview.html
+    - https://skarnet.org/software/s6-rc/why.html
+    - https://git.skarnet.org/cgi-bin/cgit.cgi/s6-rc/
+    - https://formulae.brew.sh/formula/s6-rc
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

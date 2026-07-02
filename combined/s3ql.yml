@@ -8,6 +8,32 @@ config-file-location:
   unix: ~/.s3ql/authinfo2
 credentials-file-location:
   unix: ~/.s3ql/authinfo2
+history:
+  - >
+    S3QL was created by Nikolaus Rath in 2008, in an era when S3 was the dominant cloud
+    object store and Rath described the Linux cloud-filesystem landscape as lacking
+    built-in compression, encryption, and deduplication. The project took a different
+    path from native-object mounters: it presents a Unix filesystem while storing its
+    own structured data on online storage backends such as Amazon S3, Google Storage,
+    OpenStack Swift, Rackspace CloudFiles, Backblaze B2, local storage, and other
+    S3-compatible services.
+  - >
+    The resulting tool is closer to a cloud-backed backup/archive filesystem than a
+    transparent S3 directory view. S3QL supports hard links, symlinks, Unix permissions,
+    extended attributes, compression, AES encryption with integrity checks, block-level
+    deduplication, immutable trees, and copy-on-write snapshots. Its implementation
+    stores metadata in a database, caches that metadata locally, and uploads remote
+    updates asynchronously, which makes metadata-heavy operations less tied to
+    object-store latency.
+  - >
+    Practitioners initialize a backend with mkfs.s3ql, mount it with mount.s3ql, and
+    then point backup software or ordinary filesystem tools at the mount. That workflow
+    is attractive when the object store is the durable backend but the user wants
+    POSIX-ish semantics, deduplicated encrypted storage, snapshots, and repair tooling.
+    The cost is interoperability: unlike s3fs, the bucket contents are S3QL's storage
+    format rather than normal application objects. Packaging in Homebrew, Debian, and
+    Nix reflects a specialized but durable niche for people willing to trade object
+    transparency for filesystem features.
 category: cloud-infrastructure
 package-manager:
   brew: s3ql
@@ -41,5 +67,13 @@ executables:
   - umount_s3ql
 provenance:
   formula: s3ql
+  history-sources:
+    - https://www.rath.org/s3ql-vs-zfs-on-nbd.html
+    - https://www.rath.org/s3ql-docs/
+    - https://www.rath.org/s3ql-docs/backends.html
+    - https://raw.githubusercontent.com/s3ql/s3ql/master/README.rst
+    - https://manpages.debian.org/unstable/s3ql/mount.s3ql.1.en.html
+    - https://formulae.brew.sh/formula/s3ql
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -8,6 +8,33 @@ config-file-location:
   unix: ~/.aws/config
 credentials-file-location:
   unix: ~/.aws/credentials
+history:
+  - >
+    s5cmd is a Go-based S3 and local-filesystem execution tool built around concurrency.
+    The GitHub repository was created in November 2016, and the project presents itself
+    as a fast alternative to traditional S3 utilities for workflows involving large
+    numbers of objects. The README highlights benchmarks popularized by Joshua
+    Robinson's testing, including much higher upload and download throughput than s3cmd
+    and aws-cli under benchmark conditions.
+  - >
+    The design target is not just one fast copy; it is many operations without paying
+    process-launch and serialization costs. AWS's Open Source Blog describes s5cmd as a
+    way to run multiple operations with one executable invocation, using workers instead
+    of invoking a CLI millions of times. Its own README builds on that with wildcard
+    support, batch command files, dry runs, structured logs, S3 Transfer Acceleration,
+    Google Cloud Storage and S3-compatible service support, and object operations such
+    as list, copy, move, delete, bucket creation, summaries, ACLs, KMS encryption, and
+    S3 Select.
+  - >
+    In practical object-storage shops, s5cmd is the tool people reach for when the
+    bottleneck is object count or aggregate throughput: log backfills, dataset uploads,
+    data-lake maintenance, CI artifact moves, and bulk deletes. It uses the AWS SDK
+    credential chain, including profiles, credential files, environment variables,
+    EC2/EKS roles, and unsigned public-bucket access. Packaging spans official Linux,
+    macOS, and Windows binaries plus Homebrew, MacPorts, conda-forge, FreeBSD, Docker,
+    and downstream package managers, which helped it become a common
+    performance-oriented companion to aws-cli rather than a replacement for the full AWS
+    CLI surface.
 category: cloud-infrastructure
 package-manager:
   apk: s5cmd
@@ -29,5 +56,12 @@ executables:
   - s5cmd
 provenance:
   formula: s5cmd
+  history-sources:
+    - https://github.com/peak/s5cmd
+    - https://raw.githubusercontent.com/peak/s5cmd/master/README.md
+    - https://api.github.com/repos/peak/s5cmd
+    - https://aws.amazon.com/blogs/opensource/parallelizing-s3-workloads-s5cmd/
+    - https://formulae.brew.sh/formula/s5cmd
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

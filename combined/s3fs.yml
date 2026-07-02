@@ -11,6 +11,30 @@ credentials-file-location:
     - ${HOME}/.aws/credentials
     - ${HOME}/.passwd-s3fs
     - /etc/passwd-s3fs
+history:
+  - >
+    s3fs is one of the older answers to a very specific cloud-storage wish: treating an
+    Amazon S3 bucket as a mounted filesystem. The project began as Randy Rizun's S3FS on
+    Google Code, with the project changelog recording a basic 1.0 release in 2008 and
+    the README carrying a 2010 copyright notice. Version 1.74, released on November 24,
+    2013, marked the project's initial GitHub-hosted version and matched the Google Code
+    release line.
+  - >
+    Its package-nerd importance is that it preserves files as ordinary S3 objects. That
+    makes it different from block- or database-backed S3 filesystems: other tools such
+    as AWS CLI can still see and manipulate the same objects. The README positions s3fs
+    as a FUSE filesystem for Linux, macOS, and FreeBSD, with a large subset of POSIX
+    behavior, multipart uploads for large files, optional server-side encryption,
+    metadata and disk caching, and support for S3-compatible object stores.
+  - >
+    In practice, administrators use s3fs when an application, shell script, web stack,
+    or backup job expects a path but the storage lives in an object bucket. Its
+    documentation is careful about the tradeoff: S3 is not a local filesystem, so random
+    writes and appends rewrite objects, directory listings cost network round trips,
+    renames are not atomic, multiple clients are not coordinated, hard links are absent,
+    and inotify only sees local changes. That mix explains both its broad packaging
+    across Linux distributions and macOS and its recurring role as a compatibility
+    bridge rather than a universal filesystem replacement.
 category: cloud-infrastructure
 package-manager:
   brew: s3fs
@@ -33,5 +57,11 @@ executables:
   - s3fs
 provenance:
   formula: s3fs
+  history-sources:
+    - https://raw.githubusercontent.com/s3fs-fuse/s3fs-fuse/master/README.md
+    - https://raw.githubusercontent.com/s3fs-fuse/s3fs-fuse/master/ChangeLog
+    - https://github.com/s3fs-fuse/s3fs-fuse
+    - https://formulae.brew.sh/formula/s3fs
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

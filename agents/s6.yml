@@ -5,6 +5,40 @@ docs:
   - https://www.skarnet.org/software/s6
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    s6 is Laurent Bercot's small supervision suite from the skarnet.org software family,
+    built around the daemontools/runit model of keeping daemons as direct children of a
+    supervisor rather than leaving service state to PID files and ad-hoc shell scripts.
+    The upstream documentation describes the package itself as s6-supervision: the layer
+    that provides process supervision, logging, readiness notification, service
+    directories, scan directories, fd-holding, privilege helpers, and the command-line
+    tools used to control a supervision tree.
+  - >
+    The package's role is deliberately narrower than the word "init" suggests. Upstream
+    separates s6-supervision from the larger s6 ecosystem: s6-linux-init can make
+    s6-svscan run as process 1, s6-rc adds dependency-aware service management, and
+    s6-frontend aims to provide a higher-level administrative interface. That layering
+    is why practitioners may install s6 just to supervise services under another init
+    system, use s6 with s6-linux-init for minimal systems and containers, or add s6-rc
+    when they need ordered boot/shutdown and service dependency handling.
+  - >
+    s6-rc is the important companion for system-level use. It treats services as either
+    longruns, which are supervised daemons with run scripts and optional readiness
+    notification, or oneshots, which represent state transitions such as mounting a
+    filesystem. It starts and stops those services according to a dependency graph,
+    ensuring a dependent service is not started before its prerequisites are up and a
+    prerequisite is not stopped while dependents remain up. This gives s6-based systems
+    a service-manager layer without folding policy, logging, and process supervision
+    into one large binary.
+  - >
+    In packaging terms, s6 remains a systems-programming tool distributed through source
+    tarballs and operating-system package managers rather than language registries. The
+    upstream page lists skalibs as a required dependency and execline as an optional but
+    recommended dependency, while Homebrew ships s6 with execline and skalibs
+    dependencies. The ecosystem also reaches container users through s6-overlay, which
+    automates integration of s6 into Docker images, and through related service managers
+    such as anopa and 66.
 tags:
   - cli
   - init
@@ -31,6 +65,13 @@ provenance:
     - >
       Official skarnet s6 page states the documentation is complete and self-contained
       and lists command reference pages.
+  history-sources:
+    - https://skarnet.org/software/s6/
+    - https://skarnet.org/software/s6/overview.html
+    - https://skarnet.com/projects/s6/
+    - https://skarnet.org/software/s6-rc/overview.html
+    - https://github.com/skarnet/s6
+    - https://formulae.brew.sh/formula/s6
   repo-sources:
     - Official cgit page provides clone URLs for the skarnet s6 repository.
     - Official skarnet download section links the s6 git repository.
@@ -45,5 +86,6 @@ category-path:
   - process-supervision
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -5,6 +5,25 @@ docs:
   - https://rzip.samba.org/rzip/rzip-man.html
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    rzip is Andrew Tridgell's large-file compression tool, built around the
+    long-distance redundancy ideas described in his PhD work. Rather than competing with
+    gzip and bzip2 only as another short-window compressor, rzip first searches for
+    repeated data over a much larger window and then feeds the reduced stream to
+    bzip2-style compression.
+  - >
+    Its package-nerd significance is the deliberately narrow tradeoff: rzip can produce
+    strong results on very large files, backup sets, source trees, mail archives, and
+    other inputs with duplicated material far apart in the stream, but it is memory
+    hungry and not pipeline-friendly. The upstream page frames it as useful when
+    compression ratio matters more than RAM use or Unix filter composability.
+  - >
+    rzip also became a reference point for later long-range compressors, especially
+    lrzip, which extended the idea with multiple compression backends. In packaging
+    systems it occupies the small, old-school Unix utility niche: a GPL command-line
+    compressor shipped by distributions for users who know when long-range matching
+    beats the more general gzip or bzip2 defaults.
 tags:
   - archiving
   - cli
@@ -28,6 +47,11 @@ provenance:
     - source_facts.name
   docs-sources:
     - official rzip homepage links to manual page
+  history-sources:
+    - https://rzip.samba.org/
+    - https://rzip.samba.org/rzip/rzip-man.html
+    - https://directory.fsf.org/wiki/Rzip
+    - https://github.com/ckolivas/lrzip
   repo-sources:
     - >
       source_facts.repo is empty; official rzip/Samba pages provide releases and docs,
@@ -41,5 +65,6 @@ category-path:
   - compression
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: medium
 tags-confidence: high
