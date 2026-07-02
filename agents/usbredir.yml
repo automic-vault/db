@@ -6,6 +6,76 @@ docs:
   - https://www.spice-space.org/usbredir.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      usbredir's main adoption path was virtualization. The SPICE page documents use
+      with QEMU, libvirt, virt-manager, remote-viewer, and Windows clients using UsbDk,
+      while also noting that the guest side is implemented for QEMU and shipped as part
+      of QEMU.
+    - >
+      The input package metadata lists usbredir across Alpine, Homebrew, Debian, Fedora,
+      MacPorts, Nix, Arch, Ubuntu, and openSUSE package families. That spread matches
+      its role as a low-level library used by virtualization stacks rather than as a
+      daily end-user command.
+  package-nerd-significance:
+    - >
+      usbredir is package-nerd significant because it is the quiet glue behind a visible
+      virtualization feature. Installing it satisfies build/runtime dependencies for
+      QEMU/SPICE USB redirection and exposes the libraries that let packagers connect
+      libusb, SPICE clients, and QEMU devices cleanly.
+  project-history:
+    - >
+      The official Git history begins with an initial usbredir import on 2011-02-03. The
+      protocol documentation records version 0.2 as the version demonstrated at FOSDEM
+      2011 and version 0.3, released on 2011-07-14, as the first stable version intended
+      for later compatibility.
+    - >
+      Although created for SPICE, the SPICE documentation explicitly says the protocol
+      and usbredirhost library are independent of SPICE. That separation is important
+      historically: usbredir became a reusable USB-over-network mechanism rather than
+      only a private detail of one remote desktop stack.
+    - >
+      The protocol continued to evolve through the early 2010s. The official protocol
+      document records filtering support in version 0.4 in 2012, 64-bit packet IDs in
+      0.5, buffered bulk input in 0.6, and protocol version 0.7 in 2014 with bulk-stream
+      changes.
+  related-projects:
+    - >
+      The official documentation ties usbredir to SPICE, QEMU, libvirt, virt-manager,
+      remote-viewer, libusb, and UsbDk.
+  sources:
+    - https://gitlab.freedesktop.org/spice/usbredir
+    - >
+      https://gitlab.freedesktop.org/spice/usbredir/-/blob/main/docs/usb-redirection-protocol.md
+    - https://www.spice-space.org/usbredir.html
+    - input source_facts.package-manager
+    - official git log and tags from https://gitlab.freedesktop.org/spice/usbredir.git
+  summary:
+    - >
+      usbredir is both a network protocol for forwarding USB device traffic and the
+      software package that implements it. The SPICE project documentation describes a
+      parser library, a host-side library, and utilities that let a USB device attached
+      to one machine appear inside another, commonly a virtual machine.
+  timeline:
+    - '2011-02-03: Official Git history starts with initial usbredir import.'
+    - '2011: Protocol version 0.2 demonstrated at FOSDEM.'
+    - '2011-07-14: Protocol version 0.3 released as the first stable version.'
+    - >
+      2012: Protocol versions 0.4, 0.5, and 0.6 add filtering, 64-bit packet IDs, and
+      buffered bulk input.
+    - '2014-05-19: Protocol version 0.7 released.'
+    - '2025-01-27: Official tag usbredir-0.15.0 created.'
+  usage:
+    - >
+      On the host side, applications provide a libusb device handle and callbacks for
+      transporting usbredir data, then monitor usbredir and libusb events. The
+      `usbredirect` utility can export a USB device over TCP as a client or server.
+    - >
+      In VM workflows, users add USB redirection devices in virt-manager or libvirt XML,
+      configure QEMU `usb-redir` devices and SPICE channels, and select devices from
+      remote-viewer once the SPICE connection is established. Filtering rules can block
+      or auto-connect devices by USB class, vendor, product, and version.
 tags:
   - cli
   - network-protocol
@@ -24,32 +94,31 @@ geiger:
     - metadata:library-like
 provenance:
   category-sources:
-    - >
-      Official SPICE usbredir page describes usbredir as a protocol for sending USB
-      device traffic over a network connection.
-    - source_facts.description says usbredir is a USB traffic redirection library.
+    - Official SPICE docs define usbredir as a network protocol for USB traffic redirection.
   display-name-sources:
-    - Official SPICE page and freedesktop repository use the name usbredir.
-    - source_facts.name is usbredir.
+    - source_facts.name
   docs-sources:
+    - Official GitLab project and SPICE usbredir documentation.
+  history-sources:
+    - https://gitlab.freedesktop.org/spice/usbredir
     - >
-      The official SPICE page links to the freedesktop GitLab repository as the official
-      usbredir git repository.
-    - >
-      source_facts.homepage points to the SPICE project; the official usbredir page
-      provides usage, filtering, download, and source-code references.
+      https://gitlab.freedesktop.org/spice/usbredir/-/blob/main/docs/usb-redirection-protocol.md
+    - https://www.spice-space.org/usbredir.html
+    - input source_facts.package-manager
+    - official git log and tags from https://gitlab.freedesktop.org/spice/usbredir.git
   repo-sources:
     - >
-      Official SPICE usbredir page states that the official usbredir git repository is
-      on gitlab.freedesktop.org/spice/usbredir.
+      Official README states upstream repository is
+      https://gitlab.freedesktop.org/spice/usbredir.
   tags-sources:
-    - Official SPICE page describes USB-over-network redirection and SPICE/QEMU usage.
-    - source_facts.description identifies USB traffic redirection.
+    - >
+      Official README and SPICE docs describe usbredir protocol, usbredirect utility,
+      SPICE/QEMU usage, and USB redirection.
 category-confidence: high
 category-path:
   - networking
-  - protocols
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
