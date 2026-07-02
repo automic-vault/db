@@ -7,6 +7,99 @@ docs:
   - https://xxhash.com/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xxHash spread because it filled a very common systems niche: fast checksums for
+      hash tables, content indexing, compression frames, databases, caches, backup
+      tools, file-transfer workflows, and test suites where cryptographic hashes are
+      unnecessary overhead.
+    - >
+      The project's README emphasizes SMHasher and extended collision/speed testing,
+      helping adoption by giving packagers and downstream developers a compact, portable
+      C implementation with visible quality checks. The xxhash.com reference-usage page
+      and language bindings further show adoption across multiple runtimes.
+    - >
+      A notable ecosystem link is LZ4: xxHash is used as a checksum in the LZ4 frame
+      format, reinforcing its identity as infrastructure for compression and
+      high-throughput data plumbing.
+  package-nerd-significance:
+    - >
+      xxHash is the kind of small C library that quietly becomes plumbing. Package nerds
+      care because it ships a stable ABI-facing library, pkg-config metadata, a family
+      of checksum commands, and many downstream language bindings while still staying
+      close to a reference implementation.
+    - >
+      It also illustrates a packaging distinction users often miss: checksum tools are
+      not automatically security tools. Installing xxhash gives a fast
+      file-fingerprinting utility, not a replacement for SHA-256 or BLAKE2 in hostile
+      environments.
+  project-history:
+    - >
+      The project was created by Yann Collet, also known for LZ4, around the need for
+      hashes that could keep up with memory bandwidth. Its own documentation describes
+      xxHash as processing at RAM-speed limits, portable across endianness, and
+      producing identical results on all platforms.
+    - >
+      The original family centered on XXH32 and XXH64, giving 32-bit and 64-bit outputs
+      using ordinary integer arithmetic. Later releases added XXH3, a vectorized design
+      with 64-bit and 128-bit variants that was introduced experimentally and stabilized
+      in v0.8.0.
+    - >
+      The command-line side grew alongside the library. xxhsum provides checksum
+      generation and verification in the style of cksum or sha utilities, while
+      symlinked helper names such as xxh32sum, xxh64sum, xxh3sum, and xxh128sum expose
+      the algorithm choices as separate package binaries.
+  related-projects:
+    - >
+      LZ4 is a closely related Yann Collet compression project and a prominent user of
+      xxHash checksums.
+    - >
+      SMHasher is the hash-function quality test suite cited by xxHash for collision,
+      dispersion, and randomness testing.
+    - >
+      CityHash, MurmurHash, SpookyHash, SipHash, FNV, BLAKE2, SHA-1, and MD5 appear in
+      xxHash benchmark comparisons as neighboring hash families with different
+      performance/security tradeoffs.
+  sources:
+    - https://github.com/Cyan4973/xxHash
+    - https://github.com/Cyan4973/xxHash/releases/tag/v0.8.0
+    - https://github.com/lz4/lz4/blob/dev/doc/lz4_Frame_format.md
+    - https://pypi.org/project/xxhash/
+    - https://xxhash.com/
+  summary:
+    - >
+      xxHash is Yann Collet's family of extremely fast, non-cryptographic hash
+      algorithms and a reference C implementation with the xxhsum command-line tool. In
+      package-manager terms it is both a developer library and a checksum utility for
+      cases where speed, stable output, and good distribution properties matter more
+      than cryptographic security.
+  timeline:
+    - >
+      2010s: Yann Collet develops xxHash as a very fast non-cryptographic hash family,
+      initially centered on XXH32 and XXH64.
+    - >
+      2010s: xxHash becomes associated with high-speed compression and data-processing
+      tooling, including LZ4 frame checksums.
+    - >
+      2020-07-27: xxHash v0.8.0 stabilizes XXH3, including stable 64-bit and 128-bit
+      output values for storage and interchange.
+    - >
+      2020s: The project documents XXH32, XXH64, XXH3_64bits, and XXH3_128bits as the
+      main algorithm flavors and continues shipping xxhsum plus algorithm-specific
+      helper commands.
+  usage:
+    - >
+      Developers link libxxhash or include the single-file implementation to compute
+      stable non-cryptographic hashes in performance-sensitive code. Typical use cases
+      include deduplication hints, cache keys, integrity checks inside trusted
+      pipelines, sharding, chunk fingerprints, and quick comparison of large byte
+      streams.
+    - >
+      CLI users run xxhsum or one of the algorithm-specific sum commands to generate and
+      check hashes for files. The important operational caveat is that xxHash is not a
+      cryptographic hash and should not be used for password storage, signatures,
+      HMAC-style security decisions, or adversarial tamper resistance.
 category: developer-tools
 package-manager:
   apk: libxxhash

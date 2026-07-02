@@ -1,11 +1,107 @@
 id: brew:yaegi
 display-name: Yaegi
-repo: null
+repo: https://github.com/traefik/yaegi
 docs:
   - https://github.com/traefik/yaegi#readme
   - https://pkg.go.dev/github.com/traefik/yaegi
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Yaegi adoption followed two tracks. The visible developer-tool track is the yaegi
+      command, which gives Go users a REPL, executable scripts, and a go-run-like
+      workflow. The infrastructure track is embedding, especially for plugin systems and
+      dynamic extension in Go applications.
+    - >
+      Traefik's own ecosystem gave Yaegi a practical showcase: a Go interpreter made by
+      the team behind a cloud-native edge router is naturally suited to runtime
+      extension and plugin workflows. Talks and docs around Yaegi repeatedly mention
+      Traefik Enterprise/plugin motivation alongside the broader goal of filling a
+      missing piece in the Go ecosystem.
+    - >
+      Package-manager adoption is modest but broad enough to matter: Yaegi appears in
+      Homebrew, MacPorts, Alpine, Arch, Nix, Ubuntu, and Go package documentation, which
+      makes a Go REPL/installable interpreter available without every user building from
+      source.
+  package-nerd-significance:
+    - >
+      Yaegi is package-nerd interesting because it makes Go behave like a scripting
+      language while staying inside the Go toolchain and module ecosystem. Installing
+      yaegi gives a REPL and script runner; depending on the module gives applications a
+      runtime extension engine.
+    - >
+      It also occupies a rare niche: most language interpreters package a language
+      runtime, but Yaegi packages an interpreter for a language famous for avoiding
+      runtime dynamism. That tension is exactly why it shows up in package indexes
+      despite being smaller than mainstream language runtimes.
+  project-history:
+    - >
+      Yaegi was announced in July 2019 by Marc Vertes and the Containous/Traefik team as
+      "Yet Another Go Interpreter", with the E jokingly standing for Elegant, Embedded,
+      Easy, or whatever the reader preferred. The announcement framed it as a way to
+      bring executable Go scripts, embedded plugins, interactive shells, and instant
+      prototyping on top of the Go runtime.
+    - >
+      The project's motivation was specific to Go's unusual position: a static, strongly
+      typed compiled language whose parser, type machinery, and reflection facilities
+      are available to Go programs. Yaegi turned that into an interpreter API built
+      around New, Eval, and Use.
+    - >
+      The README emphasizes pure Go implementation, standard-library-only design,
+      complete Go specification support, and a safety posture where unsafe and syscall
+      are not exported by default. That made it attractive for embedding in Go
+      applications that need extension points without handing scripts unrestricted
+      process access.
+  related-projects:
+    - Go is the compiled language and standard library that Yaegi interprets and reuses.
+    - >
+      Traefik and Traefik Enterprise are related through the team and plugin/extension
+      motivation behind Yaegi.
+    - >
+      Lua, Python, JavaScript, Starlark, Tengo, and Go plugins are neighboring choices
+      for embedding scriptability or runtime extension in Go applications.
+    - >
+      rlwrap is commonly paired with the yaegi command for interactive history and line
+      editing.
+  sources:
+    - https://github.com/traefik/yaegi
+    - https://github.com/traefik/yaegi/releases/tag/v0.9.0
+    - https://golab.io/talks/yaegi-yet-another-elegant-go-interpreter
+    - https://pkg.go.dev/github.com/traefik/yaegi/cmd/yaegi
+    - https://traefik.io/blog/announcing-yaegi-263a1e2d070a
+  summary:
+    - >
+      Yaegi is Traefik Labs' pure-Go interpreter for Go programs. It provides a
+      command-line REPL and script runner, but its deeper package significance is
+      embeddability: Go applications can evaluate Go code at runtime for plugins,
+      scripting, and prototyping without switching to Lua, Python, JavaScript, or a
+      separate DSL.
+  timeline:
+    - >
+      2019-07-27: Traefik/Containous announces Yaegi as an open-source Go interpreter
+      for scripts, embedded plugins, REPL use, and prototyping.
+    - >
+      2019: Conference talks present Yaegi as a production-oriented Go interpreter and
+      plugin engine for Traefik-related use cases.
+    - >
+      2020-09-16: Yaegi v0.9.0 release assets appear on GitHub, showing the project
+      moving into packaged binary distribution.
+    - >
+      2020s: The README documents the stable public API shape around interp.New, Eval,
+      and Use, and the yaegi command becomes packaged across multiple Unix package
+      managers.
+  usage:
+    - >
+      CLI users run yaegi with no arguments for a REPL, run Go files as interpreted
+      scripts, or use shebang-style executable Go scripts. The README even suggests
+      rlwrap for line editing/history when using the command interactively.
+    - >
+      Go developers embed Yaegi by importing the interp package, creating an
+      interpreter, loading stdlib symbols with Use, and evaluating code with Eval.
+      Common scenarios include user-provided automation, policy or routing extensions,
+      prototyping, tests, dynamic plugins, and applications that want Go as their
+      extension language.
 tags:
   - cli
   - go
@@ -23,27 +119,27 @@ geiger:
     - text:interpreter
 provenance:
   category-sources:
-    - 'source_facts.description: Yet another elegant Go interpreter.'
+    - current_curation.category
   display-name-sources:
-    - Official repository at https://github.com/traefik/yaegi uses the project name Yaegi.
-    - 'source_facts.name: yaegi.'
+    - current_curation.display-name
   docs-sources:
-    - Official repository README is the primary project documentation surface.
-    - >
-      pkg.go.dev page for github.com/traefik/yaegi is the official Go package
-      documentation surface.
+    - https://github.com/traefik/yaegi#readme
+    - https://pkg.go.dev/github.com/traefik/yaegi
+  history-sources:
+    - https://github.com/traefik/yaegi
+    - https://github.com/traefik/yaegi/releases/tag/v0.9.0
+    - https://golab.io/talks/yaegi-yet-another-elegant-go-interpreter
+    - https://pkg.go.dev/github.com/traefik/yaegi/cmd/yaegi
+    - https://traefik.io/blog/announcing-yaegi-263a1e2d070a
   repo-sources:
-    - >
-      source_facts.repo already has https://github.com/traefik/yaegi, so repository
-      lookup was not performed.
+    - https://github.com/traefik/yaegi
   tags-sources:
-    - Official repository README documents interpreter and REPL usage.
-    - source_facts.description identifies Yaegi as a Go interpreter.
+    - current_curation.tags
 category-confidence: high
 category-path:
   - language-runtime
-  - go
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

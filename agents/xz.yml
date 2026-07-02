@@ -1,11 +1,116 @@
 id: brew:xz
 display-name: XZ Utils
-repo: null
+repo: https://github.com/tukaani-project/xz
 docs:
   - https://github.com/tukaani-project/xz#readme
   - https://tukaani.org/xz
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      XZ adoption followed its compression ratio and Unix-friendly tooling. The familiar
+      xz, unxz, xzcat, xzgrep, xzless, and compatibility aliases made it a drop-in
+      neighbor to gzip and bzip2, while liblzma let package managers and applications
+      decode .xz streams without shelling out.
+    - >
+      Distribution adoption became especially visible through .tar.xz source releases
+      and compressed package artifacts. Many upstream projects now publish release
+      tarballs as .tar.xz, and free operating systems commonly install xz or liblzma
+      because so much source distribution and packaging machinery expects them.
+    - >
+      After CVE-2024-3094, adoption history also includes a trust reset: project
+      infrastructure moved back under Tukaani-controlled URLs, GitHub repositories were
+      restored, and clean XZ Utils releases were made on 2024-05-29, according to the
+      official backdoor page.
+  package-nerd-significance:
+    - >
+      XZ Utils is package-manager bedrock: small enough to be invisible most days, but
+      important enough that a bad release can shake the whole distribution world. It
+      sits in build roots, source tarball handling, package extraction, and language
+      runtime bindings.
+    - >
+      The backdoor incident made xz historically significant beyond compression. It
+      showed how a low-glamour maintainer package can become a high-value target
+      precisely because it is everywhere, and why tarball provenance, release signing,
+      maintainer access, and distro staging matter.
+  project-history:
+    - >
+      XZ Utils comes from the Tukaani Project and the earlier LZMA Utils lineage
+      maintained by Lasse Collin. The project generalized Igor Pavlov's LZMA-family
+      compression ideas into the .xz format and liblzma API used by Unix-like systems.
+    - >
+      The 5.0.0 release on 2010-10-23 was a major packaging milestone because the NEWS
+      file marks liblzma API and ABI as stable and bumps the shared-library soname to
+      5.0.0. From a distro perspective, that turned xz from a promising compressor into
+      a dependable system library.
+    - >
+      The project continued to evolve around multithreading, build-system support,
+      portability, translated documentation, and platform coverage. The official site
+      lists support across GNU/Linux, BSDs, macOS/Darwin, Solaris, AIX, Windows, DOS,
+      and several more specialized systems, which explains why package managers treat it
+      as base infrastructure.
+    - >
+      The 2024 CVE-2024-3094 backdoor is now part of XZ Utils history. Official Tukaani
+      pages state that XZ Utils 5.6.0 and 5.6.1 release tarballs contained a backdoor
+      inserted by a malicious co-maintainer and discovered by Andres Freund before broad
+      stable distribution. The incident made xz one of the central examples in
+      open-source supply-chain security discussions.
+  related-projects:
+    - >
+      LZMA Utils is the predecessor lineage and source of compatibility command aliases
+      such as lzma, unlzma, and lzcat.
+    - >
+      7-Zip and Igor Pavlov's LZMA work are related through the compression algorithms
+      and ecosystem that influenced .xz/LZMA2 tooling.
+    - >
+      gzip and bzip2 are neighboring Unix compression utilities that xz often replaces
+      when higher compression ratio matters.
+    - >
+      libarchive, tar, dpkg, rpm, pacman, and many build systems are downstream
+      consumers of .xz support.
+  sources:
+    - https://github.com/tukaani-project/xz/blob/master/NEWS
+    - https://tukaani.org/xz-backdoor/
+    - https://tukaani.org/xz/
+    - https://www.openwall.com/lists/oss-security/2024/03/29/4
+  summary:
+    - >
+      XZ Utils is the standard free-software implementation of the .xz container format,
+      the LZMA2 compression method, and liblzma. It matters to package ecosystems
+      because .tar.xz release archives, source packages, initramfs images, distribution
+      payloads, and build systems rely on xz and liblzma for high-ratio lossless
+      compression.
+  timeline:
+    - >
+      2000s: Lasse Collin's Tukaani Project develops LZMA Utils and then XZ Utils around
+      the .xz format, LZMA2, and liblzma.
+    - '2010-10-23: XZ Utils 5.0.0 marks liblzma API and ABI stable with soname 5.0.0.'
+    - >
+      2014-12-21: XZ Utils 5.2.0 continues the stable series and documents later
+      multithreading-related caveats in NEWS.
+    - >
+      2022-04-07: A public patch fixes the xzgrep filename-handling issue tracked as
+      CVE-2022-1271.
+    - >
+      2024-02-24 and 2024-03-09: XZ Utils 5.6.0 and 5.6.1 tarballs are released and
+      later identified as backdoored.
+    - "2024-03-29: Andres Freund's discovery of CVE-2024-3094 becomes public."
+    - >
+      2024-05-29: Official notes state that new clean XZ Utils releases were made after
+      the backdoor response.
+    - '2025-03-25: XZ Utils 5.8.0 continues the post-incident stable release line.'
+  usage:
+    - >
+      Command-line users compress and decompress files with xz, unxz, and xzcat, inspect
+      streams with xz --list, and use xzgrep/xzless style helpers for text workflows
+      inside compressed files. It is common in source-release workflows as tar -cJf or
+      tar.xz packaging.
+    - >
+      Developers use liblzma directly or via bindings in languages such as Python, Perl,
+      Haskell, Delphi, and Free Pascal. Package builders care about xz because archive
+      format support, reproducible source distributions, and decompression availability
+      can affect bootstrap chains.
 tags:
   - cli
   - compression
@@ -23,30 +128,26 @@ geiger:
     - text:compress
 provenance:
   category-sources:
-    - >
-      Official Tukaani/GitHub README describes XZ Utils as a compression library plus
-      command-line tools.
-    - 'source_facts.description: General-purpose data compression with high compression ratio.'
+    - current_curation.category
   display-name-sources:
-    - Official GitHub README title is XZ Utils.
-    - source_facts.name is xz, the package/tool name for XZ Utils.
+    - current_curation.display-name
   docs-sources:
-    - >
-      Official GitHub README documents overview, command-line tools, liblzma,
-      versioning, bugs, and contact information.
-    - source_facts.homepage is the official Tukaani XZ page.
+    - https://github.com/tukaani-project/xz#readme
+    - https://tukaani.org/xz
+  history-sources:
+    - https://github.com/tukaani-project/xz/blob/master/NEWS
+    - https://tukaani.org/xz-backdoor/
+    - https://tukaani.org/xz/
+    - https://www.openwall.com/lists/oss-security/2024/03/29/4
   repo-sources:
-    - source_facts.repo already has a value, so repo was not re-determined.
+    - https://github.com/tukaani-project/xz
   tags-sources:
-    - >
-      Official README describes .xz, legacy .lzma, LZMA2 filters, liblzma, and
-      command-line tools.
-    - source_facts.description identifies general-purpose data compression.
+    - current_curation.tags
 category-confidence: high
 category-path:
   - system
-  - compression
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

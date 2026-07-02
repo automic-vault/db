@@ -1,6 +1,6 @@
 id: brew:yadm
 display-name: yadm
-repo: null
+repo: https://github.com/yadm-dev/yadm
 docs:
   - https://yadm.io/docs/common_commands
   - https://yadm.io/docs/getting_started
@@ -8,6 +8,99 @@ config-file-location:
   unix:
     - ~/.config/yadm/config
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      yadm spread through developer workstations and Unix package managers because it
+      let users manage dotfiles without symlink farms or a custom DSL. The official site
+      sells the core adoption hook clearly: anything a user can do with Git, they can do
+      using yadm.
+    - >
+      Its practical adoption is visible in distribution packages, docs, blog posts, and
+      configuration-management roles. Users often pair it with broader system setup
+      tools: yadm pulls dotfiles, decrypts secrets, selects alternates, and runs
+      bootstrap scripts, while tools such as Home Manager, Ansible, or shell installers
+      handle larger machine state.
+  package-nerd-significance:
+    - >
+      yadm matters to package nerds because it is a thin wrapper over Git that resists
+      inventing a second configuration-management universe. It packages the bare-repo
+      dotfiles pattern into one command with just enough extra machinery for secrets and
+      host variance.
+    - >
+      It is also a clean example of a tool whose package value is ergonomic, not
+      algorithmic: the hard dependency is already Git, but the wrapper codifies safe
+      defaults, XDG paths, alternates, encryption, and bootstrap conventions that many
+      users would otherwise script badly.
+  project-history:
+    - >
+      The project was created by Tim Byrne and shared as open source in 2015, according
+      to the author's Hacker News explanation. The motivation was portability, seamless
+      Git interaction, alternate files for different hosts, and encryption for private
+      data.
+    - >
+      Early yadm solved a practical dotfiles problem: a bare Git repository in $HOME is
+      powerful, but awkward around secrets, host-specific files, and new-machine
+      bootstrap. yadm wrapped Git so the repository can track files in place while
+      hiding the Git plumbing from day-to-day commands.
+    - >
+      The 2.x and 3.x change logs show steady evolution rather than reinvention. Version
+      2.0.0 redesigned alternate processing, added XDG base-directory support,
+      templates, distro-aware alternates, and an upgrade command; version 3.0.0 added
+      OpenSSL encryption support, include directives in the built-in template processor,
+      and moved default repository/encrypted archive locations under XDG-style data
+      directories.
+  related-projects:
+    - Git is the underlying storage and command model for yadm.
+    - >
+      chezmoi, GNU Stow, vcsh, homesick, and dotbot are neighboring dotfile-management
+      tools with different tradeoffs around templating, symlinks, and repository layout.
+    - >
+      GPG, OpenSSL, git-crypt, and transcrypt are related through yadm's encrypted-file
+      workflows.
+    - >
+      Nix Home Manager and Ansible often complement yadm by managing packages and system
+      state while yadm manages personal files.
+  sources:
+    - https://github.com/yadm-dev/yadm
+    - https://github.com/yadm-dev/yadm/blob/master/CHANGES
+    - https://man.archlinux.org/man/extra/yadm/yadm.1.en
+    - https://news.ycombinator.com/item?id=27174878
+    - https://yadm.io/
+    - https://yadm.io/docs/faq
+    - https://yadm.io/docs/overview
+  summary:
+    - >
+      yadm, Yet Another Dotfiles Manager, is a Git-based dotfile manager that keeps
+      files in their natural locations under $HOME while storing them in a single
+      repository. Its identity is deliberately boring in the best way: if a user knows
+      Git, yadm mostly feels like Git plus dotfile-specific alternates, encryption,
+      bootstrap, hooks, and templates.
+  timeline:
+    - >
+      2015: Tim Byrne shares yadm as an open-source dotfile manager focused on Git
+      portability, alternates, and encryption.
+    - '1.10.0: yadm transitions to semantic versioning.'
+    - >
+      2.0.0: yadm adds XDG base-directory support, redesigns alternate processing, adds
+      a built-in default template processor, distro-aware alternates, and an upgrade
+      command.
+    - >
+      3.0.0: yadm adds OpenSSL encryption support, built-in template includes,
+      default-branch improvements, and new XDG-style default repository/archive paths.
+    - >
+      2020s: yadm continues as a mature dotfile package across Homebrew, Debian/Ubuntu,
+      Arch, Nix, MacPorts, Alpine, and other package ecosystems.
+  usage:
+    - >
+      Typical usage starts with yadm init or yadm clone, then yadm add, commit, push,
+      pull, and status in the same mental model as Git. The work tree is the user's home
+      directory, so dotfiles remain where applications expect them.
+    - >
+      The features that distinguish yadm from plain bare Git are alternates for
+      OS/hostname/user/class differences, encrypted archives for sensitive files,
+      bootstrap scripts for new machines, hooks around commands, and templates for
+      generating machine-specific content.
 tags:
   - cli
   - configuration-management
@@ -24,32 +117,29 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official docs at https://yadm.io/docs/getting_started describe yadm commands as
-      Git-like dotfile management.
-    - 'source_facts.description: Yet Another Dotfiles Manager.'
+    - current_curation.category
   display-name-sources:
-    - Official homepage https://yadm.io/ uses the name yadm.
-    - 'source_facts.name: yadm.'
+    - current_curation.display-name
   docs-sources:
-    - Official documentation is hosted under the yadm.io/docs path.
-    - >
-      Search/open result for https://yadm.io/docs/common_commands identifies Git-like
-      command documentation.
+    - https://yadm.io/docs/common_commands
+    - https://yadm.io/docs/getting_started
+  history-sources:
+    - https://github.com/yadm-dev/yadm
+    - https://github.com/yadm-dev/yadm/blob/master/CHANGES
+    - https://man.archlinux.org/man/extra/yadm/yadm.1.en
+    - https://news.ycombinator.com/item?id=27174878
+    - https://yadm.io/
+    - https://yadm.io/docs/faq
+    - https://yadm.io/docs/overview
   repo-sources:
-    - >
-      source_facts.repo already has https://github.com/yadm-dev/yadm, so repository
-      lookup was not performed.
+    - https://github.com/yadm-dev/yadm
   tags-sources:
-    - >
-      Official docs at https://yadm.io/docs/common_commands describe yadm as wrapping
-      Git operations.
-    - source_facts.description identifies yadm as a dotfiles manager.
+    - current_curation.tags
 category-confidence: high
 category-path:
   - developer-tools
-  - version-control
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
