@@ -6,6 +6,38 @@ docs:
   - https://github.com/seaweedfs/seaweedfs#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    SeaweedFS is Chris Lu's distributed storage system for blobs, object storage,
+    file-system semantics, and data-lake style workloads. Its design began as a
+    small-file blob store inspired by Facebook's Haystack paper: rather than making a
+    central metadata server track every file chunk, SeaweedFS has the master track
+    volumes and lets volume servers manage file offsets and sizes. That keeps hot
+    metadata close to the storage node and gives the project its repeated O(1)
+    disk-access framing.
+  - >
+    The architecture evolved upward from that blob-store core. A master server assigns
+    volume IDs and file keys, volume servers store the actual bytes, and clients can
+    cache volume-location lookups. The Filer layer adds directory semantics by mapping
+    file paths to one or more blob IDs and storing that metadata in common databases
+    such as Redis, Cassandra, MySQL, PostgreSQL, SQLite, TiDB, CockroachDB, Etcd, and
+    others. The same base system also exposes HTTP access, FUSE mounting, S3-compatible
+    object storage, HDFS-oriented integration, replication, erasure coding, tiered
+    storage, and cross-cluster replication features.
+  - >
+    SeaweedFS sits in the distributed-storage ecosystem as a pragmatic alternative to
+    heavier file and object systems when the workload contains many small objects and
+    operators want direct control over topology. Its README explicitly compares it with
+    HDFS, GlusterFS, Ceph, and MinIO: HDFS is framed around large files, Ceph and
+    GlusterFS around general distributed filesystem semantics, and SeaweedFS around
+    cacheable volume lookups, small-file efficiency, and horizontally adding volume
+    servers.
+  - >
+    Practitioners deploy it as the `weed` binary, Docker image, Kubernetes component, S3
+    endpoint, FUSE-backed filesystem, or internal blob/object backend. Package managers
+    such as Homebrew, Nix, Arch, and Alpine carry it as a Go-built storage tool, while
+    production discussions commonly revolve around master/filer/volume topologies, S3
+    gateway behavior, replication settings, garbage collection, and capacity layout.
 tags:
   - cli
   - data-lake
@@ -34,6 +66,11 @@ provenance:
     - >
       source_facts.repo is the official repository; its README links to Wiki
       Documentation and also contains quick start and architecture material.
+  history-sources:
+    - https://github.com/seaweedfs/seaweedfs
+    - https://seaweedfs.com/
+    - https://formulae.brew.sh/formula/seaweedfs
+    - https://news.ycombinator.com/item?id=39235593
   repo-sources:
     - >
       source_facts.repo already has a value; per instruction, repo returned as null and
@@ -50,5 +87,6 @@ category-path:
   - distributed-storage
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
