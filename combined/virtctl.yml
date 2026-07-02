@@ -6,6 +6,92 @@ docs:
   - https://kubevirt.io/user-guide/user_workloads/virtctl_client_tool
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      CNCF's incubation announcement described KubeVirt as having grown beyond its Red
+      Hat origin, with contributors from companies including Amadeus, Apple, CloudFlare,
+      IBM, NVIDIA, SAP, SUSE, and others, and production use at companies such as Arm,
+      CIVO, CoreWeave, H3C, and Kubermatic. The v1.0 announcement later framed the
+      project as a maturing bridge for organizations that wanted Kubernetes operations
+      without abandoning VM workloads.
+    - >
+      Downstream Kubernetes virtualization products, especially OpenShift Virtualization
+      and OKD Virtualization documentation, expose virtctl as a normal operator tool for
+      serial console, VNC, SSH/SCP-style access, and service exposure. That downstream
+      documentation helped make virtctl recognizable outside the upstream KubeVirt
+      community.
+  package-nerd-significance:
+    - >
+      virtctl is interesting to package maintainers because it is a Kubernetes ecosystem
+      CLI whose version should track the KubeVirt control plane closely enough to avoid
+      feature skew. It belongs to the same family of specialized cluster clients as
+      kubectl plugins and operator CLIs: tiny binary, high operational leverage, and
+      mostly useful to people already inside a particular platform.
+  project-history:
+    - >
+      KubeVirt was founded at Red Hat in January 2017 and published early releases
+      during the period when Kubernetes-native virtualization was still a
+      proof-of-concept space. The KubeVirt release notes list v0.1.0 as released on
+      December 8, 2017, and early Red Hat examples already treated virtctl as the
+      auxiliary tool for reaching VM consoles.
+    - >
+      The project entered the Cloud Native Computing Foundation as a Sandbox project in
+      September 2019, moved to Incubating on April 19, 2022, and announced KubeVirt v1.0
+      in July 2023. virtctl's significance grew with that arc: it remained the
+      user-facing binary for VM-specific operations that do not map cleanly to generic
+      kubectl verbs.
+  related-projects:
+    - >
+      KubeVirt is the upstream project that ships virtctl. kubectl remains the generic
+      Kubernetes CLI for common resource operations, while downstream documentation for
+      OpenShift Virtualization and OKD Virtualization documents virtctl as the VM access
+      and lifecycle helper.
+  sources:
+    - 'CNCF KubeVirt project page: https://www.cncf.io/projects/kubevirt/'
+    - >
+      CNCF KubeVirt v1.0 announcement:
+      https://www.cncf.io/blog/2023/07/11/kubevirt-v1-0-has-landed/
+    - >
+      CNCF incubation announcement:
+      https://www.cncf.io/blog/2022/04/19/kubevirt-becomes-a-cncf-incubating-project/
+    - >
+      KubeVirt release notes, including v0.1.0 date:
+      https://kubevirt.io/user-guide/release_notes/
+    - >
+      KubeVirt virtctl client tool documentation:
+      https://kubevirt.io/user-guide/user_workloads/virtctl_client_tool/
+    - >
+      Red Hat OpenShift Virtualization CLI documentation:
+      https://docs.redhat.com/en/documentation/openshift_container_platform/4.13/html/virtualization/virt-using-the-cli-tools
+  summary:
+    - >
+      virtctl is the command-line companion to KubeVirt, the Kubernetes virtualization
+      project that lets users define and manage virtual machines through Kubernetes
+      APIs. In KubeVirt's own documentation, ordinary VirtualMachineInstance operations
+      can be handled with kubectl, while virtctl is the extra client used for advanced
+      VM workflows such as console access, lifecycle convenience commands, live
+      migration, and image upload.
+  timeline:
+    - '2017: KubeVirt was founded at Red Hat.'
+    - '2017-12-08: KubeVirt v0.1.0 was released.'
+    - '2019-09-06: KubeVirt was accepted into the CNCF Sandbox.'
+    - '2022-04-19: KubeVirt moved to CNCF Incubating.'
+    - '2023-07-11: KubeVirt v1.0 was announced.'
+  usage:
+    - >
+      Typical usage starts with a KubeVirt cluster and VM resources managed by
+      Kubernetes manifests or kubectl. Users reach for virtctl when they need
+      VM-specific actions: `virtctl console` for serial console access, `virtctl vnc`
+      for graphical console access, `virtctl start` and `virtctl stop` for lifecycle
+      shortcuts, `virtctl migrate` for live migration, and image-upload commands for
+      populating VM disks.
+    - >
+      For package users, virtctl is intentionally small in conceptual scope: it is not a
+      separate virtualization platform, but a client that speaks to KubeVirt resources
+      through the Kubernetes control plane. Its value is that it keeps the cluster API
+      as the source of truth while filling the ergonomic gaps left by a generic
+      Kubernetes CLI.
 category: cloud-infrastructure
 package-manager:
   apk: virtctl
