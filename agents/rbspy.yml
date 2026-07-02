@@ -5,6 +5,28 @@ docs:
   - https://github.com/carsomyr/rbenv-bundler#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    rbspy is a sampling CPU profiler for Ruby, written in Rust and associated with Julia
+    Evans's 2017-2018 work on observing Ruby processes from outside the interpreter. By
+    February 6, 2018, Evans described rbspy as a new sampling profiler for Ruby with
+    macOS support and experiments around memory profiling; an April 16, 2018 talk
+    explained the core technical challenge: reading Ruby interpreter memory across
+    multiple Ruby versions without stopping the target process.
+  - >
+    The project's role is distinct from in-process profilers such as stackprof. rbspy
+    attaches to an already-running Ruby process by PID, samples its stack at intervals,
+    records raw data, and can generate flamegraphs or other reports later. That model
+    made it attractive for production investigations and stuck-process debugging, where
+    restarting a process with profiling instrumentation is not always practical.
+  - >
+    Distribution followed the habits of both the Ruby and Rust communities. Users can
+    install a standalone binary, use Homebrew on macOS, or build with Cargo, while the
+    GitHub repository and documentation describe Linux, macOS, Windows, and FreeBSD
+    support. Practitioners commonly run `rbspy record --pid PID` against a live Ruby
+    service, `rbspy record -- bundle exec ruby script.rb` for command-line workloads, or
+    grant `SYS_PTRACE` in containerized Linux deployments so the profiler can inspect
+    the target process.
 tags:
   - bundler
   - cli
@@ -27,6 +49,13 @@ provenance:
     - source_facts.name and project id use rbenv-bundler.
   docs-sources:
     - Official repository README is the available documentation for rbenv-bundler.
+  history-sources:
+    - https://github.com/rbspy/rbspy
+    - https://rbspy.github.io/
+    - https://rbspy.github.io/using-rbspy/
+    - https://jvns.ca/blog/2018/02/06/profiler-week-5/
+    - https://jvns.ca/blog/2018/04/16/rbspy-talk/
+    - https://blog.jetbrains.com/ruby/2019/03/rubymine-profiler/
   repo-sources:
     - >
       source_facts.repo already has an official repository value; per instruction repo
@@ -40,5 +69,6 @@ category-path:
   - version-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

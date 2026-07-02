@@ -6,6 +6,43 @@ docs:
   - https://www.openrdap.org
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    RDAP, the Registration Data Access Protocol, was standardized to fix long-standing
+    weaknesses in WHOIS. In March 2015, the IETF published the original RDAP RFC set
+    covering HTTP transport, security services, query format, JSON responses,
+    authoritative-service discovery, and inventory work on WHOIS registration objects.
+    The standards work involved the domain-name and number-registry communities because
+    RDAP had to serve both Domain Name Registries and Regional Internet Registries.
+  - >
+    The protocol's ecosystem role is different from traditional command-line WHOIS: RDAP
+    is an HTTP-based, structured registration-data protocol. RFC 9082 defines RESTful
+    query patterns and names WHOIS deficiencies such as non-standard command structures,
+    non-standard output and error structures, missing internationalization support, and
+    missing client identification, authentication, and access-control support. RFC 9083
+    defines JSON response objects for Regional Internet Registries and Domain Name
+    Registries and is part of Internet Standard STD 95.
+  - >
+    Discovery is part of the protocol story. RFC 7484 specifies how clients find the
+    authoritative RDAP server for a scope such as a domain, IP address, or
+    autonomous-system number by using IANA-maintained bootstrap registries. That
+    bootstrap model matters to tools because a user can query a domain or network
+    resource without manually knowing which registry's RDAP endpoint should answer.
+  - >
+    The `rdap` Homebrew package is OpenRDAP, a Go command-line client and library for
+    this protocol. Its README lists command-line output modes for text, JSON, and
+    WHOIS-style output; query support for domains, IP networks, autonomous-system
+    numbers, nameservers, entities, and search variants; automatic server detection;
+    object-tag support; optional bootstrap caching; and X.509 client authentication.
+    Practitioners use it where `whois` output would be too inconsistent to parse, or
+    where scripts need structured registry data over HTTP.
+  - >
+    ICANN's user documentation identifies RDAP as the replacement for WHOIS and states
+    that all gTLD registries and registrars are required to provide RDAP services using
+    the gTLD RDAP Profile, while WHOIS service ceased to be required for most gTLDs on
+    January 28, 2025. That policy change strengthened RDAP's role from an alternative
+    lookup protocol into the registration-data access path that command-line clients,
+    libraries, monitoring tools, and compliance workflows had to support.
 tags:
   - cli
   - domain-registration
@@ -21,6 +58,14 @@ provenance:
     - >
       source_facts.homepage is the official OpenRDAP site; official GitHub README
       documents the CLI
+  history-sources:
+    - https://datatracker.ietf.org/doc/html/rfc7480
+    - https://datatracker.ietf.org/doc/html/rfc9082
+    - https://www.rfc-editor.org/info/rfc9083/
+    - https://datatracker.ietf.org/doc/html/rfc7484
+    - https://github.com/openrdap/rdap
+    - >
+      https://www.icann.org/en/contracted-parties/registry-operators/registration-data-access-protocol/information-for-rdap-users-31-08-2018-en
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/openrdap/rdap; prompt
@@ -33,5 +78,6 @@ category-path:
   - registration-data
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
