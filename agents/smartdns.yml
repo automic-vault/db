@@ -9,6 +9,64 @@ config-file-location:
     - ./smartdns.conf
     - ./etc/smartdns/smartdns.conf
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      SmartDNS-rs gained package-manager visibility through Homebrew as `smartdns`, with
+      the README documenting `brew install smartdns` and service startup through
+      Homebrew services. The supplied package metadata also records packages in Debian,
+      Ubuntu, Arch, and Nix, which places it beyond a single-platform GitHub binary.
+  package-nerd-significance:
+    - >
+      Package maintainers care because SmartDNS-rs combines DNS daemon behavior,
+      privileged port binding, service integration, cross-platform binaries, and Rust
+      dependency management in one formula. It is also a small example of a C networking
+      utility being reworked for broader package-manager portability.
+  project-history:
+    - >
+      The upstream SmartDNS project documents the core design: accept local DNS queries,
+      ask multiple upstream DNS servers, test or select the fastest reachable address,
+      and return that result. SmartDNS-rs states that it was inspired by the C SmartDNS
+      project and was written because the original was mainly Linux-oriented while the
+      Rust version targets Windows, macOS, Linux, and Android Termux with compatible
+      configuration.
+  related-projects:
+    - >
+      The README names the original C SmartDNS project as inspiration and Hickory DNS as
+      a dependency or code source. It also positions the tool near dnsmasq-like local
+      DNS servers.
+  sources:
+    - >
+      GitHub releases API for mokeyish/smartdns-rs: first published release 0.1.3 on
+      2022-12-04.
+    - >
+      https://github.com/mokeyish/smartdns-rs README: description, C SmartDNS
+      inspiration, cross-platform rationale, install and usage examples.
+    - >
+      https://pymumu.github.io/smartdns/en/: original SmartDNS design, fastest-IP
+      behavior, platform and protocol support.
+    - >
+      input source_facts.package-manager: Homebrew, Debian, Ubuntu, Nix, and Arch
+      package names.
+  summary:
+    - >
+      SmartDNS-rs is a Rust implementation of the SmartDNS idea: a local DNS server that
+      queries multiple upstream resolvers and returns the fastest result for the local
+      network. In package-manager terms it sits in the same practical niche as
+      dnsmasq-like local resolvers, but with modern encrypted DNS protocols and
+      cross-platform packaging.
+  timeline:
+    - '2022: First GitHub release of smartdns-rs, 0.1.3, was published.'
+    - '2020s: README documents Homebrew installation and cross-platform service management.'
+    - >
+      2020s: The Rust version documents compatibility with the original C SmartDNS
+      configuration model.
+  usage:
+    - >
+      Typical use is as a local DNS daemon, often listening on port 53, configured with
+      upstream DoH, DoT, DoQ, or DoH3 resolvers and domain-specific rules. The README
+      shows running it with `smartdns run -c ./smartdns.conf -v`, installing it as a
+      service, and using `dig` CHAOS TXT diagnostics for server/client information.
 tags:
   - cli
   - dns-server
@@ -30,28 +88,45 @@ geiger:
     - text:server
 provenance:
   category-sources:
-    - Official GitHub README describes SmartDNS-rs as a local DNS server
     - >
-      source_facts.description says it is a rule-based DNS server with DoT/DoQ/DoH/DoH3
-      support
+      source_facts.description describes a rule-based DNS server; official README
+      describes a local DNS server.
   display-name-sources:
-    - Official GitHub README heading uses SmartDNS-rs
-    - source_facts.homepage points to mokeyish/smartdns-rs
+    - Official repository README heading uses SmartDNS-rs.
   docs-sources:
-    - Official GitHub README contains project overview and usage surface
-    - Official smartdns-rs README links to the SmartDNS documentation site
+    - >
+      https://github.com/mokeyish/smartdns-rs README links official docs and contains
+      installation, configuration, and usage sections.
+    - >
+      https://pymumu.github.io/smartdns/en is the official SmartDNS documentation linked
+      by the repository.
+  history-sources:
+    - >
+      GitHub releases API for mokeyish/smartdns-rs: first published release 0.1.3 on
+      2022-12-04.
+    - >
+      https://github.com/mokeyish/smartdns-rs README: description, C SmartDNS
+      inspiration, cross-platform rationale, install and usage examples.
+    - >
+      https://pymumu.github.io/smartdns/en/: original SmartDNS design, fastest-IP
+      behavior, platform and protocol support.
+    - >
+      input source_facts.package-manager: Homebrew, Debian, Ubuntu, Nix, and Arch
+      package names.
   repo-sources:
     - >
-      source_facts.repo already contains https://github.com/mokeyish/smartdns-rs; per
-      instruction repo is returned as null
+      source_facts.repo is already populated with
+      https://github.com/mokeyish/smartdns-rs; prompt instructs returning repo as null
+      in this case.
   tags-sources:
-    - Official GitHub README describes local DNS behavior and supported secure DNS protocols
-    - source_facts.description lists DNS protocols DoT, DoQ, DoH, and DoH3
+    - >
+      Official README documents CLI usage, DNS server role, Rust implementation, and
+      DoT/DoQ/DoH/DoH3 support.
 category-confidence: high
 category-path:
   - networking
-  - dns
 display-name-confidence: high
-docs-confidence: medium
+docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
