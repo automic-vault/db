@@ -6,6 +6,103 @@ docs:
   - https://github.com/zchunk/zchunk#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Fedora drove zchunk's most visible adoption. The Fedora 30 change proposal made
+      zchunk metadata a system-wide change, with repository metadata compressed in
+      zchunk alongside older formats and support work across dnf, libdnf, librepo,
+      libsolv, and createrepo_c. Fedora expected regular dnf users to see substantially
+      smaller metadata downloads, especially for daily update checks.
+    - >
+      The practical adoption path was infrastructure-heavy rather than
+      user-interface-heavy: repository generators had to produce .zck metadata, clients
+      had to understand the format, and mirrors only needed to support normal HTTP range
+      requests. That made zchunk a quiet package-management optimization rather than a
+      user-facing archiver like gzip or xz.
+  package-nerd-significance:
+    - >
+      zchunk is especially significant to package nerds because it moved compression
+      from a generic file-size problem into the package-manager update loop. It shows
+      how a small format and CLI can reshape bandwidth behavior across an entire
+      distribution when integrated into metadata generation and dependency-resolution
+      clients.
+    - >
+      It also sits at a neat boundary between compression formats, rsync-like delta
+      thinking, and package infrastructure: boring to end users when it works, deeply
+      interesting to anyone who watches mirrors, metadata churn, and update clients.
+  project-history:
+    - >
+      Dieter introduced zchunk publicly in April 2018 as a new format influenced by
+      zsync and casync but aimed at avoiding their weaknesses for update metadata. The
+      core idea was to keep reasonable compression while making deltas practical with
+      standard HTTP range requests, zstd-compressed chunks, and strong per-chunk
+      checksums.
+    - >
+      The format's motivating use case was Fedora repository metadata. Dieter explained
+      that Fedora update checks repeatedly downloaded large metadata files even when
+      most records were unchanged. zchunk answered that by storing chunk metadata in the
+      file header, comparing it with an older local copy, and downloading only the
+      missing chunks needed to reconstruct the new file byte-for-byte.
+    - >
+      The upstream README later marked the API and ABI stable as of zchunk 1.0, with
+      future changes limited to backward-compatible additions. That stability mattered
+      because zchunk was not just a standalone compression command; it had to be
+      embedded into repository metadata generation and package-update clients.
+  related-projects:
+    - 'zsync: an earlier HTTP-friendly delta download approach that influenced zchunk.'
+    - >
+      casync: content-addressed synchronization tool that influenced zchunk's design
+      tradeoffs.
+    - 'zstd: compression library used internally by zchunk chunks.'
+    - >
+      dnf, libdnf, librepo, libsolv, and createrepo_c: Fedora package-management
+      components involved in zchunk metadata adoption.
+  sources:
+    - >
+      https://fedoraproject.org/wiki/Changes/Zchunk_Metadata - Fedora change proposal
+      documents Fedora 30 adoption, expected bandwidth benefits, and integration work
+      across package-management components.
+    - >
+      https://github.com/zchunk/zchunk - README describes the format, tools, HTTP
+      range-request model, checksums, dictionaries, and API/ABI stability.
+    - >
+      https://www.jdieter.net/posts/2018/04/30/introducing-zchunk/ - original public
+      introduction explaining design goals, zsync/casync influence, zstd chunks,
+      dictionaries, and early Fedora use case.
+    - >
+      https://www.jdieter.net/posts/2018/05/31/what-is-zchunk/ - detailed explanation of
+      chunk headers, reuse of old chunks, HTTP range downloads, and Fedora metadata
+      motivation.
+  summary:
+    - >
+      zchunk is Jonathan Dieter's delta-friendly compressed file format and tool suite.
+      It splits compressed data into independently verified chunks so clients can reuse
+      old chunks and fetch only changed ranges from ordinary HTTP servers.
+  timeline:
+    - '2018-04: Jonathan Dieter introduced zchunk as a delta-friendly compressed file format.'
+    - >
+      2018-05: Dieter published a deeper explanation of the chunk/header/download model
+      and Fedora metadata motivation.
+    - >
+      2018-12: Fedora infrastructure began generating zchunked metadata, according to
+      the Fedora change page.
+    - '2019: Fedora 30 targeted zchunk repository metadata as a system-wide change.'
+    - >
+      zchunk 1.0: Upstream README marks the API and ABI stable with backward-compatible
+      additions only.
+  usage:
+    - >
+      The zchunk tools include zck for creating .zck files, unzck for decompression,
+      zckdl for range-aware downloads against an older source copy, zck_read_header for
+      inspecting headers, and dictionary tooling for repeated data. Users creating
+      update metadata or other frequently changing structured files choose stable
+      chunking and dictionaries so future versions maximize chunk reuse.
+    - >
+      The best fit is content where each new version overlaps heavily with older
+      versions: package repository metadata, catalogs, indexes, and other generated
+      files. It is less about compressing a single archive once and more about
+      minimizing repeated downloads over time.
 category: developer-tools
 package-manager:
   brew: zchunk

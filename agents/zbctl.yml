@@ -1,14 +1,84 @@
 id: brew:zbctl
 display-name: zbctl
-repo: null
+repo: https://github.com/camunda-community-hub/zeebe-client-go
 docs:
-  - https://docs.camunda.io/docs/apis-tools/zeebe-api/gateway-service
+  - https://docs.camunda.io/docs/apis-tools/community-clients/cli-client
+  - https://github.com/camunda-community-hub/zeebe-client-go/blob/main/cmd/zbctl/zbctl.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      zbctl's adoption was mostly tied to Zeebe and Camunda users rather than general
+      cloud operators. It appeared in tutorials, cloud getting-started flows, npm
+      packaging, downloadable release binaries, Snap packaging, asdf plugins, Docker
+      images, and Kubernetes job examples because it was a convenient way to script
+      Zeebe deployments and inspect cluster status before the newer REST API direction
+      took over.
+  package-nerd-significance:
+    - >
+      zbctl is a useful package-catalog artifact because it captures a specific moment
+      in Camunda's API evolution: a standalone CLI wrapped around the Zeebe gRPC client,
+      later preserved as a community-maintained tool after the vendor's center of
+      gravity moved toward REST APIs.
+  project-history:
+    - >
+      zbctl came out of the Zeebe era of Camunda's process orchestration stack, when
+      Zeebe exposed a gRPC API and needed a small CLI for testing gateways, creating
+      workflow resources, and performing day-to-day broker operations. Camunda release
+      notes already referenced a zbctl update alongside Zeebe 0.10.1 in June 2018, which
+      places the CLI in the early public Zeebe toolchain.
+    - >
+      The current Zeebe Go client README presents zbctl as a companion command-line
+      interface for Camunda 8. In 2024 Camunda announced that zbctl and the Go client
+      would stop receiving new official features from Camunda 8.6 onward and move to
+      community-maintained status as Camunda focused on REST APIs.
+  related-projects:
+    - 'Zeebe: the workflow engine and gateway that zbctl talks to.'
+    - 'Zeebe Go client: the Go client library that houses zbctl.'
+    - >
+      Camunda 8 REST API: the newer API direction Camunda recommends for many
+      zbctl-style automation workflows.
+  sources:
+    - >
+      https://camunda.com/blog/2018/06/announcing-zeebe-0-10-0-release/ - Camunda
+      release note mentions a zbctl update with Zeebe 0.10.1.
+    - >
+      https://camunda.com/blog/2019/09/getting-started-camunda-cloud/ - Camunda Cloud
+      tutorial uses zbctl to test cluster connectivity.
+    - >
+      https://camunda.com/blog/2024/09/deprecating-zbctl-and-go-clients/ - Camunda
+      explains the shift from officially supported zbctl/Go client work toward REST
+      APIs.
+    - >
+      https://github.com/camunda-community-hub/zeebe-client-go - README describes the Go
+      client and states that it also provides zbctl for Camunda 8.
+    - >
+      https://github.com/camunda-community-hub/zeebe-client-go/blob/main/cmd/zbctl/zbctl.md
+      - zbctl documentation covers installation, connection settings, commands, and
+      package/distribution channels.
+  summary:
+    - >
+      zbctl is the command-line client for Zeebe and Camunda 8 workflows. It lives with
+      the community-maintained Zeebe Go client and exposes operational commands for
+      talking to a Zeebe gateway from a shell or automation job.
+  timeline:
+    - '2018-06: Camunda release notes mention a zbctl update alongside Zeebe 0.10.1.'
+    - '2019: Camunda Cloud getting-started material used zbctl to test a cluster connection.'
+    - >
+      2024-09: Camunda announced deprecation of new official zbctl and Go client
+      features from Camunda 8.6 onward.
+  usage:
+    - >
+      Users point zbctl at a Zeebe or Camunda 8 gateway with environment variables or
+      flags, then run commands such as status, deploy, create, activate, complete, fail,
+      publish, cancel, and update. The CLI is especially suited to smoke tests, CI/CD
+      deployment steps, local development, and administrative maintenance jobs against a
+      workflow cluster.
 tags:
   - camunda
   - cli
-  - kubernetes
+  - grpc
   - workflow
   - zeebe
 geiger:
@@ -22,28 +92,43 @@ geiger:
     - text:client
 provenance:
   category-sources:
-    - >
-      source_facts.description describes zbctl as a CLI for managing Camunda 8 clusters
-      on Kubernetes.
+    - https://github.com/camunda-community-hub/zeebe-client-go
+    - source_facts.description
   display-name-sources:
-    - source_facts.description and formula id identify the command name zbctl.
+    - https://github.com/camunda-community-hub/zeebe-client-go/blob/main/cmd/zbctl/zbctl.md
+    - source_facts.name
   docs-sources:
+    - https://github.com/camunda-community-hub/zeebe-client-go/blob/main/cmd/zbctl/zbctl.md
+    - source_facts.homepage
+  history-sources:
     - >
-      Official Camunda docs include Zeebe API and gateway tooling documentation relevant
-      to zbctl usage.
+      https://camunda.com/blog/2018/06/announcing-zeebe-0-10-0-release/ - Camunda
+      release note mentions a zbctl update with Zeebe 0.10.1.
+    - >
+      https://camunda.com/blog/2019/09/getting-started-camunda-cloud/ - Camunda Cloud
+      tutorial uses zbctl to test cluster connectivity.
+    - >
+      https://camunda.com/blog/2024/09/deprecating-zbctl-and-go-clients/ - Camunda
+      explains the shift from officially supported zbctl/Go client work toward REST
+      APIs.
+    - >
+      https://github.com/camunda-community-hub/zeebe-client-go - README describes the Go
+      client and states that it also provides zbctl for Camunda 8.
+    - >
+      https://github.com/camunda-community-hub/zeebe-client-go/blob/main/cmd/zbctl/zbctl.md
+      - zbctl documentation covers installation, connection settings, commands, and
+      package/distribution channels.
   repo-sources:
-    - >
-      source_facts.repo already provides an upstream repository, so repo is returned as
-      null per instructions.
+    - https://github.com/camunda-community-hub/zeebe-client-go
+    - source_facts.repo
   tags-sources:
-    - >
-      source_facts.description identifies Camunda 8 cluster management on Kubernetes;
-      project name aligns with Zeebe control tooling.
+    - https://github.com/camunda-community-hub/zeebe-client-go/blob/main/cmd/zbctl/zbctl.md
+    - source_facts.description
 category-confidence: high
 category-path:
   - cloud-infrastructure
-  - kubernetes
 display-name-confidence: high
-docs-confidence: medium
+docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
