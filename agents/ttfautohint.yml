@@ -6,6 +6,84 @@ docs:
   - https://freetype.org/ttfautohint/index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The project page frames ttfautohint as useful to type designers who need a first
+      pass of TrueType hinting that can later be refined by hand. It also documents
+      visual samples and font-family examples used to compare original hinting with
+      ttfautohint output.
+    - >
+      The supplied package facts show the tool packaged across Homebrew, Debian/Ubuntu,
+      Fedora, Alpine, MacPorts, and Nix, which matches its role as a build-time CLI
+      dependency for font maintainers rather than a general end-user application.
+  package-nerd-significance:
+    - >
+      ttfautohint matters to package maintainers because fonts are often distributed as
+      generated artifacts, and hinting can change the perceived quality of the output
+      without changing the font's design. Having a packaged CLI keeps that step
+      auditable and repeatable.
+    - >
+      It is also a bridge package: it connects FreeType internals, HarfBuzz-era font
+      tooling, GUI font editors, and web-font distribution into one command that package
+      recipes can call.
+  project-history:
+    - >
+      The official project page says the project started in 2010 after Dave Crossland
+      suggested the idea, with Werner Lemberg able to begin development through
+      financial support from the Google Web Fonts team. The project grew around
+      FreeType's auto-hinting system, exposing it as libttfautohint plus the
+      `ttfautohint` CLI and a GUI.
+    - >
+      The project reached version 1.0 on 22 March 2014, after release-candidate work
+      focused on memory management, symbol fonts, and improved GDI ClearType hinting.
+      Later releases expanded script support and tuning controls, including Devanagari
+      in 1.1, low-level fine-tuning in 1.2, many Indic and other scripts in 1.5 and 1.6,
+      and a library install path in 1.8.1.
+    - >
+      The 1.8.4 release in August 2021 added support for Hanifi Rohingya, Nyiakeng
+      Puachue Hmong, Medefaidrin, and Yezidi. The official page identifies 1.8.4 as the
+      current version and points development at a public repo.or.cz git repository.
+  related-projects:
+    - FreeType provides the auto-hinting system that ttfautohint builds on.
+    - HarfBuzz is listed by the official download notes as a build prerequisite.
+    - >
+      FontForge, ttx, Visual TrueType, and FontLab appear in the official discussion as
+      adjacent tools for inspecting, editing, or refining font hints.
+  sources:
+    - https://freetype.org/ttfautohint/doc/ttfautohint.html
+    - https://freetype.org/ttfautohint/index.html
+    - source_facts.package-manager
+  summary:
+    - >
+      ttfautohint is Werner Lemberg's FreeType-based TrueType auto-hinting library and
+      command-line program, aimed especially at producing practical hinting for web
+      fonts and other TrueType fonts without the cost of full manual hinting.
+    - >
+      In package-manager culture it sits in the font-build-tool niche: a small,
+      scriptable binary that turns font rendering quality, particularly on non-FreeType
+      platforms, into a reproducible build step.
+  timeline:
+    - >
+      2010: Project started after Dave Crossland suggested the idea, with support from
+      Google Web Fonts.
+    - '2014: Version 1.0 released with improved GDI ClearType hinting.'
+    - '2016: Version 1.6 added reference-file blue zones and many new script supports.'
+    - >
+      2018: Version 1.8.1 added natural stem mode, manual stem overrides, and library
+      installation.
+    - '2021: Version 1.8.4 released with additional script support.'
+  usage:
+    - >
+      The manual describes a C library that takes a TrueType font, removes existing
+      bytecode instructions if present, and returns a new font whose glyphs are bytecode
+      hinted using FreeType auto-hinting information. The distribution bundles both the
+      CLI `ttfautohint` and `ttfautohintGUI`.
+    - >
+      Typical package-nerd usage is to install the command with a package manager and
+      run it as part of a font release pipeline, preserving the same hinting behavior
+      across build hosts. The official page also notes dependencies on FreeType and
+      HarfBuzz for building from source.
 tags:
   - cli
   - font-hinting
@@ -23,34 +101,29 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      Official FreeType ttfautohint page says it provides automated hinting for web
-      fonts and builds on FreeType auto-hinting.
-    - source_facts.description states this is an auto-hinter for TrueType fonts.
+    - https://freetype.org/ttfautohint/doc/ttfautohint.html
+    - source_facts.description
   display-name-sources:
-    - Official FreeType project page heading is ttfautohint.
-    - source_facts.name gives ttfautohint.
+    - https://freetype.org/ttfautohint/index.html
+    - source_facts.name
   docs-sources:
-    - >
-      Official documentation page covers command-line, GUI, API, options, and background
-      details.
-    - Official ttfautohint page links online documentation.
+    - https://freetype.org/ttfautohint/doc/ttfautohint.html
+    - https://freetype.org/ttfautohint/index.html
+  history-sources:
+    - https://freetype.org/ttfautohint/doc/ttfautohint.html
+    - https://freetype.org/ttfautohint/index.html
+    - source_facts.package-manager
   repo-sources:
-    - >
-      Official FreeType ttfautohint page says development takes place in a public git
-      repository and links repo.or.cz/ttfautohint.git.
-    - source_facts.repo is empty, so repo was researched.
+    - https://freetype.org/ttfautohint/index.html
   tags-sources:
-    - >
-      Official ttfautohint page describes FreeType-based hinting for web fonts and
-      command-line/GUI front ends.
-    - source_facts.description identifies TrueType auto-hinting.
+    - https://freetype.org/ttfautohint/index.html
+    - source_facts.description
 category-confidence: high
 category-path:
   - developer-tools
-  - fonts
-  - hinting
+  - font-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
