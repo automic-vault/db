@@ -12,6 +12,73 @@ config-file-location:
     - $CATALINA_BASE/conf/tomcat-users.xml
 credentials-file-location:
   unix: $CATALINA_BASE/conf/tomcat-users.xml
+history:
+  adoption-history:
+    - >
+      Tomcat 10 adoption is tied to the Java EE to Jakarta EE transition. Apache's
+      homepage warns that applications running on Tomcat 9 and earlier do not run on
+      Tomcat 10 without changes, and documents an automatic conversion path through
+      `$CATALINA_BASE/webapps-javaee` plus the Apache Tomcat migration tool for Jakarta
+      EE.
+    - >
+      The input package metadata shows why package managers keep an explicit Tomcat 10
+      identity: Homebrew uses `tomcat@10`, Arch uses `tomcat10`, Scoop has
+      `versions/tomcat10`, and Debian/Ubuntu expose Tomcat 10 embedding packages. That
+      split lets users install a supported Jakarta EE 10-era container without
+      accidentally jumping to a later major line.
+  package-nerd-significance:
+    - >
+      For package nerds, `tomcat@10` is a versioned formula that encodes a major
+      compatibility boundary. It is not merely an older Tomcat: it represents the
+      Jakarta namespace migration, Java runtime floor changes, branch tracking for
+      10.1.x, and the need to keep application-server packages installable by API
+      generation.
+  project-history:
+    - >
+      Tomcat 10.0.x built on Tomcat 9.0.x and implemented the Jakarta EE 9 generation of
+      APIs: Servlet 5.0, JSP/Jakarta Pages 3.0, EL 4.0, WebSocket 2.0, and
+      Authentication 2.0. Apache's migration guide calls out the central break from
+      Tomcat 9: specification packages changed from `javax.*` to `jakarta.*`, requiring
+      recompilation or migration of applications.
+    - >
+      Tomcat 10.1.x then built on Tomcat 10.0.x and implements the Jakarta EE 10
+      generation: Servlet 6.0, Pages 3.1, EL 5.0, WebSocket 2.1, and Authentication 3.0.
+      Apache's version matrix lists Tomcat 10.1.x as a current supported line and Tomcat
+      10.0.x as superseded, with 10.0.27 as the final 10.0 release.
+  related-projects:
+    - >
+      The official source page lists the same `tomcat.git` repository for Tomcat 10.1.x
+      development, and related projects include the Apache Tomcat migration tool for
+      Jakarta EE, Tomcat Native, Tomcat Connectors, Taglibs, and the Tomcat Maven
+      Plugin.
+  sources:
+    - https://tomcat.apache.org/
+    - https://tomcat.apache.org/migration-10.1.html
+    - https://tomcat.apache.org/migration-10.html
+    - https://tomcat.apache.org/source.html
+    - https://tomcat.apache.org/whichversion.html
+    - source_facts.package-manager
+  summary:
+    - >
+      Apache Tomcat 10 is the Jakarta EE-era Tomcat line. In package-manager terms,
+      `tomcat@10` is valuable because it pins users to the Tomcat 10 family rather than
+      the newest major Tomcat, preserving the Servlet/Jakarta API level expected by
+      applications.
+  timeline:
+    - >
+      Tomcat 10.0.x: Apache documents the Jakarta namespace migration from `javax.*` to
+      `jakarta.*`.
+    - '2022: Tomcat 10.0.x reached end of life on 2022-10-31.'
+    - >
+      2026: Apache lists Tomcat 10.1.56 as the latest supported Tomcat 10.1.x release
+      and documents Java 11 or later for 10.1.x.
+  usage:
+    - >
+      Users install Tomcat 10 to run Jakarta Servlet/Jakarta Pages applications, test
+      migrations from Tomcat 9, and host web apps that have already moved to `jakarta.*`
+      APIs. The same operational model remains: `catalina` starts and manages the
+      server, while `$CATALINA_BASE/conf/server.xml`, `catalina.properties`, and
+      `tomcat-users.xml` hold core configuration and local user credentials.
 category: cloud-infrastructure
 package-manager:
   brew: tomcat@10
