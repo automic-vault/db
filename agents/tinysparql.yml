@@ -6,6 +6,84 @@ docs:
   - https://tinysparql.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      TinySPARQL's adoption is mostly distribution and desktop-stack adoption rather
+      than end-user CLI fame. The input package metadata lists it or its library ABI
+      across apk, Homebrew, Debian, Fedora/DNF, Nix, Arch/pacman, and openSUSE/zypper
+      ecosystems, often under compatibility names such as tracker-sparql or
+      libtracker-sparql.
+    - >
+      GNOME documentation frames TinySPARQL as a library-level dependency: applications
+      create process-local stores, connect to remote HTTP SPARQL endpoints, or connect
+      to D-Bus SPARQL services owned by another process. That makes it a package-nerd
+      item because the user-facing package name, pkg-config name, GIR namespace, and old
+      Tracker compatibility names do not always move at the same pace.
+  package-nerd-significance:
+    - >
+      TinySPARQL is significant in package-manager culture because it is the renamed
+      core of a long-lived GNOME infrastructure component. Maintainers need to track the
+      soft rename, compatibility packages, pkg-config aliases, GIR/Vala namespaces, and
+      the separate LocalSearch package rather than treating it as a brand-new library.
+  project-history:
+    - >
+      The TinySPARQL name comes from a 2024 GNOME soft rename. GNOME developers renamed
+      the Tracker SPARQL library to TinySPARQL and the Tracker Miners filesystem indexer
+      to LocalSearch during the GNOME 47 cycle, after the database library and indexer
+      had become distinct components. GNOME's announcement says the rename was intended
+      both to avoid confusing terminology around 'Tracker' and 'Miner' and to make the
+      standalone lightweight SPARQL/RDF implementation more visible.
+    - >
+      The transition kept compatibility paths in place: GNOME documented a new
+      libtinysparql/Tsparql API and tinysparql-3.0 pkg-config file while continuing to
+      provide the older libtracker-sparql/Tracker API for existing applications. The
+      command-line tools also split so the SPARQL side and LocalSearch side could each
+      expose their own subcommands.
+  related-projects:
+    - >
+      Tracker and tracker-miners are the predecessor names most relevant to older
+      packages and documentation.
+    - >
+      LocalSearch is the renamed GNOME filesystem indexer that uses the SPARQL
+      infrastructure but is packaged and described separately.
+    - >
+      SQLite is relevant operationally because TinySPARQL's local store and distribution
+      bugs are often seen through SQLite-backed Tracker SPARQL behavior.
+  sources:
+    - >
+      https://blogs.gnome.org/carlosg/2024/07/14/goodbye-tracker-hello-tinysparql-and-localsearch/
+    - >
+      https://discourse.gnome.org/t/renaming-tracker-git-and-tracker-sparql-git-and-changing-default-branch/21461
+    - https://gnome.pages.gitlab.gnome.org/tinysparql/
+    - https://gnome.pages.gitlab.gnome.org/tinysparql/class.SparqlConnection.html
+    - source_facts.package-manager
+  summary:
+    - >
+      TinySPARQL is GNOME's low-footprint RDF triple store and SPARQL 1.1 library,
+      historically known through the Tracker SPARQL component. It is aimed at
+      applications that need local RDF storage, local or remote SPARQL queries, and
+      D-Bus or HTTP endpoints without deploying a heavyweight enterprise triple-store
+      stack.
+  timeline:
+    - 'Around 2020: GNOME separated the SPARQL database engine from the filesystem indexer.'
+    - >
+      2024-07-14: GNOME announced the Tracker SPARQL library rename to TinySPARQL and
+      Tracker Miners rename to LocalSearch.
+    - >
+      2024: GNOME 47 cycle soft rename changed repository names and introduced
+      libtinysparql/Tsparql compatibility paths.
+    - '2024: TinySPARQL 3.8 alpha tarballs were announced under the new project name.'
+  usage:
+    - >
+      Developers use TinySPARQL to store RDF triples, define ontologies, issue SPARQL
+      queries and updates, expose endpoints, and connect to local desktop search data
+      through D-Bus. The API documentation recommends prepared statements for
+      query/update safety and batches for update performance.
+    - >
+      On the command line, the rename split the old tracker3 utility into tinysparql and
+      localsearch tools, which matters to scripts, Flatpak manifests, and distro
+      packaging that previously depended on Tracker names.
 tags:
   - cli
   - database
@@ -24,29 +102,32 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      official GNOME API documentation describes Tsparql/TinySPARQL as a low-footprint
-      RDF triple store with SPARQL 1.1 interface
-    - source_facts.description says low-footprint RDF triple store with SPARQL 1.1 interface
+    - https://gnome.pages.gitlab.gnome.org/tinysparql/
+    - source_facts.description
   display-name-sources:
-    - official project website and GNOME API documentation use TinySPARQL
-    - source_facts.name
-  docs-sources:
     - >
-      official GNOME generated API documentation includes API reference and additional
-      documentation
-    - official project website links to the available documentation
+      https://blogs.gnome.org/carlosg/2024/07/14/goodbye-tracker-hello-tinysparql-and-localsearch/
+  docs-sources:
+    - https://gnome.pages.gitlab.gnome.org/tinysparql/
+    - https://tinysparql.org/
+  history-sources:
+    - >
+      https://blogs.gnome.org/carlosg/2024/07/14/goodbye-tracker-hello-tinysparql-and-localsearch/
+    - >
+      https://discourse.gnome.org/t/renaming-tracker-git-and-tracker-sparql-git-and-changing-default-branch/21461
+    - https://gnome.pages.gitlab.gnome.org/tinysparql/
+    - https://gnome.pages.gitlab.gnome.org/tinysparql/class.SparqlConnection.html
+    - source_facts.package-manager
   repo-sources:
-    - official GNOME API documentation Source link points to gitlab.gnome.org/GNOME/tinysparql
+    - https://gnome.pages.gitlab.gnome.org/tinysparql/
   tags-sources:
-    - official GNOME API documentation
+    - https://gnome.pages.gitlab.gnome.org/tinysparql/
     - source_facts.description
 category-confidence: high
 category-path:
   - data
-  - database
-  - rdf
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
