@@ -10,8 +10,51 @@ credentials-file-location:
   unix:
     - certs/svid.pem
     - certs/svid_key.pem
-    - certs/bundle.pem
+    - certs/svid_bundle.pem
     - certs/jwt_svid.token
+    - certs/bundle.json
+history:
+  adoption-history:
+    - >
+      Its package-manager footprint is niche but practical: the input records Homebrew
+      and Nix packages, matching the kind of operator tool that appears in Unix package
+      sets once workload identity moves from platform design into day-to-day deployment.
+  package-nerd-significance:
+    - >
+      Package maintainers care about SPIFFE Helper because it turns SPIFFE/SPIRE
+      workload identity into ordinary files and signals: a familiar Unix packaging
+      surface for certificates, keys, bundles, and reload hooks.
+  project-history:
+    - >
+      The public GitHub repository was created in October 2017. Its README describes the
+      tool as a helper that fetches X.509 SVID certificates, launches or signals a
+      process that uses them, and refreshes certificates before expiry.
+  related-projects:
+    - SPIFFE
+    - SPIRE
+    - go-spiffe
+    - systemd
+    - ghostunnel
+  sources:
+    - https://api.github.com/repos/spiffe/spiffe-helper
+    - https://github.com/spiffe/spiffe-helper
+    - https://github.com/spiffe/spiffe-helper/releases
+    - input source_facts.package-manager
+  summary:
+    - >
+      SPIFFE Helper is a small command-line utility in the SPIFFE ecosystem for fetching
+      and renewing SVID material from the SPIFFE Workload API on behalf of another
+      process.
+  timeline:
+    - '2017: Public GitHub repository created.'
+    - '2025: v0.10.0 added health-server related changes in the release notes.'
+    - '2025: v0.11.0 release notes include a new `-version` flag.'
+  usage:
+    - >
+      Typical use is `spiffe-helper -config <config_file>`, with `helper.conf` as the
+      documented default. The README documents daemon and one-shot modes, file output
+      under a configured certificate directory, and integration patterns where a
+      supervisor such as systemd owns the real service.
 category: security
 package-manager:
   brew: spiffe-helper
@@ -22,6 +65,7 @@ tags:
   - cli
   - identity
   - spiffe
+  - spire
   - svid
   - workload-identity
   - x509

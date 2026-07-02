@@ -10,12 +10,56 @@ credentials-file-location:
   unix:
     - certs/svid.pem
     - certs/svid_key.pem
-    - certs/bundle.pem
+    - certs/svid_bundle.pem
     - certs/jwt_svid.token
+    - certs/bundle.json
+history:
+  adoption-history:
+    - >
+      Its package-manager footprint is niche but practical: the input records Homebrew
+      and Nix packages, matching the kind of operator tool that appears in Unix package
+      sets once workload identity moves from platform design into day-to-day deployment.
+  package-nerd-significance:
+    - >
+      Package maintainers care about SPIFFE Helper because it turns SPIFFE/SPIRE
+      workload identity into ordinary files and signals: a familiar Unix packaging
+      surface for certificates, keys, bundles, and reload hooks.
+  project-history:
+    - >
+      The public GitHub repository was created in October 2017. Its README describes the
+      tool as a helper that fetches X.509 SVID certificates, launches or signals a
+      process that uses them, and refreshes certificates before expiry.
+  related-projects:
+    - SPIFFE
+    - SPIRE
+    - go-spiffe
+    - systemd
+    - ghostunnel
+  sources:
+    - https://api.github.com/repos/spiffe/spiffe-helper
+    - https://github.com/spiffe/spiffe-helper
+    - https://github.com/spiffe/spiffe-helper/releases
+    - input source_facts.package-manager
+  summary:
+    - >
+      SPIFFE Helper is a small command-line utility in the SPIFFE ecosystem for fetching
+      and renewing SVID material from the SPIFFE Workload API on behalf of another
+      process.
+  timeline:
+    - '2017: Public GitHub repository created.'
+    - '2025: v0.10.0 added health-server related changes in the release notes.'
+    - '2025: v0.11.0 release notes include a new `-version` flag.'
+  usage:
+    - >
+      Typical use is `spiffe-helper -config <config_file>`, with `helper.conf` as the
+      documented default. The README documents daemon and one-shot modes, file output
+      under a configured certificate directory, and integration patterns where a
+      supervisor such as systemd owns the real service.
 tags:
   - cli
   - identity
   - spiffe
+  - spire
   - svid
   - workload-identity
   - x509
@@ -31,27 +75,33 @@ geiger:
 provenance:
   category-sources:
     - >
-      source_facts.description says SPIFFE Helper retrieves and manages SVIDs on behalf
-      of a workload.
+      GitHub README describes fetching X.509 SVIDs from the SPIFFE Workload API for
+      workload identity.
   display-name-sources:
-    - source_facts.name is spiffe-helper; official GitHub repository title uses SPIFFE Helper.
+    - GitHub repository title and README heading use SPIFFE Helper.
   docs-sources:
     - >
-      source_facts.homepage is the official GitHub repository; its README is the primary
-      official documentation surface.
+      GitHub README is the official documentation surface and documents usage,
+      configuration, output certificate filenames, and operating modes.
+  history-sources:
+    - https://api.github.com/repos/spiffe/spiffe-helper
+    - https://github.com/spiffe/spiffe-helper
+    - https://github.com/spiffe/spiffe-helper/releases
+    - input source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already has https://github.com/spiffe/spiffe-helper, so repo is
-      returned as null per instruction.
+      source_facts.repo is already set to https://github.com/spiffe/spiffe-helper;
+      prompt requires returning repo null in this case.
   tags-sources:
     - >
-      source_facts.description mentions retrieving and managing SVIDs for workloads;
-      source_facts.homepage/source_facts.repo identify the official SPIFFE repository.
+      GitHub README names SPIFFE, SVID, X.509, JWT SVID, Workload API, daemon mode, and
+      CLI flags.
 category-confidence: high
 category-path:
   - security
   - identity
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

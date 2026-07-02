@@ -3,9 +3,57 @@ display-name: spiped
 homepage: https://www.tarsnap.com/spiped.html
 repo: https://github.com/Tarsnap/spiped
 docs:
+  - https://github.com/Tarsnap/spiped#readme
   - https://www.tarsnap.com/spiped.html
 config-file-location: null
-credentials-file-location: null
+credentials-file-location:
+  unix:
+    - keyfile
+    - /etc/ssh/spiped.key
+    - ~/.ssh/spiped_HOSTNAME_key
+history:
+  adoption-history:
+    - >
+      spiped is packaged broadly for a small security/networking daemon. The input facts
+      list Alpine, Homebrew, Debian, Nix, Arch, and Ubuntu packages, reflecting demand
+      for a scriptable alternative to heavier tunneling setups.
+  package-nerd-significance:
+    - >
+      Package maintainers care about spiped because it is intentionally small, does one
+      network-security job, and exposes a clean CLI/daemon surface that composes with
+      sockets, init systems, and OpenSSH configuration.
+  project-history:
+    - >
+      The official Tarsnap page presents spiped as a simple C implementation, with
+      project development taking place in the Tarsnap GitHub repository. The GitHub
+      repository was created in May 2015.
+  related-projects:
+    - Tarsnap
+    - kivaloo
+    - OpenSSH ProxyCommand
+    - ssh -L
+  sources:
+    - https://api.github.com/repos/Tarsnap/spiped
+    - https://github.com/Tarsnap/spiped
+    - https://www.tarsnap.com/spiped.html
+    - input source_facts.package-manager
+  summary:
+    - >
+      spiped is the Tarsnap secure pipe daemon, a small Unix-style tool for making
+      encrypted and authenticated pipes between socket addresses with a pre-shared
+      symmetric key.
+  timeline:
+    - '2014: Official release list includes spiped 1.4.0 on August 28.'
+    - '2015: GitHub repository created in May.'
+    - '2017: Official release list includes spiped 1.6.0.'
+    - '2025: Official release list includes spiped 1.6.4 on April 2.'
+  usage:
+    - >
+      The official examples show generating a 32-byte random key with `dd`, running
+      `spiped` in daemon mode on one host, and using `spiped` or `spipe` on the client
+      side. One documented pattern protects SSH by placing the key in
+      `/etc/ssh/spiped.key` on the server and referencing a per-host key from
+      `~/.ssh/config` via ProxyCommand.
 category: networking
 package-manager:
   apk: spiped
@@ -21,6 +69,7 @@ tags:
   - cli
   - daemon
   - encryption
+  - pre-shared-key
   - secure-tunnel
   - sockets
 description: Secure pipe daemon
