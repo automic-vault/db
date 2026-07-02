@@ -6,6 +6,76 @@ docs:
   - https://github.com/dlenski/vpn-slice#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The OpenConnect project documents vpn-slice as an alternative script written by
+      one of the OpenConnect developers, focused on limiting VPN-routed traffic to a
+      specific subset. That gives vpn-slice a recognized niche among OpenConnect users
+      who need client-side split tunneling even when the VPN server or corporate client
+      defaults to full-tunnel routing.
+    - >
+      Package listings in ecosystems such as PyPI, MacPorts, Alpine, and FreeBSD ports
+      reflect practical adoption by users who combine OpenConnect with
+      scripting-friendly network setup. Its adoption is niche, but the niche is clear:
+      developers and administrators forced to use restrictive VPNs while preserving
+      local Internet routing.
+  package-nerd-significance:
+    - >
+      vpn-slice is the kind of small Unix networking tool package managers preserve
+      well: one command that fills a very specific gap between a general VPN client and
+      local routing policy.
+    - >
+      Its value is highest for people who already know OpenConnect, vpnc-script, route
+      tables, and DNS side effects; for those users it replaces a fragile personal
+      shell-script wrapper with a maintained upstream tool.
+  project-history:
+    - >
+      The project grew out of a long-standing OpenConnect/VPNC architecture in which the
+      VPN client handles the tunnel connection but delegates operating-system routing
+      and DNS changes to an external script, traditionally called vpnc-script.
+    - >
+      vpn-slice's README presents it as a deliberate alternative to corporate-VPN
+      behavior that reroutes all traffic through the tunnel. It credits an earlier
+      split-tunnelling tutorial for the basic approach, sshuttle's host-discovery
+      options for inspiration, and a community pull request for cleaner OS-dependent
+      separation and macOS support.
+  related-projects:
+    - vpn-slice is directly related to OpenConnect, VPNC, and vpnc-script.
+    - >
+      The upstream README also relates it conceptually to sshuttle, whose automatic host
+      lookup behavior influenced vpn-slice's own host handling.
+  sources:
+    - https://github.com/dlenski/vpn-slice
+    - https://pkgs.alpinelinux.org/package/edge/community/x86/vpn-slice
+    - https://ports.macports.org/port/vpn-slice/summary/
+    - https://pypi.org/project/vpn-slice/
+    - https://www.infradead.org/openconnect/vpnc-script.html
+  summary:
+    - >
+      vpn-slice is a Python replacement for the vpnc-script hook used by OpenConnect and
+      VPNC. Its purpose is split-tunnel VPN setup: route only selected hosts or subnets
+      through the VPN while leaving ordinary network traffic on the normal interface.
+  timeline:
+    - >
+      2010s: vpn-slice emerges as a Python vpnc-script replacement for OpenConnect/VPNC
+      split tunneling.
+    - >
+      2019: Public questions around OpenConnect plus vpn-slice show use in Nix and macOS
+      workflows.
+    - >
+      2020s: OpenConnect documentation lists vpn-slice as a recognized alternative
+      script for limited-subset routing.
+  usage:
+    - >
+      Users invoke vpn-slice as the OpenConnect or VPNC script hook and pass the hosts,
+      domains, or subnets that should be reachable through the tunnel. The tool can
+      resolve named hosts using VPN DNS servers, write temporary host entries, and avoid
+      broad resolver changes outside the VPN slice.
+    - >
+      The tool is not intended for privacy VPN use cases where all traffic should go
+      through the tunnel. Its README explicitly frames the use case as minimizing
+      exposure to monitored or filtering corporate VPN networks.
 category: networking
 package-manager:
   apk: vpn-slice
