@@ -6,6 +6,57 @@ docs:
   - https://github.com/fanout/zurl#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Zurl stayed a specialist component in the Fanout/Pushpin ecosystem rather than
+      becoming a broad CLI utility. Its continued packaging matters because it preserves
+      an older ZeroMQ service-composition style: small daemons connected by IPC or TCP
+      sockets, with HTTP isolated as its own worker.
+  package-nerd-significance:
+    - >
+      For package-nerd history, Zurl is a fossil from the moment when ZeroMQ was
+      commonly used as application plumbing. It packages an architectural idea, HTTP as
+      a durable message worker, that is now more often solved with language runtimes,
+      queues, or service meshes.
+  project-history:
+    - >
+      The project was started by Justin Karneges in 2012 and presented publicly by
+      Fanout in 2014 as an HTTP/WebSocket client daemon for ZeroMQ architectures. Its
+      design combines libcurl-based protocol handling with the ZHTTP message format,
+      exposing request/response and streaming patterns over ZeroMQ sockets.
+  related-projects:
+    - "Pushpin: Fanout/Fastly's realtime reverse proxy from the same ecosystem."
+    - >
+      ZeroMQ and ZHTTP: the messaging layer and protocol abstraction that shape Zurl's
+      interface.
+    - 'libcurl: the HTTP implementation Zurl uses underneath.'
+  sources:
+    - https://blog.fanout.io/2014/02/18/fun-with-zurl-the-http-websocket-client-daemon/
+    - https://github.com/fanout/zurl
+    - https://github.com/fastly/pushpin
+  summary:
+    - >
+      Zurl is a small Fanout-era networking daemon that turns outbound HTTP and
+      WebSocket work into ZeroMQ messages. Its niche is not replacing curl for humans,
+      but giving message-oriented systems a reusable, event-driven HTTP/WebSocket
+      worker.
+  timeline:
+    - '2012: Initial public git history begins for fanout/zurl.'
+    - >
+      2014: Fanout publishes 'Fun with Zurl', framing it as a ZeroMQ gateway for
+      outbound HTTP requests and WebSocket connections.
+    - >
+      2025: The repository still receives maintenance fixes, showing that the daemon
+      remains buildable for its niche users.
+  usage:
+    - >
+      Typical use is to run the daemon, connect a ZeroMQ REQ socket or the advanced
+      PUSH/SUB streaming interface, and send JSON or TNetStrings requests describing
+      HTTP methods, URIs, headers, body data, WebSocket messages, and policy flags. It
+      is useful for webhook delivery, avoiding blocking outbound I/O in workers, sharing
+      persistent connections, and allowing different processes to send requests and
+      consume responses.
 category: networking
 package-manager:
   brew: zurl
