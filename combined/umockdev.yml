@@ -3,9 +3,83 @@ display-name: umockdev
 homepage: https://launchpad.net/umockdev
 repo: https://github.com/martinpitt/umockdev
 docs:
+  - https://github.com/martinpitt/umockdev/tree/main/docs/reference
   - https://github.com/martinpitt/umockdev#readme
+  - https://github.com/martinpitt/umockdev/blob/main/NEWS
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      umockdev's adoption is strongest in Linux hardware-adjacent testing. The README
+      explicitly names gphoto and libmtp as examples where developers can receive
+      recorded device dumps in bug reports and reproduce problems without owning the
+      affected hardware.
+    - >
+      The Homebrew input records downstream packaging across apk, Homebrew,
+      Debian/Ubuntu gir/lib packages, dnf, Nix, pacman, and zypper. That breadth is
+      notable because the tool remains Linux-specific and test-focused; package managers
+      carry it for developers and CI systems that need reproducible hardware behavior.
+  package-nerd-significance:
+    - >
+      umockdev is important to package maintainers because it turns hardware-dependent
+      bugs into text artifacts that can be checked into tests or attached to bug
+      reports. That makes CI and distro regression testing possible for code that would
+      otherwise require physical devices.
+    - >
+      It is also a classic niche systems package: small executable tools, a shared
+      library, introspection bindings, preload behavior, and distro-specific packaging
+      names that matter to anyone debugging Linux hardware stacks.
+  project-history:
+    - >
+      The official README describes umockdev as a way to mock Linux devices for tests of
+      hardware-related libraries and programs. It records device properties and
+      behavior, then runs programs or test suites against a testbed loaded with those
+      recorded devices.
+    - >
+      The project is built around libumockdev, a preload library, and CLI tools
+      including umockdev-record, umockdev-run, and umockdev-wrapper. Its feature set
+      expanded from sysfs/udev property emulation into /dev nodes, read/write scripts,
+      usbdevfs replay, pcap/usbmon replay, evdev, spidev, input events, and /proc
+      mocking.
+    - >
+      Official tags show releases by 2013, and the NEWS file documents long-running
+      maintenance, including a 2020 switch to Meson and later fixes and feature updates.
+      That history matches a specialized but durable Linux testing utility rather than a
+      broad application.
+  related-projects:
+    - >
+      The README names gphoto and libmtp as affected software examples and uses upower,
+      ModemManager, ofonod, evemu, usbmon, Wireshark, PtP/MTP, and GObject-introspection
+      ecosystems in its examples.
+  sources:
+    - https://api.github.com/repos/martinpitt/umockdev/tags?per_page=100
+    - https://github.com/martinpitt/umockdev/blob/main/NEWS
+    - https://raw.githubusercontent.com/martinpitt/umockdev/main/README.md
+    - source_facts.package-manager
+  summary:
+    - >
+      umockdev is a Linux hardware-device mocking library and set of command-line tools
+      for integration tests, bug reports, and regression reproduction.
+  timeline:
+    - '2013: Official repository tag 0.2.4 is associated with a June 2013 release commit.'
+    - '2020-11-16: NEWS records the switch to the Meson build system in release 0.15.'
+    - >
+      README era: Project documents record/replay support for sysfs, udev, /dev, USB,
+      evdev, spidev, /proc, and socket/device scripts.
+    - >
+      Current packaging: Homebrew input lists apk, Homebrew, Debian/Ubuntu, dnf, Nix,
+      pacman, and zypper package coverage.
+  usage:
+    - >
+      Typical command-line use records a real device with umockdev-record, then replays
+      it with umockdev-run around a test command. The README includes examples for
+      PtP/MTP USB devices, usbmon pcap captures, tty devices such as modem sticks, Unix
+      sockets, fake batteries, /proc, and /dev.
+    - >
+      Library users create a UMockdevTestbed through C, Vala, Python, JavaScript, or
+      other GObject-introspection languages, while the preload layer redirects /sys,
+      /dev, /proc, netlink, and ioctl access into the sandbox.
 category: developer-tools
 package-manager:
   apk: umockdev
