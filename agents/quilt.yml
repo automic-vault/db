@@ -8,6 +8,37 @@ config-file-location:
     - ~/.quiltrc
     - /etc/quilt.quiltrc
 credentials-file-location: null
+history:
+  - >
+    Quilt is a patch-stack manager for source trees. It grew out of Andrew Morton's
+    patch-management scripts and was reworked by Andreas Gruenbacher for SUSE Linux
+    kernel-source maintenance, where large vendor patch sets had to be kept ordered,
+    refreshed, and separable across upstream releases. The name fits its model: a source
+    package or working tree is treated as a base plus a sequence of patch pieces that
+    can be pushed, popped, refreshed, and inspected.
+  - >
+    The tool's basic abstraction is the `patches` directory, a `series` file, and a
+    `.pc` state directory. Patches listed in `series` are applied incrementally; `quilt
+    push` and `quilt pop` move through the stack; `quilt refresh` regenerates a patch
+    from the working tree; commands such as `quilt applied`, `quilt next`, `quilt top`,
+    `quilt diff`, and `quilt add` expose the state of the stack. This makes patches the
+    primary artifact rather than a side effect of a version-control commit.
+  - >
+    Quilt's adoption is strongly tied to distribution maintenance. Its own documentation
+    frames the original problem as maintaining many vendor patches, including
+    kernel-source packages with more than a thousand patches. Debian later standardized
+    a source package format named `3.0 (quilt)`, supported by `dpkg-source`, so Debian
+    and Ubuntu packaging workflows commonly store maintainer changes under
+    `debian/patches` in a quilt series. Tutorials for Debian contributors treat quilt
+    knowledge as part of serious source-package maintenance.
+  - >
+    Practitioners use Quilt when changes must remain as reviewable, reorderable,
+    upstreamable patch files rather than being absorbed into a single branch history.
+    Kernel packagers, distro maintainers, embedded build systems, and package rebuilders
+    use it to carry downstream fixes, add compatibility patches, update a patch after an
+    upstream release, or split a vendor delta into logical units. Its wide packaging
+    across Homebrew, Debian, Fedora, Alpine, MacPorts, Nix, Arch, Ubuntu, and openSUSE
+    reflects that infrastructure role rather than a fashion-driven CLI niche.
 tags:
   - cli
   - development
@@ -34,6 +65,13 @@ provenance:
     - >
       Official Savannah project page is the upstream project and best official
       documentation surface found in this review.
+  history-sources:
+    - https://sources.debian.org/src/quilt/0.66-2.1/doc/quilt.pdf
+    - https://man7.org/linux/man-pages/man1/quilt.1.html
+    - >
+      https://raphaelhertzog.com/2012/08/08/how-to-use-quilt-to-manage-patches-in-debian-packages/
+    - https://man7.org/linux/man-pages/man1/dpkg-source.1.html
+    - https://formulae.brew.sh/formula/quilt
   repo-sources:
     - >
       Savannah/GNU Git documentation gives the official Git URL pattern; search results
@@ -49,5 +87,6 @@ category-path:
   - patch-management
 display-name-confidence: high
 docs-confidence: medium
+history-confidence: high
 repo-confidence: medium
 tags-confidence: high
