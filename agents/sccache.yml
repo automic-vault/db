@@ -12,6 +12,30 @@ config-file-location:
   windows:
     - '%APPDATA%\Mozilla\sccache\config\config'
 credentials-file-location: null
+history:
+  - >
+    sccache is Mozilla's shared compilation cache, a ccache-like compiler wrapper
+    written in Rust by Mozilla and contributors. Its origin is closely tied to the needs
+    of large Mozilla and Rust-adjacent builds: avoid recompilation when compiler inputs
+    match, but support cache storage beyond a single local disk.
+  - >
+    The project occupies the build-infrastructure layer between a compiler and a build
+    system. The upstream README describes local and cloud storage backends, multi-level
+    cache hierarchies with backfill, support for assembler, C/C++, Rust, CUDA, clang,
+    and ROCm HIP compilations, and an icecream-style distributed compilation mode with
+    authentication, transport encryption, and sandboxed execution. Firefox's build
+    documentation treats sccache-dist as a way to distribute and cache Rust compilation
+    across multiple machines.
+  - >
+    Practitioners usually wire sccache in through environment variables or
+    compiler-wrapper settings rather than calling it as a standalone compiler. Cargo
+    users set `RUSTC_WRAPPER=sccache`, while C and C++ builds point compiler variables
+    at the wrapper. Teams then choose storage based on topology: disk for local
+    development, Redis or memcached for shared LAN caches, S3/GCS/Azure/WebDAV-style
+    stores for CI, and the distributed scheduler/server/client setup for build farms.
+    Package-manager coverage, including Homebrew, Linux distributions, Windows package
+    managers, and crates.io, reflects that it is both a developer workstation tool and
+    CI infrastructure.
 tags:
   - build-cache
   - ccache
@@ -42,6 +66,13 @@ provenance:
   docs-sources:
     - Official GitHub README is the project documentation entry point.
     - Official repository docs/Configuration.md provides configuration documentation.
+  history-sources:
+    - https://github.com/mozilla/sccache
+    - https://github.com/mozilla/sccache/blob/main/docs/Configuration.md
+    - https://github.com/mozilla/sccache/blob/main/docs/Rust.md
+    - https://github.com/mozilla/sccache/blob/main/docs/DistributedQuickstart.md
+    - https://firefox-source-docs.mozilla.org/build/buildsystem/sccache-dist.html
+    - https://formulae.brew.sh/formula/sccache
   repo-sources:
     - >
       source_facts.repo already has value https://github.com/mozilla/sccache, so repo is
@@ -55,5 +86,6 @@ category-path:
   - build-cache
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
