@@ -7,6 +7,79 @@ docs:
 config-file-location:
   unix: ./programs/
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xdg-ninja grew with dotfiles culture and the recurring frustration that many
+      command-line programs still create legacy ~/.name files even after the
+      freedesktop.org XDG Base Directory Specification defined preferred locations for
+      config, data, state, cache, and runtime files.
+    - >
+      The README documents Nix and Homebrew usage, but also warns that because upstream
+      does not cut regular releases, Homebrew users should install and upgrade from
+      HEAD. That is an unusually transparent adoption note and explains why
+      package-manager versions may lag behind the living configuration database.
+  package-nerd-significance:
+    - >
+      xdg-ninja is important to package nerds because it turns the messy social problem
+      of XDG compliance into a testable, crowd-maintained catalog. It is half lint tool,
+      half living index of which CLI programs respect modern Unix home-directory
+      conventions.
+    - >
+      It also exposes a subtle packaging issue: data freshness matters more than binary
+      freshness. A stale packaged xdg-ninja can miss newly documented offenders even if
+      the shell code itself still works.
+  project-history:
+    - >
+      The project began in May 2022 with an initial shell implementation and an early
+      import of supported-program data from the Arch Wiki XDG Base Directory page. The
+      README still describes the configuration corpus as coming from the Arch Wiki,
+      antidot, and user contributions.
+    - >
+      The tool deliberately keeps the main checker simple: a POSIX-like shell script,
+      jq, and find are enough to run the tests. Later work added a Haskell helper,
+      xdgnj, for generating and editing the JSON program configurations, while the
+      README emphasizes that the shell script remains the core checker.
+  related-projects:
+    - >
+      XDG Base Directory Specification: defines the directory conventions xdg-ninja
+      checks against.
+    - >
+      Arch Wiki XDG Base Directory page: one of the configuration-data sources named by
+      upstream.
+    - 'antidot: another source of XDG migration knowledge credited by the README.'
+    - >
+      xdgnj: upstream helper for creating and previewing xdg-ninja program configuration
+      files.
+  sources:
+    - 'Git history and tags: https://github.com/b3nj5m1n/xdg-ninja'
+    - 'README, b3nj5m1n/xdg-ninja: https://github.com/b3nj5m1n/xdg-ninja#readme'
+    - >
+      XDG Base Directory Specification:
+      https://specifications.freedesktop.org/basedir-spec/latest/
+    - 'xdg-ninja shell script: https://github.com/b3nj5m1n/xdg-ninja/blob/main/xdg-ninja.sh'
+  summary:
+    - >
+      xdg-ninja is a shell-based checker for users who want a cleaner home directory and
+      better XDG Base Directory compliance. It scans for known dotfiles and directories
+      in $HOME, then reports whether each one can be moved and how to do it.
+  timeline:
+    - '2021-05-08: XDG Base Directory Specification 0.8 publication date.'
+    - '2022-05-12: xdg-ninja initial commit and first implementation.'
+    - '2022-05-12: Early supported-program data imported from the Arch Wiki article.'
+    - '2022-06-06: v0.2.0.0 tag.'
+    - '2024-02-03: v0.2.0.2 tag for the xdgnj helper release line.'
+  usage:
+    - >
+      Users run xdg-ninja in their home environment. The script checks known paths,
+      prints warnings for unwanted files or directories, and renders Markdown help
+      explaining whether the item is movable and what setting or migration step can
+      relocate it.
+    - >
+      Contributors add JSON files under programs/. Each file names a program and the
+      $HOME paths it creates, plus Markdown help for movable or unsupported cases. The
+      XN_PROGRAMS_DIR environment variable can point the checker at an alternate
+      configuration directory.
 category: system
 package-manager:
   apk: xdg-ninja

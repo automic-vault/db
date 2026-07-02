@@ -2,9 +2,84 @@ id: brew:xdelta
 display-name: xdelta
 repo: null
 docs:
-  - https://github.com/jmacd/xdelta#readme
+  - https://jmacd.github.io/xdelta
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xdelta adoption has always followed the practical need to ship changes without
+      shipping whole files: game patches, ROM patching communities, software update
+      systems, and package workflows all benefit from binary deltas. Its VCDIFF basis
+      matters because the delta format is documented outside a single implementation.
+    - >
+      Package availability is broad in the input facts: Alpine, Homebrew, Debian/Ubuntu,
+      Fedora, MacPorts, Nix, Arch, Scoop, and openSUSE-family packages all carry xdelta
+      or xdelta3 names. That cross-platform packaging matches upstream release binaries
+      for Linux, macOS, and Windows.
+  package-nerd-significance:
+    - >
+      xdelta is a package-nerd staple because it sits at the intersection of
+      compression, patch distribution, archival workflows, and reproducible binary
+      transformations. It is small enough to be a CLI utility, but backed by a
+      standards-track format and decades of compatibility expectations.
+    - >
+      For package indexes, it is also a naming lesson: users may search for xdelta,
+      xdelta3, or VCDIFF depending on platform and era, while the executable commonly
+      exposed by modern packages is xdelta3.
+  project-history:
+    - >
+      The xdelta3 README carries copyright years beginning in 2001 and describes the
+      project as a command-line interface and source distribution for VCDIFF
+      differential compression. RFC 3284, published in June 2002 and co-authored by Josh
+      MacDonald, standardized the VCDIFF generic differencing and compression data
+      format that xdelta3 implements.
+    - >
+      The public Git history in the current repository starts with 2006 source snapshots
+      and concentrated work around large-file and checksum behavior. By the 3.0 series,
+      xdelta3 had become the maintained branch users generally meant when they installed
+      an xdelta package.
+    - >
+      The current upstream documentation presents xdelta version 3 as both a C library
+      and a command-line tool, with the maintained 3.2.x series using CMake, optional
+      liblzma secondary compression, static release binaries, and an embeddable
+      libxdelta3 API.
+  related-projects:
+    - 'VCDIFF/RFC 3284: standardized delta format implemented by xdelta3.'
+    - 'XZ Utils/liblzma: optional secondary compression support in upstream builds.'
+    - 'BLAKE3: used by modern xdelta3 armor mode for whole-file verification.'
+    - >
+      bsdiff and courgette-style binary patchers: related binary-delta tools with
+      different formats and tradeoffs.
+  sources:
+    - 'Git history and tags: https://github.com/jmacd/xdelta'
+    - 'README, jmacd/xdelta: https://github.com/jmacd/xdelta#readme'
+    - 'RFC 3284: https://www.rfc-editor.org/rfc/rfc3284'
+    - 'Xdelta documentation: https://jmacd.github.io/xdelta/'
+    - 'xdelta3 README: https://github.com/jmacd/xdelta/blob/main/xdelta3/README.md'
+  summary:
+    - >
+      xdelta is a long-running binary differencing and delta-compression project. The
+      modern xdelta3 command and library implement VCDIFF/RFC 3284 streams, letting
+      users create compact patch files between related binary inputs and reconstruct
+      targets from a source plus delta.
+  timeline:
+    - '2001: xdelta3 README copyright years begin, indicating early xdelta3 development.'
+    - '2002-06: RFC 3284 publishes the VCDIFF data format.'
+    - '2006-08-27: First source snapshot in the current GitHub repository history.'
+    - '2015-03-30: v3.0.9 tag in the long-lived 3.0 release line.'
+    - '2016-01-07: v3.0.11 and v3.1.0 tags.'
+    - '2026-06-20: v3.2.0 tag and maintained 3.2.x series documented upstream.'
+  usage:
+    - >
+      The core command pattern is encode with an old source file, a new target file, and
+      an output delta, then decode later with the same source and the delta to
+      reconstruct the target. The upstream README shows xdelta3 -e and -d examples with
+      -s for the source file.
+    - >
+      Modern xdelta3 can also be embedded as a library through xdelta3.h and
+      build-system integration. This matters for software that wants VCDIFF behavior
+      internally rather than shelling out to the xdelta3 executable.
 tags:
   - binary-diff
   - cli
@@ -22,31 +97,28 @@ geiger:
     - text:compress
 provenance:
   category-sources:
-    - >
-      source_facts.description says it provides binary diff and differential compression
-      tools; official README describes VCDIFF/RFC 3284 delta compression
+    - Upstream README describes a C library and CLI for VCDIFF delta compression.
   display-name-sources:
-    - >
-      source_facts.name and official GitHub README heading identify the project as
-      Xdelta/xdelta
+    - Upstream README title and source_facts.name.
   docs-sources:
-    - >
-      Official GitHub README is the primary documentation surface and points users to
-      command-line usage and the wiki directory
+    - Upstream README links full documentation at https://jmacd.github.io/xdelta/
+  history-sources:
+    - 'Git history and tags: https://github.com/jmacd/xdelta'
+    - 'README, jmacd/xdelta: https://github.com/jmacd/xdelta#readme'
+    - 'RFC 3284: https://www.rfc-editor.org/rfc/rfc3284'
+    - 'Xdelta documentation: https://jmacd.github.io/xdelta/'
+    - 'xdelta3 README: https://github.com/jmacd/xdelta/blob/main/xdelta3/README.md'
   repo-sources:
     - >
-      source_facts.repo already has a non-empty value, so repo is returned as null per
-      instructions
+      source_facts.repo already provides https://github.com/jmacd/xdelta; repo
+      intentionally returned as null per prompt.
   tags-sources:
-    - >
-      source_facts.description and official README identify binary diff, differential
-      compression, and VCDIFF/RFC 3284 functionality
+    - Upstream README, xdelta3 README, and RFC 3284.
 category-confidence: high
 category-path:
   - developer-tools
-  - file-processing
-  - diff
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
