@@ -6,6 +6,73 @@ docs:
   - https://github.com/travitch/whole-program-llvm#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption has remained specialized but durable in the LLVM static-analysis
+      ecosystem. The PyPI classifiers identify developers and science/research users,
+      while the repository has accumulated hundreds of public stars and forks. The
+      existence of SRI-CSL's gllvm, documented as a Go port of wllvm, is a useful sign
+      of the idea's persistence: the wrapper-plus-extract pattern was important enough
+      to be reimplemented for users who wanted a compiled toolchain wrapper.
+  package-nerd-significance:
+    - >
+      WLLVM matters because it sits at the border between normal distribution builds and
+      research tooling. It lets a package be built the way its maintainers intended
+      while still producing LLVM bitcode artifacts that package managers and analysis
+      frameworks can consume later.
+  project-history:
+    - >
+      The public GitHub repository for travitch/whole-program-llvm was created in 2011,
+      and the package later became available on PyPI, whose JSON metadata records
+      release 1.0.0 in August 2016 and release 1.3.1 in April 2021. The README describes
+      the design as a two-step compiler-wrapper approach: build real object files first,
+      generate matching LLVM bitcode second, and record bitcode paths in a dedicated
+      object-file section so a post-build tool can link them into a whole-program
+      bitcode file.
+    - >
+      WLLVM's design grew around a practical limitation of link-time optimization
+      workflows: GCC LTO and gold-plugin approaches can work for some programs but
+      become awkward around static libraries and build systems that expect native
+      objects during the build. By keeping the native build intact and delaying bitcode
+      collection until after linking, WLLVM became useful for analysis workflows that
+      need LLVM IR without forcing upstream projects to adopt LLVM-specific build logic.
+  related-projects:
+    - >
+      gllvm is a Go port of WLLVM with analogous wrapper commands and a get-bc
+      extraction workflow.
+    - >
+      LLVM, clang, llvm-link, and llvm-ar are the underlying compiler and bitcode tools
+      that make WLLVM's output useful.
+  sources:
+    - https://api.github.com/repos/travitch/whole-program-llvm
+    - https://github.com/SRI-CSL/gllvm
+    - https://github.com/klee/legacy-wllvm
+    - https://github.com/travitch/whole-program-llvm
+    - https://pypi.org/project/wllvm/
+    - https://pypi.org/pypi/wllvm/json
+  summary:
+    - >
+      WLLVM, short for Whole Program LLVM, is a Python-based wrapper toolkit for
+      producing whole-program or whole-library LLVM bitcode from ordinary C, C++, and
+      Fortran build systems. Its niche is not compiling new code directly, but making
+      existing autotools, Make, and compiler-driven projects emit normal native
+      artifacts while preserving enough per-object bitcode information for later
+      extraction.
+  timeline:
+    - '2011: travitch/whole-program-llvm public repository created on GitHub.'
+    - '2016: wllvm 1.0.0 uploaded to PyPI.'
+    - '2021: wllvm 1.3.1 uploaded to PyPI.'
+    - >
+      2020s: gllvm documents itself as a Go port of wllvm, preserving the same
+      whole-program bitcode workflow.
+  usage:
+    - >
+      A typical user exports WLLVM's compiler wrappers, builds an unmodified upstream
+      package, then runs extract-bc on the resulting executable or archive to recover a
+      linked LLVM bitcode module. That makes it a package-nerd tool for turning
+      traditional Unix source packages into LLVM IR inputs for static analysis, symbolic
+      execution, decompilation research, and whole-program optimization experiments.
 category: developer-tools
 package-manager:
   brew: wllvm

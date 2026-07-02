@@ -11,6 +11,74 @@ config-file-location:
     - /home/me/.config/wmbusmeters/wmbusmeters.conf
     - /home/me/.config/wmbusmeters/wmbusmeters.d
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      wmbusmeters has visible adoption in smart-home and utility-monitoring circles
+      because many water, heat, gas, and electricity meters expose wireless M-Bus
+      telegrams but do not provide a convenient local API. The official Home Assistant
+      add-on repository says it lets users acquire readings without a vendor bridge or
+      gateway when meters support C1, T1, or S1 wireless M-Bus telegrams.
+    - >
+      The project also maintains an online analyzer at wmbusmeters.org for inspecting
+      telegrams with the same command-line analyzer syntax. That service and the long
+      supported-driver list demonstrate that wmbusmeters has become a shared decoder
+      knowledge base for a messy field of real-world meters.
+  package-nerd-significance:
+    - >
+      The package is significant because it packages practical reverse-engineering and
+      protocol normalization for a long tail of utility meters. For self-hosting users,
+      it is often the component that turns a cheap receiver and a meter key into local,
+      scriptable energy and water telemetry.
+  project-history:
+    - >
+      The public GitHub repository was created in August 2017 and has grown into a
+      focused C++ project with a large catalog of meter drivers. Its README frames the
+      program around a concrete transformation: receive raw M-Bus or wireless M-Bus
+      telegrams from meters, decode the manufacturer- and model-specific content, and
+      publish readings in formats that other software can consume.
+    - >
+      The project has continued to evolve through driver additions and decoding changes
+      rather than through a single protocol abstraction. Recent release notes show a
+      2.0.0 release in March 2026 that moved some manufacturer-specific protocol
+      decoders from C++ into editable XMQ files with Invisible XML grammars, described
+      by the maintainers as a major step toward making all drivers editable text files
+      rather than compiled code.
+  related-projects:
+    - >
+      wmbusmeters-ha-addon is the official Home Assistant add-on repository for running
+      wmbusmeters in a smart-home deployment.
+    - >
+      rtl-wmbus and RTL-SDR workflows commonly supply wireless telegrams that
+      wmbusmeters decodes.
+  sources:
+    - https://api.github.com/repos/wmbusmeters/wmbusmeters
+    - https://api.github.com/repos/wmbusmeters/wmbusmeters/releases?per_page=100
+    - https://github.com/wmbusmeters/wmbusmeters
+    - https://github.com/wmbusmeters/wmbusmeters-ha-addon
+    - https://github.com/wmbusmeters/wmbusmeters/releases
+    - https://wmbusmeters.org/
+  summary:
+    - >
+      wmbusmeters is a utility-meter data acquisition tool for wired M-Bus and wireless
+      M-Bus meters. It turns meter telegrams into human-readable, CSV, JSON, MQTT, REST,
+      database, or log-file output, making it a bridge between low-level metering radio
+      protocols and home automation or operations systems.
+  timeline:
+    - '2017: wmbusmeters/wmbusmeters public repository created on GitHub.'
+    - '2023: GitHub release history records the 1.13.x release line.'
+    - '2024: 1.17 and 1.18 releases document continued driver additions and XMQ driver changes.'
+    - >
+      2026: 2.0.0 release notes describe moving selected manufacturer protocol decoders
+      toward editable XMQ grammar files.
+    - '2026: 3.0.0 appears as the latest GitHub release in June.'
+  usage:
+    - >
+      Typical use combines a supported radio dongle, serial M-Bus interface, RTL-SDR
+      software-radio input, file, or pipe with meter definitions and optional decryption
+      keys. Users run it as an interactive decoder while commissioning meters, or as the
+      wmbusmetersd daemon to publish recurring readings to MQTT, REST endpoints,
+      databases, or logs.
 tags:
   - cli
   - meter-reading
@@ -28,29 +96,32 @@ geiger:
     - metadata:service
 provenance:
   category-sources:
-    - >
-      source_facts.description says wmbusmeters reads wired or wireless M-Bus protocols
-      to acquire utility meter readings; official README describes collecting and
-      publishing meter readings.
+    - current_curation.category_path
+    - source_facts.description
   display-name-sources:
-    - source_facts.name and the official GitHub repository name use wmbusmeters.
+    - current_curation.display-name
+    - source_facts.name
   docs-sources:
-    - >
-      Official README links to wmbusmeters.github.io as FAQ/WIKI/MANUAL pages and also
-      contains usage and configuration documentation.
+    - current_curation.docs
+    - https://github.com/wmbusmeters/wmbusmeters#readme
+    - https://wmbusmeters.github.io/
+  history-sources:
+    - https://api.github.com/repos/wmbusmeters/wmbusmeters
+    - https://api.github.com/repos/wmbusmeters/wmbusmeters/releases?per_page=100
+    - https://github.com/wmbusmeters/wmbusmeters
+    - https://github.com/wmbusmeters/wmbusmeters-ha-addon
+    - https://github.com/wmbusmeters/wmbusmeters/releases
+    - https://wmbusmeters.org/
   repo-sources:
-    - >
-      source_facts.repo already provides the official repository, so repo is returned as
-      null per instructions.
+    - source_facts.repo already populated; history-only worker returned null per batch rule
   tags-sources:
-    - >
-      source_facts.description and official README describe wired/wireless M-Bus meter
-      acquisition, driver decoding, and publishing via MQTT, REST, database, or logs.
+    - current_curation.tags
+    - https://github.com/wmbusmeters/wmbusmeters
 category-confidence: high
 category-path:
   - system
-  - monitoring
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

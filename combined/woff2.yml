@@ -6,6 +6,83 @@ docs:
   - https://github.com/google/woff2#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      WOFF2 moved from an optimization experiment into the default web-font format
+      because it could be deployed alongside WOFF 1.0 in normal CSS. The W3C Evaluation
+      Report explained that @font-face can list WOFF2 first and WOFF as a fallback
+      without user-agent sniffing, and the current Recommendation states that WOFF2 is
+      implemented in all major browsers and widely used on production websites.
+    - >
+      The format's adoption was tied to measurable compression gains. The W3C Evaluation
+      Report found Brotli-based WOFF2 had median gains of about 23.94% over WOFF1 on the
+      Google Fonts TrueType corpus and 26.79% on an Adobe TrueType corpus, while keeping
+      memory and decompression cost within the constraints needed for web deployment.
+  package-nerd-significance:
+    - >
+      The package is important because it gives distributions a small, standalone
+      implementation of a core web platform format. It is used by font build pipelines,
+      web asset optimizers, browser tests, and packaging workflows that need
+      reproducible conversion between OpenType fonts and the compressed format browsers
+      actually fetch.
+  project-history:
+    - >
+      The W3C publication history records WOFF2's First Public Working Draft on 8 May
+      2014, Working Draft in 2015, Candidate Recommendation Snapshot in 2016, Proposed
+      Recommendation in January 2018, and Recommendation on 1 March 2018, with later
+      Recommendation updates in 2021, 2022, and 2024. The current W3C Recommendation
+      says WOFF2 was developed from experience with widely deployed WOFF 1.0 and was
+      designed to reduce network bandwidth while keeping decompression fast enough for
+      mobile devices.
+    - >
+      Google's woff2 repository was created in October 2014 and provides the font
+      compression reference code. Its README separates the Brotli reference code from
+      the C++ font compression and decompression code, and the repository's releases
+      show 1.0.0 and 1.0.1 in October 2017 followed by 1.0.2 in November 2017, just
+      before the format reached W3C Recommendation status.
+  related-projects:
+    - >
+      WOFF 1.0 is WOFF2's predecessor and remains the fallback format in many historical
+      CSS examples.
+    - >
+      Brotli is the entropy-coding layer used by WOFF2; the W3C Recommendation records
+      Google's royalty-free licensing commitment for Brotli use in the specification.
+    - >
+      FontTools implements WOFF2 support in Python and is listed in the W3C
+      implementation report alongside Google's C++ woff2 implementation.
+  sources:
+    - https://api.github.com/repos/google/woff2
+    - https://api.github.com/repos/google/woff2/releases?per_page=100
+    - https://github.com/google/woff2
+    - https://w3c.github.io/woff/woff2/ImpRpt/
+    - https://www.w3.org/Fonts/WG/WOFF2ER/
+    - https://www.w3.org/TR/WOFF2/
+    - https://www.w3.org/standards/history/WOFF2/
+  summary:
+    - >
+      WOFF2 is both a W3C web-font packaging standard and, in package-manager form,
+      Google's reference C++ encoder/decoder utilities for the format. The format
+      improves on WOFF 1.0 by combining font-aware preprocessing with Brotli compression
+      so web fonts can be transferred more compactly while remaining suitable for CSS
+      @font-face deployment.
+  timeline:
+    - >
+      2014: WOFF2 First Public Working Draft published by W3C and Google's woff2
+      repository created.
+    - >
+      2016: WOFF 2.0 Evaluation Report published as a W3C Working Group Note, comparing
+      compression candidates and deployment constraints.
+    - '2017: Google woff2 1.0.x releases published.'
+    - '2018: WOFF2 became a W3C Recommendation.'
+    - '2024: W3C published an updated WOFF2 Recommendation and implementation report material.'
+  usage:
+    - >
+      Package users normally run woff2_compress to convert TTF or OTF fonts into .woff2
+      files, woff2_decompress to round-trip them back to OpenType/SFNT data, and
+      woff2_info to inspect the package. Web developers then reference .woff2 files from
+      CSS @font-face rules, often with older formats as fallbacks only when legacy
+      browser support is required.
 category: developer-tools
 package-manager:
   apk: libwoff2common
