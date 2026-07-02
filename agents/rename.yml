@@ -6,6 +6,43 @@ docs:
   - https://github.com/ap/rename#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    `rename` is a Perl-powered batch file renamer in a crowded namespace: several Unix
+    distributions ship different commands named `rename`. The Homebrew package points to
+    Aristotle Pagaltzis's `ap/rename` implementation and describes it as a Perl-powered
+    file rename script with built-ins, while Debian's `rename` package follows the
+    File::Rename/Perl lineage maintained on CPAN.
+  - >
+    The Perl lineage goes back to the classic idea of applying Perl code to each
+    filename. The `ap/rename` manual credits Larry Wall and Robin Barker for the idea,
+    inspiration, and original code, and exposes the core model directly: each filename
+    is placed in `$_`, transformation expressions run over it, and files are renamed
+    only when the result changes. CPAN's File::Rename distribution has release records
+    from 0.01 on 2005-04-19 through 2.02 on 2023-12-30, with Robin Barker as
+    author/maintainer.
+  - >
+    Aristotle Pagaltzis's script adds a more application-like command-line interface
+    around that Perl model. Its manual documents dry runs, interactive overwrite
+    prompting, hardlink and symlink modes, path creation, NUL-delimited input for `find
+    -print0`, ordered transforms, extension-preserving operations, counters, case
+    conversion, sanitizing helpers, URL escape decoding, and the ability to load CPAN
+    modules with `-M` for specialized transformations.
+  - >
+    The command's practical use is shell-side bulk renaming where regular expressions or
+    small Perl snippets are faster than a custom script. Users run dry-run mode before
+    destructive operations, combine it with globs or `find`, normalize case and
+    whitespace, preserve extensions while numbering files, or move files into generated
+    subdirectories. The name collision with util-linux `rename` makes documentation and
+    packaging important: scripts often assume the Perl behavior and fail under the
+    simpler util-linux substitution command.
+  - >
+    Distribution history reflects that split. Debian imported upstream `rename` 1.00 on
+    2018-07-27, noted in 2020 that `rename` was no longer provided by Perl, and packaged
+    File::Rename 2.02 in 2024. Homebrew packages the `ap/rename` 1.601 script with the
+    same Perl-family license terms as Perl itself. Together those packages preserve a
+    small but heavily used Unix convenience command for people who know enough Perl to
+    make filename transformations concise.
 tags:
   - cli
   - file-renaming
@@ -21,6 +58,13 @@ provenance:
     - >
       source_facts.homepage is the official rename page; official GitHub repository
       README is also available.
+  history-sources:
+    - https://formulae.brew.sh/formula/rename
+    - https://github.com/ap/rename
+    - https://raw.githubusercontent.com/ap/rename/master/rename
+    - https://metacpan.org/pod/File%3A%3ARename
+    - https://metadata.ftp-master.debian.org/changelogs/main/r/rename/rename_2.02-1_changelog
+    - https://github.com/tldr-pages/tldr/issues/3125
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/ap/rename; repo returned
@@ -34,5 +78,6 @@ category-path:
   - system
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
