@@ -7,6 +7,32 @@ docs:
 config-file-location:
   unix: deprecated-versions.yaml
 credentials-file-location: null
+history:
+  - >
+    This package is Fairwinds' Kubernetes tool Pluto, not the Julia notebook project.
+    FairwindsOps created the GitHub repository on 2020-03-24, shortly after Kubernetes
+    1.16 made API deprecations a major upgrade issue. The README frames Pluto as a
+    utility for finding deprecated Kubernetes apiVersions in code repositories and Helm
+    releases.
+  - >
+    Pluto's origin problem is Kubernetes API conversion: asking the API server for an
+    object can return a newer apiVersion even when the object was originally applied
+    with a deprecated one. Pluto therefore scans places where the old apiVersion may
+    still be visible: static manifests, Helm charts, Helm 2 and Helm 3 releases, and
+    cluster annotations such as last-applied-configuration.
+  - >
+    Its ecosystem role is cluster-upgrade hygiene. Operators run commands such as
+    detect-files in CI or locally before a Kubernetes upgrade, add the GitHub Action to
+    workflows, or use it with Fairwinds' broader Kubernetes toolchain. Pluto
+    distinguishes deprecated from removed API versions and recommends replacement
+    versions, turning Kubernetes deprecation policy into a report that can block or
+    guide remediation.
+  - >
+    The release stream shows continuing maintenance around Kubernetes version data,
+    supply-chain packaging, and container distribution. v5.23.0 updated the versions
+    list for Kubernetes 1.33-1.35; v5.24.0 moved images from quay.io/fairwinds/pluto to
+    us-docker.pkg.dev/fairwinds-ops/oss/pluto, made tags immutable, and documented
+    signed images.
 category: cloud-infrastructure
 package-manager:
   brew: pluto
@@ -26,5 +52,15 @@ executables:
   - pluto
 provenance:
   formula: pluto
+  history-sources:
+    - https://github.com/FairwindsOps/pluto
+    - https://api.github.com/repos/FairwindsOps/pluto
+    - https://pluto.docs.fairwinds.com/
+    - >
+      https://www.fairwinds.com/blog/pluto-finds-deprecated-kubernetes-api-versions-3-questions
+    - https://github.com/FairwindsOps/pluto/releases/tag/v5.23.0
+    - https://github.com/FairwindsOps/pluto/releases/tag/v5.24.0
+    - https://formulae.brew.sh/formula/pluto
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
