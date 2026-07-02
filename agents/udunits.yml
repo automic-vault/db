@@ -6,6 +6,95 @@ docs:
   - https://www.unidata.ucar.edu/software/udunits
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      UDUNITS is part of the broader Unidata scientific software ecosystem, alongside
+      tools such as netCDF. Its adoption pattern is typical of scientific infrastructure
+      packages: it is rarely the end-user application, but it becomes a dependency below
+      weather, climate, geoscience, and data-processing software that need consistent
+      physical-unit parsing and conversion.
+    - >
+      The package-manager metadata in this batch shows the same infrastructure role
+      across Unix-like ecosystems: Homebrew ships `udunits`, Debian and Ubuntu expose
+      `libudunits2-0`, Fedora uses `udunits2`, and MacPorts and Nix also package it.
+      That spread reflects a library that downstream scientific stacks expect to find
+      from the system package manager.
+  package-nerd-significance:
+    - >
+      UDUNITS is a classic scientific packaging dependency: small on the command line,
+      important in ABI/API terms, and easy to overlook until a build of a larger
+      scientific tool fails because unit parsing is missing. Its value to package nerds
+      is that it externalizes a shared, curated unit database and conversion library
+      instead of duplicating unit logic in every project.
+    - >
+      The package is also interesting because it straddles eras. It keeps compatibility
+      with older UDUNITS-1 users while presenting a UDUNITS-2 API and XML database, so
+      distribution maintainers care about headers, shared-library paths, data-file
+      locations, and versioned downstream expectations.
+  project-history:
+    - >
+      The current UDUNITS-2 line replaced the original UDUNITS-1 implementation while
+      preserving broad compatibility. The official manual describes UDUNITS-2 as a C
+      library, the `udunits2` unit-definition and conversion utility, and an extensive
+      XML database of units.
+    - >
+      UDUNITS-2 changed the older package in several concrete ways: non-ASCII unit
+      strings, logarithmic units, persistent value converters, a revised API, and an XML
+      unit database with import support. The manual also notes that a version 1 C API is
+      included for backward compatibility, making it a transition package as well as a
+      new implementation.
+    - >
+      The changelog shows the project continuing through many 2.1 and 2.2 releases, with
+      work on the command-line utility, Windows and CMake builds, unit database
+      corrections, timestamp parsing, and portability fixes. Version 2.2.28 was
+      published in December 2020 with documentation and release-engineering changes.
+  related-projects:
+    - >
+      UDUNITS is published by NSF Unidata/UCAR and sits near other Unidata tools such as
+      netCDF in scientific data workflows.
+    - >
+      The original UDUNITS-1 package is directly related: UDUNITS-2 documents both
+      differences from UDUNITS-1 and a compatibility C API.
+  sources:
+    - >
+      The official CHANGE_LOG in the repository records 2.1.x, 2.2.x, and 2.2.28 release
+      details.
+    - >
+      https://docs.unidata.ucar.edu/udunits/current/ describes UDUNITS-2, its
+      components, differences from UDUNITS-1, XML database, installation, and support.
+    - >
+      https://github.com/Unidata/UDUNITS-2 is the official repository and describes the
+      package as an API and utility for arithmetic manipulation of physical units.
+    - >
+      https://www.unidata.ucar.edu/software/udunits is the official product page for the
+      package.
+    - >
+      source_facts.package-manager lists package names across Homebrew, Debian, Fedora,
+      MacPorts, Nix, Ubuntu, and openSUSE.
+  summary:
+    - >
+      UDUNITS is NSF Unidata's package for representing, manipulating, and converting
+      units of physical quantities. It matters in package-manager culture because it is
+      both a C library and a small command-line utility, so higher-level scientific
+      packages can depend on it without each carrying its own unit database.
+  timeline:
+    - '2009: UDUNITS-2 2.1.0 added a UDUNITS-1 compatibility API inside the new library.'
+    - '2011: The official GitHub repository was created.'
+    - >
+      2014: UDUNITS-2 2.2.x development focused on documentation, CMake, Windows
+      support, and unit database fixes.
+    - '2020-12-28: UDUNITS 2.2.28 was published.'
+  usage:
+    - >
+      Library users call UDUNITS to parse unit strings, obtain binary unit
+      representations, manipulate units arithmetically, and build converters between
+      compatible units. Command-line users use `udunits2` to inspect unit definitions
+      and convert numeric values.
+    - >
+      The XML unit database is a central usage point. The official documentation lists
+      separate XML files for SI prefixes, SI base and derived units, SI-accepted units,
+      and common non-SI units, and explains that the database is user-extensible.
 tags:
   - c
   - cli
@@ -24,27 +113,45 @@ geiger:
 provenance:
   category-sources:
     - >
-      official UDUNITS documentation describes a library and utility for units of
-      physical quantities
-    - source_facts.description says Unidata unit conversion library
+      Official Unidata docs describe units of physical quantities and scientific unit
+      conversion.
+    - source_facts.description
   display-name-sources:
-    - official Unidata documentation title uses UDUNITS
-    - source_facts.name is udunits
+    - 'Official product page title: UDUNITS.'
   docs-sources:
-    - official UDUNITS manual links the Unidata package homepage
-    - source_facts.homepage points to official Unidata current documentation
+    - Official documentation at https://docs.unidata.ucar.edu/udunits/current
+    - Official product page at https://www.unidata.ucar.edu/software/udunits
+    - source_facts.homepage
+  history-sources:
+    - >
+      The official CHANGE_LOG in the repository records 2.1.x, 2.2.x, and 2.2.28 release
+      details.
+    - >
+      https://docs.unidata.ucar.edu/udunits/current/ describes UDUNITS-2, its
+      components, differences from UDUNITS-1, XML database, installation, and support.
+    - >
+      https://github.com/Unidata/UDUNITS-2 is the official repository and describes the
+      package as an API and utility for arithmetic manipulation of physical units.
+    - >
+      https://www.unidata.ucar.edu/software/udunits is the official product page for the
+      package.
+    - >
+      source_facts.package-manager lists package names across Homebrew, Debian, Fedora,
+      MacPorts, Nix, Ubuntu, and openSUSE.
   repo-sources:
     - >
-      source_facts.repo is empty; official Unidata GitHub repository is named UDUNITS-2
-      and describes the units API and utility
+      Official GitHub repository metadata and Unidata project references identify
+      https://github.com/Unidata/UDUNITS-2.
   tags-sources:
-    - official UDUNITS documentation describes C library and unit conversion utility
-    - source_facts.executables lists udunits2 CLI
+    - >
+      Official docs describe a C library, command-line utility, XML unit database, and
+      unit conversion.
+    - source_facts.executables
 category-confidence: high
 category-path:
   - science
-  - units
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

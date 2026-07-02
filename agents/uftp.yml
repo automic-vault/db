@@ -8,6 +8,87 @@ docs:
   - https://uftp-multicast.sourceforge.net/server_usage.txt
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official description is unusually specific about adoption niche: UFTP is
+      useful when the same large file must reach many receivers, and particularly useful
+      across satellite links with two-way communication. That points to broadcast-style
+      and high-latency distribution environments rather than ordinary one-to-one FTP
+      replacement.
+    - >
+      The package-manager metadata shows UFTP available through Homebrew, Debian, Nix,
+      Ubuntu, and openSUSE naming. That distribution footprint fits a specialized
+      networking tool that operators may want to install on both senders and receivers
+      without building from source.
+  package-nerd-significance:
+    - >
+      For package nerds, UFTP is the rare maintained command-line multicast transfer
+      suite. It packages protocol machinery that would otherwise require bespoke
+      operations code: sender, receiver daemon, proxy, key management, OpenSSL/CNG
+      integration, and cross-platform builds.
+    - >
+      Its release table and compatibility notes make it useful to distributions because
+      deployments can mix clients, servers, and proxies across versions. The official
+      page notes that version 5.x clients and proxies are backward compatible with 4.x
+      servers.
+  project-history:
+    - >
+      UFTP is hosted on SourceForge and has a long public release table spanning older
+      3.x and 4.x lines through the current 5.x line. The 5.x documentation set includes
+      protocol details, server usage, client usage, proxy usage, and key-management
+      utility usage.
+    - >
+      The project is more than a single sender binary. The installed suite includes a
+      server, client daemon, proxy daemon, and key-management utility, reflecting the
+      protocol's focus on large fan-out transfers, encryption setup, retransmission, and
+      proxy aggregation.
+  related-projects:
+    - >
+      The UFTP protocol documentation references TFMCC/RFC 4654 for congestion control
+      and TLS 1.3/RFC 8446 concepts for key exchange and encryption setup.
+    - >
+      The suite includes `uftp`, `uftpd`, `uftpproxyd`, and `uftp_keymgt` as related
+      command-line programs.
+  sources:
+    - >
+      https://uftp-multicast.sourceforge.net/ describes the project, satellite-link use
+      case, proxy support, documentation set, platform support, releases, and 5.x/4.x
+      compatibility note.
+    - >
+      https://uftp-multicast.sourceforge.net/protocol.txt documents session phases,
+      retransmission, proxies, congestion control, and encryption setup.
+    - >
+      https://uftp-multicast.sourceforge.net/server_usage.txt documents server command
+      behavior and operational options.
+    - >
+      source_facts.package-manager lists Homebrew, Debian, Nix, Ubuntu, and openSUSE
+      package names.
+  summary:
+    - >
+      UFTP is an encrypted UDP-based multicast file transfer suite. Its official page
+      describes the target use case as secure, reliable, efficient distribution of files
+      to multiple receivers, especially over satellite links where TCP performs poorly
+      because of delay.
+  timeline:
+    - '2010-03-11: UFTP 3.0 release listed on the official download table.'
+    - '2013-04-27: UFTP 4.0 release listed on the official download table.'
+    - '2020-04-22: UFTP 5.0 release listed on the official download table.'
+    - '2023-12-17: UFTP 5.0.3 release and last site update listed on the official page.'
+  usage:
+    - >
+      A UFTP session has announce/register, file-transfer, and completion/confirmation
+      phases. The protocol sends file data as UDP blocks, lets clients report missing
+      blocks with NAKs, and has the server retransmit the missing data.
+    - >
+      The server command sends one or more files to one or more receivers via multicast
+      with optional encryption. The documentation exposes operational controls for
+      transmission rate, buffers, multicast TTL, DSCP, encryption algorithms, host
+      lists, proxies, restart files, and logging.
+    - >
+      UFTP also supports proxy servers for disjoint networks, NAT traversal, multicast
+      tunneling, and response aggregation, which is central to scaling sender/receiver
+      communication.
 tags:
   - cli
   - encryption
@@ -27,30 +108,41 @@ geiger:
     - text:ftp
 provenance:
   category-sources:
-    - official UFTP page describes encrypted multicast file transfer
-    - source_facts.description says secure multicast file transfer program
+    - Official UFTP page describes encrypted multicast file transfer over UDP.
+    - source_facts.description
   display-name-sources:
-    - official project page title is UFTP - Encrypted UDP based FTP with multicast
-    - source_facts.name is uftp
+    - 'Official page title: UFTP - Encrypted UDP based FTP with multicast.'
   docs-sources:
+    - Official UFTP docs link protocol, server, client, proxy, and key management text files.
+    - source_facts.homepage
+  history-sources:
     - >
-      official UFTP page has Documentation section for protocol, server, client, proxy,
-      and key-management usage
-    - source_facts.homepage points to official UFTP project page
+      https://uftp-multicast.sourceforge.net/ describes the project, satellite-link use
+      case, proxy support, documentation set, platform support, releases, and 5.x/4.x
+      compatibility note.
+    - >
+      https://uftp-multicast.sourceforge.net/protocol.txt documents session phases,
+      retransmission, proxies, congestion control, and encryption setup.
+    - >
+      https://uftp-multicast.sourceforge.net/server_usage.txt documents server command
+      behavior and operational options.
+    - >
+      source_facts.package-manager lists Homebrew, Debian, Nix, Ubuntu, and openSUSE
+      package names.
   repo-sources:
     - >
-      Official UFTP SourceForge website documents downloads and usage, but no official
-      HTTP source-control repository was found.
+      Official UFTP page hosts source archives on SourceForge but does not expose an
+      official HTTP(S) source-control repository URL.
   tags-sources:
     - >
-      official UFTP page describes encrypted multicast transfer, TLS-based keying, NAT
-      traversal, and proxy support
-    - source_facts.executables lists uftp, uftpd, uftpproxyd, and uftp_keymgt
+      Official UFTP page and protocol docs describe UDP multicast, encryption, proxies,
+      and file transfer.
+    - source_facts.executables
 category-confidence: high
 category-path:
   - networking
-  - file-transfer
 display-name-confidence: high
 docs-confidence: high
-repo-confidence: medium
+history-confidence: high
+repo-confidence: high
 tags-confidence: high
