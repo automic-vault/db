@@ -10,6 +10,79 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.twitch-cli/.twitch-cli.env
+history:
+  adoption-history:
+    - >
+      The CLI's adoption is tied to Twitch's developer ecosystem rather than
+      general-purpose programming. Twitch's own community resources list it as the
+      official CLI, created by Twitch and contributors, for testing API calls, mock
+      APIs, EventSub WebSocket servers, and mock EventSub payloads.
+    - >
+      Package-manager adoption follows that developer support path: Homebrew and Scoop
+      are documented by Twitch as installation methods, while the input facts also show
+      availability through Nix and Windows package channels.
+  package-nerd-significance:
+    - >
+      Twitch CLI is significant to package nerds because it turns a vendor API platform
+      into a locally scriptable test harness. It is not just a convenience wrapper
+      around HTTP calls; it also packages mock state, OAuth token flows, webhook signing
+      behavior, and EventSub simulations.
+    - >
+      Its official Homebrew and Scoop instructions show the package-manager role
+      clearly: Twitch wanted developers to install and update the tool through familiar
+      package workflows instead of copying binaries by hand.
+  project-history:
+    - >
+      Twitch announced the CLI on 2020-12-17 after Developer Day, alongside EventSub.
+      The initial rationale was practical: developers needed a supported way to test
+      webhook/EventSub migrations locally, generate tokens, and query Twitch APIs
+      without building staging servers or relying on extra tunneling tools.
+    - >
+      From the start, Twitch framed the CLI as a Twitch-supported open-source project on
+      GitHub, intended to accept community contributions and grow into additional
+      EventSub and developer-product support. The current official docs describe
+      installation through Homebrew on macOS/Linux, Scoop on Windows, and manual release
+      downloads.
+  related-projects:
+    - Twitch EventSub is the main API product that motivated the CLI's event-testing features.
+    - Twitch Developer Day introduced the products around which the CLI was announced.
+    - >
+      Homebrew, Scoop, and the twitchdev GitHub organization are the main packaging and
+      source distribution channels.
+  sources:
+    - 'Official Twitch CLI docs: https://dev.twitch.tv/docs/cli/'
+    - >
+      Official WebSocket EventSub testing docs:
+      https://dev.twitch.tv/docs/cli/websocket-event-command
+    - 'Official mock API docs: https://dev.twitch.tv/docs/cli/mock-api-command'
+    - >
+      Twitch announcement blog:
+      https://blog.twitch.tv/en/2020/12/17/introducing-the-twitch-command-line-interface-tool/
+    - 'Twitch community resources: https://dev.twitch.tv/code/'
+  summary:
+    - >
+      Twitch CLI is Twitch's official command-line tool for Twitch developer workflows.
+      It packages API calls, OAuth token generation, mock API data, and EventSub testing
+      into a single `twitch` executable.
+  timeline:
+    - '2020-12-17: Twitch announces the official Twitch CLI in open beta.'
+    - '2021: Official docs show mock API generation examples and local server workflows.'
+    - >
+      2020s: Official docs list Homebrew, Scoop, and manual releases as supported
+      installation paths.
+    - >
+      2020s: Twitch documents EventSub WebSocket simulation and mock subscription
+      endpoints in the CLI.
+  usage:
+    - >
+      Typical use starts with `twitch configure`, which stores a client ID and client
+      secret in the default config file, then uses commands such as `twitch token`,
+      `twitch api`, `twitch mock-api`, and `twitch event`.
+    - >
+      For local development, users generate mock data with `twitch mock-api generate`,
+      start a mock server on localhost, trigger webhook events, and test EventSub
+      WebSocket client behavior including subscriptions, reconnects, close messages, and
+      status changes.
 tags:
   - api
   - cli
@@ -28,27 +101,39 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - Official GitHub README describes Twitch CLI as the official Twitch CLI for developers.
-    - source_facts.description says it is a CLI to make developing on Twitch easier.
+    - >
+      Official docs describe managing Twitch resources, API calls, tokens, mock API, and
+      EventSub testing.
+    - source_facts.description
   display-name-sources:
-    - Official GitHub README title is Twitch CLI.
-    - source_facts.name is twitch-cli.
+    - 'Official docs title: https://dev.twitch.tv/docs/cli/'
   docs-sources:
-    - Official GitHub README documents installation, usage, commands, and configuration.
-    - Official Twitch developer documentation has a Twitch CLI section.
+    - 'Official Twitch CLI docs: https://dev.twitch.tv/docs/cli/'
+    - current_curation.docs
+  history-sources:
+    - 'Official Twitch CLI docs: https://dev.twitch.tv/docs/cli/'
+    - >
+      Official WebSocket EventSub testing docs:
+      https://dev.twitch.tv/docs/cli/websocket-event-command
+    - 'Official mock API docs: https://dev.twitch.tv/docs/cli/mock-api-command'
+    - >
+      Twitch announcement blog:
+      https://blog.twitch.tv/en/2020/12/17/introducing-the-twitch-command-line-interface-tool/
+    - 'Twitch community resources: https://dev.twitch.tv/code/'
   repo-sources:
     - >
-      source_facts.repo already contains https://github.com/twitchdev/twitch-cli, so
-      repo is returned as null per instruction.
+      source_facts.repo already provided; prompt requires repo:null rather than
+      re-determining it.
   tags-sources:
-    - Official README lists API, EventSub, token, mock-api, and configure commands.
-    - source_facts.description identifies a Twitch developer CLI.
+    - >
+      Official docs and Twitch community resources identify API, CLI, EventSub,
+      OAuth/token, and Twitch developer use.
+    - source_facts.description
 category-confidence: high
 category-path:
   - developer-tools
-  - api-tools
-  - twitch
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
