@@ -6,6 +6,92 @@ docs:
   - https://github.com/google/zopfli#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Zopfli spread first through web-performance and asset-optimization workflows,
+      where build time is cheaper than bandwidth. Because it emits standard Deflate
+      streams, users could precompress static assets and serve them through existing
+      HTTP and archive tooling without changing client decompression support.
+    - >
+      ZopfliPNG extended the same idea into image optimization: PNG files already use
+      Deflate internally, so better Deflate choices can shrink files without changing
+      the image format. That made the package especially interesting to people tuning
+      websites, fonts, archives, and static downloadable assets.
+  package-nerd-significance:
+    - >
+      Zopfli is a perfect package-nerd tool because it is small, sharp, and
+      intentionally asymmetric: slow compression, standard decompression. It rewards
+      users who understand build artifacts, static hosting, and the difference between a
+      file format and an encoder.
+    - >
+      It also sits in a recognizable Google compression lineage with Brotli and later
+      web-compression work, but unlike Brotli it did not ask the ecosystem to adopt a
+      new wire format. That compatibility is why it still shows up as a practical CLI
+      package.
+  project-history:
+    - >
+      Google announced Zopfli in February 2013 as an open-source implementation of
+      Deflate designed to produce smaller output than previous techniques. The name came
+      from a Swiss bread recipe, but the engineering idea was serious: spend much more
+      CPU time during compression while keeping decompression speed and compatibility
+      unchanged.
+    - >
+      The GitHub project describes Zopfli as a C compression library for very good but
+      slow Deflate or zlib compression, created by Lode Vandevenne and Jyrki Alakuijala
+      and based on Alakuijala's algorithm. The repository also contains the zopfli CLI
+      and zopflipng, a PNG optimizer built around the same Deflate search.
+  related-projects:
+    - >
+      zlib: the ubiquitous Deflate implementation whose output compatibility made Zopfli
+      practical.
+    - 'gzip and ZIP: container formats that can benefit from better Deflate streams.'
+    - 'zopflipng: the PNG optimizer shipped with the Zopfli project.'
+    - >
+      Brotli: a later Google compression format with stronger web adoption but different
+      compatibility tradeoffs.
+    - >
+      AdvanceCOMP and OxiPNG: PNG/archive optimization tools in the neighboring
+      lossless-compression niche.
+  sources:
+    - https://developers.googleblog.com/compress-data-more-densely-with-zopfli/
+    - https://github.com/google/zopfli
+    - https://github.com/google/zopfli/blob/master/README.zopflipng
+    - https://opensource.googleblog.com/2013/02/compress-data-more-densely-with-zopfli.html
+    - https://opensource.googleblog.com/2015/09/introducing-brotli-new-compression.html
+  summary:
+    - >
+      Zopfli is Google's deliberately slow, very dense Deflate-compatible compressor. It
+      matters because its output can be read by ordinary gzip, zlib, ZIP, PNG, and HTTP
+      Deflate consumers, making it a packageable optimization step rather than a new
+      compression format users must support.
+  timeline:
+    - >
+      2013: Google announces Zopfli as an open-source, Deflate-compatible compressor
+      optimized for smaller output.
+    - >
+      2013: The reference implementation is published in C by Lode Vandevenne and Jyrki
+      Alakuijala.
+    - >
+      2013: ZopfliPNG appears as a PNG optimization tool using Zopfli compression for
+      PNG Deflate streams.
+    - >
+      2010s: Zopfli becomes a build-time optimization option for static web assets,
+      archives, PNGs, and other Deflate-based formats.
+    - >
+      2015: Brotli appears as a related Google compression project aimed at a newer web
+      compression format rather than Deflate compatibility.
+  usage:
+    - >
+      The zopfli executable is best used offline: compress a file once, keep the smaller
+      gzip/zlib/deflate result, and let normal clients decompress it. It is usually a
+      poor choice for live request-time compression because the whole point is spending
+      extra CPU to find a smaller representation.
+    - >
+      zopflipng is the companion CLI for PNGs. It tries Zopfli Deflate plus PNG-specific
+      filter and color choices, and it may remove ancillary chunks that are not needed
+      for typical web rendering, so visual checks and metadata awareness matter when
+      using it in asset pipelines.
 category: developer-tools
 package-manager:
   apk: zopfli

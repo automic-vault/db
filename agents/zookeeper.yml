@@ -7,6 +7,96 @@ config-file-location:
   unix:
     - conf/zoo.cfg
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      ZooKeeper became deeply associated with the Hadoop generation of infrastructure
+      because projects such as Hadoop, HBase, Kafka, SolrCloud, and other distributed
+      systems used it to coordinate cluster state. The Apache ZooKeeper site still
+      describes it as trusted by Kafka, Hadoop, HBase, and many other distributed
+      systems.
+    - >
+      The project's own PoweredBy page records adoption across companies and Apache
+      projects for leader election, service discovery, sharding, locking, group
+      membership, and configuration management. In the 2020s, Kafka's move toward KRaft
+      reduced one famous dependency, but ZooKeeper remains an active Apache project and
+      still appears in older Kafka deployments and other distributed stacks.
+  package-nerd-significance:
+    - >
+      ZooKeeper is package-nerd significant because it explains why so many distributed
+      packages ship with zk-prefixed tools, conf/zoo.cfg examples, and operational
+      advice about ensembles. For years, installing parts of the big-data stack meant
+      also understanding ZooKeeper.
+    - >
+      It also marks a historical transition in open-source infrastructure packaging:
+      distributed systems stopped being single daemons and became small constellations
+      of daemons, CLIs, config files, and service dependencies. ZooKeeper was often the
+      coordination daemon in that constellation.
+  project-history:
+    - >
+      ZooKeeper was developed at Yahoo to simplify coordination problems in large
+      distributed systems. The 2010 USENIX paper by Hunt, Konar, Junqueira, and Reed
+      describes it as a high-performance coordination kernel rather than a full
+      application framework: clients build locks, leader election, group membership, and
+      configuration patterns on top of a small, ordered data model.
+    - >
+      The project moved into the Apache ecosystem through Hadoop and later became a
+      top-level Apache project. Its model of znodes in a hierarchical namespace made it
+      familiar to Unix-minded operators, while the ensemble architecture made it
+      reliable enough for service discovery and cluster metadata in production systems.
+  related-projects:
+    - >
+      Google Chubby: an earlier lock service often discussed as a conceptual predecessor
+      for distributed coordination services.
+    - >
+      Apache Curator: a higher-level Java client and recipe library built to make
+      ZooKeeper applications easier to write.
+    - >
+      etcd and Consul: later coordination/service-discovery systems that occupy adjacent
+      operational territory.
+    - >
+      Apache Kafka, HBase, SolrCloud, Hadoop, and NiFi: distributed systems historically
+      associated with ZooKeeper deployments.
+  sources:
+    - https://cwiki.apache.org/confluence/display/zookeeper/poweredby
+    - https://www.openlogic.com/blog/using-kafka-zookeeper
+    - https://www.usenix.org/legacy/event/atc10/tech/full_papers/Hunt.pdf
+    - https://zookeeper.apache.org/
+  summary:
+    - >
+      Apache ZooKeeper is one of the canonical packages for distributed coordination: a
+      replicated service that gives clustered applications naming, configuration,
+      synchronization, membership, watches, and ordered state changes. It came out of
+      Yahoo's large-scale infrastructure work and became a foundation block for much of
+      the Hadoop-era data stack.
+  timeline:
+    - >
+      2000s: Yahoo develops ZooKeeper for coordination problems in large distributed
+      infrastructure.
+    - >
+      Late 2000s: ZooKeeper moves through the Apache Hadoop ecosystem and gains use in
+      Hadoop-adjacent projects.
+    - >
+      2010: The USENIX ATC paper formalizes ZooKeeper as a wait-free coordination
+      service for Internet-scale systems.
+    - >
+      2010s: ZooKeeper becomes common infrastructure for Kafka, HBase, SolrCloud, Hadoop
+      deployments, and company service platforms.
+    - >
+      2020s: Some major users, especially Kafka, reduce or remove their ZooKeeper
+      dependency, while ZooKeeper itself remains maintained for coordination workloads.
+  usage:
+    - >
+      Operators run ZooKeeper as an odd-sized ensemble and connect applications through
+      client libraries or zkCli. Common package-level tasks include creating znodes for
+      configuration, watching paths for changes, tracking live members through ephemeral
+      nodes, and supporting recipes such as leader election, distributed locks,
+      barriers, and service discovery.
+    - >
+      The practical caution is that ZooKeeper is coordination infrastructure, not a
+      general database. It is strongest for small metadata, ordered updates, and
+      read-heavy coordination workloads; using it as bulk storage or chatty application
+      state works against the design.
 tags:
   - apache
   - cli
@@ -27,32 +117,25 @@ geiger:
     - text:server
 provenance:
   category-sources:
-    - >
-      Official Apache ZooKeeper docs describe it as a high-performance coordination
-      service for distributed applications.
-    - 'source_facts.description: Centralized server for distributed coordination of services.'
+    - https://zookeeper.apache.org/
   display-name-sources:
-    - Official Apache project and GitHub repository use Apache ZooKeeper.
-    - source_facts.homepage is the Apache ZooKeeper site.
+    - https://zookeeper.apache.org/
   docs-sources:
-    - >
-      Official Apache ZooKeeper documentation page contains current overview, getting
-      started, API docs, programmer guide, admin guide, CLI, and tools docs.
+    - https://zookeeper.apache.org/doc/current
+  history-sources:
+    - https://cwiki.apache.org/confluence/display/zookeeper/poweredby
+    - https://www.openlogic.com/blog/using-kafka-zookeeper
+    - https://www.usenix.org/legacy/event/atc10/tech/full_papers/Hunt.pdf
+    - https://zookeeper.apache.org/
   repo-sources:
-    - >
-      Official Apache GitHub repository is apache/zookeeper and its README points to
-      zookeeper.apache.org as the project website.
+    - https://zookeeper.apache.org/
   tags-sources:
-    - >
-      Official docs list naming, configuration management, synchronization, group
-      services, consensus, leader election, and presence protocols.
-    - source_facts.license is Apache-2.0 and homepage is zookeeper.apache.org.
+    - https://zookeeper.apache.org/
 category-confidence: high
 category-path:
   - data
-  - coordination
-  - distributed-systems
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
