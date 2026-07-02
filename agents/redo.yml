@@ -5,6 +5,37 @@ docs:
   - https://redo.readthedocs.io/en/latest
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    redo is a family of build systems based on Daniel J. Bernstein's published notes
+    titled 'Rebuilding target files when source files have changed.' Bernstein described
+    the core ideas: rebuilding target files atomically and treating honest
+    prerequisites, including build scripts and nonexistent files, as part of dependency
+    tracking. He did not publish a full implementation, which led several developers to
+    implement compatible or inspired versions.
+  - >
+    Avery Pennarun's implementation, often called apenwarr/redo, was announced in
+    December 2010 after he found Bernstein's design and wrote a Python implementation
+    with man pages, an installer, parallelism, locking, tests, checksum-based dependency
+    handling, and GNU make jobserver compatibility. The project describes itself as
+    smaller and more reliable than make, while preserving make's general-purpose nature
+    and replacing Makefile syntax with ordinary shell dofiles.
+  - >
+    Practitioners use redo by writing .do scripts for targets. A build rule can call
+    redo-ifchange to declare dependencies, redo-ifcreate to track files that did not
+    exist during the build, redo-stamp to rebuild when command output changes, and
+    redo-always for intentionally volatile targets. Dofiles receive the target name, a
+    basename, and a temporary output path, so successful builds can replace targets
+    atomically. The default.*.do search algorithm lets a small number of shell scripts
+    cover many generated files.
+  - >
+    redo's adoption has remained specialized, mostly among developers interested in
+    simple, auditable build logic, recursive project layouts, generated dependencies,
+    and make interoperability. The official documentation lists open source examples, an
+    experimental Buildroot variant, cookbook material for C++, containers, LaTeX, and
+    text processing, and multiple other redo implementations in shell, C, C++, Go,
+    Haskell, and other languages. Homebrew packages apenwarr/redo with the core redo
+    commands and helper utilities.
 tags:
   - automation
   - build-system
@@ -31,6 +62,13 @@ provenance:
     - >
       Official GitHub README links to documentation at redo.rtfd.io, which redirects to
       ReadTheDocs.
+  history-sources:
+    - https://cr.yp.to/redo.html
+    - https://apenwarr.ca/log/20101214
+    - https://redo.readthedocs.io/
+    - https://github.com/apenwarr/redo
+    - https://man.archlinux.org/man/redo.1.en
+    - https://formulae.brew.sh/formula/redo
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/apenwarr/redo; per
@@ -45,5 +83,6 @@ category-path:
   - build-system
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -10,6 +10,33 @@ config-file-location:
     - default.config
     - config/default.config
 credentials-file-location: null
+history:
+  - >
+    ReDex is Facebook's Android bytecode optimizer, implemented mainly in C++ and opened
+    in a GitHub repository created on 2016-03-24. Facebook first described the project
+    publicly in 2015 as a pipeline for optimizing Android `.dex` bytecode before APK
+    packaging, with transformations such as minification, inlining, dead-code removal,
+    and layout-oriented optimizations.
+  - >
+    Facebook open-sourced ReDex on 2016-04-12 after deploying it to Facebook for
+    Android. The launch post reported that the first ReDex-optimized Facebook Android
+    build shipped in November 2015, produced a 25 percent smaller app, and improved
+    startup times by up to 30 percent. That origin explains the project's niche: it was
+    not a general Java optimizer, but a post-dexing tool aimed at whole-application
+    Android binaries where bytecode layout and cross-class transformations matter.
+  - >
+    The project became a reusable optimizer framework as well as a command-line tool.
+    Its documentation describes ReDex as a framework for reading, writing, and analyzing
+    `.dex` files, with configurable optimization passes selected through JSON
+    configuration and invoked with commands such as `redex.py -c default.config -o
+    output.apk input.apk`.
+  - >
+    In the Android ecosystem, ReDex fits beside build-time shrinkers and obfuscators,
+    but it works after bytecode has been translated into dex form. Practitioners use it
+    experimentally or in production pipelines to reduce APK size, improve cold-start
+    behavior, inspect intermediate dex/IR state, and tune pass lists or blocklists when
+    an optimization conflicts with application behavior. Homebrew packages it as
+    `redex`, exposing `redex.py` for macOS and Linux developer workflows.
 category: developer-tools
 package-manager:
   brew: redex
@@ -26,5 +53,16 @@ executables:
   - redex.py
 provenance:
   formula: redex
+  history-sources:
+    - https://engineering.fb.com/2015/10/01/android/optimizing-android-bytecode-with-redex/
+    - >
+      https://engineering.fb.com/2016/04/12/android/open-sourcing-redex-making-android-apps-smaller-and-faster/
+    - https://github.com/facebook/redex
+    - https://api.github.com/repos/facebook/redex
+    - https://fbredex.com/
+    - https://fbredex.com/docs/getting_started/configuring/
+    - https://fbredex.com/docs/getting_started/usage/
+    - https://formulae.brew.sh/formula/redex
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
