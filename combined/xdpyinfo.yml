@@ -6,6 +6,78 @@ docs:
   - https://www.x.org/archive/X11R7.0/doc/html/xdpyinfo.1.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xdpyinfo's adoption is tied to X11 itself. Administrators, distribution
+      maintainers, build scripts, and users reach for it when they need to confirm that
+      an X server exists, that DISPLAY points to the intended server, what screens and
+      visuals are exposed, and which protocol extensions are present.
+    - >
+      The tool is packaged as part of the wider X.Org application set across Unix-like
+      systems. That packaging role matters because many higher-level desktop or graphics
+      issues reduce to 'what does this X server actually advertise?', and xdpyinfo
+      answers without requiring a full desktop environment.
+  package-nerd-significance:
+    - >
+      xdpyinfo is a tiny but durable example of why X.Org is packaged as many small
+      commands. Most users do not install it for daily interaction, but when a build,
+      remote display, visual depth, or extension check fails, it becomes the quickest
+      source of truth.
+    - >
+      It also preserves the X11 client/server worldview in command form: a local program
+      asks a display server what it can do, and the answer can be piped, pasted into bug
+      reports, or used to explain why another graphical package behaves differently on
+      two machines.
+  project-history:
+    - >
+      The X11R7.0 manual page credits Jim Fulton of the MIT X Consortium as author, with
+      later extension support added by Joe Moss. That places xdpyinfo in the classic X
+      client-tool tradition that predates modern X.Org packaging, then carried forward
+      into the modular X.Org source tree.
+    - >
+      X.Org's 2005 modularization split the old monolithic X Window System source into
+      individual modules for applications, libraries, drivers, fonts, protocol
+      descriptions, and related pieces. xdpyinfo became one of those independently
+      releasable app modules, with its freedesktop.org GitLab project now describing it
+      simply as a display information utility for X.
+  related-projects:
+    - xwininfo inspects individual X windows rather than server-wide capabilities.
+    - xprop prints X window and root-window properties.
+    - xrandr focuses on RandR output configuration and display modes.
+    - Xvfb is often used with xdpyinfo in headless test environments.
+  sources:
+    - https://gitlab.freedesktop.org/xorg/app/xdpyinfo
+    - https://lists.x.org/archives/xorg-announce/2013-May/002217.html
+    - https://www.x.org/ModuleDescriptions/
+    - https://www.x.org/Other/Press/X11R6970Released/
+    - https://www.x.org/archive/X11R7.0/doc/html/xdpyinfo.1.html
+  summary:
+    - >
+      xdpyinfo is the X.Org command-line utility for interrogating an X server and
+      printing its protocol, screen, visual, and extension capabilities. It is
+      old-school X plumbing: not a user-facing desktop app, but a diagnostic probe for
+      the display server behind one.
+  timeline:
+    - 'MIT X Consortium era: Jim Fulton authors xdpyinfo.'
+    - '2005: X11R7.0 ships as the first complete modularized X.Org source release.'
+    - '2010: xdpyinfo 1.2.0 is announced on xorg-announce.'
+    - '2013: xdpyinfo 1.3.1 adds a -version option in a maintenance release.'
+    - >
+      2018: The freedesktop.org GitLab project for the app module is created during
+      repository migration.
+    - '2025: The GitLab tag list records xdpyinfo 1.4.0.'
+  usage:
+    - >
+      Typical use is direct inspection: run xdpyinfo against the default DISPLAY, pass
+      -display for another server, use -queryExtensions to include numeric extension
+      opcode/event/error details, or use -ext to dump information for a supported
+      extension. It is often paired mentally with xwininfo, xprop, xrdb, xrandr, and
+      other small X11 inspection commands.
+    - >
+      Because it reports server capabilities rather than editing configuration, xdpyinfo
+      is safe to run in diagnostics, bug reports, CI environments using Xvfb, remote X
+      sessions, and package test scripts that need to verify extension availability.
 category: system
 package-manager:
   apk: xdpyinfo
