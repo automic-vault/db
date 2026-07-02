@@ -7,6 +7,79 @@ docs:
   - https://github.com/fanf2/unifdef#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The official homepage gives a concrete high-profile adoption example: the Linux
+      kernel uses unifdef to strip `#ifdef __KERNEL__` sections from headers exported to
+      userland. It also notes use outside C, including LaTeX workflows.
+    - >
+      The supplied package facts show broad distribution packaging across Homebrew,
+      Debian/Ubuntu, Fedora/DNF, Alpine, Arch, MacPorts, Nix, openSUSE, and others. That
+      matches the tool's age and purpose: it is small, portable, and useful in build and
+      source-export pipelines.
+  package-nerd-significance:
+    - >
+      unifdef is important in the package-nerd niche because it is both tiny and
+      historically deep: a BSD-era tool still used for practical source filtering. It
+      belongs in base-system and package-manager collections because build scripts and
+      source-export tasks can depend on it without pulling in a large toolchain beyond
+      normal C build support.
+    - >
+      Its Linux-kernel header-export use case is exactly the kind of quiet
+      infrastructure job package maintainers care about: remove implementation-only
+      conditional sections, preserve line-oriented source structure, and keep generated
+      user-facing source understandable.
+  project-history:
+    - >
+      unifdef is much older than its GitHub mirror. The official manual states that the
+      command appeared in 2.9BSD, and that ANSI C support was added in FreeBSD 4.7. It
+      also credits the original implementation to Dave Yost and Tony Finch's rewrite for
+      ANSI C support.
+    - >
+      Tony Finch's official project page explains the modern motivation: understanding
+      `xterm`'s heavily conditionalized pty-handling code. That places unifdef in the
+      Unix source-reading and source-cleanup tradition rather than in general-purpose
+      preprocessing.
+    - >
+      The current project page publishes release archives, manual documentation, a
+      browsable source repository, and a GitHub collaboration mirror. The GitHub README
+      warns that GitHub release downloads are incomplete and points users back to the
+      official dotat.at release files, which is useful context for packagers.
+  related-projects:
+    - The manual lists `cpp(1)` and `diff(1)` as related tools.
+    - The official page cites Linux kernel header export as a real-world use.
+    - The official page also mentions use with LaTeX, showing text-mode uses outside C.
+  sources:
+    - https://dotat.at/prog/unifdef/
+    - https://dotat.at/prog/unifdef/unifdef.txt
+    - https://github.com/fanf2/unifdef#readme
+    - input.source_facts.package-manager
+  summary:
+    - >
+      unifdef is a source-filtering utility that selectively removes C preprocessor
+      conditionals. The official manual says it processes `#if`, `#ifdef`, `#ifndef`,
+      `#elif`, `#else`, and `#endif` lines when command-line macro definitions are
+      sufficient to decide whether a block should be kept or removed.
+  timeline:
+    - '2.9BSD: Manual says the `unifdef` command appeared.'
+    - 'FreeBSD 4.7: Manual says ANSI C support was added.'
+    - '2015: Official manual page is dated December 3, 2015.'
+    - 'Current project page: Release 2.12 archives are published on dotat.at.'
+    - >
+      Current README: GitHub is maintained as a collaboration mirror, while release
+      downloads remain on dotat.at.
+  usage:
+    - >
+      unifdef is used by specifying macros with `-D`, `-U`, or a definitions file, then
+      filtering input files so known conditional branches are removed while unknown
+      conditionals are preserved. It can operate on stdin/stdout or modify files in
+      place.
+    - >
+      The manual also documents `unifdefall`, a script that uses `unifdef -s` and `cpp
+      -dM` to derive macro information and remove all conditional directives from a
+      file. This shows the tool's role as a controlled partial preprocessor rather than
+      a full C preprocessor replacement.
 tags:
   - c-preprocessor
   - cli
@@ -15,21 +88,32 @@ tags:
   - source-filtering
 provenance:
   category-sources:
-    - 'source_facts.description and official manual: processes C preprocessor conditionals.'
+    - https://dotat.at/prog/unifdef/unifdef.txt
+    - input.current_curation.category_path
   display-name-sources:
-    - source_facts.name and official homepage use unifdef.
+    - https://dotat.at/prog/unifdef/unifdef.txt
+    - input.current_curation.display-name
   docs-sources:
-    - Official dotat.at homepage/manual and official GitHub README.
+    - https://dotat.at/prog/unifdef/
+    - https://dotat.at/prog/unifdef/unifdef.txt
+    - https://github.com/fanf2/unifdef#readme
+    - input.current_curation.docs
+  history-sources:
+    - https://dotat.at/prog/unifdef/
+    - https://dotat.at/prog/unifdef/unifdef.txt
+    - https://github.com/fanf2/unifdef#readme
+    - input.source_facts.package-manager
   repo-sources:
-    - >
-      Official dotat.at page links collaboration to GitHub fanf2/unifdef and documents
-      the development clone.
+    - https://dotat.at/prog/unifdef/
+    - https://github.com/fanf2/unifdef#readme
   tags-sources:
-    - Official manual describes processing #if/#ifdef/#ifndef directives.
+    - https://dotat.at/prog/unifdef/unifdef.txt
+    - input.current_curation.tags
 category-confidence: high
 category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
