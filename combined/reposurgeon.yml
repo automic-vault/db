@@ -6,6 +6,45 @@ docs:
   - http://www.catb.org/esr/reposurgeon
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Reposurgeon is Eric S. Raymond's repository-history editing and conversion suite.
+    Raymond announced the project to Subversion developers on November 9, 2010, after
+    earlier work on `svncutter`, describing a tool intended to use import and export
+    streams for high-quality conversion between version-control systems. The project
+    README states that the original motivation was cleaning up artifacts created by
+    repository conversions.
+  - >
+    The tool's design centers on reading repository history into an editable event
+    stream and writing it back through fast-import style machinery. Its manual describes
+    operations that ordinary version-control systems intentionally make difficult:
+    changing old commit metadata, excising commits, coalescing or splitting commits,
+    removing files and subtrees from history, grafting repositories together, and
+    cutting repository parent-child links. The same manual warns that these operations
+    rewrite hash chains, so the tool is for controlled conversion or surgery rather than
+    casual rewriting of public history.
+  - >
+    Subversion support became a defining part of reposurgeon's history. On November 19,
+    2012, Raymond announced production-quality Subversion support after successful
+    conversion of the Network UPS Tools repository and work on directly reading
+    `svnadmin dump` streams into a DVCS-style commit DAG. The README later summarized
+    why practitioners use it over simpler converters such as `git-svn`: better tag
+    lifting, cleanup of cvs2svn artifacts, handling of nonstandard layouts, branch
+    merges, mixed-branch commits, and Subversion edge cases.
+  - >
+    Reposurgeon's most visible adoption has been in difficult migrations of old project
+    histories. In Git Rev News on February 19, 2020, Raymond wrote that the GNU Compiler
+    Collection history was lifted from Subversion to Git on January 12, 2020, with about
+    280,000 commits and traces of CVS and RCS ancestry; he also cited the 2011 Emacs
+    Bazaar-to-Git conversion. Those cases placed reposurgeon in the niche of repository
+    archaeology: teams use it when preserving faithful history matters more than a quick
+    one-shot import.
+  - >
+    The suite includes companion programs such as `repotool`, `repomapper`,
+    `repocutter`, and `repobench`, and its documented workflow encourages scripts that
+    are iterated until a conversion is acceptable. Packaging in Homebrew, Debian,
+    Ubuntu, Fedora, MacPorts, Nix, and related ecosystems makes it available to
+    migration specialists even though its audience is narrower than Git itself.
 category: developer-tools
 package-manager:
   brew: reposurgeon
@@ -31,5 +70,14 @@ executables:
   - repotool
 provenance:
   formula: reposurgeon
+  history-sources:
+    - https://svn-haxx.apache.org/dev/archive-2010-11/0188.shtml
+    - https://svn.haxx.se/dev/archive-2012-11/0506.shtml
+    - https://gitlab.com/esr/reposurgeon/-/raw/master/README.adoc
+    - http://www.catb.org/~esr/reposurgeon/repository-editing.html
+    - https://git.github.io/rev_news/2020/02/19/edition-60/
+    - https://gitlab.com/esr/reposurgeon/-/raw/master/NEWS.adoc
+    - https://formulae.brew.sh/formula/reposurgeon
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

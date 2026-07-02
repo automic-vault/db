@@ -5,6 +5,44 @@ docs:
   - https://salsa.debian.org/debian/reprepro/-/blob/debian/README
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Reprepro is a Debian package repository manager whose Debian changelog begins with
+    an initial upload by Bernhard R. Link on February 6, 2005. The manual and man page
+    describe it as a tool to generate, administer, manage, and sync local repositories
+    of Debian packages. The man page also records the former working title `mirrorer`, a
+    useful clue to its early focus on repository mirroring and publication.
+  - >
+    Its role is to maintain the parts of an APT repository that administrators otherwise
+    assemble with lower-level tools: pool storage, `Packages` and `Sources` indices and
+    compressed variants, `Release` files, optional signatures, source and binary package
+    tracking, and cleanup of files no longer referenced by distributions. Reprepro
+    stores managed packages and checksums in Berkeley DB files, so it does not require a
+    database server, and it supports both manually included packages and packages
+    downloaded from partially mirrored upstream repositories.
+  - >
+    The tool occupies a middle ground in Debian repository maintenance. It is not
+    Debian's full archive-management system, and its README notes differences from
+    standard tools: its mirroring is content-oriented rather than a byte-identical
+    official mirror, generated indices are signed by the repository operator, and users
+    must trust that operator's signature. That makes it especially useful for local APT
+    repositories, internal package feeds, small vendor repositories, individual PPA-like
+    archives, and controlled mirrors for deployment networks.
+  - >
+    The changelog shows a steady expansion from the first upload through 1.0.0 on June
+    24, 2006, with commands for copying packages between distributions, safer `.changes`
+    handling, Contents generation, source tracking, signing support, hooks, and index
+    handling. A significant maintenance chapter arrived in July 2022, when the Debian
+    package was salvaged and 5.4.0 imported support for keeping multiple versions of the
+    same package in an archive, changing the database layout for package name and
+    version tracking.
+  - >
+    Practitioners typically configure a `conf/distributions` file, include `.deb`,
+    `.udeb`, `.dsc`, or `.changes` inputs, sign generated metadata, and expose the
+    resulting `dists/` and `pool/` hierarchy over HTTP or a filesystem mirror. Reprepro
+    is packaged across Debian, Ubuntu, Fedora, Arch, openSUSE, Nix, and Homebrew,
+    reflecting its long-running role as a practical APT repository tool outside the
+    central Debian archive infrastructure.
 tags:
   - apt
   - cli
@@ -30,6 +68,13 @@ provenance:
     - >
       source_facts.homepage is the official Debian Salsa project; its README is the
       official documentation surface available in the repository.
+  history-sources:
+    - https://salsa.debian.org/debian/reprepro/-/raw/debian/debian/changelog
+    - https://salsa.debian.org/debian/reprepro/-/raw/debian/README
+    - https://deb.moep.com/manual.html
+    - https://manpages.ubuntu.com/manpages/bionic/man1/reprepro.1.html
+    - https://wiki.debian.org/DebianRepository/SetupWithReprepro
+    - https://formulae.brew.sh/formula/reprepro
   repo-sources:
     - >
       source_facts.homepage is the official Debian Salsa project URL
@@ -44,5 +89,6 @@ category-path:
   - package-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

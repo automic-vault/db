@@ -36,6 +36,45 @@ config-file-location:
     - c:\resticprofile\profiles
     - '%USERPROFILE%\resticprofile\profiles'
 credentials-file-location: null
+history:
+  - >
+    Resticprofile is a configuration-profile manager and scheduler for restic,
+    maintained under the `creativeprojects` GitHub account. The repository was created
+    on 2019-06-11, and the first beta release, v0.1.0, was published on 2019-06-24. From
+    the start, its role was deliberately adjacent to restic rather than a replacement
+    for it: it wraps restic invocations in named profiles and repeatable configuration
+    files.
+  - >
+    The project exists because restic intentionally emphasizes a compact CLI and
+    repository format, while many real deployments need durable configuration, multiple
+    backup jobs, hooks, retention, checks, and scheduler integration. The resticprofile
+    documentation describes it as the bridge between a configuration file and the restic
+    command line, noting that a native restic configuration file had been discussed but
+    remained a low-priority feature for restic itself.
+  - >
+    Practitioners use resticprofile to turn shell-script backup conventions into
+    structured profiles. A single configuration can define repositories, password
+    handling, backup paths, retention commands, repository checks, shell hooks for
+    mounting or unmounting disks, HTTP hooks for notifications, status files for
+    monitoring, Prometheus output, and grouped profiles that run sequentially. Supported
+    configuration syntaxes include TOML, JSON, YAML, and HCL, which makes it convenient
+    for both hand-written host configs and generated infrastructure files.
+  - >
+    Scheduling is the feature that gave resticprofile a clear place in the restic
+    ecosystem. A 2020 restic forum announcement introduced automatic schedule generation
+    for systemd timers, launchd agents, and Windows Task Scheduler. The documentation
+    later describes scheduler support for launchd on macOS, Task Scheduler on Windows,
+    systemd on Linux and other BSDs, and crond or crontab files as fallbacks. This lets
+    users keep restic’s core binary unchanged while delegating host-specific job
+    registration to resticprofile.
+  - >
+    Distribution mirrors its role as a cross-platform operations helper: GitHub releases
+    provide binaries, and package-manager metadata lists Homebrew, MacPorts, Nix, Scoop,
+    and Winget packages. It is also listed among wrapper tools in the broader restic
+    ecosystem, alongside autorestic, crestic, runrestic, resticker, and similar
+    projects. The practical adoption pattern is strongest among self-hosters and
+    administrators who like restic’s repository model but do not want backup policy to
+    live only in cron snippets or one-off shell scripts.
 category: system
 package-manager:
   brew: resticprofile
@@ -57,5 +96,15 @@ executables:
   - resticprofile
 provenance:
   formula: resticprofile
+  history-sources:
+    - https://api.github.com/repos/creativeprojects/resticprofile
+    - https://api.github.com/repos/creativeprojects/resticprofile/releases?per_page=100
+    - https://creativeprojects.github.io/resticprofile/
+    - https://creativeprojects.github.io/resticprofile/schedules/index.html
+    - >
+      https://forum.restic.net/t/auto-generate-systemd-timer-launchd-agent-windows-task-scheduler/2949
+    - https://formulae.brew.sh/formula/resticprofile
+    - https://github.com/rubiojr/awesome-restic/blob/main/README.md
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
