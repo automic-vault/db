@@ -10,6 +10,93 @@ config-file-location:
   windows:
     - package.json
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Volta gained traction among JavaScript developers as an alternative to
+      shell-function based version switchers such as nvm because its shims work across
+      projects and shells and because pinned versions live in a file already committed
+      by most Node projects. Its GitHub repository shows broad open-source adoption,
+      with thousands of stars and packaging across macOS, Linux, and Windows ecosystems.
+    - >
+      Its documentation emphasizes reproducible collaborator environments: `volta pin
+      node@20` writes the selected engine into `package.json`, and collaborators who
+      install Volta automatically get the same Node version when they enter the project
+      directory. This made Volta part of the broader shift toward checking toolchain
+      versions into application repositories.
+  package-nerd-significance:
+    - >
+      Volta is package-nerd significant because it treats the JavaScript runtime as
+      package metadata. The interesting bit is not merely downloading Node; it is
+      committing the runtime and package-manager versions beside dependencies so
+      developer laptops, CI jobs, and cloned repos converge on the same toolchain.
+    - >
+      Its later unmaintained status is also instructive: toolchain managers sit in the
+      blast radius of operating systems, package registries, and runtime distribution
+      changes, so maintenance health becomes part of the package story, not just an
+      upstream README footnote.
+  project-history:
+    - >
+      Volta began publicly as a project called Notion. Its v0.1.0 pre-release, published
+      on August 21, 2018, supported macOS and Linux, Node and Yarn installation, `notion
+      use`, and a proof-of-concept plugin API. The release history shows the project
+      adding npm/npx support, package-binary installation, fish support, a `which`
+      command, and other toolchain-manager features during the 0.x line.
+    - >
+      The project renamed to Volta in version 0.5.0, changing the `package.json` key
+      from `toolchain` to `volta` and adopting the JavaScript Launcher branding. Version
+      1.0.0 was released on December 21, 2020 with support for `npm link`, global update
+      commands, and npm/Yarn handling improvements.
+    - >
+      By 2025, the repository README and pinned issue stated that Volta was unmaintained
+      and that maintainers recommended migrating to mise. That status does not erase
+      Volta's earlier role, but it changes its package-history context from active
+      toolchain bet to a stable-but-maintenance-limited utility.
+  related-projects:
+    - >
+      nvm, asdf, fnm, mise, and Corepack occupy adjacent JavaScript or multi-runtime
+      toolchain-management space.
+    - >
+      Node.js, npm, Yarn, and pnpm are the runtimes and package managers that Volta
+      routes or pins.
+  sources:
+    - https://api.github.com/repos/volta-cli/volta/releases/tags/v0.1.0
+    - https://api.github.com/repos/volta-cli/volta/releases/tags/v1.0.0
+    - https://docs.volta.sh/advanced/packages
+    - https://docs.volta.sh/guide/
+    - https://docs.volta.sh/guide/understanding
+    - https://github.com/volta-cli/volta
+    - https://github.com/volta-cli/volta/blob/main/RELEASES.md
+    - https://github.com/volta-cli/volta/issues/2080
+  summary:
+    - >
+      Volta is a Rust-built JavaScript toolchain manager whose central idea is to make
+      Node.js, npm, Yarn, and package binaries project-aware through fast shims. Instead
+      of asking developers to manually switch Node versions, it records tool choices in
+      `package.json` and routes commands to the right cached executable.
+  timeline:
+    - '2018-08-21: v0.1.0 pre-release was published under the original Notion command naming.'
+    - >
+      2019: The 0.x release line added npm/npx support, package binaries, fish support,
+      and related toolchain-manager features.
+    - >
+      Version 0.5.0: The project renamed to Volta and changed the `package.json` key
+      from `toolchain` to `volta`.
+    - '2020-12-21: Volta v1.0.0 was released.'
+    - >
+      2025-11-14: A pinned GitHub issue announced that Volta was unmaintained and
+      recommended migration to mise.
+  usage:
+    - >
+      Typical use starts with `volta install node` or `volta install node@22` to set a
+      default Node runtime. Inside a project, `volta pin node@20` or a similar command
+      records the exact runtime or package-manager version in `package.json`; later
+      invocations of `node`, `npm`, or `yarn` are routed by Volta's shims.
+    - >
+      Volta also manages globally installed package binaries. The docs describe
+      installing command-line tools through npm or Yarn while Volta pins the Node
+      version used for that tool, so a globally installed executable keeps working even
+      when the user's default Node version changes.
 tags:
   - cli
   - javascript
@@ -27,30 +114,32 @@ geiger:
     - text:toolchain manager
 provenance:
   category-sources:
-    - >
-      source_facts.description says JavaScript toolchain manager for reproducible
-      environments; official Volta docs describe managing JavaScript command-line tools
-      and Node engines.
+    - current_curation.category
   display-name-sources:
-    - source_facts.name is volta; official docs and GitHub README use Volta.
+    - current_curation.display-name
+    - https://volta.sh/
   docs-sources:
-    - >
-      Official dedicated documentation domain docs.volta.sh provides user guide and
-      command reference.
+    - current_curation.docs
+    - https://docs.volta.sh/
+  history-sources:
+    - https://api.github.com/repos/volta-cli/volta/releases/tags/v0.1.0
+    - https://api.github.com/repos/volta-cli/volta/releases/tags/v1.0.0
+    - https://docs.volta.sh/advanced/packages
+    - https://docs.volta.sh/guide/
+    - https://docs.volta.sh/guide/understanding
+    - https://github.com/volta-cli/volta
+    - https://github.com/volta-cli/volta/blob/main/RELEASES.md
+    - https://github.com/volta-cli/volta/issues/2080
   repo-sources:
-    - >
-      source_facts.repo is already populated with https://github.com/volta-cli/volta, so
-      repo is intentionally not redetermined.
+    - source_facts.repo already provided; history-only batch left repo unchanged
   tags-sources:
-    - >
-      source_facts.description identifies JavaScript toolchain management; official
-      Volta docs describe Node engines, package managers, and volta command reference.
+    - current_curation.tags
+    - https://github.com/volta-cli/volta
 category-confidence: high
 category-path:
   - developer-tools
-  - language-runtime
-  - toolchain-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

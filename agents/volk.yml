@@ -8,6 +8,67 @@ config-file-location:
   unix:
     - ~/.volk/volk_config
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      VOLK's adoption followed GNU Radio's ecosystem: it became part of the performance
+      toolbox for software-defined radio and DSP applications that need portable vector
+      math. The official README still frames VOLK as a GNU Radio sub-project and directs
+      users to GNU Radio for broader project context.
+    - >
+      Stewardship moved with GNU Radio's modern open-source workflow. The contributing
+      documentation notes that copyright was historically owned by the Free Software
+      Foundation and that the project now uses the Developer Certificate of Origin
+      process, with pull requests tested across Linux, macOS, Windows, x86_64, armv7,
+      and aarch64.
+  package-nerd-significance:
+    - >
+      VOLK matters to package maintainers because it is small but hardware-sensitive:
+      the same source package exposes optional acceleration paths across CPU families,
+      and runtime profiling means the installed package can adapt to the machine rather
+      than baking in one best answer at build time.
+  project-history:
+    - >
+      GNU Radio developer Tom Rondeau announced VOLK in December 2010 as a new library
+      pushed into the GNU Radio tree. The motivation was practical: GNU Radio had used
+      hand optimization in places such as FIR filters, but lacked a convenient way to
+      use SIMD routinely in everyday signal-processing blocks.
+    - >
+      VOLK's design separated a public kernel call from multiple architecture-specific
+      proto-kernels. At runtime, VOLK can select the best implementation for the
+      processor, while users call an architecture-agnostic function. The project later
+      became a separately usable GNU Radio sub-project with its own website,
+      documentation, GitHub repository, and release stream.
+  related-projects:
+    - GNU Radio is the parent ecosystem and original integration point for VOLK.
+    - >
+      FFTW is a common comparison point in VOLK's early explanation because it
+      demonstrated how much SIMD can matter for numerical signal processing.
+  sources:
+    - https://github.com/gnuradio/volk
+    - https://www.libvolk.org/
+    - https://www.libvolk.org/contributing.html
+    - https://www.trondeau.com/blog/2010/12/11/volk-vector-optimized-library-of-kernels.html
+  summary:
+    - >
+      VOLK, the Vector-Optimized Library of Kernels, is a GNU Radio sub-project that
+      packages hand-written SIMD kernels behind portable C/C++ APIs. Its niche is
+      digital signal processing code that wants architecture-specific speedups without
+      scattering SSE, AVX, NEON, or generic fallback implementations across application
+      code.
+  timeline:
+    - '2010-12-11: Tom Rondeau announced VOLK as a new library in the GNU Radio tree.'
+    - >
+      2020: The libvolk.org website identified VOLK as a GNU Radio sub-project with
+      GitHub-based source, documentation, issues, and contributing workflow.
+    - '2026-02-08: The project website listed VOLK v3.3.0 as a recent release.'
+  usage:
+    - >
+      Typical users link against VOLK kernels for vector math operations and run
+      `volk_profile` after installation so VOLK can benchmark and select the fastest
+      implementation for the local CPU. Developers add new proto-kernels when a platform
+      or instruction set needs a tuned implementation, while keeping a generic version
+      for portability.
 tags:
   - c-plus-plus
   - cli
@@ -26,31 +87,28 @@ geiger:
     - metadata:library-like
 provenance:
   category-sources:
-    - >
-      source_facts.description says Vector Optimized Library of Kernels; official
-      libvolk.org says VOLK provides optimized math routines targeting SIMD processors.
+    - current_curation.category
   display-name-sources:
-    - >
-      Official libvolk.org homepage uses VOLK and Vector-Optimized Library of Kernels;
-      source_facts.name is volk.
+    - current_curation.display-name
+    - https://www.libvolk.org/
   docs-sources:
-    - >
-      Official libvolk.org links Documentation and hosts Doxygen/kernel documentation
-      and platform kernel documentation.
+    - current_curation.docs
+    - https://www.libvolk.org/
+  history-sources:
+    - https://github.com/gnuradio/volk
+    - https://www.libvolk.org/
+    - https://www.libvolk.org/contributing.html
+    - https://www.trondeau.com/blog/2010/12/11/volk-vector-optimized-library-of-kernels.html
   repo-sources:
-    - >
-      source_facts.repo is already populated with https://github.com/gnuradio/volk, so
-      repo is intentionally not redetermined.
+    - source_facts.repo already provided; history-only batch left repo unchanged
   tags-sources:
-    - >
-      source_facts.description identifies optimized kernels; official libvolk.org/GitHub
-      README describes SIMD math kernels and GNU Radio association.
+    - current_curation.tags
+    - https://github.com/gnuradio/volk
 category-confidence: high
 category-path:
   - developer-tools
-  - libraries
-  - simd
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
