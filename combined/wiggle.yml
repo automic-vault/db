@@ -7,6 +7,72 @@ docs:
   - https://github.com/neilbrown/wiggle/blob/master/wiggle.1
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      wiggle's adoption has been specialized rather than mass-market. It is useful to
+      kernel and distribution developers, downstream maintainers, and anyone carrying
+      patch queues across drifting source trees. The GitHub repository showed about 108
+      stars and 9 forks in July 2026, but its more important adoption signal is its
+      presence in Unix packaging ecosystems and its long-lived man page as a developer
+      tool.
+  package-nerd-significance:
+    - >
+      wiggle matters because it encodes a very Unixy idea: keep the format and workflow
+      of patches, but make the recovery path smarter at word granularity. For package
+      maintainers carrying downstream patches, that can be the difference between
+      manually rewriting a patch and letting a small tool salvage most of it while
+      clearly marking the rest.
+  project-history:
+    - >
+      Neil Brown announced the first public release of wiggle on the Linux kernel
+      mailing list on May 19, 2003. The announcement described the core use case as
+      applying patches that `patch` cannot apply because the original file has
+      conflicting changes, especially when back-porting patches from development kernels
+      onto stable kernels.
+    - >
+      The name came from Andrew Morton's phrasing about wanting a tool to 'wiggle' a
+      patch into a file. The first public announcement already included a tests
+      directory, a patch-management helper script named `p`, and a note that a future
+      visualization UI would be useful.
+    - >
+      The manual page preserves the tool's long maintenance arc, with copyright lines
+      spanning 2003, 2010-2013, and 2018-2020. GitHub releases list v1.0 through v1.3,
+      with v1.3 published in October 2020.
+  related-projects:
+    - >
+      wiggle is related to `patch`, `merge`, line-oriented diff tools, and patch-stack
+      workflows used by kernel and distribution maintainers. Its distinctive feature is
+      word-wise alignment and conflict reporting rather than simply rejecting hunks.
+  sources:
+    - https://github.com/neilbrown/wiggle - upstream repository overview
+    - https://github.com/neilbrown/wiggle/blob/master/wiggle.1 - upstream manual page
+    - https://github.com/neilbrown/wiggle/releases - upstream release list
+    - >
+      https://lkml.iu.edu/hypermail/linux/kernel/0305.2/0762.html - first public release
+      announcement
+  summary:
+    - >
+      wiggle is Neil Brown's GPL command-line tool for applying patches when ordinary
+      `patch` cannot match the target file cleanly, and for showing word-wise diffs. Its
+      niche is the messy middle ground between a rejected patch and a full three-way
+      merge: it tries to align the old text in a patch with the current file, apply
+      every change somewhere, and mark unresolved conflicts for review.
+  timeline:
+    - '2003-05-19: Neil Brown announced the first public release on LKML.'
+    - "2010-2013: Maintained under Neil Brown's SUSE-era copyright line in the manual."
+    - '2018-2020: Later maintenance period reflected in the manual page copyright line.'
+    - >
+      2020-10-06: GitHub release records include v1.0 through v1.3, with v1.3 the latest
+      listed release.
+  usage:
+    - >
+      A common workflow is to run `patch`, collect `.rej` files, then run `wiggle
+      --replace originalfile originalfile.rej` for each rejected hunk. The user must
+      still inspect the result, because wiggle can annotate unresolved conflicts and
+      cannot prove semantic correctness. It also has merge, diff, extract, and browse
+      modes; browse mode gives an ncurses-based inspection path for patches and
+      conflicts.
 category: developer-tools
 package-manager:
   apk: wiggle
