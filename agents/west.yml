@@ -19,6 +19,87 @@ config-file-location:
     - '%USERPROFILE%\.westconfig'
     - <workspace-topdir>\.west\config
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      west adoption is tied directly to Zephyr adoption: most Zephyr users encounter it
+      during workspace setup. The standard flow is `west init` to create a workspace and
+      clone the manifest repository, followed by `west update` to fetch the projects
+      named in the manifest. Vendors and downstreams also use west manifests to pin
+      Zephyr and module revisions for reproducible embedded products.
+    - >
+      Because Zephyr is not just a kernel tree but a collection of code, modules, vendor
+      HALs, and tools, west became the package-nerd-visible front door for many embedded
+      developers. It is also extensible, so Zephyr can expose workflow commands such as
+      build, flash, debug, and signing through the same top-level CLI.
+  package-nerd-significance:
+    - >
+      west is significant because it packages Zephyr's multi-repository source
+      distribution into a single command-line mental model. For embedded developers,
+      installing `west` is often the step that turns a pile of Git repositories into a
+      coherent Zephyr SDK-style workspace.
+  project-history:
+    - >
+      west was added because Zephyr needed two things at once: a standardized way to
+      work with multiple Git repositories and an extensible command-line interface for
+      basic Zephyr workflows. Zephyr's own history-and-motivation page explains that
+      existing tools such as Git submodules and Google's Repo were examined but did not
+      satisfy the project's requirements, including downstream overrides, Windows
+      support, and commit-based or continuous project updating.
+    - >
+      The GitHub repository was created in May 2018, and Zephyr 1.14-era release
+      material introduced west for multiple-repository management plus improved flashing
+      and debugging. That timing matches Zephyr's transition from a single RTOS
+      repository mindset toward a modular embedded ecosystem with external modules,
+      HALs, tools, samples, and downstream distributions.
+    - >
+      west evolved through a pre-1.0 period where the tool's packaging and manifest APIs
+      were still settling. Its v0.6 line removed the old split bootstrapper model and
+      made core commands part of the PyPI-distributed package. West v1.0.0, published in
+      February 2023, declared the APIs stable and dropped the compatibility modules
+      needed by the old Zephyr 1.14 LTS line.
+  sources:
+    - https://api.github.com/repos/zephyrproject-rtos/west
+    - https://api.github.com/repos/zephyrproject-rtos/west/releases?per_page=100
+    - https://docs.zephyrproject.org/latest/develop/west/basics.html
+    - https://docs.zephyrproject.org/latest/develop/west/index.html
+    - https://docs.zephyrproject.org/latest/develop/west/manifest.html
+    - https://docs.zephyrproject.org/latest/develop/west/release-notes.html
+    - https://docs.zephyrproject.org/latest/develop/west/why.html
+    - https://github.com/zephyrproject-rtos/west
+  summary:
+    - >
+      west is Zephyr's meta-tool: a Python CLI for managing Zephyr workspaces, multiple
+      Git repositories, manifests, and common build, flash, debug, and extension
+      workflows. The Zephyr documentation calls it a swiss-army-knife command line tool
+      developed in its own repository.
+  timeline:
+    - 'May 2018: zephyrproject-rtos/west repository is created.'
+    - >
+      Zephyr 1.14 era: west is introduced for multiple repository management and
+      enhanced flashing/debugging workflows.
+    - >
+      v0.6.x: west moves away from a split bootstrapper model and is distributed as one
+      PyPI package.
+    - >
+      February 20, 2023: west v1.0.0 is published with stable APIs and no Zephyr 1.14
+      LTS compatibility modules.
+    - >
+      2023-2025: later releases add workspace comparison, grep, aliases, manifest
+      filtering, packaging updates, and auto-caching support.
+  usage:
+    - >
+      west workspaces contain a `.west` directory, a manifest repository, and multiple
+      project repositories defined in a YAML manifest, usually `west.yml`. The command's
+      core model is deterministic: the manifest repository's commits name exact or
+      trackable revisions in project repositories, and `west update` makes the workspace
+      match that manifest.
+    - >
+      Typical users run `west init -m` with a Zephyr or downstream manifest, `west
+      update` to clone modules, and Zephyr extension commands such as `west build`,
+      `west flash`, or `west debug` during firmware work. Advanced users use `west
+      manifest`, `west list`, `west forall`, `west compare`, and newer commands such as
+      `west grep` to inspect or operate across a multi-repository workspace.
 tags:
   - cli
   - embedded
@@ -35,27 +116,33 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - source_facts.description says it is the Zephyr meta-tool.
+    - source_facts.description says west is the Zephyr meta-tool.
   display-name-sources:
-    - >
-      source_facts.name is `west`; source_facts.homepage is the official
-      zephyrproject-rtos/west repository.
+    - source_facts.name and official documentation use `west`.
   docs-sources:
-    - >
-      Official Zephyr documentation has a West section; source_facts.homepage is the
-      official GitHub repository README.
+    - current_curation.docs includes the official Zephyr west documentation and GitHub README.
+  history-sources:
+    - https://api.github.com/repos/zephyrproject-rtos/west
+    - https://api.github.com/repos/zephyrproject-rtos/west/releases?per_page=100
+    - https://docs.zephyrproject.org/latest/develop/west/basics.html
+    - https://docs.zephyrproject.org/latest/develop/west/index.html
+    - https://docs.zephyrproject.org/latest/develop/west/manifest.html
+    - https://docs.zephyrproject.org/latest/develop/west/release-notes.html
+    - https://docs.zephyrproject.org/latest/develop/west/why.html
+    - https://github.com/zephyrproject-rtos/west
   repo-sources:
     - >
-      source_facts.repo is empty; source_facts.homepage is the official GitHub
-      source-control repository.
+      current_curation.repo and source_facts.homepage identify the official
+      zephyrproject-rtos/west repository.
   tags-sources:
-    - source_facts.description says Zephyr meta-tool; current_curation.tags includes `cli`.
+    - >
+      source_facts.description, current_curation.tags, and Zephyr docs identify
+      embedded, Zephyr, meta-tool, and CLI use.
 category-confidence: high
 category-path:
   - developer-tools
-  - embedded
-  - zephyr
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
