@@ -7,6 +7,34 @@ docs:
   - https://protobuf.dev/reference/go/go-generated
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    protoc-gen-go is the canonical Protocol Buffers code generator for Go. The
+    protocolbuffers/protobuf-go repository describes itself as both the Go runtime
+    implementation for protocol buffers and the tool that generates Go bindings from
+    .proto schemas. Its job is to map protobuf messages, enums, oneofs, extensions,
+    reflection metadata, and file descriptors into Go packages.
+  - >
+    The package sits in a long Go protobuf lineage. Earlier Go projects commonly used
+    github.com/golang/protobuf and its protoc-gen-go binary; the protobuf-go module
+    under google.golang.org/protobuf became the successor implementation, with a
+    redesigned reflection/runtime layer and a clearer separation from gRPC service
+    generation. gRPC-Go's generator moved to protoc-gen-go-grpc, leaving protoc-gen-go
+    focused on protobuf data structures.
+  - >
+    Adoption followed the broader move of Go protobuf users toward
+    google.golang.org/protobuf imports and generated APIs. The generated-code reference
+    documents the package and import-path rules that matter in large Go module trees,
+    especially go_package options and M command-line mappings. Distribution through
+    Homebrew, Debian/Ubuntu, Alpine, Nix, Fedora-family packaging, and source
+    installation with Go made the binary a normal part of Go build images and developer
+    machines.
+  - >
+    Practitioners invoke it through protoc with --go_out and usually pair it with
+    --go_opt=paths=source_relative or module-aware import mapping. In gRPC projects it
+    is run next to protoc-gen-go-grpc; in non-RPC projects it still provides the
+    generated types consumed by storage layers, wire protocols, APIs, and config
+    schemas.
 tags:
   - cli
   - code-generation
@@ -35,6 +63,13 @@ provenance:
     - Official Go package documentation for google.golang.org/protobuf/cmd/protoc-gen-go.
     - Official Protocol Buffers Go generated code guide.
     - Official source repository README for protocolbuffers/protobuf-go.
+  history-sources:
+    - https://github.com/protocolbuffers/protobuf-go
+    - https://pkg.go.dev/google.golang.org/protobuf/cmd/protoc-gen-go
+    - https://protobuf.dev/reference/go/go-generated
+    - https://github.com/grpc/grpc-go/issues/3750
+    - https://github.com/grpc/grpc-go/issues/5116
+    - https://formulae.brew.sh/formula/protoc-gen-go
   repo-sources:
     - >
       source_facts.repo already has https://github.com/protocolbuffers/protobuf-go, so
@@ -51,5 +86,6 @@ category-path:
   - go
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -6,6 +6,26 @@ docs:
   - https://grpc.io/docs/languages/go/quickstart
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    protoc-gen-go-grpc is the gRPC-Go service-stub generator. It belongs to
+    grpc/grpc-go, the Go implementation of gRPC, and exists because Go protobuf
+    generation is split into two related outputs: protoc-gen-go generates message and
+    enum types, while protoc-gen-go-grpc generates client and server interfaces for
+    service definitions.
+  - >
+    That split became important during the migration from the older
+    github.com/golang/protobuf tooling to the google.golang.org/protobuf runtime and the
+    grpc-go code generator. In practice, Go users run both plugins for a service-bearing
+    schema: --go_out for protobuf data types and --go-grpc_out for RPC bindings. The
+    grpc-go issue tracker documents this boundary explicitly: --go-grpc_out only
+    generates gRPC code, and --go_out handles protobuf code.
+  - >
+    The plugin's ecosystem role is small but central: it turns a .proto service block
+    into Go APIs that compile against google.golang.org/grpc. Practitioners add the
+    executable to PATH, keep the protobuf runtime and grpc-go module versions aligned,
+    and wire generation into go:generate, Makefiles, buf, Bazel, or
+    package-manager-installed protoc toolchains.
 tags:
   - cli
   - code-generation
@@ -41,6 +61,13 @@ provenance:
       Official Go quick start documents installing
       google.golang.org/grpc/cmd/protoc-gen-go-grpc.
     - Official gRPC generated-code reference documents protoc-gen-go-grpc output.
+  history-sources:
+    - https://github.com/grpc/grpc-go
+    - https://grpc.io/docs/languages/go/generated-code
+    - https://grpc.io/docs/languages/go/quickstart
+    - https://github.com/grpc/grpc-go/issues/3750
+    - https://github.com/grpc/grpc-go/issues/5116
+    - https://formulae.brew.sh/formula/protoc-gen-go-grpc
   repo-sources:
     - >
       source_facts.repo already has https://github.com/grpc/grpc-go, so repo is returned
@@ -56,5 +83,6 @@ category-path:
   - rpc
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
