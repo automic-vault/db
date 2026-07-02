@@ -6,6 +6,81 @@ docs:
   - https://github.com/erebe/wstunnel#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      wstunnel's adoption is concentrated among users who need a single-file tunnel that
+      can survive HTTP-only or proxy-constrained networks. The README's examples cover
+      ordinary port forwarding, UDP DNS forwarding, SOCKS5 and HTTP proxy modes,
+      transparent proxying, Unix sockets, and using stdio as an SSH ProxyCommand
+      transport.
+    - >
+      The GitHub releases page shows an active v10 series, and the project publishes
+      container images through GitHub Packages in addition to binary releases. That
+      packaging footprint reflects its operational audience: people copying a tunnel
+      binary or container to constrained client and server environments.
+  package-nerd-significance:
+    - >
+      wstunnel is notable because it sits in the pragmatic tunneling family with tools
+      such as chisel, gost, boringproxy, and SSH ProxyCommand setups, but keeps a very
+      explicit WebSocket/HTTP transport identity. The Haskell-to-Rust rewrite also makes
+      it a useful example of a network utility migrating runtimes to improve
+      distribution and maintenance.
+  project-history:
+    - >
+      The upstream README says wstunnel was inspired by an older npm package named
+      `wstunnel`, but was remade so users would not need npm and Node.js. The project
+      was originally written in Haskell and later moved to Rust; the README calls v7.0.0
+      a complete Rust rewrite that is not compatible with earlier versions and keeps the
+      previous Haskell implementation on a separate branch.
+    - >
+      The Rust rewrite was motivated by maintenance and performance concerns. The
+      maintainer cites lower jitter from avoiding Haskell garbage collection, a more
+      homogeneous command-line interface, reverse tunneling support, traffic that better
+      resembles normal traffic, and easier long-term maintenance because the Haskell
+      ecosystem had become harder for the maintainer to keep up with.
+  related-projects:
+    - >
+      The README links the older npm `wstunnel` package as the inspiration for this
+      implementation.
+    - >
+      The README points to the Haskell branch for users interested in the pre-v7
+      implementation.
+  sources:
+    - https://github.com/erebe/wstunnel#readme
+    - https://github.com/erebe/wstunnel/pkgs/container/wstunnel
+    - https://github.com/erebe/wstunnel/releases
+    - https://github.com/erebe/wstunnel/tree/haskell
+  summary:
+    - >
+      wstunnel is a tunneling tool that carries arbitrary traffic over WebSocket or
+      HTTP/2, aiming to look like ordinary HTTP-family traffic on networks where direct
+      protocols are blocked by firewalls, proxies, or DPI systems. It supports static
+      and reverse tunnels, TCP, UDP, Unix sockets, stdio, SOCKS5, HTTP proxy mode, TLS,
+      mTLS, IPv6, and standalone binaries.
+  timeline:
+    - >
+      Original era: wstunnel was implemented in Haskell, inspired by an npm WebSocket
+      tunnel package.
+    - >
+      v7.0.0: The project was rewritten in Rust with an incompatible command-line and
+      protocol transition from the Haskell version.
+    - >
+      2020s: The README documents WebSocket and HTTP/2 transports, reverse tunneling,
+      SOCKS5/HTTP proxy modes, mTLS, IPv6, and standalone binaries.
+    - '2026: The GitHub releases page lists active v10.x releases.'
+  usage:
+    - >
+      A common pattern is to run a public wstunnel server and then start a local client
+      with one or more `-L` local-to-remote forwards or `-R` remote-to-local forwards.
+      For SSH, the README documents a stdio tunnel suitable for `ssh -o
+      ProxyCommand=...`; for browser or whole-session use, it can expose SOCKS5 or HTTP
+      proxy listeners.
+    - >
+      The tool is often used where WebSocket over TLS is more likely to pass through
+      middleboxes than raw SSH, WireGuard, or application-specific TCP/UDP traffic. The
+      README cautions that HTTP/2 tunneling is harder behind reverse proxies and CDNs
+      because buffering and protocol conversion can break streaming.
 category: networking
 package-manager:
   brew: wstunnel

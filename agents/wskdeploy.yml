@@ -1,6 +1,6 @@
 id: brew:wskdeploy
 display-name: Apache OpenWhisk wskdeploy
-repo: null
+repo: https://github.com/apache/openwhisk-wskdeploy
 docs:
   - https://openwhisk.apache.org/documentation.html
   - https://github.com/apache/openwhisk-wskdeploy#readme
@@ -13,6 +13,83 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.wskprops
+history:
+  adoption-history:
+    - >
+      OpenWhisk's adoption came through hosted and self-managed serverless deployments
+      rather than through a general-purpose CLI audience. Source-backed examples include
+      IBM Cloud Functions, Adobe I/O Runtime, and later DigitalOcean Functions in
+      OpenWhisk historical accounts; wskdeploy mattered to that ecosystem because it
+      turned collections of OpenWhisk entities into portable application manifests.
+    - >
+      The Apache OpenWhisk downloads page lists Whisk Deploy alongside the main
+      OpenWhisk CLI as a developer tool, and Apache board minutes record
+      openwhisk-wskdeploy 1.2.0 as an ASF release on 2021-03-24. That places the utility
+      in the official release train of OpenWhisk tooling rather than as a side project.
+  package-nerd-significance:
+    - >
+      wskdeploy is a small but historically interesting artifact of the first wave of
+      open-source serverless platforms. It captures OpenWhisk's model of packages,
+      actions, triggers, and rules in declarative files, analogous to how other
+      ecosystems grew deployment descriptors around their native resources.
+  project-history:
+    - >
+      The tool grew inside the Apache OpenWhisk ecosystem, whose serverless platform
+      began as an IBM Research effort in 2015, was publicly launched on Bluemix and
+      GitHub in February 2016, and entered the Apache Incubator later in 2016. IBM's
+      open-source history page records that Apache OpenWhisk became an ASF Top-Level
+      Project in July 2019, placing wskdeploy under the same Apache governance umbrella
+      as the platform it deploys to.
+    - >
+      The openwhisk-wskdeploy repository presents the utility as a way to write a
+      manifest for the OpenWhisk programming model and deploy the resulting project with
+      a single command. Its documentation also notes that the same deployment
+      functionality became available through the OpenWhisk CLI as `wsk deploy`, so the
+      standalone binary and the main CLI converged around the same package-manifest
+      workflow.
+  related-projects:
+    - >
+      Apache OpenWhisk is the serverless platform whose packages, actions, triggers,
+      rules, and APIs are managed by wskdeploy.
+    - >
+      The OpenWhisk CLI embeds the same deployment workflow as `wsk deploy`, while
+      openwhisk-client-go supplies the Go client used for OpenWhisk REST calls.
+  sources:
+    - https://github.com/apache/openwhisk-wskdeploy#readme
+    - https://github.com/apache/openwhisk-wskdeploy/blob/master/docs/programming_guide.md
+    - https://openwhisk.apache.org/documentation.html
+    - https://openwhisk.apache.org/downloads.html
+    - https://rabbah.io/openwhisk.html
+    - https://whimsy.apache.org/board/minutes/OpenWhisk.html
+    - https://www.ibm.com/opensource/story/
+  summary:
+    - >
+      wskdeploy is the Apache OpenWhisk deployment utility for describing OpenWhisk
+      packages, actions, triggers, rules, and APIs in YAML and applying them as one
+      project. Its role is narrower than the main wsk command-line client: it focuses on
+      manifest-driven deployment, export, and repeatable management of OpenWhisk
+      application assets.
+  timeline:
+    - '2015: OpenWhisk began as an IBM Research serverless computing initiative.'
+    - '2016: OpenWhisk was launched publicly and entered the Apache Incubator.'
+    - '2019: Apache OpenWhisk became an ASF Top-Level Project.'
+    - '2021-03-24: Apache released openwhisk-wskdeploy 1.2.0.'
+    - >
+      2020s: The README documents standalone `wskdeploy` use as well as equivalent `wsk
+      deploy` functionality in the OpenWhisk CLI.
+  usage:
+    - >
+      Typical use is to keep an OpenWhisk application in a YAML manifest, optionally
+      with a separate deployment file, and run `wskdeploy` against an OpenWhisk API host
+      with credentials. The programming guide frames the workflow around package
+      manifests, deployment files, actions, sequences, triggers, rules, API Gateway
+      examples, environment-variable binding, and debugging manifests before applying
+      them.
+    - >
+      The package-nerd distinction is that wskdeploy is infrastructure-as-code for a
+      specific FaaS runtime: it is not a generic cloud deployer, and it is most useful
+      where OpenWhisk entities need to be exported, recreated, or promoted across
+      OpenWhisk instances.
 tags:
   - apache-openwhisk
   - cli
@@ -29,29 +106,30 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description identifies wskdeploy as an Apache OpenWhisk project
-      deployment utility.
+    - current_curation.category
   display-name-sources:
-    - source_facts.description names Apache OpenWhisk and source_facts.name gives wskdeploy.
+    - current_curation.display-name
   docs-sources:
-    - >
-      source_facts.homepage is the official Apache OpenWhisk site; official
-      documentation page is the dedicated docs surface; source_facts.repo provides the
-      official wskdeploy README.
+    - current_curation.docs
+    - https://github.com/apache/openwhisk-wskdeploy#readme
+    - https://openwhisk.apache.org/documentation.html
+  history-sources:
+    - https://github.com/apache/openwhisk-wskdeploy#readme
+    - https://github.com/apache/openwhisk-wskdeploy/blob/master/docs/programming_guide.md
+    - https://openwhisk.apache.org/documentation.html
+    - https://openwhisk.apache.org/downloads.html
+    - https://rabbah.io/openwhisk.html
+    - https://whimsy.apache.org/board/minutes/OpenWhisk.html
+    - https://www.ibm.com/opensource/story/
   repo-sources:
-    - >
-      source_facts.repo is already populated; per instruction repo is returned as null
-      without second-guessing.
+    - source_facts.repo
   tags-sources:
-    - >
-      source_facts.description says Apache OpenWhisk project deployment utility;
-      current_curation.tags includes cli.
+    - current_curation.tags
 category-confidence: high
 category-path:
   - cloud-infrastructure
-  - serverless
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
