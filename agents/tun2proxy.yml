@@ -6,6 +6,88 @@ docs:
   - https://github.com/tun2proxy/tun2proxy
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Official installation paths include GitHub release binaries and `cargo install
+      tun2proxy`; the input package facts record Homebrew and Nix packages. That mix is
+      typical for lower-level networking tools: source builds for Rust users, binary
+      releases for operators, and package-manager formulas for workstation or server
+      bootstrap.
+    - >
+      The README's Docker and Docker Compose examples show adoption beyond interactive
+      CLI use. The documented pattern is to run tun2proxy with NET_ADMIN and
+      /dev/net/tun, then share the resulting network namespace with another container,
+      similar to a sidecar proxy pattern.
+  package-nerd-significance:
+    - >
+      tun2proxy is significant to package nerds because it solves a classic mismatch:
+      many programs obey system routes or TUN devices, while many cheap or specialized
+      proxy providers expose only HTTP or SOCKS endpoints. A package-installable
+      tun2proxy lets users turn a proxy URL into something that looks closer to a VPN
+      path.
+    - >
+      Its appeal is strongest among users who understand TUN devices, routing tables,
+      DNS leaks, Docker namespaces, Wintun, and SOCKS variants. That makes it a very
+      package-nerd package: obscure in general app catalogs, but useful in reproducible
+      network stacks and privacy, testing, mobile, or proxy-routing setups.
+  project-history:
+    - >
+      The README presents tun2proxy as a cross-platform TUN interface for HTTP and SOCKS
+      proxies, with support for SOCKS4, SOCKS4a, SOCKS5, SOCKS5h, HTTP proxy
+      authentication modes, IPv4, IPv6, UDP handling, virtual DNS, DNS-over-TCP
+      proxying, UdpGW, Android per-app routing metadata, and automated setup.
+    - >
+      The project has evolved toward operational deployment rather than only library
+      use. Official documentation covers building Apple XCFrameworks, installing
+      binaries from GitHub releases, installing from source with cargo, verifying
+      release artifacts through GitHub build provenance attestations since v0.2.23, and
+      running tun2proxy as a Docker sidecar for other containers.
+  related-projects:
+    - >
+      Wintun is named by the README as a Windows runtime requirement when installing
+      from cargo.
+    - >
+      SOCKS4, SOCKS4a, SOCKS5, SOCKS5h, HTTP proxies, UdpGW, Docker, and GitHub artifact
+      attestations are part of the documented operational context.
+    - >
+      dnsproxy is mentioned as an optional companion when direct DNS handling needs
+      another TCP-capable resolver.
+  sources:
+    - >
+      https://github.com/tun2proxy/tun2proxy README: project description, supported
+      platforms, proxy protocols, DNS modes, setup, CLI, Docker, installation,
+      attestations.
+    - >
+      https://github.com/tun2proxy/tun2proxy/wiki: official additional documentation
+      linked from README.
+    - 'input source_facts.package-manager: Homebrew and Nix package coverage.'
+  summary:
+    - >
+      tun2proxy is a Rust networking tool that exposes a tunnel interface for routing
+      traffic through HTTP and SOCKS proxies on Linux, Android, macOS, iOS, and Windows.
+      It sits in the niche between VPN-style TUN devices and ordinary application-level
+      proxy settings.
+  timeline:
+    - >
+      Current README: Documents cross-platform support for Linux, Android, macOS, iOS,
+      and Windows.
+    - >
+      v0.2.23 and later: README documents GitHub build provenance attestations for
+      release artifacts.
+    - 'Current README: Documents Docker and Docker Compose sidecar-style usage.'
+  usage:
+    - >
+      Users provide a proxy URL with `--proxy`, optionally create or name a TUN
+      interface with `--tun`, use `--setup` to configure routing automatically, and
+      choose DNS handling with `--dns direct`, `--dns over-tcp`, or `--dns virtual`.
+      Manual setup examples route broad IPv4 and optional IPv6 ranges through tun0 while
+      bypassing the proxy server itself to avoid routing loops.
+    - >
+      For Android 10+ per-app routing, the README documents embedding protocol, source
+      IP, and source port into the SOCKS5 username field by appending `+info` to the
+      username. For container workflows, tun2proxy can become the network namespace
+      provider for another container.
 tags:
   - cli
   - http-proxy
@@ -25,28 +107,34 @@ geiger:
 provenance:
   category-sources:
     - >
-      source_facts.description says "Tunnel (TUN) interface for SOCKS and HTTP proxies";
-      official README describes a tunnel interface for HTTP and SOCKS proxies on
-      multiple platforms.
+      https://github.com/tun2proxy/tun2proxy README describes a tunnel interface for
+      HTTP and SOCKS proxies.
+    - source_facts.description
   display-name-sources:
-    - source_facts.name is "tun2proxy"; official GitHub README heading is "tun2proxy".
+    - current_curation.display-name
+    - https://github.com/tun2proxy/tun2proxy README title
   docs-sources:
+    - current_curation.docs
+    - https://github.com/tun2proxy/tun2proxy README links to the official wiki.
+  history-sources:
     - >
-      Official README points to the GitHub wiki for additional information and includes
-      a CLI reference section.
+      https://github.com/tun2proxy/tun2proxy README: project description, supported
+      platforms, proxy protocols, DNS modes, setup, CLI, Docker, installation,
+      attestations.
+    - >
+      https://github.com/tun2proxy/tun2proxy/wiki: official additional documentation
+      linked from README.
+    - 'input source_facts.package-manager: Homebrew and Nix package coverage.'
   repo-sources:
-    - >
-      source_facts.repo is already set to https://github.com/tun2proxy/tun2proxy; per
-      instruction, repo is returned as null and not re-evaluated.
+    - source_facts.repo already provided; repo intentionally not redetermined per prompt.
   tags-sources:
-    - >
-      source_facts.description identifies TUN, SOCKS, and HTTP proxy support; official
-      README lists HTTP, SOCKS4/SOCKS5, virtual DNS, UDP gateway, and setup features.
+    - current_curation.tags
+    - https://github.com/tun2proxy/tun2proxy README features and CLI reference
 category-confidence: high
 category-path:
   - networking
-  - proxy
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

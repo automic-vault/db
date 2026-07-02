@@ -7,6 +7,97 @@ config-file-location:
   unix:
     - tundra.lua
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Official docs describe portability across macOS, Linux, FreeBSD, and Windows, with
+      Windows installers in GitHub releases and Homebrew as the macOS package path. The
+      input package facts record Homebrew packaging, and the formula installs CLI tools
+      such as `tundra2`, `t2-lua`, and `t2-inspect`.
+    - >
+      Tundra's adoption niche is not broad web development but native-code teams that
+      care about fast incremental rebuilds, explicit toolsets, and generated-code
+      ordering. The manual's games-industry motivation explains why package users
+      encounter it alongside build systems like Make, Ninja, SCons, Premake, CMake, and
+      Tup rather than as an application.
+  package-nerd-significance:
+    - >
+      Tundra is significant to package nerds because it is a small, fast, specialist
+      alternative in the build-system zoo. It exposes enough machinery for serious
+      native builds while avoiding package downloaders, VCS sync, and toolchain
+      guessing, which appeals to users who prefer explicit, reproducible build
+      descriptions.
+    - >
+      Its Homebrew formula makes a historically source-oriented build tool easy to
+      install on macOS, while the manual preserves the deeper Unix build-system culture:
+      one configuration file, named toolsets, variants, generated DAGs, and inspectable
+      command execution.
+  project-history:
+    - >
+      The README and manual present Tundra as a deliberately scoped build system: a Lua
+      configuration front end builds dependency graphs, while a native multi-threaded
+      build engine executes commands. The Lua front end runs only when needed, leaving
+      incremental build iteration to a fast engine.
+    - >
+      Tundra's design philosophy is unusually explicit. It favors "simple is fast",
+      "support just enough", multi-core utilization, reliable code generation through
+      build passes, separation between configuration and building, and avoiding
+      toolchain guessing. This sets it apart from broader build tools that fetch code,
+      auto-detect environments, or hide platform choices.
+    - >
+      The README identifies copyright from 2010 to 2018 and notes that Tundra was
+      previously GPL-licensed before being relicensed to MIT because the GPL hindered
+      commercial adoption and contributors agreed to the change. That license history is
+      a direct clue to its intended use in commercial native-code projects.
+  related-projects:
+    - Lua 5.1 is embedded and customized as the configuration language.
+    - >
+      The manual's design context places Tundra near Make-style tools and native build
+      systems; its explicit non-goals distinguish it from build systems that fetch
+      dependencies or auto-configure environments.
+    - >
+      A companion Visual Studio 2012 add-in is linked from the README at
+      https://github.com/deplinenoise/tundra-vsplugin.
+  sources:
+    - >
+      https://github.com/deplinenoise/tundra README: project description, supported
+      platforms, Homebrew install, license history, copyright range.
+    - >
+      https://github.com/deplinenoise/tundra/blob/master/doc/manual.asciidoc:
+      games-industry motivation, design philosophy, Lua front end, build engine,
+      `tundra.lua`, build flow.
+    - >
+      input source_facts.executables and source_facts.package-manager: Homebrew formula
+      and installed command names.
+  summary:
+    - >
+      Tundra is a high-performance code build system by Andreas Fredriksson, designed
+      for very fast incremental builds in large software projects. Its manual says the
+      design was motivated by games industry workloads, where large multi-million-line
+      codebases and frequent rebuilds make every second of build-system overhead
+      expensive.
+  timeline:
+    - >
+      2010-2018: README copyright range identifies Andreas Fredriksson's project history
+      window.
+    - >
+      Current README: Documents macOS, Linux, FreeBSD, and Windows portability, plus
+      Homebrew installation for macOS.
+    - 'Current README: Notes relicensing from GPL to MIT to improve commercial adoption.'
+    - >
+      Current manual: Documents Lua front end, native build engine, build passes, and
+      `tundra.lua` project files.
+  usage:
+    - >
+      A Tundra project is driven by a `tundra.lua` file, analogous to a Makefile, that
+      declares units and configurations. The manual's hello-world example defines a
+      Build block with Units and Configs, then runs `tundra2` to build into a platform,
+      toolset, variant, and subvariant output directory.
+    - >
+      The build flow is split into graph generation and execution: `tundra2` checks
+      whether DAG data is up to date, invokes the Lua generator if needed, saves a JSON
+      graph for compiled binary data, deletes stale outputs, analyzes requested targets,
+      runs the build engine, and saves build state.
 tags:
   - build-system
   - cli
@@ -24,29 +115,37 @@ geiger:
     - text:build system
 provenance:
   category-sources:
-    - >
-      source_facts.description says it is a code build system; official README describes
-      Tundra as a high-performance code build system for incremental builds.
+    - https://github.com/deplinenoise/tundra README describes a code build system.
+    - source_facts.description
   display-name-sources:
-    - source_facts.name is "tundra"; official README heading is "Tundra, a build system".
+    - current_curation.display-name
+    - https://github.com/deplinenoise/tundra README title
   docs-sources:
+    - current_curation.docs
+    - https://github.com/deplinenoise/tundra README points to doc/manual.asciidoc for usage.
+  history-sources:
     - >
-      Official README explicitly directs users to doc/manual.asciidoc for detailed usage
-      information.
+      https://github.com/deplinenoise/tundra README: project description, supported
+      platforms, Homebrew install, license history, copyright range.
+    - >
+      https://github.com/deplinenoise/tundra/blob/master/doc/manual.asciidoc:
+      games-industry motivation, design philosophy, Lua front end, build engine,
+      `tundra.lua`, build flow.
+    - >
+      input source_facts.executables and source_facts.package-manager: Homebrew formula
+      and installed command names.
   repo-sources:
-    - >
-      source_facts.repo is already set to https://github.com/deplinenoise/tundra; per
-      instruction, repo is returned as null and not re-evaluated.
+    - source_facts.repo already provided; repo intentionally not redetermined per prompt.
   tags-sources:
+    - current_curation.tags
     - >
-      source_facts.description identifies a build system; official README and GitHub
-      topics mention incremental builds, native development, Lua, and cross-platform
-      support.
+      https://github.com/deplinenoise/tundra/blob/master/doc/manual.asciidoc documents
+      incremental builds, Lua configuration, toolsets, and native build execution.
 category-confidence: high
 category-path:
   - developer-tools
-  - build-system
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
