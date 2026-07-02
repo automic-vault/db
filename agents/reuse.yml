@@ -10,6 +10,46 @@ config-file-location:
     - .reuse/dep5
     - LICENSES/
 credentials-file-location: null
+history:
+  - >
+    REUSE is a Free Software Foundation Europe initiative for making copyright and
+    license metadata easy to read, easy to audit, and machine-readable. The project sits
+    on top of SPDX practice: it tells projects to place license texts in a root
+    LICENSES/ directory, annotate files with SPDX-License-Identifier and
+    SPDX-FileCopyrightText lines or adjacent .license files, and use a `.reuse/dep5`
+    file when per-file headers are impractical.
+  - >
+    The ecosystem problem REUSE addresses is older than the tool: source trees often
+    combine files from many authors and licenses, and a single top-level LICENSE file
+    cannot describe every file with enough precision for downstream reuse. FSFE's
+    documentation frames the method as three steps: choose and provide licenses, add
+    copyright and licensing information to each file, and confirm compliance. The SPDX
+    License List supplies the standardized identifiers that make those declarations
+    portable across source code, package metadata, and SBOM tooling.
+  - >
+    The `reuse` helper tool turned those recommendations into a developer workflow. Its
+    documentation and PyPI releases describe a Python CLI that can download license
+    texts, add headers, lint a repository, and generate an SPDX bill of materials. The
+    0.7 and 0.8-era documentation already targeted REUSE 3.0 and Python 3.6+, while
+    package-manager support expanded through PyPI, Linux distributions, Homebrew,
+    MacPorts, Nix, and other repositories. The project later moved its canonical source
+    to Codeberg under fsfe/reuse-tool, with a GitHub mirror for compatibility.
+  - >
+    Practitioners usually adopt REUSE as a repository hygiene and compliance gate rather
+    than as a legal-scanning suite. A maintainer adds SPDX headers or a
+    REUSE.toml/DEP5-style declaration, stores full license texts under LICENSES/, runs
+    `reuse lint`, and wires the check into CI. FSFE's reuse-action wraps the helper for
+    GitHub workflows, and project documentation points to CI/CD integration and SBOM
+    generation through `reuse spdx`.
+  - >
+    The specification and tool have continued to evolve with SPDX and package-compliance
+    practice. REUSE Specification 3.0 codified the core LICENSES/, SPDX tag, `.license`,
+    and DEP5 model. On November 14, 2024, FSFE announced REUSE Specification 3.3 and
+    REUSE tool 5.0.0, presenting the release as a way to make standards-compliant
+    licensing easier for developers who are not legal specialists. For package
+    ecosystems, REUSE's role is less about installing a runtime dependency and more
+    about making a repository's licensing facts durable enough for downstream
+    distributors, auditors, and automated metadata consumers.
 tags:
   - cli
   - compliance
@@ -42,9 +82,20 @@ provenance:
     - >
       Official reuse.software site documents the REUSE recommendations, specification,
       FAQ, and developer resources.
+  history-sources:
+    - https://reuse.software/
+    - https://reuse.software/spec-3.0/
+    - https://reuse.software/spec-3.3/
+    - https://reuse.software/dev/
+    - https://reuse.readthedocs.io/en/latest/readme.html
+    - https://pypi.org/project/reuse/0.8.1/
+    - https://github.com/fsfe/reuse-action
+    - https://spdx.org/licenses
+    - https://fsfe.org/news/2024/news-20241114-01.en.html
+    - https://codeberg.org/fsfe/reuse-tool
   repo-sources:
     - >
-      GitHub fsfe/reuse-tool currently labels itself as a mirror, so Codeberg is
+      GitHub fsfe/reuse-tool labels itself as a mirror, so Codeberg is
       preferred as the official source-control URL.
     - >
       Official reuse.software developer resources identify Codeberg fsfe/reuse-tool as
@@ -61,5 +112,6 @@ category-path:
   - compliance
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
