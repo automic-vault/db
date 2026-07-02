@@ -5,6 +5,58 @@ docs:
   - https://github.com/ned1313/terrahash#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption appears niche and security-focused rather than broad. Repository metadata
+      showed a small but visible public audience by July 2026, and Homebrew metadata
+      lists a brew formula for the CLI.
+  package-nerd-significance:
+    - >
+      For package nerds, TerraHash is interesting because it fills a small gap in
+      Terraform's lock-file story: Terraform has a provider lock file, while this tool
+      experiments with a separate module lock file that can be installed as a simple
+      CLI.
+  project-history:
+    - >
+      The public GitHub repository was created in June 2024. Its README explicitly
+      labels the project as early-stage software, while documenting the core behavior:
+      evaluate initialized Terraform configuration, generate hashes for modules, and
+      store them in a .terraform.module.lock.hcl file analogous to Terraform's provider
+      lock file.
+    - >
+      The tool's narrow purpose is supply-chain control for Terraform modules. It checks
+      the lock file against current module hashes and version constraints, then reports
+      changed hashes, changed versions, or missing modules.
+  related-projects:
+    - >
+      Terraform supplies the module system and provider lock-file pattern that TerraHash
+      mirrors.
+    - >
+      Terragrunt and Terramate are adjacent Terraform workflow tools, but TerraHash is
+      focused specifically on module hash verification.
+  sources:
+    - 'Input package metadata: source_facts.package-manager, source_facts.package-manager-url'
+    - 'README: https://github.com/ned1313/terrahash#readme'
+    - 'Repository metadata: https://api.github.com/repos/ned1313/terrahash'
+  summary:
+    - >
+      TerraHash is a small Terraform module-locking CLI that creates and checks hashes
+      for modules used by a Terraform configuration.
+  timeline:
+    - '2024: Public GitHub repository created.'
+    - >
+      2024: README documents init, check, and upgrade workflows around
+      .terraform.module.lock.hcl.
+    - '2026: Homebrew metadata lists terrahash as a packaged CLI.'
+  usage:
+    - >
+      The README describes three central commands: terrahash init to create a module
+      lock file, terrahash check to validate current modules against it, and terrahash
+      upgrade to update the lock file after approved changes.
+    - >
+      The project is meant to run in CI so deployments can fail when Terraform module
+      code or version constraints diverge from the approved lock file.
 tags:
   - cli
   - hashing
@@ -22,31 +74,30 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description says terrahash creates and stores hashes of Terraform
-      modules; official README describes it as a command-line tool for Terraform module
-      hashes.
+    - current_curation.category_path
+    - source_facts.description
   display-name-sources:
-    - >
-      Official README uses TerraHash in the project description and terrahash as the
-      command name.
+    - 'README: https://github.com/ned1313/terrahash#readme'
+    - current_curation.display-name
   docs-sources:
-    - >
-      Official GitHub repository README is the primary documentation surface and
-      includes usage commands.
+    - 'README: https://github.com/ned1313/terrahash#readme'
+    - current_curation.docs
+  history-sources:
+    - 'Input package metadata: source_facts.package-manager, source_facts.package-manager-url'
+    - 'README: https://github.com/ned1313/terrahash#readme'
+    - 'Repository metadata: https://api.github.com/repos/ned1313/terrahash'
   repo-sources:
     - >
-      source_facts.repo already contains https://github.com/ned1313/terrahash, so repo
-      was not re-determined per instruction.
+      source_facts.repo already supplies https://github.com/ned1313/terrahash; prompt
+      says return repo as null when source_facts.repo is present.
   tags-sources:
-    - >
-      source_facts.description and official README describe hashing Terraform modules
-      and CI-oriented command-line use.
+    - 'README: https://github.com/ned1313/terrahash#readme'
+    - current_curation.tags
 category-confidence: high
 category-path:
   - developer-tools
-  - infrastructure-as-code
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

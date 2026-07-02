@@ -6,6 +6,66 @@ docs:
   - https://github.com/transcend-io/terragrunt-atlantis-config#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README frames the tool around Transcend's own monorepo use case, where
+      Terragrunt configuration can reach thousands of lines. GitHub repository metadata
+      showed hundreds of stars and forks by July 2026, indicating adoption beyond a
+      private internal helper but still within the Terraform/Terragrunt/Atlantis niche.
+  package-nerd-significance:
+    - >
+      For package-manager users, the package matters because it turns a Go CLI into an
+      installable piece of CI infrastructure: Homebrew supplies the local formula, while
+      the README also documents go install and release tarball installation for Atlantis
+      server images.
+  project-history:
+    - >
+      The project appeared as a public GitHub repository in March 2020, positioned
+      around a specific gap between Atlantis pull-request automation and Terragrunt's
+      dependency-aware HCL configuration. Its README describes Atlantis as a Terraform
+      pull request automation tool whose YAML config can express module dependencies,
+      then explains that Terragrunt already models those dependencies in configuration.
+    - >
+      Rather than asking teams to hand-maintain large Atlantis config files, the tool
+      scans for terragrunt.hcl files, evaluates dependency, terraform, locals, and
+      related source blocks, builds a directed acyclic graph, and emits Atlantis config
+      that reflects the graph.
+  related-projects:
+    - >
+      Atlantis provides the pull-request automation target whose YAML config this tool
+      generates.
+    - Terragrunt provides the dependency-aware HCL input model that this tool analyzes.
+    - >
+      Terraform is the underlying infrastructure-as-code workflow automated by Atlantis
+      and Terragrunt.
+  sources:
+    - 'Input package metadata: source_facts.package-manager, source_facts.package-manager-url'
+    - 'README: https://github.com/transcend-io/terragrunt-atlantis-config#readme'
+    - >
+      Repository metadata:
+      https://api.github.com/repos/transcend-io/terragrunt-atlantis-config
+  summary:
+    - >
+      terragrunt-atlantis-config is a Transcend-maintained command-line generator for
+      producing Atlantis YAML configuration from Terragrunt repositories.
+  timeline:
+    - >
+      2020: Public GitHub repository created for Transcend's Terragrunt-to-Atlantis
+      config generator.
+    - >
+      2020s: README-documented workflow centers on Atlantis pre-workflow hooks and
+      generated atlantis.yaml files for Terragrunt monorepos.
+    - '2026: Homebrew metadata lists the tool as the brew formula terragrunt-atlantis-config.'
+  usage:
+    - >
+      The recommended production pattern is to install the binary on an Atlantis server
+      and run it from a pre-workflow hook after each clone, commonly generating
+      atlantis.yaml with flags such as --autoplan, --parallel, and --create-workspace.
+    - >
+      Users can tune generated Atlantis behavior with CLI flags and Terragrunt locals
+      such as atlantis_workflow, atlantis_apply_requirements, atlantis_skip, and
+      extra_atlantis_dependencies.
 category: developer-tools
 package-manager:
   brew: terragrunt-atlantis-config
