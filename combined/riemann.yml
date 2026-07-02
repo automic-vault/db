@@ -9,6 +9,49 @@ docs:
 config-file-location:
   unix: /etc/riemann.config
 credentials-file-location: null
+history:
+  - >
+    Riemann is a Clojure-based event stream processor for monitoring distributed
+    systems. The GitHub repository was created on February 8, 2012, and the changelog
+    records the 0.1.0 release on March 8, 2012, authored by Kyle Kingsbury, also known
+    as Aphyr. The project framed monitoring as streams of transient events rather than
+    as polling plus durable time-series storage: hosts and applications emit events, and
+    Riemann aggregates, filters, combines, routes, and indexes them with low latency.
+  - >
+    The core model is small but distinctive. Clients send Protocol Buffers messages over
+    TCP or UDP; events are maps with fields such as host, service, state, time,
+    description, tags, metric, ttl, and custom attributes. The index stores the most
+    recent event for each host-service pair, and TTL expiry reinserts stale events with
+    an expired state so failure can be handled by the same streams used for state
+    transitions. Riemann configurations are Clojure programs, and streams are composable
+    functions that receive events, split them by keys, detect changes, roll up bursts,
+    compute rates or windows, and call output streams such as email, Graphite, or
+    alerting services.
+  - >
+    The 0.2.0 release on March 17, 2013, marked a maturing ecosystem around the server:
+    changelog and thanks entries mention structured event data, dashboard work,
+    pluggable transports, Graphite improvements, client libraries in several languages,
+    and packaging changes. Riemann's own client list grew to include C, C++, C#,
+    Clojure, Elixir, Erlang, Go, Guile, Java, Lua, Node.js, OCaml, Perl, Python, Ruby,
+    and Rust projects. This client spread made the server useful as a language-neutral
+    event bus for operations data.
+  - >
+    The 0.3.0 release on January 15, 2018, continued the operational integration path
+    rather than changing the basic mental model. Its changelog includes Java 9 support,
+    PagerDuty v2, Microsoft Teams output, Netty kqueue support, InfluxDB and
+    Elasticsearch work, test-mode improvements, and removal or refactoring of older
+    integrations. Later 0.3.x releases added or maintained integrations such as RabbitMQ
+    transport, InfluxDB 2.0, Prometheus batching, ClickHouse, Kafka resilience, Opsgenie
+    fixes, and EL8 or EL9 packaging.
+  - >
+    In practice, Riemann is used as a programmable monitoring router and
+    stream-processing layer. Operators run the JVM server with a Clojure config,
+    instrument applications or host daemons to submit events, use the dashboard and
+    index queries for a live view of service state, and write stream rules for rate
+    calculations, thresholding, state-change alerts, burst suppression, and forwarding.
+    Its ecosystem role sits between metrics collection, alerting, and message routing:
+    it can feed systems such as Graphite or InfluxDB, but its signature value is
+    deciding what should happen to events while they are still flowing.
 category: system
 package-manager:
   brew: riemann
@@ -26,5 +69,16 @@ executables:
   - riemann
 provenance:
   formula: riemann
+  history-sources:
+    - https://riemann.io/
+    - https://riemann.io/concepts.html
+    - https://riemann.io/quickstart.html
+    - https://riemann.io/howto.html
+    - https://riemann.io/clients.html
+    - https://raw.githubusercontent.com/riemann/riemann/main/CHANGELOG.md
+    - https://api.github.com/repos/riemann/riemann
+    - https://api.github.com/repos/riemann/riemann/releases?per_page=100
+    - https://formulae.brew.sh/formula/riemann
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

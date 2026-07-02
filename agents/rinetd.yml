@@ -7,6 +7,30 @@ config-file-location:
   unix:
     - /etc/rinetd.conf
 credentials-file-location: null
+history:
+  - >
+    rinetd is a small C TCP redirection daemon from Thomas Boutell's 1990s Internet
+    utility work. A comp.os.linux.announce posting for version 0.1 lists an entered date
+    of 05/12/1997, describes it as redirecting TCP connections between address and port
+    pairs, and gives the keywords "internet firewall virtual server port redirect." That
+    origin explains the tool's lasting shape: a single-purpose daemon for forwarding
+    traffic without becoming a general proxy.
+  - >
+    The operational model stayed simple. The daemon reads rules from /etc/rinetd.conf,
+    with forwarding lines in the form bindaddress bindport connectaddress connectport,
+    and runs as a single process using nonblocking I/O. Man pages and the upstream
+    README emphasize firewall, virtual-server, and IP masquerading use cases: expose a
+    service behind a gateway, bind a public address or port, and relay the TCP stream to
+    an internal host.
+  - >
+    Sam Hocevar's GitHub-maintained rinetd line preserved the old utility while adding
+    packaging-friendly releases. Version 0.70, published on 2017-09-09, added UDP
+    support, source address binding, and a real configuration grammar; version 0.71
+    added IPv6 but was marked broken; version 0.73, published on 2021-02-19, continued
+    parser and error-reporting fixes. Distributions package it as the rinetd executable
+    in systems such as Debian, Ubuntu, Alpine, Nix, and Homebrew, which keeps it
+    available as a compact alternative to heavier proxy stacks when protocol awareness
+    is unnecessary.
 tags:
   - cli
   - networking
@@ -35,6 +59,12 @@ provenance:
     - >
       Official GitHub README is the primary documentation surface linked by
       source_facts.homepage.
+  history-sources:
+    - https://groups.google.com/g/comp.os.linux.announce/c/RfY_2ZfplNs
+    - https://github.com/samhocevar/rinetd
+    - https://manpages.ubuntu.com/manpages/focal/man8/rinetd.8.html
+    - https://github.com/samhocevar/rinetd/releases
+    - https://formulae.brew.sh/formula/rinetd
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -45,5 +75,6 @@ category-path:
   - proxy
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

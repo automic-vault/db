@@ -7,6 +7,39 @@ docs:
   - https://gcc.gnu.org/onlinedocs
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    riscv64-elf-gcc is Homebrew's bare-metal RISC-V build of the GNU Compiler
+    Collection. GCC itself is the GNU project's multi-language compiler suite,
+    originally written as the compiler for the GNU operating system and distributed as
+    source releases for many native and cross targets. The formula configures upstream
+    GCC with `--target=riscv64-elf`, disables native language support, builds C and C++
+    front ends, uses `riscv64-elf-binutils` for the assembler and linker, and installs
+    the compiler driver plus libgcc for freestanding RISC-V ELF output.
+  - >
+    RISC-V GCC work began alongside the ISA's early life. SiFive's 2017-03-03
+    announcement says the RISC-V GCC port began shortly after the ISA design project
+    started in 2010 and that GCC had accepted the backend for inclusion in its next
+    release. GCC's release timeline lists GCC 7.1 on 2017-05-02, matching the period
+    when upstream RISC-V support moved from a specialist port into the main GNU compiler
+    release stream.
+  - >
+    The package sits beside, but is not identical to, the riscv-gnu-toolchain
+    superproject. That superproject documents generic ELF/Newlib, Linux glibc, Linux
+    musl, multilib, architecture, and ABI builds under prefixes such as
+    `riscv64-unknown-elf-` and `riscv64-unknown-linux-gnu-`. Homebrew's
+    `riscv64-elf-gcc` is the smaller packaged compiler component aimed at freestanding
+    code: it is useful for kernels, boot code, teaching operating systems, embedded
+    firmware, simulators, and board bring-up where there is no hosted userspace C
+    library.
+  - >
+    Practitioners typically call `riscv64-elf-gcc` to compile and link C or C++ into ELF
+    objects or bare-metal executables, using flags such as `-march` and `-mabi` to
+    select the RISC-V ISA subset and ABI. The companion binutils package supplies
+    inspection and conversion tools, while GDB or an external debug transport such as
+    OpenOCD handles execution and debugging. Homebrew's formula test reflects the basic
+    workflow by compiling a C file to an object and using RISC-V objdump to verify that
+    the result is `elf64-littleriscv`.
 category: developer-tools
 package-manager:
   brew: riscv64-elf-gcc
@@ -38,5 +71,16 @@ executables:
   - riscv64-elf-lto-dump
 provenance:
   formula: riscv64-elf-gcc
+  history-sources:
+    - https://gcc.gnu.org/
+    - https://gcc.gnu.org/releases.html
+    - https://www.sifive.com/blog/risc-v-gcc-is-upstreamed
+    - https://riscv.org/about/
+    - https://github.com/riscv-collab/riscv-gnu-toolchain
+    - https://raw.githubusercontent.com/riscv-collab/riscv-gnu-toolchain/master/README.md
+    - https://formulae.brew.sh/formula/riscv64-elf-gcc
+    - >
+      https://raw.githubusercontent.com/Homebrew/homebrew-core/master/Formula/r/riscv64-elf-gcc.rb
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

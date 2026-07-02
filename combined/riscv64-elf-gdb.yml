@@ -14,6 +14,38 @@ config-file-location:
     - ~/Library/Preferences/gdb/gdbinit
     - ~/.gdbinit
 credentials-file-location: null
+history:
+  - >
+    riscv64-elf-gdb is a cross-debugger packaging of the GNU Debugger for RISC-V ELF
+    targets. GDB is the GNU Project debugger: it can start programs, stop them on
+    conditions, examine state after a stop or crash, and change program state during a
+    debugging session. The Homebrew formula builds upstream GDB with
+    `--target=riscv64-elf`, disables the binutils install because the separate binutils
+    formula owns those tools, enables the text user interface, and links against support
+    libraries such as ncurses, Python, readline, xz, and zstd.
+  - >
+    RISC-V debugging followed the same path from specialist ecosystem ports toward
+    upstream GNU tools. SiFive's software-ecosystem notes in 2017 described active work
+    to upstream the RISC-V GDB port, and a RISC-V software-development thread from 2018
+    reported that core architecture support had been upstreamed to FSF GDB while native
+    Linux support was still a separate concern. Sourceware's GDB manual includes
+    RISC-V-specific commands and register-display behavior, which places the
+    architecture within standard GDB documentation rather than only vendor forks.
+  - >
+    In practice, `riscv64-elf-gdb` is used with a RISC-V ELF binary produced by the
+    companion GCC package and then connected to a simulator, remote stub, JTAG debug
+    server, or batch analysis session. RISC-V external debug documentation describes a
+    host debugger such as GDB communicating through a debug translator such as OpenOCD
+    to reach debug transport hardware. Homebrew's formula test uses the simplest local
+    form of that workflow: compile a small `_start` symbol with `riscv64-elf-gcc`, then
+    run `riscv64-elf-gdb -batch` to query the symbol address from the ELF file.
+  - >
+    The package's ecosystem role is therefore different from native GDB on a
+    workstation. It is a target-aware debugger for firmware, kernels, labs, simulators,
+    and board bring-up where the program under inspection uses RISC-V registers and ELF
+    metadata even though the host machine may be macOS or x86_64 Linux. Together with
+    riscv64-elf-binutils and riscv64-elf-gcc, it forms the inspect-build-debug loop for
+    freestanding RISC-V work.
 category: developer-tools
 package-manager:
   brew: riscv64-elf-gdb
@@ -35,5 +67,16 @@ executables:
   - riscv64-elf-gstack
 provenance:
   formula: riscv64-elf-gdb
+  history-sources:
+    - https://www.gnu.org/software/gdb/
+    - https://sourceware.org/gdb/current/onlinedocs/gdb.html/RISC_002dV.html
+    - >
+      https://www.sifive.com/blog/all-aboard-part-10-how-to-contribute-to-the-risc-v-software-ecosystem
+    - https://groups.google.com/a/groups.riscv.org/g/sw-dev/c/CSkwpmjQLqc
+    - https://riscv.org/wp-content/uploads/2024/12/riscv-debug-release.pdf
+    - https://formulae.brew.sh/formula/riscv64-elf-gdb
+    - >
+      https://raw.githubusercontent.com/Homebrew/homebrew-core/master/Formula/r/riscv64-elf-gdb.rb
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

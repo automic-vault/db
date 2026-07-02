@@ -6,6 +6,30 @@ docs:
   - https://www.gnu.org/software/binutils
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    riscv64-elf-binutils is a cross-target packaging of GNU Binutils for bare-metal
+    RISC-V ELF development. The upstream GNU Binutils project supplies the assembler,
+    linker, archive tools, object-file inspectors, demangler, profiler, and related
+    binary utilities; the Homebrew formula builds those sources with
+    `--target=riscv64-elf`, placing tools such as `riscv64-elf-as`, `riscv64-elf-ld`,
+    `riscv64-elf-objdump`, `riscv64-elf-readelf`, and `riscv64-elf-objcopy` on PATH.
+  - >
+    The RISC-V context is broader than the Homebrew formula. RISC-V began at UC Berkeley
+    in May 2010, the first publication describing the instruction set was the 2011-05-13
+    RISC-V Instruction Set Manual, and the RISC-V Foundation launched in 2015 to
+    coordinate an open, royalty-free ISA ecosystem. GNU toolchain support became one of
+    the practical requirements for that ecosystem: the RISC-V GNU Toolchain repository
+    describes itself as the RISC-V C and C++ cross-compiler and supports both generic
+    ELF/Newlib and Linux-ELF/glibc build modes.
+  - >
+    In practitioner workflows, the binutils package is the foundation below the compiler
+    and debugger. Assembly files are assembled with `riscv64-elf-as`, object files and
+    archives are inspected with `objdump`, `readelf`, `nm`, `size`, and `strings`,
+    firmware images are transformed with `objcopy`, and final bare-metal ELF images are
+    linked with `ld` or via GCC's driver. Homebrew's formula test demonstrates that role
+    directly by assembling a small RISC-V program and checking the resulting object with
+    `riscv64-elf-objdump` for the `elf64-littleriscv` file format.
 tags:
   - binutils
   - cli
@@ -20,6 +44,15 @@ provenance:
     - source_facts.name names the cross-target package riscv64-elf-binutils.
   docs-sources:
     - GNU Binutils page links current release documentation at sourceware.org/binutils/docs/.
+  history-sources:
+    - https://www.gnu.org/software/binutils/
+    - https://sourceware.org/binutils/docs
+    - https://riscv.org/about/
+    - https://github.com/riscv-collab/riscv-gnu-toolchain
+    - https://raw.githubusercontent.com/riscv-collab/riscv-gnu-toolchain/master/README.md
+    - https://formulae.brew.sh/formula/riscv64-elf-binutils
+    - >
+      https://raw.githubusercontent.com/Homebrew/homebrew-core/master/Formula/r/riscv64-elf-binutils.rb
   repo-sources:
     - >
       GNU Binutils page links the official anonymous git tree and gitweb interface for
@@ -31,5 +64,6 @@ category-path:
   - developer-tools
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
