@@ -9,6 +9,45 @@ config-file-location:
 credentials-file-location:
   unix:
     - ~/.aws/credentials
+history:
+  adoption-history:
+    - >
+      The official README documents Homebrew, Chocolatey, shell-script, source, and
+      manual binary installation paths, which is typical for a small infrastructure CLI
+      meant to be grabbed during incident cleanup or queue maintenance.
+  package-nerd-significance:
+    - >
+      Package-manager users care because it turns a common SQS dead-letter queue chore
+      into a packaged binary instead of a one-off script, while still fitting normal AWS
+      CLI credential conventions.
+  project-history:
+    - >
+      The GitHub repository was created in 2016 and the official README presents the
+      tool as a single-purpose operational utility: it resolves queue names, copies
+      message attributes, supports FIFO queues, batches work, and deletes source
+      messages only after enqueueing them to the destination.
+  related-projects:
+    - AWS CLI, Amazon SQS, AWS SDK for Go, dead-letter queue replay scripts.
+  sources:
+    - https://api.github.com/repos/mercury2269/sqsmover
+    - https://api.github.com/repos/mercury2269/sqsmover/releases
+    - https://github.com/mercury2269/sqsmover#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      SQS Message Mover is a small Go command-line tool for moving AWS SQS messages from
+      one queue to another, with dead-letter queue recovery called out as its main use
+      case.
+  timeline:
+    - '2016: GitHub repository created.'
+    - '2020: v0.3.x releases published with prebuilt binaries.'
+    - '2021: v0.4.0 published.'
+  usage:
+    - >
+      Users run sqsmover with source and destination queue names, optional
+      region/profile/endpoint flags, and batch or limit controls. It relies on the
+      standard AWS shared credentials file, optional AWS config file, or AWS environment
+      variables.
 tags:
   - aws
   - cli
@@ -27,30 +66,27 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description says AWS SQS Message mover; official GitHub README says
-      sqsmover moves AWS SQS messages from one queue to another.
+    - source_facts.description describes AWS SQS message moving.
   display-name-sources:
-    - >
-      Official GitHub README heading is SQS Message Mover; source_facts.name and
-      executable identify the command as sqsmover.
+    - Official README title and current_curation.display-name.
   docs-sources:
-    - Official GitHub README contains feature, usage, and build documentation for sqsmover.
+    - Official GitHub README from current_curation.docs and source_facts.homepage.
+  history-sources:
+    - https://api.github.com/repos/mercury2269/sqsmover
+    - https://api.github.com/repos/mercury2269/sqsmover/releases
+    - https://github.com/mercury2269/sqsmover#readme
+    - source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo is already populated with
-      https://github.com/mercury2269/sqsmover; per instruction repo is returned as null
-      and not second-guessed.
+      source_facts.repo is already supplied; prompt instructs returning repo as null
+      instead of redetermining it.
   tags-sources:
-    - >
-      Official GitHub README describes moving AWS SQS messages between queues and
-      dead-letter queue recovery; GitHub topics include cli, golang, and aws-sqs.
+    - Official README usage/features and source_facts.description.
 category-confidence: high
 category-path:
   - cloud-infrastructure
-  - messaging
-  - cli
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
