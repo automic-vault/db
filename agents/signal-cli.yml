@@ -11,6 +11,30 @@ credentials-file-location:
   unix:
     - $XDG_DATA_HOME/signal-cli
     - ~/.local/share/signal-cli
+history:
+  - >
+    signal-cli grew out of the gap between Signal's official mobile/desktop clients and
+    the operational need for a scriptable, headless Signal endpoint. Its README
+    describes it as an unofficial command-line interface for the Signal messenger, built
+    on a patched libsignal-service-java extracted from Signal-Android, with support for
+    registering, verifying, sending, and receiving messages. That ancestry makes it less
+    like a generic chat bot SDK and more like a practical wrapper around the same moving
+    service protocol that the official clients use.
+  - >
+    The project found its niche in server-side notifications and automation. The manual
+    says it was primarily developed for servers that notify administrators of important
+    events, and its daemon forms make that use case less fragile: D-Bus for
+    desktop/system integration and JSON-RPC for embedding in other programs.
+    Practitioners use it for cron jobs, alerting pipelines, simple bots, and bridges
+    where a shell command or long-running local service is easier to deploy than a full
+    GUI client.
+  - >
+    Its packaging story reflects both popularity and maintenance friction. Homebrew
+    ships it as `signal-cli`, while the upstream README also points to binary archives,
+    Docker images, and community Linux packages. The README warns that old releases may
+    stop working when Signal Server changes, because official clients expire after three
+    months; packagers and operators therefore treat signal-cli as a tool that needs
+    timely upgrades rather than a stable wire-protocol utility.
 tags:
   - cli
   - dbus
@@ -37,6 +61,11 @@ provenance:
     - >
       source_facts.homepage and source_facts.repo point to the official GitHub
       repository README
+  history-sources:
+    - https://github.com/AsamK/signal-cli
+    - https://github.com/AsamK/signal-cli/blob/master/man/signal-cli.1.adoc
+    - https://github.com/AsamK/signal-cli/blob/master/man/signal-cli-jsonrpc.5.adoc
+    - https://formulae.brew.sh/formula/signal-cli
   repo-sources:
     - source_facts.repo already has a value, so repo is returned as null per instructions
   tags-sources:
@@ -49,5 +78,6 @@ category-path:
   - messaging
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -14,6 +14,26 @@ credentials-file-location:
   unix:
     - /etc/signmykey/server.yml
     - /etc/signmykey/server.key
+history:
+  - >
+    signmykey is a Go-based attempt to make OpenSSH certificate authorities
+    operationally convenient. Instead of distributing long-lived public keys to every
+    host, an organization runs a signing service that authenticates users, maps them to
+    SSH principals, and issues short-lived SSH certificates for infrastructure access.
+  - >
+    The project is intentionally backend-oriented. Its README lists separate
+    authenticator, principals, and signer backends: users can be checked against LDAP or
+    local maps, principals can come from LDAP groups or static configuration, and
+    certificate signing can happen directly in signmykey or through HashiCorp Vault. The
+    documentation shows it deployed as a systemd service with
+    `/etc/signmykey/server.yml`, TLS material, and Vault AppRole credentials, which puts
+    it closer to an internal identity service than a one-off SSH helper.
+  - >
+    Distribution is small but conventional: Homebrew ships a `signmykey` formula for
+    developer machines, while the upstream documentation and README describe APT
+    repository installation and manual release binaries. Practitioners would use it
+    where SSH certificate issuance, group-derived principals, and Vault-backed signing
+    are preferable to hand-managed `authorized_keys` files.
 category: security
 package-manager:
   brew: signmykey
@@ -30,5 +50,10 @@ executables:
   - signmykey
 provenance:
   formula: signmykey
+  history-sources:
+    - https://github.com/signmykeyio/signmykey
+    - https://signmykey.io/getting-started/signmykey/
+    - https://formulae.brew.sh/formula/signmykey
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

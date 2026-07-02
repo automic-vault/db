@@ -6,6 +6,36 @@ docs:
   - https://sigsum.org
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    sigsum-go is the Go implementation and CLI toolkit for Sigsum, a transparency system
+    for signed checksums. Sigsum's design documents position it near Certificate
+    Transparency and Go's checksum database, but with a narrower object model: log
+    signed checksums plus minimal metadata so key usage becomes visible without turning
+    the log into a general artifact store.
+  - >
+    The security model is deliberately small and composable. Sigsum's site frames the
+    goal as making every accepted signature appear in a public log, so a project can
+    detect secret releases or unexpected use of a signing key. The design document calls
+    this pre-hashed digital signing with transparency, and stresses simple parsing,
+    constrained-environment verification, preserved data flows, and proofs that can be
+    distributed with the artifact instead of forcing every end user to contact the log.
+  - >
+    sigsum-go packages that model as both a Go library and command-line tools. The
+    README says it contains client tools for interacting with Sigsum servers, while the
+    getting-started guide walks through `sigsum-key`, `sigsum-policy`, `sigsum-submit`,
+    `sigsum-verify`, and `sigsum-monitor`: generate an Ed25519 signing key, submit a
+    signed checksum, collect a proof of logging, verify it offline, and monitor for key
+    use. The Homebrew formula also exposes the witness-related tooling used around log
+    cosigning.
+  - >
+    Its ecosystem role is closer to release transparency plumbing than a general signing
+    command. Service documentation lists a stable log operated by Glasklar Teknik and
+    stable witnesses including Glasklar and Mullvad, while test logs and test witnesses
+    support development. Practitioners use sigsum-go to add public, monitorable evidence
+    to software releases, reproducibility claims, configuration states, or other
+    checksum-addressed outputs where the signature alone does not answer whether the
+    signer meant to sign that object.
 category: security
 package-manager:
   brew: sigsum-go
@@ -29,5 +59,13 @@ executables:
   - sigsum-witness
 provenance:
   formula: sigsum-go
+  history-sources:
+    - https://www.sigsum.org/
+    - https://github.com/sigsum/sigsum-go
+    - https://www.sigsum.org/getting-started/
+    - https://www.sigsum.org/services/
+    - https://git.sigsum.org/sigsum/tree/doc/design.md
+    - https://formulae.brew.sh/formula/sigsum-go
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

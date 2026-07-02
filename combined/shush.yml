@@ -6,6 +6,28 @@ docs:
   - https://github.com/realestate-com-au/shush#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    shush is a small Go command-line tool from realestate.com.au for encrypting and
+    decrypting short secrets with AWS Key Management Service. The repository was created
+    on GitHub in 2015 and the README presents the core workflow as piping plaintext into
+    shush encrypt with a KMS key id, ARN, or alias, then piping the stored ciphertext
+    back through shush decrypt without restating the key because that information is
+    embedded in the ciphertext.
+  - >
+    Its practical role is glue between AWS KMS and Unix-style deployment habits. The
+    tool supports AWS credential discovery, explicit region selection outside EC2, KMS
+    encryption contexts, and a 4 KB plaintext limit inherited from the small-secret use
+    case. The notable operational feature is shush exec: it scans environment variables
+    with a KMS_ENCRYPTED_ prefix, decrypts them, strips the prefix, and execs the target
+    command, which made it suitable as a Docker entrypoint shim for applications that
+    keep encrypted environment material in deploy configuration.
+  - >
+    Packaging reflects that narrow operations niche. Homebrew distributes shush,
+    upstream publishes release binaries, and the README also documents source
+    installation with go install. Practitioners use it when they want encrypted values
+    to live beside application or infrastructure configuration while still relying on
+    IAM and KMS policy for access control.
 category: security
 package-manager:
   brew: shush
@@ -23,5 +45,10 @@ executables:
   - shush
 provenance:
   formula: shush
+  history-sources:
+    - https://github.com/realestate-com-au/shush
+    - https://api.github.com/repos/realestate-com-au/shush
+    - https://formulae.brew.sh/formula/shush
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
