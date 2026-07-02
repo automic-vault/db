@@ -12,6 +12,47 @@ credentials-file-location:
     - kube_config_cluster.yml
     - kube_config_<FILE_NAME>.yml
     - cluster.rkestate
+history:
+  - >
+    Rancher Kubernetes Engine, usually called RKE or RKE1, came out of Rancher Labs'
+    effort to make Kubernetes installation less brittle for operators. Rancher's
+    introductory material framed Kubernetes installation as one of the hard problems for
+    operations and DevOps because clusters span many platforms, operating systems, and
+    host layouts. RKE answered that with a Go-written installer that supported
+    bare-metal and virtualized servers and ran from Linux or macOS workstations.
+  - >
+    RKE's practical model was deliberately simple: operators describe nodes and roles in
+    a cluster.yml file, then run the rke binary to bring the cluster up. The installer
+    connects to hosts over SSH, uses Docker on the remote machines, generates and
+    distributes Kubernetes certificates, deploys control-plane and worker components as
+    containers, saves kubeconfig locally, and records cluster state for later updates or
+    removal. The resulting workflow made RKE especially attractive for on-premises and
+    infrastructure-agnostic Rancher deployments where a cloud provider's managed
+    Kubernetes service was not the target.
+  - >
+    RKE became part of Rancher's broader Kubernetes management story. Rancher
+    documentation describes RKE as a CNCF-certified Kubernetes distribution that runs
+    entirely within Docker containers and works on bare-metal and virtualized servers.
+    SUSE's July 9, 2020 announcement that it would acquire Rancher Labs placed Rancher,
+    and therefore RKE, inside a larger enterprise open-source portfolio; the
+    announcement cited Rancher Labs as a Kubernetes management company with 37,000
+    active users and more than 100 million downloads for its flagship product.
+  - >
+    The successor path explains RKE's later lifecycle. Rancher and SUSE positioned RKE2
+    as the next-generation distribution, with RKE2 using containerd and a different
+    provisioning model while RKE depended on Docker. RKE documentation states that
+    RKE/RKE1 reached end of life on July 31, 2025, Rancher 2.12.0 and later no longer
+    support provisioning or managing downstream RKE1 clusters, and operators should
+    replatform RKE1 clusters to RKE2 for continued support and security updates. The RKE
+    repository also states that version 1.8 is the final release line in the RKE 1.x
+    series.
+  - >
+    In package-manager terms, RKE remained a single-purpose CLI rather than a
+    daemon-heavy distribution package. Homebrew, Alpine, MacPorts, Nix, Scoop, and
+    openSUSE package entries expose the rke executable, while the operational artifacts
+    live beside the operator's cluster definition: cluster.yml for desired state,
+    kube_config_cluster.yml or similarly named kubeconfig files for access, and
+    cluster.rkestate for local state.
 category: cloud-infrastructure
 package-manager:
   apk: rke
@@ -33,5 +74,16 @@ executables:
   - rke
 provenance:
   formula: rke
+  history-sources:
+    - https://www.suse.com/c/rancher_blog/an-introduction-to-rancher-kubernetes-engine-rke/
+    - https://rke.docs.rancher.com/
+    - https://github.com/rancher/rke
+    - https://www.suse.com/news/suse-acquires-rancher/
+    - https://www.suse.com/c/rancher_blog/rke-vs-rke2-comparing-kubernetes-distros/
+    - https://formulae.brew.sh/formula/rke
+    - source_facts.package-manager
+    - source_facts.config-file-location
+    - source_facts.credentials-file-location
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

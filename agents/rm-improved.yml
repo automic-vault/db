@@ -5,6 +5,34 @@ docs:
   - https://github.com/nivekuil/rip#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    rm-improved is the Homebrew formula name for `rip`, Kevin Liu's Rust command-line
+    deletion tool. The upstream README expands the name as Rm ImProved and positions it
+    as a safe, ergonomic alternative to `rm`: files are moved to a graveyard instead of
+    immediately unlinked, and the stored path structure makes recovery possible.
+  - >
+    The project emerged in the Rust CLI wave of the mid-2010s; the author posted it to
+    the Rust community as a safer `rm` alternative in a discussion that immediately
+    focused on Unix semantics, recursive-delete expectations, XDG trash behavior,
+    filename edge cases, and whether users should alias `rm` to a recovery-oriented
+    tool. Those debates shaped the package's ecosystem role: it is not a freedesktop
+    trash implementation, and the README explicitly says it does not implement the XDG
+    Trash specification or pursue the same goals.
+  - >
+    In practical use, `rip target` moves files under a graveyard directory, keeps
+    numbered backups when the same absolute path is deleted more than once, and provides
+    subcommands or flags for inspection, listing sent files, restoring them, and
+    permanently emptying the graveyard. The tool is useful for shell users who want
+    undoable deletion without the desktop trash stack, but its own design makes it a
+    separate command rather than a perfectly compatible `rm` clone.
+  - >
+    Distribution reflects that small Rust-tool identity. The README documents
+    installation through `cargo install rm-improved`, binary release tarballs, the Arch
+    AUR, and Homebrew; Homebrew packages version 0.13.1 from the upstream GitHub tag,
+    builds it with Rust, and installs the `rip` executable. The formula also records a
+    conflict with `rip2` because both install a `rip` binary, illustrating that the
+    command name has become shared territory among newer safe-delete tools.
 tags:
   - cli
   - file-deletion
@@ -21,6 +49,14 @@ provenance:
     - source_facts.name names the package rm-improved.
   docs-sources:
     - source_facts.homepage and source_facts.repo point to the official GitHub README.
+  history-sources:
+    - https://github.com/nivekuil/rip
+    - https://github.com/nivekuil/rip/releases
+    - https://github.com/nivekuil/rip/releases/tag/0.13.1
+    - https://crates.io/crates/rm-improved
+    - https://formulae.brew.sh/api/formula/rm-improved.json
+    - >
+      https://www.reddit.com/r/rust/comments/59ade6/rip_a_safe_and_ergonomic_alternative_to_rm/
   repo-sources:
     - source_facts.repo is populated; per instructions repo is returned as null.
   tags-sources:
@@ -30,5 +66,6 @@ category-path:
   - system
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

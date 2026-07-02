@@ -7,6 +7,45 @@ docs:
   - https://github.com/sahib/rmlint#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    rmlint is a filesystem lint and deduplication tool whose public development dates to
+    2010, when Christopher Pahl started the project. The README credits Pahl for
+    2010-2017, Daniel Thomas for 2014-2021, and Cebtenzzre for 2021-2023, showing the
+    transition from a personal C utility into a maintained Unix cleanup tool with
+    extensive documentation and tests.
+  - >
+    The project broadened the usual duplicate-file-finder niche. Its README says it
+    finds duplicate files and directories, nonstripped binaries, broken symlinks, empty
+    files and directories, and files with invalid user or group IDs. The manual
+    emphasizes a conservative design point: rmlint itself does not delete files, but
+    emits executable output such as `rmlint.sh` plus JSON and summaries so users can
+    inspect and choose how to act.
+  - >
+    Adoption grew among users managing large home directories, backup drives, media
+    collections, source trees, and copy-on-write filesystems. Compared with older tools
+    such as fdupes, rmlint's appeal is speed, multiple output formats, noninteractive
+    operation, selectable original-file ranking, replayable JSON results, xattr checksum
+    caching, and filesystem-aware handlers such as reflink, clone, hardlink, symlink,
+    and remove. The documentation also treats safety as part of the workflow: users can
+    tag preferred original paths with `//`, keep all tagged files, or require duplicates
+    to exist across backup and original trees before removal.
+  - >
+    Practitioners typically run rmlint as a scanner first and a deleter second. A common
+    workflow is `rmlint path`, inspect the pretty output and generated `rmlint.json`,
+    review `rmlint.sh`, and then execute the script if the selected originals look
+    right. Advanced use cases include `--merge-directories` for duplicate directory
+    trees, `--replay` for filtering previous large scans without rereading the
+    filesystem, piping paths from `find`, JSON post-processing with `jq`, and Btrfs or
+    reflink-based deduplication where replacing duplicate content with shared extents is
+    safer than removing files.
+  - >
+    Packaging reflects a mature cross-platform Unix CLI. The README notes readily made
+    packages in distributions, while the package metadata in this batch lists Alpine,
+    Homebrew, Debian, Fedora, MacPorts, Nix, Ubuntu, and openSUSE. Homebrew packages
+    version 2.10.3 from the GitHub release tarball and builds with SCons and Sphinx; the
+    GitHub repository exposes thousands of commits, dozens of releases, and
+    documentation published through Read the Docs.
 category: system
 package-manager:
   apk: rmlint
@@ -29,5 +68,14 @@ executables:
   - rmlint
 provenance:
   formula: rmlint
+  history-sources:
+    - https://github.com/sahib/rmlint
+    - https://rmlint.readthedocs.io/en/master/rmlint.1.html
+    - https://rmlint.readthedocs.io/en/master/tutorial.html
+    - https://rmlint.readthedocs.io/en/master/cautions.html
+    - https://rmlint.readthedocs.io/en/master/install.html
+    - https://github.com/sahib/rmlint/releases/tag/v2.10.3
+    - https://formulae.brew.sh/api/formula/rmlint.json
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high

@@ -5,6 +5,47 @@ docs:
   - https://github.com/hanslub42/rlwrap#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    rlwrap is a Unix command-line wrapper by Hans Lub that adds GNU Readline editing,
+    history, and completion behavior to interactive programs that do not implement those
+    features themselves. Lub described the original motivation as a missing tool he
+    needed in 1999; an imported Git snapshot of rlwrap 0.35, dated January 8, 2010,
+    still carried that account and framed rlwrap among other readline wrappers such as
+    rlfe and cle.
+  - >
+    The project settled into the small-but-durable Unix utility niche: it wraps another
+    command through a pseudo-terminal, intercepts line input, and lets Readline provide
+    arrow-key editing, reverse search, persistent per-command histories, and
+    programmable completions. Its own README emphasizes the practical symptom that made
+    it popular with shell users: when a program prints escape sequences such as `^[[D`
+    after an arrow key, running it as `rlwrap command` gives the user a more normal
+    interactive prompt without changing the wrapped program.
+  - >
+    rlwrap's ecosystem role is strongest around REPLs, database shells, network clients,
+    and legacy interactive tools. Examples in the README include wrapping netcat,
+    Prolog, and smbclient; package descriptions from Cygwin and Homebrew describe the
+    same role as adding Readline support to commands that lack it. The tool became a
+    common workaround for SQL*Plus, Common Lisp, Tcl, vendor CLIs, and small internal
+    prompts where adding native Readline support to the target program would be harder
+    than wrapping it.
+  - >
+    Distribution has followed ordinary source-package channels rather than a single
+    language registry. The upstream repository uses Autotools and depends on Readline
+    and pseudo-terminal support; Homebrew packages version 0.48 from the GitHub tag and
+    declares readline and libptytty dependencies, while the package also appears in
+    Linux and Unix package collections such as Debian, Fedora, Arch, Cygwin, MacPorts,
+    Nix, and Alpine. The README also documents portability work across Unix-like systems
+    including FreeBSD, macOS, HP-UX, AIX, Solaris, QNX, Cygwin, and Linux.
+  - >
+    Practitioners use rlwrap as a deliberately thin layer: aliases such as `alias
+    sqlplus='rlwrap sqlplus'`, completion word lists loaded with `-f`, completion
+    learned from program input/output with `-r`, forced wrapping with
+    `--always-readline`, and filters for advanced prompt, history, or completion
+    transformations. The same README warns that rlwrap is not a terminal emulator and is
+    a poor fit for programs that already do sophisticated terminal handling, which keeps
+    its role clear: improve plain line-oriented interactive programs, not full-screen
+    TUIs.
 tags:
   - cli
   - interactive-shell
@@ -30,6 +71,13 @@ provenance:
     - >
       source_facts.repo points to the official GitHub repository; its README is the
       primary documentation surface.
+  history-sources:
+    - https://github.com/hanslub42/rlwrap
+    - https://github.com/andreyvit/rlwrap
+    - https://raw.githubusercontent.com/hanslub42/rlwrap/master/NEWS
+    - https://formulae.brew.sh/api/formula/rlwrap.json
+    - https://cygwin.com/packages/summary/rlwrap-src.html
+    - https://docs.oracle.com/cd/E88353_01/html/E37839/rlwrap-1.html
   repo-sources:
     - source_facts.repo is already populated; per instruction repo is returned as null.
   tags-sources:
@@ -43,5 +91,6 @@ category-path:
   - readline-wrapper
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

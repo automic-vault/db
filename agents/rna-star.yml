@@ -6,6 +6,49 @@ docs:
   - https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    STAR, Spliced Transcripts Alignment to a Reference, emerged from the RNA-seq
+    alignment problems faced by high-throughput transcriptome projects. Alexander Dobin
+    and colleagues published the STAR paper in Bioinformatics on 2012-10-25, with the
+    article appearing in volume 29, issue 1, January 2013. The paper framed RNA-seq
+    alignment as a harder problem than ordinary contiguous short-read mapping because
+    reads can cross splice junctions, include sequencing errors and variants, and arrive
+    at consortium scale.
+  - >
+    The original STAR algorithm used sequential maximum mappable seed search in
+    uncompressed suffix arrays, followed by seed clustering and stitching. In the paper,
+    the authors reported developing the software to align a large ENCODE Transcriptome
+    RNA-seq dataset exceeding 80 billion reads. They reported more than a 50-fold
+    mapping-speed advantage over other aligners in their comparison, including 550
+    million 2 x 76 bp paired-end reads per hour to the human genome on a 12-core server,
+    while also detecting canonical splice junctions, non-canonical junctions, chimeric
+    transcripts, and full-length RNA sequences.
+  - >
+    That combination of speed, splice awareness, and fusion-read handling made STAR a
+    standard aligner in bulk RNA-seq practice. The project moved from the original
+    Google Code-era distribution mentioned in the 2012 paper to a GitHub repository
+    created on 2014-03-15. The repository README identifies the package as STAR 2.7.11b,
+    credits Alexander Dobin for 2009-2024, links support to GitHub issues and the
+    rna-star Google Group, and records precompiled binaries, source code, documentation,
+    release notes, and change history in the repository layout.
+  - >
+    STAR's practical workflow is index-first and batch-oriented. Users generate a genome
+    index for a reference genome, align FASTQ reads with STAR, and feed the resulting
+    SAM or BAM-compatible alignments and splice-junction outputs into downstream RNA-seq
+    quantification, transcript assembly, or fusion-discovery workflows. Practitioner
+    discussions describe a common pipeline of running STAR per sample and then using
+    HTSeq-count or featureCounts for gene-level counts; two-pass workflows use splice
+    junctions found in an initial pass to improve a subsequent alignment pass.
+  - >
+    Packaging reflects STAR's role as compiled scientific infrastructure. The README
+    documents x86-64 64-bit Linux and Mac OS X requirements, make-based compilation, and
+    a memory recommendation of at least 16 GB, ideally 32 GB, for mammalian genomes.
+    Homebrew's rna-star formula generated on 2026-07-02 packaged version 2.7.11b,
+    installed the STAR executable, depended on libomp, and published bottles for macOS
+    and Linux. The package is also represented in distribution ecosystems under names
+    such as rna-star or star, matching its use in reproducible bioinformatics
+    environments and workflow managers.
 tags:
   - aligner
   - bioinformatics
@@ -32,6 +75,15 @@ provenance:
     - >
       Official GitHub README has a MANUAL section linking to doc/STARmanual.pdf; README
       is the official documentation surface in the source repo.
+  history-sources:
+    - https://academic.oup.com/bioinformatics/article/29/1/15/272537
+    - https://github.com/alexdobin/STAR
+    - https://api.github.com/repos/alexdobin/STAR
+    - https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf
+    - https://groups.google.com/g/rna-star
+    - https://github.com/alexdobin/STAR/discussions/1185
+    - https://formulae.brew.sh/api/formula/rna-star.json
+    - https://formulae.brew.sh/formula/rna-star
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/alexdobin/STAR; per
@@ -47,5 +99,6 @@ category-path:
   - rna-seq
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
