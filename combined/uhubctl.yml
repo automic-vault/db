@@ -6,6 +6,79 @@ docs:
   - https://github.com/mvp/uhubctl
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      uhubctl's adoption is closely tied to lab automation, embedded development,
+      Raspberry Pi work, USB device testing, and remote recovery workflows where
+      physically unplugging a device is inconvenient. The README documents Raspberry Pi
+      models and many external hubs and docks as compatible or partially compatible
+      devices.
+    - >
+      The supplied package data records uhubctl in Homebrew, MacPorts, Nix, Alpine,
+      Debian, Ubuntu, Fedora/dnf, and openSUSE. The official README likewise lists
+      package-manager install commands for macOS, Debian-family systems, Red Hat-family
+      systems, openSUSE, and FreeBSD.
+  package-nerd-significance:
+    - >
+      uhubctl is significant because it turns a hardware capability that is
+      inconsistently implemented by consumer devices into a scriptable package-manager
+      tool. That makes it useful for test rigs, CI benches with attached hardware, home
+      labs, and headless systems.
+    - >
+      For packagers, the interesting part is not just compiling a small C program; it is
+      carrying libusb behavior, OS-specific permissions, kernel interface changes, and
+      documentation for hardware quirks that determine whether the command actually cuts
+      power.
+  project-history:
+    - >
+      The public uhubctl repository was created in 2015. Its README credits hub-ctrl.c
+      by Niibe Yutaka as the original inspiration and defines the target hardware as
+      smart USB hubs that can switch power per port.
+    - >
+      The project grew around a practical compatibility table rather than only a
+      codebase. The README tracks known working hubs, monitors, docks, keyboards,
+      Raspberry Pi boards, and embedded devices, and asks users to report working
+      hardware with uhubctl output and VBUS-off test results.
+    - >
+      Release metadata shows v1.8 in 2017, v2.0.0 in 2018, a series of 2.x releases
+      through 2022, and v2.6.0 in 2024.
+  related-projects:
+    - The README names hub-ctrl.c by Niibe Yutaka as the original inspiration.
+    - >
+      uhubctl depends on libusb for portable USB access and, on newer Linux kernels, can
+      use the kernel port-disable interface.
+  sources:
+    - https://api.github.com/repos/mvp/uhubctl
+    - https://api.github.com/repos/mvp/uhubctl/releases?per_page=10
+    - https://github.com/mvp/uhubctl
+    - https://raw.githubusercontent.com/mvp/uhubctl/master/README.md
+    - source_facts.package-manager
+  summary:
+    - >
+      uhubctl is a command-line utility for controlling per-port power on USB hubs that
+      implement USB per-port power switching.
+  timeline:
+    - '2015: Public GitHub repository created.'
+    - '2017: v1.8 release published.'
+    - '2018: v2.0.0 release published.'
+    - '2020: v2.2.0 and v2.3.0 releases published.'
+    - '2022: v2.5.0 release published.'
+    - '2024: v2.6.0 release published.'
+  usage:
+    - >
+      The common command form is to list supported hubs, then turn a selected port off,
+      on, toggle it, or cycle it with a configurable delay. The README documents
+      location selection for multi-hub systems and cautions that switching built-in USB
+      ports can disconnect keyboards or mice.
+    - >
+      On Linux, the README documents udev rules for non-root access and notes that Linux
+      kernel 6.0 and later provide a standard interface for disabling hub ports, which
+      uhubctl tries to use instead of libusb where possible.
+    - >
+      The README also explains USB 3.0 duality: a USB 3 hub can appear as separate USB2
+      and USB3 virtual hubs, and power changes may need to be applied to both for the
+      physical port state to match the user's expectation.
 category: system
 package-manager:
   apk: uhubctl
