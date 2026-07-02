@@ -10,6 +10,93 @@ config-file-location:
     - Tupfile.ini
     - .tup/
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      tup remained a specialist build-system choice rather than a universal default, but
+      it achieved unusually broad package-manager coverage for a niche developer tool.
+      The supplied package metadata lists packages in apk, Homebrew, Debian, MacPorts,
+      Nix, pacman, Scoop, Ubuntu, and zypper.
+    - >
+      Its adoption history is tied to developers who care about exact incremental
+      builds, generated dependency graphs, and avoiding unnecessary work. The official
+      manual's examples and comparisons position tup in the same conversation as
+      Make-like tools, but with a stronger focus on automatic dependency knowledge and
+      fast no-op updates.
+  package-nerd-significance:
+    - >
+      tup matters in the package-nerd niche because it is a long-lived, packaged
+      build-system experiment with a clear thesis: rebuild correctness and speed should
+      come from the updater knowing the file graph, not from every project
+      hand-maintaining perfect dependency lists.
+    - >
+      It is also a useful package-index signal for build-tool archaeology. Seeing tup in
+      Homebrew, Linux distributions, Nix, Scoop, and other managers marks it as a tool
+      that remained interesting enough for cross-platform packagers even without
+      becoming the dominant build system.
+  project-history:
+    - >
+      tup was published as an alternative to traditional build tools whose rebuild cost
+      depends heavily on scanning files and manually maintained dependencies. The
+      official README and homepage describe it as a build system for Linux, macOS, and
+      Windows that takes a list of file changes and a DAG, then executes the commands
+      needed to update dependent files with very little overhead.
+    - >
+      The project has been public on GitHub since 2011, but its official site keeps the
+      older research-oriented framing alive: the navigation links to the manual,
+      examples, Make-vs-tup comparisons, a Lua parser, and the Build System Rules and
+      Algorithms PDF. The manual presents `tup` as the primary command, `tup init` as
+      the creator of the `.tup` database, and Tupfiles as the place where projects
+      describe how source files become outputs.
+    - >
+      Unlike build front ends such as CMake, tup is itself the dependency-tracking
+      updater. Its manual emphasizes that it has no domain-specific knowledge: C,
+      generated files, and other build products are expressed through Tupfiles, while
+      tup handles the graph, changed-file detection, parallel jobs, environment
+      checking, and optional file monitoring.
+  related-projects:
+    - Make
+    - Ninja
+    - CMake
+    - SCons
+    - redo
+    - Lua
+  sources:
+    - >
+      GitHub API for gittup/tup: repository created 2011-05-01, active metadata, and
+      official tag list.
+    - >
+      https://github.com/gittup/tup README: file-based build system, Linux/macOS/Windows
+      support, changed files plus DAG model.
+    - 'https://gittup.org/tup homepage: project positioning and documentation sections.'
+    - >
+      https://gittup.org/tup manual: `tup`, `tup init`, `.tup`, `Tupfile.ini`, Tupfiles,
+      secondary commands, and 2024-05-19 manual update date.
+    - >
+      source_facts.package-manager: apk, Homebrew, Debian, MacPorts, Nix, pacman, Scoop,
+      Ubuntu, and zypper package-manager presence.
+  summary:
+    - >
+      tup is a file-based build system that models a project as changed files plus a
+      directed acyclic graph, then updates only the outputs affected by those changes.
+  timeline:
+    - '2011: Official GitHub repository created.'
+    - '2011: Early v0.1 tag recorded in the official GitHub tag list.'
+    - >
+      2024: Official manual page updated date shows continued maintenance of command
+      documentation.
+    - '2026: GitHub repository metadata shows recent activity and continued public maintenance.'
+  usage:
+    - >
+      In day-to-day use, a developer initializes a tup hierarchy with `.tup` or a root
+      `Tupfile.ini`, writes `Tupfile` rules, and runs `tup` to bring outputs up to date.
+      The manual notes that `tup` can be run from anywhere in the hierarchy and will
+      update requested outputs or the whole project.
+    - >
+      For package-manager users, tup is a compact CLI that installs beside compilers and
+      editors. It is often evaluated by people who are already dissatisfied with
+      Makefile dependency drift or build-system scans, and who are comfortable adopting
+      a declarative graph-oriented build workflow.
 tags:
   - build-system
   - cli
@@ -27,29 +114,43 @@ geiger:
     - text:build system
 provenance:
   category-sources:
-    - >
-      source_facts.description says "File-based build system"; official manual describes
-      Tup as a file-based build system for translating input files to output files via
-      Tupfiles.
+    - https://github.com/gittup/tup README
+    - https://gittup.org/tup/manual.html
+    - source_facts.description
   display-name-sources:
-    - source_facts.name is "tup"; official manual title and GitHub repo use "tup".
+    - https://github.com/gittup/tup README
+    - source_facts.name
   docs-sources:
+    - current_curation.docs
+    - https://gittup.org/tup
+    - https://gittup.org/tup/manual.html
+  history-sources:
     - >
-      Official project site provides a Manual page, Getting Started, Examples, and
-      related documentation links.
+      GitHub API for gittup/tup: repository created 2011-05-01, active metadata, and
+      official tag list.
+    - >
+      https://github.com/gittup/tup README: file-based build system, Linux/macOS/Windows
+      support, changed files plus DAG model.
+    - 'https://gittup.org/tup homepage: project positioning and documentation sections.'
+    - >
+      https://gittup.org/tup manual: `tup`, `tup init`, `.tup`, `Tupfile.ini`, Tupfiles,
+      secondary commands, and 2024-05-19 manual update date.
+    - >
+      source_facts.package-manager: apk, Homebrew, Debian, MacPorts, Nix, pacman, Scoop,
+      Ubuntu, and zypper package-manager presence.
   repo-sources:
     - >
-      source_facts.repo is already set to https://github.com/gittup/tup; per
-      instruction, repo is returned as null and not re-evaluated.
+      source_facts.repo already provides https://github.com/gittup/tup; prompt requires
+      repo null when source_facts.repo is present.
   tags-sources:
-    - >
-      source_facts.description identifies a file-based build system; official manual
-      describes dependency graph updates, Tupfiles, and build outputs.
+    - https://github.com/gittup/tup README
+    - https://gittup.org/tup/manual.html
+    - source_facts.description
 category-confidence: high
 category-path:
   - developer-tools
-  - build-system
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

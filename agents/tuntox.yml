@@ -9,6 +9,66 @@ credentials-file-location:
   unix:
     - /etc/tuntox/
     - directory passed with -C
+history:
+  adoption-history:
+    - >
+      tuntox stayed niche but was packaged beyond Homebrew. The supplied package
+      metadata lists Homebrew, Nix, and Arch pacman entries, and the official FAQ lists
+      additional distribution packaging such as Arch, Homebrew, NixOS, Pentoo, Void, and
+      work-in-progress Debian packaging.
+  package-nerd-significance:
+    - >
+      For package nerds, tuntox is interesting less as a mainstream remote-access
+      product and more as a packaged example of the Tox ecosystem being used as
+      infrastructure: a peer-to-peer overlay repurposed for TCP forwarding, NAT
+      traversal, and occasional Tor/proxy-aware experiments.
+  project-history:
+    - >
+      The project appeared publicly in December 2014 in the official GitHub repository.
+      Its README framed it as early work in progress and described a single binary that
+      can run in either server or client mode, with the server publishing a Tox ID and
+      the client forwarding local ports to services behind that Tox identity.
+    - >
+      The early releases developed the core tunneling workflow and added shared-secret
+      authentication by version 0.0.4. Later official releases continued into 2021,
+      while the README and FAQ kept the focus on practical NAT traversal, SSH-style
+      local forwarding, and operational cautions around Tox connectivity and security.
+  related-projects:
+    - Tox
+    - c-toxcore
+    - uTox
+    - OpenSSH local port forwarding
+  sources:
+    - >
+      GitHub API for gjedeer/tuntox: repository created 2014-12-11 and releases 0.0.1
+      through 0.0.10.
+    - >
+      https://github.com/gjedeer/tuntox README: TCP forwarding over Tox, NAT-traversal
+      use case, server/client mode, `/etc/tuntox/`, `-C`, `-L`, ProxyCommand, and
+      security notes.
+    - >
+      https://github.com/gjedeer/tuntox/blob/master/FAQ.md FAQ: Tox relay behavior,
+      proxy/Tor support, Docker notes, and distribution package list.
+    - 'source_facts.package-manager: Homebrew, Nix, and pacman package-manager presence.'
+  summary:
+    - >
+      tuntox is a small command-line networking tool for forwarding TCP connections over
+      the Tox peer-to-peer protocol, aimed at reaching machines behind NAT or dynamic
+      addresses without router port forwarding.
+  timeline:
+    - '2014: GitHub repository created and 0.0.1 initial release published.'
+    - '2015: 0.0.4 release introduced the shared-secret security mode documented in the README.'
+    - '2018: FAQ documented relay-versus-UDP behavior and distro packaging status.'
+    - '2021: 0.0.10 release published.'
+  usage:
+    - >
+      A typical use is to run `tuntox` on a remote laptop, home machine, or Raspberry Pi
+      behind NAT, save its Tox identity under `/etc/tuntox/` or a `-C` directory, and
+      connect from another machine with an SSH-like `-L` forwarding rule.
+    - >
+      Package-manager users mostly encounter it as a tiny tunnel binary: install it, run
+      the server without root, then use local port forwarding or SSH `ProxyCommand` mode
+      to reach a private service over the Tox overlay.
 tags:
   - cli
   - nat-traversal
@@ -27,30 +87,39 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description says "Tunnel TCP connections over the Tox protocol";
-      official README documents server/client tunneling over the Tox overlay network.
+    - https://github.com/gjedeer/tuntox README
+    - source_facts.description
   display-name-sources:
-    - >
-      source_facts.name is "tuntox"; official GitHub repository and README use the
-      tuntox name.
+    - https://github.com/gjedeer/tuntox
+    - source_facts.name
   docs-sources:
+    - current_curation.docs
+    - https://github.com/gjedeer/tuntox README
+    - https://github.com/gjedeer/tuntox/blob/master/FAQ.md
+  history-sources:
     - >
-      Official GitHub README contains server and client usage sections and links to the
-      official FAQ file.
+      GitHub API for gjedeer/tuntox: repository created 2014-12-11 and releases 0.0.1
+      through 0.0.10.
+    - >
+      https://github.com/gjedeer/tuntox README: TCP forwarding over Tox, NAT-traversal
+      use case, server/client mode, `/etc/tuntox/`, `-C`, `-L`, ProxyCommand, and
+      security notes.
+    - >
+      https://github.com/gjedeer/tuntox/blob/master/FAQ.md FAQ: Tox relay behavior,
+      proxy/Tor support, Docker notes, and distribution package list.
+    - 'source_facts.package-manager: Homebrew, Nix, and pacman package-manager presence.'
   repo-sources:
     - >
-      source_facts.repo is already set to https://github.com/gjedeer/tuntox; per
-      instruction, repo is returned as null and not re-evaluated.
+      source_facts.repo already provides https://github.com/gjedeer/tuntox; prompt
+      requires repo null when source_facts.repo is present.
   tags-sources:
-    - >
-      source_facts.description identifies TCP tunneling over Tox; official GitHub topics
-      include nat, p2p, tox, toxcore, tunneling, and tox-protocol.
+    - https://github.com/gjedeer/tuntox README
+    - source_facts.description
 category-confidence: high
 category-path:
   - networking
-  - tunneling
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
