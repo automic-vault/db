@@ -6,6 +6,34 @@ docs:
   - https://github.com/jaymzh/pius#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    PIUS, the PGP Individual UID Signer, grew out of the older PGP keysigning-party
+    workflow: after meeting people and checking fingerprints, a signer still had to sign
+    each user ID separately and send the resulting certification only to the address on
+    that UID. The project README says PIUS began as several shell scripts accumulated
+    over years of keysigning parties, then became a unified Python utility after direct
+    shell driving of GnuPG proved too fragile.
+  - >
+    Its niche is deliberately narrow but important for the web-of-trust era of OpenPGP.
+    PIUS automates the high-friction parts of post-party signing: verify fingerprints,
+    choose signing levels, sign individual UIDs, export per-UID signatures, and send
+    encrypted mail to the UID address. The Ubuntu manpage describes the same security
+    goal: recipients can choose which signatures to import, and inactive UIDs are not
+    delivered.
+  - >
+    PIUS is used as a terminal workflow around GnuPG rather than as a cryptographic
+    library. Operators typically point it at a party keyring with `pius -A -s <keyid> -r
+    <keyring> -m <email>`, configure SMTP details or a local mail agent, and let
+    GnuPG/gpg-agent handle private-key access. Version 3.0 and later require
+    gpg2/gpg-agent, so PIUS does not handle the passphrase or unencrypted private key
+    itself.
+  - >
+    Adoption is mostly distribution-packaging adoption rather than broad application
+    embedding. The README notes packaging across many operating systems, and package
+    metadata exists in Homebrew, Debian/Ubuntu, Nix, and Arch-derived ecosystems. That
+    placement fits a specialist CLI: it is installed when a user needs OpenPGP
+    keysigning operations, not pulled in as a library dependency.
 category: security
 package-manager:
   brew: pius
@@ -29,5 +57,12 @@ executables:
   - pius-report
 provenance:
   formula: pius
+  history-sources:
+    - https://github.com/jaymzh/pius
+    - https://raw.githubusercontent.com/jaymzh/pius/main/README.md
+    - https://manpages.ubuntu.com/manpages/bionic/man1/pius.1.html
+    - https://formulae.brew.sh/formula/pius
+    - https://api.github.com/repos/jaymzh/pius
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: medium

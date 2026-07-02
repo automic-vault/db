@@ -5,6 +5,30 @@ docs:
   - https://github.com/cashapp/pivit#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Pivit is a Cash App open-source CLI for using X.509 certificates stored in
+    smart-card PIV applets, especially YubiKeys, as signing keys. Its public GitHub
+    repository was created on September 14, 2022, under the `cashapp` organization and
+    is written in Go under the MIT license.
+  - >
+    The project sits at the intersection of Git's X.509 signing support and
+    hardware-backed private keys. Its README emphasizes compatibility with the way `git`
+    invokes external programs to sign and verify commits and tags: users configure
+    `gpg.format x509`, set `gpg.x509.program pivit`, print the YubiKey certificate
+    fingerprint, and use that fingerprint as `user.signingkey`.
+  - >
+    In practice, Pivit manages the PIV lifecycle around Git signing. It can reset and
+    initialize the YubiKey PIV applet, generate a key pair and certificate request,
+    import a certificate, print certificate details, sign data, and verify signatures.
+    The README documents slot selection across standard PIV slots such as 9a, 9c, 9d,
+    and 9e; Yubico's PIV documentation explains those slots as certificate/private-key
+    storage locations with different intended uses.
+  - >
+    Its adoption evidence is modest but concrete: Homebrew packages it as `pivit`, and
+    the README also supports `go install`. The tool is best understood as a small
+    operational bridge between enterprise-style X.509 identity, hardware tokens, and
+    developer signing workflows rather than as a general PKI toolkit.
 tags:
   - cli
   - piv
@@ -32,6 +56,12 @@ provenance:
     - >
       Official GitHub README is the primary documentation surface linked by
       source_facts.homepage/repo.
+  history-sources:
+    - https://github.com/cashapp/pivit
+    - https://raw.githubusercontent.com/cashapp/pivit/main/README.md
+    - https://developers.yubico.com/PIV/Introduction/Certificate_slots.html
+    - https://formulae.brew.sh/formula/pivit
+    - https://api.github.com/repos/cashapp/pivit
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/cashapp/pivit; per
@@ -47,5 +77,6 @@ category-path:
   - hardware-keys
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

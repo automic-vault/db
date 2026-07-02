@@ -10,6 +10,40 @@ config-file-location:
     - pyproject.toml
     - pixi.lock
 credentials-file-location: null
+history:
+  - >
+    pixi-pack is a QuantCo Rust tool for packing Pixi-managed conda environments into
+    redistributable archives. The public repository was created on May 30, 2024, and
+    QuantCo introduced the tool in a July 11, 2024 engineering post about shipping conda
+    environments to production with Pixi.
+  - >
+    Its origin is tightly coupled to Pixi adoption inside QuantCo. The QuantCo post says
+    the company had migrated more than 40 repositories to Pixi, then needed a deployment
+    path for environments outside Docker or in sealed-off production systems without
+    internet access. Existing tools covered adjacent needs: `conda-pack` archives an
+    installed environment, while `constructor` creates installers. pixi-pack was written
+    for a simpler lockfile-driven archive workflow.
+  - >
+    The main design choice is that pixi-pack starts from `pixi.lock` rather than from an
+    already-installed environment. The README contrasts it with `conda-pack`: pixi-pack
+    downloads the packages specified by the lockfile and places them into a `.tar`
+    archive, which improves reproducibility and allows packs for another platform, such
+    as building a `win-64` pack from a `linux-64` machine.
+  - >
+    The paired commands define the user workflow. `pixi-pack` creates an archive
+    containing package artifacts and channel metadata; `pixi-unpack` recreates the
+    environment on the target machine and writes an activation script, without requiring
+    conda or micromamba on that target. Pixi's deployment documentation presents this as
+    a production deployment option for systems where a container image is not the right
+    delivery artifact.
+  - >
+    The tool's role in the Pixi ecosystem is deployment glue. It turns Pixi's
+    reproducible lockfile model into a transport format for offline, cross-platform, and
+    production installs. Later README-documented features include self-extracting
+    archives, package injection for locally built artifacts, wheel support for PyPI
+    dependencies, mirror/S3 configuration, and bounded download concurrency, all of
+    which point at operational packaging rather than everyday development environment
+    creation.
 tags:
   - cli
   - conda
@@ -36,6 +70,14 @@ provenance:
     - >
       source_facts.homepage points to official pixi.sh documentation; official
       Quantco/pixi-pack README links Pixi documentation and provides usage docs.
+  history-sources:
+    - https://github.com/Quantco/pixi-pack
+    - https://raw.githubusercontent.com/Quantco/pixi-pack/main/README.md
+    - https://tech.quantco.com/blog/pixi-production/
+    - https://pixi.sh/latest/deployment/pixi_pack
+    - https://prefix-dev.github.io/pixi/v0.40.1/advanced/production_deployment/
+    - https://prefix.dev/channels/conda-forge/packages/pixi-pack
+    - https://api.github.com/repos/Quantco/pixi-pack
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/quantco/pixi-pack; per
@@ -51,5 +93,6 @@ category-path:
   - conda
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

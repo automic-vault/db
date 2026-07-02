@@ -6,6 +6,35 @@ docs:
   - https://pkgconf.org/
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    pkgconf was written from scratch in summer 2011 as a replacement for pkg-config, the
+    long-standing freedesktop.org tool used by Autoconf, Meson, Makefiles, language
+    build systems, and distribution packaging to discover compiler and linker flags from
+    .pc metadata files. The project positions itself as a superset of pkg-config
+    functionality, with an important caveat for package maintainers: it does not try to
+    preserve every bug-compatible behavior of the original implementation.
+  - >
+    The project split the role into a command-line frontend and libpkgconf, a C library
+    that exposes the resolver to other tools. That library API is a major part of
+    pkgconf's ecosystem role: Fedora's system-pkg-config change explicitly cited
+    build-file generators, IDEs, and compilers as consumers that could embed smarter
+    handling of pkg-config files rather than shelling out to a command.
+  - >
+    Distribution adoption turned pkgconf from an alternate implementation into
+    infrastructure. Fedora switched the system-wide pkg-config provider to pkgconf
+    through a pkgconf-pkg-config compatibility subpackage, arguing that pkgconf
+    supported more of the .pc specification, handled Provides and Cflags.private rules,
+    avoided a GLib bootstrap cycle, and had a less costly dependency resolver. A Debian
+    transition proposal in 2022 made the same case and noted existing use in Fedora,
+    Gentoo, and Arch.
+  - >
+    Practitioners usually encounter pkgconf in one of two ways: by running pkgconf
+    directly during builds, or indirectly through a /usr/bin/pkg-config shim supplied by
+    their distribution. In both modes it resolves .pc dependency graphs and prints
+    CFLAGS/LIBS for compilers and linkers. The project also added bomtool and spdxtool,
+    using pkg-config module metadata as input for SBOM generation, which shows how its
+    internal package graph model grew beyond simple flag printing.
 tags:
   - build-tools
   - cli
@@ -34,6 +63,11 @@ provenance:
   docs-sources:
     - Official GitHub README contains build, usage, and project notes.
     - Official website pkgconf.org contains the project overview and links to GitHub.
+  history-sources:
+    - https://www.freshports.org/devel/pkgconf/
+    - https://github.com/pkgconf/pkgconf
+    - https://fedoraproject.org/wiki/Changes/pkgconf_as_system_pkg-config_implementation
+    - https://groups.google.com/g/linux.debian.devel/c/kmS6iIcClPY
   repo-sources:
     - Official GitHub repository is pkgconf/pkgconf.
     - >
@@ -51,5 +85,6 @@ category-path:
   - pkg-config
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
