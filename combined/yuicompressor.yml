@@ -7,6 +7,102 @@ docs:
   - https://yui.github.io/yuicompressor
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      YUI Compressor became popular because it matched the way web teams shipped assets
+      in the late 2000s and early 2010s: Java was already common in build
+      infrastructure, Ant integration was natural, and the command-line interface fit
+      makefiles, CI jobs, and static asset deployment scripts.
+    - >
+      Its official documentation emphasizes byte savings compared with JSMin and safe
+      handling of JavaScript and CSS. Those claims mattered in the pre-bundler period,
+      when teams often concatenated and minified library files directly rather than
+      running a full module pipeline.
+    - >
+      Later adoption shifted toward wrapper packages and legacy maintenance. The README
+      documents an npm package that still invokes Java under the hood, showing how the
+      compressor was carried forward into Node-oriented workflows even though its
+      implementation remained a Java command-line tool.
+  package-nerd-significance:
+    - >
+      YUI Compressor is package-nerd archaeology from the period when frontend
+      optimization was often a Java jar in a build directory. It sits between tiny text
+      filters such as JSMin and modern JavaScript bundler/minifier stacks, and it
+      explains why many old packages still have yuicompressor hooks.
+    - >
+      It also shows how a once-central tool can survive as a compatibility package: the
+      web moved on to UglifyJS, terser, esbuild, SWC, and bundlers, but package
+      collections keep YUI Compressor available for old build recipes and reproducible
+      maintenance work.
+  project-history:
+    - >
+      The project grew out of Yahoo's frontend performance work around the YUI Library.
+      The official project page frames minification as one of the secondary performance
+      techniques used after larger page-design savings, and compares YUI Compressor with
+      tools such as JSMin, the Dojo compressor, and Dean Edwards' Packer.
+    - >
+      Technically, YUI Compressor used Mozilla Rhino to tokenize JavaScript instead of
+      relying only on text substitutions. That let it remove whitespace and rename local
+      symbols while taking a defensive approach around difficult JavaScript constructs
+      such as eval and with. CSS compression was also included, using a
+      regular-expression-based minifier lineage credited on the official page.
+    - >
+      The public GitHub repository was created in December 2008, while the changelog
+      preserves a longer 2.x release line. The final tagged GitHub release, v2.4.8
+      'Greendale', was published in July 2013 and focused on compatibility fixes, CSS
+      compression improvements, warning output, parameter parsing, batch modes, and
+      tests.
+  related-projects:
+    - >
+      YUI Library is the Yahoo frontend library whose performance culture helped drive
+      the compressor.
+    - >
+      Mozilla Rhino is the JavaScript engine/tokenizer lineage used by YUI Compressor,
+      with local modifications documented in the README.
+    - >
+      JSMin, the Dojo compressor, and Dean Edwards' Packer are named by the official
+      project page as contemporary JavaScript minification tools.
+  sources:
+    - https://api.github.com/repos/yui/yuicompressor
+    - https://api.github.com/repos/yui/yuicompressor/releases
+    - https://github.com/yui/yuicompressor
+    - https://raw.githubusercontent.com/yui/yuicompressor/master/README.md
+    - https://raw.githubusercontent.com/yui/yuicompressor/master/doc/CHANGELOG
+    - https://yui.github.io/yuicompressor/
+  summary:
+    - >
+      YUI Compressor is Yahoo's Java-based JavaScript and CSS minifier from the YUI era.
+      It removes comments and whitespace, shortens local JavaScript symbols when safe,
+      compresses CSS, and became a standard build-step tool before newer
+      JavaScript-native minifiers took over much of the ecosystem.
+    - >
+      For package managers, its identity is very CLI-shaped: install a small wrapper
+      around a Java jar, point it at .js or .css files, and produce smaller production
+      assets. That made it easy to package across Homebrew, MacPorts, Maven, npm
+      wrappers, and older Ant-era web build systems.
+  timeline:
+    - '2008-12-05: The public GitHub repository for yui/yuicompressor is created.'
+    - >
+      2008-2010: The 2.x changelog records active fixes around JavaScript parsing, CSS
+      compression, source compatibility, and batch workflows.
+    - '2013-07-03: GitHub release v2.4.8, named Greendale, is published.'
+    - >
+      2021-09-15: GitHub metadata shows the repository's most recent push before the
+      2026 enrichment run.
+  usage:
+    - >
+      Typical use is batch minification: run the yuicompressor command or jar against
+      JavaScript or CSS input, set the type explicitly when needed, and write to stdout
+      or an output file. The README documents options for character set, line breaking,
+      JavaScript symbol munging, semicolon preservation, and disabling
+      micro-optimizations.
+    - >
+      The tool is most relevant today when reproducing older web builds, maintaining
+      projects that were pinned to YUI-era minification behavior, or comparing
+      historical minifier output. It is also a useful example of a minifier that exposes
+      safety knobs for constructs and comments that mattered to production
+      JavaScript/CSS deployment.
 category: developer-tools
 package-manager:
   brew: yuicompressor
