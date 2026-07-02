@@ -10,6 +10,97 @@ credentials-file-location:
   unix:
     - ~/.pgpass
     - ~/.aws/credentials
+history:
+  adoption-history:
+    - >
+      WAL-G's adoption followed the operational pattern created by WAL-E: use object
+      storage as the durable archive for physical database backups and transaction logs.
+      The WAL-E repository now calls WAL-E obsolete and points users to alternatives
+      including WAL-G, noting that WAL-G can read, but not write, WAL-E archives and
+      that it is a broader system supporting more databases and compression formats.
+    - >
+      The tool became a common package-ecosystem fixture for self-managed PostgreSQL
+      backup setups because it fits common cloud storage and PITR designs without
+      requiring a full backup server. Community and operator writeups describe it as a
+      practical way to stream PostgreSQL backups and WAL to S3-compatible storage and
+      restore to a specific point in time.
+    - >
+      By 2026, WAL-G was mature enough to be the compatibility target for newer
+      experiments. ClickHouse's WAL-RUS announcement described WAL-G as mature,
+      battle-tested, and well served in the PostgreSQL community, while proposing a Rust
+      implementation mainly for more predictable memory behavior rather than for
+      replacing WAL-G's backup model.
+  project-history:
+    - >
+      Citus Data introduced WAL-G publicly in August 2017 as a successor to WAL-E and
+      described it as a complete rewrite in Go. The launch rationale was not just
+      language churn: Citus reported restore performance improvements over WAL-E,
+      highlighted parallel restore work, compatibility with existing WAL-E archives, and
+      additional safety checks for incomplete restores.
+    - >
+      The first GitHub release, v0.1.0, was published on August 18, 2017. Early 0.1
+      releases established the PostgreSQL-focused feature set, including encryption and
+      delta backups in v0.1.3 in December 2017, then continued through safety and
+      performance work around WAL prefetching, parallel reads, delta backup behavior,
+      and WAL-E compatibility during 2018 and 2019.
+    - >
+      WAL-G later grew beyond its original PostgreSQL-only niche. The project README now
+      presents it as an archival and restoration tool for PostgreSQL, MySQL/MariaDB, SQL
+      Server, MongoDB, Redis, and related database variants, with separate binaries
+      named for target database families. The release stream also shows ecosystem
+      expansion: v3.0.0 in March 2024 collected a large set of changes, while later 3.x
+      releases mention OrioleDB, Cloudberry, MongoDB 8.0, Greenplum, Redis, and SQL
+      Server work.
+  related-projects:
+    - >
+      WAL-E is the direct predecessor in concept and archive model, while pgBackRest and
+      Barman are adjacent PostgreSQL backup systems. WAL-RUS is a later Rust
+      implementation designed for WAL-G-compatible PostgreSQL archival with a different
+      memory-management profile.
+  sources:
+    - https://clickhouse.com/blog/walrus-postgres-backups-in-rust
+    - https://github.com/wal-e/wal-e
+    - https://github.com/wal-g/wal-g
+    - https://github.com/wal-g/wal-g/releases
+    - https://wal-g.readthedocs.io/PostgreSQL/
+    - >
+      https://www.citusdata.com/blog/2017/08/18/introducing-wal-g-faster-restores-for-postgres/
+  summary:
+    - >
+      WAL-G is a cloud-oriented database backup and restore tool best known in the
+      PostgreSQL world, where it archives WAL segments and base backups for
+      point-in-time recovery. It began as a Go rewrite and successor to WAL-E, the older
+      Python tool used for continuous PostgreSQL archiving, and its identity is closely
+      tied to faster restore paths, parallelism, compression choices, and object-storage
+      workflows.
+  timeline:
+    - >
+      2017-08-18: WAL-G v0.1.0 was released on GitHub, the same day Citus published its
+      introduction of WAL-G as a Go successor to WAL-E.
+    - '2017-12-19: v0.1.3 added encryption support and delta backups.'
+    - >
+      2018-11-13: v0.2.0 introduced WAL-delta technology and page-prefault work for
+      faster restore/replay workflows.
+    - '2024-03-17: v3.0.0 shipped as a major accumulated release.'
+    - '2024-08-08: v3.0.3 added full OrioleDB support.'
+    - >
+      2025-01-10: v3.0.5 listed Cloudberry database support and MongoDB 8.0 support
+      among its major features.
+    - >
+      2026-01-21: v3.0.8 continued the 3.x stable line with infrastructure, PostgreSQL,
+      Redis, MongoDB, Greenplum/Cloudberry, and other database updates.
+  usage:
+    - >
+      For PostgreSQL, WAL-G is typically wired into backup scripts and PostgreSQL
+      archiving settings: operators run base-backup commands, push WAL segments as they
+      are generated, and later fetch backups and WAL for recovery. Its documentation
+      frames the PostgreSQL mode around encrypted and compressed full or incremental
+      backups pushed to remote storage rather than staged locally.
+    - >
+      Package nerd significance comes from the way WAL-G sits between database internals
+      and cloud object stores. It is not a generic compression tool; it encodes the
+      operational assumptions of WAL archiving, PITR, restore prefetching, backup
+      retention, and compatibility with earlier WAL-E archive layouts.
 category: data
 package-manager:
   brew: wal-g
