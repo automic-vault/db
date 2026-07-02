@@ -6,6 +6,27 @@ docs:
   - https://www.scala-lang.org/api/2.12.20
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    scala@2.12 packages the Scala 2.12 binary line rather than the main Scala
+    distribution. Scala 2.12.0 was announced on 3 November 2016, and its headline change
+    was a compiler overhaul for Java 8: traits compile more directly to Java interfaces
+    with default methods, lambdas use invokedynamic through the Java 8
+    LambdaMetaFactory, and the optimizer was reworked around the newer JVM backend.
+  - >
+    The 2.12 line matters because Scala library artifacts are binary-versioned. A
+    project built for Scala 2.12 depends on coordinates ending in _2.12 and normally
+    sets scalaVersion in sbt or Mill, or using scala in Scala CLI, to a compatible
+    2.12.x release. The official release notes state that 2.12.x releases are
+    binary-compatible with 2.12.0, while GitHub release notes list common ways to obtain
+    releases: update build settings, download a distribution, or consume JARs from Maven
+    Central.
+  - >
+    Homebrew's versioned formula gives workstation and CI users a stable compiler runner
+    for old-but-supported codebases without making the unversioned scala formula stay on
+    that line. Practitioners keep scala@2.12 around for enterprise services, Spark and
+    data-platform stacks, and libraries whose dependency graph or published artifacts
+    remain tied to _2.12 cross-builds.
 tags:
   - cli
   - compiler
@@ -19,6 +40,12 @@ provenance:
     - source_facts.name identifies the Scala 2.12 formula.
   docs-sources:
     - source_facts.homepage and official Scala API docs for Scala 2.12.
+  history-sources:
+    - https://www.scala-lang.org/news/2.12.0/
+    - https://github.com/scala/scala/releases
+    - https://www.scala-lang.org/download/all.html
+    - source_facts.package-manager
+    - source_facts.executables
   repo-sources:
     - source_facts.repo is already populated; prompt requires repo:null.
   tags-sources:
@@ -28,5 +55,6 @@ category-path:
   - language-runtime
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

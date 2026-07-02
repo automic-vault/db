@@ -5,6 +5,29 @@ docs:
   - https://github.com/microsoft/sbom-tool#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    Microsoft's `sbom-tool` grew out of the company's internal SBOM work after the 2021
+    U.S. cybersecurity executive order increased demand for machine-readable software
+    bills of materials. Microsoft described its earlier effort as a conversion of
+    existing proprietary build-manifest tooling into SPDX JSON, with the goal of
+    producing SBOMs for official builds, integrating generation into CI/CD systems, and
+    distributing a cross-platform executable for non-standard build environments.
+  - >
+    The public tool was open sourced as a general-purpose, build-time SBOM generator for
+    Windows, Linux, and macOS. Its core workflow is supply-chain documentation: scan
+    build inputs with Microsoft's Component Detection libraries, enrich component
+    metadata through ClearlyDefined, hash files in a build drop, and emit SPDX 2.2 or
+    SPDX 3.0 manifests under a `_manifest` directory. It also validates SBOMs, redacts
+    file references from SBOMs, and supports API use through a NuGet package.
+  - >
+    Practitioners use `sbom-tool` in release pipelines rather than as an interactive
+    inventory browser. A typical invocation supplies the shipped artifact directory,
+    source or build-components directory, package name, version, supplier, and namespace
+    base; CI integrations for GitHub Actions and Azure DevOps automate the same step at
+    build time. The project's distribution reflects that pipeline role: GitHub release
+    binaries, Homebrew, WinGet, a .NET global tool, Docker builds, Nix, Scoop, and
+    Winget packaging all make the generator easy to place on build agents.
 tags:
   - cli
   - compliance
@@ -30,6 +53,13 @@ provenance:
     - >
       source_facts.repo is the official Microsoft GitHub project; README is the primary
       official documentation surface
+  history-sources:
+    - >
+      https://devblogs.microsoft.com/engineering-at-microsoft/generating-software-bills-of-materials-sboms-with-spdx-at-microsoft/
+    - >
+      https://devblogs.microsoft.com/engineering-at-microsoft/microsoft-open-sources-software-bill-of-materials-sbom-generation-tool/
+    - https://github.com/microsoft/sbom-tool
+    - https://formulae.brew.sh/formula/sbom-tool
   repo-sources:
     - source_facts.repo already provided; per instructions repo returned as null
   tags-sources:
@@ -41,5 +71,6 @@ category-path:
   - sbom
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
