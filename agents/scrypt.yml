@@ -5,6 +5,31 @@ docs:
   - https://www.tarsnap.com/scrypt.html
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    scrypt is both a password-based key derivation function and the reference-style file
+    encryption utility distributed by Tarsnap. Colin Percival designed the function for
+    the Tarsnap online backup system and presented the original paper, `Stronger Key
+    Derivation via Sequential Memory-Hard Functions`, at BSDCan in May 2009. Its core
+    historical contribution was making password cracking expensive in memory as well as
+    CPU time, raising the cost of custom hardware attacks compared with PBKDF2 and
+    bcrypt.
+  - >
+    The cryptographic design became standardized in RFC 7914, published in August 2016
+    by Colin Percival and Simon Josefsson. The RFC specifies scrypt as a password-based
+    KDF that derives keys from a secret string using memory-hard functions and includes
+    an ASN.1 schema. In practice, security libraries expose scrypt for password hashing
+    and key derivation where tunable memory cost is desired, while the standalone
+    utility demonstrates file encryption using `scrypt enc`, `scrypt dec`, and parameter
+    controls for time and memory.
+  - >
+    The command-line package is useful to practitioners who want password-based
+    encryption without relying on a low-memory KDF. The Tarsnap documentation describes
+    the utility as a demonstration of the KDF, with options that cap derivation time and
+    memory use; the repository also provides `libscrypt-kdf` usage for callers embedding
+    the KDF. Package managers distribute it as a small security tool: Homebrew ships
+    `scrypt` with OpenSSL, Debian and Ubuntu expose the development library as
+    `libscrypt-kdf-dev`, and other Unix package sets carry the CLI.
 tags:
   - cli
   - encryption
@@ -33,6 +58,12 @@ provenance:
     - source_facts.name identifies the project as scrypt.
   docs-sources:
     - source_facts.homepage is the official Tarsnap scrypt project and documentation page.
+  history-sources:
+    - https://www.tarsnap.com/scrypt.html
+    - https://github.com/Tarsnap/scrypt
+    - https://www.tarsnap.com/scrypt/scrypt.pdf
+    - https://datatracker.ietf.org/doc/html/rfc7914
+    - https://formulae.brew.sh/formula/scrypt
   repo-sources:
     - Official Tarsnap GitHub repository is the source-control repository for scrypt.
     - source_facts.repo is empty.
@@ -47,5 +78,6 @@ category-path:
   - cryptography
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
