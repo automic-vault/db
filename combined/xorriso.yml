@@ -8,6 +8,122 @@ docs:
   - https://www.gnu.org/software/xorriso/man_1_xorriso.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xorriso gained adoption where users needed more than a one-shot ISO image writer.
+      It can update existing images, grow sessions, extract files back out, verify
+      media, preserve Unix metadata, and produce bootable images, so it fits
+      distribution-image build systems, backup scripts, and optical-media maintenance.
+    - >
+      Its mkisofs and cdrecord compatibility modes helped adoption by letting existing
+      habits and scripts migrate without requiring every caller to learn xorriso's
+      native command language first. The xorrisofs name is especially important in build
+      tooling because it presents xorriso as a mkisofs-like ISO producer while still
+      using the Libburnia stack underneath.
+    - >
+      As optical media became less central, xorriso stayed relevant because ISO images
+      remained central to OS installers, rescue media, virtual-machine boot media, and
+      reproducible artifact pipelines. The official docs explicitly note that xorriso
+      operates on ISO images in data files or block devices, not only physical discs.
+  package-nerd-significance:
+    - >
+      xorriso is the quiet workhorse behind many bootable ISO workflows. It matters
+      because it bridges old optical-media command traditions, modern bootable installer
+      images, Unix metadata preservation, and script compatibility in one package.
+    - >
+      It also represents a packaging-friendly alternative to relying on historically
+      separate formatter and recorder tools. One install provides the native xorriso
+      command plus aliases for mkisofs-like and cdrecord-like callers, reducing the
+      amount of external tool choreography in build scripts.
+    - >
+      For package nerds, the project is a reminder that declining hardware categories
+      can leave behind essential file formats. Even users who never burn a disc still
+      depend on ISO construction and inspection for OS images, virtual machines,
+      firmware workflows, and archival media.
+  project-history:
+    - >
+      The changelog records the initial libisoburn/xorriso release as 0.1.0 on
+      2008-02-15. That first entry already states the core design: libisoburn connects
+      libisofs and libburn, emulates multi-session behavior on media without session
+      history, and xorriso is an integrated multi-session tool for ISO 9660 Rock Ridge
+      images.
+    - >
+      By 2008-03, standalone xorriso 0.1.2 added early cdrecord and mkisofs emulation
+      modes. In 2008-04, libisoburn 0.1.4 improved ISO tree reading, added incremental
+      backup functionality, and expanded the emulation of basic mkisofs and cdrecord
+      options. By 2008-07, make install created the osirrox, xorrisofs, and xorrecord
+      aliases, making the single engine present familiar command faces to existing
+      workflows.
+    - >
+      The 2009-2013 changelog shows xorriso evolving beyond disc burning into a serious
+      image-construction and backup tool: BD media support, ACL and extended attribute
+      recording, zisofs/gzip filters, hardlink preservation, MD5 recording and checking,
+      ISOLINUX boot images, and later GRUB2, EFI, HFS+, GPT, and partition-table-related
+      boot support.
+    - >
+      The GNU page and README present the mature project as a GNU contribution from
+      Libburnia. Current documentation describes support for GNU/Linux, FreeBSD,
+      Solaris, and NetBSD drive access, with POSIX file-object operation on other X/Open
+      systems.
+  related-projects:
+    - libburn provides the optical-drive recording layer used by xorriso.
+    - libisofs provides ISO 9660 image creation and manipulation support.
+    - >
+      libisoburn coordinates libburn and libisofs and is the source project that
+      contains xorriso.
+    - mkisofs and genisoimage are compatibility targets for xorrisofs-style ISO creation.
+    - >
+      cdrecord and cdrskin are related optical-media recording tools in the same
+      command-line tradition.
+  sources:
+    - https://lists.gnu.org/archive/html/info-gnu/2021-02/msg00004.html
+    - https://raw.githubusercontent.com/Distrotech/xorriso/master/ChangeLog
+    - https://www.gnu.org/software/xorriso/
+    - https://www.gnu.org/software/xorriso/README_xorriso
+    - https://www.gnu.org/software/xorriso/man_1_xorriso.html
+  summary:
+    - >
+      GNU xorriso is an ISO 9660 Rock Ridge filesystem manipulator by Thomas Schmitt,
+      derived from and supported by the Libburnia project. It can create, load, modify,
+      extract from, and write ISO images, including optical-media sessions and plain
+      filesystem image files.
+    - >
+      Its defining package-nerd role is consolidation: xorriso incorporates Libburnia
+      libraries so it does not need an external ISO formatter or burn program, while
+      also providing mkisofs and cdrecord emulation through xorrisofs and xorrecord
+      aliases.
+  timeline:
+    - >
+      2008-02-15: libisoburn/xorriso 0.1.0 is released as the initial integrated ISO
+      9660 Rock Ridge multi-session tool.
+    - >
+      2008-03-12: xorriso 0.1.2 appears as a standalone release with early cdrecord and
+      mkisofs emulation modes.
+    - '2008-07-25: libisoburn 0.2.2.pl01 installs osirrox, xorrisofs, and xorrecord aliases.'
+    - '2009-03: xorriso gains ACL and extended-attribute import/export support.'
+    - '2009-07: hardlink recording/restoring and the -for_backup shortcut appear.'
+    - '2009-10: MD5 checksums for sessions and individual data files are added.'
+    - '2011-06: GNU xorriso 1.1.0 appears in the changelog as a GNU-branded release line.'
+    - '2026-05-22: The GNU site lists xorriso 1.5.8.pl02 as the current source release.'
+  usage:
+    - >
+      Common usage includes creating Rock Ridge ISO images from directory trees, adding
+      boot equipment for ISOLINUX or GRUB via El Torito/MBR/EFI structures, extracting
+      files from existing images with osirrox-style behavior, and writing new or add-on
+      sessions to optical media or image files.
+    - >
+      Package builders and release engineers often use the mkisofs-compatible xorrisofs
+      interface when a script expects mkisofs/genisoimage semantics. The xorrecord
+      interface handles a narrower cdrecord-like task set, while native xorriso mode
+      exposes richer image-tree manipulation, session loading, verification, and
+      command-file workflows.
+    - >
+      The manpage is unusually explicit about the filesystem model: ISO 9660 sessions
+      are generated and mounted read-only, while xorriso loads existing image metadata,
+      stages modifications, and commits a new session or replacement image. That model
+      makes it useful for controlled image mutation rather than just burning a finished
+      blob.
 category: system
 package-manager:
   apk: xorriso

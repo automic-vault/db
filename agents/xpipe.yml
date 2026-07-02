@@ -6,6 +6,75 @@ docs:
   - https://www.netmeister.org/apps/xpipe.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xpipe's adoption is modest but real in the Unix-tools niche. It appeals to users
+      who understand xargs but need to send each chunk on standard input, such as
+      feeding PEM certificates one at a time to openssl, creating archive batches, or
+      compressing split log chunks.
+    - >
+      The README calls out packaging paths for source installs, Arch AUR, pkgsrc, and
+      macOS users, which suggests the tool spread mainly through small-package
+      ecosystems and personal Unix workflows rather than through a large application
+      stack.
+  package-nerd-significance:
+    - >
+      xpipe is the kind of tiny Unix command package nerds like: it fills one gap in the
+      standard toolbox without inventing a new ecosystem. It is easiest to understand as
+      xargs for stdin chunks rather than argv construction.
+    - >
+      Its significance is also pedagogical. By naming the space between split, tee, and
+      xargs, xpipe makes a common shell-script pattern explicit and reusable, reducing
+      the need for ad hoc sed/awk loops and temporary-file cleanup.
+  project-history:
+    - >
+      The GitHub repository was created on 2020-01-12. The README says xpipe was
+      developed on NetBSD 8.0 and tested on NetBSD 8.0, macOS 12.6, and Fedora 36,
+      matching Schaumann's broader Unix/pkgsrc background.
+    - >
+      The project is intentionally narrow: one C utility, a manpage-style README, and
+      examples centered on stream chunking. Its design goal is practical shell
+      composition rather than a new pipeline framework.
+  related-projects:
+    - >
+      xargs is the closest standard utility, but it constructs command arguments rather
+      than piping each input chunk to stdin.
+    - >
+      split is related because it partitions input, though xpipe avoids forcing
+      intermediate files.
+    - >
+      tee is related in the README's conceptual model because xpipe routes input into
+      repeated downstream processes.
+  sources:
+    - https://api.github.com/repos/jschauma/xpipe
+    - https://github.com/jschauma/xpipe
+    - https://raw.githubusercontent.com/jschauma/xpipe/master/README.md
+    - https://www.netmeister.org/apps/xpipe.html
+  summary:
+    - >
+      xpipe is Jan Schaumann's small Unix command that splits standard input into chunks
+      and feeds each chunk to a utility. Its README describes it as a conceptual
+      combination of split, tee, and xargs, but with chunks piped to the invoked program
+      rather than passed as command-line arguments.
+  timeline:
+    - '2020-01-12: The jschauma/xpipe repository is created.'
+    - >
+      2020s: xpipe is documented as developed on NetBSD 8.0 and tested on NetBSD, macOS,
+      and Fedora.
+    - >
+      2026: The GitHub repository remains active with a compact C implementation and
+      manpage-oriented README.
+  usage:
+    - >
+      xpipe reads stdin, splits by byte count, line count, or a regular-expression
+      pattern, then invokes the chosen utility repeatedly with the chunk connected to
+      that utility's stdin. The -J option can substitute an invocation number into
+      command arguments, making per-chunk output files straightforward.
+    - >
+      The most distinctive usage is pattern-delimited input where temporary files would
+      otherwise be annoying. The README's certificate example splits a PEM bundle at END
+      CERTIFICATE lines and feeds each certificate to openssl x509 for inspection.
 tags:
   - cli
   - data-processing
@@ -25,31 +94,28 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      source_facts.description says split input and feed it into the given utility;
-      official GitHub README describes xpipe as reading stdin, splitting it by bytes,
-      lines, or pattern, and invoking a utility repeatedly.
+    - current_curation.category
   display-name-sources:
-    - source_facts.name is xpipe; official GitHub repository and README use xpipe.
+    - current_curation.display-name
+    - https://github.com/jschauma/xpipe
   docs-sources:
-    - >
-      source_facts.homepage is the official Netmeister app page; official GitHub README
-      includes usage examples and an embedded manual page.
+    - https://github.com/jschauma/xpipe#readme
+    - https://www.netmeister.org/apps/xpipe.html
+  history-sources:
+    - https://api.github.com/repos/jschauma/xpipe
+    - https://github.com/jschauma/xpipe
+    - https://raw.githubusercontent.com/jschauma/xpipe/master/README.md
+    - https://www.netmeister.org/apps/xpipe.html
   repo-sources:
-    - >
-      official GitHub repository jschauma/xpipe contains the project README and source;
-      README history identifies Jan Schaumann of netmeister.org as author, matching the
-      official homepage domain.
+    - https://github.com/jschauma/xpipe
   tags-sources:
-    - >
-      source_facts.description names splitting input and feeding a utility; official
-      README compares xpipe to split, tee, and xargs and documents stdin chunking.
+    - current_curation.tags
+    - https://github.com/jschauma/xpipe
 category-confidence: high
 category-path:
   - developer-tools
-  - cli
-  - data-processing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

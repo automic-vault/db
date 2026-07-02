@@ -12,6 +12,119 @@ config-file-location:
     - /etc/X11/xorg.conf.d
     - /usr/share/X11/xorg.conf.d
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      X.Org Server rapidly became the standard open-source X server for Linux and BSD
+      desktops after the XFree86 split. The Xorg manpage lists broad operating-system
+      and architecture support, including Linux, FreeBSD, NetBSD, OpenBSD, Solaris, GNU
+      Hurd, Mac OS X via Xquartz, and Win32/Cygwin via XWin.
+    - >
+      The modular X.Org era also made distribution packaging more practical: servers,
+      drivers, libraries, fonts, and applications could be released and updated
+      independently. X.Org's release notes describe builders watching xorg-announce for
+      individual module updates rather than waiting for a full window-system roll-up.
+    - >
+      Even as Wayland became the modern Linux display-server direction, X.Org Server
+      remained important through Xwayland compatibility, legacy Xorg sessions, nested
+      servers, and headless tools. Xvfb and Xephyr in particular kept the package
+      relevant beyond desktop login sessions: test suites, CI jobs, browser automation,
+      and remote GUI debugging still depend on X server behavior.
+  package-nerd-significance:
+    - >
+      Few packages have more historical gravity in Unix GUI stacks. xorg-server embodies
+      the X11 split between server, clients, libraries, drivers, and protocol
+      extensions, so packaging it correctly means understanding an entire ecosystem
+      rather than a single executable.
+    - >
+      It is also a classic example of infrastructure that became less visible as it got
+      more mature. A user may never type Xorg directly, but the package can decide
+      whether old CAD tools, Tcl/Tk apps, X11 forwarding, headless browser tests, and
+      desktop sessions work at all.
+    - >
+      The modularization story is a package-management lesson in itself: the X.Org stack
+      moved from one large release artifact to many independently versioned modules,
+      matching the way distributions and source package systems actually want to update
+      fast-moving drivers and servers.
+  project-history:
+    - >
+      The Xorg manual says the server was derived by the X.Org Foundation from the
+      XFree86 project's XFree86 4.4rc2 release; XFree86 itself came from the earlier
+      X386 work contributed to X11R5. That lineage matters because the 2004 X.Org
+      transition turned the de facto open Unix X server into a foundation-maintained
+      project under the freedesktop.org development umbrella.
+    - >
+      X.Org's X11R7.7 release notes explain the larger release history: X11's network
+      protocol version was first released in 1988 and remained upward-compatible for
+      decades, while the X.Org Foundation, founded in early 2004, issued releases from
+      X11R6.7 onward. The server therefore carries both old X protocol compatibility and
+      the post-XFree86 maintenance model.
+    - >
+      A major turning point was modularization. X11R7.0, released in 2005, moved away
+      from the old monolithic source tree into separately released modules. X.Org's
+      version-numbering document notes that X11R7.0 included the xorg-server 1.0 module
+      and that module versions became the most accurate way to track server development.
+  related-projects:
+    - XFree86 is the immediate source lineage from which X.Org Server was forked.
+    - >
+      Xwayland lets X11 clients run in Wayland environments and keeps Xorg code relevant
+      in modern desktops.
+    - >
+      XQuartz and XWin are platform-specific X servers for macOS and Windows/Cygwin
+      environments.
+    - >
+      Xvfb, Xephyr, and Xnest are specialized X servers shipped from the same server
+      family for virtual and nested display use.
+  sources:
+    - https://gitlab.freedesktop.org/xorg/xserver
+    - https://www.x.org/Releases/
+    - https://www.x.org/releases/X11R7.7/doc/xorg-docs/ReleaseNotes.txt
+    - https://xorg.freedesktop.org/archive/X11R7.7/doc/xorg-docs/Versions.txt
+    - https://xorg.freedesktop.org/archive/current/doc/man/man1/Xorg.1.xhtml
+  summary:
+    - >
+      X.Org Server is the reference X11 display server maintained by the X.Org project.
+      It is the process behind the familiar DISPLAY model: clients connect to an X
+      server, ask it to create windows and draw, and receive input through the X
+      protocol.
+    - >
+      For package nerds, xorg-server is not just one binary. It is the package that
+      provides Xorg plus specialized servers such as Xvfb, Xephyr, Xnest, and related
+      utilities, making it central to graphical desktops, remote GUI workflows, headless
+      test runs, and decades of Unix compatibility.
+  timeline:
+    - '1988: X11 protocol version 11 is first released, according to X.Org release notes.'
+    - >
+      Early 2004: The X.Org Foundation is founded and begins issuing X11 releases from
+      X11R6.7 onward.
+    - '2004: X.Org Server is derived from XFree86 4.4rc2.'
+    - '2005-12-21: X11R7.0 is released with the modular xorg-server 1.0 module.'
+    - >
+      2010-12-20: X11R7.6 adds xorg.conf.d directories, InputClass sections, udev
+      support on Linux, improved documentation, and integrated xcb.
+    - >
+      2012-06-06: X11R7.7 is released, adding multitouch input support, Sync fences, and
+      pointer barriers.
+    - >
+      After X11R7.7: X.Org stops producing unified whole-stack releases and releases
+      individual modules as needed.
+  usage:
+    - >
+      On a traditional Unix-like desktop, Xorg is launched by a display manager or
+      startx/xinit, loads video and input drivers, reads xorg.conf and xorg.conf.d
+      configuration when needed, and brokers windows, drawing, and input for client
+      applications.
+    - >
+      In development and automation, Xvfb provides a virtual framebuffer for programs
+      that require an X display without real hardware. Xephyr runs a full X server
+      inside a window on another X display, useful for nested sessions, compositor
+      testing, and isolating graphical experiments. Xnest serves a related nested-server
+      role with different tradeoffs.
+    - >
+      Administrators and package maintainers care about xorg-server because it is a
+      convergence point for kernel device access, input stacks, graphics drivers, font
+      paths, extension versions, and security policy. Small changes in this package can
+      affect everything from terminal emulators to browser tests.
 tags:
   - cli
   - display-server
@@ -32,30 +145,29 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      source_facts.description says X Window System display server; official Xorg manual
-      describes Xorg as a full-featured X server.
+    - current_curation.category
   display-name-sources:
-    - official Xorg manual uses Xorg - X11R7 X server; source_facts.name is xorg-server.
+    - current_curation.display-name
+    - https://xorg.freedesktop.org/archive/current/doc/man/man1/Xorg.1.xhtml
   docs-sources:
-    - >
-      official X.Org documentation page points to current protocol docs, man pages, and
-      development documentation; official Xorg man page documents the server.
+    - https://www.x.org/wiki/Documentation
+    - https://x.org/releases/current/doc
+  history-sources:
+    - https://gitlab.freedesktop.org/xorg/xserver
+    - https://www.x.org/Releases/
+    - https://www.x.org/releases/X11R7.7/doc/xorg-docs/ReleaseNotes.txt
+    - https://xorg.freedesktop.org/archive/X11R7.7/doc/xorg-docs/Versions.txt
+    - https://xorg.freedesktop.org/archive/current/doc/man/man1/Xorg.1.xhtml
   repo-sources:
-    - >
-      official X.Org/Freedesktop documentation states X source is hosted in Freedesktop
-      git; freedesktop cgit identifies xorg/xserver as mirrored from
-      https://gitlab.freedesktop.org/xorg/xserver.
+    - https://gitlab.freedesktop.org/xorg/xserver
   tags-sources:
-    - >
-      source_facts.description and executables list Xorg, Xvfb, Xephyr, Xnest; official
-      manual describes Xorg as an X server.
+    - current_curation.tags
+    - https://xorg.freedesktop.org/archive/current/doc/man/man1/Xorg.1.xhtml
 category-confidence: high
 category-path:
   - system
-  - display-server
-  - x11
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
