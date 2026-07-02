@@ -10,14 +10,15 @@ history:
   adoption-history:
     - >
       ccal's adoption is mostly in Unix package collections where a small,
-      self-contained calendar utility is cheap to preserve. The batch input lists
-      Homebrew, Debian, MacPorts, Nix, and Ubuntu packages, which matches the tool's
-      shape: stable C++ source, a man page, no service, and no network dependency.
+      self-contained calendar utility is cheap to preserve. Its shape is simple: a C++
+      command-line program, a man page, printable/web output formats, and no network
+      service.
     - >
-      Homebrew's formula API for this batch points at the official 2.5.3 tarball and
-      marks the upstream homepage/repository status with a 2026-06-22 deprecation date
-      for repo_removed, so package metadata around the project needs conservative source
-      handling.
+      The official page also offers a web interface with PNG, JPEG, PDF, and
+      picture-calendar generation, but the downloadable program is the durable packaging
+      target. That split is typical of older personal utility projects: the static site
+      documents both a web convenience layer and the CLI that package managers can
+      actually preserve.
   package-nerd-significance:
     - >
       ccal is a compact example of a culturally specific CLI that package managers keep
@@ -25,32 +26,32 @@ history:
       it is a focused executable for Chinese lunisolar calendar presentation and
       printable output formats.
     - >
-      For package-history work, ccal is interesting because the apparent GitHub source
-      is an approved mirror, while the official distribution remains a static project
-      page and tarball. The package should therefore avoid treating the mirror as the
-      upstream repository unless a policy explicitly accepts approved mirrors.
+      It is also a reminder to distinguish official upstream distribution from mirrors.
+      The official project surface is a static chinesebay.com page with source archives
+      and documentation, so the repository field should stay null unless an official
+      source-control URL is verified.
   project-history:
     - >
-      The official 2.5.3 page records development from at least version 1.1 on
-      2000-04-01 through version 2.5.3 on 2012-03-04. Early changes focused on better
+      The official 2.5.3 page records development from at least version 1.1 on 1 April
+      2000 through version 2.5.3 on 4 March 2012. Early changes focused on smoother
       Chinese font rendering, a cache for years 1950 to 2050, Encapsulated PostScript
-      output, and bug fixes in lunar-date calculation.
+      output improvements, and corrections to lunar-date calculation.
     - >
-      The 2.x series expanded language and output support: version 2.0 added traditional
-      Chinese support for EPS and HTML output, version 2.1 added traditional or
-      simplified Chinese character-mode output, version 2.3 added UTF-8 support, version
-      2.4 added XML output and an XSL sample, and version 2.5 incorporated updated
+      The 2.x series expanded language and output support. Version 2.0 added traditional
+      Chinese support for EPS and HTML table output; version 2.1 added traditional or
+      simplified Chinese character-mode output; version 2.3 added UTF-8 output; version
+      2.4 added XML mode and a sample XSL file; and version 2.5 adopted updated
       astronomical formulae and corrections.
     - >
-      The project combines calendar software with astronomy code. The official change
-      log mentions NOVAS-C updates, formulae published by NASA for computing Delta T,
-      parameters from the second edition of Jean Meeus's Astronomical Algorithms, and
-      corrections based on DE405 for years between 1645 and 2200.
+      The project combines calendar software with astronomy code. The official changelog
+      mentions NOVAS-C updates, NASA-published formulae for Delta T, parameters from the
+      second edition of Jean Meeus's Astronomical Algorithms, and corrections based on
+      DE405 for years between 1645 and 2200.
   related-projects:
     - NOVAS-C is incorporated for astronomical calculations.
     - >
       NASA Delta T formulae, Jean Meeus's Astronomical Algorithms, and DE405 corrections
-      are cited by the official change log.
+      are cited by the official changelog.
     - Ghostscript is used by the ccalpdf helper script.
   sources:
     - https://ccal.chinesebay.com/ccal/ccal.1
@@ -61,30 +62,30 @@ history:
       ccal is Zhuo Meng's command-line Chinese calendar generator. The official page
       describes a cal-like Unix utility that prints Gregorian calendars together with
       Chinese calendar information and can also generate Encapsulated PostScript, HTML
-      table, and XML output for printable or web calendars.
+      table, and XML output.
   timeline:
     - >
-      2000-04-01: Version 1.1 added higher-resolution Chinese font output and a
+      2000-04-01: version 1.1 added higher-resolution Chinese font output and a
       1950-2050 year cache.
-    - '2002-03-24: Version 2.0 added traditional Chinese support for EPS and HTML table output.'
-    - '2003-01-29: Version 2.2 was released under the GNU General Public License.'
-    - '2003-10-04: Version 2.3 added UTF-8 output for traditional or simplified Chinese.'
-    - '2006-03-26: Version 2.4 added XML mode and a sample XSL file.'
+    - '2002-03-24: version 2.0 added traditional Chinese support for EPS and HTML table output.'
+    - '2003-01-29: version 2.2 was released under the GNU General Public License.'
+    - '2003-10-04: version 2.3 added UTF-8 output for traditional or simplified Chinese.'
+    - '2006-03-26: version 2.4 added XML mode and a sample XSL file.'
     - >
-      2008-07-25: Version 2.5 adopted updated astronomical formulae and DE405-based
-      corrections.
-    - '2012-03-04: Version 2.5.3 incorporated NOVAS-C updates and 64-bit portability fixes.'
+      2008-07-25: version 2.5 adopted NASA Delta T formulae, updated Meeus parameters,
+      and DE405-based corrections.
+    - '2012-03-04: version 2.5.3 incorporated NOVAS-C updates and 64-bit portability fixes.'
   usage:
     - >
       The official page says ccal writes a Gregorian calendar together with a Chinese
-      calendar to standard output, with usage similar to the Unix cal program. It
-      supports simplified and traditional Chinese characters and can emit ASCII, EPS,
-      HTML table, and XML formats.
+      calendar to standard output, with usage similar to the Unix `cal` program. It
+      supports simplified and traditional Chinese characters and can emit console, EPS,
+      HTML table, and XML formats for printable calendars or web pages.
     - >
-      The same site also provides a web interface with additional PNG, JPEG, PDF, and
-      picture-calendar output, but the packaged CLI is the useful part for scripts,
-      printable calendars, and do-it-yourself web pages. The related ccalpdf script
-      creates PDF calendars using Ghostscript on Unix and Cygwin.
+      The related ccalpdf shell script creates PDF calendars using Ghostscript on Unix
+      and Cygwin. Typical package use is scripting, printing, or generating
+      do-it-yourself web calendars that need Chinese lunisolar calendar annotations
+      without depending on a hosted API.
 tags:
   - calendar
   - chinese-calendar
@@ -105,38 +106,27 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - >
-      https://ccal.chinesebay.com/ccal/ccal.htm describes ccal as a command-line program
-      that writes Gregorian and Chinese calendars.
-    - 'source_facts.description: Create Chinese calendars for print or browsing.'
+    - https://ccal.chinesebay.com/ccal/ccal.htm
+    - source_facts.description
   display-name-sources:
-    - https://ccal.chinesebay.com/ccal/ccal.htm title uses CCAL-2.5.3.
-    - 'source_facts.name: ccal.'
+    - https://ccal.chinesebay.com/ccal/ccal.htm
+    - source_facts.name
   docs-sources:
-    - >
-      current_curation.docs includes the official manual URL
-      https://ccal.chinesebay.com/ccal/ccal.1.
-    - >
-      https://ccal.chinesebay.com/ccal/ccal.htm is the official project page and links a
-      pre-formatted manual page.
+    - https://ccal.chinesebay.com/ccal/ccal.1
+    - https://ccal.chinesebay.com/ccal/ccal.htm
   history-sources:
     - https://ccal.chinesebay.com/ccal/ccal.1
     - https://ccal.chinesebay.com/ccal/ccal.htm
     - https://formulae.brew.sh/api/formula/ccal.json
   repo-sources:
-    - >
-      https://ccal.chinesebay.com/ccal/ccal.htm offers official downloads and source
-      tarball but no official HTTP(S) source-control repository; third-party mirrors are
-      disallowed by the prompt.
+    - https://ccal.chinesebay.com/ccal/ccal.htm
+    - https://formulae.brew.sh/api/formula/ccal.json
   tags-sources:
-    - >
-      https://ccal.chinesebay.com/ccal/ccal.htm documents console, Encapsulated
-      PostScript, HTML table, XML, simplified Chinese, and traditional Chinese output.
-    - source_facts.executables lists ccal and ccalpdf.
+    - https://ccal.chinesebay.com/ccal/ccal.htm
+    - source_facts.description
 category-confidence: high
 category-path:
   - productivity
-  - calendar
 display-name-confidence: high
 docs-confidence: high
 history-confidence: high

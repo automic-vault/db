@@ -9,54 +9,64 @@ credentials-file-location: null
 history:
   adoption-history:
     - >
-      The supplied package facts show arpoison packaged by Homebrew and Nix, but not
-      widely across the mainstream Linux distro set listed for the larger ARP tools in
-      this batch. That fits the project's age and narrow purpose: it is more of a
-      specialized security/network-testing utility than a general inventory scanner.
+      arpoison's adoption is necessarily narrow. It is useful to administrators,
+      students, and security testers who need controlled ARP cache manipulation on a
+      local network, but it is not a general-purpose network inventory tool or a modern
+      maintained platform.
+    - >
+      The package's continued value is mostly archival and practical: when a user needs
+      a tiny utility that emits hand-crafted ARP packets, the package manager can still
+      provide it without requiring a checkout from a live development project.
   package-nerd-significance:
     - >
-      arpoison is significant mostly as a fossilized but still packageable
-      single-purpose tool. It demonstrates why old security utilities often have
-      official homepages and tarballs but no modern repo, docs site, CI, or release
-      feed.
+      arpoison is significant mostly as a compact preservation package: one executable,
+      one C source tree, one man page, and an official tarball. It is the sort of
+      security utility where a package database should preserve the real upstream
+      homepage and avoid promoting unrelated mirrors as official repositories.
     - >
-      For metadata, the conservative answer is to keep the repo empty rather than bless
-      a mirror as official.
+      Its metadata is also a reminder that old security tools often predate today's
+      expectation of GitHub, release feeds, CI, and signed source releases. For this
+      package, the conservative answer is source-backed history plus a null repository.
   project-history:
     - >
-      The official source archive contains an arpoison.8 manual page dated January 2003
-      and source for version 0.7. No official public source-control repository was found
-      on the project homepage, only a tarball.
+      The official upstream surface is old-school: a static homepage, a tarball, a
+      dependency note for libnet, and contact information. The 0.7 archive includes
+      source, a README, a Makefile, a GPL license file, and an arpoison.8 manual page
+      dated January 2003. No official HTTP source-control repository was found on the
+      project homepage.
     - >
-      The program belongs to the early-2000s libnet packet-tool era: compact C utilities
-      for generating custom Ethernet/ARP traffic, commonly used by administrators,
-      security testers, and lab users who needed direct control over packet fields.
+      arpoison belongs to the early-2000s packet-construction utility era, when small C
+      programs built on libnet were common tools for network labs and security testing.
+      Its source and manual are focused on one task: generating custom ARP traffic
+      rather than providing a broader scanning, discovery, or intrusion framework.
   related-projects:
-    - libnet is the required packet-construction library.
-    - arping can also send unsolicited ARP, but is framed as a diagnostic utility.
-    - arp-scan is for discovery and fingerprinting, not poisoning.
+    - libnet is the packet-construction library required by the official homepage and README.
+    - >
+      arping and arp-scan live in the same ARP-tool neighborhood, but arpoison is
+      specifically about crafted ARP cache update packets.
   sources:
     - http://www.arpoison.net/
     - http://www.arpoison.net/arpoison-0.7.tar.gz
   summary:
     - >
-      arpoison is a small Unix ARP cache update utility by Steve Buer. The official
-      homepage is sparse but provides the 0.7 source archive; the included README and
-      manual page describe a tool for crafting ARP request or reply packets with
-      user-selected hardware and protocol addresses.
+      arpoison is Steve Buer's small Unix ARP cache update utility. Its official site
+      describes it tersely as a Unix ARP cache update utility and distributes a 0.7
+      source archive; the bundled manual page describes a command that constructs ARP
+      request or reply packets with user-specified hardware and protocol addresses.
   timeline:
-    - '2003-01: Included manual page dated January 2003.'
-    - '0.7: Official homepage offers arpoison-0.7.tar.gz.'
+    - '2003-01: The bundled manual page is dated January 2003.'
+    - '0.7: The official homepage distributes arpoison-0.7.tar.gz.'
   usage:
     - >
-      The README says arpoison sends a custom ARP reply packet with chosen hardware and
-      protocol address information, relying on ARP's stateless behavior. The manpage
-      documents options for interface, destination IP, source IP, target MAC, source
-      MAC, ARP request mode, packet count, and delay between packets.
+      The bundled README says the program sends a custom ARP reply packet with chosen
+      hardware and protocol address information, relying on ARP's stateless behavior.
+      The manual page documents options for interface, destination IP, source IP, target
+      MAC, source MAC, ARP request mode, packet count, and delay between packets.
     - >
-      Its practical use is controlled ARP cache manipulation and ARP poisoning tests on
-      local networks. Because it emits crafted ARP packets, it is naturally a
-      privileged/security-sensitive CLI.
+      In practice, arpoison is used for controlled ARP cache updates and ARP poisoning
+      experiments on local networks. Because it sends forged link-layer traffic, it is a
+      privileged and security-sensitive command rather than a normal user productivity
+      tool.
 category: security
 package-manager:
   brew: arpoison
