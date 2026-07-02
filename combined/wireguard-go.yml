@@ -8,6 +8,92 @@ docs:
   - https://www.wireguard.com/repositories
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      WireGuard's wider adoption accelerated when it was merged for Linux 5.6 in 2020,
+      turning the protocol from an out-of-tree module plus tools into a standard Linux
+      networking feature. That made userspace implementations less central on modern
+      Linux but more valuable as cross-platform compatibility pieces for macOS,
+      BSD-derived systems, containers, embedded environments, and application stacks
+      that need a WireGuard tunnel without depending on a kernel module.
+    - >
+      In package-manager culture, wireguard-go is commonly installed with
+      wireguard-tools or used by higher-level products that need an implementation of
+      the WireGuard protocol in userspace. It is not the glamorous default path on
+      current Linux, but it is the package that makes the same protocol available when
+      the native interface is missing.
+  package-nerd-significance:
+    - >
+      For package maintainers, wireguard-go is the portability valve in the WireGuard
+      ecosystem: small, official, and intentionally less preferred than the kernel
+      implementation on Linux, but essential when kernels, operating systems, or
+      sandboxed deployments cannot provide a native WireGuard device.
+    - >
+      Its significance is mostly negative space: if the platform has first-class
+      WireGuard support, users may never notice it; when it does not, this package is
+      often the thing that lets the rest of the WireGuard tooling keep working.
+  project-history:
+    - >
+      WireGuard itself was designed as a small, auditable alternative to IPsec and
+      OpenVPN, with a public technical paper describing it as a secure network tunnel
+      implemented as a Linux kernel virtual network interface. The WireGuard project
+      later organized several official implementation repositories, including the kernel
+      implementation, cross-platform tools, and wireguard-go as a cross-platform
+      userspace implementation maintained by Donenfeld.
+    - >
+      The role of wireguard-go became clearer after WireGuard entered the Linux kernel
+      line: Linux users are generally expected to use the kernel module for performance
+      and integration, while wireguard-go remains the portable fallback for platforms
+      and situations where a userspace TUN implementation is the practical route. Its
+      README explicitly tells Linux users that the kernel module is faster and better
+      integrated, which gives the package a deliberately narrow but important niche.
+  related-projects:
+    - >
+      wireguard-tools provides `wg` and `wg-quick`, the common command-line tools used
+      to configure interfaces created by either the kernel implementation or
+      wireguard-go.
+    - >
+      wireguard-linux and wireguard-linux-compat cover the kernel side of the same
+      protocol, while other official repositories cover Android, BSD, Rust, and
+      experimental implementations.
+  sources:
+    - https://github.com/WireGuard/wireguard-go
+    - https://kernelnewbies.org/Linux_5.6
+    - https://www.wireguard.com/
+    - https://www.wireguard.com/papers/wireguard.pdf
+    - https://www.wireguard.com/repositories/
+  summary:
+    - >
+      wireguard-go is the official Go userspace implementation of WireGuard, the modern
+      encrypted layer-3 VPN protocol created by Jason A. Donenfeld. It exists alongside
+      the Linux kernel implementation and is most useful where a kernel driver is
+      unavailable, undesirable, or less portable than a userspace tunnel process.
+  timeline:
+    - >
+      2017: Donenfeld's WireGuard technical paper describes the design goals of a small,
+      production-oriented secure network tunnel.
+    - >
+      2019: The WireGuard project lists wireguard-go as the official cross-platform
+      userspace implementation in Go.
+    - >
+      2020: WireGuard is included in Linux 5.6, shifting mainstream Linux use toward the
+      kernel driver while preserving wireguard-go for portability.
+    - >
+      2026: The WireGuard repositories page still lists wireguard-go as a complete
+      official implementation.
+  usage:
+    - >
+      A typical invocation creates a WireGuard-style network interface by running a
+      command such as `wireguard-go wg0`; the interface can then be configured with
+      `wg(8)` plus ordinary platform networking tools. The upstream README describes it
+      as creating the interface and then forking into the background, with a foreground
+      mode available for supervision and logging.
+    - >
+      The package is usually part of a larger WireGuard setup rather than a complete VPN
+      product by itself. Users still need keys, peers, allowed IPs, routing, and address
+      configuration, usually handled through `wg`, `wg-quick`, system network managers,
+      or application-specific wrappers.
 category: networking
 package-manager:
   apk: wireguard-go

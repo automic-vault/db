@@ -11,6 +11,85 @@ config-file-location:
 credentials-file-location:
   unix:
     - /etc/wireguard/INTERFACE.conf
+history:
+  adoption-history:
+    - >
+      The tools package became the everyday interface to WireGuard both before and after
+      the protocol reached Linux 5.6. Before mainline inclusion, it paired with
+      out-of-tree kernel modules and userspace implementations; after inclusion, it
+      remained necessary because the kernel feature alone does not provide the
+      user-facing `wg` and `wg-quick` commands.
+    - >
+      Its cross-platform scope also matters: the official project describes
+      wireguard-tools as tooling for WireGuard implementations rather than only for
+      Linux. Package ecosystems therefore treat it as the stable CLI surface that can
+      sit on top of kernel drivers, BSD ports, macOS interfaces, Windows support, and
+      wireguard-go.
+  package-nerd-significance:
+    - >
+      This is the package that turns WireGuard from a kernel feature or protocol
+      implementation into something shell users can operate. For many systems,
+      installing WireGuard really means installing the tunnel implementation plus
+      wireguard-tools.
+    - >
+      The package is also beloved in automation because `wg` has script-friendly output
+      and `wg-quick` keeps the common one-file tunnel pattern boring. That combination
+      made WireGuard unusually approachable for sysadmins compared with older VPN stacks
+      that relied on larger daemon configurations and certificate-heavy workflows.
+  project-history:
+    - >
+      WireGuard was designed around a deliberately small kernel or userspace tunnel
+      implementation plus simple userspace configuration. The official repositories page
+      identifies wireguard-tools as the cross-platform userspace tooling for configuring
+      WireGuard implementations, including `wg(8)` and `wg-quick(8)`.
+    - >
+      `wg` became the protocol-specific tool for setting and reading interface state,
+      peers, keys, endpoints, allowed IPs, handshakes, and transfer counters. `wg-quick`
+      grew into the pragmatic wrapper for common host setups: it reads an
+      interface-named config file, adds the interface, assigns addresses, configures
+      routes, and then tears that setup down again on request.
+  related-projects:
+    - >
+      wireguard-go can create a userspace WireGuard interface that is then configured
+      with `wg`.
+    - >
+      NetworkManager and desktop network settings tools can cover higher-level
+      workflows, but wireguard-tools remains the reference command-line layer.
+  sources:
+    - https://git.zx2c4.com/wireguard-tools/
+    - https://git.zx2c4.com/wireguard-tools/about/src/man/wg-quick.8
+    - https://git.zx2c4.com/wireguard-tools/about/src/man/wg.8
+    - https://kernelnewbies.org/Linux_5.6
+    - https://www.wireguard.com/papers/wireguard.pdf
+    - https://www.wireguard.com/repositories/
+  summary:
+    - >
+      wireguard-tools is the command-line companion package for WireGuard. It supplies
+      `wg`, the low-level configuration utility, and `wg-quick`, the convenience script
+      that turns simple interface configuration files into working tunnels.
+  timeline:
+    - '2017: The WireGuard paper describes a separate userspace `wg(8)` tool for configuration.'
+    - >
+      2019: WireGuard is accepted into the net-next path toward Linux 5.6, increasing
+      the importance of stable userspace tooling around the kernel implementation.
+    - >
+      2020: Linux 5.6 ships WireGuard support; wireguard-tools remains the common CLI
+      package for configuring it.
+    - >
+      2026: The upstream cgit repository continues to publish tagged wireguard-tools
+      releases and cross-platform fixes.
+  usage:
+    - >
+      `wg` is used for precise interface inspection and configuration: showing runtime
+      status, setting peers, applying keys, and dumping machine-readable state for
+      scripts. It is the command admins reach for when they need to see whether a tunnel
+      has handshaken or exactly which allowed IPs are active.
+    - >
+      `wg-quick` is the fast path for common deployments. It looks for an interface
+      config such as `/etc/wireguard/wg0.conf`, applies WireGuard settings, assigns
+      addresses, and infers routes from peer allowed IPs, while still allowing more
+      advanced users to bypass it and call `wg` plus platform networking commands
+      directly.
 tags:
   - cli
   - network-security
@@ -28,31 +107,33 @@ geiger:
     - text:network
 provenance:
   category-sources:
-    - >
-      source_facts.description says it provides tools for the WireGuard secure network
-      tunnel; official WireGuard repositories page describes wireguard-tools as
-      userspace tools for wg and wg-quick.
+    - https://www.wireguard.com/
+    - source_facts.description
   display-name-sources:
-    - >
-      source_facts.name is wireguard-tools; official WireGuard repositories page lists
-      the project as wireguard-tools.
+    - current_curation.display-name
+    - https://git.zx2c4.com/wireguard-tools/
   docs-sources:
-    - >
-      Official WireGuard site provides Quick Start, compilation, and official
-      repositories pages.
+    - current_curation.docs
+    - https://git.zx2c4.com/wireguard-tools/about/src/man/wg-quick.8
+    - https://git.zx2c4.com/wireguard-tools/about/src/man/wg.8
+  history-sources:
+    - https://git.zx2c4.com/wireguard-tools/
+    - https://git.zx2c4.com/wireguard-tools/about/src/man/wg-quick.8
+    - https://git.zx2c4.com/wireguard-tools/about/src/man/wg.8
+    - https://kernelnewbies.org/Linux_5.6
+    - https://www.wireguard.com/papers/wireguard.pdf
+    - https://www.wireguard.com/repositories/
   repo-sources:
-    - >
-      source_facts.repo is empty; official WireGuard repositories and compilation pages
-      identify git.zx2c4.com/wireguard-tools as the wireguard-tools source repository.
+    - current_curation.repo
+    - https://www.wireguard.com/repositories/
   tags-sources:
-    - >
-      source_facts.executables lists wg and wg-quick; source_facts.description
-      identifies WireGuard secure network tunnel tooling.
+    - https://www.wireguard.com/repositories/
+    - source_facts.description
 category-confidence: high
 category-path:
   - networking
-  - vpn
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
