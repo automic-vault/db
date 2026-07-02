@@ -7,6 +7,33 @@ docs:
   - https://simdutf.github.io/simdutf/index.html
 config-file-location: null
 credentials-file-location: null
+history:
+  - >
+    simdutf grew out of Daniel Lemire and collaborators' work on using SIMD instructions
+    for Unicode validation and transcoding. The research line includes fast UTF-8
+    validation and the 2021 paper on transcoding billions of Unicode characters per
+    second with SIMD instructions, which framed ordinary UTF-8 and UTF-16 conversion as
+    a throughput bottleneck in software stacks that move text at disk and network
+    speeds.
+  - >
+    The library packages that work as a C++ component: validation, error reporting,
+    character counting, and transcoding among UTF-8, UTF-16, UTF-32, and Latin1, later
+    joined by high-speed base64 routines. Its design matters at trust boundaries because
+    conversion routines can validate while transcoding, rejecting malformed input
+    instead of silently producing unsafe text.
+  - >
+    simdutf's ecosystem role expanded because Unicode conversion is a hot path inside
+    JavaScript runtimes, browsers, servers, terminals, and data systems. The project
+    site and repository describe production users including Node.js, Bun, WebKit,
+    Chromium, Cloudflare workerd, Ladybird, Ghostty, and related language bindings. That
+    adoption turned it from a benchmark-friendly algorithm library into infrastructure
+    that many developers encounter indirectly through runtimes and browsers.
+  - >
+    Practitioners use simdutf either as a direct dependency in C and C++ projects,
+    through package managers such as Homebrew, distro packages, Conan, and language
+    wrappers, or as a vendored component inside larger systems. The package also ships
+    command-line tools such as sutf and fastbase64 for exercising the same routines
+    outside an embedding application.
 category: developer-tools
 package-manager:
   apk: fastbase64
@@ -32,5 +59,13 @@ executables:
   - sutf-benchmark
 provenance:
   formula: simdutf
+  history-sources:
+    - https://github.com/simdutf/simdutf
+    - https://simdutf.github.io/simdutf/
+    - https://arxiv.org/abs/2109.10433
+    - https://lemire.me/blog/2020/10/20/ridiculously-fast-unicode-utf-8-validation/
+    - https://conan.io/center/recipes/simdutf
+    - https://formulae.brew.sh/formula/simdutf
   provider: brew
   source: https://formulae.brew.sh/api/formula.json
+history-confidence: high
