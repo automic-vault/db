@@ -2,9 +2,72 @@ id: brew:xcdiff
 display-name: xcdiff
 repo: null
 docs:
+  - https://github.com/bloomberg/xcdiff/blob/main/Documentation/CLI.md
+  - https://github.com/bloomberg/xcdiff/blob/main/Documentation/Framework.md
   - https://github.com/bloomberg/xcdiff#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The project is niche by design: it is aimed at teams that need to compare two
+      generated or hand-maintained Xcode projects in a meaningful way. Swift Package
+      Index lists xcdiff as an active package with one executable, two libraries, and
+      roughly a thousand GitHub stars, indicating modest but real use among Swift and
+      Apple-platform tooling users.
+  package-nerd-significance:
+    - >
+      Xcode projects are serialized as large property-list-like graphs, so ordinary text
+      diffs are noisy and often misleading. xcdiff matters in its niche because it
+      treats the project file as structured data, which helps teams review
+      generated-project changes without hand-reading unstable .pbxproj ordering and
+      identifiers.
+  project-history:
+    - >
+      The project appeared publicly in the Xcode project-generation era, when teams
+      increasingly used tools such as XcodeGen and Tuist to generate .xcodeproj files
+      rather than editing them entirely by hand. Swift Package Index records xcdiff's
+      first public release, 0.2.0, on 22 October 2019, and the GitHub releases page
+      shows continued maintenance through the 0.14.0 release in September 2025.
+    - >
+      xcdiff builds on other Swift/Xcode infrastructure instead of parsing project files
+      in isolation. The README credits Tuist's XcodeProj library and Swift Package
+      Manager's utility library, which places xcdiff in the same small ecosystem of
+      tools that inspect, generate, or normalize Xcode project metadata.
+  related-projects:
+    - >
+      XcodeGen and Tuist are named by the README as project-generation tools whose
+      output can be checked with xcdiff.
+    - >
+      Tuist's XcodeProj library is credited by xcdiff and provides the underlying Xcode
+      project modeling used in the wider Swift tooling ecosystem.
+  sources:
+    - https://github.com/bloomberg/xcdiff#readme
+    - https://github.com/bloomberg/xcdiff/releases
+    - https://swiftpackageindex.com/bloomberg/xcdiff
+  summary:
+    - >
+      xcdiff is Bloomberg's Swift-based tool for comparing Xcode project files. Its
+      README describes it as an extensible "git diff for .xcodeproj files", usable both
+      as a command-line program and as a library for custom tools.
+  timeline:
+    - '2019-10-22: Swift Package Index records xcdiff 0.2.0 as the first public release.'
+    - >
+      2021-01-22: xcdiff 0.6.0 adds additional comparators, including Swift Package and
+      project attributes.
+    - '2025-09-08: GitHub releases list xcdiff 0.14.0 as a current release.'
+  usage:
+    - >
+      The canonical workflow is to run `xcdiff` in a directory containing two .xcodeproj
+      files, or to pass two project paths explicitly with `-p1` and `-p2`. The README's
+      main use case is migration to project generation: compare a generated project
+      against the original one and inspect differences in targets, sources, headers, and
+      related project structure.
+    - >
+      Beyond the CLI, xcdiff exposes XCDiffCore as a Swift Package Manager dependency.
+      That makes it useful for package-nerd workflows where a team wants project-file
+      comparison inside another migration, review, or CI tool rather than only as
+      terminal output.
 tags:
   - cli
   - diff
@@ -22,27 +85,27 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - Official/package metadata identifies xcdiff as a tool for diffing xcodeproj files.
-    - 'source_facts.description: Tool to diff xcodeproj files'
+    - current_curation.category
   display-name-sources:
-    - 'current_curation.display-name: xcdiff'
-    - 'source_facts.name: xcdiff'
+    - current_curation.display-name
+    - official README project name
   docs-sources:
-    - Official GitHub README is the best documentation surface found.
-    - 'source_facts.repo: https://github.com/bloomberg/xcdiff'
+    - current_curation.docs
+    - official GitHub README documentation links
+  history-sources:
+    - https://github.com/bloomberg/xcdiff#readme
+    - https://github.com/bloomberg/xcdiff/releases
+    - https://swiftpackageindex.com/bloomberg/xcdiff
   repo-sources:
-    - >
-      source_facts.repo already set to https://github.com/bloomberg/xcdiff; returning
-      null per instruction.
+    - source_facts.repo already populated; per run instruction repo returned as null
   tags-sources:
-    - current_curation.tags includes cli
-    - source_facts.description identifies xcodeproj diffing.
+    - current_curation.tags
+    - official README description
 category-confidence: high
 category-path:
   - developer-tools
-  - apple-development
-  - diff
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

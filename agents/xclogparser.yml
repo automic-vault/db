@@ -2,9 +2,79 @@ id: brew:xclogparser
 display-name: XCLogParser
 repo: null
 docs:
+  - https://github.com/MobileNativeFoundation/XCLogParser/blob/master/docs/JSON%20Format.md
+  - >
+    https://github.com/MobileNativeFoundation/XCLogParser/blob/master/docs/Xcactivitylog%20Format.md
   - https://github.com/MobileNativeFoundation/XCLogParser#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The most visible downstream adoption is XCMetrics, Spotify's build-metrics system.
+      Spotify and XCMetrics documentation state that XCMetrics is built on top of
+      XCLogParser and has used it to collect large-scale build metrics across Spotify
+      iOS applications, turning the parser from a standalone CLI into an engine for
+      continuous developer-productivity measurement.
+  package-nerd-significance:
+    - >
+      XCLogParser is significant because `.xcactivitylog` files are not pleasant text
+      logs: they are gzipped binary SLF data in DerivedData. The tool gives package, CI,
+      and build-performance nerds a stable way to mine Xcode's hidden build graph and
+      timing data without depending on the Xcode UI.
+  project-history:
+    - >
+      The project came from Spotify's Apple-platform build tooling work and later moved
+      under the Mobile Native Foundation organization. Its README points to Erick
+      Camacho's AltConf 2019 talk about the `.xcactivitylog` format, and Spotify's later
+      XCMetrics writing explains that XCLogParser was created to extract human-readable
+      data from Xcode build logs.
+    - >
+      XCLogParser's scope expanded from dumping raw logs to producing structured reports
+      for build times, warnings, errors, unit-test results, Swift compiler timings,
+      linker statistics, and Clang time-trace data. The GitHub releases page shows
+      ongoing maintenance through v0.2.48 in June 2026, including parser updates for
+      newer Xcode activity-log sections.
+  related-projects:
+    - >
+      XCMetrics is the major related project and uses XCLogParser as its log-parsing
+      foundation.
+    - >
+      xcbeautify and similar xcodebuild log tools address console output readability,
+      while XCLogParser focuses on `.xcactivitylog` and structured build telemetry.
+  sources:
+    - >
+      https://engineering.atspotify.com/introducing-xcmetrics-our-all-in-one-tool-for-tracking-xcode-build-metrics
+    - https://github.com/MobileNativeFoundation/XCLogParser#readme
+    - >
+      https://github.com/MobileNativeFoundation/XCLogParser/blob/master/docs/Xcactivitylog%20Format.md
+    - https://github.com/MobileNativeFoundation/XCLogParser/releases
+    - https://xcmetrics.io/docs/
+  summary:
+    - >
+      XCLogParser is a Swift command-line tool for parsing Xcode and `xcodebuild` logs
+      stored as compressed `.xcactivitylog` files in Apple's SLF format. Its README
+      presents it as a way to turn opaque build and test logs into JSON, HTML, Chrome
+      trace, issue, and summary reports.
+  timeline:
+    - '2019: README points users to an AltConf 2019 talk about the Xcode activity-log format.'
+    - >
+      2020: Spotify introduces XCMetrics as a system built on top of XCLogParser for
+      continuous build metrics.
+    - >
+      2026-06-09: GitHub releases list v0.2.48 with parser updates for newer Xcode
+      activity logs.
+  usage:
+    - >
+      Typical use is either `xclogparser dump` for raw JSON or `xclogparser parse` with
+      a reporter such as `json`, `flatJson`, `summaryJson`, `chromeTracer`, `issues`, or
+      `html`. The README documents locating logs by project, workspace, xcodeproj,
+      explicit file, or DerivedData path.
+    - >
+      The README also documents Xcode integration through a post-scheme build action,
+      plus a caveat that since Xcode 11, command-line `xcodebuild` only generates
+      `.xcactivitylog` build logs when `-resultBundlePath` is supplied. That detail is
+      central to using the tool reliably in CI.
 tags:
   - cli
   - logs
@@ -22,28 +92,31 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - Official GitHub repository describes parsing Xcode and xcodebuild xcactivitylog files.
-    - 'source_facts.description: Tool to parse the SLF serialization format used by Xcode'
+    - current_curation.category
   display-name-sources:
-    - Official repository name uses XCLogParser capitalization.
-    - 'source_facts.name: xclogparser'
+    - current_curation.display-name
+    - official README project name
   docs-sources:
-    - Official GitHub README is the best documentation surface found.
-    - 'source_facts.repo: https://github.com/MobileNativeFoundation/XCLogParser'
-  repo-sources:
+    - current_curation.docs
+    - official GitHub README documentation links
+  history-sources:
     - >
-      source_facts.repo already set to
-      https://github.com/MobileNativeFoundation/XCLogParser; returning null per
-      instruction.
+      https://engineering.atspotify.com/introducing-xcmetrics-our-all-in-one-tool-for-tracking-xcode-build-metrics
+    - https://github.com/MobileNativeFoundation/XCLogParser#readme
+    - >
+      https://github.com/MobileNativeFoundation/XCLogParser/blob/master/docs/Xcactivitylog%20Format.md
+    - https://github.com/MobileNativeFoundation/XCLogParser/releases
+    - https://xcmetrics.io/docs/
+  repo-sources:
+    - source_facts.repo already populated; per run instruction repo returned as null
   tags-sources:
-    - current_curation.tags includes cli
-    - source_facts.description identifies SLF serialization parsing for Xcode.
+    - current_curation.tags
+    - official README description
 category-confidence: high
 category-path:
   - developer-tools
-  - apple-development
-  - log-analysis
-display-name-confidence: medium
+display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

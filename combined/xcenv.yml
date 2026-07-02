@@ -9,6 +9,59 @@ config-file-location:
     - ./.xcode-version
     - ~/.xcenv/.xcode-version
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The tool follows the family pattern of language and runtime managers that use
+      shims plus local and global version files. In xcenv's case, those shims wrap tools
+      such as `xcodebuild`, `xcrun`, and other Xcode binaries so third-party build tools
+      can inherit the selected Xcode version.
+  package-nerd-significance:
+    - >
+      xcenv is notable less as a large project than as an Apple-platform adaptation of
+      the version-file convention familiar from tools such as rbenv. For package and
+      build-system users, the important idea is that the required Xcode version can live
+      with the source tree instead of in local machine notes.
+  project-history:
+    - >
+      xcenv was created to solve a common Apple-development problem: teams often need
+      multiple Xcode.app bundles installed, but `xcode-select` and `DEVELOPER_DIR`
+      require agreement on exact application paths. The README explicitly calls out
+      conflicting app naming conventions, such as `Xcode7.2.app` versus `Xcode_7_2.app`,
+      as the kind of team-level friction the tool avoids.
+  related-projects:
+    - >
+      The README names Fastlane, CocoaPods, and Shenzhen as tools that can run through
+      xcenv shims.
+    - >
+      Later Xcode managers such as Xcodes and Xcodes.app focus more on downloading and
+      switching installed Xcode versions, while xcenv centers on documenting and
+      resolving the version to use.
+  sources:
+    - https://github.com/XcodesOrg/XcodesApp#readme
+    - https://github.com/XcodesOrg/xcodes#readme
+    - https://github.com/xcenv/xcenv#readme
+  summary:
+    - >
+      xcenv is an Xcode version manager modeled around project and global version files.
+      Its README frames the tool as a way to document and manage the Xcode version
+      required by a project or shell environment.
+  timeline:
+    - '2010s: xcenv adopts a shim-and-version-file model for Xcode toolchains.'
+    - >
+      2020s: The `.xcode-version` convention remains visible in Apple build tooling
+      discussions and related tools.
+  usage:
+    - >
+      xcenv chooses the active Xcode version from `DEVELOPER_DIR`, then `XCENV_VERSION`,
+      then the nearest `.xcode-version` file, then the global `~/.xcenv/.xcode-version`
+      file. A project can commit `.xcode-version` so that switching branches or checking
+      out old commits also records the expected Xcode toolchain.
+    - >
+      The main commands are `xcenv local`, `xcenv global`, `xcenv shell`, `xcenv
+      version`, and `xcenv rehash`. Its README names Fastlane, CocoaPods, Shenzhen, and
+      existing scripts using `xcodebuild` or `xcrun` as examples of tools that can
+      benefit from the shim approach.
 category: developer-tools
 package-manager:
   brew: xcenv

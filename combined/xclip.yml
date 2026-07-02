@@ -6,6 +6,98 @@ docs:
   - https://github.com/astrand/xclip#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xclip became one of the standard small utilities installed when scripts, editors,
+      or terminal workflows need access to the X11 clipboard. Debian describes it as a
+      command-line interface to X selections, and distribution package pages across
+      Debian, Fedora, Arch, Alpine, GNU Guix, OpenBSD ports, and Homebrew carry the same
+      role: a tiny bridge between shell pipelines and desktop selection ownership.
+    - >
+      Its adoption is also visible through how other software talks about clipboard
+      support on Linux: command-line tools frequently recommend `xclip` or `xsel` for
+      X11 clipboard integration. That position has persisted even as Wayland gained
+      adoption, because X11 and XWayland sessions still expose the selection model that
+      xclip was written to manipulate.
+  package-nerd-significance:
+    - >
+      xclip matters because the X Window System has multiple selections, not just a
+      single clipboard. The README points to the freedesktop.org clipboard specification
+      and summarizes the difference between XA_PRIMARY, middle-click paste, and
+      XA_CLIPBOARD, giving shell users precise control over a desktop feature that GUI
+      applications usually hide.
+    - >
+      The tool's design also explains a recurring Unix packaging pattern: a small C
+      program, a man page, and shell helpers become the glue that lets unrelated
+      programs interoperate. For headless or remote workflows it is still bounded by the
+      existence of an X display, but within that boundary it remains the boring,
+      reliable answer for "put this command output where my GUI can paste it."
+  project-history:
+    - >
+      The source file records copyright by Kim Saunders in 2001 and Peter Astrand in
+      2007-2008, marking xclip as an older Unix desktop utility that predates modern
+      clipboard abstractions. Its old changelog starts at version 0.01, "Everything.
+      First release, pretty basic, but it worked," then shows a steady evolution through
+      file input, output mode, selection choice, INCR support for large transfers, UTF-8
+      fixes, man pages, and helper scripts.
+    - >
+      Version 0.05 added the ability to access XA_SECONDARY and XA_CLIPBOARD rather than
+      only the default primary selection. Version 0.06 added support for the X INCR
+      mechanism, improving large-data transfers. Version 0.10 moved the build from Imake
+      to Autoconf and added `xclip-copyfile` and `xclip-pastefile`, making the tool
+      useful not only for text snippets but also for copying files over an existing X11
+      connection.
+    - >
+      The project was historically hosted on SourceForge and later moved to GitHub.
+      SourceForge now says the project remains there for historical reasons and points
+      users to the GitHub repository; the GitHub changelog includes a February 2016
+      commit changing SourceForge URLs to GitHub. The 0.13 GitHub release in September
+      2016 gathered several years of fixes and small features after the 0.12 line.
+  related-projects:
+    - >
+      xsel is the other commonly cited X11 clipboard CLI and is often mentioned
+      alongside xclip in Linux tooling.
+    - >
+      The freedesktop.org clipboard specification documents the X selection conventions
+      that xclip exposes.
+  sources:
+    - https://github.com/astrand/xclip#readme
+    - https://github.com/astrand/xclip/blob/master/ChangeLog
+    - https://github.com/astrand/xclip/blob/master/xclip.c
+    - https://github.com/astrand/xclip/releases
+    - https://packages.debian.org/sid/xclip
+    - https://sourceforge.net/projects/xclip/
+    - https://specifications.freedesktop.org/clipboards-spec/clipboards-latest.txt
+  summary:
+    - >
+      xclip is a long-running command-line interface to X11 selections. The README
+      describes it as a utility for any system with an X11 implementation, able to read
+      standard input or files into an X selection and print a selection back to standard
+      output.
+  timeline:
+    - >
+      2001: xclip source records Kim Saunders copyright, matching the earliest era of
+      the project.
+    - '0.05: Adds `-selection` support for XA_SECONDARY and XA_CLIPBOARD.'
+    - '0.06: Adds X INCR mechanism support for larger selection transfers.'
+    - '0.10: Adds file-copy helper scripts and switches from Imake to Autoconf.'
+    - '2010: Changelog records version 0.12 maintenance, man pages, and build fixes.'
+    - '2016-02: Project URLs are changed from SourceForge to GitHub.'
+    - '2016-09-13: GitHub release 0.13 collects several years of fixes and features.'
+  usage:
+    - >
+      The classic usage is pipeline-oriented: `uptime | xclip` puts command output into
+      the primary selection, `xclip -o -sel clip` writes the clipboard to standard
+      output, and `xclip -o | xclip -sel clip` copies the primary selection into the
+      explicit clipboard. The README also documents use from Vim filters and scripts
+      that open selected URLs or save browser-copied text.
+    - >
+      The helper commands `xclip-copyfile`, `xclip-pastefile`, and `xclip-cutfile` use
+      the selection mechanism to move files or directory trees between directories and
+      even between machines when X11 forwarding is available. This is the package-nerd
+      trick that makes xclip more than a text clipboard tool: it can piggyback on an
+      already-authenticated X connection as a lightweight file-transfer path.
 category: system
 package-manager:
   apk: xclip

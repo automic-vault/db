@@ -9,6 +9,101 @@ config-file-location:
     - ./buildServer.json
     - ./.compile
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption is concentrated among Swift developers who want Neovim, VS Code,
+      JetBrains IDEs, or another LSP-capable editor to understand Xcode projects. A
+      Swift Forums discussion from 2024 describes SourceKit-LSP's BSP integration and
+      the need for build servers to provide build settings, target information, and
+      index data; xcode-build-server is one practical community implementation of that
+      idea for Xcode.
+    - >
+      The tool is cited in SourceKit-LSP issue discussions and editor setup guides as a
+      working answer for Xcode project support. MacPorts describes it as implementing a
+      build server to provide SourceKit-LSP with the build information it needs for an
+      Xcode project, and the GitHub page shows nearly a thousand stars, making it one of
+      the better-known utilities in this small niche.
+  package-nerd-significance:
+    - >
+      xcode-build-server is significant because Xcode projects are historically hard to
+      use outside Xcode. SourceKit-LSP supports Swift and C-family editor features, but
+      it needs exact compiler arguments, SDK paths, target membership, and index
+      locations. xcode-build-server turns Xcode's own build output into that missing
+      protocol layer.
+    - >
+      For Swift tooling users, it represents a pragmatic compromise: keep Xcode as the
+      authoritative build system, but let other editors participate through
+      SourceKit-LSP and BSP. That makes it a bridge between Apple's proprietary project
+      model and the open editor tooling world.
+  project-history:
+    - >
+      The project was created by SolaWing to make iOS and Apple-platform development
+      practical in editors outside Xcode. The README says the goal is to integrate Xcode
+      with SourceKit-LSP and support the language set Xcode handles: Swift, C, C++,
+      Objective-C, and Objective-C++.
+    - >
+      xcode-build-server's implementation reflects the gap it fills. Instead of
+      replacing Xcode's build system, it watches or parses Xcode build logs, extracts
+      compile flags, and exposes the information SourceKit-LSP needs. The repository is
+      primarily Python and includes the `xcode-build-server` executable, config helpers,
+      log parsing code, and Xcode automation scripts.
+    - >
+      The GitHub repository lists about 142 commits, five releases, and v1.3.0 as the
+      latest release on 5 January 2026. Earlier release search results show v1.0.0 in
+      February 2024, suggesting the tool moved from a useful niche script into a
+      versioned utility as SourceKit-LSP/BSP workflows became more common.
+  related-projects:
+    - >
+      SourceKit-LSP is Apple's language-server implementation for Swift and C-family
+      languages and is the main consumer of the build information xcode-build-server
+      provides.
+    - >
+      The Build Server Protocol defines the editor-to-build-server layer that
+      xcode-build-server implements.
+    - >
+      Other Swift BSP work, such as sourcekit-bsp and Swift build-server experiments,
+      addresses similar integration problems for different build systems.
+  sources:
+    - >
+      https://forums.swift.org/t/extending-functionality-of-build-server-protocol-with-sourcekit-lsp/74400
+    - https://github.com/SolaWing/xcode-build-server#readme
+    - https://github.com/SolaWing/xcode-build-server/releases
+    - https://github.com/swiftlang/sourcekit-lsp#readme
+    - https://ports.macports.org/port/xcode-build-server/details/
+  summary:
+    - >
+      xcode-build-server is a Build Server Protocol implementation for using Xcode
+      projects with Apple's SourceKit-LSP. Its README states the motivation plainly:
+      SourceKit-LSP does not directly support Xcode projects, but it can integrate with
+      other build systems through BSP.
+  timeline:
+    - >
+      2023: SourceKit-LSP issue discussions identify xcode-build-server as a practical
+      solution for Xcode project support.
+    - '2024-02-14: GitHub release listings show v1.0.0 and v1.0.1 releases.'
+    - >
+      2024: Swift Forums discusses extending SourceKit-LSP's use of Build Server
+      Protocol for richer build-system integration.
+    - '2026-01-05: GitHub repository lists v1.3.0 as the latest release.'
+  usage:
+    - >
+      The simplest documented workflow is to run `xcode-build-server config` in the
+      workspace root with a workspace or project and scheme. That creates or updates
+      `buildServer.json` with `kind: xcode`, instructing the server to watch and use
+      compile flags from the newest Xcode build log. Afterward, opening files with
+      SourceKit-LSP enabled should provide editor intelligence.
+    - >
+      For non-Xcode builds, the README documents `xcode-build-server parse` on a build
+      log or on piped `xcodebuild` output. That mode writes compile information to
+      `.compile` and updates `buildServer.json` with `kind: manual`. The README
+      repeatedly notes that stale compile info should be refreshed by building again or
+      rerunning the parse step when files, SDKs, configurations, or macros change.
+    - >
+      The package-nerd detail is that it relies on the standard `buildServer.json`
+      discovery convention used by BSP/LSP tooling. The project root must be the working
+      directory where `buildServer.json` is created, so editor setup and repository
+      layout matter as much as the executable itself.
 category: developer-tools
 package-manager:
   brew: xcode-build-server
