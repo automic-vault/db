@@ -5,6 +5,56 @@ docs:
   - https://github.com/takaishi/tfclean#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The README documents installation through the author's Homebrew tap, `go install`,
+      aqua, GitHub Actions, and release binaries. It also includes a GitHub Actions
+      workflow that runs tfclean and opens a pull request when cleanup changes are
+      detected.
+  package-nerd-significance:
+    - >
+      tfclean is a package-nerd maintenance tool: it exists because modern
+      Terraform/OpenTofu workflows produce temporary declarative migration blocks that
+      should eventually disappear. Installing it as a CLI or GitHub Action lets teams
+      automate that cleanup without hand-editing HCL.
+  project-history:
+    - >
+      The repository began in June 2024 with an initial implementation, README, and
+      import-block support. v0.0.1 was tagged on 2024-07-01, and the changelog shows
+      rapid iteration through parsing fixes and support for more Terraform block types.
+    - >
+      By v0.0.4 the project had support for `removed` blocks and forced removal of all
+      block types. Later releases added flags, pre-commit support, GitHub Action
+      installation, aqua installation docs, S3 backend auto-detection, and parser
+      refactoring.
+  related-projects:
+    - Terraform supplies the configuration files and state model tfclean inspects.
+    - GitHub Actions integration is documented for automated cleanup pull requests.
+    - aqua is documented as a declarative CLI version-manager installation path.
+  sources:
+    - Official git tags and commit history from https://github.com/takaishi/tfclean
+    - https://github.com/takaishi/tfclean/blob/main/CHANGELOG.md
+    - https://github.com/takaishi/tfclean/blob/main/README.md
+  summary:
+    - >
+      tfclean is a Terraform cleanup CLI that removes applied `moved`, `import`, and
+      `removed` blocks from configuration files. It targets the maintenance phase after
+      refactors or imports have already been applied.
+  timeline:
+    - '2024-06-24: Repository initialized'
+    - '2024-06-27: Import-block support commit'
+    - '2024-07-01: v0.0.1 release'
+    - '2024-08-31: v0.0.4 added removed-block and force-removal work'
+    - '2025-07-19: v0.0.10 added GitHub Action support'
+    - '2025-11-30: v0.0.15 added S3 backend auto-detection'
+    - '2026-05-14: v0.0.18 release'
+  usage:
+    - >
+      Users point `tfclean` at a directory of Terraform files to remove all relevant
+      blocks, or pass `--tfstate` so it removes only blocks that have already been
+      applied. With S3 backends, the tool can detect state location from Terraform
+      backend configuration in `.tf` files.
 tags:
   - cleanup
   - cli
@@ -23,28 +73,29 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      source_facts.description says tfclean removes applied moved blocks, import blocks,
-      and related Terraform cleanup items.
-    - source_facts.homepage points to the official takaishi/tfclean repository.
+    - current_curation.category
+    - source_facts.description
   display-name-sources:
-    - source_facts.homepage is the official repository and matches the display name.
-    - source_facts.name is tfclean.
+    - current_curation.display-name
+    - https://github.com/takaishi/tfclean/blob/main/README.md
   docs-sources:
-    - Official GitHub repository README is the primary documentation surface for tfclean.
+    - current_curation.docs
+    - https://github.com/takaishi/tfclean/blob/main/README.md
+  history-sources:
+    - Official git tags and commit history from https://github.com/takaishi/tfclean
+    - https://github.com/takaishi/tfclean/blob/main/CHANGELOG.md
+    - https://github.com/takaishi/tfclean/blob/main/README.md
   repo-sources:
-    - source_facts.repo already has a value, so repo is returned as null per instruction.
+    - source_facts.repo is already populated; prompt requires repo:null
   tags-sources:
-    - >
-      Go package metadata for the official repository lists README sections for removing
-      blocks and applied blocks.
-    - source_facts.description identifies cleanup of moved/import blocks.
+    - current_curation.tags
+    - https://github.com/takaishi/tfclean/blob/main/CHANGELOG.md
+    - https://github.com/takaishi/tfclean/blob/main/README.md
 category-confidence: high
 category-path:
   - developer-tools
-  - terraform
-  - maintenance
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
