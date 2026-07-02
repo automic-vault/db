@@ -1,6 +1,6 @@
 id: brew:youtubeuploader
 display-name: Youtube Uploader
-repo: null
+repo: https://github.com/porjo/youtubeuploader
 docs:
   - https://github.com/porjo/youtubeuploader#readme
 config-file-location: null
@@ -8,6 +8,77 @@ credentials-file-location:
   unix:
     - client_secrets.json
     - request.token
+history:
+  adoption-history:
+    - >
+      youtubeuploader serves a narrower but durable automation niche: creators,
+      archivists, CI jobs, and media pipelines that need repeatable uploads rather than
+      browser sessions. Third-party tutorials document it as a practical way to batch or
+      command-line upload videos, while Homebrew and Nix package it for
+      workstation/server installation.
+    - >
+      The README also tracks ecosystem constraints imposed by Google. It highlights the
+      July 28, 2020 YouTube API policy that new unverified API projects have uploads
+      restricted to private visibility, and notes quota limits that affect how many
+      videos a default project can upload per day.
+  package-nerd-significance:
+    - >
+      youtubeuploader is useful package lore because it packages a web-console workflow
+      as a reproducible CLI. Its hard parts are not algorithms; they are OAuth, API
+      policy, quotas, metadata shape, and robust streaming upload behavior.
+    - >
+      It pairs naturally with schedulers, build systems, and media pipelines, which is
+      exactly where a package-manager-installed binary beats a one-off browser session.
+  project-history:
+    - >
+      The public repository was created in May 2015, in the period when YouTube Data API
+      v3 and OAuth2 became the normal path for programmatic uploads. The README credits
+      Google's Go YouTube API sample code and tokland/youtube-upload for playlist-update
+      insight, placing the project in a lineage of CLI wrappers around the official
+      YouTube API.
+    - >
+      The project evolved around the operational details that make uploads hard to
+      script: OAuth client secrets, token caching, resumable/chunked uploads, rate
+      limiting, metadata JSON, thumbnails, captions, playlist IDs, subscriber
+      notification flags, and headless-server token transfer.
+  related-projects:
+    - Google YouTube Data API v3 is the service API that youtubeuploader wraps.
+    - Google's Go API samples are credited as a base for the uploader.
+    - >
+      tokland/youtube-upload is an earlier command-line uploader credited for
+      playlist-update insight.
+  sources:
+    - https://api.github.com/repos/porjo/youtubeuploader
+    - https://developers.google.com/youtube/v3/revision_history#july-28,-2020
+    - https://github.com/porjo/youtubeuploader
+    - https://marioyepes.com/blog/batch-upload-videos-to-youtube/
+    - https://pkg.go.dev/github.com/porjo/youtubeuploader
+    - https://transloadit.com/devtips/export-files-to-youtube-from-the-command-line/
+  summary:
+    - >
+      youtubeuploader is a Go command-line utility for scripted uploads to YouTube.
+      Instead of downloading media, it automates the publishing side: upload a local
+      file or URL, set metadata, manage playlists, apply thumbnails/captions, and
+      control upload bandwidth.
+  timeline:
+    - '2015-05-21: The public porjo/youtubeuploader GitHub repository is created.'
+    - >
+      2010s: The tool builds on Google's Go YouTube API sample code and earlier
+      youtube-upload CLI ideas.
+    - >
+      2020-07-28: Google changes YouTube Data API upload policy for new unverified API
+      projects, affecting automated uploader workflows.
+    - '2020s: youtubeuploader remains packaged for scripted workstation and server uploads.'
+  usage:
+    - >
+      At minimum, users run `youtubeuploader -filename blob.mp4`. First-run OAuth opens
+      a browser and stores a request token; for a headless server, users generate the
+      token locally and copy it with the binary and client_secrets.json.
+    - >
+      More advanced usage supplies metadata through flags or a JSON file: title,
+      description, tags, privacy status, publish time, made-for-kids flags, playlist
+      IDs/titles, localizations, captions, thumbnail, language, chunk size, and
+      rate-limit windows.
 tags:
   - cli
   - golang
@@ -25,27 +96,30 @@ geiger:
     - text:upload
 provenance:
   category-sources:
-    - official GitHub README says Youtube Uploader supports scripted uploads to YouTube
-    - source_facts.description says scripted uploads to Youtube
+    - https://formulae.brew.sh/formula/youtubeuploader
+    - https://github.com/porjo/youtubeuploader
   display-name-sources:
-    - official README heading is Youtube Uploader
-    - source_facts.name is youtubeuploader
+    - https://formulae.brew.sh/formula/youtubeuploader
+    - https://github.com/porjo/youtubeuploader
   docs-sources:
-    - official README provides setup, OAuth configuration, usage, and metadata documentation
-    - source_facts.homepage is the official GitHub repository
+    - https://github.com/porjo/youtubeuploader#readme
+  history-sources:
+    - https://api.github.com/repos/porjo/youtubeuploader
+    - https://developers.google.com/youtube/v3/revision_history#july-28,-2020
+    - https://github.com/porjo/youtubeuploader
+    - https://marioyepes.com/blog/batch-upload-videos-to-youtube/
+    - https://pkg.go.dev/github.com/porjo/youtubeuploader
+    - https://transloadit.com/devtips/export-files-to-youtube-from-the-command-line/
   repo-sources:
-    - >
-      source_facts.repo already provides https://github.com/porjo/youtubeuploader, so
-      repo is returned as null per instruction
+    - https://github.com/porjo/youtubeuploader
   tags-sources:
-    - official README topics include go, video, youtube-api, and youtube-uploader
-    - source_facts.description identifies scripted YouTube uploads
+    - https://formulae.brew.sh/formula/youtubeuploader
+    - https://github.com/porjo/youtubeuploader
 category-confidence: high
 category-path:
   - media
-  - youtube
-  - uploaders
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
