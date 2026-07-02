@@ -5,11 +5,78 @@ repo: https://salsa.debian.org/reproducible-builds/strip-nondeterminism
 docs:
   - >
     https://manpages.debian.org/testing/dh-strip-nondeterminism/dh_strip_nondeterminism.1p.en.html
-  - >
-    https://manpages.debian.org/testing/dh-strip-nondeterminism/strip-nondeterminism.1p.en.html
+  - https://manpages.debian.org/testing/strip-nondeterminism/strip-nondeterminism.1p.en.html
   - https://salsa.debian.org/reproducible-builds/strip-nondeterminism
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The Debian manpage documents both the standalone `strip-nondeterminism` command
+      and `dh_strip_nondeterminism`, the debhelper program that examines package build
+      directories and strips reproducibility-breaking metadata automatically.
+    - >
+      The supplied package-manager facts show packaging beyond Debian and Ubuntu,
+      including apk, Homebrew, Nix, pacman, and zypper. That spread follows the broader
+      reproducible-builds movement across distributions.
+  package-nerd-significance:
+    - >
+      This is package-nerd infrastructure in the purest sense: almost invisible to end
+      users, but central to making archives auditable, rebuildable, and less dependent
+      on trust in a single build machine.
+    - >
+      It matters because package ecosystems discovered that reproducibility is often won
+      by many small normalizers, policy hooks, and metadata conventions rather than one
+      grand compiler switch.
+  project-history:
+    - >
+      The Reproducible Builds history page says strip-nondeterminism came out of 2014
+      Debian reproducible-build discussions, when Andrew Ayer took on a generic
+      post-processing tool for file formats such as gzip, Zip, Jar, Javadoc, and static
+      archives.
+    - >
+      The Salsa project page describes StripNondeterminism as a Perl library for
+      stripping nondeterministic information from many file and archive formats and says
+      it is integrated into Debian's debhelper system. The Salsa project metadata shows
+      the current repository created on 2018-05-15.
+  related-projects:
+    - >
+      Debhelper, dpkg, diffoscope, reprotest, SOURCE_DATE_EPOCH, and the broader
+      Reproducible Builds project are adjacent package-infrastructure work.
+  sources:
+    - >
+      https://manpages.debian.org/testing/dh-strip-nondeterminism/dh_strip_nondeterminism.1p.en.html
+    - https://manpages.debian.org/testing/strip-nondeterminism/strip-nondeterminism.1p.en.html
+    - https://reproducible-builds.org/docs/history/
+    - https://salsa.debian.org/reproducible-builds/strip-nondeterminism
+    - source_facts.package-manager
+  summary:
+    - >
+      strip-nondeterminism is a Debian Reproducible Builds tool and Perl library for
+      removing timestamps, file ordering, and similar nondeterministic metadata from
+      build artifacts.
+  timeline:
+    - >
+      2013: Reproducible Builds history records Debian's first large-scale
+      reproducibility rebuilds.
+    - >
+      2014: Reproducible Builds history records the idea and first release of
+      strip-nondeterminism after DebConf14 discussions.
+    - >
+      2015: Reproducible Builds history records the wider Debian announcement of
+      reproducible-build proof-of-concept results.
+    - '2018-05-15: Salsa project metadata records creation of the current repository.'
+    - '2026: Debian manpages document current standalone and debhelper command behavior.'
+  usage:
+    - >
+      As a standalone CLI, `strip-nondeterminism [-t filetype] filename ...`
+      post-processes files when the build itself cannot be made deterministic. In Debian
+      packaging, `dh_strip_nondeterminism` is used as a debhelper step that guesses
+      applicable files using `file(1)` and filenames.
+    - >
+      Package maintainers use it for the boring but essential cleanup work that makes
+      binary packages rebuild byte-for-byte: normalizing timestamps and metadata in
+      archives rather than patching every upstream build system immediately.
 category: developer-tools
 package-manager:
   apk: strip-nondeterminism
