@@ -7,6 +7,100 @@ docs:
   - https://www.iana.org/time-zones/repository/tz-link.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      tzdb became packaging infrastructure because civil-time rules change outside
+      software release schedules. RFC 6557 describes the database as a normative
+      reference for time-zone names used by protocols such as DHCP and iCalendar, and it
+      documents a community update process centered on the tz mailing list.
+    - >
+      The IANA distribution page provides complete, data-only, and code-only release
+      tarballs; Homebrew's `tzdb` formula exposes the reference programs `tzselect`,
+      `zdump`, and `zic`. The batch package facts show Homebrew and zypper packaging,
+      but tzdb's real downstream footprint is broader because OS vendors and language
+      runtimes often ingest its data into their own packages.
+    - >
+      The official NEWS file shows why packagers track it closely: releases may change
+      future timestamps, past historical data, binary TZif generation, build defaults,
+      and C reference-code behavior. The IANA page listed 2026b, released 2026-04-22, as
+      the latest version during this run.
+  package-nerd-significance:
+    - >
+      tzdb is one of the clearest examples of data as a critical package. It is tiny
+      compared with compilers or browsers, but a stale version can make scheduled jobs,
+      calendar invites, legal deadlines, logs, and cross-region systems wrong.
+    - >
+      It also explains why distribution packaging sometimes treats data updates like
+      security or compatibility fixes: users rarely care which library implements time
+      zones, but they immediately notice when a country changes daylight-saving law and
+      their system has the wrong local time.
+  project-history:
+    - >
+      RFC 6557 records that the database was maintained from the early 1980s through
+      2011 at the U.S. National Institutes of Health, that it was already used on nearly
+      all Unix systems, Java systems, and other systems, and that Arthur David Olson
+      maintained the database, mailing list, and release platform from the database's
+      inception.
+    - >
+      The 2012 IETF Best Current Practice moved the maintenance model into an IANA-style
+      process, defining the TZ Coordinator role, the tz mailing list, update procedures,
+      distribution expectations, and public-domain contribution policy. IANA's current
+      page lists Paul Eggert as primary TZ Coordinator and Tim Parenti as secondary
+      coordinator.
+    - >
+      The official IANA page describes the database as code and data representing the
+      history of local time for representative locations, updated when political bodies
+      change time-zone boundaries, UTC offsets, or daylight-saving rules. The
+      `theory.html` file explains the practical scope: zones are location-based
+      identifiers whose clocks agree after the POSIX epoch, with pre-1970 data included
+      but treated more cautiously.
+  related-projects:
+    - >
+      POSIX time functions, Java time-zone handling, DHCP time-zone options, and
+      iCalendar TZID usage are named in RFC 6557 as consumers or protocol contexts.
+    - >
+      Downstream packages and libraries such as tzdata, ICU/CLDR integrations,
+      language-runtime time libraries, and command-line tools like tz and tzdiff depend
+      on tzdb names and rules.
+  sources:
+    - https://api.github.com/repos/eggert/tz
+    - https://data.iana.org/time-zones/tzdb/NEWS
+    - https://data.iana.org/time-zones/tzdb/theory.html
+    - https://datatracker.ietf.org/doc/html/rfc6557
+    - https://github.com/eggert/tz
+    - https://www.iana.org/time-zones
+    - https://www.iana.org/time-zones/repository/tz-link.html
+    - source_facts.executables
+  summary:
+    - >
+      The IANA Time Zone Database, often called tz, tzdb, or zoneinfo, is the canonical
+      data and reference code used by operating systems and programming languages to
+      represent civil time rules. For package managers it is foundational
+      infrastructure: a small data/code release whose downstream updates affect clocks,
+      logs, calendars, databases, containers, and language runtimes.
+  timeline:
+    - >
+      Early 1980s-2011: RFC 6557 records NIH-hosted maintenance of the database and
+      mailing list.
+    - '2012-02: RFC 6557/BCP 175 published procedures for maintaining the Time Zone Database.'
+    - '2012-07-18: eggert/tz GitHub development repository created.'
+    - '2026-03-01: tzdb 2026a released.'
+    - >
+      2026-04-22: tzdb 2026b released and listed by IANA as the latest version during
+      this run.
+  usage:
+    - >
+      Packagers commonly build tzdb with `zic` to generate compiled TZif files under
+      system zoneinfo directories, ship data-only updates as `tzdata`-style packages,
+      and include tools such as `tzselect` for choosing a zone and `zdump` for
+      inspecting transitions.
+    - >
+      Application developers mostly see tzdb through identifiers such as
+      `America/New_York`, `Europe/Paris`, or `Asia/Tokyo`, while package maintainers see
+      the moving parts: release tarballs, mailing-list announcements, signature
+      verification, downstream rebuilds, and urgent changes when governments alter clock
+      rules.
 category: data
 package-manager:
   brew: tzdb
