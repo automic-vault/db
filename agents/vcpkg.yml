@@ -8,6 +8,107 @@ config-file-location:
     - vcpkg.json
     - vcpkg-configuration.json
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Microsoft's C++ Team reported in October 2022 that vcpkg had passed 2,000 unique
+      open-source libraries in its public registry, with over 10,000 available port
+      versions, 95 contributors active during that release window, 4.8k forks, and 16.8k
+      GitHub stars. On 2026-07-02, GitHub API metadata for Microsoft/vcpkg showed more
+      than 27k stars and 7.6k forks, indicating continued adoption in the C++ tooling
+      community.
+    - >
+      The public vcpkg site describes a catalog of 2,849 open-source libraries, while
+      Microsoft Learn material presents vcpkg as a free C/C++ package manager for
+      acquiring and managing libraries and adding private libraries. The adoption story
+      is therefore both public-registry growth and enterprise workflow growth: teams can
+      pin baselines, use custom registries, and share binary caches in CI.
+  package-nerd-significance:
+    - >
+      vcpkg is significant because it treats C++ package management as a build-recipe
+      and ABI problem instead of only a download problem. Ports can encode source
+      retrieval and build steps, triplets encode target choices, manifests encode
+      project dependencies, and baselines make dependency versions reviewable in source
+      control.
+    - >
+      For package maintainers, vcpkg also became a visible catalog of C and C++ library
+      portability work. A working port is not just a version number; it is evidence that
+      a library can be fetched, patched if necessary, configured, built, and tested
+      across at least one supported target.
+  project-history:
+    - >
+      The public Microsoft/vcpkg repository was created on 2016-09-15, matching
+      Microsoft's later description of the September 2022 release as vcpkg's sixth
+      anniversary. Early vcpkg centered on a shared installed tree and simple commands
+      for acquiring C++ libraries; the maintained registry became the main social and
+      technical object, with contributors adding and updating port recipes.
+    - >
+      By 2020, vcpkg's implementation was being separated into the Microsoft/vcpkg-tool
+      repository, whose GitHub metadata describes it as the components of the vcpkg
+      binary. That split reflects the project's maturation from a scripts-and-ports
+      repository into a package manager with an independently released tool and a
+      fast-moving registry.
+  related-projects:
+    - >
+      vcpkg is commonly compared with Conan, system package managers, language-specific
+      package managers, and project-local vendoring. Its closest internal companion is
+      vcpkg-tool, the repository for the compiled tool that works with the main ports
+      registry.
+    - >
+      In CMake projects, vcpkg is often used through its toolchain integration, so its
+      practical ecosystem overlaps heavily with CMake, MSBuild, Visual Studio, GitHub
+      Actions, NuGet-style binary caches, and private source registries.
+  sources:
+    - https://api.github.com/repos/microsoft/vcpkg
+    - https://api.github.com/repos/microsoft/vcpkg-tool
+    - >
+      https://devblogs.microsoft.com/cppblog/vcpkg-september-2022-release-is-now-available-celebrating-6-years-with-over-2000-libraries/
+    - https://github.com/microsoft/vcpkg
+    - https://github.com/microsoft/vcpkg-tool
+    - https://learn.microsoft.com/en-us/vcpkg/concepts/manifest-mode
+    - https://learn.microsoft.com/en-us/vcpkg/consume/classic-mode
+    - https://learn.microsoft.com/en-us/vcpkg/users/binarycaching
+    - https://vcpkg.io/
+  summary:
+    - >
+      vcpkg is Microsoft's open-source C and C++ package manager, built around a curated
+      ports registry, a command-line tool, and integration points for native build
+      systems. It began as a way to make Windows C++ library consumption less painful,
+      then grew into a cross-platform workflow for Windows, macOS, Linux, and multiple
+      target triplets.
+    - >
+      The project matters because it brought package-manager ergonomics to an ecosystem
+      that historically depended on handwritten build instructions, vendored source
+      trees, system packages, or project-specific CMake glue. Its package-nerd identity
+      is the combination of source-built ports, reproducible baselines, triplets, binary
+      caching, and manifest files checked into application repositories.
+  timeline:
+    - '2016-09-15: The Microsoft/vcpkg GitHub repository was created.'
+    - >
+      2020-12-08: The Microsoft/vcpkg-tool repository was created for the vcpkg binary
+      components.
+    - >
+      2022-10-06: Microsoft marked vcpkg's sixth anniversary and reported more than
+      2,000 unique libraries in the public registry.
+    - >
+      2024: Microsoft Learn continued positioning manifest mode as the recommended
+      workflow for most users.
+    - >
+      2026-07-02: GitHub API metadata showed Microsoft/vcpkg with more than 27k stars
+      and active pushes on the same day.
+  usage:
+    - >
+      Modern vcpkg use is usually manifest mode: projects commit a vcpkg.json file
+      declaring direct dependencies and, when needed, a vcpkg-configuration.json file
+      for registries and baselines. Microsoft Learn describes manifest mode as the
+      recommended workflow for most users, while classic mode remains available for
+      installing packages directly into a vcpkg tree.
+    - >
+      Package users care about triplets because vcpkg packages are built for a target
+      configuration rather than merely downloaded as opaque archives. CI-heavy users
+      care about binary caching, which Microsoft documents as a way to persist
+      vcpkg-built binaries across clean build agents, including GitHub Actions
+      workflows.
 tags:
   - cli
   - cpp
@@ -25,24 +126,31 @@ geiger:
     - metadata:library-like
 provenance:
   category-sources:
-    - source_facts.description identifies vcpkg as a C++ library manager.
+    - current_curation.category_path
   display-name-sources:
-    - source_facts.name provides the project name vcpkg.
+    - current_curation.display-name
   docs-sources:
+    - current_curation.docs
+  history-sources:
+    - https://api.github.com/repos/microsoft/vcpkg
+    - https://api.github.com/repos/microsoft/vcpkg-tool
     - >
-      Official Microsoft Learn vcpkg documentation is hosted at
-      learn.microsoft.com/en-us/vcpkg/.
+      https://devblogs.microsoft.com/cppblog/vcpkg-september-2022-release-is-now-available-celebrating-6-years-with-over-2000-libraries/
+    - https://github.com/microsoft/vcpkg
+    - https://github.com/microsoft/vcpkg-tool
+    - https://learn.microsoft.com/en-us/vcpkg/concepts/manifest-mode
+    - https://learn.microsoft.com/en-us/vcpkg/consume/classic-mode
+    - https://learn.microsoft.com/en-us/vcpkg/users/binarycaching
+    - https://vcpkg.io/
   repo-sources:
-    - source_facts.repo is already populated, so repo is returned as null per instruction.
+    - source_facts.repo
   tags-sources:
-    - >
-      source_facts.description says C++ Library Manager; source_facts.executables lists
-      the vcpkg CLI.
+    - current_curation.tags
 category-confidence: high
 category-path:
   - developer-tools
-  - package-management
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

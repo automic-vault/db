@@ -9,6 +9,76 @@ config-file-location:
     - $XDG_CONFIG_HOME/vcsh/config
     - ~/.config/vcsh/config
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      vcsh's adoption is mostly among Unix users who split dotfiles by concern: one
+      repository for zsh, another for vim, another for ssh, and so on. The Arch manpage
+      and upstream documentation both stress this selective setup model, where each
+      machine can clone only the config sets it needs.
+    - >
+      The project was designed with myrepos, also known as mr, in mind. Upstream
+      documentation says myrepos has native support for vcsh repositories and that a
+      machine can go from a standard installation to a fully set up system quickly when
+      vcsh and mr are used together.
+  package-nerd-significance:
+    - >
+      vcsh is package-nerd significant because it represents a minimalist answer to
+      dotfile portability: use Git more carefully instead of inventing a full
+      configuration database. For people who maintain many machines, the combination of
+      vcsh and mr gives reproducible checkout and update behavior while keeping files in
+      their natural paths.
+    - >
+      It also sits in the lineage of Unix tools that deliberately compose: Git stores
+      history, vcsh selects the fake-bare working-tree layout, and myrepos handles fleet
+      operations across repositories.
+  project-history:
+    - >
+      The RichiH/vcsh repository was created on 2011-04-28, and its early tag history
+      includes v0.20111227. Upstream documentation describes vcsh as taking the
+      dotfiles-in-Git approach one step further: single-purpose repositories live in a
+      hidden directory while the actual files are placed directly in $HOME.
+    - >
+      The project has stayed intentionally small and Git-centered. Release metadata
+      shows the 2.0 series continuing into 2024, including v2.0.10 on 2024-04-08, which
+      is a long maintenance tail for a tool whose core idea has remained stable.
+  related-projects:
+    - >
+      myrepos/mr is vcsh's closest companion, providing commands to register, update,
+      and operate on many repositories together. The vcsh_mr_template repository is the
+      sample bootstrap layout referenced by the manpage.
+    - >
+      vcsh is related in spirit to bare-Git-dotfiles setups, GNU Stow-style symlink
+      farms, chezmoi, yadm, homesick, and other dotfile managers, but it stays closest
+      to plain Git.
+  sources:
+    - https://api.github.com/repos/RichiH/vcsh
+    - https://api.github.com/repos/RichiH/vcsh/releases
+    - https://api.github.com/repos/RichiH/vcsh/tags
+    - https://github.com/RichiH/vcsh
+    - https://github.com/RichiH/vcsh/blob/main/doc/README.md
+    - https://man.archlinux.org/man/vcsh.1.en
+    - https://myrepos.branchable.com/
+  summary:
+    - >
+      vcsh is a Git-based configuration manager for dotfiles. Its central trick is to
+      let several Git repositories share $HOME as their working tree without clobbering
+      each other, using fake bare repositories instead of symlink farms.
+  timeline:
+    - '2011-04-28: The RichiH/vcsh GitHub repository was created.'
+    - '2011-12-27: Early vcsh tag v0.20111227 appears in the repository tag history.'
+    - '2014: Public dotfile-management tutorials were already pairing vcsh with myrepos.'
+    - '2024-04-08: Release v2.0.10 was published on GitHub.'
+  usage:
+    - >
+      Typical vcsh usage starts with init or clone for a named repository, then ordinary
+      Git commands are run through vcsh's environment. Commands such as list, enter,
+      foreach, list-tracked, and list-untracked reflect that vcsh is a thin coordinator
+      around many Git repositories rather than a new storage format.
+    - >
+      The manpage describes the implementation as keeping GIT_DIR separate from
+      GIT_WORK_TREE, with the work tree pointed at $HOME. That avoids symlinks while
+      still letting each repository own only the files it tracks.
 tags:
   - cli
   - configuration-management
@@ -25,24 +95,28 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - source_facts.description describes vcsh as a config manager based on Git.
+    - current_curation.category_path
   display-name-sources:
-    - source_facts.name provides the project name vcsh.
+    - current_curation.display-name
   docs-sources:
-    - >
-      Official GitHub repository README is the best available documentation surface from
-      the supplied official repo metadata.
+    - current_curation.docs
+  history-sources:
+    - https://api.github.com/repos/RichiH/vcsh
+    - https://api.github.com/repos/RichiH/vcsh/releases
+    - https://api.github.com/repos/RichiH/vcsh/tags
+    - https://github.com/RichiH/vcsh
+    - https://github.com/RichiH/vcsh/blob/main/doc/README.md
+    - https://man.archlinux.org/man/vcsh.1.en
+    - https://myrepos.branchable.com/
   repo-sources:
-    - source_facts.repo is already populated, so repo is returned as null per instruction.
+    - source_facts.repo
   tags-sources:
-    - >
-      source_facts.description says config manager based on Git;
-      source_facts.executables lists vcsh.
+    - current_curation.tags
 category-confidence: high
 category-path:
   - developer-tools
-  - version-control
 display-name-confidence: high
-docs-confidence: medium
+docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
