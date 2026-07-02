@@ -5,6 +5,85 @@ docs:
   - https://github.com/unoconv/unoserver#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The supplied Homebrew metadata packages it with four command-line entry points:
+      `unocompare`, `unoconvert`, `unoping`, and `unoserver`. That reflects adoption by
+      users who need repeatable document conversion in scripts and services rather than
+      a desktop LibreOffice workflow.
+    - >
+      unoserver also lives in the `unoconv` GitHub organization and uses `unoconv` as a
+      project keyword in its package metadata, tying it to the older Unix tradition of
+      wrapping LibreOffice/OpenOffice conversion behind CLI tools.
+  package-nerd-significance:
+    - >
+      unoserver is interesting to package maintainers because it is not just a converter
+      binary; it must run under a Python environment that can import LibreOffice's UNO
+      bindings. The README devotes substantial space to finding the correct LibreOffice
+      Python and to system versus bundled LibreOffice installs, which is exactly the
+      sort of path and runtime coupling that package-manager users notice.
+    - >
+      Its 2.x client-server split reduced that packaging pain for client machines. In
+      package-nerd terms, it turns LibreOffice conversion from a heavyweight local
+      dependency into a service boundary, while keeping a small set of Unix-style
+      commands for automation.
+  project-history:
+    - >
+      The project grew around LibreOffice's UNO listener mode. Its upstream package
+      metadata describes it as a production/stable POSIX/Linux Python project with
+      scripts for `unoserver`, conversion, comparison, and pinging a running server.
+    - >
+      The changelog shows a steady 2021-2026 evolution from a server/converter pair into
+      a small client-server toolkit. Version 2.0 beta in 2023 was the major
+      architectural step: the client became lightweight and communicated with an XML-RPC
+      server, so client systems no longer needed LibreOffice or the UNO library
+      installed. Later releases added document comparison, filter options,
+      service-management aids, timeouts, HTTPS transport, protected-document support,
+      and `unoping`.
+  related-projects:
+    - >
+      LibreOffice is the conversion engine. The project name, GitHub organization, and
+      package keywords relate it to unoconv, the older command-line LibreOffice
+      conversion wrapper.
+  sources:
+    - https://github.com/unoconv/unoserver/blob/master/CHANGES.rst
+    - https://github.com/unoconv/unoserver/blob/master/README.rst
+    - https://github.com/unoconv/unoserver/blob/master/pyproject.toml
+    - source_facts.package-manager
+  summary:
+    - >
+      unoserver is a Python command-line service for using LibreOffice as a persistent
+      document-conversion server. Its README explains the package-manager problem it
+      solves: invoking `libreoffice --headless --convert-to` repeatedly reloads
+      LibreOffice each time, while a listener keeps LibreOffice resident and can reduce
+      CPU load for batches of conversions.
+  timeline:
+    - '2021: Changelog records 1.1 with module entry points and LibreOffice shutdown handling.'
+    - >
+      2023: 1.4 adds document comparison; 2.0 beta introduces the XML-RPC server and
+      lightweight client architecture.
+    - >
+      2024: 2.x releases add absolute-path handling, filter selection, IPv6 support,
+      retries, version checks, and crash handling.
+    - >
+      2025: 3.x releases add HTTPS client/server support, stop-after behavior, password
+      conversion support, and `unoping`.
+    - >
+      2026: 3.7 adds temporary-directory control, LibreOffice version reporting through
+      `unoping`, and logging fixes.
+  usage:
+    - >
+      The README frames the normal usage as starting `unoserver` on an interface and
+      port, then using client commands to request document conversion, comparison, or
+      status checks. It also documents client/server deployments where only the server
+      needs LibreOffice's Python/UNO environment, while clients can send files or paths
+      over the XML-RPC API.
+    - >
+      The README warns that the service has no security on the exposed ports and must
+      not be reachable outside the intended server stack. That operational note is
+      central to how package users deploy it: behind local service managers, inside
+      controlled automation, or on a dedicated conversion host.
 tags:
   - cli
   - document-conversion
@@ -22,24 +101,31 @@ geiger:
     - text:server
 provenance:
   category-sources:
-    - official README describes unoserver usage for conversion commands and server operation
-    - 'source_facts.description: Server for file conversions with Libre Office'
+    - current_curation.category_path
+    - https://github.com/unoconv/unoserver/blob/master/pyproject.toml
   display-name-sources:
-    - 'official GitHub repository name: unoconv/unoserver'
-    - 'source_facts.name: unoserver'
+    - current_curation.display-name
+    - https://github.com/unoconv/unoserver/blob/master/pyproject.toml
   docs-sources:
-    - official GitHub README is the primary documentation surface and includes usage sections
+    - current_curation.docs
+    - https://github.com/unoconv/unoserver/blob/master/README.rst
+  history-sources:
+    - https://github.com/unoconv/unoserver/blob/master/CHANGES.rst
+    - https://github.com/unoconv/unoserver/blob/master/README.rst
+    - https://github.com/unoconv/unoserver/blob/master/pyproject.toml
+    - source_facts.package-manager
   repo-sources:
-    - source_facts.homepage is the official GitHub repository URL
+    - https://github.com/unoconv/unoserver/blob/master/README.rst
+    - source_facts.repo empty
   tags-sources:
-    - official README usage section
-    - source_facts.description
-    - source_facts.executables
+    - current_curation.tags
+    - https://github.com/unoconv/unoserver/blob/master/README.rst
+    - https://github.com/unoconv/unoserver/blob/master/pyproject.toml
 category-confidence: high
 category-path:
   - productivity
-  - document-conversion
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

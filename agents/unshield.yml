@@ -5,6 +5,83 @@ docs:
   - https://github.com/twogood/unshield#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The supplied package metadata shows Unshield packaged in Homebrew, Alpine/apk,
+      Debian and Ubuntu as `libunshield-dev`, Fedora/dnf, MacPorts, Nix, Arch/pacman,
+      Scoop, and openSUSE/zypper. That broad spread reflects both CLI use and library
+      development use.
+    - >
+      Unshield also appears as an optional backend in the `unp` ecosystem: the `unp` 2.0
+      changelog records experimental support for InstallShield-style Microsoft Cabinet
+      files via unshield. That is a classic package-manager adoption path for a niche
+      extractor: one focused tool becomes a backend behind a more general archive
+      wrapper.
+  package-nerd-significance:
+    - >
+      Unshield matters in package culture because proprietary installer formats often
+      block reproducible packaging. A small MIT-licensed extractor lets maintainers
+      inspect or extract upstream payloads on Unix systems, script the process, and
+      avoid depending on Windows-only tooling.
+    - >
+      Its split library/tool design is also package-friendly: distributions can ship a
+      CLI for users and development files for programs that need InstallShield cabinet
+      support.
+  project-history:
+    - >
+      The upstream README is unusually explicit about the design origin. InstallShield
+      cabinet files were not officially documented, so the author used the Windows tools
+      i5comp and i6comp as references, discovered through `strings` that they used zlib
+      for decompression, and chose to write a new implementation rather than port those
+      tools.
+    - >
+      The stated goals were pragmatic and distribution-friendly: use the MIT license,
+      work on little-endian and big-endian systems, separate the implementation into a
+      tool and a library, support InstallShield version 5 and later, list cabinet
+      contents, and extract files.
+    - >
+      The project has since become a maintained small C package. Its changelog records
+      man-page work in 2008 and a 0.6 release in 2009; tagged releases later reached
+      1.x, and the current CMake configuration sets version 1.6.2, uses C23, installs a
+      man page and pkg-config file, and builds both library and CLI components.
+  related-projects:
+    - >
+      Unshield is related to InstallShield, Microsoft Cabinet files, zlib, the historic
+      i5comp and i6comp tools, and archive wrappers such as `unp` that can delegate
+      InstallShield-style extraction to it.
+  sources:
+    - https://github.com/twogood/unshield/blob/master/CMakeLists.txt
+    - https://github.com/twogood/unshield/blob/master/ChangeLog
+    - https://github.com/twogood/unshield/blob/master/README.md
+    - https://github.com/twogood/unshield/blob/master/man/unshield.1
+    - https://salsa.debian.org/blade/unp/-/raw/master/debian/changelog
+    - source_facts.package-manager
+  summary:
+    - >
+      Unshield is a command-line tool and C library for extracting files from
+      InstallShield cabinet files. Its README explains the original motivation: many
+      Pocket PC applications were distributed as Windows InstallShield installers rather
+      than standalone Microsoft Cabinet files, which was impractical for Linux and
+      FreeBSD users.
+  timeline:
+    - '2008: Upstream changelog starts and records addition of the man page.'
+    - '2009: Upstream changelog records the 0.6 release.'
+    - '2013: GitHub tag metadata records version 1.0.'
+    - '2023: Man page identifies the Unshield project and documents the modern command set.'
+    - '2024: `unp` 2.0 records experimental InstallShield cabinet support via unshield.'
+    - '2026: Current CMake project version is 1.6.2.'
+  usage:
+    - >
+      The man page describes Unshield as a tool for listing, testing, and extracting
+      InstallShield cabinet contents. Its commands include listing components, file
+      groups, files, testing files, and extracting files; options cover component and
+      group selection, output directory, forced InstallShield version, filename encoding
+      conversion, lowercasing, raw extraction, and path handling.
+    - >
+      In practice, users reach for it when they have a Windows installer archive but
+      need the payload on a Unix-like system, in a build recipe, or in a
+      recovery/migration workflow without running the installer.
 tags:
   - archives
   - cab
@@ -22,28 +99,34 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - >
-      source_facts.description says it extracts files from InstallShield cabinet files;
-      official GitHub README describes extracting Microsoft Cabinet files from
-      InstallShield Cabinet files.
+    - current_curation.category_path
+    - https://github.com/twogood/unshield/blob/master/README.md
+    - source_facts.description
   display-name-sources:
-    - Official GitHub README heading is Unshield; source_facts.name is unshield.
+    - current_curation.display-name
+    - https://github.com/twogood/unshield/blob/master/README.md
   docs-sources:
-    - Official repository README is the primary documentation surface for Unshield.
+    - current_curation.docs
+    - https://github.com/twogood/unshield/blob/master/README.md
+    - https://github.com/twogood/unshield/blob/master/man/unshield.1
+  history-sources:
+    - https://github.com/twogood/unshield/blob/master/CMakeLists.txt
+    - https://github.com/twogood/unshield/blob/master/ChangeLog
+    - https://github.com/twogood/unshield/blob/master/README.md
+    - https://github.com/twogood/unshield/blob/master/man/unshield.1
+    - https://salsa.debian.org/blade/unp/-/raw/master/debian/changelog
+    - source_facts.package-manager
   repo-sources:
-    - >
-      source_facts.repo already provides https://github.com/twogood/unshield, so repo is
-      returned as null per instruction.
+    - source_facts.repo already provided; repo intentionally returned as null per prompt
   tags-sources:
-    - >
-      source_facts.description identifies InstallShield cabinet extraction; official
-      README defines InstallShield Cabinet File and Microsoft Cabinet File use cases;
-      current_curation.tags includes cli.
+    - current_curation.tags
+    - https://github.com/twogood/unshield/blob/master/README.md
+    - https://github.com/twogood/unshield/blob/master/man/unshield.1
 category-confidence: high
 category-path:
   - system
-  - archives
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
