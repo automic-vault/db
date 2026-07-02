@@ -1,11 +1,91 @@
 id: brew:xk6
 display-name: xk6
-repo: null
+repo: https://github.com/grafana/xk6
 docs:
   - https://grafana.com/docs/k6/latest/extensions/create
   - https://github.com/grafana/xk6/blob/master/README.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xk6 became important because many useful k6 capabilities live outside the default
+      binary. Grafana's extension documentation tells users that official and community
+      extensions may be resolved automatically in newer k6 releases, but that other
+      extensions, including private or newly-created ones, still require building a
+      custom k6 binary with xk6.
+    - >
+      The tool is therefore part of the normal path for k6 users who need SQL outputs,
+      custom protocols, test helpers, private modules, or experimental APIs before they
+      are available in the main k6 release. Grafana also publishes an xk6 Docker image
+      so users can build custom binaries without first setting up a local Go toolchain.
+  package-nerd-significance:
+    - >
+      xk6 is a package-nerd example of a small CLI that exists to manufacture another
+      CLI. Its value is not in running load tests directly, but in making reproducible,
+      module-aware k6 binaries from Go extension packages.
+    - >
+      It also shows how modern developer tools push extension distribution into language
+      package ecosystems: the package manager installs xk6, xk6 asks Go for modules, and
+      the result is a custom executable tailored to a testing stack.
+  project-history:
+    - >
+      The tool grew out of k6's decision to keep the core load-testing runtime small
+      while letting users compile in Go-based extensions. The current Grafana repository
+      presents xk6 as the official toolbox for extension authors and lists its main jobs
+      as scaffolding, building, running, testing, linting, reusable workflows, Docker
+      use, and development-container support.
+    - >
+      xk6's command surface has expanded from the basic custom-builder role into a
+      fuller extension workflow. Its README documents commands such as `xk6 new`, `xk6
+      build`, `xk6 run`, `xk6 lint`, `xk6 test`, and `xk6 sync`; the build command also
+      handles extension module paths, replacements, target OS/architecture, k6 forks,
+      and k6 major-version resolution.
+  related-projects:
+    - >
+      k6 is the load-testing runtime that xk6 builds. The surrounding ecosystem includes
+      Grafana's k6 extension registry, xk6 extension template repositories, and
+      individual extensions such as xk6-sql, xk6-output-influxdb, xk6-faker, and
+      xk6-disruptor.
+  sources:
+    - https://community.grafana.com/t/i-need-to-build-k6-with-an-extension-in-local/97838
+    - https://community.grafana.com/t/unable-to-locate-xk6-after-installing-it/99016
+    - https://github.com/grafana/xk6
+    - https://grafana.com/docs/k6/latest/extensions/
+    - https://grafana.com/docs/k6/latest/extensions/run/
+    - https://grafana.com/docs/k6/latest/extensions/run/build-k6-binary-using-go/
+    - https://registry.k6.io/
+  summary:
+    - >
+      xk6 is Grafana k6's extension-development toolbox: a command-line tool for
+      creating extension skeletons, building custom k6 binaries, running k6 with
+      extensions, testing extensions, linting extension projects, and sharing reusable
+      extension workflows. In package terms it is the bridge between the stock k6
+      executable and the larger Go-module ecosystem of k6 extensions.
+  timeline:
+    - >
+      2020: Public support discussions show users installing and troubleshooting xk6 for
+      custom k6 builds.
+    - >
+      2021-2022: Grafana community answers routinely recommend `xk6 build ... --with
+      ...` for extension-based k6 binaries.
+    - >
+      2025: The Grafana xk6 repository records v0.x development and documents xk6 as a
+      broader extension-development toolbox, not only a builder.
+    - >
+      2026: Grafana k6 documentation still directs users to xk6 for custom binaries when
+      automatic extension resolution is not enough.
+  usage:
+    - >
+      Typical use is `xk6 build --with module[@version]` to produce a custom `k6`
+      executable containing one or more extensions. Extension developers also use `xk6
+      run` to rebuild and execute during development, `xk6 new` to create a template
+      project, and `xk6 lint` or `xk6 test` to check extension compliance.
+    - >
+      xk6 is most relevant when the desired extension is not handled by k6 automatic
+      extension resolution, when an output extension is involved, when the extension is
+      private, or when the user needs to pin or replace Go modules during a custom
+      build.
 tags:
   - cli
   - extensions
@@ -23,26 +103,29 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - Official grafana/xk6 repository describes xk6 as the k6 extension development toolbox
-    - 'source_facts.description: Build k6 with extensions'
+    - https://github.com/grafana/xk6
   display-name-sources:
-    - Official grafana/xk6 repository title
-    - source_facts.name
+    - https://github.com/grafana/xk6
   docs-sources:
-    - Official Grafana k6 documentation for creating extensions
-    - Official grafana/xk6 README
+    - https://github.com/grafana/xk6
+    - https://grafana.com/docs/k6/latest/extensions/create
+  history-sources:
+    - https://community.grafana.com/t/i-need-to-build-k6-with-an-extension-in-local/97838
+    - https://community.grafana.com/t/unable-to-locate-xk6-after-installing-it/99016
+    - https://github.com/grafana/xk6
+    - https://grafana.com/docs/k6/latest/extensions/
+    - https://grafana.com/docs/k6/latest/extensions/run/
+    - https://grafana.com/docs/k6/latest/extensions/run/build-k6-binary-using-go/
+    - https://registry.k6.io/
   repo-sources:
-    - source_facts.repo already provided; per instructions repo returned as null
+    - https://github.com/grafana/xk6
   tags-sources:
-    - Official Grafana k6 extension documentation
-    - Official grafana/xk6 README
-    - source_facts.description
+    - https://github.com/grafana/xk6
 category-confidence: high
 category-path:
   - developer-tools
-  - testing
-  - load-testing
 display-name-confidence: high
 docs-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

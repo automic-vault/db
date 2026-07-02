@@ -5,6 +5,85 @@ docs:
   - https://www.x.org/archive/X11R7.5/doc/man/man1/xkbcomp.1.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xkbcomp was adopted because XKB itself became the standard keyboard model for X11
+      systems. Desktop environments and users usually interact with higher-level tools
+      such as setxkbmap or desktop settings, but xkbcomp sits underneath them as the
+      program that verifies, resolves, compiles, dumps, or uploads the actual keymap.
+    - >
+      The tool also became a favorite diagnostic and customization utility for
+      keyboard-layout specialists. Documentation and community examples commonly use
+      `xkbcomp :0 -` to inspect the active keymap or `xkbcomp file.xkb $DISPLAY` to load
+      a custom map into a running X server.
+  package-nerd-significance:
+    - >
+      xkbcomp is classic Unix desktop substrate: rarely glamorous, but essential when
+      packaging X servers, keyboard data, desktop sessions, remote desktops, or custom
+      layouts. It is also a good example of a compiler whose input language is
+      configuration rather than application code.
+    - >
+      For package maintainers, its significance comes from being split from the
+      keyboard-layout data it consumes. xkeyboard-config supplies the evolving layout
+      corpus; xkbcomp supplies the compiler that XKB-capable systems rely on to consume
+      that corpus.
+  project-history:
+    - >
+      The manual page identifies xkbcomp as a compiler for XKB keyboard descriptions and
+      carries 1994 copyright lines for Silicon Graphics Computer Systems and the X
+      Consortium, with Erik Fortune of Silicon Graphics listed as author. That places
+      the tool in the original XKB work that extended X11 keyboard handling beyond the
+      older core protocol.
+    - >
+      As X11 moved through XFree86 and X.Org, xkbcomp remained the low-level compiler
+      behind keyboard layout composition. The X.Org XKB page now points users toward
+      xkeyboard-config for the maintained data files, while the xkbcomp source is
+      maintained as an X.Org application project on freedesktop.org.
+  related-projects:
+    - >
+      xkeyboard-config supplies the keyboard models, layouts, variants, and options that
+      xkbcomp compiles. setxkbmap selects XKB layouts at a higher level. libxkbcommon
+      reuses XKB concepts outside the X server world, especially for Wayland
+      compositors.
+  sources:
+    - >
+      https://cgit.freedesktop.org/xorg/app/xkbcomp/tree/README.enhancing?id=8eb2e1fcd08a05f296a31dbadde1ec3cc84d8e28
+    - https://www.x.org/XKB/
+    - https://xkbcommon.org/doc/current/introduction-to-xkb.html
+    - https://xkbcommon.org/doc/current/user-configuration.html
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xkbcomp.1.html
+  summary:
+    - >
+      xkbcomp is the X Keyboard Extension keymap compiler. It turns human-readable XKB
+      keyboard descriptions into compiled keymaps for X servers and utilities, and can
+      also reverse a running display or compiled map back into resolved XKB source.
+  timeline:
+    - >
+      1994: The xkbcomp manual page records Silicon Graphics/X Consortium copyright and
+      Erik Fortune as author.
+    - >
+      1996: The original XKB protocol and library specifications were published for
+      X11R6-era XKB.
+    - >
+      2002: XKB enhancement documentation described xkbcomp as the ordinary compiler
+      used to prepare compiled keyboard configuration for the X server.
+    - >
+      2004: XFree86 4.3 and X11R6.7-era documentation described multi-layout XKB
+      configuration handled through the same compiled keymap model.
+    - >
+      2010s-2020s: X.Org keeps xkbcomp as a separate application while XKB data files
+      are maintained by xkeyboard-config.
+  usage:
+    - >
+      Common package usage is compiling `.xkb` source into `.xkm` files, generating
+      resolved XKB source from a display or compiled map, updating the keymap for a
+      running X display, and producing C headers for servers or utilities that need
+      built-in default keymaps.
+    - >
+      For layout authors, xkbcomp is the last mile after editing keycodes, types,
+      compat, symbols, and geometry files. It checks that those pieces merge into a
+      complete keymap and reports warnings at selectable verbosity levels.
 tags:
   - cli
   - compiler
@@ -23,25 +102,30 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - Official X.Org xkbcomp manual page
-    - 'source_facts.description: XKB keyboard description compiler'
+    - https://www.x.org/XKB/
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xkbcomp.1.html
   display-name-sources:
-    - Official X.Org xkbcomp manual page
-    - source_facts.name
+    - https://www.x.org/XKB/
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xkbcomp.1.html
   docs-sources:
-    - Official X.Org xkbcomp manual page
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xkbcomp.1.html
+  history-sources:
+    - >
+      https://cgit.freedesktop.org/xorg/app/xkbcomp/tree/README.enhancing?id=8eb2e1fcd08a05f296a31dbadde1ec3cc84d8e28
+    - https://www.x.org/XKB/
+    - https://xkbcommon.org/doc/current/introduction-to-xkb.html
+    - https://xkbcommon.org/doc/current/user-configuration.html
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xkbcomp.1.html
   repo-sources:
-    - Official X.Org app repository pattern on freedesktop GitLab
-    - source_facts.source-archive identifies xkbcomp as an X.Org individual app release
+    - https://gitlab.freedesktop.org/xorg/app/xkbcomp
   tags-sources:
-    - Official X.Org xkbcomp manual page
-    - source_facts.description
+    - https://www.x.org/XKB/
+    - https://xorg.freedesktop.org/archive/X11R7.5/doc/man/man1/xkbcomp.1.html
 category-confidence: high
 category-path:
   - system
-  - x11
-  - keyboard
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
