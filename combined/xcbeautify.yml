@@ -6,6 +6,71 @@ docs:
   - https://github.com/cpisciotta/xcbeautify#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      xcbeautify's adoption is most visible in the iOS and macOS CI ecosystem.
+      fastlane's xcodebuild formatter documentation says fastlane 2.201.0 and later can
+      select an xcodebuild_formatter, defaults to xcbeautify when it is installed, and
+      describes xcbeautify as the recommended formatter.
+    - >
+      The same fastlane documentation explains the transition context: xcpretty had
+      historically been tightly integrated with fastlane as a RubyGem dependency, while
+      xcbeautify became preferred for new build-system output, parallel testing output,
+      Swift Package Manager formatting, and speed.
+  package-nerd-significance:
+    - >
+      xcbeautify is important in Apple-platform packaging because xcodebuild is
+      unavoidable but noisy. It provides a small CLI layer that makes Xcode builds
+      readable in terminal and CI logs without tying the workflow to Ruby.
+    - >
+      Its role is also a good example of ecosystem succession: a Swift-native formatter
+      increasingly replacing or supplementing xcpretty in places where Xcode's newer
+      build and parallel-test output needed better handling.
+  project-history:
+    - >
+      The GitHub release history shows xcbeautify releases from 0.3.6 in December 2018
+      to the 3.x series in 2026. The project has remained focused on parsing and
+      presenting Apple's verbose build and test output while tracking changes in Xcode
+      behavior.
+    - >
+      The README emphasizes being written in Swift and compiling to a static binary,
+      reducing Ruby dependence in development and CI environments compared with
+      xcpretty. Later features include JUnit report generation and dedicated renderers
+      for GitHub Actions, TeamCity, and Azure DevOps Pipeline.
+  related-projects:
+    - >
+      xcbeautify is directly related to xcodebuild, Swift Package Manager, fastlane
+      scan/gym/snapshot, and xcpretty.
+  sources:
+    - https://docs.fastlane.tools/best-practices/xcodebuild-formatters/
+    - https://github.com/cpisciotta/xcbeautify/releases
+    - https://github.com/xcpretty/xcpretty
+    - https://raw.githubusercontent.com/cpisciotta/xcbeautify/main/README.md
+  summary:
+    - >
+      xcbeautify is a Swift command-line formatter for xcodebuild output. Its README
+      presents it as a faster alternative to xcpretty, with colored human-readable
+      output and support for modern Xcode, Swift Package Manager, and CI rendering
+      workflows.
+  timeline:
+    - '2018: GitHub release history includes xcbeautify 0.3.6.'
+    - >
+      2022: fastlane 2.201.0 and later document xcodebuild_formatter support and default
+      to xcbeautify when installed.
+    - '2023: 1.0.1 is published in the release stream.'
+    - '2024: 2.0.1 is published in the release stream.'
+    - '2026: 3.2.1 is released with fixes and additional CLI test coverage.'
+  usage:
+    - >
+      The basic usage is to pipe xcodebuild output into xcbeautify. The README also
+      recommends `set -o pipefail` in CI so the pipeline preserves xcodebuild's exit
+      status, and shows unbuffered/combined output for parallel or concurrent
+      destination testing.
+    - >
+      CI users can select specialized renderers, such as `--renderer github-actions`, so
+      warnings, errors, and test results appear directly in the CI provider interface
+      instead of only in raw logs.
 category: developer-tools
 package-manager:
   brew: xcbeautify
