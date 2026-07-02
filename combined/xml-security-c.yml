@@ -1,11 +1,121 @@
 id: brew:xml-security-c
 display-name: Apache XML Security for C++
 homepage: https://santuario.apache.org/
-repo: null
+repo: https://svn.apache.org/repos/asf/santuario/xml-security-cpp/trunk
 docs:
   - https://santuario.apache.org/
+  - https://santuario.apache.org/cindex.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      The package's practical adoption was strongest in infrastructure that needed C++
+      XML signature verification or encryption rather than Java APIs. Apache's current
+      C++ page explicitly identifies the Shibboleth Project as the source of current
+      manpower and says the transferred code is maintained by Shibboleth because it is a
+      dependency of that software.
+    - >
+      The library's security advisories are part of its adoption story. Apache published
+      C++ advisories for issues such as signature bypass, XPointer stack overflow, HMAC
+      denial-of-service/hash-length bypass, InclusiveNamespace heap overflow, and 2011
+      large-key buffer overflows. That history matters because XML Signature processing
+      sits directly on trust boundaries.
+    - >
+      In 2024, Apache announced retirement of the C++ code after discussion by the
+      Santuario PMC. The current site says the code is frozen at Apache, transferred to
+      Shibboleth for a period, and not supported for third-party use, while the Java
+      Santuario code remains supported.
+  package-nerd-significance:
+    - >
+      xml-security-c is significant because it packages standards-heavy security
+      machinery into a native C++ library plus CLI tools. Its dependency stack, optional
+      transform support, security advisories, and retirement notice all show why
+      security packages are not just version numbers: maintainer availability and
+      threat-model fit are part of the package's meaning.
+    - >
+      It is also a case study in downstream-driven survival. The formula can still exist
+      for legacy users, but upstream's own position has shifted from general-purpose
+      Apache library to frozen code maintained elsewhere for a specific dependent
+      ecosystem.
+  project-history:
+    - >
+      Apache Santuario's history starts with a Java XML Signature effort at the
+      University of Siegen in 1999-2001, which was later placed under the Apache
+      Software Foundation. The C++ library was added later: the official history says it
+      began on SourceForge and migrated into the XML-Security project in early 2003.
+    - >
+      The C++ library implemented XML Digital Signature and XML Encryption
+      specifications and used Xerces-C for XML parsing, optional Xalan-C for XPath/XSLT
+      transforms, and OpenSSL for cryptographic functionality through a wrapper layer.
+      The C++ overview stresses that XML Signature and Encryption are complex and hard
+      to implement securely, and warns that generic support for features such as XPath
+      and XSLT increases risk.
+    - >
+      Apache Santuario became a top-level project in 2006 and included both Java and C++
+      libraries. Over time the Java library remained the main supported implementation,
+      while C++ maintenance became concentrated in downstream users, especially the
+      Shibboleth Project.
+    - >
+      The 2.0.0 C++ release in 2018 was a major upgrade focused on refactoring and
+      removing deprecated APIs rather than adding large features. Later 2.0.x releases
+      addressed crash bugs and OpenSSL compatibility, with 2.0.4 in 2021 correcting
+      support for OpenSSL versions earlier than 1.1 after a 2.0.3 regression.
+  related-projects:
+    - >
+      Related projects and standards include Apache Santuario for Java, W3C XML
+      Signature, W3C XML Encryption, Xerces-C, Xalan-C, OpenSSL, NSS, Windows CryptoAPI,
+      XKMS, and the Shibboleth Project.
+  sources:
+    - https://santuario.apache.org/
+    - https://santuario.apache.org/cindex.html
+    - https://santuario.apache.org/cinstallation.html
+    - https://santuario.apache.org/cprogramming.html
+    - https://santuario.apache.org/history.html
+    - https://santuario.apache.org/oldnews.html
+    - https://santuario.apache.org/secadv.html
+    - https://svn.apache.org/repos/asf/santuario/xml-security-cpp/trunk/
+    - https://svn.apache.org/repos/asf/santuario/xml-security-cpp/trunk/xml-security-c.spec
+  summary:
+    - >
+      Apache XML Security for C++ was the C++ implementation in Apache Santuario,
+      providing XML Digital Signature and XML Encryption support plus command-line tools
+      such as checksig, c14n, cipher, and template signing helpers. As of 2024, Apache
+      has frozen and officially retired the C++ code because of long-term maintainer
+      scarcity.
+  timeline:
+    - >
+      1999-2001: University of Siegen XML Signature work led to the original Apache XML
+      Security Java library.
+    - >
+      Early 2003: XML Security C++ migrated from SourceForge into the Apache
+      XML-Security project.
+    - '2006: XML-Security became the Apache Santuario top-level project.'
+    - >
+      2013: Apache issued multiple Santuario XML Security for C++ advisories affecting
+      versions before 1.7.1.
+    - >
+      2018-06: Apache XML Security for C++ 2.0.0 released as a refactoring/API cleanup
+      major release.
+    - '2021-11: Version 2.0.4 released to fix a regression affecting pre-OpenSSL-1.1 builds.'
+    - >
+      2024-03: Apache announced the C++ code would be frozen and retired because of lack
+      of support.
+    - >
+      2024-07: Apache site noted the C++ library was officially retired and migrated as
+      a fork to the Shibboleth Project.
+  usage:
+    - >
+      Library users embedded it to create and validate XML signatures, encrypt or
+      decrypt XML, canonicalize XML, and process signature transforms. Programming
+      examples initialize Xerces, optionally Xalan, and XSEC, then create or load
+      DSIGSignature objects through XSECProvider.
+    - >
+      Command-line package users encounter the tool side: xsec-checksig for signature
+      checking, xsec-c14n for canonicalization, xsec-cipher for encryption/decryption
+      workflows, and template/signature information helpers. These tools are useful for
+      testing and operations around XML security artifacts, but the upstream
+      documentation now cautions strongly against new third-party application use.
 category: security
 package-manager:
   brew: xml-security-c

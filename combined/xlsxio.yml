@@ -6,6 +6,85 @@ docs:
   - https://github.com/brechtsanders/xlsxio/blob/master/README.md
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Adoption followed the library's narrow C API and included command-line converters.
+      The README documents xlsxio_xlsx2csv for turning sheets into CSV files and
+      xlsxio_csv2xlsx for creating .xlsx files from CSV, making the package useful both
+      as a linkable library and as a shell-friendly converter.
+    - >
+      The project also gained ecosystem paths beyond a source checkout: the README
+      documents Conan installation, and the changelog records work to install pkg-config
+      and CMake package files so downstream builds can discover the library more
+      naturally.
+  package-nerd-significance:
+    - >
+      XLSX I/O matters to package nerds because it is a compact answer to a common
+      packaging pain: many tools need .xlsx interchange, but embedding a large office
+      stack is unreasonable. This package exposes just enough Open Packaging Convention
+      / XML spreadsheet handling to be useful in C programs and command-line pipelines.
+    - >
+      Its history is also a nice example of small-library maintenance driven by
+      build-system interoperability: Makefile, CMake, pkg-config, and Windows import
+      libraries all matter as much as the file-format parser.
+  project-history:
+    - >
+      The GitHub repository was created on 2016-03-04 by Brecht Sanders. The README
+      describes the project goals as standard C with C++ usability, a simple interface,
+      small footprint, portability across Windows and Unix-like systems, and a
+      deliberately small support stack.
+    - >
+      The project separated read and write libraries early: libxlsxio_read for reading
+      worksheet data and libxlsxio_write for generating simple data-table .xlsx files.
+      The README is explicit about the tradeoff: it processes values and table-like
+      data, while ignoring or not supporting richer spreadsheet features such as
+      formulas, layout, charts, graphics, and multiple worksheets for writing.
+    - >
+      The changelog shows a pragmatic maintenance history around build portability and
+      edge cases: Windows and MSVC fixes, MinGW import-library support, CMake and
+      pkg-config generation, minizip-ng support, hidden-row handling, sheet-name
+      crashes, and memory-safety fixes from user reports and pull requests.
+  related-projects:
+    - >
+      Related projects and formats include Microsoft Excel's .xlsx format, CSV tooling,
+      expat, minizip, libzip, zlib, Conan Center recipes, and other spreadsheet
+      libraries that choose broader document fidelity over XLSX I/O's small tabular
+      scope.
+  sources:
+    - https://api.github.com/repos/brechtsanders/xlsxio
+    - https://api.github.com/repos/brechtsanders/xlsxio/releases?per_page=10
+    - https://github.com/brechtsanders/xlsxio
+    - https://raw.githubusercontent.com/brechtsanders/xlsxio/master/Changelog.txt
+    - https://raw.githubusercontent.com/brechtsanders/xlsxio/master/README.md
+  summary:
+    - >
+      XLSX I/O is a portable C library and small CLI-tool suite for reading and writing
+      Microsoft Excel .xlsx files without requiring Excel. Its niche is deliberately
+      narrower than full spreadsheet automation: stream tabular worksheet data in and
+      out of the zipped XML-based .xlsx format.
+  timeline:
+    - '2016-03-04: GitHub repository created.'
+    - >
+      2018-03: Changelog records build instructions, examples, UTF-16 read support, and
+      minizip becoming the default backend.
+    - >
+      2020-03: Changelog records memory-leak fixes, valgrind testing of the CLI
+      converters, and Doxygen HTML documentation installation.
+    - '2021-09-01: Changelog records .pc and .cmake file generation and installation.'
+    - '2022-11-02: Release 0.2.34 added minizip-ng support.'
+    - '2025-09-12: Release 0.2.36 fixed builds against recent minizip-ng.'
+  usage:
+    - >
+      Common library use opens an .xlsx workbook, iterates sheets, rows, and cells, and
+      frees returned cell values through the xlsxio API. For writing, callers create a
+      workbook, add columns, stream rows and cells, and close the writer without
+      buffering the whole file in memory.
+    - >
+      The CLI tools are useful when a workflow needs spreadsheet interchange but not
+      spreadsheet semantics: converting bulk tabular .xlsx data to CSV for scripts, or
+      emitting a simple .xlsx file from CSV for users who expect Excel-compatible
+      output.
 category: developer-tools
 package-manager:
   brew: xlsxio
