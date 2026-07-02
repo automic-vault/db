@@ -13,6 +13,71 @@ config-file-location:
     - Cargo.toml
     - pyproject.toml
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Official docs present typos as both a standalone binary and an integration target.
+      The README lists pre-built GitHub releases, `cargo install typos-cli --locked`,
+      Homebrew, Conda, and Pacman installation paths, and it links official integration
+      docs for GitHub Actions and pre-commit.
+    - >
+      The batch input shows broader package-manager coverage across apk, Homebrew, Nix,
+      Pacman, Scoop, and Winget. Upstream release metadata shows v1.48.0 published in
+      June 2026, so the package is actively maintained in the current package-manager
+      ecosystem.
+  package-nerd-significance:
+    - >
+      typos-cli is significant because it packages source-code-aware spell checking as a
+      fast, reproducible binary that fits package-manager, pre-commit, and CI habits.
+      For maintainers who care about low-friction quality gates, its value is that it
+      can be installed like any other dev tool and run unattended on large repositories.
+  project-history:
+    - >
+      The crate-ci/typos repository was created in April 2019. The changelog shows the
+      project reached 1.0.0 in May 2021, after earlier 0.x releases, and continued with
+      frequent dictionary and correctness updates into 2026.
+    - >
+      The official design document explains the central choice that shaped the tool:
+      unlike dictionary-distance spell checkers, typos uses known misspelling
+      corrections to keep automated correction and CI use low-noise. Its source-code
+      focus includes identifier splitting for snake_case, CamelCase, acronyms, hashes,
+      escapes, UUIDs, and other code-shaped text.
+    - >
+      The README documents a full command-line workflow: plain `typos` for reporting,
+      `typos --write-changes` for automatic fixes, `--diff` for patches, `--format json`
+      for machine-readable output, and `--dump-config`, `--files`, `--identifiers`, and
+      `--words` for debugging.
+  related-projects:
+    - >
+      The official comparison document compares typos with client9/misspell, codespell,
+      scspell3k, and topy. The README also points to editor and CI integrations
+      including GitHub Actions, pre-commit, Visual Studio Code, typos-lsp, and GitLab
+      Code Quality.
+  sources:
+    - https://api.github.com/repos/crate-ci/typos
+    - https://api.github.com/repos/crate-ci/typos/releases
+    - https://github.com/crate-ci/typos#readme
+    - https://github.com/crate-ci/typos/blob/master/CHANGELOG.md
+    - https://github.com/crate-ci/typos/blob/master/docs/comparison.md
+    - https://github.com/crate-ci/typos/blob/master/docs/design.md
+    - source_facts.package-manager
+  summary:
+    - >
+      typos-cli is the command-line package for `typos`, a Rust source-code spell
+      checker. Its upstream README emphasizes two package-nerd requirements: it is fast
+      enough for monorepos and has low enough false positives to run on pull requests.
+  timeline:
+    - '2019: Public GitHub repository created.'
+    - '2021: 1.0.0 released.'
+    - '2024: Ongoing 1.x release train continued.'
+    - '2026: v1.48.0 released with June 2026 dictionary updates.'
+  usage:
+    - >
+      In package and CI workflows, typos is used as a repository check that fails on
+      known spelling mistakes while avoiding noisy guesses. Developers can tune false
+      positives in `_typos.toml` or related config files, extend identifiers and words,
+      disable content checking for localized files, and use JSON Lines output for custom
+      integrations.
 category: developer-tools
 package-manager:
   apk: typos
