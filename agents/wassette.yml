@@ -3,8 +3,90 @@ display-name: Wassette
 repo: null
 docs:
   - https://github.com/microsoft/wassette#readme
+  - https://microsoft.github.io/wassette
+  - https://microsoft.github.io/wassette/latest/concepts.html
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      As of its early public releases, Wassette is explicitly marked by its repository
+      as early development and not production ready. Its adoption story is therefore
+      mostly experimental: agent developers can wire it into MCP-capable clients such as
+      GitHub Copilot, Cursor, Claude Code, and Gemini CLI, then load Wasm components as
+      tools.
+    - >
+      Its significance comes from timing. MCP made agent tools easy to connect, but also
+      raised the risk of giving agents arbitrary local executables. Wassette's answer is
+      to package tools as WebAssembly Components, inspect typed interfaces, and enforce
+      a deny-by-default permission model before granting filesystem, network, or other
+      host access.
+  package-nerd-significance:
+    - >
+      Wassette is package-nerd interesting because it combines three packaging
+      interfaces that usually live separately: MCP tool registration, OCI artifact
+      distribution, and Wasm Component interfaces. It treats tool installation as
+      something an agent may request dynamically, but tries to keep the runtime
+      authority narrow and auditable.
+    - >
+      For the WebAssembly ecosystem, it is a concrete example of the Component Model's
+      promise: tools can expose typed functions instead of ad hoc JSON-over-process
+      contracts, and the host can reason about permissions before executing untrusted
+      code.
+  project-history:
+    - >
+      The project's changelog records v0.1.0 on August 5, 2025 as the initial Wassette
+      release, adding the core MCP server, SSE and stdio transports, component lifecycle
+      management, policy-based permissions, examples, CLI support, installation, and
+      documentation.
+    - >
+      Microsoft's open source blog introduced Wassette on August 6, 2025 through the
+      Azure Core Upstream team. The announcement described it as a security-oriented
+      runtime for running WebAssembly Components via MCP, able to fetch components from
+      OCI registries and execute them with Wasmtime-backed sandboxing.
+  related-projects:
+    - Wasmtime provides the underlying WebAssembly runtime sandbox.
+    - >
+      The WebAssembly Component Model and WIT provide the typed interfaces Wassette
+      exposes as tools.
+    - >
+      The Model Context Protocol is the protocol surface through which AI agents call
+      Wassette-managed tools.
+    - OCI registries are used as a distribution mechanism for WebAssembly Components.
+  sources:
+    - https://github.com/microsoft/wassette
+    - https://github.com/microsoft/wassette/blob/main/CHANGELOG.md
+    - https://microsoft.github.io/wassette/
+    - https://microsoft.github.io/wassette/latest/concepts.html
+    - >
+      https://opensource.microsoft.com/blog/2025/08/06/introducing-wassette-webassembly-based-tools-for-ai-agents/
+  summary:
+    - >
+      Wassette is a Microsoft open source runtime and MCP server that exposes
+      WebAssembly Components as tools for AI agents. Its history is short, but it is
+      notable because it applies Wasmtime, the Component Model, OCI artifacts, and
+      deny-by-default permissions to the emerging Model Context Protocol tool ecosystem.
+  timeline:
+    - >
+      2025-08-05: Wassette v0.1.0 initial release added the core MCP server, component
+      lifecycle management, and permission system.
+    - >
+      2025-08-06: Microsoft Open Source introduced Wassette publicly as
+      WebAssembly-based tools for AI agents.
+    - >
+      2025-2026: Documentation and repository warnings continued to frame Wassette as
+      early-stage, security-oriented infrastructure for MCP and WebAssembly Component
+      experiments.
+  usage:
+    - >
+      Users register Wassette as an MCP server with an agent, then ask the agent to load
+      a WebAssembly Component. Wassette translates the component's typed exports into
+      MCP tools and brokers calls through a Wasmtime sandbox.
+    - >
+      Component authors can build tools in languages that target the WebAssembly
+      Component Model, publish them as OCI artifacts, and let Wassette fetch and run
+      them. That makes it a package-oriented security layer for agent tools rather than
+      a general-purpose Wasm CLI.
 tags:
   - cli
   - components
@@ -24,33 +106,41 @@ geiger:
 provenance:
   category-sources:
     - >
-      Official GitHub repository describes Wassette as a security-oriented runtime for
-      WebAssembly Components via MCP.
+      https://opensource.microsoft.com/blog/2025/08/06/introducing-wassette-webassembly-based-tools-for-ai-agents/
+      emphasizes security-oriented execution and deny-by-default permissions.
     - >
-      source_facts.description says Wassette is a security-oriented runtime that runs
-      WebAssembly Components via MCP.
+      source_facts.description: Security-oriented runtime that runs WebAssembly
+      Components via MCP.
   display-name-sources:
-    - Official repository title is microsoft/wassette and README uses Wassette.
-    - source_facts.name is wassette.
+    - current_curation.display-name
+    - https://github.com/microsoft/wassette uses Wassette as the project name.
   docs-sources:
-    - Official GitHub README is the primary documentation surface for microsoft/wassette.
+    - https://github.com/microsoft/wassette#readme is the upstream README.
+    - https://microsoft.github.io/wassette/ is the official documentation site.
+    - >
+      https://microsoft.github.io/wassette/latest/concepts.html documents MCP and
+      WebAssembly Component concepts.
+  history-sources:
+    - https://github.com/microsoft/wassette
+    - https://github.com/microsoft/wassette/blob/main/CHANGELOG.md
+    - https://microsoft.github.io/wassette/
+    - https://microsoft.github.io/wassette/latest/concepts.html
+    - >
+      https://opensource.microsoft.com/blog/2025/08/06/introducing-wassette-webassembly-based-tools-for-ai-agents/
   repo-sources:
     - >
-      source_facts.repo already has https://github.com/microsoft/wassette; per
-      instruction, repo is returned as null.
+      source_facts.repo is already https://github.com/microsoft/wassette; returning repo
+      as null preserves existing curation.
   tags-sources:
     - >
-      Official Microsoft repository and blog describe isolated sandbox execution for
-      agent tools.
-    - >
-      source_facts.description identifies WebAssembly Components, MCP, and
-      security-oriented runtime behavior.
+      https://github.com/microsoft/wassette topics identify mcp, permissions, wasm,
+      capabilities, wasmtime, OCI artifacts, wasm components, and MCP server roles.
+    - source_facts.executables includes wassette.
 category-confidence: high
 category-path:
   - security
-  - webassembly
-  - runtime
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

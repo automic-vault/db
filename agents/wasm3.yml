@@ -2,9 +2,92 @@ id: brew:wasm3
 display-name: Wasm3
 repo: null
 docs:
+  - https://github.com/wasm3/wasm3/blob/main/docs/Interpreter.md
   - https://github.com/wasm3/wasm3#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Wasm3's adoption story is strongest in embedded and constrained-device circles.
+      The companion Arduino repository says the runtime needs roughly 64 KB of flash and
+      10 KB of RAM for minimal functionality and lists devices such as ESP32, ESP8266,
+      Arduino MKR, Particle, ST Nucleo, BluePill, Nordic nRF5, and Teensy as verified
+      targets.
+    - >
+      The main repository also frames Wasm3 as universal, with topics covering embedded,
+      IoT, serverless, containers, sandboxing, smart contracts, and edge computing. That
+      breadth reflects its role as a small embeddable engine: developers use it when
+      they want Wasm as a portable plugin or scripting format but cannot afford a
+      heavier optimizing runtime.
+  package-nerd-significance:
+    - >
+      Wasm3 is significant because it keeps the interpreter design space visible in a
+      WebAssembly ecosystem often led by optimizing compilers. For package maintainers,
+      it is a reminder that the same .wasm artifact can target browsers, server
+      runtimes, and tiny boards, but that the host ABI and resource budget determine
+      which runtime is realistic.
+    - >
+      It also matters as a minimal embeddable dependency: a C runtime with a CLI and
+      microcontroller examples is easier to fit into unusual packaging environments than
+      a larger Rust or C++ runtime stack.
+  project-history:
+    - >
+      The source tree identifies Wasm3 as a high-performance WebAssembly interpreter
+      with 2019 copyrights for Steven Massey and Volodymyr Shymanskyy. The project
+      documentation explains that its M3 interpreter strategy existed before this
+      specific Wasm runtime and was adapted because the approach fit WebAssembly's
+      bytecode structure.
+    - >
+      The interpreter documentation describes M3 as a C implementation using a novel
+      high-performance topology. Instead of emphasizing ahead-of-time or just-in-time
+      compilation, Wasm3 translates WebAssembly opcodes into internal operations
+      intended to execute efficiently in an interpreter, making it a useful counterpoint
+      to the compiler-heavy runtimes that dominate server-side Wasm.
+  related-projects:
+    - >
+      WAMR is a related lightweight WebAssembly runtime aimed at embedded, IoT, edge,
+      and trusted-execution use cases.
+    - >
+      Wasmtime and Wasmer are heavier standalone runtimes with stronger WASI, embedding,
+      and compiler stories.
+    - >
+      The WebAssembly reference interpreter and wasm-interp are useful comparison points
+      for correctness and testing rather than minimal embedded deployment.
+  sources:
+    - https://github.com/wasm3/wasm3
+    - https://github.com/wasm3/wasm3-arduino
+    - https://github.com/wasm3/wasm3/blob/main/docs/Interpreter.md
+    - https://github.com/wasm3/wasm3/blob/main/source/wasm3.h
+  summary:
+    - >
+      Wasm3 is a compact WebAssembly interpreter written in C, positioned by its
+      maintainers as a fast and highly portable runtime rather than a JIT compiler. Its
+      niche is running Wasm in places where engines such as V8, Wasmtime, or Wasmer are
+      too large, unavailable, or unsuitable because dynamic code generation is
+      restricted.
+  timeline:
+    - >
+      2019: Wasm3 source files identify the project as a high-performance WebAssembly
+      interpreter by Steven Massey and Volodymyr Shymanskyy.
+    - >
+      2020: Wasm3 was discussed publicly as a fast WebAssembly interpreter in C, with
+      attention on its M3 execution model.
+    - >
+      2020s: The Arduino and embedded repositories documented operation on small
+      microcontrollers, giving Wasm3 a durable niche among constrained-device Wasm
+      runtimes.
+  usage:
+    - >
+      Command-line users run wasm3 against a .wasm file to execute a module locally.
+      Embedded users more often link the C runtime into firmware or an application host,
+      load a Wasm module from flash, storage, or a network update path, and expose only
+      a small set of host functions to the guest module.
+    - >
+      Package-nerd usage tends to compare Wasm3 with WAMR, wasmi, wasm-interp, and JIT
+      runtimes. Wasm3 is chosen for portability and low memory ceilings; Wasmtime or
+      Wasmer are usually chosen when standard WASI coverage, component-model support, or
+      peak JIT/AOT performance matters more.
 tags:
   - cli
   - interpreter
@@ -22,30 +105,35 @@ geiger:
     - text:interpreter
 provenance:
   category-sources:
-    - >
-      Official GitHub repository describes wasm3 as a fast WebAssembly interpreter and
-      WASM runtime
-    - source_facts.description says high performance WebAssembly interpreter
+    - https://github.com/wasm3/wasm3 describes Wasm3 as a WebAssembly interpreter and runtime.
+    - 'source_facts.description: High performance WebAssembly interpreter.'
   display-name-sources:
-    - Official GitHub repository title uses wasm3 and description names Wasm3 branding
-    - source_facts.name is wasm3
+    - current_curation.display-name
+    - https://github.com/wasm3/wasm3 uses Wasm3 as the project name.
   docs-sources:
+    - https://github.com/wasm3/wasm3#readme is the upstream README.
     - >
-      source_facts.homepage is the official GitHub repository; README is the best
-      official documentation surface
+      https://github.com/wasm3/wasm3/blob/main/docs/Interpreter.md documents the M3
+      interpreter design.
+  history-sources:
+    - https://github.com/wasm3/wasm3
+    - https://github.com/wasm3/wasm3-arduino
+    - https://github.com/wasm3/wasm3/blob/main/docs/Interpreter.md
+    - https://github.com/wasm3/wasm3/blob/main/source/wasm3.h
   repo-sources:
     - >
-      source_facts.repo is already populated with https://github.com/wasm3/wasm3; per
-      instruction repo was not re-evaluated
+      source_facts.repo is already https://github.com/wasm3/wasm3; returning repo as
+      null preserves existing curation.
   tags-sources:
-    - Official GitHub repository description identifies a WebAssembly interpreter and runtime
-    - source_facts.description identifies a WebAssembly interpreter
+    - >
+      https://github.com/wasm3/wasm3 topics and README identify interpreter, runtime,
+      wasm, and webassembly roles.
+    - source_facts.executables includes wasm3.
 category-confidence: high
 category-path:
   - language-runtime
-  - webassembly
-  - interpreter
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

@@ -3,8 +3,115 @@ display-name: Wasmtime
 repo: null
 docs:
   - https://docs.wasmtime.dev/
+  - https://component-model.bytecodealliance.org/running-components/wasmtime.html
+  - https://github.com/bytecodealliance/wasmtime#readme
 config-file-location: null
 credentials-file-location: null
+history:
+  adoption-history:
+    - >
+      Wasmtime's adoption is unusually standards-centered. Because the same organization
+      stewards Cranelift, WASI tooling, wasm-tools, and Component Model documentation,
+      Wasmtime often serves as the runtime people try first when experimenting with new
+      WebAssembly proposals outside the browser.
+    - >
+      It is also embedded into higher-level platforms. wasmCloud documentation describes
+      Wasmtime as a Bytecode Alliance runtime that can be used standalone or as part of
+      a larger stack, supporting WebAssembly, WASI, and the Component Model while
+      providing a defense-in-depth runtime for wasmCloud workloads.
+    - >
+      The runtime's security posture is part of its adoption story. Bytecode Alliance
+      writing before the 1.0 release emphasized correctness, fuzzing, formal
+      verification work, multi-stakeholder investment, and security processes as reasons
+      the project considered itself ready for production.
+  package-nerd-significance:
+    - >
+      Wasmtime is significant because it made WASI and the Component Model concrete for
+      package authors. It gave package managers, plugin systems, and platform teams a
+      runnable target for artifacts that are not tied to a browser, CPU architecture, or
+      one source language.
+    - >
+      Its presence in the Bytecode Alliance also means its release notes and APIs often
+      reveal where the Wasm ecosystem is going next: new proposals, new WASI versions,
+      host bindings, component execution, and cross-language interface tooling.
+  project-history:
+    - >
+      Wasmtime became one of the founding project contributions to the Bytecode Alliance
+      when Mozilla, Fastly, Intel, and Red Hat announced the alliance on November 12,
+      2019. The formation announcement described Wasmtime as a small and efficient
+      runtime for WebAssembly and WASI, alongside Lucet, WAMR, and Cranelift.
+    - >
+      The Mozilla announcement for the Bytecode Alliance framed Wasmtime as a
+      configurable and scalable standalone runtime that could work as a CLI tool or be
+      embedded into other systems, from IoT devices to cloud data centers. That early
+      positioning explains why Wasmtime has remained both a developer executable and a
+      library API.
+    - >
+      Wasmtime reached 1.0 on September 20, 2022. The Bytecode Alliance announcement
+      said the runtime was ready for production use and noted that alliance members had
+      already been running Wasmtime in production environments during the preceding
+      year.
+    - >
+      After 1.0, Wasmtime continued to track standards work around WASI and the
+      Component Model. Bytecode Alliance documentation identifies Wasmtime as the
+      reference implementation of the Component Model, with support for command
+      components, HTTP components through wasmtime serve, and later WASI 0.3 runtime
+      support in Wasmtime 43 and newer.
+  related-projects:
+    - Cranelift is Wasmtime's optimizing code generator and a core Bytecode Alliance project.
+    - >
+      Lucet, Fastly's earlier AOT WebAssembly runtime, was part of the original Bytecode
+      Alliance project set and was refactored toward Wasmtime at its core.
+    - >
+      WAMR, WasmEdge, Wasmer, wazero, Spin, runwasi, and wasmCloud are common comparison
+      or integration points.
+    - >
+      WASI, WIT, wasm-tools, and the WebAssembly Component Model are standards and tools
+      tightly connected to Wasmtime's ecosystem role.
+  sources:
+    - https://bytecodealliance.org/articles/component-model-tooling-compatibility
+    - https://bytecodealliance.org/articles/security-and-correctness-in-wasmtime
+    - https://bytecodealliance.org/articles/wasmtime-1-0-fast-safe-and-production-ready
+    - https://bytecodealliance.org/press/formation
+    - https://component-model.bytecodealliance.org/
+    - https://component-model.bytecodealliance.org/running-components/wasmtime.html
+    - https://docs.wasmtime.dev/
+    - https://github.com/bytecodealliance/wasmtime
+    - https://hacks.mozilla.org/2019/11/announcing-the-bytecode-alliance/
+    - https://wasmcloud.com/docs/v1/ecosystem/wasmtime/
+  summary:
+    - >
+      Wasmtime is the Bytecode Alliance's standalone runtime for WebAssembly, WASI, and
+      the WebAssembly Component Model. It is built around the Cranelift code generator
+      and is used both as a command-line tool and as an embeddable engine for
+      applications that need a capability-oriented Wasm sandbox.
+  timeline:
+    - >
+      2019-11-12: Bytecode Alliance launched with Wasmtime, Lucet, WAMR, and Cranelift
+      among its founding project contributions.
+    - >
+      2022-09-20: Wasmtime 1.0 was released and declared production ready by the
+      Bytecode Alliance.
+    - >
+      2023: Bytecode Alliance tooling compatibility documentation listed Wasmtime 7.0.0
+      with component-model support.
+    - >
+      2024-01-25: WASI 0.2.0 became a stable Component Model target, strengthening
+      Wasmtime's role as a reference runtime.
+    - >
+      2026: Bytecode Alliance documentation describes Wasmtime 43 and later as
+      supporting WASI 0.3 runtime features.
+  usage:
+    - >
+      CLI users run .wasm modules or components with wasmtime run, expose only selected
+      host capabilities, and can serve WASI HTTP components with wasmtime serve. Library
+      users embed Wasmtime through Rust, C, Python, .NET, Go, and other bindings to
+      execute untrusted or portable code inside a host application.
+    - >
+      Wasmtime is a default choice when the goal is standards conformance, WASI
+      experimentation, component-model execution, or a capability-secure plugin system.
+      It is less about being a package registry or product platform than about being the
+      runtime substrate other tools build on.
 tags:
   - cli
   - component-model
@@ -24,29 +131,43 @@ geiger:
 provenance:
   category-sources:
     - >
-      Official Wasmtime docs describe it as a standalone runtime for WebAssembly, WASI,
-      and the Component Model.
-    - >
-      source_facts.description says Wasmtime is a standalone JIT-style runtime for
-      WebAssembly using Cranelift.
+      https://docs.wasmtime.dev/ describes Wasmtime as a standalone runtime for
+      WebAssembly, WASI, and the Component Model.
+    - 'source_facts.description: Standalone JIT-style runtime for WebAssembly, using Cranelift.'
   display-name-sources:
-    - Official documentation is titled Wasmtime.
-    - source_facts.homepage is https://wasmtime.dev/.
+    - current_curation.display-name
+    - https://docs.wasmtime.dev/ uses Wasmtime as the project name.
   docs-sources:
-    - Official Wasmtime documentation is hosted on docs.wasmtime.dev.
+    - >
+      https://component-model.bytecodealliance.org/running-components/wasmtime.html
+      documents Wasmtime component execution.
+    - https://docs.wasmtime.dev/ is the official Wasmtime documentation.
+    - https://github.com/bytecodealliance/wasmtime#readme is the upstream repository README.
+  history-sources:
+    - https://bytecodealliance.org/articles/component-model-tooling-compatibility
+    - https://bytecodealliance.org/articles/security-and-correctness-in-wasmtime
+    - https://bytecodealliance.org/articles/wasmtime-1-0-fast-safe-and-production-ready
+    - https://bytecodealliance.org/press/formation
+    - https://component-model.bytecodealliance.org/
+    - https://component-model.bytecodealliance.org/running-components/wasmtime.html
+    - https://docs.wasmtime.dev/
+    - https://github.com/bytecodealliance/wasmtime
+    - https://hacks.mozilla.org/2019/11/announcing-the-bytecode-alliance/
+    - https://wasmcloud.com/docs/v1/ecosystem/wasmtime/
   repo-sources:
     - >
-      source_facts.repo already has https://github.com/bytecodealliance/wasmtime; per
-      instruction, repo is returned as null.
+      source_facts.repo is already https://github.com/bytecodealliance/wasmtime;
+      returning repo as null preserves existing curation.
   tags-sources:
-    - Official docs identify WASI, the Component Model, command-line use, and embedding APIs.
-    - source_facts.description mentions WebAssembly and Cranelift.
+    - >
+      https://docs.wasmtime.dev/ and https://github.com/bytecodealliance/wasmtime
+      identify runtime, CLI, Cranelift, WASI, component-model, and WebAssembly roles.
+    - source_facts.executables includes wasmtime.
 category-confidence: high
 category-path:
   - developer-tools
-  - webassembly
-  - runtime
 display-name-confidence: high
 docs-confidence: high
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
