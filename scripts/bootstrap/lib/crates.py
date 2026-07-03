@@ -24,6 +24,7 @@ CRATES_IO_CACHE_DIR = CACHE_DIR / "cratesio"
 CRATES_IO_DUMP_PATH = CRATES_IO_CACHE_DIR / "db-dump.tar.gz"
 CRATES_IO_DUMP_META_PATH = CRATES_IO_CACHE_DIR / "db-dump.meta.json"
 CRATES_IO_INDEX_PATH = CRATES_IO_CACHE_DIR / "index.json"
+CRATES_IO_SOURCE_INSPECTION_CACHE_PATH = CRATES_IO_CACHE_DIR / "source-inspection-cache.json"
 CRATES_IO_DOWNLOAD_TIMEOUT = int(os.environ.get("CRATES_IO_DOWNLOAD_TIMEOUT", "3600"))
 CRATES_IO_SOURCE_DOWNLOAD_TIMEOUT = int(os.environ.get("CRATES_IO_SOURCE_DOWNLOAD_TIMEOUT", str(DEFAULT_TIMEOUT)))
 CRATES_IO_SOURCE_MAX_INSPECT_BYTES = int(os.environ.get("CRATES_IO_SOURCE_MAX_INSPECT_BYTES", str(10 * 1024 * 1024)))
@@ -144,6 +145,34 @@ def read_json_file(path: Path, default: Any = None) -> Any:
 def write_db_dump_meta(meta: dict[str, Any]) -> None:
     CRATES_IO_DUMP_META_PATH.parent.mkdir(parents=True, exist_ok=True)
     CRATES_IO_DUMP_META_PATH.write_text(json.dumps(meta, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def read_source_inspection_cache(definition_hash: str) -> dict[str, dict[str, Any]]:
+    payload = read_json_file(CRATES_IO_SOURCE_INSPECTION_CACHE_PATH, {}) or {}
+    if not isinstance(payload, dict):
+        return {}
+    if payload.get("definition_hash") != definition_hash:
+        return {}
+    entries = payload.get("entries")
+    if not isinstance(entries, dict):
+        return {}
+    return {
+        str(key): value
+        for key, value in entries.items()
+        if isinstance(key, str) and isinstance(value, dict)
+    }
+
+
+def write_source_inspection_cache(definition_hash: str, entries: dict[str, dict[str, Any]]) -> None:
+    CRATES_IO_SOURCE_INSPECTION_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "definition_hash": definition_hash,
+        "entries": entries,
+    }
+    CRATES_IO_SOURCE_INSPECTION_CACHE_PATH.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 def head_db_dump(url: str, *, now: int) -> dict[str, Any]:
@@ -584,6 +613,9 @@ def build_index_from_dump(
         min_recent_downloads=min_recent_downloads,
         recent_window_days=recent_window_days,
     )
+    source_inspection_cache = read_source_inspection_cache(definition_hash)
+    cache_hits = 0
+    cache_misses = 0
     with tempfile.TemporaryDirectory(prefix="avdb-cratesio-") as tmp:
         files = extract_selected_csvs(dump_path, Path(tmp))
         crates_by_id = {
@@ -627,13 +659,21 @@ def build_index_from_dump(
             continue
         all_time_downloads = downloads_by_id.get(crate_id, parse_int(version.get("downloads")))
         name = str(crate.get("name") or "").strip()
-        intent = cargo_executable_intent(
-            name,
-            crate,
-            version,
-            executables,
-            source_archive_fetcher=source_archive_fetcher,
-        )
+        cache_key = f"{name}@{str(version.get('num') or '').strip()}"
+        cached_intent = source_inspection_cache.get(cache_key)
+        if cached_intent is not None:
+            intent = cached_intent
+            cache_hits += 1
+        else:
+            intent = cargo_executable_intent(
+                name,
+                crate,
+                version,
+                executables,
+                source_archive_fetcher=source_archive_fetcher,
+            )
+            source_inspection_cache[cache_key] = intent
+            cache_misses += 1
         if intent.get("intent") == "internal_only":
             excluded_internal_binary_crates.append({
                 "name": name,
@@ -679,6 +719,10 @@ def build_index_from_dump(
         inspection_summary["excludedInternalBinaryCrateSamples"] = excluded_internal_binary_crates[:25]
     if source_inspection_failures:
         inspection_summary["sourceInspectionFailureSamples"] = source_inspection_failures[:25]
+    inspection_summary["cacheHits"] = cache_hits
+    inspection_summary["cacheMisses"] = cache_misses
+
+    write_source_inspection_cache(definition_hash, source_inspection_cache)
 
     return {
         "schema": SCHEMA_VERSION,

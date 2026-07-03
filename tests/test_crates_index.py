@@ -417,6 +417,63 @@ description = "A cat(1) clone with wings."
         self.assertEqual(index["source"]["source_inspection"]["excludedInternalBinaryCrates"], 1)
         self.assertEqual(index["source"]["source_inspection"]["sourceInspectionFailures"], 1)
 
+    def test_build_index_from_dump_reuses_source_inspection_cache(self):
+        archives = {
+            ("unsafe-libyaml", "0.2.11"): crate_archive_bytes({
+                "unsafe-libyaml-0.2.11/Cargo.toml.orig": """
+[package]
+name = "unsafe-libyaml"
+
+[lib]
+""",
+                "unsafe-libyaml-0.2.11/src/bin/run-emitter-test-suite.rs": "fn main() {}",
+            }),
+            ("bat", "0.26.1"): crate_archive_bytes({
+                "bat-0.26.1/Cargo.toml.orig": """
+[package]
+name = "bat"
+
+[lib]
+
+[[bin]]
+name = "bat"
+""",
+                "bat-0.26.1/src/main.rs": "fn main() {}",
+            }),
+        }
+        calls: list[tuple[str, str]] = []
+
+        def fetcher(name: str, version: str) -> bytes:
+            calls.append((name, version))
+            if name == "sourcefail":
+                raise OSError("fixture fetch failure")
+            return archives[(name, version)]
+
+        with tempfile.TemporaryDirectory() as tmp:
+            dump_path = Path(tmp) / "db-dump.tar.gz"
+            write_internal_binary_fixture_dump(dump_path)
+            original_cache_path = crates_index.CRATES_IO_SOURCE_INSPECTION_CACHE_PATH
+            crates_index.CRATES_IO_SOURCE_INSPECTION_CACHE_PATH = Path(tmp) / "source-inspection-cache.json"
+            try:
+                crates_index.build_index_from_dump(
+                    dump_path,
+                    min_recent_downloads=50,
+                    recent_window_days=90,
+                    dump_meta={"source_url": "fixture"},
+                    source_archive_fetcher=fetcher,
+                )
+                crates_index.build_index_from_dump(
+                    dump_path,
+                    min_recent_downloads=50,
+                    recent_window_days=90,
+                    dump_meta={"source_url": "fixture"},
+                    source_archive_fetcher=fetcher,
+                )
+            finally:
+                crates_index.CRATES_IO_SOURCE_INSPECTION_CACHE_PATH = original_cache_path
+
+        self.assertEqual(calls, [("unsafe-libyaml", "0.2.11"), ("bat", "0.26.1"), ("sourcefail", "1.0.0")])
+
     def test_crates_index_creates_cargo_package_pages_without_db_entries(self):
         sources = {
             "db": {"entries": {}, "formulas": {}, "casks": {}, "npms": {}},
