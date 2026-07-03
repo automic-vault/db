@@ -37,6 +37,7 @@ DEFAULT_CODEX_TIMEOUT_SECONDS = 15 * 60
 PATH_LOCATION_PLATFORMS = ("unix", "linux", "macos", "windows")
 ENRICH_BACKENDS = ("codex-cli", "external")
 ENRICH_PHASES = ("run", "prepare", "apply")
+ENRICH_MODES = ("replace", "new", "review-stale-updated", "history-missing")
 
 
 def strict_platform_map_schema() -> dict[str, Any]:
@@ -64,7 +65,7 @@ def strict_platform_map_schema() -> dict[str, Any]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Review and apply curated project enrichment with Codex.")
-    parser.add_argument("--mode", choices=["replace", "new", "review-stale-updated"], required=True)
+    parser.add_argument("--mode", choices=ENRICH_MODES, required=True)
     parser.add_argument("--limit", type=int, default=0, help="Limit projects sent for review.")
     parser.add_argument("--batch-size", type=int, default=10, help="Projects to send to Codex per batch.")
     parser.add_argument("--force", action="store_true", help="Re-run Codex even when a valid batch checkpoint exists.")
@@ -458,12 +459,18 @@ def apply_prepared_batches(
 def selected_projects_for_args(args: argparse.Namespace, state: dict[str, Any], today: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     projects = load_projects(args.provider)
     update_observed_state(state, projects, today)
+    selection_mode = "new" if args.mode == "history-missing" else args.mode
+    include_missing_curated_fields = (
+        args.include_missing_curated_fields
+        or args.only_missing_curated_fields
+        or args.mode == "history-missing"
+    )
     selected = select_projects(
         projects,
         state,
-        mode=args.mode,
+        mode=selection_mode,
         today=today,
-        include_missing_curated_fields=args.include_missing_curated_fields or args.only_missing_curated_fields,
+        include_missing_curated_fields=include_missing_curated_fields,
     )
     if args.only_missing_curated_fields:
         selected = [record for record in selected if has_missing_curated_fields(record)]

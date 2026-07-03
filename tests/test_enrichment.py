@@ -248,6 +248,24 @@ class EnrichmentTests(unittest.TestCase):
         selected = select_projects([record], state, mode="review-stale-updated", today=today.isoformat())
         self.assertEqual([item["id"] for item in selected], ["brew:bat"])
 
+    def test_history_missing_mode_is_accepted_for_legacy_controller_runs(self):
+        module = load_enrich_projects_module()
+        args = argparse.Namespace(
+            provider="brew",
+            mode="history-missing",
+            include_missing_curated_fields=False,
+            only_missing_curated_fields=False,
+            limit=0,
+        )
+        record = sample_record()
+        state = {}
+
+        with mock.patch.object(module, "load_projects", return_value=[record]):
+            projects, selected = module.selected_projects_for_args(args, state, date.today().isoformat())
+
+        self.assertEqual(projects, [record])
+        self.assertEqual([item["id"] for item in selected], ["brew:bat"])
+
     def test_low_confidence_skips_non_empty_field_but_caches_review(self):
         record = sample_record()
         record["category"] = "developer-tools"
