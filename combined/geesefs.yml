@@ -11,55 +11,42 @@ credentials-file-location:
 history:
   adoption-history:
     - >
-      GeeseFS occupies a practical niche for teams that want object storage to look like
-      a filesystem without accepting the performance limits of older S3 FUSE tools. Its
-      README points to a GeeseFS-based CSI S3 driver, while package metadata shows
-      Homebrew and Nix distribution for users who want a packaged binary rather than
-      building from source.
+      The project lives under the yandex-cloud organization and the README points to a
+      GeeseFS-based CSI S3 driver. The input package facts list Homebrew and Nix
+      packaging, which matches a systems-tool audience that wants the same mount helper
+      available through reproducible package channels.
   package-nerd-significance:
     - >
-      For package collections, GeeseFS is a filesystem tool with real operational
-      dependencies. FUSE or macFUSE/WinFSP support, S3 credential conventions,
-      object-store compatibility flags, and performance-sensitive defaults all matter
-      more than the fact that it ships as a single Go binary.
+      GeeseFS is notable for package-manager users because it is a single Go/FUSE binary
+      at the boundary between cloud object storage and local filesystem semantics, where
+      packaging has to line up with FUSE support, init/fstab workflows, Windows WinFSP
+      usage, and S3 credential conventions.
   project-history:
     - >
-      Yandex Cloud opened GeeseFS on GitHub in 2021, with the first GitHub release line
-      beginning at v0.28.1 in September of that year. The README describes it as a
-      high-performance S3 filesystem written in Go and explicitly lists it as a fork of
-      Goofys.
-    - >
-      The project evolved around the limitations of S3-backed FUSE filesystems. Its
-      README contrasts GeeseFS with rclone, Goofys, s3fs, and gcsfuse, emphasizing
-      aggressive parallelism, asynchronous operations, caching, recursive listing
-      optimizations, xfstests coverage, and Yandex Object Storage features such as
-      partial object updates.
+      The official README frames GeeseFS as a Go implementation intended to address
+      common S3 FUSE performance problems, especially small-file and metadata workloads,
+      by using aggressive parallelism and asynchrony.
   related-projects:
-    - Goofys is the upstream project GeeseFS forked from.
-    - s3fs, rclone mount, and gcsfuse are comparison points in the README.
-    - Yandex Cloud's CSI S3 driver uses GeeseFS.
+    - >
+      The README compares GeeseFS with rclone, Goofys, S3FS, and gcsfuse, and points to
+      a GeeseFS-based CSI S3 driver.
   sources:
-    - https://api.github.com/repos/yandex-cloud/geesefs
-    - https://api.github.com/repos/yandex-cloud/geesefs/releases?per_page=100
     - https://github.com/yandex-cloud/geesefs
-    - https://raw.githubusercontent.com/yandex-cloud/geesefs/master/README.md
   summary:
     - >
-      GeeseFS is a Go FUSE filesystem for mounting S3 and S3-compatible object storage
-      as a high-performance, POSIX-ish filesystem.
+      GeeseFS is a high-performance, POSIX-ish FUSE filesystem for mounting
+      S3-compatible object storage as a filesystem.
   timeline:
-    - '2021: GitHub repository created.'
-    - '2021: v0.28.1 release published.'
-    - '2021: README documented GeeseFS as a Goofys fork for high-performance S3 mounts.'
-    - '2026: v0.43.x releases continued performance and memory-management work.'
+    - >
+      0.37.0: Metadata cache memory usage became limited, according to the README's
+      common-issues notes.
   usage:
     - >
-      Practitioners use geesefs by providing AWS-style credentials, then mounting a
-      bucket or bucket prefix at a local mountpoint. The README documents standard
-      credential files, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment
-      variables, fstab entries for startup mounts, custom endpoints for S3-compatible
-      stores, Windows use through WinFSP, and tuning flags for throughput, cache memory,
-      and compatibility.
+      Users provide AWS-style credentials, then run geesefs with a bucket and mount
+      point, optionally specifying an endpoint or bucket prefix. The official README
+      also documents fstab startup usage, Windows operation with WinFSP,
+      environment-variable credentials, and custom credential files through
+      --shared-config.
 category: cloud-infrastructure
 package-manager:
   brew: geesefs
