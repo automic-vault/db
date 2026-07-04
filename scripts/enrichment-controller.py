@@ -9,6 +9,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNS_DIR = ROOT / "cache" / "enrichment" / "runs"
+MODE_ALIASES = {"history-only": "history-missing"}
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -63,7 +64,7 @@ def apply_command(run: dict[str, Any]) -> list[str]:
         "python3",
         "scripts/enrich-projects.py",
         "--mode",
-        str(run["mode"]),
+        MODE_ALIASES.get(str(run["mode"]), str(run["mode"])),
         "--batch-size",
         str(run["batch_size"]),
         "--backend",

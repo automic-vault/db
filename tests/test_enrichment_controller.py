@@ -109,6 +109,22 @@ class EnrichmentControllerTests(unittest.TestCase):
         self.assertIn("review-stale-updated", command)
         self.assertEqual(command[-1], "--commit-after-batch")
 
+    def test_apply_command_maps_history_only_manifest_mode(self):
+        controller = load_enrichment_controller()
+
+        command = controller.apply_command(
+            {
+                "run_id": "history-only-20260630T214000Z",
+                "mode": "history-only",
+                "provider": "brew",
+                "batch_size": 6,
+                "include_missing_curated_fields": False,
+            }
+        )
+
+        self.assertEqual(command[command.index("--mode") + 1], "history-missing")
+        self.assertEqual(command[-1], "--commit-after-batch")
+
 
 if __name__ == "__main__":
     unittest.main()
