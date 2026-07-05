@@ -1,43 +1,82 @@
 id: brew:mksh
 display-name: MirBSD Korn Shell
 homepage: https://mbsd.evolvis.org/mksh.htm
-repo: null
+repo: https://www.mirbsd.org/cvs.cgi/src/bin/mksh
 docs:
   - https://mbsd.evolvis.org/mksh.htm
   - https://www.mirbsd.org/man1/mksh
   - https://www.mirbsd.org/mksh-faq.htm
 config-file-location:
+  linux:
+    - /etc/skel/.mkshrc
+    - /etc/mkshrc
   unix:
     - ~/.mkshrc
-    - /etc/mkshrc
+    - ~/.profile
+    - /etc/profile
+    - /etc/suid_profile
+    - /etc/shells
 credentials-file-location: null
 history:
-  sources:
+  adoption-history:
     - >
-      https://android.googlesource.com/platform/external/mksh/+/refs/tags/android-14.0.0_r37/src/mksh.faq
-    - https://directory.fsf.org/wiki/Mksh
-    - https://github.com/mirabilos/mksh-cvs2git/blob/master/mksh.faq
-    - https://manpages.debian.org/unstable/mksh/mksh.1.en.html
+      mksh became the system shell in several operating systems and Linux distributions.
+      The FAQ says it is used as Android's system shell for startup, background, and
+      user-invoked commands.
+    - >
+      Its broad packaging footprint across Homebrew, Debian, Ubuntu, Alpine, Fedora,
+      Nix, MacPorts, and SUSE reflects a mature portable shell rather than a
+      platform-specific utility.
+  package-nerd-significance:
+    - >
+      mksh matters to package nerds because shells sit at the boundary between user
+      environment, system boot scripts, and package maintainer scripts. It is a small
+      but consequential runtime whose packaging choices affect `/bin/sh` compatibility,
+      skeleton rc files, Android system behavior, and historical Korn shell
+      compatibility.
+    - >
+      It is also a case where the official project explicitly labels its GitHub mirror
+      unofficial, so package metadata should prefer the MirBSD homepage, signed
+      distfiles, manual, FAQ, and CVS/CVSweb sources.
+  project-history:
+    - >
+      The mksh FAQ traces the lineage from the Public Domain Bourne Shell and pdksh,
+      through OpenBSD cleanup work, to MirBSD development beginning in 2002. After 2004,
+      development added portability, parser reorganization, bug fixes, and features
+      influenced by ksh93, bash, zsh, BSD csh, and POSIX work.
+    - >
+      The official mksh page lists R59c from October 31, 2020 as the current version and
+      provides signed source distributions plus instructions for CVS HEAD.
+  related-projects:
+    - >
+      mksh is related to pdksh, oksh, AT&T ksh/ksh93, POSIX sh, bash, zsh, lksh, Android
+      system shell usage, MirBSD, Debian, and OpenWrt/FreeWRT packaging.
+  sources:
+    - https://mbsd.evolvis.org/mksh.htm
+    - https://www.mirbsd.org/man1/mksh
+    - https://www.mirbsd.org/mksh-faq.htm
   summary:
     - >
-      mksh, the MirBSD Korn Shell, is a Bourne-compatible command interpreter derived
-      from the Public Domain Korn Shell line rather than from AT&T's proprietary
-      KornShell. The project history in the mksh FAQ traces the lineage from the Public
-      Domain Bourne Shell and pdksh through OpenBSD cleanup work, then to MirBSD
-      development beginning in 2002. That development added portability back on top of
-      the OpenBSD work, followed by parser reorganization, bug fixes, and features
-      influenced by ksh93, bash, zsh, and BSD csh.
+      mksh, the MirBSD Korn Shell, is a Bourne/POSIX/Korn-style command interpreter and
+      scripting language. The official site describes it as an actively developed free
+      implementation of the Korn Shell programming language and successor to the Public
+      Domain Korn Shell line.
+  timeline:
+    - '1980s: Public Domain Bourne Shell lineage begins, later becoming pdksh.'
+    - '1999: pdksh development ends.'
+    - "2002: Development of what became mksh starts as MirBSD's system shell."
+    - '2003: OpenBSD cleanup of pdksh feeds into the lineage.'
+    - '2004: mksh sees independent parser, portability, and feature work.'
+    - '2020-10: Official page lists mksh R59c as current.'
   usage:
     - >
-      The shell's niche is a small, portable Korn Shell-style runtime for interactive
-      use, scripting, and system shell roles. Debian's manual describes mksh as a
-      command interpreter for both interactive and shell-script use, with a language
-      that is a superset of sh and POSIX shell and largely compatible with the original
-      Korn shell. The FAQ also documents Android adoption: mksh is used as Android's
-      system shell, running commands during startup, background operation, and
-      user-invoked tasks. Package-manager coverage across Homebrew, Debian/Ubuntu,
-      Alpine, Fedora, Nix, MacPorts, and SUSE reflects that role as a general-purpose
-      Unix shell rather than a single-platform utility.
+      The mksh manual describes it as a command interpreter for both interactive and
+      shell-script use, with a command language that is a superset of sh and POSIX shell
+      and largely compatible with the original Korn shell.
+    - >
+      Interactive users normally use `~/.mkshrc` or `$ENV`; login shells also process
+      profile files. Packagers commonly install `dot.mkshrc` into `/etc/skel/.mkshrc` or
+      `/etc/mkshrc` with a user-editable wrapper.
 category: language-runtime
 package-manager:
   apk: mksh
@@ -51,6 +90,7 @@ package-manager:
 package-manager-url: https://formulae.brew.sh/formula/mksh
 license: MirOS
 tags:
+  - android
   - cli
   - korn-shell
   - mirbsd
