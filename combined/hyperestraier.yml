@@ -9,60 +9,57 @@ docs:
   - https://dbmx.net/hyperestraier/nguide-en.html
   - https://dbmx.net/hyperestraier/pguide-en.html
   - https://dbmx.net/hyperestraier/uguide-en.html
-config-file-location: null
-credentials-file-location: null
+config-file-location:
+  unix:
+    - <server-root>/_conf
+    - <crawler-root>/_conf
+    - <cgi-dir>/estseek.conf
+    - <cgi-dir>/estproxy.conf
+credentials-file-location:
+  unix: <server-root>/_user
 history:
   adoption-history:
     - >
-      Hyper Estraier was useful in the era when small sites, mail archives, local file
-      servers, and community portals often needed self-hosted search. Its official
-      introduction uses exactly those scenarios: site search, mailbox search, and
-      file-server search.
+      Hyper Estraier was useful in the era when small sites, mail archives, file
+      servers, and community portals often needed self-hosted search.
     - >
-      The project’s adoption niche was broader than a single binary. The official site
-      provided C APIs plus Java, Ruby, and Perl bindings, while the manuals documented
-      CGI deployment, crawler-based indexing, and networked node operation. That made it
-      viable both for administrators assembling a local search service and programmers
-      embedding search into another system.
+      Its adoption niche was broader than one executable: administrators could assemble
+      search with estcmd, estseek.cgi, estwaver, estmaster, and estcall, while
+      programmers could embed search through the C API and language bindings for Java,
+      Ruby, and Perl.
     - >
-      Its P2P design was an ambitious adoption pitch: multiple node servers could
-      distribute indexes across machines, forward searches, merge results, and keep
-      service available even if some servers were unavailable.
+      Its P2P design was an ambitious adoption pitch: node masters could host multiple
+      node servers, forward searches, merge results, and keep distributed search
+      available across machines.
   package-nerd-significance:
     - >
-      Hyper Estraier is package-nerd archaeology in the best sense: a compact,
-      source-distributed Unix search system with many small executables, CGI scripts, C
-      libraries, language bindings, and distributed-search ambitions.
+      Hyper Estraier is package-nerd archaeology: a compact Unix search stack with many
+      small executables, CGI scripts, C libraries, language bindings, and
+      distributed-search ambitions.
     - >
-      It captures a moment before Lucene-derived stacks and hosted search APIs became
-      the default answer for many new projects. Installing it today is less about
-      chasing modern search fashion and more about preserving a runnable model of
-      mid-2000s self-hosted search infrastructure.
+      It preserves a runnable model of mid-2000s self-hosted search infrastructure
+      before Lucene-derived stacks and hosted search APIs became the default answer for
+      many new projects.
   project-history:
     - >
       The official Hyper Estraier site carries a 2004-2007 copyright window and presents
       the project as a full-text search system for web sites, mail boxes, and file
-      servers. Its manual set covers introduction, user operation, programming, node
-      operation, crawler use, and P2P operation, which is unusually broad for a small
-      source-distributed Unix search package.
+      servers.
+    - >
+      The official documents cover introduction, user operation, programming, P2P node
+      operation, crawler use, and language bindings. Its feature list includes N-gram
+      indexing, optional morphological analysis, phrase search, regular-expression
+      search, attribute search, similarity search, multilingual Unicode support, and an
+      intelligent web crawler.
     - >
       The project followed the Estraier and QDBM ecosystem associated with Mikio
-      Hirabayashi. Its feature list reflects mid-2000s self-hosted search concerns: high
-      recall through N-gram indexing, optional morphological analysis, phrase search,
-      regular-expression search, attribute search, similarity search,
-      repository-independent indexing, multilingual Unicode support, and an intelligent
-      crawler.
-    - >
-      Hyper Estraier had two explicit faces. One was a library/API for embedding
-      full-text search into applications; the other was an application layer with
-      commands and CGI scripts for building a usable search system without writing code.
+      Hirabayashi and shipped as an open-source source package under the GNU Lesser
+      General Public License.
   related-projects:
     - >
       Hyper Estraier is related to Estraier, QDBM, MeCab-assisted Japanese text
-      analysis, local CGI search systems, and Unix full-text search tools.
-    - >
-      Its documented example application mod_estraier used the node API with Apache
-      proxying to build search over seen or proxied web content.
+      analysis, CGI search systems, and Unix full-text search tools.
+    - The official P2P guide discusses mod_estraier as an example application of the node API.
   sources:
     - https://dbmx.net/hyperestraier/
     - https://dbmx.net/hyperestraier/cguide-en.html
@@ -72,32 +69,30 @@ history:
     - https://dbmx.net/hyperestraier/uguide-en.html
   summary:
     - >
-      Hyper Estraier is Mikio Hirabayashi’s full-text search system for building local,
-      site, and community search indexes. It combines command-line indexing, CGI search,
-      a crawler, C APIs, language bindings, Unicode handling, and a documented
-      client/server and peer-to-peer search architecture.
+      Hyper Estraier is Mikio Hirabayashi's full-text search system for local, site, and
+      community search. It packages command-line indexing, CGI search, crawler
+      operation, C APIs, language bindings, Unicode support, and a documented
+      client/server and peer-to-peer node architecture.
   timeline:
     - '2004: The official documentation copyright window begins.'
     - '2007: The official English documentation was last updated.'
+    - '2007: The official homepage lists source package version 1.4.13.'
     - >
       2000s: The manuals documented command-line indexing, CGI search, crawler
       operation, programming APIs, and P2P node search.
   usage:
     - >
-      The basic user workflow is to create an index with estcmd, gather documents from a
-      directory, and search through either command-line tools or the estseek CGI
-      interface. The user guide documents indexing local web content, updating an index
-      incrementally, purging deleted documents, and searching with full-text and
-      attribute conditions.
+      The basic workflow is to create an index with estcmd, gather documents, and search
+      through command-line tools or the estseek.cgi interface.
     - >
-      For web-scale collection, estwaver crawls web sites and indexes fetched documents
-      directly, avoiding the extra storage and overhead of prefetching a site with a
-      separate crawler. For networked search, estmaster runs as a resident node master
-      and estcall acts as a client command.
+      For web collection, estwaver creates a crawler root directory and indexes crawled
+      documents. For networked search, estmaster creates a server root directory
+      containing _conf, _user, _log, _meta, _pid, _node, and related runtime files,
+      while estcall acts as a client command.
     - >
-      Programmers could use the core API to make search applications over repositories
-      other than plain files, such as records in a relational database, while keeping
-      indexing and retrieval independent of the user interface.
+      CGI deployment uses configuration files such as estseek.conf and estproxy.conf
+      copied into CGI-script locations, with sample configurations installed under the
+      Hyper Estraier shared data directory.
 category: data
 package-manager:
   brew: hyperestraier
@@ -106,6 +101,7 @@ package-manager:
 package-manager-url: https://formulae.brew.sh/formula/hyperestraier
 license: LGPL-2.1-or-later
 tags:
+  - cgi
   - cli
   - crawler
   - full-text-search
