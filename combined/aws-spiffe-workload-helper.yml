@@ -3,6 +3,7 @@ display-name: AWS SPIFFE Workload Helper
 homepage: https://github.com/spiffe/aws-spiffe-workload-helper
 repo: https://github.com/spiffe/aws-spiffe-workload-helper
 docs:
+  - https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html
   - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sourcing-external.html
   - https://docs.aws.amazon.com/rolesanywhere/latest/userguide/introduction.html
   - https://github.com/spiffe/aws-spiffe-workload-helper#readme
@@ -12,52 +13,47 @@ credentials-file-location: null
 history:
   adoption-history:
     - >
-      The project is young and narrow. Its adoption story is mainly SPIFFE and AWS Roles
-      Anywhere integration rather than broad CLI popularity: users run it where
-      workloads already receive X.509 or JWT SVIDs from the SPIFFE Workload API.
+      The repository is a SPIFFE tiny-project and remains a narrow integration tool
+      rather than a broad CLI ecosystem. Its GitHub releases reached v0.0.5 on February
+      16, 2026.
   package-nerd-significance:
     - >
-      For package maintainers, the interesting bit is not size but trust boundary: this
-      binary bridges SPIFFE Workload API identity, AWS STS or Roles Anywhere, and the
-      AWS SDK credential_process hook. Packaging makes that bridge reproducible on hosts
-      and images.
+      The package is notable because it bridges SPIFFE Workload API identity, AWS Roles
+      Anywhere, AWS STS, and the AWS external credential process contract in a single
+      distributable binary.
   project-history:
     - >
-      The public repository begins in October 2024 and is marked by the SPIFFE project
-      as development-phase/tiny-project. The README says it is intended to provide a
-      more native SPIFFE experience than AWS's rolesanywhere-credential-helper and can
-      be used in its place.
+      The official README describes the helper as a lightweight tool for providing
+      workloads with AWS credentials using SPIFFE identity, with support for X.509 SVIDs
+      through AWS Roles Anywhere and JWT SVIDs through AssumeRoleWithWebIdentity.
   related-projects:
     - SPIFFE and the SPIFFE Workload API provide the identity source.
     - >
-      AWS Roles Anywhere and STS AssumeRoleWithWebIdentity provide the AWS credential
+      AWS Roles Anywhere and AWS STS AssumeRoleWithWebIdentity provide AWS credential
       exchange targets.
     - >
       AWS rolesanywhere-credential-helper is the AWS tool the README compares this
       helper against.
   sources:
+    - https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html
     - https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sourcing-external.html
     - https://docs.aws.amazon.com/rolesanywhere/latest/userguide/introduction.html
     - https://github.com/spiffe/aws-spiffe-workload-helper#readme
-    - official git history and tags from https://github.com/spiffe/aws-spiffe-workload-helper
+    - https://github.com/spiffe/aws-spiffe-workload-helper/releases
   summary:
     - >
-      AWS SPIFFE Workload Helper is a lightweight SPIFFE project tool for obtaining AWS
-      credentials for workloads from SPIFFE identities.
+      AWS SPIFFE Workload Helper is a SPIFFE project helper for obtaining AWS
+      credentials from SPIFFE workload identities.
   timeline:
-    - '2024: Initial public commits create the helper and Cobra-based CLI handlers.'
-    - '2024: Release-candidate tags begin.'
-    - '2025: Early v0.0.x tags continue.'
+    - '2024: Initial public development began in the official repository.'
+    - '2025: Early v0.0.x releases were published.'
+    - '2026: v0.0.5 was published on GitHub Releases.'
   usage:
     - >
-      The helper supports x509-credential-process for AWS Roles Anywhere,
-      x509-credential-file for legacy consumers that need a credential file, and
-      jwt-credential-process for AssumeRoleWithWebIdentity. The preferred process flow
-      writes credentials to stdout in the format expected by AWS SDKs and CLIs.
-    - >
-      To configure AWS SDKs and CLIs, the README instructs users to modify the AWS
-      config file, normally ~/.aws/config, and set credential_process to invoke
-      aws-spiffe-workload-helper.
+      Users configure AWS SDKs and CLIs by setting `credential_process` in
+      `~/.aws/config` to invoke `aws-spiffe-workload-helper`. The helper can return
+      credentials to stdout or write a user-specified credential file for legacy
+      consumers.
 category: security
 package-manager:
   brew: aws-spiffe-workload-helper
@@ -70,6 +66,7 @@ tags:
   - identity
   - roles-anywhere
   - spiffe
+  - sts
   - workload-api
 description: Helper for providing AWS credentials to workloads using their SPIFFE identity
 executables:
