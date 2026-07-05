@@ -650,6 +650,9 @@ def page_search_text(page_module: Any, page: Any, locale: dict[str, Any] | None)
         pieces.extend(str(item) for item in page.approval_gate.get("rules") or [])
     if getattr(page, "agent_safety_answer", None):
         pieces.extend(str(value) for value in page.agent_safety_answer.values())
+    for related in getattr(page, "related_packages", []):
+        if isinstance(related, dict):
+            pieces.extend(str(related.get(key) or "") for key in ("label", "name", "reason", "rel", "evidence"))
     for match in getattr(page, "external_package_manager_matches", []):
         if not isinstance(match, dict):
             continue
