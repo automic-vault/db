@@ -10,6 +10,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 RUNS_DIR = ROOT / "cache" / "enrichment" / "runs"
 MODE_ALIASES = {"history-only": "history-missing"}
+PROVIDER_ALIASES = {"mixed": "brew"}
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -72,7 +73,7 @@ def apply_command(run: dict[str, Any]) -> list[str]:
         "--phase",
         "apply",
         "--provider",
-        str(run["provider"]),
+        PROVIDER_ALIASES.get(str(run["provider"]), str(run["provider"])),
         "--run-id",
         str(run["run_id"]),
     ]

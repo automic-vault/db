@@ -125,6 +125,21 @@ class EnrichmentControllerTests(unittest.TestCase):
         self.assertEqual(command[command.index("--mode") + 1], "history-missing")
         self.assertEqual(command[-1], "--commit-after-batch")
 
+    def test_apply_command_maps_mixed_manifest_provider(self):
+        controller = load_enrichment_controller()
+
+        command = controller.apply_command(
+            {
+                "run_id": "history-only-20260701T000500Z",
+                "mode": "history-only",
+                "provider": "mixed",
+                "batch_size": 6,
+                "include_missing_curated_fields": False,
+            }
+        )
+
+        self.assertEqual(command[command.index("--provider") + 1], "brew")
+
 
 if __name__ == "__main__":
     unittest.main()
