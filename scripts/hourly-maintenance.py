@@ -33,6 +33,7 @@ PREPARE_OUTPUT_PATTERN = re.compile(
 )
 UNATTENDED_PUBLISH_SKIP_MARKERS = (
     "missing AWS credential_process approval token",
+    "Unable to locate credentials",
 )
 
 
