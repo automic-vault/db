@@ -641,8 +641,9 @@ def page_search_text(page_module: Any, page: Any, locale: dict[str, Any] | None)
     for hub in page.package_hubs:
         if isinstance(hub, dict):
             pieces.extend(str(hub.get(key) or "") for key in ("slug", "label", "reason"))
-    if page.geiger:
-        pieces.extend(str(item) for item in page.geiger.get("reasons") or [])
+    geiger = sanitized_geiger(page)
+    if geiger:
+        pieces.extend(str(item) for item in geiger.get("reasons") or [])
     if page.isotope:
         justification = page.isotope.get("justification") or {}
         pieces.append(page_module.public_copy(justification.get("title") or ""))
@@ -715,14 +716,41 @@ def package_security_signals(page_module: Any, page: Any) -> list[str]:
         title = page_module.public_copy(justification.get("title") or "")
         if title:
             signals.append(title)
-    if page.geiger:
-        signals.extend(str(item) for item in page.geiger.get("reasons") or [])
+    geiger = sanitized_geiger(page)
+    if geiger:
+        signals.extend(str(item) for item in geiger.get("reasons") or [])
     if page.approval_gate:
         rule_count = page.approval_gate.get("rule_count")
         if rule_count:
             signals.append(f"{rule_count} approval-gate rules")
         signals.extend(str(item) for item in page.approval_gate.get("rules") or [])
     return sorted(dict.fromkeys(item.strip() for item in signals if item and item.strip()))
+
+
+STALE_NO_EXECUTABLE_REASON = "no executable entrypoint in the package index"
+STALE_NO_EXECUTABLE_SIGNAL = "metadata:no-indexed-executables"
+
+
+def has_executable_evidence(page: Any) -> bool:
+    return bool(getattr(page, "executables", None) or getattr(page, "aliases", None) or getattr(page, "binaries", None))
+
+
+def sanitized_geiger(page: Any) -> dict[str, Any] | None:
+    geiger = getattr(page, "geiger", None)
+    if not isinstance(geiger, dict) or not has_executable_evidence(page):
+        return geiger
+    cleaned = dict(geiger)
+    cleaned["reasons"] = [
+        reason
+        for reason in (geiger.get("reasons") or [])
+        if str(reason).strip() != STALE_NO_EXECUTABLE_REASON
+    ]
+    cleaned["signals"] = [
+        signal
+        for signal in (geiger.get("signals") or [])
+        if str(signal).strip() != STALE_NO_EXECUTABLE_SIGNAL
+    ]
+    return cleaned if cleaned.get("reasons") else None
 
 
 def jsonable(value: Any) -> Any:
@@ -840,7 +868,7 @@ def full_package_data(page_module: Any, page: Any, route: PackageRoute | None = 
         "classifiers": getattr(page, "classifiers", []),
         "projectUrls": getattr(page, "project_urls", {}),
         "versionFreshness": getattr(page, "version_freshness", {}),
-        "geiger": getattr(page, "geiger", None),
+        "geiger": sanitized_geiger(page),
         "relatedPackages": getattr(page, "related_packages", []),
         "alsoAvailableVia": getattr(page, "also_available_via", []),
         "packageHubs": getattr(page, "package_hubs", []),
