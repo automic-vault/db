@@ -31,6 +31,9 @@ ISOTOPES_JSON_PATH = ROOT / "cache" / "automic-vault" / "isotopes.json"
 PREPARE_OUTPUT_PATTERN = re.compile(
     r"Prepared \d+ projects in \d+ batches under (?P<run_dir>cache/enrichment/runs/[^\s]+)"
 )
+UNATTENDED_PUBLISH_SKIP_MARKERS = (
+    "missing AWS credential_process approval token",
+)
 
 
 class EnrichmentHealthError(RuntimeError):
@@ -162,6 +165,40 @@ def run_prepare_enrichment(command: list[str], *, timeout: int) -> Path | None:
     return parse_prepared_run_dir(result.stdout)
 
 
+def run_publish_public_db(command: list[str]) -> bool:
+    print("+", " ".join(command), flush=True)
+    result = subprocess.run(
+        command,
+        cwd=ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    if result.stdout:
+        print(result.stdout, end="", flush=True)
+    if result.returncode == 0:
+        if result.stderr:
+            print(result.stderr, end="", file=sys.stderr, flush=True)
+        return True
+
+    if result.stderr:
+        print(result.stderr, end="", file=sys.stderr, flush=True)
+    if any(marker in result.stderr for marker in UNATTENDED_PUBLISH_SKIP_MARKERS):
+        print(
+            "WARN: skipping public db publish because unattended AWS approval is unavailable",
+            file=sys.stderr,
+            flush=True,
+        )
+        return False
+
+    raise subprocess.CalledProcessError(
+        result.returncode,
+        command,
+        output=result.stdout,
+        stderr=result.stderr,
+    )
+
+
 def commit_if_changed(message: str) -> str | None:
     path_args = git_known_paths(COMMIT_PATHS)
     if not path_args:
@@ -274,7 +311,7 @@ def main() -> int:
             )
     run([py, "scripts/export-automic-vault-db.py"])
     run([py, "scripts/check-automic-vault-db-health.py"])
-    run([py, "scripts/publish-public-db.py"])
+    run_publish_public_db([py, "scripts/publish-public-db.py"])
     run([py, "scripts/generate-pkg-page-enrichment.py", "--refresh", "--registry-cache-only"])
     run([py, "scripts/generate-pkg-version-freshness.py"])
     run([py, "scripts/generate-pkg-manager-indexes.py"])

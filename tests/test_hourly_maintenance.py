@@ -1,5 +1,6 @@
 import importlib.util
 import io
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -25,25 +26,30 @@ class HourlyMaintenanceTests(unittest.TestCase):
             with (
                 mock.patch.object(maintenance, "can_refresh_isotopes", return_value=True),
                 mock.patch.object(maintenance, "run") as run,
+                mock.patch.object(maintenance, "run_publish_public_db", return_value=True) as run_publish_public_db,
                 mock.patch.object(maintenance, "run_prepare_enrichment", return_value=None) as run_prepare_enrichment,
                 mock.patch.object(maintenance, "unresolved_enrichment_run_ids", return_value=[]),
             ):
                 self.assertEqual(maintenance.main(), 0)
-        return [call.args[0] for call in run.call_args_list], run_prepare_enrichment.call_args_list
+        return (
+            [call.args[0] for call in run.call_args_list],
+            [call.args[0] for call in run_publish_public_db.call_args_list],
+            run_prepare_enrichment.call_args_list,
+        )
 
     def test_default_builds_new_isotopes(self):
-        commands, _ = self.run_hourly()
+        commands, _, _ = self.run_hourly()
 
         self.assertIn(["bash", "scripts/build-isotopes.sh"], commands)
         self.assertNotIn(["bash", "scripts/build-isotopes.sh", "--skip-builds"], commands)
 
     def test_skip_isotope_builds_refreshes_summary_only(self):
-        commands, _ = self.run_hourly("--skip-isotope-builds")
+        commands, _, _ = self.run_hourly("--skip-isotope-builds")
 
         self.assertIn(["bash", "scripts/build-isotopes.sh", "--skip-builds"], commands)
 
     def test_skip_isotopes_skips_isotope_command(self):
-        commands, _ = self.run_hourly("--skip-isotopes")
+        commands, _, _ = self.run_hourly("--skip-isotopes")
 
         isotope_commands = [
             command
@@ -68,6 +74,7 @@ class HourlyMaintenanceTests(unittest.TestCase):
                         with mock.patch.object(sys, "argv", ["hourly-maintenance.py", "--no-commit", "--skip-sqlite"]):
                             with (
                                 mock.patch.object(maintenance, "run") as run,
+                                mock.patch.object(maintenance, "run_publish_public_db", return_value=True),
                                 mock.patch.object(maintenance, "run_prepare_enrichment", return_value=None),
                                 mock.patch.object(maintenance, "unresolved_enrichment_run_ids", return_value=[]),
                                 mock.patch("sys.stderr", stderr),
@@ -96,6 +103,7 @@ class HourlyMaintenanceTests(unittest.TestCase):
                         with mock.patch.object(sys, "argv", ["hourly-maintenance.py", "--no-commit", "--skip-sqlite"]):
                             with (
                                 mock.patch.object(maintenance, "run"),
+                                mock.patch.object(maintenance, "run_publish_public_db", return_value=True),
                                 mock.patch.object(maintenance, "run_prepare_enrichment", return_value=None),
                                 mock.patch.object(maintenance, "unresolved_enrichment_run_ids", return_value=[]),
                             ):
@@ -103,7 +111,7 @@ class HourlyMaintenanceTests(unittest.TestCase):
                                     maintenance.main()
 
     def test_runs_automic_vault_db_health_check_after_export(self):
-        commands, _ = self.run_hourly("--skip-isotopes")
+        commands, _, _ = self.run_hourly("--skip-isotopes")
 
         export_index = commands.index([sys.executable, "scripts/export-automic-vault-db.py"])
         health_index = commands.index([sys.executable, "scripts/check-automic-vault-db-health.py"])
@@ -111,7 +119,7 @@ class HourlyMaintenanceTests(unittest.TestCase):
         self.assertEqual(health_index, export_index + 1)
 
     def test_hourly_enrichment_prepares_external_controller_batches(self):
-        _, prepare_calls = self.run_hourly("--skip-isotopes")
+        _, _, prepare_calls = self.run_hourly("--skip-isotopes")
 
         self.assertEqual(len(prepare_calls), 1)
         command = prepare_calls[0].args[0]
@@ -123,12 +131,42 @@ class HourlyMaintenanceTests(unittest.TestCase):
         self.assertNotIn("--commit-after-batch", command)
 
     def test_publishes_public_db_after_health_check(self):
-        commands, _ = self.run_hourly("--skip-isotopes")
+        commands, publish_commands, _ = self.run_hourly("--skip-isotopes")
 
         health_index = commands.index([sys.executable, "scripts/check-automic-vault-db-health.py"])
-        publish_index = commands.index([sys.executable, "scripts/publish-public-db.py"])
 
-        self.assertEqual(publish_index, health_index + 1)
+        self.assertEqual(publish_commands, [[sys.executable, "scripts/publish-public-db.py"]])
+        self.assertEqual(health_index, 2)
+
+    def test_skips_public_db_publish_when_unattended_aws_approval_is_unavailable(self):
+        maintenance = load_hourly_maintenance()
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        with mock.patch("subprocess.run") as subprocess_run:
+            subprocess_run.return_value = subprocess.CompletedProcess(
+                [sys.executable, "scripts/publish-public-db.py"],
+                1,
+                stdout="",
+                stderr='{"error": "missing AWS credential_process approval token", "ok": false}\n',
+            )
+            with mock.patch("sys.stdout", stdout), mock.patch("sys.stderr", stderr):
+                self.assertFalse(maintenance.run_publish_public_db([sys.executable, "scripts/publish-public-db.py"]))
+
+        self.assertIn("skipping public db publish", stderr.getvalue())
+
+    def test_public_db_publish_still_fails_for_other_errors(self):
+        maintenance = load_hourly_maintenance()
+
+        with mock.patch("subprocess.run") as subprocess_run:
+            subprocess_run.return_value = subprocess.CompletedProcess(
+                [sys.executable, "scripts/publish-public-db.py"],
+                1,
+                stdout="",
+                stderr='{"error": "boom", "ok": false}\n',
+            )
+            with self.assertRaises(subprocess.CalledProcessError):
+                maintenance.run_publish_public_db([sys.executable, "scripts/publish-public-db.py"])
 
     def test_parse_prepared_run_dir_reads_prepare_output(self):
         maintenance = load_hourly_maintenance()
@@ -208,6 +246,7 @@ class HourlyMaintenanceTests(unittest.TestCase):
                     with mock.patch.object(sys, "argv", ["hourly-maintenance.py", "--no-commit", "--skip-sqlite"]):
                         with (
                             mock.patch.object(maintenance, "run") as run,
+                            mock.patch.object(maintenance, "run_publish_public_db", return_value=True) as run_publish_public_db,
                             mock.patch.object(maintenance, "run_prepare_enrichment") as run_prepare_enrichment,
                             mock.patch.object(maintenance, "can_refresh_isotopes", return_value=False),
                             mock.patch("sys.stderr", stderr),
@@ -218,7 +257,7 @@ class HourlyMaintenanceTests(unittest.TestCase):
             self.assertIn("skipping hourly enrichment prepare", stderr.getvalue())
             commands = [call.args[0] for call in run.call_args_list]
             self.assertIn([sys.executable, "scripts/build.py", "--refresh"], commands)
-            self.assertIn([sys.executable, "scripts/publish-public-db.py"], commands)
+            run_publish_public_db.assert_called_once_with([sys.executable, "scripts/publish-public-db.py"])
 
 
 if __name__ == "__main__":
