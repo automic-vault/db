@@ -5,6 +5,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -26,6 +27,7 @@ DEFAULT_HOURLY_ENRICH_LIMIT = int(os.environ.get("AVDB_HOURLY_ENRICH_LIMIT", "10
 DEFAULT_HOURLY_ENRICH_BATCH_SIZE = int(os.environ.get("AVDB_HOURLY_ENRICH_BATCH_SIZE", "3"))
 DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS = int(os.environ.get("AVDB_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS", "300"))
 ENRICHMENT_RUNS_DIR = ROOT / "cache" / "enrichment" / "runs"
+ISOTOPES_JSON_PATH = ROOT / "cache" / "automic-vault" / "isotopes.json"
 PREPARE_OUTPUT_PATTERN = re.compile(
     r"Prepared \d+ projects in \d+ batches under (?P<run_dir>cache/enrichment/runs/[^\s]+)"
 )
@@ -191,6 +193,10 @@ def commit_if_changed(message: str) -> str | None:
     return result.stdout.strip()
 
 
+def can_refresh_isotopes() -> bool:
+    return shutil.which("gh") is not None
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run one av.db hourly package database update.")
     parser.add_argument("--no-commit", action="store_true", help="Do not commit stable source changes.")
@@ -249,10 +255,23 @@ def main() -> int:
             if run_dir is not None:
                 assert_hourly_enrichment_progress(run_dir)
     if not args.skip_isotopes:
-        isotope_command = ["bash", "scripts/build-isotopes.sh"]
-        if args.skip_isotope_builds:
-            isotope_command.append("--skip-builds")
-        run(isotope_command)
+        if can_refresh_isotopes():
+            isotope_command = ["bash", "scripts/build-isotopes.sh"]
+            if args.skip_isotope_builds:
+                isotope_command.append("--skip-builds")
+            run(isotope_command)
+        elif ISOTOPES_JSON_PATH.is_file():
+            cached_path = os.path.relpath(ISOTOPES_JSON_PATH, ROOT)
+            print(
+                "WARN: skipping isotope refresh because gh is not installed; "
+                f"keeping cached {cached_path}",
+                file=sys.stderr,
+                flush=True,
+            )
+        else:
+            raise FileNotFoundError(
+                f"gh is not installed and cached isotopes are missing at {ISOTOPES_JSON_PATH}"
+            )
     run([py, "scripts/export-automic-vault-db.py"])
     run([py, "scripts/check-automic-vault-db-health.py"])
     run([py, "scripts/publish-public-db.py"])
