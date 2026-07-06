@@ -172,6 +172,34 @@ class HourlyMaintenanceTests(unittest.TestCase):
 
         self.assertIn("skipping public db publish", stderr.getvalue())
 
+    def test_skips_public_db_publish_when_unattended_publish_stalls(self):
+        maintenance = load_hourly_maintenance()
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        with mock.patch("subprocess.run", side_effect=subprocess.TimeoutExpired(["aws"], 120)):
+            with mock.patch("sys.stdout", stdout), mock.patch("sys.stderr", stderr):
+                self.assertFalse(maintenance.run_publish_public_db([sys.executable, "scripts/publish-public-db.py"]))
+
+        self.assertIn("stalled", stderr.getvalue())
+
+    def test_skips_public_db_publish_when_av_inject_connection_is_interrupted(self):
+        maintenance = load_hourly_maintenance()
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        with mock.patch("subprocess.run") as subprocess_run:
+            subprocess_run.return_value = subprocess.CompletedProcess(
+                [sys.executable, "scripts/publish-public-db.py"],
+                1,
+                stdout="",
+                stderr="av inject: Connection interrupted\n",
+            )
+            with mock.patch("sys.stdout", stdout), mock.patch("sys.stderr", stderr):
+                self.assertFalse(maintenance.run_publish_public_db([sys.executable, "scripts/publish-public-db.py"]))
+
+        self.assertIn("skipping public db publish", stderr.getvalue())
+
     def test_public_db_publish_still_fails_for_other_errors(self):
         maintenance = load_hourly_maintenance()
 

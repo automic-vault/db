@@ -26,6 +26,9 @@ COMMIT_PATHS = [
 DEFAULT_HOURLY_ENRICH_LIMIT = int(os.environ.get("AVDB_HOURLY_ENRICH_LIMIT", "10"))
 DEFAULT_HOURLY_ENRICH_BATCH_SIZE = int(os.environ.get("AVDB_HOURLY_ENRICH_BATCH_SIZE", "3"))
 DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS = int(os.environ.get("AVDB_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS", "300"))
+DEFAULT_PUBLIC_DB_PUBLISH_TIMEOUT_SECONDS = int(
+    os.environ.get("AVDB_PUBLIC_DB_PUBLISH_TIMEOUT_SECONDS", "120")
+)
 ENRICHMENT_RUNS_DIR = ROOT / "cache" / "enrichment" / "runs"
 ISOTOPES_JSON_PATH = ROOT / "cache" / "automic-vault" / "isotopes.json"
 PREPARE_OUTPUT_PATTERN = re.compile(
@@ -34,6 +37,7 @@ PREPARE_OUTPUT_PATTERN = re.compile(
 UNATTENDED_PUBLISH_SKIP_MARKERS = (
     "missing AWS credential_process approval token",
     "Unable to locate credentials",
+    "av inject: Connection interrupted",
 )
 
 
@@ -168,13 +172,22 @@ def run_prepare_enrichment(command: list[str], *, timeout: int) -> Path | None:
 
 def run_publish_public_db(command: list[str]) -> bool:
     print("+", " ".join(command), flush=True)
-    result = subprocess.run(
-        command,
-        cwd=ROOT,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
+    try:
+        result = subprocess.run(
+            command,
+            cwd=ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=DEFAULT_PUBLIC_DB_PUBLISH_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired:
+        print(
+            "WARN: skipping public db publish because unattended AWS approval stalled",
+            file=sys.stderr,
+            flush=True,
+        )
+        return False
     if result.stdout:
         print(result.stdout, end="", flush=True)
     if result.returncode == 0:
