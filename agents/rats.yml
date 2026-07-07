@@ -1,32 +1,50 @@
 id: brew:rats
 display-name: RATS
-repo: null
+repo: https://code.google.com/archive/p/rough-auditing-tool-for-security/source/default/source
 docs:
   - https://security.web.cern.ch/security/recommendations/en/codetools/rats.shtml
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    RATS, the Rough Auditing Tool for Security, is an early free static-analysis scanner
-    developed by Secure Software Inc. and later associated with Fortify after
-    acquisition. The tool scans C, C++, Perl, PHP, Python, and in maintained mirrors
-    Ruby source code, flagging common security-sensitive patterns such as buffer
-    overflows, time-of-check/time-of-use races, and risky library or language built-ins.
-  - >
-    Its name describes its contract: RATS performs a rough audit, not a proof of safety.
-    The original documentation and downstream manpages stress that it can miss real
-    defects and report non-defects, so the output is meant to guide manual code review.
-    That made it useful in the era before heavier SAST platforms became normal in CI: a
-    developer could run a fast command-line scanner over a source tree, get
-    severity-ranked findings, and decide where a human audit should begin.
-  - >
-    CERN's security guidance highlights the same practical usage pattern, noting that
-    RATS is fast enough to integrate into a build process with little overhead. Typical
-    invocations include `rats --resultsonly <path>` for terse output or `rats --quiet
-    --xml -w 3 <path>` for machine-readable reporting at a higher warning level. Package
-    availability in Homebrew, Fedora/DNF, MacPorts, Gentoo, and historical Ubuntu
-    manpages shows how it remained a small packaged security utility even after the
-    original Google Code distribution aged out.
+  adoption-history:
+    - >
+      RATS circulated as a small Unix security-auditing utility through source archives
+      and package managers. Homebrew, Debian-derived manpage packaging, Fedora,
+      MacPorts, and other Unix package collections carried it as a lightweight
+      source-code auditing tool.
+  package-nerd-significance:
+    - >
+      Package maintainers care about RATS because it is an old-style security CLI: small
+      C code, autoconf build, XML vulnerability databases, and a package surface that
+      exposes static-analysis behavior without a large framework.
+  project-history:
+    - >
+      The official README says RATS was developed, maintained, and distributed by Secure
+      Software, Inc. The 2.4 source archive describes it as a scanner for C, C++, Perl,
+      PHP, Python, and Ruby source that flags issues such as buffer overflows and TOCTOU
+      race conditions.
+  related-projects:
+    - >
+      The README notes Expat as a build/runtime requirement and credits Ben Laurie for
+      OpenSSL-specific database contributions.
+  sources:
+    - >
+      Google Code Archive: official rough-auditing-tool-for-security project and source
+      download.
+    - Homebrew formula metadata for rats stable 2.4.
+    - RATS 2.4 README and rats.1 from the official Google Code archive tarball.
+  summary:
+    - >
+      RATS, the Rough Auditing Tool for Security, is a command-line static analysis
+      scanner for finding common security-sensitive programming patterns in source code.
+  timeline:
+    - '2001: The bundled manpage date records RATS documentation in September 2001.'
+    - '2.4: Homebrew packages the Google Code archive release as the stable version.'
+  usage:
+    - >
+      Users run rats against files or directories and can select vulnerability databases
+      with -d, force a language with -l, choose warning levels, recurse through
+      directories, and emit text, XML, or HTML reports.
 tags:
   - cli
   - code-auditing
@@ -56,18 +74,14 @@ provenance:
       source_facts.homepage is the official RATS documentation/homepage used as the best
       available official documentation surface.
   history-sources:
-    - https://security.web.cern.ch/security/recommendations/en/codetools/rats.shtml
-    - https://github.com/andrew-d/rough-auditing-tool-for-security
-    - https://code.google.com/archive/p/rough-auditing-tool-for-security/
-    - https://manpages.ubuntu.com/manpages/trusty/man1/rats.1.html
     - >
-      https://www.nist.gov/itl/csd/secure-systems-and-applications/source-code-security-analyzers
-    - https://packages.gentoo.org/packages/dev-util/rats
-    - https://formulae.brew.sh/formula/rats
+      Google Code Archive: official rough-auditing-tool-for-security project and source
+      download.
+    - Homebrew formula metadata for rats stable 2.4.
+    - RATS 2.4 README and rats.1 from the official Google Code archive tarball.
   repo-sources:
-    - >
-      Official CERN page links Fortify/Google Code downloads for RATS, but no official
-      HTTP(S) source-control project URL was confidently verified.
+    - Google Code Archive page for rough-auditing-tool-for-security source browser.
+    - Homebrew rats formula uses the Google Code archive download for rats-2.4.tgz.
   tags-sources:
     - >
       source_facts.description and homepage identify RATS as a security/code auditing
@@ -78,6 +92,6 @@ category-path:
   - static-analysis
 display-name-confidence: high
 docs-confidence: medium
-history-confidence: high
-repo-confidence: low
+history-confidence: medium
+repo-confidence: medium
 tags-confidence: high
