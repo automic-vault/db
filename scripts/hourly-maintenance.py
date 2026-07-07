@@ -38,6 +38,7 @@ UNATTENDED_PUBLISH_SKIP_MARKERS = (
     "missing AWS credential_process approval token",
     "Unable to locate credentials",
     "av inject: Connection interrupted",
+    "av inject: failed to load isotope key AWS_ACCESS_KEY_ID",
 )
 
 
