@@ -7,29 +7,71 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    peg/leg is Ian Piumarta's 2007 pair of recursive-descent parser generators for C,
-    built around Bryan Ford's 2004 Parsing Expression Grammar formalism. `peg` consumes
-    grammars close to Ford's original PEG syntax, while `leg` uses conventions intended
-    to make it a practical replacement for lex/yacc-style parser toolchains.
-  - >
-    The tool's design reflects the PEG shift from ambiguous context-free grammars toward
-    recognition-based parsing with ordered choice. The project documentation highlights
-    unlimited backtracking, ordered choice for disambiguation, and the ability to
-    combine lexical scanning and syntactic parsing in one grammar instead of splitting
-    that work between a lexer and parser generator.
-  - >
-    Version history in the public mirror shows a long-lived 0.1 series, including
-    Windows-build fixes in 2013, source-line directive work in 2016, re-entrant parsing
-    support in 2019, and experimental inline-action semantic values in 0.1.20 on
-    2019-11-19. Homebrew packages the tool as `peg`, also known as `leg`, and exposes
-    the two executables.
-  - >
-    Practitioners use `peg` or `leg` by writing a PEG grammar and generating C parser
-    code, often for small languages, file formats, DSLs, or projects that want
-    scannerless recursive-descent parsing without a heavier parser framework. Its
-    ecosystem role is a compact C parser-generator package that influenced and supported
-    other grammar-driven tools, including peg-markdown's build.
+  adoption-history:
+    - >
+      peg/leg spread through Unix-like package managers as a small C parser-generation
+      tool: the input metadata lists Homebrew, Debian, Ubuntu, Arch, MacPorts, Nix,
+      Alpine, and openSUSE package names.
+    - >
+      Its niche is smaller than yacc-family tools, but it remains useful where a project
+      wants PEG-style ordered choice, unlimited backtracking, and combined scanning and
+      parsing in generated C.
+  package-nerd-significance:
+    - >
+      peg/leg is package-manager-friendly because it is a compact C command-line tool
+      with a stable manual page, source tarballs, and a long version history.
+    - >
+      For package nerds it is also a useful contrast with lex/yacc: a small PEG-based
+      generator that produces embeddable C parsers without requiring a larger parser
+      framework.
+  project-history:
+    - >
+      Ian Piumarta's official page lists peg/leg as tools for generating
+      recursive-descent parsers from Parsing Expression Grammars. The first public
+      release in the official version history is 0.1.1 on 2007-05-15.
+    - >
+      The manual page explains that peg reads grammar files or standard input and
+      generates C source defining `yyparse()`, while leg uses a syntax intended to make
+      it attractive to users familiar with lex and yacc workflows.
+    - >
+      The official version history shows steady maintenance through 0.1.19 stable in
+      2023, including reentrant parsing support, error actions, UTF-8 fixes, C++ support
+      improvements, and Windows/Mac build files.
+  related-projects:
+    - >
+      Bryan Ford's 2004 Parsing Expression Grammars paper is the formal grammar
+      reference cited by the official page.
+    - lex and yacc are the comparison point used by the official page and manual.
+  sources:
+    - https://www.piumarta.com/software/peg
+    - https://www.piumarta.com/software/peg/peg.1.html
+    - source_facts.package-manager
+  summary:
+    - >
+      peg and leg are recursive-descent parser generators for C. They process Parsing
+      Expression Grammars and generate C parsers, with `peg` following Bryan Ford's
+      original PEG syntax and `leg` using conventions intended as an alternative to lex
+      and yacc.
+  timeline:
+    - '2007-05-15: First public release, 0.1.1.'
+    - >
+      2013-06-03: 0.1.11 added error actions, C++ support improvements, and Win32/Mac
+      build files.
+    - '2016-07-22: 0.1.18 added the `-P` option to disable `#line` directives.'
+    - >
+      2023-03-06: 0.1.19 stable added experimental re-entrant parsing through
+      `yyparsefrom_r()`.
+    - >
+      2023-11-19: 0.1.20 development version listed with experimental inline-action
+      variables and semantic values.
+  usage:
+    - >
+      Typical use is to run `peg` or `leg` over a grammar file and compile or include
+      the generated C source in a client program.
+    - >
+      The official manual documents options such as `-o` for output file selection, `-P`
+      for suppressing `#line` directives, `-v` for verbose mode, and `-V` for version
+      output.
 tags:
   - c
   - cli
@@ -58,15 +100,11 @@ provenance:
     - Official Piumarta manual page is the dedicated documentation surface.
     - source_facts.homepage is the official project homepage.
   history-sources:
-    - https://github.com/gpakosz/peg
-    - https://www.piumarta.com/software/peg/
+    - https://www.piumarta.com/software/peg
     - https://www.piumarta.com/software/peg/peg.1.html
-    - https://bford.info/pub/lang/peg.pdf
-    - https://formulae.brew.sh/formula/peg
+    - source_facts.package-manager
   repo-sources:
-    - >
-      Official homepage documents source releases but no official HTTP source-control
-      repository was confirmed
+    - https://www.piumarta.com/software/peg
   tags-sources:
     - Official/manual source identifies PEG parser generation for C.
     - source_facts.description and executables identify peg/leg command-line tools.
@@ -77,5 +115,5 @@ category-path:
 display-name-confidence: high
 docs-confidence: high
 history-confidence: high
-repo-confidence: low
+repo-confidence: high
 tags-confidence: high
