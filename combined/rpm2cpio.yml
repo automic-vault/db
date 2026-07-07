@@ -1,39 +1,53 @@
 id: brew:rpm2cpio
 display-name: rpm2cpio
 homepage: https://svnweb.freebsd.org/ports/head/archivers/rpm2cpio/
-repo: null
+repo: https://svnweb.freebsd.org/ports/head/archivers/rpm2cpio
 docs:
   - https://svnweb.freebsd.org/ports/head/archivers/rpm2cpio
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rpm2cpio is the small extraction bridge between RPM packages and the traditional
-    cpio archive format used inside RPM payloads. The upstream RPM manual page says
-    rpm2cpio converts an .rpm file to a cpio archive on standard output, or reads an RPM
-    stream from standard input when passed a dash. Its authorship is credited in the
-    manual page to Erik Troan, matching RPM's early Red Hat lineage.
-  - >
-    The command became a standard troubleshooting and forensics tool because it lets
-    users inspect or extract files from an RPM without installing the package. Maximum
-    RPM documents the classic pattern: pipe rpm2cpio output directly into cpio to list
-    archive contents or extract selected paths. That workflow is especially useful on
-    non-RPM systems, in build scripts, in package review, and when a user needs one file
-    from a package without changing the host package database.
-  - >
-    There are two related packaging stories behind the name. RPM itself ships an
-    rpm2cpio utility, while FreeBSD and other ports collections also carry a lightweight
-    rpm2cpio package whose description says it exists because the full RPM-linked
-    version can require many dependencies and that the FreeBSD version is a tiny wrapper
-    around bsdtar. The FreeBSD port was added on March 20, 2001, gained RPM v4 support
-    in December 2003, support for newer xz/lzma-compressed RPMs in July 2010, and was
-    simplified into a shell script around bsdtar in December 2015.
-  - >
-    rpm2cpio's practical importance has narrowed but not disappeared. The RPM manual
-    notes that cpio cannot host individual files larger than 4 GB and directs users to
-    rpm2archive for that case. For ordinary packages, however, the old pipeline remains
-    muscle memory: rpm2cpio package.rpm | cpio -tv to inspect, or rpm2cpio package.rpm |
-    cpio -idmv to extract into a scratch directory.
+  adoption-history:
+    - >
+      The tool has typical cross-distro packaging-tool adoption: the input lists
+      Homebrew, Alpine, Debian, and Ubuntu package names, and Homebrew distributes the
+      FreeBSD ports script with libarchive and xz dependencies.
+  package-nerd-significance:
+    - >
+      rpm2cpio is package-nerd infrastructure in miniature: it lets users inspect or
+      unpack RPM payloads without installing the full RPM stack. This FreeBSD-port
+      implementation is especially small because libarchive does the archive work.
+  project-history:
+    - >
+      The FreeBSD ports description frames this rpm2cpio implementation as another
+      converter for RPM files, created because an existing implementation required
+      unnecessary RPM extraction dependencies. The port's Makefile lists version 1.4 and
+      installs the script as both `rpm2cpio` and `rpm2cpio.pl` for compatibility.
+  related-projects:
+    - >
+      Related tools and formats include RPM, cpio, bsdtar, libarchive, xz, and the
+      FreeBSD ports tree.
+  sources:
+    - https://formulae.brew.sh/api/formula/rpm2cpio.json
+    - https://svnweb.freebsd.org/ports/head/archivers/rpm2cpio/
+    - https://svnweb.freebsd.org/ports/head/archivers/rpm2cpio/files/rpm2cpio?view=markup
+    - https://svnweb.freebsd.org/ports/head/archivers/rpm2cpio/pkg-descr?view=markup
+    - source_facts.package-manager
+  summary:
+    - >
+      rpm2cpio is a tiny packaging utility that converts RPM package files into cpio
+      archives. The FreeBSD ports version is implemented as a short shell wrapper around
+      bsdtar/libarchive.
+  timeline:
+    - >
+      2016: FreeBSD ports revision 408590 simplified the port, added BSD-2-Clause
+      licensing, and installed the script as both rpm2cpio and rpm2cpio.pl.
+    - '2026: Homebrew formula API lists stable version 1.4 and continued binary bottle support.'
+  usage:
+    - >
+      The script accepts zero arguments when reading an RPM from standard input or one
+      file argument for a `.rpm` file, then writes a GNU cpio archive to standard
+      output.
 category: developer-tools
 package-manager:
   apk: rpm2cpio
