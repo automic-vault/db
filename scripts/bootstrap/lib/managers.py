@@ -142,6 +142,7 @@ MANAGER_DEFINITIONS: dict[str, dict[str, Any]] = {
 
 
 PACKAGE_ALIAS_MATCHES: dict[str, dict[str, list[str]]] = {
+    "aom": {"ubuntu": ["aom-tools"], "debian": ["aom-tools"]},
     "node": {"ubuntu": ["nodejs"], "debian": ["nodejs"], "dnf": ["nodejs", "nodejs24"], "pacman": ["nodejs"], "apk": ["nodejs"], "zypper": ["nodejs", "nodejs24"], "nix": ["nodejs"], "macports": ["nodejs24"], "winget": ["OpenJS.NodeJS"], "chocolatey": ["nodejs"], "scoop": ["main/nodejs"]},
     "postgresql": {"ubuntu": ["postgresql-client"], "debian": ["postgresql-client"], "apk": ["postgresql-client"]},
     "openssl@3": {"apk": ["libssl3"], "macports": ["openssl3"], "zypper": ["openssl-3"]},

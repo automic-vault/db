@@ -137,6 +137,10 @@ MANAGER_DEFINITIONS: dict[str, dict[str, Any]] = {
 
 
 PACKAGE_ALIAS_MATCHES: dict[str, dict[str, list[str]]] = {
+    "aom": {
+        "ubuntu": ["aom-tools"],
+        "debian": ["aom-tools"],
+    },
     "node": {
         "ubuntu": ["nodejs"],
         "debian": ["nodejs"],
