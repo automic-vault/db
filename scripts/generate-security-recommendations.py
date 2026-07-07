@@ -6,7 +6,6 @@ import os
 import sys
 from pathlib import Path
 
-from avdb_paths import ISOTOPES_JSON_PATH, RADIOISOTOPES_REPO_DIR
 from geiger_agent_data import load_agent_geiger_data
 
 
@@ -45,11 +44,6 @@ def _brew_key(formula):
     return f"brew:{formula}"
 
 
-def _unqualified_isotope_name(record_key, record):
-    name = _string(record.get("name")) or record_key
-    return name.removeprefix("isotope:")
-
-
 def _ensure_package(packages, package_key):
     package = packages.setdefault(
         package_key,
@@ -75,101 +69,6 @@ def _add_signal(package, signal, priority, reason):
     _append_unique(package["signals"], signal)
     _append_unique(package["reasons"], reason)
     package["priority"] = min(package["priority"], priority)
-
-
-def _versioned_formulae_for(base, geiger):
-    result = []
-    for name in geiger.get("packages", {}):
-        if not isinstance(name, str) or not name.startswith(f"{base}@"):
-            continue
-        version = name[len(base) + 1 :]
-        if version and version.isascii() and version.isdigit():
-            result.append(name)
-    return sorted(set(result))
-
-
-def _manifest_scalar(path, key):
-    lines = path.read_text(encoding="utf-8").splitlines()
-    for index, line in enumerate(lines):
-        stripped = line.strip()
-        if stripped == f"{key}:":
-            for child in lines[index + 1 :]:
-                value = child.strip()
-                if value:
-                    return value
-            return None
-        prefix = f"{key}:"
-        if stripped.startswith(prefix):
-            return _string(stripped[len(prefix) :])
-    return None
-
-
-def _versioned_radioisotope_bases(root):
-    bases = set()
-    for path in root.glob("*/automic-vault.yml"):
-        if (_manifest_scalar(path, "appliesToVersionedFormulae") or "").lower() != "true":
-            continue
-        modifies = _manifest_scalar(path, "modifies")
-        if modifies is not None and modifies.startswith("brew:"):
-            bases.add(modifies.removeprefix("brew:"))
-    return bases
-
-
-def _isotope_reason(record):
-    justification = record.get("justification")
-    if isinstance(justification, dict):
-        return _string(justification.get("title"))
-    return None
-
-
-def _apply_isotope_metadata(package, isotope, mode, reason):
-    package["isotope"] = isotope
-    package["isotopePackage"] = f"isotope:{isotope}"
-    package["isotopeMode"] = mode
-    _add_signal(
-        package,
-        "isotope",
-        0,
-        reason or "Automic Vault protected-tool coverage is available.",
-    )
-
-
-def _add_isotope_packages(packages, isotopes, geiger, versioned_radioisotope_bases):
-    explicit_brew_targets = set()
-    for record in isotopes.values():
-        if not isinstance(record, dict):
-            continue
-        target = _string(record.get("modifies")) or _string(record.get("replaces"))
-        if target is not None and target.startswith("brew:"):
-            explicit_brew_targets.add(target)
-
-    for record_key, record in isotopes.items():
-        if not isinstance(record, dict):
-            continue
-        modifies = _string(record.get("modifies"))
-        replaces = _string(record.get("replaces"))
-        target = modifies or replaces
-        if target is None or not target.startswith("brew:"):
-            continue
-
-        package = _ensure_package(packages, target)
-        isotope = _unqualified_isotope_name(record_key, record)
-        mode = "modifies" if modifies is not None else "replaces"
-        reason = _isotope_reason(record)
-        _apply_isotope_metadata(package, isotope, mode, reason)
-
-        base = target.removeprefix("brew:")
-        if (
-            record.get("appliesToVersionedFormulae") is not True
-            and base not in versioned_radioisotope_bases
-        ):
-            continue
-        for formula in _versioned_formulae_for(base, geiger):
-            versioned_target = f"brew:{formula}"
-            if versioned_target in explicit_brew_targets:
-                continue
-            versioned_package = _ensure_package(packages, versioned_target)
-            _apply_isotope_metadata(versioned_package, formula, mode, reason)
 
 
 def _add_approval_gate_packages(packages, approval_root):
@@ -218,12 +117,6 @@ def _add_geiger_packages(packages, geiger):
 def _expected():
     packages = {}
     geiger = load_agent_geiger_data()
-    _add_isotope_packages(
-        packages,
-        _read_json(ISOTOPES_JSON_PATH),
-        geiger,
-        _versioned_radioisotope_bases(RADIOISOTOPES_REPO_DIR),
-    )
     _add_approval_gate_packages(packages, Path("data/approval-gates/brew"))
     _add_geiger_packages(packages, geiger)
 

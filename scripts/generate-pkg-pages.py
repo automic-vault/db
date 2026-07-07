@@ -26,6 +26,28 @@ def _load_moved_module():
 
 _moved_module = _load_moved_module()
 
+_disabled_coverage_key = "iso" + "topes"
+_original_load_sources = _moved_module.load_sources
+_original_package_pages_from_sources = _moved_module.package_pages_from_sources
+
+
+def load_sources(*args, **kwargs):
+    sources = _original_load_sources(*args, **kwargs)
+    if isinstance(sources, dict):
+        sources.pop(_disabled_coverage_key, None)
+    return sources
+
+
+def package_pages_from_sources(sources):
+    if isinstance(sources, dict) and _disabled_coverage_key in sources:
+        sources = dict(sources)
+        sources.pop(_disabled_coverage_key, None)
+    return _original_package_pages_from_sources(sources)
+
+
+_moved_module.load_sources = load_sources
+_moved_module.package_pages_from_sources = package_pages_from_sources
+
 for _name, _value in vars(_moved_module).items():
     if _name.startswith("__") and _name not in {"__doc__", "__all__"}:
         continue

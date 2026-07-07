@@ -17,7 +17,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from avdb_paths import DB_JSON_PATH, ISOTOPES_JSON_PATH
+from avdb_paths import DB_JSON_PATH
 from pkg_hub_data import graph_hub_definitions, load_pkg_taxonomy_index, taxonomy_for_package, taxonomy_terms
 
 
@@ -125,7 +125,6 @@ def source_files() -> list[Path]:
         Path("data/pkg-hubs.json"),
         Path("data/pkg-taxonomy.json"),
         DB_JSON_PATH,
-        ISOTOPES_JSON_PATH,
         Path("data/npm.json"),
         Path("data/pip.json"),
         Path("scripts/pkg_hub_data.py"),

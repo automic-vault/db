@@ -644,9 +644,6 @@ def page_search_text(page_module: Any, page: Any, locale: dict[str, Any] | None)
     geiger = sanitized_geiger(page)
     if geiger:
         pieces.extend(str(item) for item in geiger.get("reasons") or [])
-    if page.isotope:
-        justification = page.isotope.get("justification") or {}
-        pieces.append(page_module.public_copy(justification.get("title") or ""))
     if page.approval_gate:
         pieces.extend(str(item) for item in page.approval_gate.get("rules") or [])
     if getattr(page, "agent_safety_answer", None):
@@ -711,11 +708,6 @@ def string_items(values: Any, keys: tuple[str, ...] = ("name", "target", "source
 
 def package_security_signals(page_module: Any, page: Any) -> list[str]:
     signals: list[str] = []
-    if page.isotope:
-        justification = page.isotope.get("justification") or {}
-        title = page_module.public_copy(justification.get("title") or "")
-        if title:
-            signals.append(title)
     geiger = sanitized_geiger(page)
     if geiger:
         signals.extend(str(item) for item in geiger.get("reasons") or [])
@@ -873,10 +865,6 @@ def full_package_data(page_module: Any, page: Any, route: PackageRoute | None = 
         "alsoAvailableVia": getattr(page, "also_available_via", []),
         "packageHubs": getattr(page, "package_hubs", []),
         "agentSafetyAnswer": getattr(page, "agent_safety_answer", None),
-        "isotope": getattr(page, "isotope", None),
-        "isotopeReadme": getattr(page, "isotope_readme", ""),
-        "isotopeReadmeHtml": page_module.public_copy(getattr(page, "isotope_readme_html", "")),
-        "isotopeReadmeSource": getattr(page, "isotope_readme_source", ""),
         "approvalGate": getattr(page, "approval_gate", None),
         "registryInsights": extra.get("registryInsights", {}),
         "externalPackageManagerMatches": getattr(page, "external_package_manager_matches", []),

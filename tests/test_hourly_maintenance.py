@@ -24,7 +24,6 @@ class HourlyMaintenanceTests(unittest.TestCase):
         maintenance = load_hourly_maintenance()
         with mock.patch.object(sys, "argv", ["hourly-maintenance.py", "--no-commit", "--skip-sqlite", *args]):
             with (
-                mock.patch.object(maintenance, "can_refresh_isotopes", return_value=True),
                 mock.patch.object(maintenance, "run") as run,
                 mock.patch.object(maintenance, "run_publish_public_db", return_value=True) as run_publish_public_db,
                 mock.patch.object(maintenance, "run_prepare_enrichment", return_value=None) as run_prepare_enrichment,
@@ -37,81 +36,13 @@ class HourlyMaintenanceTests(unittest.TestCase):
             run_prepare_enrichment.call_args_list,
         )
 
-    def test_default_builds_new_isotopes(self):
+    def test_does_not_run_deleted_builder(self):
         commands, _, _ = self.run_hourly()
 
-        self.assertIn(["bash", "scripts/build-isotopes.sh"], commands)
-        self.assertNotIn(["bash", "scripts/build-isotopes.sh", "--skip-builds"], commands)
-
-    def test_skip_isotope_builds_refreshes_summary_only(self):
-        commands, _, _ = self.run_hourly("--skip-isotope-builds")
-
-        self.assertIn(["bash", "scripts/build-isotopes.sh", "--skip-builds"], commands)
-
-    def test_skip_isotopes_skips_isotope_command(self):
-        commands, _, _ = self.run_hourly("--skip-isotopes")
-
-        isotope_commands = [
-            command
-            for command in commands
-            if command[:2] == ["bash", "scripts/build-isotopes.sh"]
-        ]
-        self.assertEqual(isotope_commands, [])
-
-    def test_skips_isotopes_when_gh_missing_and_cache_exists(self):
-        maintenance = load_hourly_maintenance()
-
-        with tempfile.TemporaryDirectory() as tmp:
-            tmp_root = Path(tmp)
-            isotopes_path = tmp_root / "cache" / "automic-vault" / "isotopes.json"
-            isotopes_path.parent.mkdir(parents=True)
-            isotopes_path.write_text("{}\n", encoding="utf-8")
-            stderr = io.StringIO()
-
-            with mock.patch.object(maintenance, "ROOT", tmp_root):
-                with mock.patch.object(maintenance, "ISOTOPES_JSON_PATH", isotopes_path):
-                    with mock.patch.object(maintenance, "can_refresh_isotopes", return_value=False):
-                        with mock.patch.object(sys, "argv", ["hourly-maintenance.py", "--no-commit", "--skip-sqlite"]):
-                            with (
-                                mock.patch.object(maintenance, "run") as run,
-                                mock.patch.object(maintenance, "run_publish_public_db", return_value=True),
-                                mock.patch.object(maintenance, "run_prepare_enrichment", return_value=None),
-                                mock.patch.object(maintenance, "unresolved_enrichment_run_ids", return_value=[]),
-                                mock.patch("sys.stderr", stderr),
-                            ):
-                                self.assertEqual(maintenance.main(), 0)
-
-            commands = [call.args[0] for call in run.call_args_list]
-            isotope_commands = [
-                command
-                for command in commands
-                if command[:2] == ["bash", "scripts/build-isotopes.sh"]
-            ]
-            self.assertEqual(isotope_commands, [])
-            self.assertIn("skipping isotope refresh because gh is not installed", stderr.getvalue())
-
-    def test_fails_when_gh_missing_and_no_cached_isotopes_exist(self):
-        maintenance = load_hourly_maintenance()
-
-        with tempfile.TemporaryDirectory() as tmp:
-            tmp_root = Path(tmp)
-            isotopes_path = tmp_root / "cache" / "automic-vault" / "isotopes.json"
-
-            with mock.patch.object(maintenance, "ROOT", tmp_root):
-                with mock.patch.object(maintenance, "ISOTOPES_JSON_PATH", isotopes_path):
-                    with mock.patch.object(maintenance, "can_refresh_isotopes", return_value=False):
-                        with mock.patch.object(sys, "argv", ["hourly-maintenance.py", "--no-commit", "--skip-sqlite"]):
-                            with (
-                                mock.patch.object(maintenance, "run"),
-                                mock.patch.object(maintenance, "run_publish_public_db", return_value=True),
-                                mock.patch.object(maintenance, "run_prepare_enrichment", return_value=None),
-                                mock.patch.object(maintenance, "unresolved_enrichment_run_ids", return_value=[]),
-                            ):
-                                with self.assertRaises(FileNotFoundError):
-                                    maintenance.main()
+        self.assertNotIn("bash", [command[0] for command in commands])
 
     def test_runs_automic_vault_db_health_check_after_export(self):
-        commands, _, _ = self.run_hourly("--skip-isotopes")
+        commands, _, _ = self.run_hourly()
 
         export_index = commands.index([sys.executable, "scripts/export-automic-vault-db.py"])
         health_index = commands.index([sys.executable, "scripts/check-automic-vault-db-health.py"])
@@ -119,7 +50,7 @@ class HourlyMaintenanceTests(unittest.TestCase):
         self.assertEqual(health_index, export_index + 1)
 
     def test_hourly_enrichment_prepares_external_controller_batches(self):
-        _, _, prepare_calls = self.run_hourly("--skip-isotopes")
+        _, _, prepare_calls = self.run_hourly()
 
         self.assertEqual(len(prepare_calls), 1)
         command = prepare_calls[0].args[0]
@@ -131,7 +62,7 @@ class HourlyMaintenanceTests(unittest.TestCase):
         self.assertNotIn("--commit-after-batch", command)
 
     def test_publishes_public_db_after_health_check(self):
-        commands, publish_commands, _ = self.run_hourly("--skip-isotopes")
+        commands, publish_commands, _ = self.run_hourly()
 
         health_index = commands.index([sys.executable, "scripts/check-automic-vault-db-health.py"])
 
@@ -194,23 +125,6 @@ class HourlyMaintenanceTests(unittest.TestCase):
                 1,
                 stdout="",
                 stderr="av inject: Connection interrupted\n",
-            )
-            with mock.patch("sys.stdout", stdout), mock.patch("sys.stderr", stderr):
-                self.assertFalse(maintenance.run_publish_public_db([sys.executable, "scripts/publish-public-db.py"]))
-
-        self.assertIn("skipping public db publish", stderr.getvalue())
-
-    def test_skips_public_db_publish_when_av_inject_cannot_load_aws_key(self):
-        maintenance = load_hourly_maintenance()
-        stdout = io.StringIO()
-        stderr = io.StringIO()
-
-        with mock.patch("subprocess.run") as subprocess_run:
-            subprocess_run.return_value = subprocess.CompletedProcess(
-                [sys.executable, "scripts/publish-public-db.py"],
-                1,
-                stdout="",
-                stderr="av inject: failed to load isotope key AWS_ACCESS_KEY_ID: -25300\n",
             )
             with mock.patch("sys.stdout", stdout), mock.patch("sys.stderr", stderr):
                 self.assertFalse(maintenance.run_publish_public_db([sys.executable, "scripts/publish-public-db.py"]))
@@ -302,15 +216,11 @@ class HourlyMaintenanceTests(unittest.TestCase):
             stderr = io.StringIO()
             with mock.patch.object(maintenance, "ROOT", tmp_root):
                 with mock.patch.object(maintenance, "ENRICHMENT_RUNS_DIR", runs_dir):
-                    with mock.patch.object(maintenance, "ISOTOPES_JSON_PATH", tmp_root / "cache" / "automic-vault" / "isotopes.json"):
-                        (tmp_root / "cache" / "automic-vault").mkdir(parents=True, exist_ok=True)
-                        (tmp_root / "cache" / "automic-vault" / "isotopes.json").write_text("{}\n", encoding="utf-8")
                     with mock.patch.object(sys, "argv", ["hourly-maintenance.py", "--no-commit", "--skip-sqlite"]):
                         with (
                             mock.patch.object(maintenance, "run") as run,
                             mock.patch.object(maintenance, "run_publish_public_db", return_value=True) as run_publish_public_db,
                             mock.patch.object(maintenance, "run_prepare_enrichment") as run_prepare_enrichment,
-                            mock.patch.object(maintenance, "can_refresh_isotopes", return_value=False),
                             mock.patch("sys.stderr", stderr),
                         ):
                             self.assertEqual(maintenance.main(), 0)

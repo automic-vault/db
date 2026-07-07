@@ -55,4 +55,4 @@ For stale review, use `--mode review-stale-updated`. For hourly missing curated 
 
 5. If apply reports missing outputs or validation failures, leave completed batch commits in place and rerun only the failed batches with the same `--run-id` after their `codex-output.json` files are fixed.
 
-`scripts/build-isotopes.sh` still has a separate conflict-repair `codex exec` path. That path is out of scope for this controller unless isotope conflict repair starts timing out too.
+Package enrichment conflict repair is out of scope for this controller.

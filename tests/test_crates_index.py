@@ -489,7 +489,6 @@ name = "bat"
                 }
             },
             "geiger": {},
-            "isotopes": {},
             "pkg_page_enrichment": {},
             "pkg_version_freshness": {},
             "pkg_graph": {},

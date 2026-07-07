@@ -5,13 +5,12 @@ import json
 import os
 import sys
 
-from avdb_paths import COMBINED_JSON_PATH, DB_JSON_PATH, ISOTOPES_JSON_PATH
+from avdb_paths import COMBINED_JSON_PATH, DB_JSON_PATH
 
 
 SOURCE_FILES = {
     "aliases": os.path.join("data", "aliases.json"),
     "db": os.fspath(DB_JSON_PATH),
-    "isotopes": os.fspath(ISOTOPES_JSON_PATH),
     "npm": os.path.join("data", "npm.json"),
     "pip": os.path.join("data", "pip.json"),
     "security-recommendations": os.path.join("data", "security-recommendations.json"),

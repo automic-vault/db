@@ -62,8 +62,8 @@ Runner jobs:
 
 - `db`: runs the hourly package database refresh through
   `scripts/hourly-maintenance.py`. This refreshes source data, prepares hourly
-  missing-curated-field enrichment if no older prepared run is waiting, builds
-  isotope summaries/releases, exports and health-checks
+  missing-curated-field enrichment if no older prepared run is waiting, exports
+  and health-checks
   `cache/automic-vault/db.json`, publishes the public DB, rebuilds package-page
   derived data, and commits tracked stable outputs as `hourly: refresh package
   database`.

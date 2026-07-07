@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import argparse
 import datetime as dt
 import hashlib
@@ -15,7 +17,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from avdb_paths import DB_JSON_PATH, ISOTOPES_JSON_PATH
+from avdb_paths import DB_JSON_PATH
 from geiger_agent_data import load_agent_geiger_data
 from pkg_hub_data import graph_hub_definitions, load_pkg_taxonomy_index, taxonomy_for_package, taxonomy_terms
 
@@ -150,7 +152,6 @@ def input_files() -> list[Path]:
         Path("data/pkg-hubs.json"),
         Path("data/pkg-taxonomy.json"),
         DB_JSON_PATH,
-        ISOTOPES_JSON_PATH,
         Path("data/npm.json"),
         Path("data/pip.json"),
         Path("scripts/generate-pkg-pages.py"),
@@ -193,17 +194,6 @@ def approval_gate_packages() -> set[str]:
     root = Path("data/approval-gates/brew")
     if root.exists():
         result.update(path.stem for path in root.glob("*.yaml"))
-    return result
-
-
-def isotope_packages(isotopes: dict[str, Any]) -> set[str]:
-    result = set()
-    for isotope in isotopes.values() if isinstance(isotopes, dict) else []:
-        if not isinstance(isotope, dict):
-            continue
-        modifies = isotope.get("modifies") or isotope.get("replaces")
-        if isinstance(modifies, str) and modifies.startswith("brew:"):
-            result.add(modifies.split(":", 1)[1])
     return result
 
 
@@ -287,7 +277,6 @@ def hub_memberships(
     info: dict[str, Any],
     geiger: dict[str, Any] | None,
     gated: bool,
-    isotope: bool,
     taxonomy: dict[str, Any],
 ) -> list[dict[str, str]]:
     memberships = []
@@ -310,7 +299,7 @@ def hub_memberships(
         matched = False
         if hub.get("riskHub"):
             level = str((geiger or {}).get("level") or "").lower()
-            matched = isotope or gated or level not in {"", "green", "low", "unknown"}
+            matched = gated or level not in {"", "green", "low", "unknown"}
         else:
             matched = (
                 any(normalize_name(item) in names for item in hub.get("names") or ())
@@ -380,7 +369,6 @@ def package_keys_from_sources(
 def page_keys_from_filtered_pages(
     db: dict[str, Any],
     geiger_data: dict[str, Any],
-    isotopes: dict[str, Any],
     npm: dict[str, Any],
     pip: dict[str, Any],
     enrichment: dict[str, Any],
@@ -390,7 +378,6 @@ def page_keys_from_filtered_pages(
     pages = pages_module.package_pages_from_sources({
         "db": db,
         "geiger": geiger_data,
-        "isotopes": isotopes,
         "npm": npm,
         "pip": pip,
         "pkg_graph": {},
@@ -433,7 +420,6 @@ def package_info_for_key(package_key: str, enrichment_packages: dict[str, Any], 
             "postInstallDefined": (enrichment.get("installBehavior") or {}).get("postInstallDefined"),
             "serviceDeclared": bool((enrichment.get("installBehavior") or {}).get("service")),
             "geigerLevel": (geiger or {}).get("level") or "",
-            "radioisotope": False,
             "approvalGate": False,
         },
     }
@@ -603,7 +589,6 @@ def build_graph() -> dict[str, Any]:
     enrichment = read_json(PKG_PAGE_ENRICHMENT_PATH)
     db = read_json(DB_JSON_PATH)
     geiger_data = load_agent_geiger_data()
-    isotopes = read_json(ISOTOPES_JSON_PATH, {})
     npm = read_json(Path("data/npm.json"), {})
     pip = read_json(Path("data/pip.json"), {})
     freshness = read_json(PKG_VERSION_FRESHNESS_PATH, {})
@@ -612,7 +597,7 @@ def build_graph() -> dict[str, Any]:
     packages = enrichment.get("packages") if isinstance(enrichment, dict) else {}
     if not isinstance(packages, dict):
         raise ValueError(f"{PKG_PAGE_ENRICHMENT_PATH} must contain packages")
-    page_keys = page_keys_from_filtered_pages(db, geiger_data, isotopes, npm, pip, enrichment, freshness)
+    page_keys = page_keys_from_filtered_pages(db, geiger_data, npm, pip, enrichment, freshness)
     taxonomy_index = load_pkg_taxonomy_index()
     taxonomy_by_key = {
         key: taxonomy_for_package(taxonomy_index, *package_key_parts(key))
@@ -660,7 +645,6 @@ def build_graph() -> dict[str, Any]:
 
     geiger_packages = (geiger_data.get("packages") or {}) if isinstance(geiger_data, dict) else {}
     gated_packages = approval_gate_packages()
-    isotope_names = isotope_packages(isotopes)
     graph_packages: dict[str, Any] = {}
 
     for key in sorted(packages):
@@ -677,7 +661,6 @@ def build_graph() -> dict[str, Any]:
         repo = repository_url(info)
         geiger = geiger_packages.get(name) if isinstance(geiger_packages.get(name), dict) else None
         gated = name in gated_packages
-        isotope = name in isotope_names
         related: list[dict[str, Any]] = []
         related_seen: set[tuple[str, str, str]] = set()
 
@@ -737,7 +720,7 @@ def build_graph() -> dict[str, Any]:
                         also_seen,
                     )
 
-        hubs = hub_memberships("brew", name, {**info, "summary": summary}, geiger, gated, isotope, taxonomy)
+        hubs = hub_memberships("brew", name, {**info, "summary": summary}, geiger, gated, taxonomy)
 
         claims = []
         for item in related[:20]:
@@ -793,7 +776,6 @@ def build_graph() -> dict[str, Any]:
                 "postInstallDefined": (info.get("installBehavior") or {}).get("postInstallDefined"),
                 "serviceDeclared": bool((info.get("installBehavior") or {}).get("service")),
                 "geigerLevel": (geiger or {}).get("level") or "",
-                "radioisotope": isotope,
                 "approvalGate": gated,
             },
             "linkIntents": {

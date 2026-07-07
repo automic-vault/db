@@ -5,7 +5,6 @@ import argparse
 import json
 import os
 import re
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -30,7 +29,6 @@ DEFAULT_PUBLIC_DB_PUBLISH_TIMEOUT_SECONDS = int(
     os.environ.get("AVDB_PUBLIC_DB_PUBLISH_TIMEOUT_SECONDS", "120")
 )
 ENRICHMENT_RUNS_DIR = ROOT / "cache" / "enrichment" / "runs"
-ISOTOPES_JSON_PATH = ROOT / "cache" / "automic-vault" / "isotopes.json"
 PREPARE_OUTPUT_PATTERN = re.compile(
     r"Prepared \d+ projects in \d+ batches under (?P<run_dir>cache/enrichment/runs/[^\s]+)"
 )
@@ -38,7 +36,6 @@ UNATTENDED_PUBLISH_SKIP_MARKERS = (
     "missing AWS credential_process approval token",
     "Unable to locate credentials",
     "av inject: Connection interrupted",
-    "av inject: failed to load isotope key AWS_ACCESS_KEY_ID",
 )
 
 
@@ -245,19 +242,9 @@ def commit_if_changed(message: str) -> str | None:
     return result.stdout.strip()
 
 
-def can_refresh_isotopes() -> bool:
-    return shutil.which("gh") is not None
-
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run one av.db hourly package database update.")
     parser.add_argument("--no-commit", action="store_true", help="Do not commit stable source changes.")
-    parser.add_argument("--skip-isotopes", action="store_true", help="Skip isotope build and summary refresh.")
-    parser.add_argument(
-        "--skip-isotope-builds",
-        action="store_true",
-        help="Refresh isotope summary without building or publishing isotope releases.",
-    )
     parser.add_argument("--skip-sqlite", action="store_true", help="Skip package SQLite generation.")
     parser.add_argument("--skip-enrichment", action="store_true", help="Skip hourly curated-field enrichment.")
     parser.add_argument(
@@ -306,24 +293,6 @@ def main() -> int:
             )
             if run_dir is not None:
                 assert_hourly_enrichment_progress(run_dir)
-    if not args.skip_isotopes:
-        if can_refresh_isotopes():
-            isotope_command = ["bash", "scripts/build-isotopes.sh"]
-            if args.skip_isotope_builds:
-                isotope_command.append("--skip-builds")
-            run(isotope_command)
-        elif ISOTOPES_JSON_PATH.is_file():
-            cached_path = os.path.relpath(ISOTOPES_JSON_PATH, ROOT)
-            print(
-                "WARN: skipping isotope refresh because gh is not installed; "
-                f"keeping cached {cached_path}",
-                file=sys.stderr,
-                flush=True,
-            )
-        else:
-            raise FileNotFoundError(
-                f"gh is not installed and cached isotopes are missing at {ISOTOPES_JSON_PATH}"
-            )
     run([py, "scripts/export-automic-vault-db.py"])
     run([py, "scripts/check-automic-vault-db-health.py"])
     run_publish_public_db([py, "scripts/publish-public-db.py"])
