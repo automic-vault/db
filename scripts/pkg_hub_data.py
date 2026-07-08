@@ -10,6 +10,7 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PKG_HUBS_PATH = REPO_ROOT / "data/pkg-hubs.json"
 PKG_TAXONOMY_PATH = REPO_ROOT / "data/pkg-taxonomy.json"
+PKG_ECOSYSTEM_TAXONOMY_PATH = REPO_ROOT / "data/pkg-ecosystem-taxonomy.json"
 
 
 def read_json(path: Path, default: Any = None) -> Any:
@@ -72,9 +73,15 @@ def load_pkg_taxonomy_data() -> dict[str, Any]:
 
 
 @lru_cache(maxsize=1)
-def load_pkg_taxonomy_index() -> dict[str, dict[str, Any]]:
-    packages = load_pkg_taxonomy_data().get("packages") or {}
-    index: dict[str, dict[str, Any]] = {}
+def load_pkg_ecosystem_taxonomy_data() -> dict[str, Any]:
+    data = read_json(PKG_ECOSYSTEM_TAXONOMY_PATH, {"schema": 1, "packages": {}})
+    packages = data.get("packages")
+    if not isinstance(packages, dict):
+        raise ValueError(f"{PKG_ECOSYSTEM_TAXONOMY_PATH} must contain a packages object")
+    return data
+
+
+def add_taxonomy_packages(index: dict[str, dict[str, Any]], packages: dict[str, Any]) -> None:
     for package_key, entry in packages.items():
         if not isinstance(package_key, str) or not isinstance(entry, dict):
             continue
@@ -87,6 +94,13 @@ def load_pkg_taxonomy_index() -> dict[str, dict[str, Any]]:
             name_text = str(name or "").strip()
             if provider_text and name_text:
                 index.setdefault(f"{provider_text}:{name_text}", entry)
+
+
+@lru_cache(maxsize=1)
+def load_pkg_taxonomy_index() -> dict[str, dict[str, Any]]:
+    index: dict[str, dict[str, Any]] = {}
+    add_taxonomy_packages(index, load_pkg_taxonomy_data().get("packages") or {})
+    add_taxonomy_packages(index, load_pkg_ecosystem_taxonomy_data().get("packages") or {})
     return index
 
 

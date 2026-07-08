@@ -123,6 +123,7 @@ def source_files() -> list[Path]:
     files = [
         GENERATED_DATA_DIR / "pkg-page-enrichment.json",
         Path("data/pkg-hubs.json"),
+        Path("data/pkg-ecosystem-taxonomy.json"),
         Path("data/pkg-taxonomy.json"),
         DB_JSON_PATH,
         Path("data/npm.json"),

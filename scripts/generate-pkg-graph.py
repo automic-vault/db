@@ -150,6 +150,7 @@ def input_files() -> list[Path]:
         PKG_PAGE_ENRICHMENT_PATH,
         CROSS_ECOSYSTEM_PATH,
         Path("data/pkg-hubs.json"),
+        Path("data/pkg-ecosystem-taxonomy.json"),
         Path("data/pkg-taxonomy.json"),
         DB_JSON_PATH,
         Path("data/npm.json"),
