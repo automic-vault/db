@@ -8,6 +8,7 @@ from typing import Any
 
 from .common import CACHE_DIR, COMBINED_DIR, read_json, write_json
 from .casks import read_cask_authority
+from .crates import CRATES_IO_INDEX_PATH
 from .executables import executable_entries_from_index, executable_index_from_project_yaml
 from .render import parse_simple_yaml, read_formula_cache
 
@@ -370,6 +371,31 @@ def apply_npm_entries(entries: dict[str, str], npm_metadata: dict[str, dict[str,
             entries.setdefault(executable, f"npm:{package}")
 
 
+def read_crate_metadata() -> dict[str, dict[str, Any]]:
+    payload = read_json(CRATES_IO_INDEX_PATH, {})
+    crates = payload.get("crates") if isinstance(payload, dict) else None
+    if not isinstance(crates, dict):
+        return {}
+    return {
+        crate: dict(metadata)
+        for crate, metadata in sorted(crates.items())
+        if isinstance(crate, str) and crate and isinstance(metadata, dict)
+    }
+
+
+def apply_crate_entries(entries: dict[str, str], crates: dict[str, dict[str, Any]]) -> None:
+    for crate, metadata in crates.items():
+        executables = metadata.get("executables")
+        if not isinstance(executables, list):
+            continue
+        for executable in executables:
+            if not isinstance(executable, dict):
+                continue
+            name = executable.get("name")
+            if isinstance(name, str) and name:
+                entries.setdefault(name, f"cargo:{crate}")
+
+
 def build_automic_vault_db(root: Path = COMBINED_DIR, formulae: list[dict[str, Any]] | None = None, generated_at: str | None = None) -> dict[str, Any]:
     source_formulae = formulae if formulae is not None else read_formula_cache()
     executable_index = executable_index_from_project_yaml(root)
@@ -380,6 +406,8 @@ def build_automic_vault_db(root: Path = COMBINED_DIR, formulae: list[dict[str, A
     formulas, casks = overlay_homebrew_pulse_metadata(formulas, casks, source_formulae)
     npms = read_npm_metadata()
     apply_npm_entries(entries, npms)
+    crates = read_crate_metadata()
+    apply_crate_entries(entries, crates)
     timestamp = generated_at or datetime.datetime.now(datetime.timezone.utc).isoformat()
     return {
         "schema": DB_SCHEMA_VERSION,
@@ -388,6 +416,7 @@ def build_automic_vault_db(root: Path = COMBINED_DIR, formulae: list[dict[str, A
         "formulas": formulas,
         "casks": stable_cask_metadata(casks),
         "npms": npms,
+        "crates": crates,
     }
 
 

@@ -147,6 +147,10 @@ class ExecutableSeedTests(unittest.TestCase):
                 authority,
                 "read_npm_metadata",
                 return_value={},
+            ), mock.patch.object(
+                authority,
+                "read_crate_metadata",
+                return_value={},
             ):
                 db = build_automic_vault_db(
                     root,
@@ -175,6 +179,7 @@ class ExecutableSeedTests(unittest.TestCase):
         self.assertEqual(db["entries"]["op"], "cask:1password-cli")
         self.assertIn("1password-cli", db["casks"])
         self.assertEqual(db["npms"], {})
+        self.assertEqual(db["crates"], {})
 
     def test_automic_vault_db_export_keeps_cask_install_metadata(self):
         self.assertEqual(
@@ -231,6 +236,10 @@ class ExecutableSeedTests(unittest.TestCase):
             with mock.patch.object(authority, "read_cask_authority", return_value=({}, {})), mock.patch.object(
                 authority,
                 "read_npm_metadata",
+                return_value={},
+            ), mock.patch.object(
+                authority,
+                "read_crate_metadata",
                 return_value={},
             ), mock.patch.object(
                 authority,
@@ -294,6 +303,10 @@ class ExecutableSeedTests(unittest.TestCase):
                 return_value={},
             ), mock.patch.object(
                 authority,
+                "read_crate_metadata",
+                return_value={},
+            ), mock.patch.object(
+                authority,
                 "git_pulse_events",
                 side_effect=[
                     {
@@ -350,6 +363,10 @@ class ExecutableSeedTests(unittest.TestCase):
                 authority,
                 "git_pulse_events",
                 return_value={},
+            ), mock.patch.object(
+                authority,
+                "read_crate_metadata",
+                return_value={},
             ), mock.patch.object(authority, "NPM_INDEX_STATE_PATH", index_path):
                 db = build_automic_vault_db(
                     root,
@@ -370,6 +387,46 @@ class ExecutableSeedTests(unittest.TestCase):
                 "pulse_kind": "updated",
             },
         )
+
+    def test_automic_vault_db_export_reads_crate_cache_metadata(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "awscli.yml").write_text(
+                "id: brew:awscli\ndescription: Official Amazon AWS command-line interface\nexecutables:\n  - aws\n",
+                encoding="utf-8",
+            )
+            crates = {
+                "ripgrep": {
+                    "summary": "Fast recursive search",
+                    "version": "15.1.0",
+                    "executables": [{"name": "rg"}, {"name": "aws"}],
+                    "last_updated_at": "2026-06-15T12:00:00Z",
+                }
+            }
+
+            with mock.patch.object(authority, "read_cask_authority", return_value=({}, {})), mock.patch.object(
+                authority,
+                "git_pulse_events",
+                return_value={},
+            ), mock.patch.object(
+                authority,
+                "read_npm_metadata",
+                return_value={},
+            ), mock.patch.object(
+                authority,
+                "read_crate_metadata",
+                return_value=crates,
+            ):
+                db = build_automic_vault_db(
+                    root,
+                    [{"name": "awscli", "ruby_source_path": "Formula/a/awscli.rb"}],
+                    generated_at="2026-06-16T00:00:00+00:00",
+                )
+
+        self.assertEqual(db["schema"], 7)
+        self.assertEqual(db["entries"]["rg"], "cargo:ripgrep")
+        self.assertEqual(db["entries"]["aws"], "awscli")
+        self.assertEqual(db["crates"], crates)
 
     def test_missing_homebrew_pulse_events_keep_npm_last_updated_at_metadata(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -410,6 +467,10 @@ class ExecutableSeedTests(unittest.TestCase):
             ), mock.patch.object(
                 authority,
                 "git_pulse_events",
+                return_value={},
+            ), mock.patch.object(
+                authority,
+                "read_crate_metadata",
                 return_value={},
             ), mock.patch.object(authority, "NPM_INDEX_STATE_PATH", index_path):
                 db = build_automic_vault_db(

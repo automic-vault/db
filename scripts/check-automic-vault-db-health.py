@@ -13,7 +13,7 @@ except ModuleNotFoundError:
     from scripts.avdb_paths import DB_JSON_PATH
 
 
-PULSE_SOURCES = ("formulas", "casks", "npms")
+PULSE_SOURCES = ("formulas", "casks", "npms", "crates")
 PULSE_KIND_REQUIRED_SOURCES = {"formulas", "casks"}
 
 

@@ -38,6 +38,11 @@ class AutomicVaultDbHealthTests(unittest.TestCase):
                         "last_updated_at": "2026-06-13T12:00:00Z",
                     }
                 },
+                "crates": {
+                    "ripgrep": {
+                        "last_updated_at": "2026-06-12T12:00:00Z",
+                    }
+                },
             }
         )
 
@@ -45,6 +50,8 @@ class AutomicVaultDbHealthTests(unittest.TestCase):
         self.assertEqual(coverage["casks"]["pulse_kind"], 1)
         self.assertEqual(coverage["npms"]["last_updated_at"], 1)
         self.assertEqual(coverage["npms"]["pulse_kind"], 0)
+        self.assertEqual(coverage["crates"]["last_updated_at"], 1)
+        self.assertEqual(coverage["crates"]["pulse_kind"], 0)
 
     def test_pulse_health_fails_when_populated_source_has_no_updates(self):
         health = load_health_check()
@@ -58,6 +65,7 @@ class AutomicVaultDbHealthTests(unittest.TestCase):
                     "formulas": {"awscli": {"summary": "AWS CLI"}},
                     "casks": {},
                     "npms": {},
+                    "crates": {},
                 }
             )
 
@@ -77,6 +85,7 @@ class AutomicVaultDbHealthTests(unittest.TestCase):
                         }
                     },
                     "npms": {},
+                    "crates": {},
                 }
             )
 

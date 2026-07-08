@@ -38,6 +38,7 @@ def main() -> int:
         "formulas": pulse_coverage(db["formulas"]),
         "casks": pulse_coverage(db["casks"]),
         "npms": pulse_coverage(db["npms"]),
+        "crates": pulse_coverage(db["crates"]),
     }
     for source, coverage in pulse.items():
         if coverage["total"] and not coverage["last_updated_at"]:
