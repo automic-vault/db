@@ -11,6 +11,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.bootstrap.lib.common import git_commit_if_changed
+
 COMMIT_PATHS = [
     "deterministic",
     "combined",
@@ -62,21 +67,6 @@ def run(command: list[str], *, timeout: int | None = None, allow_failure: bool =
 
 def read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
-
-
-def git_known_paths(paths: list[str]) -> list[str]:
-    known: list[str] = []
-    for path in paths:
-        result = subprocess.run(
-            ["git", "ls-files", "--cached", "--others", "--exclude-standard", "--", path],
-            cwd=ROOT,
-            check=True,
-            stdout=subprocess.PIPE,
-            text=True,
-        )
-        if result.stdout.strip():
-            known.append(path)
-    return known
 
 
 def parse_prepared_run_dir(stdout: str) -> Path | None:
@@ -211,37 +201,6 @@ def run_publish_public_db(command: list[str]) -> bool:
     )
 
 
-def commit_if_changed(message: str) -> str | None:
-    path_args = git_known_paths(COMMIT_PATHS)
-    if not path_args:
-        return None
-    run(["git", "add", "-A", "--", *path_args])
-    diff = subprocess.run(["git", "diff", "--cached", "--quiet", "--", *path_args], cwd=ROOT)
-    if diff.returncode == 0:
-        return None
-    if diff.returncode != 1:
-        diff.check_returncode()
-    changed = subprocess.run(
-        ["git", "diff", "--cached", "--name-only", "--", *path_args],
-        cwd=ROOT,
-        check=True,
-        stdout=subprocess.PIPE,
-        text=True,
-    )
-    changed_paths = [line for line in changed.stdout.splitlines() if line]
-    if not changed_paths:
-        return None
-    subprocess.run(["git", "commit", "-m", message, "--", *changed_paths], cwd=ROOT, check=True)
-    result = subprocess.run(
-        ["git", "rev-parse", "--short", "HEAD"],
-        cwd=ROOT,
-        check=True,
-        stdout=subprocess.PIPE,
-        text=True,
-    )
-    return result.stdout.strip()
-
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run one av.db hourly package database update.")
     parser.add_argument("--no-commit", action="store_true", help="Do not commit stable source changes.")
@@ -307,7 +266,11 @@ def main() -> int:
         run([py, "scripts/generate-pkg-sqlite.py"])
 
     if not args.no_commit:
-        commit = commit_if_changed("hourly: refresh package database")
+        commit = git_commit_if_changed(
+            "hourly: refresh package database",
+            COMMIT_PATHS,
+            preserve_existing_dirty=True,
+        )
         print(f"commit={commit or 'none'}")
     return 0
 

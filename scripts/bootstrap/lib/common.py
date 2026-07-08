@@ -80,13 +80,49 @@ def git_known_paths(paths: list[str | Path]) -> list[str]:
     return known
 
 
-def git_commit_if_changed(message: str, paths: list[str | Path]) -> str | None:
+def git_dirty_paths(paths: list[str | Path]) -> tuple[list[str], list[str]]:
+    if not paths:
+        return [], []
+    path_args = [Path(path).as_posix() for path in paths]
+    tracked = subprocess.run(
+        ["git", "diff", "--name-only", "HEAD", "--", *path_args],
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    untracked = subprocess.run(
+        ["git", "ls-files", "--others", "--exclude-standard", "--", *path_args],
+        cwd=ROOT,
+        check=True,
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    tracked_paths = sorted({line for line in tracked.stdout.splitlines() if line})
+    untracked_paths = sorted({line for line in untracked.stdout.splitlines() if line})
+    return tracked_paths, untracked_paths
+
+
+def git_commit_if_changed(
+    message: str,
+    paths: list[str | Path],
+    *,
+    preserve_existing_dirty: bool = False,
+) -> str | None:
     if not paths:
         return None
     path_args = git_known_paths(paths)
     if not path_args:
         return None
+    tracked_dirty: list[str] = []
+    untracked_dirty: list[str] = []
+    if preserve_existing_dirty:
+        tracked_dirty, untracked_dirty = git_dirty_paths(path_args)
     subprocess.run(["git", "add", "-A", "--", *path_args], cwd=ROOT, check=True)
+    if tracked_dirty:
+        subprocess.run(["git", "reset", "-q", "HEAD", "--", *tracked_dirty], cwd=ROOT, check=True)
+    if untracked_dirty:
+        subprocess.run(["git", "rm", "--cached", "-q", "--", *untracked_dirty], cwd=ROOT, check=True)
     diff = subprocess.run(["git", "diff", "--cached", "--quiet", "--", *path_args], cwd=ROOT)
     if diff.returncode == 0:
         return None

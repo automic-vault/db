@@ -152,7 +152,11 @@ def run_task(task: Task, *, dry_run: bool = False) -> int:
 
     if code == 0 and task.commit_paths:
         try:
-            commit = git_commit_if_changed(task.commit_message or f"nightly: {task.name}", task.commit_paths)
+            commit = git_commit_if_changed(
+                task.commit_message or f"nightly: {task.name}",
+                task.commit_paths,
+                preserve_existing_dirty=True,
+            )
         except subprocess.CalledProcessError as err:
             code = err.returncode or 1
             status["exit_code"] = code
