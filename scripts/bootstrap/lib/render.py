@@ -386,8 +386,13 @@ def parse_yaml_mapping(lines: list[tuple[int, str]], index: int, indent: int) ->
             values, index = parse_yaml_list(lines, index, lines[index][0])
             record[key] = values
         elif index < len(lines) and lines[index][0] > line_indent:
-            values, index = parse_yaml_mapping(lines, index, lines[index][0])
-            record[key] = values
+            child_indent = lines[index][0]
+            child_text = lines[index][1]
+            if ": " not in child_text and not child_text.endswith(":"):
+                record[key], index = parse_yaml_scalar_block(lines, index, line_indent)
+            else:
+                values, index = parse_yaml_mapping(lines, index, child_indent)
+                record[key] = values
         else:
             record[key] = {}
     return record, index
@@ -410,6 +415,17 @@ def parse_yaml_list(lines: list[tuple[int, str]], index: int, indent: int) -> tu
 
 
 def parse_yaml_block_scalar(lines: list[tuple[int, str]], index: int, parent_indent: int) -> tuple[str, int]:
+    values: list[str] = []
+    while index < len(lines):
+        line_indent, text = lines[index]
+        if line_indent <= parent_indent:
+            break
+        values.append(text)
+        index += 1
+    return " ".join(values).strip(), index
+
+
+def parse_yaml_scalar_block(lines: list[tuple[int, str]], index: int, parent_indent: int) -> tuple[str, int]:
     values: list[str] = []
     while index < len(lines):
         line_indent, text = lines[index]
