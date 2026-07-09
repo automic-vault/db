@@ -424,7 +424,7 @@ def source_backed_manager_commands(facts: dict[str, Any], matcher: dict[str, lis
     seen_managers = set()
     for tier in package_match_tiers(facts):
         for normalized in tier:
-            for item in matcher.get(normalized) or []:
+            for item in sorted(matcher.get(normalized) or [], key=lambda item: str(((item.get("source") if isinstance(item, dict) else {}) or {}).get("package_id") or "") != normalized):
                 source = item.get("source") if isinstance(item, dict) else {}
                 manager = source.get("manager") if isinstance(source, dict) else item.get("manager")
                 command_text = item.get("command")
@@ -492,6 +492,7 @@ def dedupe_external_matches(matches: list[dict[str, Any]]) -> list[dict[str, Any
         result,
         key=lambda item: (
             -float(item.get("confidence") or 0),
+            str(item.get("packageId") or "") != str(item.get("matchedBy") or ""),
             str(item.get("platform") or ""),
             str(item.get("displayName") or item.get("manager") or ""),
             str(item.get("packageId") or ""),
