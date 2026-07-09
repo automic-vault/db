@@ -6,22 +6,33 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from .common import CACHE_DIR, COMBINED_DIR, read_json, write_json
+from .common import CACHE_DIR, COMBINED_DIR, ROOT, read_json, write_json
 from .casks import read_cask_authority
 from .crates import CRATES_IO_INDEX_PATH
 from .executables import executable_entries_from_index, executable_index_from_project_yaml
 from .render import parse_simple_yaml, read_formula_cache
 
 
-DB_SCHEMA_VERSION = 7
+DB_SCHEMA_VERSION = 8
 AUTOMIC_VAULT_CACHE_DIR = CACHE_DIR / "automic-vault"
 AUTOMIC_VAULT_DB_PATH = AUTOMIC_VAULT_CACHE_DIR / "db.json"
 NPM_INDEX_STATE_PATH = CACHE_DIR / "npmjs" / "index.json"
+PKG_TAXONOMY_PATH = ROOT / "data" / "pkg-taxonomy.json"
+PKG_ECOSYSTEM_TAXONOMY_PATH = ROOT / "data" / "pkg-ecosystem-taxonomy.json"
 HOMEBREW_CORE_REPO = "Homebrew/homebrew-core"
 HOMEBREW_CASK_REPO = "Homebrew/homebrew-cask"
 PULSE_NEW_WINDOW_DAYS = 7
 PULSE_HISTORY_WINDOW_DAYS = 90
 PULSE_KINDS = {"new", "updated"}
+PACKAGE_TAXONOMY_FIELDS = (
+    "category",
+    "categoryPath",
+    "categoryConfidence",
+    "categorySources",
+    "tags",
+    "tagsConfidence",
+    "tagsSources",
+)
 
 
 def formula_lookup(formulae: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -371,6 +382,41 @@ def apply_npm_entries(entries: dict[str, str], npm_metadata: dict[str, dict[str,
             entries.setdefault(executable, f"npm:{package}")
 
 
+def add_package_taxonomy(index: dict[str, dict[str, Any]], packages: Any) -> None:
+    if not isinstance(packages, dict):
+        return
+    for key, entry in packages.items():
+        if isinstance(key, str) and isinstance(entry, dict):
+            index[key] = entry
+            aliases = entry.get("packageManagerAliases")
+            if isinstance(aliases, dict):
+                for provider, name in aliases.items():
+                    provider_text = str(provider or "").strip()
+                    name_text = str(name or "").strip()
+                    if provider_text and name_text:
+                        index.setdefault(f"{provider_text}:{name_text}", entry)
+
+
+def read_package_taxonomy_index() -> dict[str, dict[str, Any]]:
+    index: dict[str, dict[str, Any]] = {}
+    for path in (PKG_TAXONOMY_PATH, PKG_ECOSYSTEM_TAXONOMY_PATH):
+        add_package_taxonomy(index, read_json(path, {}).get("packages"))
+    return index
+
+
+def apply_package_taxonomy(provider: str, packages: dict[str, dict[str, Any]], taxonomy: dict[str, dict[str, Any]]) -> None:
+    for name, metadata in packages.items():
+        entry = taxonomy.get(f"{provider}:{name}")
+        if not entry:
+            continue
+        for field in PACKAGE_TAXONOMY_FIELDS:
+            value = entry.get(field)
+            if isinstance(value, list):
+                metadata[field] = list(value)
+            elif isinstance(value, str) and value:
+                metadata[field] = value
+
+
 def read_crate_metadata() -> dict[str, dict[str, Any]]:
     payload = read_json(CRATES_IO_INDEX_PATH, {})
     crates = payload.get("crates") if isinstance(payload, dict) else None
@@ -408,6 +454,9 @@ def build_automic_vault_db(root: Path = COMBINED_DIR, formulae: list[dict[str, A
     apply_npm_entries(entries, npms)
     crates = read_crate_metadata()
     apply_crate_entries(entries, crates)
+    taxonomy = read_package_taxonomy_index()
+    apply_package_taxonomy("npm", npms, taxonomy)
+    apply_package_taxonomy("cargo", crates, taxonomy)
     timestamp = generated_at or datetime.datetime.now(datetime.timezone.utc).isoformat()
     return {
         "schema": DB_SCHEMA_VERSION,

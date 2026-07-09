@@ -158,7 +158,7 @@ class ExecutableSeedTests(unittest.TestCase):
                     generated_at="2026-06-01T00:00:00+00:00",
                 )
 
-        self.assertEqual(db["schema"], 7)
+        self.assertEqual(db["schema"], 8)
         self.assertEqual(db["generated_at"], "2026-06-01T00:00:00+00:00")
         self.assertEqual(db["entries"]["aws"], "awscli")
         self.assertEqual(db["entries"]["aws_completer"], "awscli")
@@ -367,6 +367,10 @@ class ExecutableSeedTests(unittest.TestCase):
                 authority,
                 "read_crate_metadata",
                 return_value={},
+            ), mock.patch.object(
+                authority,
+                "read_package_taxonomy_index",
+                return_value={},
             ), mock.patch.object(authority, "NPM_INDEX_STATE_PATH", index_path):
                 db = build_automic_vault_db(
                     root,
@@ -416,6 +420,10 @@ class ExecutableSeedTests(unittest.TestCase):
                 authority,
                 "read_crate_metadata",
                 return_value=crates,
+            ), mock.patch.object(
+                authority,
+                "read_package_taxonomy_index",
+                return_value={},
             ):
                 db = build_automic_vault_db(
                     root,
@@ -423,10 +431,60 @@ class ExecutableSeedTests(unittest.TestCase):
                     generated_at="2026-06-16T00:00:00+00:00",
                 )
 
-        self.assertEqual(db["schema"], 7)
+        self.assertEqual(db["schema"], 8)
         self.assertEqual(db["entries"]["rg"], "cargo:ripgrep")
         self.assertEqual(db["entries"]["aws"], "awscli")
         self.assertEqual(db["crates"], crates)
+
+    def test_automic_vault_db_export_adds_npm_and_crate_taxonomy(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            npms = {"ts-node": {"summary": "TypeScript execution", "executable": "ts-node"}}
+            crates = {"ripgrep": {"summary": "Fast recursive search", "executables": [{"name": "rg"}]}}
+            taxonomy = {
+                "npm:ts-node": {
+                    "category": "developer-tools",
+                    "categoryPath": ["developer-tools", "language-tools"],
+                    "categoryConfidence": "high",
+                    "categorySources": ["npm summary"],
+                    "tags": ["typescript", "cli"],
+                    "tagsConfidence": "high",
+                    "tagsSources": ["npm executable"],
+                },
+                "cargo:ripgrep": {
+                    "category": "system",
+                    "categoryPath": ["system", "file-management"],
+                    "categoryConfidence": "high",
+                    "tags": ["search"],
+                    "tagsConfidence": "medium",
+                },
+            }
+
+            with mock.patch.object(authority, "read_cask_authority", return_value=({}, {})), mock.patch.object(
+                authority,
+                "git_pulse_events",
+                return_value={},
+            ), mock.patch.object(
+                authority,
+                "read_npm_metadata",
+                return_value=npms,
+            ), mock.patch.object(
+                authority,
+                "read_crate_metadata",
+                return_value=crates,
+            ), mock.patch.object(
+                authority,
+                "read_package_taxonomy_index",
+                return_value=taxonomy,
+            ):
+                db = build_automic_vault_db(root, [], generated_at="2026-06-16T00:00:00+00:00")
+
+        self.assertEqual(db["npms"]["ts-node"]["category"], "developer-tools")
+        self.assertEqual(db["npms"]["ts-node"]["categoryPath"], ["developer-tools", "language-tools"])
+        self.assertEqual(db["npms"]["ts-node"]["tags"], ["typescript", "cli"])
+        self.assertEqual(db["npms"]["ts-node"]["categorySources"], ["npm summary"])
+        self.assertEqual(db["crates"]["ripgrep"]["category"], "system")
+        self.assertEqual(db["crates"]["ripgrep"]["tagsConfidence"], "medium")
 
     def test_missing_homebrew_pulse_events_keep_npm_last_updated_at_metadata(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -471,6 +529,10 @@ class ExecutableSeedTests(unittest.TestCase):
             ), mock.patch.object(
                 authority,
                 "read_crate_metadata",
+                return_value={},
+            ), mock.patch.object(
+                authority,
+                "read_package_taxonomy_index",
                 return_value={},
             ), mock.patch.object(authority, "NPM_INDEX_STATE_PATH", index_path):
                 db = build_automic_vault_db(

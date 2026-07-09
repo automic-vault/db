@@ -42,7 +42,8 @@ class BuildPipelineTests(unittest.TestCase):
         self.assertTrue(export_step.refresh_sensitive)
         self.assertIn("cache/brew/casks.json", input_paths)
         self.assertIn("cache/npmjs/index.json", input_paths)
-        self.assertNotIn("cache/cratesio/index.json", input_paths)
+        self.assertIn("data/pkg-ecosystem-taxonomy.json", input_paths)
+        self.assertIn("cache/cratesio/index.json", input_paths)
 
     def test_render_projects_reruns_when_cask_entries_change(self):
         render_step = next(
@@ -53,14 +54,14 @@ class BuildPipelineTests(unittest.TestCase):
 
         self.assertIn("cache/brew/cask-entries.json", {path.as_posix() for path in render_step.inputs})
 
-    def test_crates_index_is_refresh_sensitive_without_feeding_authority_db(self):
+    def test_crates_index_feeds_authority_db_crate_metadata(self):
         pipeline_steps = steps(refresh=True, fetch_manifests=False, manifest_limit=0)
         crates_step = next(step for step in pipeline_steps if step.name == "crates-index")
         export_step = next(step for step in pipeline_steps if step.name == "export-automic-vault-db")
 
         self.assertTrue(crates_step.refresh_sensitive)
         self.assertIn("cache/cratesio/index.json", {path.as_posix() for path in crates_step.outputs})
-        self.assertNotIn("cache/cratesio/index.json", {path.as_posix() for path in export_step.inputs})
+        self.assertIn("cache/cratesio/index.json", {path.as_posix() for path in export_step.inputs})
 
 
 if __name__ == "__main__":
