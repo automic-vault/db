@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 import argparse
 import datetime as dt
 import gzip
@@ -424,7 +426,10 @@ def source_backed_manager_commands(facts: dict[str, Any], matcher: dict[str, lis
     seen_managers = set()
     for tier in package_match_tiers(facts):
         for normalized in tier:
-            for item in sorted(matcher.get(normalized) or [], key=lambda item: str(((item.get("source") if isinstance(item, dict) else {}) or {}).get("package_id") or "") != normalized):
+            for item in sorted(
+                matcher.get(normalized) or [],
+                key=lambda item: str(((item.get("source") if isinstance(item, dict) else {}) or {}).get("package_id") or "") != normalized,
+            ):
                 source = item.get("source") if isinstance(item, dict) else {}
                 manager = source.get("manager") if isinstance(source, dict) else item.get("manager")
                 command_text = item.get("command")
