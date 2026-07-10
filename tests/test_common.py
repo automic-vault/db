@@ -71,6 +71,52 @@ class CommonGitTests(unittest.TestCase):
 
             self.assertIsNone(commit)
 
+    def test_git_commit_if_changed_preserves_only_preexisting_dirty_paths(self):
+        original_root = common.ROOT
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            subprocess.run(["git", "init"], cwd=root, check=True, stdout=subprocess.PIPE)
+            subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=root, check=True)
+            subprocess.run(["git", "config", "user.name", "Test User"], cwd=root, check=True)
+            (root / "combined").mkdir()
+            (root / "combined" / "old.yml").write_text("name: old\n", encoding="utf-8")
+            (root / "combined" / "new.yml").write_text("version: 1\n", encoding="utf-8")
+            subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-m", "initial"], cwd=root, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            try:
+                common.ROOT = root
+                (root / "combined" / "old.yml").write_text("name: dirty\n", encoding="utf-8")
+                preserved_tracked_dirty, preserved_untracked_dirty = common.git_dirty_paths(["combined"])
+                (root / "combined" / "new.yml").write_text("version: 2\n", encoding="utf-8")
+                commit = common.git_commit_if_changed(
+                    "hourly: refresh package database",
+                    ["combined"],
+                    preserve_existing_dirty=True,
+                    preserved_tracked_dirty=preserved_tracked_dirty,
+                    preserved_untracked_dirty=preserved_untracked_dirty,
+                )
+            finally:
+                common.ROOT = original_root
+
+            self.assertIsNotNone(commit)
+            committed = subprocess.run(
+                ["git", "show", "--name-only", "--format=", "HEAD"],
+                cwd=root,
+                check=True,
+                stdout=subprocess.PIPE,
+                text=True,
+            ).stdout.splitlines()
+            dirty = subprocess.run(
+                ["git", "diff", "--name-only"],
+                cwd=root,
+                check=True,
+                stdout=subprocess.PIPE,
+                text=True,
+            ).stdout.splitlines()
+            self.assertEqual(committed, ["combined/new.yml"])
+            self.assertEqual(dirty, ["combined/old.yml"])
+
 
 class FetchBytesTests(unittest.TestCase):
     def test_fetch_bytes_retries_incomplete_read(self):

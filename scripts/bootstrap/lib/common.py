@@ -108,6 +108,8 @@ def git_commit_if_changed(
     paths: list[str | Path],
     *,
     preserve_existing_dirty: bool = False,
+    preserved_tracked_dirty: list[str] | None = None,
+    preserved_untracked_dirty: list[str] | None = None,
 ) -> str | None:
     if not paths:
         return None
@@ -117,7 +119,11 @@ def git_commit_if_changed(
     tracked_dirty: list[str] = []
     untracked_dirty: list[str] = []
     if preserve_existing_dirty:
-        tracked_dirty, untracked_dirty = git_dirty_paths(path_args)
+        if preserved_tracked_dirty is None or preserved_untracked_dirty is None:
+            tracked_dirty, untracked_dirty = git_dirty_paths(path_args)
+        else:
+            tracked_dirty = sorted({line for line in preserved_tracked_dirty if line})
+            untracked_dirty = sorted({line for line in preserved_untracked_dirty if line})
     subprocess.run(["git", "add", "-A", "--", *path_args], cwd=ROOT, check=True)
     if tracked_dirty:
         subprocess.run(["git", "reset", "-q", "HEAD", "--", *tracked_dirty], cwd=ROOT, check=True)

@@ -16,7 +16,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from scripts.bootstrap.lib.common import git_commit_if_changed
+from scripts.bootstrap.lib.common import git_commit_if_changed, git_dirty_paths
 
 
 STATUS_DIR = ROOT / "cache" / "automation" / "nightly-maintenance"
@@ -132,6 +132,10 @@ def run_task(task: Task, *, dry_run: bool = False) -> int:
     started_at = now_iso()
     started_monotonic = datetime.now()
     command_text = quote_command(task.command)
+    preserved_tracked_dirty: list[str] = []
+    preserved_untracked_dirty: list[str] = []
+    if task.commit_paths:
+        preserved_tracked_dirty, preserved_untracked_dirty = git_dirty_paths(task.commit_paths)
     status: dict[str, Any] = {
         "task": task.name,
         "title": task.title,
@@ -156,6 +160,8 @@ def run_task(task: Task, *, dry_run: bool = False) -> int:
                 task.commit_message or f"nightly: {task.name}",
                 task.commit_paths,
                 preserve_existing_dirty=True,
+                preserved_tracked_dirty=preserved_tracked_dirty,
+                preserved_untracked_dirty=preserved_untracked_dirty,
             )
         except subprocess.CalledProcessError as err:
             code = err.returncode or 1

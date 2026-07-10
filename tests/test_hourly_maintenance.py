@@ -69,6 +69,28 @@ class HourlyMaintenanceTests(unittest.TestCase):
         self.assertEqual(publish_commands, [[sys.executable, "scripts/publish-public-db.py"]])
         self.assertEqual(health_index, 2)
 
+    def test_snapshots_dirty_paths_before_running_commit_flow(self):
+        maintenance = load_hourly_maintenance()
+
+        with mock.patch.object(sys, "argv", ["hourly-maintenance.py", "--skip-sqlite"]):
+            with (
+                mock.patch.object(maintenance, "run"),
+                mock.patch.object(maintenance, "run_publish_public_db", return_value=True),
+                mock.patch.object(maintenance, "run_prepare_enrichment", return_value=None),
+                mock.patch.object(maintenance, "unresolved_enrichment_run_ids", return_value=[]),
+                mock.patch.object(maintenance, "git_dirty_paths", return_value=(["combined/existing.yml"], [])) as git_dirty_paths,
+                mock.patch.object(maintenance, "git_commit_if_changed", return_value="abc123") as git_commit_if_changed,
+            ):
+                self.assertEqual(maintenance.main(), 0)
+
+        git_dirty_paths.assert_called_once_with(maintenance.COMMIT_PATHS)
+        git_commit_if_changed.assert_called_once()
+        self.assertEqual(
+            git_commit_if_changed.call_args.kwargs["preserved_tracked_dirty"],
+            ["combined/existing.yml"],
+        )
+        self.assertEqual(git_commit_if_changed.call_args.kwargs["preserved_untracked_dirty"], [])
+
     def test_skips_public_db_publish_when_unattended_aws_approval_is_unavailable(self):
         maintenance = load_hourly_maintenance()
         stdout = io.StringIO()

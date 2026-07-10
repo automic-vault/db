@@ -89,6 +89,32 @@ class NightlyMaintenanceTests(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 enrich_projects.codex_timeout_seconds()
 
+    def test_run_task_passes_preserved_dirty_snapshot_to_commit_helper(self):
+        maintenance = load_nightly_maintenance()
+        task = maintenance.Task(
+            name="refresh",
+            title="Refresh deterministic package data",
+            command=[sys.executable, "-c", "print('ok')"],
+            commit_paths=["deterministic", "combined"],
+            commit_message="nightly: refresh package data",
+        )
+
+        with (
+            mock.patch.object(maintenance, "write_status"),
+            mock.patch.object(maintenance, "run_command", return_value=0),
+            mock.patch.object(maintenance, "git_dirty_paths", return_value=(["combined/existing.yml"], [])) as git_dirty_paths,
+            mock.patch.object(maintenance, "git_commit_if_changed", return_value="abc123") as git_commit_if_changed,
+        ):
+            self.assertEqual(maintenance.run_task(task), 0)
+
+        git_dirty_paths.assert_called_once_with(["deterministic", "combined"])
+        git_commit_if_changed.assert_called_once()
+        self.assertEqual(
+            git_commit_if_changed.call_args.kwargs["preserved_tracked_dirty"],
+            ["combined/existing.yml"],
+        )
+        self.assertEqual(git_commit_if_changed.call_args.kwargs["preserved_untracked_dirty"], [])
+
 
 if __name__ == "__main__":
     unittest.main()

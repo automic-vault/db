@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.bootstrap.lib.common import git_commit_if_changed
+from scripts.bootstrap.lib.common import git_commit_if_changed, git_dirty_paths
 
 COMMIT_PATHS = [
     "deterministic",
@@ -225,6 +225,10 @@ def main() -> int:
     args = parse_args()
     py = sys.executable
     os.chdir(ROOT)
+    preserved_tracked_dirty: list[str] = []
+    preserved_untracked_dirty: list[str] = []
+    if not args.no_commit:
+        preserved_tracked_dirty, preserved_untracked_dirty = git_dirty_paths(COMMIT_PATHS)
 
     run([py, "scripts/build.py", "--refresh"])
     if not args.skip_enrichment and args.enrich_limit > 0:
@@ -270,6 +274,8 @@ def main() -> int:
             "hourly: refresh package database",
             COMMIT_PATHS,
             preserve_existing_dirty=True,
+            preserved_tracked_dirty=preserved_tracked_dirty,
+            preserved_untracked_dirty=preserved_untracked_dirty,
         )
         print(f"commit={commit or 'none'}")
     return 0
