@@ -8,9 +8,10 @@ credentials-file-location: null
 history:
   adoption-history:
     - >
-      Adoption evidence is limited to its upstream repository and package-manager
-      presence. Homebrew packages version 0.0.1, which reflects the tool's role as a
-      niche migration helper rather than a broad day-to-day Git workflow package.
+      Adoption evidence is limited to the upstream repository and package-manager
+      presence. Homebrew packages version 0.0.1 and also exposes a HEAD build,
+      reflecting the tool's role as a niche migration helper rather than a broad
+      day-to-day Git workflow package.
   package-nerd-significance:
     - >
       Its significance is as a fossil of the SVN-to-Git migration era: a packageable set
@@ -18,39 +19,32 @@ history:
       repository conversion step that core Git intentionally leaves to external tooling.
   project-history:
     - >
-      The repository was created in 2009 by Yuval Kogman and describes a workflow built
-      around git-svn: clone the Subversion repository, run the fix-refs command,
-      optionally add grafts for unrecognized merges, then run the cleanup command. The
-      README frames the project as a way of abandoning SVN in favor of Git rather than
-      continuing bidirectional synchronization.
+      The README frames the project as a workflow for abandoning SVN in favor of Git
+      while keeping a clean history. The documented process starts from a git-svn clone,
+      runs `git svn-abandon-fix-refs`, optionally adds `.git/info/grafts` for merge
+      commits, and then runs `git-svn-abandon-cleanup`.
   related-projects:
     - >
       git-svn-abandon builds on git-svn and points users toward Snerp Vortex and
       svn2git-style scripts when a repository is too large or complex for its own
       cleanup scripts.
   sources:
-    - https://api.github.com/repos/nothingmuch/git-svn-abandon
     - https://formulae.brew.sh/formula/git-svn-abandon
-    - https://github.com/nothingmuch/git-svn-abandon
+    - https://github.com/nothingmuch/git-svn-abandon#readme
     - https://raw.githubusercontent.com/nothingmuch/git-svn-abandon/master/README.mkdn
   summary:
     - >
       git-svn-abandon is a small suite of Git extension scripts for turning a git-svn
-      working repository into a plain Git repository after a Subversion migration. Its
-      purpose is deliberately narrow: preserve as much branch, tag, merge, and message
-      history as possible while removing the git-svn metadata that kept the repository
-      tied to Subversion.
+      working repository into a plain Git repository after a Subversion migration.
   timeline:
-    - >
-      2009: GitHub repository created for history-preserving SVN-to-Git migration using
-      git-svn.
+    - "2009: README links to the author's detailed git-svn-abandon how-to."
     - '0.0.1: Homebrew packages the upstream release as git-svn-abandon.'
   usage:
     - >
       Practitioners use it after a git-svn import to convert SVN remote references into
       normal Git heads and tags, recreate SVN tags as annotated Git tags, remove
       git-svn-id and SVK message noise, and apply grafts where merge ancestry has to be
-      supplied manually. After cleanup, the README warns that git svn rebase can no
+      supplied manually. After cleanup, the README warns that `git svn rebase` can no
       longer be used against the converted repository.
 tags:
   - cli
@@ -69,26 +63,31 @@ geiger:
     - metadata:no-higher-risk-signals
 provenance:
   category-sources:
-    - https://github.com/nothingmuch/git-svn-abandon
+    - >
+      Official README describes a Git/SVN repository migration workflow;
+      source_facts.description says "History-preserving svn-to-git migration".
   display-name-sources:
-    - https://github.com/nothingmuch/git-svn-abandon
+    - Official repository name and Homebrew formula name use git-svn-abandon.
   docs-sources:
-    - https://github.com/nothingmuch/git-svn-abandon#readme
+    - Official GitHub repository README is the primary documentation surface.
   history-sources:
-    - https://api.github.com/repos/nothingmuch/git-svn-abandon
     - https://formulae.brew.sh/formula/git-svn-abandon
-    - https://github.com/nothingmuch/git-svn-abandon
+    - https://github.com/nothingmuch/git-svn-abandon#readme
     - https://raw.githubusercontent.com/nothingmuch/git-svn-abandon/master/README.mkdn
   repo-sources:
-    - https://github.com/nothingmuch/git-svn-abandon
+    - >
+      source_facts.repo is already populated with
+      https://github.com/nothingmuch/git-svn-abandon; prompt requires returning repo as
+      null when source_facts.repo is present.
   tags-sources:
-    - https://formulae.brew.sh/formula/git-svn-abandon
-    - https://github.com/nothingmuch/git-svn-abandon
+    - Official README documents git-svn conversion, refs, tags, grafts, and cleanup behavior.
 category-confidence: high
 category-path:
   - developer-tools
+  - version-control
+  - migration
 display-name-confidence: high
 docs-confidence: high
-history-confidence: low
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
