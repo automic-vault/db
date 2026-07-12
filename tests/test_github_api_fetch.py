@@ -34,6 +34,17 @@ pkg_manager_indexes = load_script_module(
 
 
 class GithubApiFetchTests(unittest.TestCase):
+    def test_build_db_validate_authority_db_accepts_current_schema_and_cargo_entries(self):
+        build_db._validate_authority_db(
+            {
+                "schema": 8,
+                "entries": {"aws": "awscli", "op": "cask:1password-cli", "rg": "cargo:ripgrep"},
+                "formulas": {"awscli": {"summary": "AWS CLI"}},
+                "casks": {"1password-cli": {"summary": "1Password CLI"}},
+                "crates": {"ripgrep": {"summary": "ripgrep", "executables": [{"name": "rg"}]}},
+            }
+        )
+
     def test_common_github_api_bytes_uses_gh_api_endpoint(self):
         url = "https://api.github.com/repos/NixOS/nixpkgs/git/trees/master?recursive=1"
         completed = subprocess.CompletedProcess(

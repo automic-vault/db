@@ -27,7 +27,7 @@ CACHE_DIR = "cache"
 ECOSYSTEM = "brew.sh"
 NPM_ECOSYSTEM = "npmjs"
 DB_PATH = os.fspath(DB_JSON_PATH)
-SCHEMA_VERSION = 7
+SCHEMA_VERSION = 8
 AUTHORITY_DB_PATH = os.environ.get(
     "AV_DB_AUTHORITY_PATH",
     os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "av.db", "cache", "automic-vault", "db.json")),
@@ -1867,6 +1867,13 @@ def _validate_authority_db(db):
             raise ValueError(
                 f"authority db entry {executable!r} points at missing cask {provider!r}"
             )
+        if provider.startswith("cargo:"):
+            crates = db.get("crates")
+            if not isinstance(crates, dict) or provider[len("cargo:") :] not in crates:
+                raise ValueError(
+                    f"authority db entry {executable!r} points at missing crate {provider!r}"
+                )
+            continue
         if not provider.startswith(("cask:", "npm:")) and provider not in formulas:
             raise ValueError(
                 f"authority db entry {executable!r} points at missing formula {provider!r}"
