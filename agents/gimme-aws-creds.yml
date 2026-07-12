@@ -1,9 +1,8 @@
 id: brew:gimme-aws-creds
-display-name: Gifski
+display-name: gimme-aws-creds
 repo: https://github.com/Nike-Inc/gimme-aws-creds
 docs:
-  - https://gif.ski/
-  - https://github.com/ImageOptim/gifski#readme
+  - https://github.com/Nike-Inc/gimme-aws-creds#readme
 config-file-location:
   unix:
     - ~/.okta_aws_login_config
@@ -17,47 +16,47 @@ history:
       The package fits the enterprise CLI niche created by federated AWS access:
       engineers need temporary AWS profiles, but organizations often require Okta MFA
       and SAML rather than long-lived IAM user keys. Distribution through PyPI,
-      Homebrew, and Nix made it accessible to both Python and macOS-oriented workstation
+      Homebrew, and Nix made it accessible to Python and macOS-oriented workstation
       setups.
   package-nerd-significance:
     - >
       gimme-aws-creds is package-manager-interesting because it lives at the boundary
       between local developer ergonomics and enterprise identity policy. Small packaging
-      details, Python version support, shell completion, and credential-file paths
-      directly affect whether engineers can enter cloud shells without manual SAML
-      copy-and-paste work.
+      details, Python support, shell completion, optional dependencies, and
+      credential-file paths directly affect whether engineers can enter cloud shells
+      without manual SAML copy-and-paste work.
   project-history:
     - >
-      The GitHub repository was created in March 2017, and version 1.0.0 was released in
-      October 2017. The README credits earlier work in okta_aws_login, noting that
-      gimme-aws-creds reused some MIT-licensed code while addressing stale maintenance
-      and multi-application scaling limitations.
+      The official README describes gimme-aws-creds as a CLI that uses an Okta identity
+      provider via SAML to acquire short-lived credentials for AWS and Alibaba Cloud.
+      Its 1.0.0 release notes describe support for a Lambda proxy to avoid sharing an
+      Okta API key widely, plus Okta MFA support for multiple factors.
     - >
-      Over time the tool expanded from a friendly Okta-to-AWS credential helper into a
-      broader cloud credential bridge. Its documentation covers Okta Identity Engine,
+      Over time the tool expanded from an Okta-to-AWS credential helper into a broader
+      cloud credential bridge. Its documentation covers Okta Identity Engine,
       browser-based device authorization, MFA factor handling, configurable profiles,
       optional gimme-creds-lambda proxying, and Alibaba Cloud RAM credentials using the
       same Okta authentication flow.
   related-projects:
     - >
-      The README names okta_aws_login as an ancestor and lists okta-aws-cli and
-      okta-aws-cli-assume-role as related projects.
+      The README points to gimme-creds-lambda for proxying Okta API interaction. It also
+      sits near Okta's AWS client, AWS STS AssumeRoleWithSAML workflows, Alibaba Cloud
+      STS, and other Okta-to-cloud credential helper CLIs.
   sources:
-    - https://formulae.brew.sh/formula/gimme-aws-creds
     - https://github.com/Nike-Inc/gimme-aws-creds
+    - https://github.com/Nike-Inc/gimme-aws-creds#readme
+    - https://github.com/Nike-Inc/gimme-aws-creds/releases/tag/v1.0.0
     - https://pypi.org/project/gimme-aws-creds/
-    - https://raw.githubusercontent.com/Nike-Inc/gimme-aws-creds/master/README.md
   summary:
     - >
-      gimme-aws-creds is a command-line tool from Nike for obtaining short-lived AWS
+      gimme-aws-creds is a command-line tool from Nike for obtaining short-lived cloud
       credentials through Okta-backed SAML authentication.
   timeline:
-    - '2017: Repository created.'
-    - '2017: Version 1.0.0 released.'
-    - '2018: 1.1 series releases continued profile and compatibility work.'
-    - >
-      2020s: Documentation grew around Okta Identity Engine, device authorization,
-      Python 3.10+, Homebrew, Nix, Docker, and Alibaba Cloud support.
+    - '2017: Version 1.0.0 released with Lambda proxy and MFA support notes.'
+    - '2018: 1.0 and 1.1 series releases continued on PyPI.'
+    - '2019: 2.0 series appeared on PyPI.'
+    - '2023: 2.7 series releases added Identity Engine and authentication-policy work.'
+    - '2024: 2.8.2 released with config and Windows dependency fixes.'
   usage:
     - >
       Practitioners install the tool, run its configuration action to store Okta
@@ -66,10 +65,11 @@ history:
       Teams use named profiles and environment overrides to switch accounts, roles,
       durations, MFA behavior, and cloud-provider mode.
 tags:
+  - aws
   - cli
-  - encoder
-  - gif
-  - pngquant
+  - credentials
+  - okta
+  - saml
 geiger:
   category: appliance
   color: green
@@ -81,26 +81,35 @@ geiger:
     - metadata:no-indexed-executables
 provenance:
   category-sources:
-    - https://formulae.brew.sh/formula/gimme-aws-creds
+    - >
+      source_facts.description and official README describe retrieving AWS and Alibaba
+      Cloud credentials through Okta SAML.
   display-name-sources:
-    - https://formulae.brew.sh/formula/gimme-aws-creds
+    - Official GitHub repository and README use the project name gimme-aws-creds.
   docs-sources:
-    - https://gif.ski/
-    - https://github.com/ImageOptim/gifski#readme
+    - >
+      Official GitHub README is the project documentation surface and contains
+      installation, configuration, usage, cloud-provider, and troubleshooting sections.
   history-sources:
-    - https://formulae.brew.sh/formula/gimme-aws-creds
     - https://github.com/Nike-Inc/gimme-aws-creds
+    - https://github.com/Nike-Inc/gimme-aws-creds#readme
+    - https://github.com/Nike-Inc/gimme-aws-creds/releases/tag/v1.0.0
     - https://pypi.org/project/gimme-aws-creds/
-    - https://raw.githubusercontent.com/Nike-Inc/gimme-aws-creds/master/README.md
   repo-sources:
-    - https://github.com/Nike-Inc/gimme-aws-creds
+    - >
+      source_facts.homepage points to the official Nike-Inc/gimme-aws-creds GitHub
+      repository, and the official README uses that repository as the project home.
   tags-sources:
-    - https://formulae.brew.sh/formula/gimme-aws-creds
-category-confidence: low
+    - >
+      Official README describes AWS STS, Alibaba Cloud STS, Okta, SAML, MFA,
+      configuration profiles, and command-line usage.
+category-confidence: high
 category-path:
-  - media
-display-name-confidence: low
-docs-confidence: low
+  - cloud-infrastructure
+  - credentials
+  - identity
+display-name-confidence: high
+docs-confidence: high
 history-confidence: high
 repo-confidence: high
-tags-confidence: low
+tags-confidence: high
