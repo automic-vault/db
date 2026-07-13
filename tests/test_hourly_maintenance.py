@@ -49,6 +49,14 @@ class HourlyMaintenanceTests(unittest.TestCase):
 
         self.assertEqual(health_index, export_index + 1)
 
+    def test_runs_one_seventh_of_npm_full_scan(self):
+        commands, _, _ = self.run_hourly()
+
+        self.assertIn(
+            [sys.executable, "scripts/build-db.py", "--refresh", "--npm-full-scan-parts=7"],
+            commands,
+        )
+
     def test_hourly_enrichment_prepares_external_controller_batches(self):
         _, _, prepare_calls = self.run_hourly()
 
@@ -67,7 +75,7 @@ class HourlyMaintenanceTests(unittest.TestCase):
         health_index = commands.index([sys.executable, "scripts/check-automic-vault-db-health.py"])
 
         self.assertEqual(publish_commands, [[sys.executable, "scripts/publish-public-db.py"]])
-        self.assertEqual(health_index, 2)
+        self.assertEqual(health_index, 3)
 
     def test_snapshots_dirty_paths_before_running_commit_flow(self):
         maintenance = load_hourly_maintenance()

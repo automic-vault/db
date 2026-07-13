@@ -244,6 +244,7 @@ def main() -> int:
     if not args.no_commit:
         preserved_tracked_dirty, preserved_untracked_dirty = git_dirty_paths(COMMIT_PATHS)
 
+    run([py, "scripts/build-db.py", "--refresh", "--npm-full-scan-parts=7"])
     run([py, "scripts/build.py", "--refresh"])
     if not args.skip_enrichment and args.enrich_limit > 0:
         unresolved = unresolved_enrichment_run_ids()

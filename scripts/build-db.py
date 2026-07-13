@@ -67,6 +67,7 @@ NPM_INDEX_STATE_PATH = os.path.join(CACHE_DIR, NPM_ECOSYSTEM, "index.json")
 NPM_AUTH_HOSTS = {"registry.npmjs.org", "replicate.npmjs.com", "api.npmjs.org"}
 NPM_DOWNLOADS_HOSTS = {"api.npmjs.org"}
 NPM_FULL_SCAN = False
+NPM_FULL_SCAN_PARTS = 1
 
 _GHCR_TOKENS = {}
 
@@ -1630,9 +1631,19 @@ def _refresh_npm_packuments(packages, packuments, existing_packages, downloads=N
     return accepted
 
 
+def _npm_full_scan_page_budget(total_rows):
+    if NPM_FULL_SCAN_PARTS <= 1 or total_rows is None:
+        return None
+    total_pages = (
+        total_rows + NPM_FULL_SCAN_PAGE_SIZE - 1
+    ) // NPM_FULL_SCAN_PAGE_SIZE
+    return max(1, (total_pages + NPM_FULL_SCAN_PARTS - 1) // NPM_FULL_SCAN_PARTS)
+
+
 def _run_npm_full_scan(state):
     packages = state["packages"]
     cursor = state.get("full_scan_cursor")
+    processed_pages = 0
     if not state.get("full_scan_started_at"):
         state["full_scan_started_at"] = datetime.datetime.now(
             datetime.timezone.utc
@@ -1697,6 +1708,7 @@ def _run_npm_full_scan(state):
         state["full_scan_page_count"] = (
             (_parse_count(state.get("full_scan_page_count")) or 0) + 1
         )
+        processed_pages += 1
         _write_npm_index_state(state)
         _npm_full_scan_progress(state, len(packages))
 
@@ -1707,6 +1719,16 @@ def _run_npm_full_scan(state):
                 datetime.timezone.utc
             ).isoformat()
             _write_npm_index_state(state)
+            break
+        page_budget = _npm_full_scan_page_budget(
+            _parse_count(state.get("full_scan_total_rows"))
+        )
+        if page_budget is not None and processed_pages >= page_budget:
+            print(
+                f"Paused npm full scan after {processed_pages} pages; "
+                f"next run resumes at {next_cursor}",
+                file=sys.stderr,
+            )
             break
         cursor = next_cursor
 
@@ -1738,7 +1760,8 @@ def _collect_npm_metadata():
     try:
         changes_since = state.get("last_seq")
         if NPM_FULL_SCAN:
-            changes_since = _current_npm_changes_sequence()
+            if NPM_FULL_SCAN_PARTS <= 1:
+                changes_since = _current_npm_changes_sequence()
             print("Starting npm full metadata scan...", file=sys.stderr)
             _run_npm_full_scan(state)
         elif state.get("full_scan_cursor") or not state.get("last_full_scan_at"):
@@ -2078,7 +2101,7 @@ def _collect_homebrew_authority_legacy(github_token):
 
 
 def main():
-    global FORCE_REFRESH, NPM_FULL_SCAN
+    global FORCE_REFRESH, NPM_FULL_SCAN, NPM_FULL_SCAN_PARTS
 
     _ensure_cwd()
 
@@ -2087,8 +2110,20 @@ def main():
             FORCE_REFRESH = True
         elif arg == "--npm-full-scan":
             NPM_FULL_SCAN = True
+        elif arg.startswith("--npm-full-scan-parts="):
+            try:
+                NPM_FULL_SCAN_PARTS = int(arg.split("=", 1)[1])
+            except ValueError:
+                NPM_FULL_SCAN_PARTS = 0
+            if NPM_FULL_SCAN_PARTS < 1:
+                print("--npm-full-scan-parts must be a positive integer", file=sys.stderr)
+                sys.exit(2)
+            NPM_FULL_SCAN = True
         elif arg in ("--help", "-h"):
-            print("Usage: scripts/build-db.py [--refresh] [--npm-full-scan]")
+            print(
+                "Usage: scripts/build-db.py [--refresh] [--npm-full-scan] "
+                "[--npm-full-scan-parts=N]"
+            )
             print()
             print("Environment knobs:")
             print("  NPM_TOKEN, NODE_AUTH_TOKEN, NPM_REGISTRY_TOKEN")
@@ -2101,7 +2136,8 @@ def main():
         else:
             print(f"Unknown argument: {arg}", file=sys.stderr)
             print(
-                "Usage: scripts/build-db.py [--refresh] [--npm-full-scan]",
+                "Usage: scripts/build-db.py [--refresh] [--npm-full-scan] "
+                "[--npm-full-scan-parts=N]",
                 file=sys.stderr,
             )
             sys.exit(2)

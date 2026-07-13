@@ -60,8 +60,9 @@ scripts/automation-runner.sh npm-full-scan
 
 Runner jobs:
 
-- `db`: runs the hourly package database refresh through
-  `scripts/hourly-maintenance.py`. This refreshes source data, prepares hourly
+- `db`: runs the nightly package database refresh through
+  `scripts/hourly-maintenance.py`. This refreshes one seventh of the npm registry,
+  resumes that scan on the next run, refreshes source data, prepares nightly
   missing-curated-field enrichment if no older prepared run is waiting, exports
   and health-checks
   `cache/automic-vault/db.json`, publishes the public DB, rebuilds package-page
