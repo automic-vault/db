@@ -24,10 +24,10 @@ For nightly stale or upstream-updated projects:
 python3 scripts/enrich-projects.py --mode review-stale-updated --limit 50 --batch-size 5 --backend external --phase prepare --run-id "$(date -u +%Y%m%dT%H%M%SZ)"
 ```
 
-For hourly missing curated fields:
+For nightly new and missing curated fields:
 
 ```sh
-python3 scripts/enrich-projects.py --mode new --include-missing-curated-fields --limit 10 --batch-size 3 --backend external --phase prepare --run-id "$(date -u +%Y%m%dT%H%M%SZ)"
+python3 scripts/enrich-projects.py --mode new --include-missing-curated-fields --limit 250 --batch-size 5 --backend external --phase prepare --commit-after-batch --run-id "$(date -u +%Y%m%dT%H%M%SZ)"
 ```
 
 2. Read `cache/enrichment/runs/<run-id>/controller-manifest.json`.
@@ -51,7 +51,7 @@ Use the same mode, limits, and batch size as the prepare command. For nightly ne
 python3 scripts/enrich-projects.py --mode new --limit 50 --batch-size 5 --backend external --phase apply --run-id "<run-id>" --commit-after-batch
 ```
 
-For stale review, use `--mode review-stale-updated`. For hourly missing curated fields, include `--include-missing-curated-fields --limit 10 --batch-size 3`; omit `--commit-after-batch` when the surrounding hourly refresh will commit all stable source changes at the end.
+For stale review, use `--mode review-stale-updated`. For nightly new and missing curated fields, include `--include-missing-curated-fields --limit 250 --batch-size 5 --commit-after-batch`.
 
 5. If apply reports missing outputs or validation failures, leave completed batch commits in place and rerun only the failed batches with the same `--run-id` after their `codex-output.json` files are fixed.
 

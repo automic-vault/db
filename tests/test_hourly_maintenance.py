@@ -67,7 +67,14 @@ class HourlyMaintenanceTests(unittest.TestCase):
         self.assertIn("external", command)
         self.assertIn("--phase", command)
         self.assertIn("prepare", command)
-        self.assertNotIn("--commit-after-batch", command)
+        self.assertIn("--commit-after-batch", command)
+
+    def test_nightly_enrichment_uses_daily_capacity(self):
+        _, _, prepare_calls = self.run_hourly()
+
+        command = prepare_calls[0].args[0]
+        self.assertEqual(command[command.index("--limit") + 1], "250")
+        self.assertEqual(command[command.index("--batch-size") + 1], "5")
 
     def test_publishes_public_db_after_health_check(self):
         commands, publish_commands, _ = self.run_hourly()

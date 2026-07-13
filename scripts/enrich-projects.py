@@ -262,6 +262,7 @@ def prepare_run(
         "backend": args.backend,
         "batch_size": args.batch_size,
         "batches": [],
+        "commit_after_batch": bool(args.commit_after_batch),
         "include_missing_curated_fields": bool(args.include_missing_curated_fields),
         "mode": args.mode,
         "phase": "prepare",
@@ -474,6 +475,15 @@ def selected_projects_for_args(args: argparse.Namespace, state: dict[str, Any], 
     )
     if args.only_missing_curated_fields:
         selected = [record for record in selected if has_missing_curated_fields(record)]
+    selected.sort(
+        key=lambda record: (
+            not any(
+                (state.get(str(record.get("id") or "")) or {}).get(field) == today
+                for field in ("first_observed", "last_source_change")
+            ),
+            str(record.get("id") or ""),
+        )
+    )
     if args.limit:
         selected = selected[: args.limit]
     return projects, selected

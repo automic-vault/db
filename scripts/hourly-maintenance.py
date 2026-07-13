@@ -27,8 +27,8 @@ COMMIT_PATHS = [
     "data/pkg-pages",
     "data/pkg-taxonomy.json",
 ]
-DEFAULT_HOURLY_ENRICH_LIMIT = int(os.environ.get("AVDB_HOURLY_ENRICH_LIMIT", "10"))
-DEFAULT_HOURLY_ENRICH_BATCH_SIZE = int(os.environ.get("AVDB_HOURLY_ENRICH_BATCH_SIZE", "3"))
+DEFAULT_HOURLY_ENRICH_LIMIT = int(os.environ.get("AVDB_HOURLY_ENRICH_LIMIT", "250"))
+DEFAULT_HOURLY_ENRICH_BATCH_SIZE = int(os.environ.get("AVDB_HOURLY_ENRICH_BATCH_SIZE", "5"))
 DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS = int(os.environ.get("AVDB_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS", "300"))
 DEFAULT_PUBLIC_DB_PUBLISH_TIMEOUT_SECONDS = int(
     os.environ.get("AVDB_PUBLIC_DB_PUBLISH_TIMEOUT_SECONDS", "120")
@@ -216,10 +216,10 @@ def run_pkg_graph_curation(command: list[str]) -> bool:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run one av.db hourly package database update.")
+    parser = argparse.ArgumentParser(description="Run one av.db nightly package database update.")
     parser.add_argument("--no-commit", action="store_true", help="Do not commit stable source changes.")
     parser.add_argument("--skip-sqlite", action="store_true", help="Skip package SQLite generation.")
-    parser.add_argument("--skip-enrichment", action="store_true", help="Skip hourly curated-field enrichment.")
+    parser.add_argument("--skip-enrichment", action="store_true", help="Skip nightly curated-field enrichment.")
     parser.add_argument(
         "--enrich-limit",
         type=int,
@@ -230,7 +230,7 @@ def parse_args() -> argparse.Namespace:
         "--enrich-batch-size",
         type=int,
         default=DEFAULT_HOURLY_ENRICH_BATCH_SIZE,
-        help="Projects to send to Codex per hourly enrichment batch.",
+        help="Projects to send to Codex per nightly enrichment batch.",
     )
     return parser.parse_args()
 
@@ -266,6 +266,7 @@ def main() -> int:
                     "external",
                     "--phase",
                     "prepare",
+                    "--commit-after-batch",
                 ],
                 timeout=DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS,
             )
@@ -286,7 +287,7 @@ def main() -> int:
 
     if not args.no_commit:
         commit = git_commit_if_changed(
-            "hourly: refresh package database",
+            "nightly: refresh package database",
             COMMIT_PATHS,
             preserve_existing_dirty=True,
             preserved_tracked_dirty=preserved_tracked_dirty,

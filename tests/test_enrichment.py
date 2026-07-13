@@ -191,6 +191,27 @@ class EnrichmentTests(unittest.TestCase):
         )
         self.assertEqual([item["id"] for item in selected], ["brew:bat"])
 
+    def test_daily_candidates_are_prioritized_before_older_backlog(self):
+        module = load_enrich_projects_module()
+        today = date.today().isoformat()
+        args = sample_enrich_project_args(limit=1, include_missing_curated_fields=True)
+        old = sample_record()
+        old["id"] = "brew:aaa-old"
+        new = sample_record()
+        new["id"] = "brew:zzz-new"
+        state = {
+            "brew:aaa-old": {
+                "first_observed": "2026-01-01",
+                "last_source_change": "2026-01-01",
+                "source_fact_hash": hash_source_facts(old),
+            }
+        }
+
+        with mock.patch.object(module, "load_projects", return_value=[old, new]):
+            _, selected = module.selected_projects_for_args(args, state, today)
+
+        self.assertEqual([record["id"] for record in selected], ["brew:zzz-new"])
+
     def test_missing_curated_fields_flag_treats_explicit_null_as_reviewed(self):
         record = sample_record()
         record["display-name"] = "Bat"
@@ -743,6 +764,7 @@ class EnrichmentTests(unittest.TestCase):
 
             self.assertEqual(manifest["selected_count"], 1)
             self.assertEqual(manifest["batches"][0]["status"], "pending")
+            self.assertFalse(manifest["commit_after_batch"])
             self.assertFalse(manifest["include_missing_curated_fields"])
             self.assertTrue((run_dir / "input.json").is_file())
             self.assertTrue((run_dir / "batches" / "0001" / "input.json").is_file())
@@ -763,6 +785,17 @@ class EnrichmentTests(unittest.TestCase):
                 manifest = module.prepare_run(args, [record], run_dir)
 
         self.assertTrue(manifest["include_missing_curated_fields"])
+
+    def test_prepare_phase_records_commit_behavior(self):
+        module = load_enrich_projects_module()
+        args = sample_enrich_project_args(commit_after_batch=True)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = Path(tmp) / "run"
+            with mock.patch.object(module, "ROOT", Path(tmp)):
+                manifest = module.prepare_run(args, [sample_record()], run_dir)
+
+        self.assertTrue(manifest["commit_after_batch"])
 
     def test_only_missing_curated_fields_selects_only_missing_records(self):
         module = load_enrich_projects_module()

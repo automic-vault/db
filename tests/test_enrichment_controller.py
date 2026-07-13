@@ -74,7 +74,26 @@ class EnrichmentControllerTests(unittest.TestCase):
         self.assertEqual(runs[0]["run_id"], "20260623T010101Z")
         self.assertTrue(runs[0]["include_missing_curated_fields"])
 
-    def test_apply_command_includes_include_missing_when_requested(self):
+    def test_apply_command_includes_missing_and_explicit_commit_when_requested(self):
+        controller = load_enrichment_controller()
+
+        command = controller.apply_command(
+            {
+                "run_id": "20260623T010101Z",
+                "mode": "new",
+                "provider": "brew",
+                "batch_size": 3,
+                "commit_after_batch": True,
+                "include_missing_curated_fields": True,
+            }
+        )
+
+        self.assertIn("--include-missing-curated-fields", command)
+        self.assertIn("--commit-after-batch", command)
+        self.assertEqual(command[command.index("--batch-size") + 1], "3")
+        self.assertEqual(command[-2:], ["--include-missing-curated-fields", "--commit-after-batch"])
+
+    def test_legacy_missing_field_run_remains_uncommitted(self):
         controller = load_enrichment_controller()
 
         command = controller.apply_command(
@@ -87,10 +106,7 @@ class EnrichmentControllerTests(unittest.TestCase):
             }
         )
 
-        self.assertIn("--include-missing-curated-fields", command)
         self.assertNotIn("--commit-after-batch", command)
-        self.assertEqual(command[command.index("--batch-size") + 1], "3")
-        self.assertEqual(command[-2:], ["20260623T010101Z", "--include-missing-curated-fields"])
 
     def test_apply_command_omits_include_missing_when_not_requested(self):
         controller = load_enrichment_controller()

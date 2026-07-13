@@ -51,6 +51,7 @@ def unresolved_runs() -> list[dict[str, Any]]:
                 "mode": str(manifest.get("mode") or ""),
                 "provider": str(manifest.get("provider") or "brew"),
                 "batch_size": int(manifest.get("batch_size") or 0),
+                "commit_after_batch": bool(manifest.get("commit_after_batch")),
                 "selected_count": selected_count,
                 "include_missing_curated_fields": bool(manifest.get("include_missing_curated_fields")),
                 "pending_batches": len(pending_batches),
@@ -77,9 +78,10 @@ def apply_command(run: dict[str, Any]) -> list[str]:
         "--run-id",
         str(run["run_id"]),
     ]
-    if bool(run.get("include_missing_curated_fields")):
+    include_missing = bool(run.get("include_missing_curated_fields"))
+    if include_missing:
         command.append("--include-missing-curated-fields")
-    else:
+    if bool(run.get("commit_after_batch", not include_missing)):
         command.append("--commit-after-batch")
     return command
 
@@ -134,6 +136,7 @@ def main() -> int:
             "mode": str(manifest.get("mode") or ""),
             "provider": str(manifest.get("provider") or "brew"),
             "batch_size": int(manifest.get("batch_size") or 0),
+            "commit_after_batch": bool(manifest.get("commit_after_batch")),
             "selected_count": int(manifest.get("selected_count") or 0),
             "include_missing_curated_fields": bool(manifest.get("include_missing_curated_fields")),
             "pending_batches": sum(1 for batch in batches if str(batch.get("status") or "") == "pending"),
