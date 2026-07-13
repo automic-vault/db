@@ -33,6 +33,9 @@ DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS = int(os.environ.get("AVDB_HOURLY_
 DEFAULT_PUBLIC_DB_PUBLISH_TIMEOUT_SECONDS = int(
     os.environ.get("AVDB_PUBLIC_DB_PUBLISH_TIMEOUT_SECONDS", "120")
 )
+DEFAULT_PKG_GRAPH_CURATION_TIMEOUT_SECONDS = int(
+    os.environ.get("AVDB_PKG_GRAPH_CURATION_TIMEOUT_SECONDS", "600")
+)
 ENRICHMENT_RUNS_DIR = ROOT / "cache" / "enrichment" / "runs"
 PREPARE_OUTPUT_PATTERN = re.compile(
     r"Prepared \d+ projects in \d+ batches under (?P<run_dir>cache/enrichment/runs/[^\s]+)"
@@ -201,6 +204,17 @@ def run_publish_public_db(command: list[str]) -> bool:
     )
 
 
+def run_pkg_graph_curation(command: list[str]) -> bool:
+    if run(command, timeout=DEFAULT_PKG_GRAPH_CURATION_TIMEOUT_SECONDS, allow_failure=True):
+        return True
+    print(
+        "WARN: skipping package graph curation refresh and reusing the last generated artifact",
+        file=sys.stderr,
+        flush=True,
+    )
+    return False
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run one av.db hourly package database update.")
     parser.add_argument("--no-commit", action="store_true", help="Do not commit stable source changes.")
@@ -264,7 +278,7 @@ def main() -> int:
     run([py, "scripts/generate-pkg-manager-indexes.py"])
     run([py, "scripts/generate-pkg-cross-ecosystem.py"])
     run([py, "scripts/generate-pkg-graph.py"])
-    run([py, "scripts/generate-pkg-graph-curation.py"])
+    run_pkg_graph_curation([py, "scripts/generate-pkg-graph-curation.py"])
     run([py, "scripts/generate-pkg-graph.py"])
     if not args.skip_sqlite:
         run([py, "scripts/generate-pkg-sqlite.py"])
