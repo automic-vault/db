@@ -779,7 +779,10 @@ def npm_enrichment(name: str, db_info: dict[str, Any], payload: dict[str, Any]) 
     if not name:
         return None
     manifest = npm_latest_manifest(payload)
-    latest = npm_latest_version(payload) or str(db_info.get("version") or "")
+    payload_latest = npm_latest_version(payload)
+    db_latest = str(db_info.get("version") or "")
+    latest = db_latest or payload_latest or ""
+    payload_matches_db = not db_latest or not payload_latest or db_latest == payload_latest
     if not manifest and latest:
         manifest = {
             "name": name,
@@ -787,11 +790,30 @@ def npm_enrichment(name: str, db_info: dict[str, Any], payload: dict[str, Any]) 
             "description": db_info.get("summary") or "",
             "homepage": db_info.get("homepage") or "",
         }
+    if not payload_matches_db:
+        manifest = {
+            "name": name,
+            "version": latest,
+            "description": db_info.get("summary") or payload.get("description") or "",
+            "homepage": db_info.get("homepage") or payload.get("homepage") or "",
+        }
     executable = db_info.get("executable") if isinstance(db_info.get("executable"), str) else ""
     homepage = normalize_url(manifest.get("homepage")) or normalize_url(payload.get("homepage")) or str(db_info.get("homepage") or "")
     repository = normalize_repository(manifest.get("repository") or payload.get("repository"))
     bugs = normalize_url(manifest.get("bugs") or payload.get("bugs"))
-    tarball = normalize_url((manifest.get("dist") or {}).get("tarball") if isinstance(manifest.get("dist"), dict) else "")
+    tarball = ""
+    if payload_matches_db:
+        tarball = normalize_url((manifest.get("dist") or {}).get("tarball") if isinstance(manifest.get("dist"), dict) else "")
+    registry_insights = npm_registry_insights(payload, manifest, latest)
+    if not payload_matches_db:
+        dist_tags = registry_insights.get("distTags")
+        if not isinstance(dist_tags, dict):
+            dist_tags = {}
+        dist_tags["latest"] = latest
+        registry_insights["distTags"] = dist_tags
+        if db_info.get("last_updated_at"):
+            registry_insights["modifiedAt"] = db_info.get("last_updated_at")
+            registry_insights["latestPublishedAt"] = db_info.get("last_updated_at")
     entry: dict[str, Any] = {
         "package": {
             "provider": "npm",
@@ -810,8 +832,12 @@ def npm_enrichment(name: str, db_info: dict[str, Any], payload: dict[str, Any]) 
         "buildDependencies": normalize_dependency_names(manifest.get("devDependencies")),
         "executables": npm_executable_records(manifest, executable),
         "installBehavior": npm_install_behavior(manifest),
-        "publishedAt": ((payload.get("time") or {}).get(latest) if isinstance(payload.get("time"), dict) else ""),
-        "registryInsights": npm_registry_insights(payload, manifest, latest),
+        "publishedAt": (
+            ((payload.get("time") or {}).get(latest) if isinstance(payload.get("time"), dict) else "")
+            if payload_matches_db
+            else str(db_info.get("last_updated_at") or "")
+        ),
+        "registryInsights": registry_insights,
     }
     keywords = manifest.get("keywords")
     if isinstance(keywords, list):

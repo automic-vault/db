@@ -73,6 +73,45 @@ class FetchJsonTests(unittest.TestCase):
         self.assertEqual(data, {"cached": True})
         self.assertEqual(fetch_url.call_count, 1)
 
+    def test_npm_enrichment_prefers_db_version_when_cached_packument_lags(self):
+        payload = {
+            "dist-tags": {"latest": "7.8.4"},
+            "description": "The semantic version parser used by npm.",
+            "homepage": "https://github.com/npm/node-semver#readme",
+            "time": {
+                "modified": "2026-06-09T23:50:03.928Z",
+                "7.8.4": "2026-06-09T23:50:03.612Z",
+            },
+            "versions": {
+                "7.8.4": {
+                    "name": "semver",
+                    "version": "7.8.4",
+                    "description": "The semantic version parser used by npm.",
+                    "homepage": "https://github.com/npm/node-semver#readme",
+                    "bin": {"semver": "bin/semver.js"},
+                    "dist": {
+                        "tarball": "https://registry.npmjs.org/semver/-/semver-7.8.4.tgz",
+                    },
+                },
+            },
+        }
+        db_info = {
+            "version": "7.8.5",
+            "summary": "The semantic version parser used by npm.",
+            "homepage": "https://github.com/npm/node-semver#readme",
+            "executable": "semver",
+            "last_updated_at": "2026-06-19T18:32:48.972Z",
+        }
+
+        key, entry = pkg_page_enrichment.npm_enrichment("semver", db_info, payload)
+
+        self.assertEqual(key, "npm:semver")
+        self.assertEqual(entry["version"], "7.8.5")
+        self.assertNotIn("sourceArchive", entry)
+        self.assertEqual(entry["publishedAt"], "2026-06-19T18:32:48.972Z")
+        self.assertEqual(entry["registryInsights"]["distTags"]["latest"], "7.8.5")
+        self.assertEqual(entry["registryInsights"]["latestPublishedAt"], "2026-06-19T18:32:48.972Z")
+
 
 if __name__ == "__main__":
     unittest.main()

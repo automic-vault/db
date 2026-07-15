@@ -564,7 +564,7 @@ def manager_info(package_key: str, entry: dict[str, Any], db: dict[str, Any], no
         else:
             activity = "stale"
     return {
-        "version": str(entry.get("version") or db_entry.get("version") or ""),
+        "version": str(db_entry.get("version") or entry.get("version") or ""),
         "updatedAt": str(updated_at or ""),
         "ageDays": days,
         "activity": activity,
