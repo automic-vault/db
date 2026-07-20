@@ -5,11 +5,58 @@ docs:
   - https://github.com/dsprenkels/sss-cli#readme
 config-file-location: null
 credentials-file-location: null
-history: null
+history:
+  adoption-history:
+    - >
+      Upstream originally documented installation from a Git branch with Cargo and from
+      a third-party Homebrew tap. The supplied package metadata records later
+      availability in Homebrew and Nix, giving the focused Rust utility conventional
+      Unix package-manager distribution.
+  package-nerd-significance:
+    - >
+      sss-cli is a compact example of packaging a cryptographic primitive as composable
+      Unix filters. It is notable for exposing secret splitting without a service,
+      account, or credentials store and for distributing the same Rust code through
+      Cargo and system package managers.
+  project-history:
+    - >
+      The official GitHub repository was created in 2017. The project packages the
+      author's secure Shamir secret-sharing implementation as the `secret-share-split`
+      and `secret-share-combine` commands.
+    - >
+      The 0.1.2 change documented in the README moved the cryptographic wrapper to
+      RustCrypto's `crypto-secretbox` crate. The tool adds authenticated encryption so
+      tampered shares are detected when a secret is reconstructed.
+  related-projects:
+    - >
+      The upstream `dsprenkels/sss` library supplies the Shamir secret-sharing
+      implementation wrapped by sss-cli; RustCrypto's `crypto-secretbox` supplies the
+      authenticated-encryption primitive noted in the changelog.
+  sources:
+    - https://github.com/dsprenkels/sss-cli
+    - https://github.com/dsprenkels/sss-cli#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      sss-cli is a small Rust command-line wrapper around David Sprenkels's SSS library.
+      Its two executables split a secret into Shamir shares and recombine a threshold
+      number of shares.
+  timeline:
+    - '2017: The official sss-cli GitHub repository was created.'
+    - >
+      2020s: The project became available through Homebrew and Nix in addition to
+      Cargo-based installation.
+  usage:
+    - >
+      Users pipe a secret into `secret-share-split`, select the number of shares and
+      reconstruction threshold, store each output line separately, and later pipe enough
+      shares into `secret-share-combine`. The commands are stream-oriented and therefore
+      fit shell pipelines without a project configuration file.
 tags:
   - cli
   - cryptography
   - key-splitting
+  - rust
   - secret-sharing
   - shamir-secret-sharing
 geiger:
@@ -24,33 +71,35 @@ geiger:
 provenance:
   category-sources:
     - >
-      source_facts.description describes a Shamir secret share command-line interface;
-      official README describes secure splitting and recombining using Shamir secret
-      sharing.
+      The official README describes secure Shamir secret sharing and authenticated
+      protection against share tampering: https://github.com/dsprenkels/sss-cli#readme
   display-name-sources:
-    - source_facts.name is sss-cli; official repository name is dsprenkels/sss-cli.
+    - >
+      The official repository and supplied package name both use sss-cli:
+      https://github.com/dsprenkels/sss-cli
   docs-sources:
     - >
-      Official GitHub README at https://github.com/dsprenkels/sss-cli#readme documents
-      secret-share-split and secret-share-combine usage.
+      The official README documents installation, split/combine pipelines, integrity
+      protection, and the 0.1.2 change: https://github.com/dsprenkels/sss-cli#readme
   history-sources:
-    - >
-      History set to null: official README and package metadata establish usage, but
-      reliable official/source-backed project and adoption history is too thin for a
-      neutral history entry.
+    - https://github.com/dsprenkels/sss-cli
+    - https://github.com/dsprenkels/sss-cli#readme
+    - source_facts.package-manager
   repo-sources:
     - >
-      source_facts.repo already supplies https://github.com/dsprenkels/sss-cli; per
-      prompt, repo is returned as null rather than re-evaluated.
+      source_facts.repo is already populated, so the task instructions require repo to
+      be returned as null.
   tags-sources:
     - >
-      Official README documents Shamir secret sharing, command-line usage, and the
-      secret-share-split and secret-share-combine binaries.
+      The official repository describes the Rust command-line wrapper, Shamir secret
+      sharing, and its two pipeline-oriented executables:
+      https://github.com/dsprenkels/sss-cli
 category-confidence: high
 category-path:
   - security
+  - cryptography
 display-name-confidence: high
 docs-confidence: high
-history-confidence: low
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

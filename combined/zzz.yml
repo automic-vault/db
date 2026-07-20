@@ -4,64 +4,49 @@ homepage: https://github.com/Orc/Zzz
 repo: https://github.com/Orc/Zzz
 docs:
   - https://github.com/Orc/Zzz#readme
+  - https://github.com/Orc/Zzz/blob/main/Zzz.8
 config-file-location: null
 credentials-file-location: null
 history:
   adoption-history:
     - >
-      Adoption appears narrow: users install it when they want a memorable terminal
-      command that sleeps a Mac immediately, especially in scripts or shell workflows
-      where a GUI sleep command is awkward. The README's explicit Homebrew instructions
-      show that package-manager installation is part of the intended usage story.
+      The official README documents both traditional make-based installation into
+      `/usr/local/bin` and Homebrew installation. This positions Zzz as a compact
+      packaged convenience for shell users rather than a larger application or daemon.
   package-nerd-significance:
     - >
-      Zzz is package-nerd significant as an extreme small-package case. It demonstrates
-      why package indexes contain tiny platform appliances: a few lines of C plus a
-      stable command name can be more convenient than remembering or retyping
-      lower-level system calls or scripts.
-    - >
-      It also shows the maintenance quirks of old macOS C utilities: even a sleep
-      wrapper depends on SDK headers, IOKit linkage, and small compatibility fixes over
-      time.
+      Zzz is a characteristic micro-utility: a stable, memorable command packages a
+      platform API call that would otherwise require custom C code or a less
+      discoverable system workflow. Its makefile, manual page, C source, and Homebrew
+      path exemplify the durable Unix packaging of tiny native tools.
   project-history:
     - >
-      The upstream README presents Zzz as a command-line macOS sleep program similar to
-      SleepNow, with traditional make-based installation and a Homebrew installation
-      path. The source is intentionally small C code using IOMasterPort,
-      IOPMFindPowerManagement, and IOPMSleepSystem to ask macOS to sleep.
-    - >
-      There is little public narrative around the project beyond the README and source,
-      so its history is best understood as preservation of a tiny utility rather than an
-      evolving application ecosystem.
+      The project's manual page is dated 11 August 2011 and describes a single-purpose
+      system utility authored by David Parsons. The upstream C source remains
+      intentionally small: it locates the IOKit power-management service, calls
+      `IOPMSleepSystem`, reports errors, and exits.
   related-projects:
     - >
-      Related tools and APIs include Apple's IOKit power-management APIs, pmset
-      sleepnow, SleepNow-style utilities, SleepWatcher, caffeinate as the opposite
-      keep-awake workflow, and other macOS command-line power-management helpers.
+      The README compares Zzz with SleepNow, while its implementation directly uses
+      Apple's IOKit power-management interfaces.
   sources:
-    - https://github.com/Orc/Zzz
-    - https://raw.githubusercontent.com/Orc/Zzz/master/README.md
-    - https://raw.githubusercontent.com/Orc/Zzz/master/Zzz.c
-    - >
-      https://support.apple.com/guide/mac-help/schedule-your-mac-to-turn-on-or-off-mchl40376151/mac
+    - https://github.com/Orc/Zzz#readme
+    - https://github.com/Orc/Zzz/blob/main/Zzz.8
+    - https://github.com/Orc/Zzz/blob/main/Zzz.c
   summary:
     - >
-      Zzz is a tiny macOS command-line utility that immediately requests system sleep.
-      It is essentially a packaged one-command wrapper around Apple's IOKit
-      power-management APIs.
+      Zzz is a small macOS command-line program that asks the operating system's
+      power-management service to put the machine to sleep immediately.
   timeline:
+    - '2011-08-11: The Zzz manual page documents the macOS sleep command.'
     - >
-      Public README era: Zzz is documented as a command-line macOS sleep program with
-      make-based installation and Homebrew installation instructions.
-    - >
-      Current source: Zzz implements sleep by opening the macOS power-management
-      connection and calling IOPMSleepSystem.
+      Later upstream README: Traditional make installation and Homebrew installation are
+      documented side by side.
   usage:
     - >
-      Usage is intentionally minimal: run Zzz, and the Mac sleeps immediately. The
-      program has no configuration file, credentials, long-running daemon, or visible
-      help flow; its behavior is the side effect of calling the macOS power-management
-      sleep API.
+      Run `Zzz` with no arguments to request immediate sleep. The manual documents a
+      zero exit status on success and a nonzero status on failure; no root access is
+      required.
 category: system
 package-manager:
   apk: zzz
@@ -70,6 +55,7 @@ package-manager:
 package-manager-url: https://formulae.brew.sh/formula/zzz
 license: LicenseRef-Homebrew-public-domain
 tags:
+  - c
   - cli
   - macos
   - power-management

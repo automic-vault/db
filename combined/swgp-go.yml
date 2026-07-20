@@ -6,9 +6,60 @@ docs:
   - https://github.com/database64128/swgp-go/tree/main/docs
   - https://github.com/database64128/swgp-go#readme
 config-file-location:
-  linux: /etc/swgp-go/%i.json
+  linux:
+    - /etc/swgp-go/config.json
+    - /etc/swgp-go/%i.json
 credentials-file-location: null
-history: null
+history:
+  adoption-history:
+    - >
+      Upstream distributes prebuilt release binaries and documents installation through
+      Homebrew, AUR release and VCS packages, and `go install`; a community container
+      image supplies another deployment route. The supplied metadata also records a Nix
+      package.
+  package-nerd-significance:
+    - >
+      swgp-go is appealing to package and network-tool enthusiasts because it is a
+      single Go binary with no separate control service, conventional JSON
+      configuration, systemd examples, and several installation channels. It addresses
+      WireGuard traffic obfuscation without replacing WireGuard itself.
+  project-history:
+    - >
+      The official repository was created in March 2022. The project developed multiple
+      proxy modes that balance overhead and traffic-shape concealment, with newer 2026
+      modes adding timestamped replay protection while retaining legacy modes for
+      compatibility.
+    - >
+      The project reached a 1.x release series and continued regular releases through
+      2026. Its deployment assets include JSON examples and both singleton and templated
+      systemd unit files.
+  related-projects:
+    - >
+      WireGuard provides the tunnel traffic carried by swgp-go. The README uses `wg
+      genpsk` for compatible pre-shared keys and points to a community-maintained
+      container image for container deployment.
+  sources:
+    - https://github.com/database64128/swgp-go#readme
+    - https://github.com/database64128/swgp-go/releases
+    - https://github.com/database64128/swgp-go/tree/main/docs
+    - source_facts.package-manager
+  summary:
+    - >
+      swgp-go is a small Go proxy that obfuscates or encrypts WireGuard traffic with
+      minimal overhead. It provides client and server modes intended to sit immediately
+      outside an ordinary WireGuard tunnel.
+  timeline:
+    - '2022: The official swgp-go repository was created.'
+    - '2025: Version 1.8.0 was released during the established 1.x series.'
+    - >
+      2026: Versions 1.9.0 and 1.10.0 were released, and the documented 2026 proxy modes
+      added replay protection.
+  usage:
+    - >
+      Operators run one swgp-go server near a WireGuard endpoint and one client near the
+      WireGuard peer, configuring listen and endpoint addresses, a matching proxy mode
+      and pre-shared key, and the path MTU. Linux deployments can use the supplied
+      systemd units with JSON files under `/etc/swgp-go`.
 category: networking
 package-manager:
   brew: swgp-go
@@ -18,7 +69,9 @@ license: AGPL-3.0-or-later
 tags:
   - cli
   - go
+  - obfuscation
   - proxy
+  - systemd
   - vpn
   - wireguard
 description: Simple WireGuard proxy with minimal overhead for WireGuard traffic
