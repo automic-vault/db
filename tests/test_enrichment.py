@@ -19,6 +19,7 @@ from scripts.enrichment import (
     needs_new_curation,
     normalize_docs,
     normalize_history,
+    normalize_category_path,
     normalize_path_locations,
     normalize_repo,
     normalize_tags,
@@ -31,6 +32,12 @@ from scripts.enrichment import (
     validate_codex_payload,
     validate_codex_payload_partial,
 )
+
+
+class CategoryTests(unittest.TestCase):
+    def test_ai_category_paths_are_valid(self):
+        self.assertEqual(normalize_category_path(["ai", "agents"]), ["ai", "agents"])
+        self.assertEqual(normalize_category_path("ai/coding-agents"), ["ai", "coding-agents"])
 
 
 def load_enrich_projects_module():

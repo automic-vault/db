@@ -28,6 +28,7 @@ CURATED_FIELDS = (
 PATH_LOCATION_FIELDS = ("config-file-location", "credentials-file-location")
 PATH_LOCATION_PLATFORMS = ("unix", "linux", "macos", "windows")
 CATEGORIES = {
+    "ai",
     "developer-tools",
     "cloud-infrastructure",
     "security",

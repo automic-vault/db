@@ -15,6 +15,7 @@ from .yaml_writer import yaml_text
 
 
 CATEGORIES = {
+    "ai",
     "developer-tools",
     "cloud-infrastructure",
     "security",
