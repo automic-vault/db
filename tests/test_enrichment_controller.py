@@ -3,6 +3,7 @@ import json
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest import mock
 
@@ -19,6 +20,22 @@ def load_enrichment_controller():
 
 
 class EnrichmentControllerTests(unittest.TestCase):
+    def write_manifest(self, run_dir: Path, *, selected_count: int = 1) -> None:
+        run_dir.mkdir(parents=True)
+        (run_dir / "controller-manifest.json").write_text(
+            json.dumps(
+                {
+                    "mode": "new",
+                    "provider": "brew",
+                    "batch_size": 5,
+                    "selected_count": selected_count,
+                    "batches": [{"status": "pending"}] if selected_count else [],
+                }
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
     def test_unresolved_runs_skips_applied_and_empty_runs(self):
         controller = load_enrichment_controller()
 
@@ -155,6 +172,101 @@ class EnrichmentControllerTests(unittest.TestCase):
         )
 
         self.assertEqual(command[command.index("--provider") + 1], "brew")
+
+    def test_unresolved_runs_skip_active_claims_but_include_stale_claims(self):
+        controller = load_enrichment_controller()
+        now = datetime(2026, 7, 26, 12, 0, tzinfo=timezone.utc)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            runs_dir = tmp_root / "cache" / "enrichment" / "runs"
+            active = runs_dir / "20260726T010101Z"
+            stale = runs_dir / "20260726T020202Z"
+            self.write_manifest(active)
+            self.write_manifest(stale)
+            (active / "controller-claim.json").write_text(
+                json.dumps({"lease_expires_at": (now + timedelta(hours=1)).isoformat()}) + "\n",
+                encoding="utf-8",
+            )
+            (stale / "controller-claim.json").write_text(
+                json.dumps({"lease_expires_at": (now - timedelta(seconds=1)).isoformat()}) + "\n",
+                encoding="utf-8",
+            )
+
+            with (
+                mock.patch.object(controller, "ROOT", tmp_root),
+                mock.patch.object(controller, "RUNS_DIR", runs_dir),
+            ):
+                runs = controller.unresolved_runs(now=now)
+
+        self.assertEqual([run["run_id"] for run in runs], ["20260726T020202Z"])
+
+    def test_claim_next_atomically_leases_oldest_available_run(self):
+        controller = load_enrichment_controller()
+        now = datetime(2026, 7, 26, 12, 0, tzinfo=timezone.utc)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            runs_dir = tmp_root / "cache" / "enrichment" / "runs"
+            oldest = runs_dir / "20260726T010101Z"
+            newest = runs_dir / "20260726T020202Z"
+            self.write_manifest(oldest)
+            self.write_manifest(newest)
+
+            with (
+                mock.patch.object(controller, "ROOT", tmp_root),
+                mock.patch.object(controller, "RUNS_DIR", runs_dir),
+                mock.patch.object(controller.uuid, "uuid4", side_effect=["claim-one", "claim-two"]),
+            ):
+                first = controller.claim_next(owner="nightly-monolith", lease_seconds=3600, now=now)
+                second = controller.claim_next(owner="nightly-monolith", lease_seconds=3600, now=now)
+                third = controller.claim_next(owner="nightly-monolith", lease_seconds=3600, now=now)
+
+            first_claim = json.loads((oldest / "controller-claim.json").read_text(encoding="utf-8"))
+            second_claim = json.loads((newest / "controller-claim.json").read_text(encoding="utf-8"))
+
+        self.assertIsNotNone(first)
+        self.assertIsNotNone(second)
+        assert first is not None
+        assert second is not None
+        self.assertEqual(first["run_id"], "20260726T010101Z")
+        self.assertEqual(first["claim"]["claim_id"], "claim-one")
+        self.assertEqual(second["run_id"], "20260726T020202Z")
+        self.assertEqual(first_claim["owner"], "nightly-monolith")
+        self.assertEqual(second_claim["claim_id"], "claim-two")
+        self.assertIsNone(third)
+
+    def test_claim_next_replaces_a_stale_lease(self):
+        controller = load_enrichment_controller()
+        now = datetime(2026, 7, 26, 12, 0, tzinfo=timezone.utc)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            runs_dir = tmp_root / "cache" / "enrichment" / "runs"
+            run_dir = runs_dir / "20260726T010101Z"
+            self.write_manifest(run_dir)
+            (run_dir / "controller-claim.json").write_text(
+                json.dumps(
+                    {
+                        "claim_id": "expired-claim",
+                        "lease_expires_at": (now - timedelta(hours=1)).isoformat(),
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            with (
+                mock.patch.object(controller, "ROOT", tmp_root),
+                mock.patch.object(controller, "RUNS_DIR", runs_dir),
+                mock.patch.object(controller.uuid, "uuid4", return_value="replacement-claim"),
+            ):
+                claimed = controller.claim_next(owner="nightly-monolith", lease_seconds=3600, now=now)
+
+            claim = json.loads((run_dir / "controller-claim.json").read_text(encoding="utf-8"))
+
+        self.assertIsNotNone(claimed)
+        self.assertEqual(claim["claim_id"], "replacement-claim")
 
 
 if __name__ == "__main__":

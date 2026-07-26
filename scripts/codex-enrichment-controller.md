@@ -2,13 +2,24 @@
 
 Use this workflow from a Codex-hosted automation when curated enrichment needs AI research. Do not call `codex exec` from inside the maintenance scripts for this path.
 
-To inspect the next unresolved prepared run, use:
+To inspect the next unclaimed prepared run without taking ownership, use:
 
 ```sh
 python3 scripts/enrichment-controller.py next-run --json
 ```
 
 It emits the oldest unresolved run plus the exact `apply_command` for that run.
+
+Workers must atomically claim work instead:
+
+```sh
+python3 scripts/enrichment-controller.py claim-next --owner codex-nightly-monolith --json
+```
+
+`claim-next` records a 12-hour lease in the run directory and emits the claimed run plus its exact
+`apply_command`. Active claims are hidden from both `claim-next` and `next-run`, so overlapping or
+manually retried workers cannot select the same run. An interrupted claim becomes eligible again
+after its lease expires.
 
 1. Prepare the run.
 
@@ -30,7 +41,7 @@ For nightly new and missing curated fields:
 python3 scripts/enrich-projects.py --mode new --include-missing-curated-fields --limit 250 --batch-size 5 --backend external --phase prepare --commit-after-batch --run-id "$(date -u +%Y%m%dT%H%M%SZ)"
 ```
 
-2. Read `cache/enrichment/runs/<run-id>/controller-manifest.json`.
+2. Claim the oldest run and read `cache/enrichment/runs/<run-id>/controller-manifest.json`.
 
 3. For each batch with `"status": "pending"`, spawn one sub-agent. Give it only:
 
@@ -54,5 +65,8 @@ python3 scripts/enrich-projects.py --mode new --limit 50 --batch-size 5 --backen
 For stale review, use `--mode review-stale-updated`. For nightly new and missing curated fields, include `--include-missing-curated-fields --limit 250 --batch-size 5 --commit-after-batch`.
 
 5. If apply reports missing outputs or validation failures, leave completed batch commits in place and rerun only the failed batches with the same `--run-id` after their `codex-output.json` files are fixed.
+
+6. After a successful apply, call `claim-next` again and repeat until it exits non-zero. Do not
+delegate a run returned by the inspection-only `next-run` command.
 
 Package enrichment conflict repair is out of scope for this controller.
