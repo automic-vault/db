@@ -163,7 +163,7 @@ def run_pkg_graph_curation(command: list[str]) -> bool:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run one av.db nightly package database update.")
+    parser = argparse.ArgumentParser(description="Run one nightly package metadata update.")
     parser.add_argument("--no-commit", action="store_true", help="Do not commit stable source changes.")
     parser.add_argument("--skip-sqlite", action="store_true", help="Skip package SQLite generation.")
     parser.add_argument("--sqlite-output", default="cache/pkg.sqlite", help="Package SQLite output path.")

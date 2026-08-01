@@ -996,7 +996,7 @@ def apply_package_taxonomy(pages: dict[str, PackagePage]) -> None:
         page.extra["pkgTaxonomy"] = brief
         if brief.get("category"):
             page.category = str(brief["category"])
-        page.source_notes.append("av.db category and tag curation")
+        page.source_notes.append("pkgdb category and tag curation")
 
 
 def apply_package_page_enrichment(pages: dict[str, PackagePage], enrichment: dict[str, Any]) -> None:
@@ -4361,7 +4361,7 @@ def render_related(page: PackagePage, locale: dict[str, Any] | None = None) -> s
   <div>
     <p class="section-kicker">{html_escape(tx(locale, 'packageGraph', 'package graph'))}</p>
     <h2 id="related-title">{html_escape(tx(locale, 'internalLinks', 'Internal package links'))}</h2>
-    <p>{html_escape(tx(locale, 'packageGraphCopy', 'Links come from deterministic package relationships, av.db category and tag curation, ecosystem matches, and package hub membership.'))}</p>
+    <p>{html_escape(tx(locale, 'packageGraphCopy', 'Links come from deterministic package relationships, pkgdb category and tag curation, ecosystem matches, and package hub membership.'))}</p>
   </div>
   <div class="related-columns">
     {article_html}

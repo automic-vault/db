@@ -1,94 +1,79 @@
-# Comprehensive Database for All Open Source Packages with CLIs
+# Package Metadata Database
 
-We’re using agents to fill this out but humans are welcome to do fixes and
-improve the scripts.
+The metadata and live SQLite origin behind Automic Vault’s `/pkg/` catalog.
 
 > [!IMPORTANT]
-> CLIs only. No transitive or library-only deps go here.
-
-## Data We Collect
-
-Only rarely changing data, not eg. popularity, download counts or rankings.
+> CLIs only. Library-only and transitive dependencies don’t belong here.
 
 ## Build
 
-Run the deterministic pipeline:
-
 ```sh
-scripts/build.py
+$ scripts/build.py --refresh
+$ scripts/build-db.py --refresh --npm-full-scan-parts=7
+$ scripts/generate-pkg-sqlite.py
 ```
 
-Use `scripts/build.py --refresh` for daily source refreshes. The pipeline writes
-remote and intermediate data to `cache/`, then publishes committed YAML stages:
+Downloaded and intermediate data stays in `cache/`. The committed YAML stages
+are:
 
-- `deterministic/<formula>.yml`: source-backed generator output
-- `agents/<formula>.yml`: schema-validated Codex enrichment, including confidence/provenance
-- `human-override/<formula>.yml`: hand-authored corrections
-- `combined/<formula>.yml`: final public output
+- `deterministic/`: source-backed generator output
+- `agents/`: schema-validated Codex enrichment
+- `human-override/`: hand-authored corrections
+- `combined/`: the final merged metadata
 
-It also derives Homebrew executable indexes from this repository’s own published
-YAML:
+Precedence is deterministic < agents < human override. Package-page data,
+search documents, hubs, localized responses, and sitemaps are compiled into
+`cache/pkg.sqlite`. There is no public `db.json` export.
 
-- `cache/brew/executables.json`: `formula -> [executables]`
-- `cache/brew/executable-entries.json`: `executable -> formula`
-- `cache/brew/cask-entries.json`: supported binary casks and `cask:<token>` executable entries
-- `cache/automic-vault/db.json`: Automic Vault-compatible Homebrew authority DB
-
-The pipeline also builds `cache/cratesio/index.json` from the crates.io daily
-database dump. That index is used for Cargo/crates.io package pages and exported
-into the Automic Vault authority DB under `crates`.
-
-Precedence is deterministic < agents < human override. Raw Codex JSON is kept
-under `cache/` for resumability/debugging; YAML in `agents/` is the committed
-agent-curated layer. Confidence and provenance fields stay in the agent stages
-and are not copied into `combined/`.
-
-Agent YAML may also include a `geiger` block with the package risk color,
-classifier confidence, category, reasons, and signals. This is agent-stage
-context and is not copied into `combined/`.
-
-## Codex Automations
-
-Maintenance is designed to be run by Codex cron automations. Codex owns the
-schedule; repo scripts are one-shot entrypoints and each invocation runs exactly
-one task.
+## Run the `/pkg/` origin
 
 ```sh
-scripts/automation-runner.sh db
-scripts/automation-runner.sh npm-full-scan
+$ AV_WEB_DB_PATH=cache/pkg.sqlite cargo run --release -p av-web
+av-web listening on 127.0.0.1:3004
 ```
 
-Runner jobs:
+`AV_WEB_DB_PATH` selects the SQLite file. The production service defaults to
+`/var/lib/automic-vault-web/pkg.sqlite`; origin-header settings remain in
+`/etc/automic-vault-web.env` on Atlas.
 
-- `db`: runs the nightly package database refresh through
-  `scripts/hourly-maintenance.py`. This refreshes one seventh of the npm registry,
-  resumes that scan on the next run, refreshes source data, prepares up to 250
-  new or missing-curated-field enrichments if no older run is waiting, exports
-  and health-checks
-  `cache/automic-vault/db.json`, publishes the public DB, rebuilds package-page
-  derived data, and commits tracked stable outputs as `nightly: refresh package
-  database`.
-- `npm-full-scan`: runs `scripts/build-db.py --refresh --npm-full-scan` followed
-  by `scripts/build-combined-json.py`.
+## Atlas
 
-Each runner job writes `cache/automation/<job>.status.json` and appends
-`cache/automation/<job>.log`. Use `scripts/codex-automation-status.sh` to inspect
-both jobs, recent logs, active maintenance processes, and public DB freshness.
-Runner invocations are lock-protected; if a job is already running, another
-invocation reports that condition and exits cleanly.
-
-AI enrichment automations must use the controller flow in
-`scripts/codex-enrichment-controller.md`. Scheduled Python scripts only prepare
-`codex-output.json` targets; they do not shell out to nested `codex exec` by
-default. Apply completed controller runs with the command emitted by:
+Deploy code and systemd units from Pangolin:
 
 ```sh
-python3 scripts/enrichment-controller.py next-run --json
+$ scripts/deploy-atlas.sh
+$ ssh atlas codex login --device-auth
 ```
 
-Manual nightly helpers still exist for one-off Codex cron tasks:
+`pkgdb-maintenance.timer` refreshes metadata nightly, runs bounded Codex
+enrichment, generates and validates `pkg.sqlite.next`, then atomically replaces
+the live database. `av-web` opens SQLite per request, so successful swaps need
+no restart. Failed builds leave the previous database serving.
+
+Inspect it with:
 
 ```sh
-scripts/nightly-maintenance.py --list
-scripts/nightly-maintenance.py <task> --dry-run
+$ ssh atlas systemctl status pkgdb-maintenance.timer automic-vault-web.service
+$ ssh atlas journalctl -u pkgdb-maintenance.service -n 100
 ```
+
+Atlas has no GitHub credentials. Retrieve its metadata commits and push them
+from Pangolin:
+
+```sh
+$ scripts/sync-atlas.sh
+```
+
+The static website and CloudFront `/pkg/` behaviors remain in `../av.www`.
+
+## Checks
+
+```sh
+$ python3 -m unittest discover
+$ cargo test --workspace
+$ scripts/generate-pkg-sqlite.py --check
+```
+
+Raw Codex outputs remain under ignored `cache/enrichment/` paths for resumable
+or manual controller runs. See `scripts/codex-enrichment-controller.md` when
+using that flow instead of Atlas’s direct CLI backend.

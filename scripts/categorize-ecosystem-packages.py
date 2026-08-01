@@ -130,7 +130,7 @@ def batches(items: list[dict[str, Any]], size: int) -> list[list[dict[str, Any]]
 
 def prompt_text(input_path: Path, count: int) -> str:
     roots = ", ".join(sorted(CATEGORIES))
-    return f"""Categorize these npm and Cargo CLI packages for av.db package pages.
+    return f"""Categorize these npm and Cargo CLI packages for pkgdb package pages.
 
 Read the input JSON at `{input_path}`. Return JSON only in `codex-output.json` shape:
 {{"results":[{{"id":"npm:name","displayName":"Name","category":"developer-tools","categoryPath":["developer-tools","subarea"],"categoryConfidence":"high","tags":["cli"],"tagsConfidence":"high","categorySources":["source note"],"tagsSources":["source note"]}}]}}

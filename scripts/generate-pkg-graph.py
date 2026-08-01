@@ -268,8 +268,8 @@ def taxonomy_peer_candidates(
 
 def taxonomy_peer_reason(shared: set[str]) -> str:
     if shared:
-        return f"Shares av.db curated category or tags: {', '.join(sorted(shared)[:5])}."
-    return "Shares av.db curated package taxonomy."
+        return f"Shares pkgdb curated category or tags: {', '.join(sorted(shared)[:5])}."
+    return "Shares pkgdb curated package taxonomy."
 
 
 def hub_memberships(

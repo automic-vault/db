@@ -32,7 +32,7 @@ META_KEY = "__pkgdb_meta__"
 PAYLOAD_KEY = "__pkgdb_payload__"
 DEFAULT_TIMEOUT = 90
 CHECK_INTERVAL_SECONDS = 24 * 60 * 60
-USER_AGENT = "av.db/1.0"
+USER_AGENT = "pkgdb/1.0"
 FETCH_ATTEMPTS = 3
 
 

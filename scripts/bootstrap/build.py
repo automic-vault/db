@@ -159,7 +159,7 @@ def should_run(step: Step, state: dict[str, str], *, refresh: bool, force: bool)
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run the av.db package data pipeline incrementally.")
+    parser = argparse.ArgumentParser(description="Run the pkgdb package data pipeline incrementally.")
     parser.add_argument("--refresh", action="store_true", help="Refresh remote source caches.")
     parser.add_argument("--force", action="store_true", help="Run every step even if fingerprints match.")
     parser.add_argument("--fetch-manifests", action="store_true", help="Fetch GHCR manifests to discover executables missing from the local seed.")

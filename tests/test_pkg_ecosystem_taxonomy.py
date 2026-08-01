@@ -86,7 +86,7 @@ class EcosystemCategorizerTests(unittest.TestCase):
     def test_selects_uncategorized_npm_and_cargo_records(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            db = root / "db.json"
+            db = root / "package-index.json"
             crates = root / "crates.json"
             db.write_text(json.dumps({"npms": {"0x": {"summary": "flamegraph profiler", "executable": "0x"}}}), encoding="utf-8")
             crates.write_text(json.dumps({"crates": {"ripgrep": {"summary": "line search", "executables": [{"name": "rg"}]}}}), encoding="utf-8")

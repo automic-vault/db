@@ -181,7 +181,7 @@ def run_task(task: Task, *, dry_run: bool = False) -> int:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run one av.db maintenance task for a Codex cron automation."
+        description="Run one pkgdb maintenance task for a Codex automation."
     )
     parser.add_argument("task", nargs="?", choices=["refresh", "enrich-new", "review-stale-updated"], help="Task to run.")
     parser.add_argument("--list", action="store_true", help="List available automation tasks.")
