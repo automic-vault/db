@@ -63,6 +63,24 @@ class HourlyMaintenanceTests(unittest.TestCase):
         self.assertEqual(command[command.index("--limit") + 1], "250")
         self.assertEqual(command[command.index("--batch-size") + 1], "5")
 
+    def test_atlas_runs_codex_and_writes_staged_sqlite(self):
+        maintenance = load_hourly_maintenance()
+        with (
+            mock.patch.dict("os.environ", {"AVDB_ENRICH_BACKEND": "codex-cli"}),
+            mock.patch.object(sys, "argv", ["hourly-maintenance.py", "--no-commit", "--sqlite-output", "pkg.sqlite.next"]),
+            mock.patch.object(maintenance, "run") as run,
+        ):
+            self.assertEqual(maintenance.main(), 0)
+
+        commands = [call.args[0] for call in run.call_args_list]
+        enrichment = next(command for command in commands if "scripts/enrich-projects.py" in command)
+        self.assertIn("codex-cli", enrichment)
+        self.assertIn("run", enrichment)
+        self.assertIn(
+            [sys.executable, "scripts/generate-pkg-sqlite.py", "--output", "pkg.sqlite.next"],
+            commands,
+        )
+
     def test_snapshots_dirty_paths_before_running_commit_flow(self):
         maintenance = load_hourly_maintenance()
 

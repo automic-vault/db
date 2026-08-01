@@ -166,6 +166,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run one av.db nightly package database update.")
     parser.add_argument("--no-commit", action="store_true", help="Do not commit stable source changes.")
     parser.add_argument("--skip-sqlite", action="store_true", help="Skip package SQLite generation.")
+    parser.add_argument("--sqlite-output", default="cache/pkg.sqlite", help="Package SQLite output path.")
     parser.add_argument("--skip-enrichment", action="store_true", help="Skip nightly curated-field enrichment.")
     parser.add_argument(
         "--enrich-limit",
@@ -194,31 +195,31 @@ def main() -> int:
     run([py, "scripts/build-db.py", "--refresh", "--npm-full-scan-parts=7"])
     run([py, "scripts/build.py", "--refresh"])
     if not args.skip_enrichment and args.enrich_limit > 0:
-        unresolved = unresolved_enrichment_run_ids()
-        if unresolved:
-            warn_unresolved_hourly_enrichment_backlog(unresolved)
+        command = [
+            py,
+            "scripts/enrich-projects.py",
+            "--mode",
+            "new",
+            "--include-missing-curated-fields",
+            "--limit",
+            str(args.enrich_limit),
+            "--batch-size",
+            str(args.enrich_batch_size),
+            "--commit-after-batch",
+        ]
+        if os.environ.get("AVDB_ENRICH_BACKEND") == "codex-cli":
+            run([*command, "--backend", "codex-cli", "--phase", "run"])
         else:
-            run_dir = run_prepare_enrichment(
-                [
-                    py,
-                    "scripts/enrich-projects.py",
-                    "--mode",
-                    "new",
-                    "--include-missing-curated-fields",
-                    "--limit",
-                    str(args.enrich_limit),
-                    "--batch-size",
-                    str(args.enrich_batch_size),
-                    "--backend",
-                    "external",
-                    "--phase",
-                    "prepare",
-                    "--commit-after-batch",
-                ],
-                timeout=DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS,
-            )
-            if run_dir is not None:
-                assert_hourly_enrichment_progress(run_dir)
+            unresolved = unresolved_enrichment_run_ids()
+            if unresolved:
+                warn_unresolved_hourly_enrichment_backlog(unresolved)
+            else:
+                run_dir = run_prepare_enrichment(
+                    [*command, "--backend", "external", "--phase", "prepare"],
+                    timeout=DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS,
+                )
+                if run_dir is not None:
+                    assert_hourly_enrichment_progress(run_dir)
     run([py, "scripts/generate-pkg-page-enrichment.py", "--refresh", "--registry-cache-only"])
     run([py, "scripts/generate-pkg-version-freshness.py"])
     run([py, "scripts/generate-pkg-manager-indexes.py"])
@@ -227,7 +228,7 @@ def main() -> int:
     run_pkg_graph_curation([py, "scripts/generate-pkg-graph-curation.py"])
     run([py, "scripts/generate-pkg-graph.py"])
     if not args.skip_sqlite:
-        run([py, "scripts/generate-pkg-sqlite.py"])
+        run([py, "scripts/generate-pkg-sqlite.py", "--output", args.sqlite_output])
 
     if not args.no_commit:
         commit = git_commit_if_changed(
@@ -243,4 +244,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
