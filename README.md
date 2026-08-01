@@ -69,7 +69,7 @@ The static website and CloudFront `/pkg/` behaviors remain in `../av.www`.
 ## Checks
 
 ```sh
-$ python3 -m unittest discover
+$ python3 -m unittest discover -s tests
 $ cargo test --workspace
 $ scripts/generate-pkg-sqlite.py --check
 ```
