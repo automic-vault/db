@@ -41,6 +41,7 @@ else
 fi
 rm -f /var/tmp/pkgdb.bundle
 
+git -C "${remote_root}" switch -C main
 git -C "${remote_root}" remote set-url origin https://github.com/automic-vault/db.git
 git -C "${remote_root}" config user.name "Codex on Atlas"
 git -C "${remote_root}" config user.email "codex@atlas"
@@ -63,4 +64,3 @@ curl -fsS http://127.0.0.1:3004/healthz >/dev/null
 REMOTE
 
 echo "Atlas package origin deployed. Run 'ssh ${atlas} codex login --device-auth' before the first maintenance job."
-
