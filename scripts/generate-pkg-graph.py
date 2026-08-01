@@ -17,7 +17,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from avdb_paths import DB_JSON_PATH
+from avdb_paths import PACKAGE_INDEX_PATH
 from geiger_agent_data import load_agent_geiger_data
 from pkg_hub_data import graph_hub_definitions, load_pkg_taxonomy_index, taxonomy_for_package, taxonomy_terms
 
@@ -152,7 +152,7 @@ def input_files() -> list[Path]:
         Path("data/pkg-hubs.json"),
         Path("data/pkg-ecosystem-taxonomy.json"),
         Path("data/pkg-taxonomy.json"),
-        DB_JSON_PATH,
+        PACKAGE_INDEX_PATH,
         Path("data/npm.json"),
         Path("data/pip.json"),
         Path("scripts/generate-pkg-pages.py"),
@@ -588,7 +588,7 @@ def count_hub_memberships(graph_packages: dict[str, Any]) -> dict[str, int]:
 
 def build_graph() -> dict[str, Any]:
     enrichment = read_json(PKG_PAGE_ENRICHMENT_PATH)
-    db = read_json(DB_JSON_PATH)
+    db = read_json(PACKAGE_INDEX_PATH)
     geiger_data = load_agent_geiger_data()
     npm = read_json(Path("data/npm.json"), {})
     pip = read_json(Path("data/pip.json"), {})

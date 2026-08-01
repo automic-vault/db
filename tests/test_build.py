@@ -31,19 +31,11 @@ class BuildPipelineTests(unittest.TestCase):
             self.assertTrue(should_run(step, state, refresh=True, force=False)[0])
             self.assertFalse(should_run(step, {"brew-fetch": non_refresh_fp}, refresh=False, force=False)[0])
 
-    def test_export_automic_vault_db_refresh_recomputes_pulse_metadata(self):
-        export_step = next(
-            step
-            for step in steps(refresh=True, fetch_manifests=False, manifest_limit=0)
-            if step.name == "export-automic-vault-db"
-        )
-        input_paths = {path.as_posix() for path in export_step.inputs}
+    def test_pipeline_does_not_export_db_json(self):
+        pipeline_steps = steps(refresh=True, fetch_manifests=False, manifest_limit=0)
 
-        self.assertTrue(export_step.refresh_sensitive)
-        self.assertIn("cache/brew/casks.json", input_paths)
-        self.assertIn("cache/npmjs/index.json", input_paths)
-        self.assertIn("data/pkg-ecosystem-taxonomy.json", input_paths)
-        self.assertIn("cache/cratesio/index.json", input_paths)
+        self.assertNotIn("export-automic-vault-db", {step.name for step in pipeline_steps})
+        self.assertFalse(any("db.json" in path.as_posix() for step in pipeline_steps for path in step.outputs))
 
     def test_render_projects_reruns_when_cask_entries_change(self):
         render_step = next(
@@ -54,14 +46,12 @@ class BuildPipelineTests(unittest.TestCase):
 
         self.assertIn("cache/brew/cask-entries.json", {path.as_posix() for path in render_step.inputs})
 
-    def test_crates_index_feeds_authority_db_crate_metadata(self):
+    def test_crates_index_is_retained_for_package_pages(self):
         pipeline_steps = steps(refresh=True, fetch_manifests=False, manifest_limit=0)
         crates_step = next(step for step in pipeline_steps if step.name == "crates-index")
-        export_step = next(step for step in pipeline_steps if step.name == "export-automic-vault-db")
 
         self.assertTrue(crates_step.refresh_sensitive)
         self.assertIn("cache/cratesio/index.json", {path.as_posix() for path in crates_step.outputs})
-        self.assertIn("cache/cratesio/index.json", {path.as_posix() for path in export_step.inputs})
 
 
 if __name__ == "__main__":

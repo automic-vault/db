@@ -30,9 +30,6 @@ COMMIT_PATHS = [
 DEFAULT_HOURLY_ENRICH_LIMIT = int(os.environ.get("AVDB_HOURLY_ENRICH_LIMIT", "250"))
 DEFAULT_HOURLY_ENRICH_BATCH_SIZE = int(os.environ.get("AVDB_HOURLY_ENRICH_BATCH_SIZE", "5"))
 DEFAULT_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS = int(os.environ.get("AVDB_HOURLY_ENRICH_PREPARE_TIMEOUT_SECONDS", "300"))
-DEFAULT_PUBLIC_DB_PUBLISH_TIMEOUT_SECONDS = int(
-    os.environ.get("AVDB_PUBLIC_DB_PUBLISH_TIMEOUT_SECONDS", "120")
-)
 DEFAULT_PKG_GRAPH_CURATION_TIMEOUT_SECONDS = int(
     os.environ.get("AVDB_PKG_GRAPH_CURATION_TIMEOUT_SECONDS", "600")
 )
@@ -40,13 +37,6 @@ ENRICHMENT_RUNS_DIR = ROOT / "cache" / "enrichment" / "runs"
 PREPARE_OUTPUT_PATTERN = re.compile(
     r"Prepared \d+ projects in \d+ batches under (?P<run_dir>cache/enrichment/runs/[^\s]+)"
 )
-UNATTENDED_PUBLISH_SKIP_MARKERS = (
-    "missing AWS credential_process approval token",
-    "Unable to locate credentials",
-    "av inject: Connection interrupted",
-)
-
-
 class EnrichmentHealthError(RuntimeError):
     pass
 
@@ -161,49 +151,6 @@ def run_prepare_enrichment(command: list[str], *, timeout: int) -> Path | None:
     return parse_prepared_run_dir(result.stdout)
 
 
-def run_publish_public_db(command: list[str]) -> bool:
-    print("+", " ".join(command), flush=True)
-    try:
-        result = subprocess.run(
-            command,
-            cwd=ROOT,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            timeout=DEFAULT_PUBLIC_DB_PUBLISH_TIMEOUT_SECONDS,
-        )
-    except subprocess.TimeoutExpired:
-        print(
-            "WARN: skipping public db publish because unattended AWS approval stalled",
-            file=sys.stderr,
-            flush=True,
-        )
-        return False
-    if result.stdout:
-        print(result.stdout, end="", flush=True)
-    if result.returncode == 0:
-        if result.stderr:
-            print(result.stderr, end="", file=sys.stderr, flush=True)
-        return True
-
-    if result.stderr:
-        print(result.stderr, end="", file=sys.stderr, flush=True)
-    if any(marker in result.stderr for marker in UNATTENDED_PUBLISH_SKIP_MARKERS):
-        print(
-            "WARN: skipping public db publish because unattended AWS approval is unavailable",
-            file=sys.stderr,
-            flush=True,
-        )
-        return False
-
-    raise subprocess.CalledProcessError(
-        result.returncode,
-        command,
-        output=result.stdout,
-        stderr=result.stderr,
-    )
-
-
 def run_pkg_graph_curation(command: list[str]) -> bool:
     if run(command, timeout=DEFAULT_PKG_GRAPH_CURATION_TIMEOUT_SECONDS, allow_failure=True):
         return True
@@ -272,9 +219,6 @@ def main() -> int:
             )
             if run_dir is not None:
                 assert_hourly_enrichment_progress(run_dir)
-    run([py, "scripts/export-automic-vault-db.py"])
-    run([py, "scripts/check-automic-vault-db-health.py"])
-    run_publish_public_db([py, "scripts/publish-public-db.py"])
     run([py, "scripts/generate-pkg-page-enrichment.py", "--refresh", "--registry-cache-only"])
     run([py, "scripts/generate-pkg-version-freshness.py"])
     run([py, "scripts/generate-pkg-manager-indexes.py"])
@@ -299,3 +243,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

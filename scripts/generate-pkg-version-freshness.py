@@ -15,7 +15,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-from avdb_paths import DB_JSON_PATH
+from avdb_paths import PACKAGE_INDEX_PATH
 
 
 SCHEMA_VERSION = 1
@@ -122,7 +122,7 @@ def write_json(path: Path, payload: Any) -> None:
 
 
 def source_files() -> list[Path]:
-    return [PKG_PAGE_ENRICHMENT_PATH, DB_JSON_PATH]
+    return [PKG_PAGE_ENRICHMENT_PATH, PACKAGE_INDEX_PATH]
 
 
 def source_digest(files: list[Path]) -> str:
@@ -523,7 +523,7 @@ def upstream_metadata(package_key: str, entry: dict[str, Any], *, force_refresh:
 def input_generated_at(enrichment: dict[str, Any], db: dict[str, Any]) -> dict[str, str]:
     return {
         PKG_PAGE_ENRICHMENT_PATH.as_posix(): str(enrichment.get("generated_at") or ""),
-        DB_JSON_PATH.as_posix(): str(db.get("generated_at") or ""),
+        PACKAGE_INDEX_PATH.as_posix(): str(db.get("generated_at") or ""),
     }
 
 
@@ -711,7 +711,7 @@ def build_freshness(
 
 def expected_freshness(*, force_refresh: bool = False, cache_only: bool = True, upstream_limit: int | None = None) -> dict[str, Any]:
     enrichment = read_json(PKG_PAGE_ENRICHMENT_PATH, {})
-    db = read_json(DB_JSON_PATH, {})
+    db = read_json(PACKAGE_INDEX_PATH, {})
     if not isinstance(enrichment, dict) or not isinstance(db, dict):
         raise ValueError("freshness inputs must be JSON objects")
     return build_freshness(enrichment, db, force_refresh=force_refresh, cache_only=cache_only, upstream_limit=upstream_limit)

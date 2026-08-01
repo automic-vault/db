@@ -16,7 +16,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from avdb_paths import DB_JSON_PATH
+from avdb_paths import PACKAGE_INDEX_PATH
 
 
 SCHEMA_VERSION = 4
@@ -97,7 +97,7 @@ def source_files() -> list[Path]:
     files = [
         GENERATED_DATA_DIR / "pkg-page-enrichment.json",
         GENERATED_DATA_DIR / "cratesio" / "index.json",
-        DB_JSON_PATH,
+        PACKAGE_INDEX_PATH,
         Path("data/npm.json"),
         Path("data/pip.json"),
         PKG_MANAGER_INDEX_PATH,

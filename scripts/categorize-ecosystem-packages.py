@@ -20,7 +20,7 @@ from scripts.enrichment import CATEGORIES, normalize_category_path, normalize_ta
 SCHEMA_VERSION = 1
 RUNS_DIR = ROOT / "cache" / "ecosystem-taxonomy" / "runs"
 OUTPUT_PATH = ROOT / "data" / "pkg-ecosystem-taxonomy.json"
-DB_JSON_PATH = ROOT / "cache" / "automic-vault" / "db.json"
+PACKAGE_INDEX_PATH = ROOT / "cache" / "package-index.json"
 CRATES_INDEX_PATH = ROOT / "cache" / "cratesio" / "index.json"
 CONFIDENCE = {"high", "medium", "low"}
 
@@ -330,7 +330,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--include-existing", action="store_true")
     parser.add_argument("--run-id")
     parser.add_argument("--output", type=Path, default=OUTPUT_PATH)
-    parser.add_argument("--db", type=Path, default=DB_JSON_PATH)
+    parser.add_argument("--db", type=Path, default=PACKAGE_INDEX_PATH)
     parser.add_argument("--crates-index", type=Path, default=CRATES_INDEX_PATH)
     return parser.parse_args()
 

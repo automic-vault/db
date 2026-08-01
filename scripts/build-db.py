@@ -17,7 +17,7 @@ import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from avdb_paths import DB_JSON_PATH
+from avdb_paths import PACKAGE_INDEX_PATH
 
 FORMULA_URL = "https://formulae.brew.sh/api/formula.json"
 ANALYTICS_URL = "https://formulae.brew.sh/api/analytics/install/365d.json"
@@ -26,19 +26,19 @@ CASK_ANALYTICS_URL = "https://formulae.brew.sh/api/analytics/cask-install/365d.j
 CACHE_DIR = "cache"
 ECOSYSTEM = "brew.sh"
 NPM_ECOSYSTEM = "npmjs"
-DB_PATH = os.fspath(DB_JSON_PATH)
+DB_PATH = os.fspath(PACKAGE_INDEX_PATH)
 SCHEMA_VERSION = 8
 AUTHORITY_DB_PATH = os.environ.get(
     "AV_DB_AUTHORITY_PATH",
-    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "av.db", "cache", "automic-vault", "db.json")),
+    DB_PATH,
 )
 AV_DB_FORMULAE_PATH = os.environ.get(
     "AV_DB_FORMULAE_PATH",
-    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "av.db", "cache", "brew", "formulae.json")),
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "cache", "brew", "formulae.json")),
 )
 AV_DB_CASKS_PATH = os.environ.get(
     "AV_DB_CASKS_PATH",
-    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "av.db", "cache", "brew", "casks.json")),
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "cache", "brew", "casks.json")),
 )
 HOMEWBREW_CORE_REPO = "Homebrew/homebrew-core"
 HOMEWBREW_CASK_REPO = "Homebrew/homebrew-cask"

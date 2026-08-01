@@ -17,7 +17,7 @@ import urllib.parse
 from pathlib import Path
 from typing import Any
 
-from avdb_paths import DB_JSON_PATH
+from avdb_paths import PACKAGE_INDEX_PATH
 
 
 SCHEMA_VERSION = 1
@@ -1032,9 +1032,9 @@ def expected_enrichment(
     )
     if not isinstance(casks, list):
         raise ValueError("Homebrew cask API payload must be a list")
-    db = read_json(DB_JSON_PATH)
+    db = read_json(PACKAGE_INDEX_PATH)
     if not isinstance(db, dict):
-        raise ValueError(f"{DB_JSON_PATH} must contain an object")
+        raise ValueError(f"{PACKAGE_INDEX_PATH} must contain an object")
     npms = db.get("npms") or {}
     npm_payloads: dict[str, Any] = {}
     if isinstance(npms, dict):
@@ -1100,7 +1100,7 @@ def check_current(path: Path, terminal: Terminal) -> int:
     if not current.get("generated_at"):
         failures.append("missing generated_at")
     if current.get("packages") != expected.get("packages"):
-        failures.append(f"package enrichment does not match current Homebrew formula data and {DB_JSON_PATH}")
+        failures.append(f"package enrichment does not match current Homebrew formula data and {PACKAGE_INDEX_PATH}")
     if failures:
         terminal.error_log("Package-origin enrichment is stale.")
         for failure in failures:

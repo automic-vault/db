@@ -136,28 +136,6 @@ def steps(refresh: bool, fetch_manifests: bool, manifest_limit: int) -> list[Ste
             ],
             [Path("deterministic"), Path("combined")],
         ),
-        Step(
-            "export-automic-vault-db",
-            [py, "scripts/bootstrap/05-export-automic-vault-db.py"],
-            [
-                Path("scripts/bootstrap/05-export-automic-vault-db.py"),
-                Path("scripts/bootstrap/lib/authority.py"),
-                Path("scripts/bootstrap/lib/common.py"),
-                Path("scripts/bootstrap/lib/casks.py"),
-                Path("scripts/bootstrap/lib/executables.py"),
-                Path("scripts/bootstrap/lib/render.py"),
-                Path("data/pkg-taxonomy.json"),
-                Path("data/pkg-ecosystem-taxonomy.json"),
-                Path("combined"),
-                Path("cache/brew/formulae.json"),
-                Path("cache/brew/casks.json"),
-                Path("cache/brew/cask-entries.json"),
-                Path("cache/npmjs/index.json"),
-                Path("cache/cratesio/index.json"),
-            ],
-            [Path("cache/automic-vault/db.json")],
-            refresh_sensitive=True,
-        ),
     ]
 
 

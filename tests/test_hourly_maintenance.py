@@ -25,32 +25,19 @@ class HourlyMaintenanceTests(unittest.TestCase):
         with mock.patch.object(sys, "argv", ["hourly-maintenance.py", "--no-commit", "--skip-sqlite", *args]):
             with (
                 mock.patch.object(maintenance, "run") as run,
-                mock.patch.object(maintenance, "run_publish_public_db", return_value=True) as run_publish_public_db,
                 mock.patch.object(maintenance, "run_prepare_enrichment", return_value=None) as run_prepare_enrichment,
                 mock.patch.object(maintenance, "unresolved_enrichment_run_ids", return_value=[]),
             ):
                 self.assertEqual(maintenance.main(), 0)
-        return (
-            [call.args[0] for call in run.call_args_list],
-            [call.args[0] for call in run_publish_public_db.call_args_list],
-            run_prepare_enrichment.call_args_list,
-        )
+        return [call.args[0] for call in run.call_args_list], run_prepare_enrichment.call_args_list
 
     def test_does_not_run_deleted_builder(self):
-        commands, _, _ = self.run_hourly()
+        commands, _ = self.run_hourly()
 
         self.assertNotIn("bash", [command[0] for command in commands])
 
-    def test_runs_automic_vault_db_health_check_after_export(self):
-        commands, _, _ = self.run_hourly()
-
-        export_index = commands.index([sys.executable, "scripts/export-automic-vault-db.py"])
-        health_index = commands.index([sys.executable, "scripts/check-automic-vault-db-health.py"])
-
-        self.assertEqual(health_index, export_index + 1)
-
     def test_runs_one_seventh_of_npm_full_scan(self):
-        commands, _, _ = self.run_hourly()
+        commands, _ = self.run_hourly()
 
         self.assertIn(
             [sys.executable, "scripts/build-db.py", "--refresh", "--npm-full-scan-parts=7"],
@@ -58,7 +45,7 @@ class HourlyMaintenanceTests(unittest.TestCase):
         )
 
     def test_hourly_enrichment_prepares_external_controller_batches(self):
-        _, _, prepare_calls = self.run_hourly()
+        _, prepare_calls = self.run_hourly()
 
         self.assertEqual(len(prepare_calls), 1)
         command = prepare_calls[0].args[0]
@@ -70,19 +57,11 @@ class HourlyMaintenanceTests(unittest.TestCase):
         self.assertIn("--commit-after-batch", command)
 
     def test_nightly_enrichment_uses_daily_capacity(self):
-        _, _, prepare_calls = self.run_hourly()
+        _, prepare_calls = self.run_hourly()
 
         command = prepare_calls[0].args[0]
         self.assertEqual(command[command.index("--limit") + 1], "250")
         self.assertEqual(command[command.index("--batch-size") + 1], "5")
-
-    def test_publishes_public_db_after_health_check(self):
-        commands, publish_commands, _ = self.run_hourly()
-
-        health_index = commands.index([sys.executable, "scripts/check-automic-vault-db-health.py"])
-
-        self.assertEqual(publish_commands, [[sys.executable, "scripts/publish-public-db.py"]])
-        self.assertEqual(health_index, 3)
 
     def test_snapshots_dirty_paths_before_running_commit_flow(self):
         maintenance = load_hourly_maintenance()
@@ -90,7 +69,6 @@ class HourlyMaintenanceTests(unittest.TestCase):
         with mock.patch.object(sys, "argv", ["hourly-maintenance.py", "--skip-sqlite"]):
             with (
                 mock.patch.object(maintenance, "run"),
-                mock.patch.object(maintenance, "run_publish_public_db", return_value=True),
                 mock.patch.object(maintenance, "run_prepare_enrichment", return_value=None),
                 mock.patch.object(maintenance, "unresolved_enrichment_run_ids", return_value=[]),
                 mock.patch.object(maintenance, "git_dirty_paths", return_value=(["combined/existing.yml"], [])) as git_dirty_paths,
@@ -105,81 +83,6 @@ class HourlyMaintenanceTests(unittest.TestCase):
             ["combined/existing.yml"],
         )
         self.assertEqual(git_commit_if_changed.call_args.kwargs["preserved_untracked_dirty"], [])
-
-    def test_skips_public_db_publish_when_unattended_aws_approval_is_unavailable(self):
-        maintenance = load_hourly_maintenance()
-        stdout = io.StringIO()
-        stderr = io.StringIO()
-
-        with mock.patch("subprocess.run") as subprocess_run:
-            subprocess_run.return_value = subprocess.CompletedProcess(
-                [sys.executable, "scripts/publish-public-db.py"],
-                1,
-                stdout="",
-                stderr='{"error": "missing AWS credential_process approval token", "ok": false}\n',
-            )
-            with mock.patch("sys.stdout", stdout), mock.patch("sys.stderr", stderr):
-                self.assertFalse(maintenance.run_publish_public_db([sys.executable, "scripts/publish-public-db.py"]))
-
-        self.assertIn("skipping public db publish", stderr.getvalue())
-
-    def test_skips_public_db_publish_when_aws_credentials_are_missing(self):
-        maintenance = load_hourly_maintenance()
-        stdout = io.StringIO()
-        stderr = io.StringIO()
-
-        with mock.patch("subprocess.run") as subprocess_run:
-            subprocess_run.return_value = subprocess.CompletedProcess(
-                [sys.executable, "scripts/publish-public-db.py"],
-                1,
-                stdout="",
-                stderr="upload failed: cache/automic-vault/combined.json to s3://automicvault.com/db.json Unable to locate credentials\n",
-            )
-            with mock.patch("sys.stdout", stdout), mock.patch("sys.stderr", stderr):
-                self.assertFalse(maintenance.run_publish_public_db([sys.executable, "scripts/publish-public-db.py"]))
-
-        self.assertIn("skipping public db publish", stderr.getvalue())
-
-    def test_skips_public_db_publish_when_unattended_publish_stalls(self):
-        maintenance = load_hourly_maintenance()
-        stdout = io.StringIO()
-        stderr = io.StringIO()
-
-        with mock.patch("subprocess.run", side_effect=subprocess.TimeoutExpired(["aws"], 120)):
-            with mock.patch("sys.stdout", stdout), mock.patch("sys.stderr", stderr):
-                self.assertFalse(maintenance.run_publish_public_db([sys.executable, "scripts/publish-public-db.py"]))
-
-        self.assertIn("stalled", stderr.getvalue())
-
-    def test_skips_public_db_publish_when_av_inject_connection_is_interrupted(self):
-        maintenance = load_hourly_maintenance()
-        stdout = io.StringIO()
-        stderr = io.StringIO()
-
-        with mock.patch("subprocess.run") as subprocess_run:
-            subprocess_run.return_value = subprocess.CompletedProcess(
-                [sys.executable, "scripts/publish-public-db.py"],
-                1,
-                stdout="",
-                stderr="av inject: Connection interrupted\n",
-            )
-            with mock.patch("sys.stdout", stdout), mock.patch("sys.stderr", stderr):
-                self.assertFalse(maintenance.run_publish_public_db([sys.executable, "scripts/publish-public-db.py"]))
-
-        self.assertIn("skipping public db publish", stderr.getvalue())
-
-    def test_public_db_publish_still_fails_for_other_errors(self):
-        maintenance = load_hourly_maintenance()
-
-        with mock.patch("subprocess.run") as subprocess_run:
-            subprocess_run.return_value = subprocess.CompletedProcess(
-                [sys.executable, "scripts/publish-public-db.py"],
-                1,
-                stdout="",
-                stderr='{"error": "boom", "ok": false}\n',
-            )
-            with self.assertRaises(subprocess.CalledProcessError):
-                maintenance.run_publish_public_db([sys.executable, "scripts/publish-public-db.py"])
 
     def test_parse_prepared_run_dir_reads_prepare_output(self):
         maintenance = load_hourly_maintenance()
@@ -256,7 +159,6 @@ class HourlyMaintenanceTests(unittest.TestCase):
                     with mock.patch.object(sys, "argv", ["hourly-maintenance.py", "--no-commit", "--skip-sqlite"]):
                         with (
                             mock.patch.object(maintenance, "run") as run,
-                            mock.patch.object(maintenance, "run_publish_public_db", return_value=True) as run_publish_public_db,
                             mock.patch.object(maintenance, "run_prepare_enrichment") as run_prepare_enrichment,
                             mock.patch("sys.stderr", stderr),
                         ):
@@ -266,7 +168,6 @@ class HourlyMaintenanceTests(unittest.TestCase):
             self.assertIn("skipping hourly enrichment prepare", stderr.getvalue())
             commands = [call.args[0] for call in run.call_args_list]
             self.assertIn([sys.executable, "scripts/build.py", "--refresh"], commands)
-            run_publish_public_db.assert_called_once_with([sys.executable, "scripts/publish-public-db.py"])
 
 
 if __name__ == "__main__":
