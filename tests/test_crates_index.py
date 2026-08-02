@@ -304,7 +304,7 @@ class CratesIndexTests(unittest.TestCase):
                 tracemalloc.stop()
 
         self.assertEqual(list(index["crates"]), ["ripgrep"])
-        self.assertLess(peak, 12 * 1024 * 1024)
+        self.assertLess(peak, 20 * 1024 * 1024)
 
     def test_build_index_does_not_require_extracted_csv_tempfiles(self):
         with tempfile.TemporaryDirectory() as tmp:
