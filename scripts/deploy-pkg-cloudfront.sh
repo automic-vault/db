@@ -218,7 +218,7 @@ if [[ "${certificate_is_issued}" == "true" ]]; then
   certificate_json="$(jq -cn --arg arn "${certificate_arn}" '{CloudFrontDefaultCertificate: false, ACMCertificateArn: $arn, SSLSupportMethod: "sni-only", MinimumProtocolVersion: "TLSv1.2_2021"}')"
 else
   aliases_json='{"Quantity":0}'
-  certificate_json='{"CloudFrontDefaultCertificate":true}'
+  certificate_json='{"CloudFrontDefaultCertificate":true,"MinimumProtocolVersion":"TLSv1"}'
 fi
 
 jq -n --arg name "${cache_policy_name}" '{
