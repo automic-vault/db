@@ -64,7 +64,22 @@ from Pangolin:
 $ scripts/sync-atlas.sh
 ```
 
-The static website and CloudFront `/pkg/` behaviors remain in `../av.www`.
+`pkg.so` uses a dedicated CloudFront distribution in front of the same Atlas
+origin. Create or update it from Pangolin with:
+
+```sh
+$ AV_WEB_ORIGIN_SECRET=... scripts/deploy-pkg-cloudfront.sh --prepare-only
+$ AV_WEB_ORIGIN_SECRET=... scripts/deploy-pkg-cloudfront.sh
+```
+
+The deploy requests a DNS-validated ACM certificate in `us-east-1` when one is
+not already present. It deploys on the generated `cloudfront.net` hostname
+until that certificate is issued, then attaches the `pkg.so` alias on the next
+run. The script reports the required ACM CNAME but does not change DNS.
+
+The existing `atomicvault.com/pkg/` CloudFront behaviors stay live during the
+migration. Their redirect to `https://pkg.so/pkg/...` is staged in `../av.www`
+and must be enabled separately after DNS and production verification.
 
 ## Checks
 
