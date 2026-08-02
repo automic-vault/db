@@ -34,7 +34,8 @@ from pkg_hub_data import graph_hub_definitions, load_pkg_taxonomy_index, taxonom
 
 
 SCHEMA_VERSION = 1
-SITE_ORIGIN = "https://www.automicvault.com"
+SITE_ORIGIN = "https://pkg.so"
+SITE_NAME = "pkg.so"
 OUTPUT_DIR = Path("cache/pkg-pages-render")
 STATIC_PACKAGE_PAGE_OPT_IN = "AV_ALLOW_STATIC_PKG_PAGES"
 MANIFEST_NAME = ".manifest.json"
@@ -2143,10 +2144,10 @@ def render_index(
     hub_links = hub_group_sections(hubs, locale)
     search_placeholder = json.dumps(tx(locale, "searchPlaceholder", "Search awscli, gh, .env, npm publish"), ensure_ascii=False)
     return html_doc(
-        title=tx(locale, "packageCatalogTitle", "Package security catalog") + " | Automic Vault",
+        title=tx(locale, "packageCatalogTitle", "Package security catalog") + f" | {SITE_NAME}",
         description=tx(locale, "packageCatalogDescription", (
-            "Automic Vault package catalog for executable Nucleus packages, protected-tool "
-            "secret handling, approval gates, install metadata, and agent security notes."
+            "Source-backed package intelligence for executable tools, including install metadata, "
+            "security signals, approval gates, and agent-oriented notes."
         )),
         canonical=locale_url("/pkg/", locale),
         alternates_path="/pkg/",
@@ -2218,10 +2219,10 @@ def render_index(
         schema={
             "@context": "https://schema.org",
             "@type": "CollectionPage",
-            "name": tx(locale, "packageCatalogTitle", "Automic Vault package security catalog"),
+            "name": tx(locale, "packageCatalogTitle", "Package security catalog"),
             "url": locale_url("/pkg/", locale),
             "inLanguage": (locale or {}).get("htmlLang") or "en",
-            "isPartOf": {"@type": "WebSite", "name": "Automic Vault", "url": SITE_ORIGIN + "/"},
+            "isPartOf": {"@type": "WebSite", "name": SITE_NAME, "url": SITE_ORIGIN + "/"},
             "about": tx(locale, "packageCatalogDescription", "Nucleus packages, AI agent package security, approval gates, and secret migration metadata"),
         },
     )
@@ -2264,11 +2265,11 @@ def render_hub_page(
     gated = [page for page in pages if page.approval_gate]
     rows = "\n".join(hub_package_row(page, locale) for page in top)
     description = short_text(
-        tx(locale, "hubSchemaDescription", "{description} Browse {count} package pages with install commands, metadata, and Automic Vault security notes.", description=hub.description, count=len(pages)),
+        tx(locale, "hubSchemaDescription", "{description} Browse {count} package pages with install commands, metadata, and security notes.", description=hub.description, count=len(pages)),
         155,
     )
     return html_doc(
-        title=f"{hub.title} | Automic Vault package catalog",
+        title=f"{hub.title} | {SITE_NAME} package catalog",
         description=description,
         canonical=locale_url(hub.path, locale),
         alternates_path=hub.path,
@@ -2514,9 +2515,9 @@ def schema_for_hub(hub: PackageHub, pages: list[PackagePage], description: str, 
     return {
         "@context": "https://schema.org",
         "@graph": [
-            {"@type": "WebSite", "@id": f"{SITE_ORIGIN}/#website", "name": "Automic Vault", "url": f"{SITE_ORIGIN}/"},
-            {"@type": "Organization", "@id": f"{SITE_ORIGIN}/#organization", "name": "Automic Vault", "url": f"{SITE_ORIGIN}/"},
-            {"@type": "Person", "@id": f"{SITE_ORIGIN}/about/#max-howell", "name": "Max Howell", "url": f"{SITE_ORIGIN}/about/"},
+            {"@type": "WebSite", "@id": f"{SITE_ORIGIN}/#website", "name": SITE_NAME, "url": f"{SITE_ORIGIN}/"},
+            {"@type": "Organization", "@id": f"{SITE_ORIGIN}/#organization", "name": SITE_NAME, "url": f"{SITE_ORIGIN}/"},
+            {"@type": "Person", "@id": "https://github.com/mxcl#person", "name": "Max Howell", "url": "https://github.com/mxcl"},
             {
                 "@type": "CollectionPage",
                 "@id": f"{url}#webpage",
@@ -2528,8 +2529,8 @@ def schema_for_hub(hub: PackageHub, pages: list[PackagePage], description: str, 
                 "dateModified": updated,
                 "isPartOf": {"@id": f"{SITE_ORIGIN}/#website"},
                 "about": {"@id": f"{SITE_ORIGIN}/#software"},
-                "author": {"@id": f"{SITE_ORIGIN}/about/#max-howell"},
-                "reviewedBy": {"@id": f"{SITE_ORIGIN}/about/#max-howell"},
+                "author": {"@id": "https://github.com/mxcl#person"},
+                "reviewedBy": {"@id": "https://github.com/mxcl#person"},
                 "publisher": {"@id": f"{SITE_ORIGIN}/#organization"},
                 "mainEntity": {
                     "@type": "ItemList",
@@ -4688,8 +4689,8 @@ def schema_for_package(page: PackagePage, description: str, updated: str, locale
         "description": description,
         "dateModified": updated,
         "inLanguage": (locale or {}).get("htmlLang") or "en",
-        "author": {"@id": f"{SITE_ORIGIN}/about/#max-howell"},
-        "reviewedBy": {"@id": f"{SITE_ORIGIN}/about/#max-howell"},
+        "author": {"@id": "https://github.com/mxcl#person"},
+        "reviewedBy": {"@id": "https://github.com/mxcl#person"},
         "publisher": {"@id": f"{SITE_ORIGIN}/#organization"},
         "mainEntity": {"@id": f"{url}#software"},
     }
@@ -4736,9 +4737,9 @@ def schema_for_package(page: PackagePage, description: str, updated: str, locale
     return {
         "@context": "https://schema.org",
         "@graph": [
-            {"@type": "WebSite", "@id": f"{SITE_ORIGIN}/#website", "name": "Automic Vault", "url": f"{SITE_ORIGIN}/"},
-            {"@type": "Organization", "@id": f"{SITE_ORIGIN}/#organization", "name": "Automic Vault", "url": f"{SITE_ORIGIN}/"},
-            {"@type": "Person", "@id": f"{SITE_ORIGIN}/about/#max-howell", "name": "Max Howell", "url": f"{SITE_ORIGIN}/about/"},
+            {"@type": "WebSite", "@id": f"{SITE_ORIGIN}/#website", "name": SITE_NAME, "url": f"{SITE_ORIGIN}/"},
+            {"@type": "Organization", "@id": f"{SITE_ORIGIN}/#organization", "name": SITE_NAME, "url": f"{SITE_ORIGIN}/"},
+            {"@type": "Person", "@id": "https://github.com/mxcl#person", "name": "Max Howell", "url": "https://github.com/mxcl"},
             software,
             article,
             breadcrumb,
@@ -4822,15 +4823,16 @@ def sitemap_hreflang_lines(path: str) -> list[str]:
 def nav(root: str, locale: dict[str, Any] | None = None) -> str:
     return f"""
 <header class="masthead">
-  <a class="brand" href="{root}" aria-label="Automic Vault home">
-    <img class="brand-mark" src="{root}assets/icon@2x.webp" alt="Automic Vault" width="54" height="54">
-    <span class="brand-type">Automic Vault</span>
+  <a class="brand" href="{root}pkg/" aria-label="pkg.so package catalog">
+    <span class="brand-mark" aria-hidden="true">p</span>
+    <span class="brand-type">pkg.so</span>
+    <span class="brand-tagline">package field notes</span>
   </a>
   <nav class="nav" aria-label="Main navigation">
-    <a href="{root}docs/">{html_escape(tx(locale, 'docs', 'Docs'))}</a>
-    <a href="{root}security/">{html_escape(tx(locale, 'security', 'Security'))}</a>
     <a href="{root}pkg/">{html_escape(tx(locale, 'packages', 'Packages'))}</a>
-    <a href="https://github.com/automic-vault/automic-vault">{html_escape(tx(locale, 'github', 'GitHub'))}</a>
+    <a href="{root}sitemap.xml">Sitemap</a>
+    <a href="{root}pkg/new.json">JSON feed</a>
+    <a href="https://github.com/automic-vault/db">Source</a>
   </nav>
 </header>
 """
@@ -4839,11 +4841,11 @@ def nav(root: str, locale: dict[str, Any] | None = None) -> str:
 def footer(root: str, locale: dict[str, Any] | None = None) -> str:
     return f"""
 <footer class="site-footer">
-  <p>{html_escape(tx(locale, 'footer', 'Automic Vault secures Homebrew tools, CLI secrets, and command approval gates locally on your Mac before AI agents use them.'))}</p>
+  <p>{html_escape(tx(locale, 'footer', 'Source-backed package intelligence, rebuilt daily.'))}</p>
   <div class="footer-links">
-    <a href="{root}privacy/">{html_escape(tx(locale, 'privacy', 'Privacy'))}</a>
-    <a href="{root}terms/">{html_escape(tx(locale, 'terms', 'Terms'))}</a>
-    <a href="{root}llms.txt">llms.txt</a>
+    <a href="{root}sitemap.xml">Sitemap</a>
+    <a href="{root}robots.txt">Robots</a>
+    <a href="https://github.com/automic-vault/db">Source</a>
   </div>
 </footer>
 """
@@ -4895,21 +4897,18 @@ def html_doc(
   <meta name="description" content="{attr(description)}">
   <meta name="robots" content="{attr(robots)}">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Automic Vault">
+  <meta property="og:site_name" content="{SITE_NAME}">
   <meta property="og:title" content="{attr(title)}">
   <meta property="og:description" content="{attr(description)}">
   <meta property="og:url" content="{attr(canonical)}">
-  <meta property="og:image" content="{SITE_ORIGIN}/preview.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{attr(title)}">
   <meta name="twitter:description" content="{attr(description)}">
-  <meta name="twitter:image" content="{SITE_ORIGIN}/preview.jpg">
   <link rel="canonical" href="{attr(canonical)}">
 {hreflang_head}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;family=Geist+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="icon" href="{favicon_href}" sizes="16x16 32x32 48x48">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{stylesheet_href}">
 {GOOGLE_TAG}
 {extra_head}
@@ -4929,20 +4928,21 @@ def html_doc(
 
 def render_css() -> str:
     return """:root {
-  --bg: #10100f;
-  --surface: #171615;
-  --surface-2: #1d1c1a;
-  --ink: #f0eee8;
-  --muted: #9e9a90;
-  --dim: #6f6a62;
-  --line: #302e2b;
-  --line-strong: #45413b;
-  --hot: #f26d3d;
-  --blue: #2d8bd8;
-  --green: #72b661;
-  --gold: #d0a248;
-  --font-ui: "Geist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: "Geist Mono", "SFMono-Regular", Consolas, monospace;
+  --bg: #e7e1d2;
+  --surface: #f7f3e8;
+  --surface-2: #eee9dc;
+  --ink: #121416;
+  --muted: #555b5d;
+  --dim: #747878;
+  --line: #c9c3b5;
+  --line-strong: #17191b;
+  --hot: #2455ff;
+  --blue: #2455ff;
+  --green: #4d7200;
+  --gold: #879f00;
+  --signal: #caff42;
+  --font-ui: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
   --max: 1540px;
   --shell-gutter-y: 44px;
   --shell-gutter-x: 48px;
@@ -4951,7 +4951,7 @@ def render_css() -> str:
 * { box-sizing: border-box; }
 
 html {
-  background: #050505;
+  background: var(--bg);
   color: var(--ink);
   scroll-behavior: smooth;
 }
@@ -4961,10 +4961,10 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 12% 0%, rgba(242, 109, 61, 0.12), transparent 30rem),
-    radial-gradient(circle at 86% 12%, rgba(114, 182, 97, 0.075), transparent 28rem),
-    linear-gradient(180deg, rgba(34, 33, 30, 0.92), rgba(8, 8, 8, 0.98) 42rem),
-    #080808;
+    linear-gradient(90deg, rgba(36, 85, 255, 0.08) 0 1px, transparent 1px 100%),
+    linear-gradient(180deg, rgba(18, 20, 22, 0.045) 0 1px, transparent 1px 100%),
+    var(--bg);
+  background-size: 96px 100%, 100% 32px, auto;
   font-family: var(--font-ui);
   letter-spacing: 0;
 }
@@ -4978,9 +4978,7 @@ body::after {
   width: min(calc(100% - var(--shell-gutter-x)), var(--max));
   height: var(--shell-gutter-y);
   border-inline: 1px solid var(--line-strong);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.024), transparent 18rem),
-    rgba(19, 18, 17, 0.965);
+  background: var(--surface);
   transform: translateX(-50%);
   pointer-events: none;
 }
@@ -4991,12 +4989,8 @@ body::before {
   inset: 0;
   z-index: 50;
   pointer-events: none;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
-  background-size: 100% 4px, 48px 100%;
-  opacity: 0.22;
-  mix-blend-mode: screen;
+  background: repeating-linear-gradient(115deg, transparent 0 11px, rgba(18, 20, 22, 0.016) 11px 12px);
+  opacity: 0.7;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -5011,13 +5005,11 @@ code { font-family: var(--font-mono); }
   margin: var(--shell-gutter-y) auto;
   overflow: clip;
   border: 1px solid var(--line-strong);
-  border-radius: 8px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.024), transparent 18rem),
-    rgba(19, 18, 17, 0.965);
+  border-radius: 0;
+  background: var(--surface);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.055),
-    0 34px 90px rgba(0, 0, 0, 0.44);
+    12px 12px 0 rgba(18, 20, 22, 0.12),
+    0 34px 90px rgba(18, 20, 22, 0.12);
 }
 
 .masthead {
@@ -5031,17 +5023,39 @@ code { font-family: var(--font-mono); }
   min-height: 82px;
   padding: 18px clamp(20px, 3vw, 44px);
   border-bottom: 1px solid var(--line);
-  background: rgba(23, 22, 21, 0.9);
+  background: rgba(247, 243, 232, 0.94);
   backdrop-filter: blur(16px);
 }
 
-.brand { display: inline-flex; align-items: center; gap: 12px; min-width: 0; }
-.brand-mark { width: 34px; height: 34px; border-radius: 8px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+.brand-mark {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  background: var(--signal);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+}
 .brand-type {
   color: var(--ink);
   font-family: var(--font-mono);
-  font-size: 0.96rem;
+  font-size: 1.08rem;
   font-weight: 700;
+  text-transform: uppercase;
+}
+.brand-tagline {
+  padding-left: 10px;
+  border-left: 1px solid var(--line);
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
@@ -5064,7 +5078,7 @@ code { font-family: var(--font-mono); }
   gap: 9px;
   padding: 22px clamp(20px, 3vw, 44px);
   border-bottom: 1px solid var(--line);
-  background: rgba(18, 17, 16, 0.965);
+  background: var(--surface-2);
   color: var(--dim);
   font-family: var(--font-mono);
   font-size: 0.76rem;
@@ -5083,8 +5097,8 @@ code { font-family: var(--font-mono); }
   border-bottom: 1px solid var(--line);
   overflow: hidden;
   background:
-    linear-gradient(135deg, rgba(242, 109, 61, 0.055), transparent 34%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 68%);
+    linear-gradient(135deg, rgba(36, 85, 255, 0.11), transparent 34%),
+    linear-gradient(180deg, rgba(202, 255, 66, 0.12), transparent 68%);
 }
 .pkg-hero::before {
   content: "";
@@ -5092,9 +5106,9 @@ code { font-family: var(--font-mono); }
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(208, 162, 72, 0.16), transparent 1px) 0 0 / 16.666% 100%,
-    linear-gradient(rgba(255, 255, 255, 0.04), transparent 1px) 0 0 / 100% 72px;
-  opacity: 0.18;
+    linear-gradient(90deg, rgba(36, 85, 255, 0.3), transparent 1px) 0 0 / 16.666% 100%,
+    linear-gradient(rgba(18, 20, 22, 0.12), transparent 1px) 0 0 / 100% 72px;
+  opacity: 0.24;
 }
 .pkg-hero::after {
   content: "";
@@ -5138,9 +5152,9 @@ h1 {
   width: min(100%, 820px);
   margin-top: clamp(20px, 3vw, 34px);
   padding: 18px 20px;
-  border: 1px solid rgba(242, 109, 61, 0.28);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(36, 85, 255, 0.38);
+  border-radius: 0;
+  background: rgba(36, 85, 255, 0.055);
 }
 .summary-card p:last-child {
   margin-top: 8px;
@@ -5167,7 +5181,7 @@ h1 {
 }
 .button:hover { transform: translateY(-1px); }
 .button:active { transform: translateY(1px); }
-.button.primary { border-color: var(--hot); background: var(--hot); color: #11100f; }
+.button.primary { border-color: var(--hot); background: var(--hot); color: #fff; }
 .button.secondary { background: rgba(255, 255, 255, 0.035); }
 .copy-button {
   min-height: 36px;
@@ -5191,14 +5205,13 @@ h1 {
   display: grid;
   align-self: stretch;
   padding: 4px 18px;
-  border: 1px solid rgba(69, 65, 59, 0.86);
-  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent),
-    rgba(16, 16, 15, 0.78);
+    linear-gradient(180deg, rgba(202, 255, 66, 0.22), transparent),
+    var(--surface-2);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.075),
-    0 18px 42px rgba(0, 0, 0, 0.22);
+    6px 6px 0 rgba(18, 20, 22, 0.12);
 }
 .at-a-glance {
   display: grid;
@@ -5248,7 +5261,7 @@ h1 {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(300px, 0.42fr);
   gap: clamp(30px, 5vw, 70px);
-  background: linear-gradient(90deg, rgba(242, 109, 61, 0.055), transparent 34%);
+  background: linear-gradient(90deg, rgba(36, 85, 255, 0.07), transparent 34%);
 }
 .support-section {
   display: grid;
@@ -5846,7 +5859,7 @@ h1 {
 }
 .pkg-search .pagefind-ui__search-input:focus {
   border-color: rgba(114, 182, 97, 0.72);
-  background: #22211f;
+  background: #fffdf6;
   outline: none;
   transform: translateY(-1px);
 }
@@ -5998,7 +6011,7 @@ td { color: var(--ink); overflow-wrap: anywhere; }
   opacity: 0;
   transition: opacity 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.package-row:hover { background: #22211f; transform: translateY(-1px); }
+.package-row:hover { background: #e2e8ff; transform: translateY(-1px); }
 .package-row:hover::before { opacity: 0.76; }
 .package-row:active { transform: translateY(1px) scale(0.995); }
 .package-row span { position: relative; color: var(--ink); font-weight: 700; overflow-wrap: anywhere; }
@@ -6059,7 +6072,7 @@ td { color: var(--ink); overflow-wrap: anywhere; }
   opacity: 0;
   transition: opacity 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.hub-card:hover { background: #22211f; transform: translateY(-1px); }
+.hub-card:hover { background: #e2e8ff; transform: translateY(-1px); }
 .hub-card:hover::after { opacity: 0.82; }
 .hub-card:active { transform: translateY(1px) scale(0.995); }
 .hub-card span {
@@ -6113,7 +6126,7 @@ td { color: var(--ink); overflow-wrap: anywhere; }
   overflow: hidden;
   transition: background 180ms cubic-bezier(0.16, 1, 0.3, 1), transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.hub-related-card:hover { background: #22211f; transform: translateY(-1px); }
+.hub-related-card:hover { background: #e2e8ff; transform: translateY(-1px); }
 .hub-related-card:active { transform: translateY(1px) scale(0.995); }
 .hub-related-card span {
   color: var(--ink);
@@ -6152,6 +6165,7 @@ td { color: var(--ink); overflow-wrap: anywhere; }
     --shell-gutter-x: 24px;
   }
   .masthead, .site-footer { align-items: flex-start; flex-direction: column; }
+  .brand-tagline { display: none; }
   .nav { width: 100%; flex-wrap: wrap; gap: 12px 18px; }
   .pkg-hero, .split-section, .security-section, .support-section, .pkg-search-section, .install-section, .signal-grid, .related-columns, .platform-install-grid, .install-command-row, .freshness-metrics, .file-location-board { grid-template-columns: 1fr; }
   .pkg-hero { padding-top: 38px; }

@@ -17,7 +17,7 @@ const DEFAULT_ORIGIN_HEADER: &str = "x-automic-vault-origin";
 const HTML_CACHE_CONTROL: &str = "public, max-age=86400, s-maxage=86400";
 const DEFAULT_SEARCH_LIMIT: usize = 8;
 const MAX_SEARCH_LIMIT: usize = 50;
-const PKG_STYLESHEET_VERSION: &str = "20260623-shell-cap";
+const PKG_STYLESHEET_VERSION: &str = "20260802-pkg-so";
 const I18N_PKG_TEMPLATES_JSON: &str = include_str!("../../data/pkg-i18n/templates.json");
 static I18N_PKG_TEMPLATES: OnceLock<Value> = OnceLock::new();
 
@@ -463,7 +463,8 @@ const LOCALES: &[Locale] = &[
     },
 ];
 
-const SITE_ORIGIN: &str = "https://www.automicvault.com";
+const SITE_ORIGIN: &str = "https://pkg.so";
+const SITE_NAME: &str = "pkg.so";
 const PROVIDERS: &[&str] = &["brew", "cask", "npm", "pip", "cargo"];
 
 #[derive(Debug, Clone, Default, Deserialize)]
@@ -506,6 +507,25 @@ struct HubRow {
 }
 
 fn dynamic_response_for_path(db_path: &Path, path: &str) -> Result<Option<StoredResponse>, String> {
+    if path == "/robots.txt" {
+        let connection = open_database(db_path)?;
+        return Ok(Some(dynamic_stored_response(
+            &connection,
+            path,
+            "text/plain; charset=utf-8",
+            format!("User-agent: *\nAllow: /\nSitemap: {SITE_ORIGIN}/sitemap.xml\n"),
+        )?));
+    }
+    if path == "/sitemap.xml" {
+        let connection = open_database(db_path)?;
+        let body = render_sitemap_index(&connection)?;
+        return Ok(Some(dynamic_stored_response(
+            &connection,
+            path,
+            "application/xml; charset=utf-8",
+            body,
+        )?));
+    }
     let (locale, canonical_path) = canonical_pkg_route(path);
     if !canonical_path.starts_with("/pkg/") && canonical_path != "/pkg/index.html" {
         return Ok(None);
@@ -1081,17 +1101,17 @@ fn render_index_page(connection: &Connection, locale: &Locale) -> Result<String,
         "name": catalog_title.clone(),
         "url": locale_url("/pkg/", locale),
         "inLanguage": locale.hreflang,
-        "isPartOf": {"@type": "WebSite", "name": "Automic Vault", "url": format!("{SITE_ORIGIN}/")},
+        "isPartOf": {"@type": "WebSite", "name": SITE_NAME, "url": format!("{SITE_ORIGIN}/")},
         "about": tx(locale, "packageCatalogDescription", "Nucleus packages, AI agent package security, approval gates, and secret migration metadata")
     });
     let schema_json = serde_json::to_string_pretty(&schema).unwrap_or_else(|_| "{}".to_string());
     Ok(html_doc(
         locale,
-        &format!("{catalog_title} | Automic Vault"),
+        &format!("{catalog_title} | {SITE_NAME}"),
         &tx(
             locale,
             "packageCatalogDescription",
-            "Automic Vault package catalog for executable Nucleus packages, protected-tool secret handling, approval gates, install metadata, and agent security notes.",
+            "Source-backed package intelligence for executable tools, including install metadata, security signals, approval gates, and agent-oriented notes.",
         ),
         &locale_url("/pkg/", locale),
         "index,follow",
@@ -1223,7 +1243,7 @@ fn render_hub_page(
         &txf(
             locale,
             "hubSchemaDescription",
-            "{description} Browse {count} package pages with install commands, metadata, and Automic Vault security notes.",
+            "{description} Browse {count} package pages with install commands, metadata, and security notes.",
             &[
                 ("description", hub.description.clone()),
                 ("count", stats.package_count.to_string()),
@@ -1328,7 +1348,7 @@ fn render_hub_markdown(
 
 fn render_package_page(package: &PackageRow, locale: &Locale, generated_at: &str) -> String {
     let install_heading = package_install_heading(package, locale);
-    let title = format!("{install_heading} | Automic Vault");
+    let title = format!("{install_heading} | {SITE_NAME}");
     let description = meta_description(package, locale);
     let updated = first_non_empty(&[
         display_last_verified(package),
@@ -1537,21 +1557,18 @@ fn html_doc(
   <meta name="description" content="{description}">
   <meta name="robots" content="{robots}">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Automic Vault">
+  <meta property="og:site_name" content="{site_name}">
   <meta property="og:title" content="{title}">
   <meta property="og:description" content="{description}">
   <meta property="og:url" content="{canonical}">
-  <meta property="og:image" content="{origin}/preview.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{title}">
   <meta name="twitter:description" content="{description}">
-  <meta name="twitter:image" content="{origin}/preview.jpg">
   <link rel="canonical" href="{canonical}">
 {hreflang}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;family=Geist+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{stylesheet}">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y78QKG1T9Y"></script>
@@ -1579,7 +1596,7 @@ fn html_doc(
         description = html_escape(description),
         robots = html_escape(robots),
         canonical = html_escape(canonical),
-        origin = SITE_ORIGIN,
+        site_name = SITE_NAME,
         hreflang = html_hreflang_links(canonical),
         stylesheet = html_escape(&format!(
             "{}?v={}",
@@ -1595,32 +1612,24 @@ fn html_doc(
 
 fn site_nav(locale: &Locale) -> String {
     format!(
-        r#"<header class="masthead"><a class="brand" href="{}" aria-label="{}"><img class="brand-mark" src="/assets/icon@2x.webp" alt="Automic Vault" width="54" height="54"><span class="brand-type">Automic Vault</span></a><nav class="nav" aria-label="{}"><a href="{}">{}</a><a href="{}">{}</a><a href="{}">{}</a><a href="https://github.com/automic-vault/automic-vault">GitHub</a></nav></header>"#,
-        html_escape(&locale_path("/", locale)),
-        html_escape(&tx(locale, "brandHomeAria", "Automic Vault home")),
+        r#"<header class="masthead"><a class="brand" href="{}" aria-label="{}"><span class="brand-mark" aria-hidden="true">p</span><span class="brand-type">pkg.so</span><span class="brand-tagline">package field notes</span></a><nav class="nav" aria-label="{}"><a href="{}">{}</a><a href="/sitemap.xml">Sitemap</a><a href="{}">JSON feed</a><a href="https://github.com/automic-vault/db">Source</a></nav></header>"#,
+        html_escape(&locale_path("/pkg/", locale)),
+        html_escape(&tx(locale, "brandHomeAria", "pkg.so package catalog")),
         html_escape(&tx(locale, "mainNavigation", "Main navigation")),
-        html_escape(&locale_path("/docs/", locale)),
-        html_escape(&tx(locale, "docs", "Docs")),
-        html_escape(&locale_path("/security/", locale)),
-        html_escape(&tx(locale, "security", "Security")),
         html_escape(&locale_path("/pkg/", locale)),
         html_escape(&tx(locale, "packages", "Packages")),
+        html_escape(&locale_path("/pkg/new.json", locale)),
     )
 }
 
 fn site_footer(locale: &Locale) -> String {
     format!(
-        r#"<footer class="site-footer"><p>{}</p><div class="footer-links"><a href="{}">{}</a><a href="{}">{}</a><a href="{}">llms.txt</a></div></footer>"#,
+        r#"<footer class="site-footer"><p>{}</p><div class="footer-links"><a href="/sitemap.xml">Sitemap</a><a href="/robots.txt">Robots</a><a href="https://github.com/automic-vault/db">Source</a></div></footer>"#,
         html_escape(&tx(
             locale,
             "footer",
-            "Automic Vault secures Homebrew tools, CLI secrets, and command approval gates locally on your Mac before AI agents use them."
+            "Source-backed package intelligence, rebuilt daily."
         )),
-        html_escape(&locale_path("/privacy/", locale)),
-        html_escape(&tx(locale, "privacy", "Privacy")),
-        html_escape(&locale_path("/terms/", locale)),
-        html_escape(&tx(locale, "terms", "Terms")),
-        html_escape(&locale_path("/llms.txt", locale)),
     )
 }
 
@@ -3616,9 +3625,9 @@ fn schema_for_hub(
     json!({
         "@context": "https://schema.org",
         "@graph": [
-            {"@type": "WebSite", "@id": format!("{SITE_ORIGIN}/#website"), "name": "Automic Vault", "url": format!("{SITE_ORIGIN}/")},
-            {"@type": "Organization", "@id": format!("{SITE_ORIGIN}/#organization"), "name": "Automic Vault", "url": format!("{SITE_ORIGIN}/")},
-            {"@type": "Person", "@id": format!("{SITE_ORIGIN}/about/#max-howell"), "name": "Max Howell", "url": format!("{SITE_ORIGIN}/about/")},
+            {"@type": "WebSite", "@id": format!("{SITE_ORIGIN}/#website"), "name": SITE_NAME, "url": format!("{SITE_ORIGIN}/")},
+            {"@type": "Organization", "@id": format!("{SITE_ORIGIN}/#organization"), "name": SITE_NAME, "url": format!("{SITE_ORIGIN}/")},
+            {"@type": "Person", "@id": "https://github.com/mxcl#person", "name": "Max Howell", "url": "https://github.com/mxcl"},
             {
                 "@type": "CollectionPage",
                 "@id": format!("{url}#webpage"),
@@ -3629,7 +3638,7 @@ fn schema_for_hub(
                 "inLanguage": locale.hreflang,
                 "dateModified": updated,
                 "isPartOf": {"@id": format!("{SITE_ORIGIN}/#website")},
-                "author": {"@id": format!("{SITE_ORIGIN}/about/#max-howell")},
+                "author": {"@id": "https://github.com/mxcl#person"},
                 "publisher": {"@id": format!("{SITE_ORIGIN}/#organization")},
                 "mainEntity": {"@id": format!("{url}#list")}
             },
@@ -4827,9 +4836,9 @@ fn schema_for_package(
     json!({
         "@context": "https://schema.org",
         "@graph": [
-            {"@type": "WebSite", "@id": format!("{SITE_ORIGIN}/#website"), "name": "Automic Vault", "url": format!("{SITE_ORIGIN}/")},
-            {"@type": "Organization", "@id": format!("{SITE_ORIGIN}/#organization"), "name": "Automic Vault", "url": format!("{SITE_ORIGIN}/")},
-            {"@type": "Person", "@id": format!("{SITE_ORIGIN}/about/#max-howell"), "name": "Max Howell", "url": format!("{SITE_ORIGIN}/about/")},
+            {"@type": "WebSite", "@id": format!("{SITE_ORIGIN}/#website"), "name": SITE_NAME, "url": format!("{SITE_ORIGIN}/")},
+            {"@type": "Organization", "@id": format!("{SITE_ORIGIN}/#organization"), "name": SITE_NAME, "url": format!("{SITE_ORIGIN}/")},
+            {"@type": "Person", "@id": "https://github.com/mxcl#person", "name": "Max Howell", "url": "https://github.com/mxcl"},
             software,
             {
                 "@type": "TechArticle",
@@ -4846,8 +4855,8 @@ fn schema_for_package(
                 "description": description,
                 "dateModified": updated,
                 "inLanguage": locale.hreflang,
-                "author": {"@id": format!("{SITE_ORIGIN}/about/#max-howell")},
-                "reviewedBy": {"@id": format!("{SITE_ORIGIN}/about/#max-howell")},
+                "author": {"@id": "https://github.com/mxcl#person"},
+                "reviewedBy": {"@id": "https://github.com/mxcl#person"},
                 "publisher": {"@id": format!("{SITE_ORIGIN}/#organization")},
                 "mainEntity": {"@id": format!("{url}#software")}
             },
@@ -6660,6 +6669,12 @@ mod tests {
     #[test]
     fn dynamic_routes_render_package_hub_and_sitemap() {
         let db = test_database();
+        let robots = dynamic_response_for_path(db.path(), "/robots.txt")
+            .expect("query")
+            .expect("robots response");
+        let root_sitemap = dynamic_response_for_path(db.path(), "/sitemap.xml")
+            .expect("query")
+            .expect("root sitemap response");
         let package = dynamic_response_for_path(db.path(), "/pkg/brew/awscli/")
             .expect("query")
             .expect("package response");
@@ -6705,14 +6720,33 @@ mod tests {
             .expect("new json response");
 
         let package_html = String::from_utf8(package.body).expect("package html");
+        assert_eq!(robots.content_type, "text/plain; charset=utf-8");
+        assert_eq!(
+            String::from_utf8(robots.body).expect("robots text"),
+            "User-agent: *\nAllow: /\nSitemap: https://pkg.so/sitemap.xml\n"
+        );
+        assert_eq!(root_sitemap.content_type, "application/xml; charset=utf-8");
+        assert!(
+            String::from_utf8(root_sitemap.body)
+                .expect("root sitemap xml")
+                .contains("https://pkg.so/pkg/sitemap-brew.xml")
+        );
+        assert!(
+            package_html
+                .contains(r#"<link rel="canonical" href="https://pkg.so/pkg/brew/awscli/">"#)
+        );
+        assert!(package_html.contains(r#"<meta property="og:site_name" content="pkg.so">"#));
+        assert!(package_html.contains("package field notes"));
+        assert!(!package_html.contains("class=\"brand-mark\" src="));
         assert!(package_html.contains("AWS credential file coverage"));
         assert!(package_html.contains("brew install awscli"));
         assert!(package_html.contains("Risk classifier"));
         assert!(package_html.contains("aws iam create-access-key"));
         assert!(package_html.contains("Agent safety answer"));
-        assert!(package_html.contains(
-            "<title>Install awscli with Homebrew, apt, winget, pip | Automic Vault</title>"
-        ));
+        assert!(
+            package_html
+                .contains("<title>Install awscli with Homebrew, apt, winget, pip | pkg.so</title>")
+        );
         assert!(package_html.contains(
             r#"<meta name="description" content="Install awscli with Homebrew, apt, winget, pip. AWS command line interface. View executables, metadata, and security notes."#
         ));
@@ -6750,9 +6784,11 @@ mod tests {
         let localized_package_html =
             String::from_utf8(localized_package.body).expect("localized package html");
         assert!(localized_package_html.contains("<html lang=\"fr\">"));
-        assert!(localized_package_html.contains(
-            "<title>Installer awscli avec Homebrew, apt, winget, pip | Automic Vault</title>"
-        ));
+        assert!(
+            localized_package_html.contains(
+                "<title>Installer awscli avec Homebrew, apt, winget, pip | pkg.so</title>"
+            )
+        );
         assert!(localized_package_html.contains(
             r#"<meta name="description" content="Installez awscli avec Homebrew, apt, winget, pip. Consultez les exécutables, métadonnées et notes de sécurité.""#
         ));
@@ -6787,7 +6823,7 @@ mod tests {
         let hub_markdown = String::from_utf8(hub_markdown.body).expect("hub markdown");
         assert!(hub_markdown.contains("# Cloud"));
         assert!(hub_markdown.contains("Cloud tools"));
-        assert!(hub_markdown.contains("[awscli](https://www.automicvault.com/pkg/brew/awscli/)"));
+        assert!(hub_markdown.contains("[awscli](https://pkg.so/pkg/brew/awscli/)"));
 
         let crates_hub_html = String::from_utf8(crates_hub.body).expect("crates.io hub html");
         assert!(crates_hub_html.contains("crates.io command packages"));
@@ -6803,10 +6839,7 @@ mod tests {
         let crates_hub_markdown =
             String::from_utf8(crates_hub_markdown.body).expect("crates.io hub markdown");
         assert!(crates_hub_markdown.contains("# crates.io command packages"));
-        assert!(
-            crates_hub_markdown
-                .contains("[ripgrep](https://www.automicvault.com/pkg/cargo/ripgrep/)")
-        );
+        assert!(crates_hub_markdown.contains("[ripgrep](https://pkg.so/pkg/cargo/ripgrep/)"));
 
         let index_html = String::from_utf8(index.body).expect("index html");
         assert!(index_html.contains("data-locale=\"de\""));
@@ -6866,7 +6899,7 @@ mod tests {
         assert!(text.contains("- 2020: AWS CLI v2 becomes the default generation of the tool."));
         assert!(text.contains("AWS credential file coverage"));
         assert!(text.contains("Upstream latest detected"));
-        assert!(text.contains("[Cloud](https://www.automicvault.com/pkg/cloud/)"));
+        assert!(text.contains("[Cloud](https://pkg.so/pkg/cloud/)"));
         assert!(text.contains("Source archive"));
         assert!(text.contains("Source Database Details"));
         assert!(text.contains("Other Package-Manager Records"));
@@ -7629,6 +7662,14 @@ mod tests {
         );
         assert!(health.starts_with("HTTP/1.1 200 OK"));
         assert!(health.ends_with("ok\n"));
+
+        let robots = handle_raw_request(
+            db.path(),
+            "GET /robots.txt HTTP/1.1\r\nHost: test\r\n\r\n",
+            None,
+        );
+        assert!(robots.starts_with("HTTP/1.1 200 OK"));
+        assert!(robots.contains("Sitemap: https://pkg.so/sitemap.xml"));
 
         let forbidden = handle_raw_request(
             db.path(),
