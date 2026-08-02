@@ -4,6 +4,7 @@ import io
 import json
 import tarfile
 import tempfile
+import tracemalloc
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -37,7 +38,7 @@ def crate_archive_bytes(files):
     return handle.getvalue()
 
 
-def write_fixture_dump(path: Path) -> None:
+def write_fixture_dump(path: Path, *, irrelevant_crates: int = 0) -> None:
     today = dt.date.today().isoformat()
     old_day = (dt.date.today() - dt.timedelta(days=120)).isoformat()
     files = {
@@ -70,6 +71,14 @@ def write_fixture_dump(path: Path) -> None:
                 {"id": "2", "name": "serde", "description": "serialization framework"},
                 {"id": "3", "name": "oldcli", "description": "old command"},
                 {"id": "4", "name": "yankedcli", "description": "gone"},
+                *(
+                    {
+                        "id": str(index + 100),
+                        "name": f"irrelevant-{index}",
+                        "description": "x" * 500,
+                    }
+                    for index in range(irrelevant_crates)
+                ),
             ],
         ),
         "data/crate_downloads.csv": csv_bytes(
@@ -258,6 +267,26 @@ def write_internal_binary_fixture_dump(path: Path) -> None:
 
 
 class CratesIndexTests(unittest.TestCase):
+    def test_build_index_memory_does_not_scale_with_irrelevant_crates(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            dump_path = Path(tmp) / "db-dump.tar.gz"
+            write_fixture_dump(dump_path, irrelevant_crates=30_000)
+
+            tracemalloc.start()
+            try:
+                index = crates_index.build_index_from_dump(
+                    dump_path,
+                    min_recent_downloads=50,
+                    recent_window_days=90,
+                    dump_meta={"source_url": "fixture"},
+                )
+                _, peak = tracemalloc.get_traced_memory()
+            finally:
+                tracemalloc.stop()
+
+        self.assertEqual(list(index["crates"]), ["ripgrep"])
+        self.assertLess(peak, 12 * 1024 * 1024)
+
     def test_build_index_does_not_require_extracted_csv_tempfiles(self):
         with tempfile.TemporaryDirectory() as tmp:
             dump_path = Path(tmp) / "db-dump.tar.gz"

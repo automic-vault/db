@@ -313,11 +313,11 @@ def csv_rows(source: Path | BinaryIO):
         yield from csv.DictReader(handle)
 
 
-def crate_downloads(source: Path | BinaryIO) -> dict[str, int]:
+def crate_downloads(source: Path | BinaryIO, crate_ids: set[str]) -> dict[str, int]:
     result: dict[str, int] = {}
     for row in csv_rows(source):
         crate_id = str(row.get("crate_id") or "").strip()
-        if crate_id:
+        if crate_id in crate_ids:
             result[crate_id] = parse_int(row.get("downloads"))
     return result
 
@@ -601,43 +601,21 @@ def build_index_from_dump(
     cache_hits = 0
     cache_misses = 0
     found: set[str] = set()
-    crates_by_id: dict[str, dict[str, Any]] = {}
-    downloads_by_id: dict[str, int] = {}
     defaults_by_crate: dict[str, dict[str, Any]] = {}
     candidate_versions: dict[str, dict[str, Any]] = {}
-    recent_by_version: dict[str, int] = {}
     with tarfile.open(dump_path, mode="r:gz") as archive:
         for member in archive:
             basename = Path(member.name).name
-            if not member.isfile() or basename not in SELECTED_DUMP_FILES:
+            if not member.isfile() or basename not in {"default_versions.csv", "versions.csv"}:
                 continue
             handle = archive.extractfile(member)
             if handle is None:
                 continue
             found.add(basename)
-            if basename == "crates.csv":
-                crates_by_id = {
-                    str(row.get("id") or "").strip(): row
-                    for row in csv_rows(handle)
-                    if str(row.get("id") or "").strip() and str(row.get("name") or "").strip()
-                }
-            elif basename == "crate_downloads.csv":
-                downloads_by_id = crate_downloads(handle)
-            elif basename == "default_versions.csv":
+            if basename == "default_versions.csv":
                 defaults_by_crate = default_versions(handle)
-            elif basename == "versions.csv":
+            else:
                 candidate_versions = executable_version_rows(handle)
-            elif basename == "version_downloads.csv":
-                if not candidate_versions:
-                    raise CratesIndexError("crates.io dump lists version_downloads.csv before versions.csv")
-                recent_by_version = recent_version_downloads(
-                    handle,
-                    set(candidate_versions),
-                    window_days=recent_window_days,
-                )
-    missing = sorted(SELECTED_DUMP_FILES - found)
-    if missing:
-        raise CratesIndexError(f"crates.io dump missing expected files: {', '.join(missing)}")
     default_version_ids = {
         str(item["version_id"])
         for item in defaults_by_crate.values()
@@ -648,11 +626,41 @@ def build_index_from_dump(
         for version_id, row in candidate_versions.items()
         if version_id in default_version_ids
     }
-    recent_by_version = {
-        version_id: downloads
-        for version_id, downloads in recent_by_version.items()
-        if version_id in default_version_ids
+    candidate_crate_ids = {
+        crate_id
+        for crate_id, default in defaults_by_crate.items()
+        if str(default["version_id"]) in versions_by_id
     }
+    crates_by_id: dict[str, dict[str, Any]] = {}
+    downloads_by_id: dict[str, int] = {}
+    recent_by_version: dict[str, int] = {}
+    with tarfile.open(dump_path, mode="r:gz") as archive:
+        for member in archive:
+            basename = Path(member.name).name
+            if not member.isfile() or basename not in {"crates.csv", "crate_downloads.csv", "version_downloads.csv"}:
+                continue
+            handle = archive.extractfile(member)
+            if handle is None:
+                continue
+            found.add(basename)
+            if basename == "crates.csv":
+                crates_by_id = {
+                    crate_id: row
+                    for row in csv_rows(handle)
+                    if (crate_id := str(row.get("id") or "").strip()) in candidate_crate_ids
+                    and str(row.get("name") or "").strip()
+                }
+            elif basename == "crate_downloads.csv":
+                downloads_by_id = crate_downloads(handle, candidate_crate_ids)
+            else:
+                recent_by_version = recent_version_downloads(
+                    handle,
+                    set(versions_by_id),
+                    window_days=recent_window_days,
+                )
+    missing = sorted(SELECTED_DUMP_FILES - found)
+    if missing:
+        raise CratesIndexError(f"crates.io dump missing expected files: {', '.join(missing)}")
 
     candidates: list[tuple[str, int, int, dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]] = []
     excluded_internal_binary_crates: list[dict[str, Any]] = []
