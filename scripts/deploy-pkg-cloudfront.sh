@@ -8,9 +8,12 @@ origin_header_name="${PKG_CF_ORIGIN_HEADER_NAME:-${AV_WEB_ORIGIN_HEADER:-X-Autom
 origin_secret="${PKG_CF_ORIGIN_HEADER_VALUE:-${AV_WEB_ORIGIN_SECRET:-}}"
 distribution_id="${PKG_CF_DISTRIBUTION_ID:-}"
 certificate_arn="${PKG_CF_CERTIFICATE_ARN:-}"
-cache_policy_id="${PKG_CF_CACHE_POLICY_ID:-101796a9-99d5-49b8-98f5-649c6ad7af24}"
-search_cache_policy_id="${PKG_CF_SEARCH_CACHE_POLICY_ID:-9a0601a2-b540-48f4-a5c9-378c377cd2c7}"
-headers_policy_id="${PKG_CF_HEADERS_POLICY_ID:-be01d98f-d925-4dd1-a065-b392d92cd630}"
+cache_policy_id="${PKG_CF_CACHE_POLICY_ID:-}"
+search_cache_policy_id="${PKG_CF_SEARCH_CACHE_POLICY_ID:-}"
+headers_policy_id="${PKG_CF_HEADERS_POLICY_ID:-}"
+cache_policy_name="pkg-so-daily-cache"
+search_cache_policy_name="pkg-so-search-daily-cache"
+headers_policy_name="pkg-so-security-headers"
 comment="pkg.so package catalog"
 prepare_only=false
 
@@ -31,6 +34,9 @@ Optional environment:
   PKG_CF_ORIGIN_DOMAIN          Default: ${origin_domain}
   PKG_CF_ORIGIN_HEADER_NAME     Default: ${origin_header_name}
   PKG_CF_ORIGIN_HEADER_VALUE    Overrides AV_WEB_ORIGIN_SECRET
+  PKG_CF_CACHE_POLICY_ID        Use an existing cache policy instead
+  PKG_CF_SEARCH_CACHE_POLICY_ID Use an existing search cache policy instead
+  PKG_CF_HEADERS_POLICY_ID      Use an existing response headers policy instead
 EOF
 }
 
@@ -103,6 +109,76 @@ print_validation_record() {
   fi
 }
 
+find_cache_policy() {
+  aws cloudfront list-cache-policies --type custom --output json | jq -r --arg name "$1" '
+    [.CachePolicyList.Items[]?
+      | select(.CachePolicy.CachePolicyConfig.Name == $name)
+      | .CachePolicy.Id][0] // empty
+  '
+}
+
+find_headers_policy() {
+  aws cloudfront list-response-headers-policies --type custom --output json | jq -r --arg name "$1" '
+    [.ResponseHeadersPolicyList.Items[]?
+      | select(.ResponseHeadersPolicy.ResponseHeadersPolicyConfig.Name == $name)
+      | .ResponseHeadersPolicy.Id][0] // empty
+  '
+}
+
+ensure_cache_policy() {
+  local explicit_id="$1"
+  local name="$2"
+  local config_file="$3"
+  local policy_id etag
+  if [[ -n "${explicit_id}" ]]; then
+    printf '%s\n' "${explicit_id}"
+    return
+  fi
+  policy_id="$(find_cache_policy "${name}")"
+  if [[ "${prepare_only}" == "true" ]]; then
+    printf '%s\n' "${policy_id:-will-create:${name}}"
+  elif [[ -n "${policy_id}" ]]; then
+    etag="$(aws cloudfront get-cache-policy-config --id "${policy_id}" --query ETag --output text)"
+    aws cloudfront update-cache-policy \
+      --id "${policy_id}" \
+      --if-match "${etag}" \
+      --cache-policy-config "file://${config_file}" >/dev/null
+    printf '%s\n' "${policy_id}"
+  else
+    aws cloudfront create-cache-policy \
+      --cache-policy-config "file://${config_file}" \
+      --query 'CachePolicy.Id' \
+      --output text
+  fi
+}
+
+ensure_headers_policy() {
+  local explicit_id="$1"
+  local name="$2"
+  local config_file="$3"
+  local policy_id etag
+  if [[ -n "${explicit_id}" ]]; then
+    printf '%s\n' "${explicit_id}"
+    return
+  fi
+  policy_id="$(find_headers_policy "${name}")"
+  if [[ "${prepare_only}" == "true" ]]; then
+    printf '%s\n' "${policy_id:-will-create:${name}}"
+  elif [[ -n "${policy_id}" ]]; then
+    etag="$(aws cloudfront get-response-headers-policy-config --id "${policy_id}" --query ETag --output text)"
+    aws cloudfront update-response-headers-policy \
+      --id "${policy_id}" \
+      --if-match "${etag}" \
+      --response-headers-policy-config "file://${config_file}" >/dev/null
+    printf '%s\n' "${policy_id}"
+  else
+    aws cloudfront create-response-headers-policy \
+      --response-headers-policy-config "file://${config_file}" \
+      --query 'ResponseHeadersPolicy.Id' \
+      --output text
+  fi
+}
+
 if [[ -z "${distribution_id}" ]]; then
   distribution_id="$(find_distribution)"
 fi
@@ -144,6 +220,74 @@ else
   aliases_json='{"Quantity":0}'
   certificate_json='{"CloudFrontDefaultCertificate":true}'
 fi
+
+jq -n --arg name "${cache_policy_name}" '{
+  Name: $name,
+  Comment: "pkg.so package origin cache; CloudFront checks Atlas daily",
+  DefaultTTL: 86400,
+  MaxTTL: 86400,
+  MinTTL: 0,
+  ParametersInCacheKeyAndForwardedToOrigin: {
+    EnableAcceptEncodingGzip: true,
+    EnableAcceptEncodingBrotli: true,
+    HeadersConfig: {HeaderBehavior: "none"},
+    CookiesConfig: {CookieBehavior: "none"},
+    QueryStringsConfig: {QueryStringBehavior: "none"}
+  }
+}' >"${tmp_dir}/cache-policy.json"
+
+jq -n --arg name "${search_cache_policy_name}" '{
+  Name: $name,
+  Comment: "pkg.so search cache with query parameters",
+  DefaultTTL: 86400,
+  MaxTTL: 86400,
+  MinTTL: 0,
+  ParametersInCacheKeyAndForwardedToOrigin: {
+    EnableAcceptEncodingGzip: true,
+    EnableAcceptEncodingBrotli: true,
+    HeadersConfig: {HeaderBehavior: "none"},
+    CookiesConfig: {CookieBehavior: "none"},
+    QueryStringsConfig: {
+      QueryStringBehavior: "whitelist",
+      QueryStrings: {Quantity: 4, Items: ["q", "offset", "limit", "locale"]}
+    }
+  }
+}' >"${tmp_dir}/search-cache-policy.json"
+
+jq -n --arg name "${headers_policy_name}" '{
+  Name: $name,
+  Comment: "Security headers for pkg.so package pages",
+  SecurityHeadersConfig: {
+    XSSProtection: {Override: true, Protection: true, ModeBlock: true},
+    FrameOptions: {Override: true, FrameOption: "DENY"},
+    ReferrerPolicy: {Override: true, ReferrerPolicy: "strict-origin-when-cross-origin"},
+    ContentSecurityPolicy: {
+      Override: true,
+      ContentSecurityPolicy: "default-src '\''self'\''; script-src '\''self'\'' '\''unsafe-inline'\'' https://www.googletagmanager.com; style-src '\''self'\'' '\''unsafe-inline'\'' https://fonts.googleapis.com; font-src '\''self'\'' https://fonts.gstatic.com; img-src '\''self'\'' data:; connect-src '\''self'\'' https://www.google-analytics.com https://www.google.com; frame-ancestors '\''none'\''; base-uri '\''self'\''; form-action '\''none'\''"
+    },
+    ContentTypeOptions: {Override: true},
+    StrictTransportSecurity: {
+      Override: true,
+      IncludeSubdomains: true,
+      Preload: true,
+      AccessControlMaxAgeSec: 63072000
+    }
+  },
+  ServerTimingHeadersConfig: {Enabled: false},
+  CustomHeadersConfig: {
+    Quantity: 1,
+    Items: [{
+      Header: "Permissions-Policy",
+      Value: "camera=(), microphone=(), geolocation=(), payment=()",
+      Override: true
+    }]
+  },
+  RemoveHeadersConfig: {Quantity: 0}
+}' >"${tmp_dir}/headers-policy.json"
+
+cache_policy_id="$(ensure_cache_policy "${cache_policy_id}" "${cache_policy_name}" "${tmp_dir}/cache-policy.json")"
+search_cache_policy_id="$(ensure_cache_policy "${search_cache_policy_id}" "${search_cache_policy_name}" "${tmp_dir}/search-cache-policy.json")"
+headers_policy_id="$(ensure_headers_policy "${headers_policy_id}" "${headers_policy_name}" "${tmp_dir}/headers-policy.json")"
 
 origin_json="$(jq -cn \
   --arg domain "${origin_domain}" \
@@ -210,6 +354,8 @@ search_behaviors_json="$(jq -cn \
 if [[ "${prepare_only}" == "true" ]]; then
   printf 'CloudFront action: %s\n' "$([[ -n "${distribution_id}" ]] && printf update || printf create)"
   printf 'Domain: %s\nOrigin: %s\n' "${domain}" "${origin_domain}"
+  printf 'Cache policies: %s, %s\nHeaders policy: %s\n' \
+    "${cache_policy_id}" "${search_cache_policy_id}" "${headers_policy_id}"
   if [[ -n "${certificate_arn}" ]]; then
     printf 'Certificate status: %s\n' "$(certificate_status "${certificate_arn}")"
     [[ "${certificate_is_issued}" == "true" ]] || print_validation_record "${certificate_arn}"
