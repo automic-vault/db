@@ -13,7 +13,7 @@ import time
 import urllib.error
 import urllib.request
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, BinaryIO, Callable
 
 from .common import CACHE_DIR, CHECK_INTERVAL_SECONDS, DEFAULT_TIMEOUT, USER_AGENT, replace_if_changed, stable_hash, write_json
 
@@ -297,33 +297,7 @@ def download_db_dump(*, refresh: bool = False, url: str = CRATES_IO_DUMP_URL, ou
         Path(tmp_name).unlink(missing_ok=True)
 
 
-def extract_selected_csvs(dump_path: Path, target_dir: Path) -> dict[str, Path]:
-    found: dict[str, Path] = {}
-    with tarfile.open(dump_path, mode="r:gz") as archive:
-        for member in archive:
-            if not member.isfile():
-                continue
-            basename = Path(member.name).name
-            if basename not in SELECTED_DUMP_FILES:
-                continue
-            handle = archive.extractfile(member)
-            if handle is None:
-                continue
-            target = target_dir / basename
-            with target.open("wb") as output:
-                while True:
-                    chunk = handle.read(1024 * 1024)
-                    if not chunk:
-                        break
-                    output.write(chunk)
-            found[basename] = target
-    missing = sorted(SELECTED_DUMP_FILES - set(found))
-    if missing:
-        raise CratesIndexError(f"crates.io dump missing expected files: {', '.join(missing)}")
-    return found
-
-
-def csv_rows(path: Path):
+def csv_rows(source: Path | BinaryIO):
     limit = sys.maxsize
     while True:
         try:
@@ -331,22 +305,26 @@ def csv_rows(path: Path):
             break
         except OverflowError:
             limit //= 10
-    with path.open("r", encoding="utf-8", newline="") as handle:
+    if isinstance(source, Path):
+        handle = source.open("r", encoding="utf-8", newline="")
+    else:
+        handle = io.TextIOWrapper(source, encoding="utf-8", newline="")
+    with handle:
         yield from csv.DictReader(handle)
 
 
-def crate_downloads(path: Path) -> dict[str, int]:
+def crate_downloads(source: Path | BinaryIO) -> dict[str, int]:
     result: dict[str, int] = {}
-    for row in csv_rows(path):
+    for row in csv_rows(source):
         crate_id = str(row.get("crate_id") or "").strip()
         if crate_id:
             result[crate_id] = parse_int(row.get("downloads"))
     return result
 
 
-def default_versions(path: Path) -> dict[str, dict[str, Any]]:
+def default_versions(source: Path | BinaryIO) -> dict[str, dict[str, Any]]:
     result: dict[str, dict[str, Any]] = {}
-    for row in csv_rows(path):
+    for row in csv_rows(source):
         crate_id = str(row.get("crate_id") or "").strip()
         version_id = str(row.get("version_id") or "").strip()
         if crate_id and version_id:
@@ -357,10 +335,15 @@ def default_versions(path: Path) -> dict[str, dict[str, Any]]:
     return result
 
 
-def recent_version_downloads(path: Path, version_ids: set[str], *, window_days: int) -> dict[str, int]:
+def recent_version_downloads(
+    source: Path | BinaryIO,
+    version_ids: set[str],
+    *,
+    window_days: int,
+) -> dict[str, int]:
     cutoff = dt.date.today() - dt.timedelta(days=window_days)
     result: dict[str, int] = {}
-    for row in csv_rows(path):
+    for row in csv_rows(source):
         version_id = str(row.get("version_id") or "").strip()
         if version_id not in version_ids:
             continue
@@ -371,11 +354,12 @@ def recent_version_downloads(path: Path, version_ids: set[str], *, window_days: 
     return result
 
 
-def latest_version_rows(path: Path, version_ids: set[str]) -> dict[str, dict[str, Any]]:
+def executable_version_rows(source: Path | BinaryIO) -> dict[str, dict[str, Any]]:
     result: dict[str, dict[str, Any]] = {}
-    for row in csv_rows(path):
+    for row in csv_rows(source):
         version_id = str(row.get("id") or "").strip()
-        if version_id in version_ids:
+        executables = parse_pg_text_array(row.get("bin_names"))
+        if version_id and any(valid_executable_name(item) for item in executables):
             result[version_id] = row
     return result
 
@@ -616,26 +600,59 @@ def build_index_from_dump(
     source_inspection_cache = read_source_inspection_cache(definition_hash)
     cache_hits = 0
     cache_misses = 0
-    with tempfile.TemporaryDirectory(prefix="avdb-cratesio-") as tmp:
-        files = extract_selected_csvs(dump_path, Path(tmp))
-        crates_by_id = {
-            str(row.get("id") or "").strip(): row
-            for row in csv_rows(files["crates.csv"])
-            if str(row.get("id") or "").strip() and str(row.get("name") or "").strip()
-        }
-        downloads_by_id = crate_downloads(files["crate_downloads.csv"])
-        defaults_by_crate = default_versions(files["default_versions.csv"])
-        default_version_ids = {
-            str(item["version_id"])
-            for item in defaults_by_crate.values()
-            if item.get("version_id")
-        }
-        versions_by_id = latest_version_rows(files["versions.csv"], default_version_ids)
-        recent_by_version = recent_version_downloads(
-            files["version_downloads.csv"],
-            default_version_ids,
-            window_days=recent_window_days,
-        )
+    found: set[str] = set()
+    crates_by_id: dict[str, dict[str, Any]] = {}
+    downloads_by_id: dict[str, int] = {}
+    defaults_by_crate: dict[str, dict[str, Any]] = {}
+    candidate_versions: dict[str, dict[str, Any]] = {}
+    recent_by_version: dict[str, int] = {}
+    with tarfile.open(dump_path, mode="r:gz") as archive:
+        for member in archive:
+            basename = Path(member.name).name
+            if not member.isfile() or basename not in SELECTED_DUMP_FILES:
+                continue
+            handle = archive.extractfile(member)
+            if handle is None:
+                continue
+            found.add(basename)
+            if basename == "crates.csv":
+                crates_by_id = {
+                    str(row.get("id") or "").strip(): row
+                    for row in csv_rows(handle)
+                    if str(row.get("id") or "").strip() and str(row.get("name") or "").strip()
+                }
+            elif basename == "crate_downloads.csv":
+                downloads_by_id = crate_downloads(handle)
+            elif basename == "default_versions.csv":
+                defaults_by_crate = default_versions(handle)
+            elif basename == "versions.csv":
+                candidate_versions = executable_version_rows(handle)
+            elif basename == "version_downloads.csv":
+                if not candidate_versions:
+                    raise CratesIndexError("crates.io dump lists version_downloads.csv before versions.csv")
+                recent_by_version = recent_version_downloads(
+                    handle,
+                    set(candidate_versions),
+                    window_days=recent_window_days,
+                )
+    missing = sorted(SELECTED_DUMP_FILES - found)
+    if missing:
+        raise CratesIndexError(f"crates.io dump missing expected files: {', '.join(missing)}")
+    default_version_ids = {
+        str(item["version_id"])
+        for item in defaults_by_crate.values()
+        if item.get("version_id")
+    }
+    versions_by_id = {
+        version_id: row
+        for version_id, row in candidate_versions.items()
+        if version_id in default_version_ids
+    }
+    recent_by_version = {
+        version_id: downloads
+        for version_id, downloads in recent_by_version.items()
+        if version_id in default_version_ids
+    }
 
     candidates: list[tuple[str, int, int, dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]] = []
     excluded_internal_binary_crates: list[dict[str, Any]] = []

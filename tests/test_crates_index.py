@@ -6,6 +6,7 @@ import tarfile
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from scripts.bootstrap.lib import crates as crates_index
 from tests.test_pkg_page_rendering import pkg_pages
@@ -257,6 +258,25 @@ def write_internal_binary_fixture_dump(path: Path) -> None:
 
 
 class CratesIndexTests(unittest.TestCase):
+    def test_build_index_does_not_require_extracted_csv_tempfiles(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            dump_path = Path(tmp) / "db-dump.tar.gz"
+            write_fixture_dump(dump_path)
+
+            with mock.patch.object(
+                crates_index.tempfile,
+                "TemporaryDirectory",
+                side_effect=OSError(28, "No space left on device"),
+            ):
+                index = crates_index.build_index_from_dump(
+                    dump_path,
+                    min_recent_downloads=50,
+                    recent_window_days=90,
+                    dump_meta={"source_url": "fixture"},
+                )
+
+        self.assertEqual(list(index["crates"]), ["ripgrep"])
+
     def test_csv_rows_accepts_large_fields(self):
         with tempfile.TemporaryDirectory() as tmp:
             csv_path = Path(tmp) / "crates.csv"
