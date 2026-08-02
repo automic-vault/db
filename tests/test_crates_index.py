@@ -97,6 +97,14 @@ def write_fixture_dump(path: Path, *, irrelevant_crates: int = 0, irrelevant_ver
                 {"crate_id": "2", "version_id": "20", "num_versions": "4"},
                 {"crate_id": "3", "version_id": "30", "num_versions": "1"},
                 {"crate_id": "4", "version_id": "40", "num_versions": "1"},
+                *(
+                    {
+                        "crate_id": str(index + 100),
+                        "version_id": str(index + 100),
+                        "num_versions": "1",
+                    }
+                    for index in range(irrelevant_versions)
+                ),
             ],
         ),
         "data/versions.csv": csv_bytes(
