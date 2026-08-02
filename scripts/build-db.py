@@ -1345,14 +1345,15 @@ def _npm_metadata_from_packument(package, packument, monthly_downloads, stale_me
     return metadata
 
 
-def _fetch_npm_packument(package):
+def _fetch_npm_packument(package, use_cache=True):
     return _npm_fetch_json(
         _npm_package_url(package),
         accept="application/json",
+        use_cache=use_cache,
     )
 
 
-def _fetch_npm_packuments_for_packages(packages, progress_label=None):
+def _fetch_npm_packuments_for_packages(packages, progress_label=None, use_cache=True):
     if not packages:
         return {}
     completed = 0
@@ -1361,7 +1362,7 @@ def _fetch_npm_packuments_for_packages(packages, progress_label=None):
 
     def fetch(package):
         try:
-            return package, _fetch_npm_packument(package)
+            return package, _fetch_npm_packument(package, use_cache=use_cache)
         except NpmFetchError as err:
             print(f"Keeping stale npm metadata for {package}: {err}", file=sys.stderr)
             return package, None
@@ -1685,7 +1686,10 @@ def _run_npm_full_scan(state):
             for package in page_packages
             if (downloads.get(package) or 0) >= NPM_MIN_MONTHLY_DOWNLOADS
         ]
-        packuments = _fetch_npm_packuments_for_packages(popular_packages)
+        packuments = _fetch_npm_packuments_for_packages(
+            popular_packages,
+            use_cache=False,
+        )
         accepted_count = _refresh_npm_packuments(
             packages,
             packuments,

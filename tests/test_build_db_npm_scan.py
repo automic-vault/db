@@ -19,6 +19,22 @@ def load_build_db():
 
 
 class NpmFullScanTests(unittest.TestCase):
+    def test_packument_batch_can_skip_disk_cache(self):
+        build_db = load_build_db()
+
+        with mock.patch.object(
+            build_db,
+            "_fetch_npm_packument",
+            return_value={"name": "example"},
+        ) as fetch_packument:
+            packuments = build_db._fetch_npm_packuments_for_packages(
+                ["example"],
+                use_cache=False,
+            )
+
+        self.assertEqual(packuments, {"example": {"name": "example"}})
+        fetch_packument.assert_called_once_with("example", use_cache=False)
+
     def test_npm_fetch_retries_incomplete_response(self):
         build_db = load_build_db()
         truncated = mock.MagicMock()
