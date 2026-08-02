@@ -45,6 +45,14 @@ $ scripts/deploy-atlas.sh
 $ ssh atlas codex login --device-auth
 ```
 
+Set `PKGDB_REBUILD_SQLITE=true` when renderer, stylesheet, crawler, or source
+inputs changed. The deploy generates and validates a new artifact on Atlas and
+atomically swaps it into service:
+
+```sh
+$ PKGDB_REBUILD_SQLITE=true scripts/deploy-atlas.sh
+```
+
 `pkgdb-maintenance.timer` refreshes metadata nightly, runs bounded Codex
 enrichment, generates and validates `pkg.sqlite.next`, then atomically replaces
 the live database. `av-web` opens SQLite per request, so successful swaps need

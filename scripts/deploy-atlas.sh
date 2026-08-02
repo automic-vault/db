@@ -5,17 +5,25 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 atlas="${ATLAS_SSH_TARGET:-atlas}"
 remote_root="${PKGDB_ATLAS_ROOT:-/apps/pkgdb}"
+rebuild_sqlite="${PKGDB_REBUILD_SQLITE:-false}"
 bundle="$(mktemp -t pkgdb.XXXXXX.bundle)"
 trap 'rm -f "${bundle}"' EXIT
 
 cd "${repo_root}"
-[[ -z "$(git status --porcelain)" ]] || { echo "working tree must be clean" >&2; exit 1; }
+if [[ "${rebuild_sqlite}" != "true" && "${rebuild_sqlite}" != "false" ]]; then
+  echo "PKGDB_REBUILD_SQLITE must be true or false" >&2
+  exit 1
+fi
+if [[ -n "$(git status --porcelain)" ]]; then
+  echo "warning: deploying committed HEAD; uncommitted changes are excluded" >&2
+fi
 git bundle create "${bundle}" HEAD
 scp "${bundle}" "${atlas}:/var/tmp/pkgdb.bundle"
 
-ssh "${atlas}" bash -s -- "${remote_root}" <<'REMOTE'
+ssh "${atlas}" bash -s -- "${remote_root}" "${rebuild_sqlite}" <<'REMOTE'
 set -euo pipefail
 remote_root="$1"
+rebuild_sqlite="$2"
 
 sudo dnf install -y bubblewrap sqlite >/dev/null
 if ! command -v uv >/dev/null; then
@@ -61,6 +69,17 @@ sudo systemctl enable automic-vault-web.service pkgdb-maintenance.timer >/dev/nu
 sudo systemctl restart automic-vault-web.service
 sudo systemctl start pkgdb-maintenance.timer
 curl -fsS http://127.0.0.1:3004/healthz >/dev/null
+
+if [[ "${rebuild_sqlite}" == "true" ]]; then
+  sqlite_tmp="/var/tmp/pkg.sqlite.$$.next"
+  "${remote_root}/scripts/generate-pkg-sqlite.py" --output "${sqlite_tmp}"
+  "${remote_root}/scripts/generate-pkg-sqlite.py" --check --output "${sqlite_tmp}"
+  [[ "$(sqlite3 "${sqlite_tmp}" 'PRAGMA integrity_check;')" == "ok" ]]
+  sudo install -o automic-vault-web -g automic-vault-web -m 0640 \
+    "${sqlite_tmp}" /var/lib/automic-vault-web/pkg.sqlite.next
+  sudo mv -f /var/lib/automic-vault-web/pkg.sqlite.next /var/lib/automic-vault-web/pkg.sqlite
+  curl -fsS http://127.0.0.1:3004/healthz >/dev/null
+fi
 REMOTE
 
 echo "Atlas package origin deployed. Run 'ssh ${atlas} codex login --device-auth' before the first maintenance job."
