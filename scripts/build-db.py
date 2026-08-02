@@ -3,6 +3,7 @@ import base64
 import datetime
 import email.utils
 import hashlib
+import http.client
 import json
 import os
 import random
@@ -453,7 +454,7 @@ def _npm_fetch_json(url, accept="application/json", use_cache=True):
             _NPM_STATS["retries"] += 1
             time.sleep(delay)
             continue
-        except (urllib.error.URLError, TimeoutError, socket.timeout) as err:
+        except (urllib.error.URLError, http.client.IncompleteRead, TimeoutError, socket.timeout) as err:
             last_error = err
             delay = _npm_backoff_seconds(attempt, err)
             if (

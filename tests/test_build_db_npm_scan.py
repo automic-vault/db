@@ -1,7 +1,9 @@
 import importlib.util
+import http.client
 import sys
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 def load_build_db():
@@ -17,6 +19,28 @@ def load_build_db():
 
 
 class NpmFullScanTests(unittest.TestCase):
+    def test_npm_fetch_retries_incomplete_response(self):
+        build_db = load_build_db()
+        truncated = mock.MagicMock()
+        truncated.__enter__.return_value.read.side_effect = http.client.IncompleteRead(
+            b'{"partial"',
+            10,
+        )
+        complete = mock.MagicMock()
+        complete.__enter__.return_value.read.return_value = b'{"ok": true}'
+        complete.__enter__.return_value.headers = {}
+
+        with (
+            mock.patch.object(build_db.urllib.request, "urlopen", side_effect=[truncated, complete]) as urlopen,
+            mock.patch.object(build_db, "_npm_bucket_for_host") as bucket_for_host,
+            mock.patch.object(build_db.time, "sleep"),
+        ):
+            payload = build_db._npm_fetch_json("https://registry.npmjs.org/example", use_cache=False)
+
+        self.assertEqual(payload, {"ok": True})
+        self.assertEqual(urlopen.call_count, 2)
+        self.assertEqual(bucket_for_host.return_value.wait.call_count, 2)
+
     def test_seven_parts_caps_current_registry_at_120_pages(self):
         build_db = load_build_db()
         build_db.NPM_FULL_SCAN_PARTS = 7
