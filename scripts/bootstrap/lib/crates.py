@@ -354,12 +354,12 @@ def recent_version_downloads(
     return result
 
 
-def executable_version_rows(source: Path | BinaryIO) -> dict[str, dict[str, Any]]:
+def executable_version_rows(source: Path | BinaryIO, version_ids: set[str]) -> dict[str, dict[str, Any]]:
     result: dict[str, dict[str, Any]] = {}
     for row in csv_rows(source):
         version_id = str(row.get("id") or "").strip()
         executables = parse_pg_text_array(row.get("bin_names"))
-        if version_id and any(valid_executable_name(item) for item in executables):
+        if version_id in version_ids and any(valid_executable_name(item) for item in executables):
             result[version_id] = row
     return result
 
@@ -602,30 +602,32 @@ def build_index_from_dump(
     cache_misses = 0
     found: set[str] = set()
     defaults_by_crate: dict[str, dict[str, Any]] = {}
-    candidate_versions: dict[str, dict[str, Any]] = {}
     with tarfile.open(dump_path, mode="r:gz") as archive:
         for member in archive:
             basename = Path(member.name).name
-            if not member.isfile() or basename not in {"default_versions.csv", "versions.csv"}:
+            if not member.isfile() or basename != "default_versions.csv":
                 continue
             handle = archive.extractfile(member)
             if handle is None:
                 continue
             found.add(basename)
-            if basename == "default_versions.csv":
-                defaults_by_crate = default_versions(handle)
-            else:
-                candidate_versions = executable_version_rows(handle)
+            defaults_by_crate = default_versions(handle)
     default_version_ids = {
         str(item["version_id"])
         for item in defaults_by_crate.values()
         if item.get("version_id")
     }
-    versions_by_id = {
-        version_id: row
-        for version_id, row in candidate_versions.items()
-        if version_id in default_version_ids
-    }
+    versions_by_id: dict[str, dict[str, Any]] = {}
+    with tarfile.open(dump_path, mode="r:gz") as archive:
+        for member in archive:
+            basename = Path(member.name).name
+            if not member.isfile() or basename != "versions.csv":
+                continue
+            handle = archive.extractfile(member)
+            if handle is None:
+                continue
+            found.add(basename)
+            versions_by_id = executable_version_rows(handle, default_version_ids)
     candidate_crate_ids = {
         crate_id
         for crate_id, default in defaults_by_crate.items()

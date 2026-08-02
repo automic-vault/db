@@ -38,7 +38,7 @@ def crate_archive_bytes(files):
     return handle.getvalue()
 
 
-def write_fixture_dump(path: Path, *, irrelevant_crates: int = 0) -> None:
+def write_fixture_dump(path: Path, *, irrelevant_crates: int = 0, irrelevant_versions: int = 0) -> None:
     today = dt.date.today().isoformat()
     old_day = (dt.date.today() - dt.timedelta(days=120)).isoformat()
     files = {
@@ -142,6 +142,17 @@ def write_fixture_dump(path: Path, *, irrelevant_crates: int = 0) -> None:
                 {"id": "20", "crate_id": "2", "num": "1.0.0", "yanked": "f", "bin_names": "{}"},
                 {"id": "30", "crate_id": "3", "num": "1.0.0", "yanked": "f", "bin_names": "{oldcli}"},
                 {"id": "40", "crate_id": "4", "num": "1.0.0", "yanked": "t", "bin_names": "{yankedcli}"},
+                *(
+                    {
+                        "id": str(index + 100),
+                        "crate_id": str(index + 100),
+                        "num": "1.0.0",
+                        "yanked": "f",
+                        "bin_names": f"{{irrelevant-{index}}}",
+                        "description": "x" * 500,
+                    }
+                    for index in range(irrelevant_versions)
+                ),
             ],
         ),
         "data/version_downloads.csv": csv_bytes(
@@ -270,7 +281,7 @@ class CratesIndexTests(unittest.TestCase):
     def test_build_index_memory_does_not_scale_with_irrelevant_crates(self):
         with tempfile.TemporaryDirectory() as tmp:
             dump_path = Path(tmp) / "db-dump.tar.gz"
-            write_fixture_dump(dump_path, irrelevant_crates=30_000)
+            write_fixture_dump(dump_path, irrelevant_crates=30_000, irrelevant_versions=30_000)
 
             tracemalloc.start()
             try:
