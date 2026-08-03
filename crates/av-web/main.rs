@@ -1199,9 +1199,9 @@ fn render_index_page(connection: &Connection, locale: &Locale) -> Result<String,
     body.push_str("<main>");
     body.push_str(&format!(
         r#"<section class="pkg-hero pkg-hero-index" aria-labelledby="pkg-title"><div class="hero-copy"><p class="eyebrow">{}</p><h1 id="pkg-title">{}</h1><p class="lede">{}</p></div><aside class="hero-panel" aria-label="{}">{}{}{}</aside></section>"#,
-        html_escape(&tx(locale, "catalogEyebrow", "Nucleus package intelligence")),
+        html_escape(&tx(locale, "catalogEyebrow", "pkg.so package intelligence")),
         html_escape(&catalog_title),
-        html_escape(&tx(locale, "catalogPagesCopy", "Generated pages for executable packages Nucleus knows about, with install routes, popularity, executable aliases, and upstream package facts.")),
+        html_escape(&tx(locale, "catalogPagesCopy", "Generated pages for executable packages in the pkg.so catalog, with install routes, popularity, executable aliases, and upstream package facts.")),
         html_escape(&tx(locale, "catalogCounts", "Catalog counts")),
         metric(&tx(locale, "packages", "packages"), &fmt_int(package_total)),
         metric(&tx(locale, "packageHubs", "package hubs"), &fmt_int(hub_summaries.len() as i64)),
@@ -1228,7 +1228,7 @@ fn render_index_page(connection: &Connection, locale: &Locale) -> Result<String,
         r#"<section class="pkg-section split-section"><div><p class="section-kicker">{}</p><h2>{}</h2><p>{}</p></div><div class="package-list" aria-label="{}">"#,
         html_escape(&tx(locale, "catalogPagesKicker", "crawlable catalog")),
         html_escape(&tx(locale, "catalogPagesTitle", "Package pages from local source data")),
-        html_escape(&tx(locale, "crawlableCatalog", "Nucleus package metadata, generated package inventories, executable indexes, and package-manager facts are served by the Atlas package origin so search and answer engines can find specific tools.")),
+        html_escape(&tx(locale, "crawlableCatalog", "pkg.so package metadata, generated package inventories, executable indexes, and package-manager facts are served by the Atlas package origin so search and answer engines can find specific tools.")),
         html_escape(&tx(locale, "popularPackages", "Popular packages")),
     ));
     for package in &top_packages {
@@ -1335,7 +1335,7 @@ fn render_hub_page(
         html_escape(&tx(locale, "hubSummaryTitle", "Why this package group is here")),
         html_escape(&hub_description),
         html_escape(&tx(locale, "generatedSource", "Generated source")),
-        html_escape(&tx(locale, "generatedSourceCopy", "This hub uses the same local package data as individual package pages: Nucleus package metadata, Homebrew enrichment, Geiger classifier output, secret-handling manifests, and approval-gate seeds where available.")),
+        html_escape(&tx(locale, "generatedSourceCopy", "This hub uses the same local package data as individual package pages: pkg.so package metadata, Homebrew enrichment, Geiger classifier output, secret-handling manifests, and approval-gate seeds where available.")),
         html_escape(&tx(locale, "hubReviewModel", "Review model")),
         html_escape(&tx(locale, "hubReviewCopy", "Use the hub to find command families that need tighter secret injection, approval gates, or manual review before agents run them."))
     ));
@@ -1462,7 +1462,7 @@ fn render_hub_markdown(
         tx(
             locale,
             "generatedSourceCopy",
-            "This hub uses the same local package data as individual package pages: Nucleus package metadata, Homebrew enrichment, Geiger classifier output, secret-handling manifests, and approval-gate seeds where available."
+            "This hub uses the same local package data as individual package pages: pkg.so package metadata, Homebrew enrichment, Geiger classifier output, secret-handling manifests, and approval-gate seeds where available."
         ),
         tx(locale, "hubReviewModel", "Review model"),
         tx(
@@ -4132,10 +4132,10 @@ fn hero_sentence(package: &PackageRow) -> String {
         );
     }
     if !summary.is_empty() {
-        return format!("Nucleus can resolve {}: {}", package.display_name, summary);
+        return format!("Package data for {}: {}", package.display_name, summary);
     }
     format!(
-        "Nucleus package metadata for {}, from local Automic Vault package sources.",
+        "Package metadata for {}, from local pkg.so sources.",
         package.display_name
     )
 }
@@ -4479,7 +4479,7 @@ fn security_summary(package: &PackageRow, locale: &Locale) -> String {
     txf(
         locale,
         "radioisotopeMissingSummary",
-        "No matching local secret-handling manifest was found for {name}. Nucleus package metadata is still published here so future coverage has a stable package URL.",
+        "No matching local secret-handling manifest was found for {name}. Package metadata is still published here so future coverage has a stable package URL.",
         &[("name", package.display_name.clone())],
     )
 }
@@ -7397,7 +7397,7 @@ mod tests {
         bare.version.clear();
         bare.last_updated_at.clear();
         bare.data.full = serde_json::json!({});
-        assert!(hero_sentence(&bare).contains("local Automic Vault package sources"));
+        assert!(hero_sentence(&bare).contains("local pkg.so sources"));
         assert!(render_executables(&bare, &LOCALES[0]).contains("No executable data"));
         assert!(render_agent_safety_answer(&bare, &LOCALES[0]).is_empty());
         assert!(render_registry_insights(&bare, &LOCALES[0]).is_empty());
@@ -7407,7 +7407,7 @@ mod tests {
 
         let mut summary_only = bare.clone();
         summary_only.summary = "Sparse summary without an install command".to_string();
-        assert!(hero_sentence(&summary_only).contains("Nucleus can resolve"));
+        assert!(hero_sentence(&summary_only).contains("Package data for"));
 
         let mut version_mismatch = sparse.clone();
         version_mismatch.summary = "Sparse summary for version reconciliation.".to_string();

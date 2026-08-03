@@ -32,7 +32,7 @@ META_KEY = "__pkgdb_meta__"
 PAYLOAD_KEY = "__pkgdb_payload__"
 CHECK_INTERVAL_SECONDS = 24 * 60 * 60
 DEFAULT_TIMEOUT = 60
-USER_AGENT = "nucleus/0.1"
+USER_AGENT = "pkgdb/0.1"
 FETCH_ATTEMPTS = 3
 OUTPUT_PATH = GENERATED_DATA_DIR / "pkg-page-enrichment.json"
 

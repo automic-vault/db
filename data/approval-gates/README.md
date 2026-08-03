@@ -1,7 +1,7 @@
 # Approval Gates Metadata
 
 This is a metadata-only seed for package approval gates. It is not integrated
-into Automic Vault or Nucleus yet.
+into Automic Vault or pkg.so yet.
 
 The shape follows `docs/package-approval-metadata.md` in the parent repo:
 

@@ -27,7 +27,7 @@ META_KEY = "__pkgdb_meta__"
 PAYLOAD_KEY = "__pkgdb_payload__"
 CHECK_INTERVAL_SECONDS = 7 * 24 * 60 * 60
 DEFAULT_TIMEOUT = 30
-USER_AGENT = "nucleus/0.1"
+USER_AGENT = "pkgdb/0.1"
 
 
 class Terminal:

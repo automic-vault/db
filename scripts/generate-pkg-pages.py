@@ -816,7 +816,7 @@ def package_pages_from_sources(sources: dict[str, Any]) -> dict[str, PackagePage
                 if rank is not None:
                     popularity["rank"] = rank
             page.popularity = popularity
-            page.source_notes.append("Nucleus package database")
+            page.source_notes.append("pkg.so package database")
 
     for name, info in (sources.get("npm") or {}).items():
         if isinstance(info, dict):
@@ -2154,9 +2154,9 @@ def render_index(
 <main>
   <section class="pkg-hero pkg-hero-index" aria-labelledby="pkg-title">
     <div class="hero-copy">
-      <p class="eyebrow">{html_escape(tx(locale, 'catalogEyebrow', 'Nucleus package intelligence'))}</p>
+      <p class="eyebrow">{html_escape(tx(locale, 'catalogEyebrow', 'pkg.so package intelligence'))}</p>
       <h1 id="pkg-title">{html_escape(tx(locale, "packageCatalogTitle", "Package catalog"))}</h1>
-      <p class="lede">{html_escape(tx(locale, 'catalogPagesCopy', 'Generated pages for executable packages Nucleus knows about, with install routes, popularity, executable aliases, and upstream package facts.'))}</p>
+      <p class="lede">{html_escape(tx(locale, 'catalogPagesCopy', 'Generated pages for executable packages in the pkg.so catalog, with install routes, popularity, executable aliases, and upstream package facts.'))}</p>
     </div>
     <aside class="hero-panel" aria-label="{attr(tx(locale, 'catalogCounts', 'Catalog counts'))}">
       {metric(tx(locale, 'packages', 'packages'), fmt_int(len(pages)))}
@@ -2184,7 +2184,7 @@ def render_index(
     <div>
       <p class="section-kicker">{html_escape(tx(locale, 'catalogPagesKicker', 'crawlable catalog'))}</p>
       <h2>{html_escape(tx(locale, 'catalogPagesTitle', 'Package pages from local source data'))}</h2>
-      <p>{html_escape(tx(locale, 'crawlableCatalog', 'Nucleus package metadata, generated package inventories, executable indexes, and package-manager facts are served by the Atlas package origin so search and answer engines can find specific tools.'))}</p>
+      <p>{html_escape(tx(locale, 'crawlableCatalog', 'pkg.so package metadata, generated package inventories, executable indexes, and package-manager facts are served by the Atlas package origin so search and answer engines can find specific tools.'))}</p>
     </div>
     <div class="package-list" aria-label="{attr(tx(locale, 'popularPackages', 'Popular packages'))}">
       {package_links}
@@ -2302,7 +2302,7 @@ def render_hub_page(
     <div class="detail-stack">
       <article>
         <h3>{html_escape(tx(locale, 'generatedSource', 'Generated source'))}</h3>
-        <p>{html_escape(tx(locale, 'generatedSourceCopy', 'This hub uses the same local package data as individual package pages: Nucleus package metadata, Homebrew enrichment, Geiger classifier output, secret-handling manifests, and approval-gate seeds where available.'))}</p>
+        <p>{html_escape(tx(locale, 'generatedSourceCopy', 'This hub uses the same local package data as individual package pages: pkg.so package metadata, Homebrew enrichment, Geiger classifier output, secret-handling manifests, and approval-gate seeds where available.'))}</p>
       </article>
       <article>
         <h3>{html_escape(tx(locale, 'hubReviewModel', 'Review model'))}</h3>
@@ -2358,7 +2358,7 @@ def render_hub_markdown(
         "",
         f"## {md_text(tx(locale, 'generatedSource', 'Generated source'))}",
         "",
-        md_text(tx(locale, 'generatedSourceCopy', 'This hub uses the same local package data as individual package pages: Nucleus package metadata, Homebrew enrichment, Geiger classifier output, secret-handling manifests, and approval-gate seeds where available.')),
+        md_text(tx(locale, 'generatedSourceCopy', 'This hub uses the same local package data as individual package pages: pkg.so package metadata, Homebrew enrichment, Geiger classifier output, secret-handling manifests, and approval-gate seeds where available.')),
         "",
         f"## {md_text(tx(locale, 'hubReviewModel', 'Review model'))}",
         "",
@@ -3198,8 +3198,8 @@ def hero_sentence(page: PackagePage) -> str:
     if page.approval_gate:
         return f"Automic Vault has approval-gate metadata for {page.display_name}, including high-risk commands and recommended human review points."
     if summary:
-        return f"Nucleus can resolve {page.display_name}: {summary}"
-    return f"Nucleus package metadata for {page.display_name}, from local Automic Vault package sources."
+        return f"Package data for {page.display_name}: {summary}"
+    return f"Package metadata for {page.display_name}, from local pkg.so sources."
 
 
 def localized_hero_sentence(page: PackagePage, locale: dict[str, Any] | None = None) -> str:
@@ -3888,7 +3888,7 @@ def security_summary(page: PackagePage, locale: dict[str, Any] | None = None) ->
     return tx(
         locale,
         "radioisotopeMissingSummary",
-        "No matching local secret-handling manifest was found for {name}. Nucleus package metadata is still published here so future coverage has a stable package URL.",
+        "No matching local secret-handling manifest was found for {name}. Package metadata is still published here so future coverage has a stable package URL.",
         name=page.display_name,
     )
 
