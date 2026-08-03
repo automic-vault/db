@@ -54,13 +54,13 @@ COMBINED_YAML_GITHUB_BASE = "https://github.com/automic-vault/db/blob/main"
 INDEXABLE_MIN_SIGNAL_COUNT = 2
 PACKAGE_PROVIDERS = ("brew", "cask", "npm", "pip", "cargo")
 GOOGLE_TAG = """  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y78QKG1T9Y"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMPY7XG4QH"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
-    gtag('config', 'G-Y78QKG1T9Y');
+    gtag('config', 'G-CMPY7XG4QH');
   </script>"""
 
 PUBLIC_COPY_REPLACEMENTS = (

@@ -1644,12 +1644,12 @@ fn html_doc(
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{stylesheet}">
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y78QKG1T9Y"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CMPY7XG4QH"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){{dataLayer.push(arguments);}}
     gtag('js', new Date());
-    gtag('config', 'G-Y78QKG1T9Y');
+    gtag('config', 'G-CMPY7XG4QH');
   </script>
 {extra_head}
   <script type="application/ld+json">
@@ -6850,8 +6850,8 @@ mod tests {
         assert!(package_html.contains("Debian apt"));
         assert!(package_html.contains("Amazon.AWSCLI"));
         assert!(package_html.contains("123,456,789"));
-        assert!(package_html.contains("https://www.googletagmanager.com/gtag/js?id=G-Y78QKG1T9Y"));
-        assert!(package_html.contains("gtag('config', 'G-Y78QKG1T9Y')"));
+        assert!(package_html.contains("https://www.googletagmanager.com/gtag/js?id=G-CMPY7XG4QH"));
+        assert!(package_html.contains("gtag('config', 'G-CMPY7XG4QH')"));
 
         let cargo_package_html = String::from_utf8(cargo_package.body).expect("cargo package html");
         assert!(cargo_package_html.contains("Line-oriented search tool."));
@@ -6887,9 +6887,9 @@ mod tests {
         assert!(!localized_package_html.contains("Install behavior"));
         assert!(
             localized_package_html
-                .contains("https://www.googletagmanager.com/gtag/js?id=G-Y78QKG1T9Y")
+                .contains("https://www.googletagmanager.com/gtag/js?id=G-CMPY7XG4QH")
         );
-        assert!(localized_package_html.contains("gtag('config', 'G-Y78QKG1T9Y')"));
+        assert!(localized_package_html.contains("gtag('config', 'G-CMPY7XG4QH')"));
 
         let hub_html = String::from_utf8(hub.body).expect("hub html");
         assert!(hub_html.contains("Cloud CLI"));
