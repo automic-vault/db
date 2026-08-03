@@ -69,6 +69,14 @@
       window.clearTimeout(input._avSearchTimer);
       input._avSearchTimer = window.setTimeout(search, 160);
     });
+
+    function focusFromHash() {
+      if (window.location.hash === "#pkg-search") {
+        window.requestAnimationFrame(() => input.focus());
+      }
+    }
+    window.addEventListener("hashchange", focusFromHash);
+    focusFromHash();
   }
 
   window.addEventListener("DOMContentLoaded", () => {

@@ -50,7 +50,7 @@ PKG_AGENT_SAFETY_ANSWERS_PATH = Path("data/pkg-agent-safety-answers.json")
 I18N_LOCALES_PATH = Path("data/pkg-i18n/locales.json")
 I18N_PKG_TEMPLATES_PATH = Path("data/pkg-i18n/templates.json")
 COMBINED_YAML_DIR = Path("combined")
-COMBINED_YAML_GITHUB_BASE = "https://github.com/automic-vault/db/blob/main"
+COMBINED_YAML_GITHUB_BASE = "https://github.com/mxcl/pkgdb/blob/main"
 INDEXABLE_MIN_SIGNAL_COUNT = 2
 PACKAGE_PROVIDERS = ("brew", "cask", "npm", "pip", "cargo")
 GOOGLE_TAG = """  <!-- Google tag (gtag.js) -->
@@ -4828,9 +4828,9 @@ def nav(root: str, locale: dict[str, Any] | None = None) -> str:
   </a>
   <nav class="nav" aria-label="Main navigation">
     <a class="nav-primary" href="{root}">{html_escape(tx(locale, 'packages', 'Explore packages'))}</a>
-    <a href="{root}sitemap.xml">Index</a>
-    <a href="{root}pkg/new.json">Data feed</a>
-    <a href="https://github.com/automic-vault/db">GitHub <span aria-hidden="true">↗</span></a>
+    <a href="{root}#pkg-search">Search</a>
+    <a href="{root}pkg/data/">Data feed</a>
+    <a href="https://github.com/mxcl/pkgdb">GitHub <span aria-hidden="true">↗</span></a>
   </nav>
 </header>
 """
@@ -4843,7 +4843,7 @@ def footer(root: str, locale: dict[str, Any] | None = None) -> str:
   <div class="footer-links">
     <a href="{root}sitemap.xml">Sitemap</a>
     <a href="{root}robots.txt">Robots</a>
-    <a href="https://github.com/automic-vault/db">Source</a>
+    <a href="https://github.com/mxcl/pkgdb">Source</a>
   </div>
 </footer>
 """

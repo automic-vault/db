@@ -617,6 +617,8 @@ fn dynamic_response_for_path(db_path: &Path, path: &str) -> Result<Option<Stored
             render_new_packages_json(&connection)?,
             "application/json; charset=utf-8",
         ))
+    } else if canonical_path == "/pkg/data/index.html" {
+        Some((render_data_page(locale), "text/html; charset=utf-8"))
     } else if let Some((provider, slug)) = package_json_route(&canonical_path) {
         let Some(package) = package_by_provider_slug(&connection, provider, slug)? else {
             return Ok(None);
@@ -1017,7 +1019,7 @@ fn hub_summaries(connection: &Connection) -> Result<Vec<HubSummary>, String> {
              FROM hubs h
              LEFT JOIN hub_packages hp ON hp.hub_slug = h.slug
              GROUP BY h.path, h.slug, h.title, h.description, h.group_name
-             ORDER BY h.group_name, h.title",
+             ORDER BY h.group_name, COUNT(hp.package_key) DESC, h.title",
         )
         .map_err(|err| format!("failed to prepare hub summaries query: {err}"))?;
     let rows = statement
@@ -1105,6 +1107,73 @@ fn render_new_packages_json(connection: &Connection) -> Result<String, String> {
     let values = packages.iter().map(package_json_value).collect::<Vec<_>>();
     serde_json::to_string(&values)
         .map_err(|err| format!("failed to encode new packages json: {err}"))
+}
+
+fn render_data_page(locale: &Locale) -> String {
+    let title = tx(locale, "dataFeedTitle", "Package data and JSON feeds");
+    let new_feed = locale_path("/pkg/new.json", locale);
+    let manifest = locale_path("/pkg/.manifest.json", locale);
+    let search = format!("{}?q=awscli", locale_path("/pkg/search.json", locale));
+    let package_example = locale_path("/pkg/brew/awscli.json", locale);
+    let mut body = String::new();
+    body.push_str(&site_nav(locale));
+    body.push_str("<main>");
+    body.push_str(&format!(
+        r#"<section class="pkg-hero pkg-hero-index" aria-labelledby="data-title"><div class="hero-copy"><p class="eyebrow">{}</p><h1 id="data-title">{}</h1><p class="lede">{}</p></div></section>"#,
+        html_escape(&tx(locale, "dataFeedKicker", "machine-readable catalog")),
+        html_escape(&title),
+        html_escape(&tx(locale, "dataFeedCopy", "Use the catalog feeds for discovery, or add .json to an individual package URL to retrieve its complete package record.")),
+    ));
+    body.push_str(&format!(
+        r#"<section class="pkg-section split-section"><div><p class="section-kicker">{}</p><h2>{}</h2><p>{}</p></div><div class="detail-stack"><article><h3><a href="{}">{}</a></h3><p>{}</p><code>{}</code></article><article><h3><a href="{}">{}</a></h3><p>{}</p><code>{}</code></article><article><h3><a href="{}">{}</a></h3><p>{}</p><code>{}</code></article></div></section>"#,
+        html_escape(&tx(locale, "jsonEndpointsKicker", "JSON endpoints")),
+        html_escape(&tx(locale, "catalogFeedsTitle", "Catalog-level feeds")),
+        html_escape(&tx(locale, "catalogFeedsCopy", "These endpoints expose recent additions, build metadata, and searchable package records.")),
+        html_escape(&new_feed), html_escape(&tx(locale, "newPackagesFeed", "New packages")),
+        html_escape(&tx(locale, "newPackagesFeedCopy", "Packages added or updated during the latest seven-day window.")), html_escape(&new_feed),
+        html_escape(&manifest), html_escape(&tx(locale, "manifestFeed", "Build manifest")),
+        html_escape(&tx(locale, "manifestFeedCopy", "Catalog counts, generation timestamps, source hashes, and sitemap totals.")), html_escape(&manifest),
+        html_escape(&search), html_escape(&tx(locale, "searchFeed", "Search API")),
+        html_escape(&tx(locale, "searchFeedCopy", "Search package titles, keys, summaries, and indexed metadata. Use q, limit, and offset query parameters.")), html_escape(&search),
+    ));
+    body.push_str(&format!(
+        r#"<section class="pkg-section split-section"><div><p class="section-kicker">{}</p><h2>{}</h2><p>{}</p></div><div class="detail-stack"><article><h3>{}</h3><p>{}</p><code>{}</code><p><a href="{}">{}</a></p></article><article><h3>{}</h3><p>{}</p><code>application/json</code></article></div></section></main>"#,
+        html_escape(&tx(locale, "packageJsonKicker", "per-package JSON")),
+        html_escape(&tx(locale, "packageJsonTitle", "Add .json to a package URL")),
+        html_escape(&tx(locale, "packageJsonCopy", "Every package page has a JSON representation containing its normalized fields and full source-backed data object.")),
+        html_escape(&tx(locale, "packageJsonExampleTitle", "Example")),
+        html_escape(&tx(locale, "packageJsonExampleCopy", "Replace the trailing slash with .json.")),
+        html_escape(&package_example), html_escape(&package_example),
+        html_escape(&tx(locale, "openExampleJson", "Open example JSON")),
+        html_escape(&tx(locale, "contentType", "Content type")),
+        html_escape(&tx(locale, "packageJsonContentTypeCopy", "JSON endpoints return UTF-8 JSON and use the same cache validators as the corresponding catalog data.")),
+    ));
+    body.push_str(&site_footer(locale));
+    let schema = json!({
+        "@context": "https://schema.org", "@type": "TechArticle", "name": title,
+        "url": locale_url("/pkg/data/", locale), "inLanguage": locale.hreflang,
+        "isPartOf": {"@type": "WebSite", "name": SITE_NAME, "url": format!("{SITE_ORIGIN}/")}
+    });
+    let schema_json = serde_json::to_string_pretty(&schema).unwrap_or_else(|_| "{}".to_string());
+    html_doc(
+        locale,
+        &format!(
+            "{} | {}",
+            tx(locale, "dataFeedTitle", "Package data and JSON feeds"),
+            SITE_NAME
+        ),
+        &tx(
+            locale,
+            "dataFeedDescription",
+            "JSON feeds and per-package JSON records for the pkg.so package catalog.",
+        ),
+        &locale_url("/pkg/data/", locale),
+        "index,follow",
+        "",
+        &schema_json,
+        &body,
+        "",
+    )
 }
 
 fn render_index_page(connection: &Connection, locale: &Locale) -> Result<String, String> {
@@ -1685,19 +1754,21 @@ fn html_doc(
 
 fn site_nav(locale: &Locale) -> String {
     format!(
-        r#"<header class="masthead"><a class="brand" href="{}" aria-label="{}"><span class="brand-mark" aria-hidden="true">pkg</span><span class="brand-lockup"><span class="brand-type">pkg.so</span><span class="brand-tagline">open package index</span></span></a><nav class="nav" aria-label="{}"><a class="nav-primary" href="{}">{}</a><a href="/sitemap.xml">Index</a><a href="{}">Data feed</a><a href="https://github.com/automic-vault/db">GitHub <span aria-hidden="true">↗</span></a></nav></header>"#,
+        r#"<header class="masthead"><a class="brand" href="{}" aria-label="{}"><span class="brand-mark" aria-hidden="true">pkg</span><span class="brand-lockup"><span class="brand-type">pkg.so</span><span class="brand-tagline">open package index</span></span></a><nav class="nav" aria-label="{}"><a class="nav-primary" href="{}">{}</a><a href="{}">{}</a><a href="{}">Data feed</a><a href="https://github.com/mxcl/pkgdb">GitHub <span aria-hidden="true">↗</span></a></nav></header>"#,
         html_escape(&locale_path("/", locale)),
         html_escape(&tx(locale, "brandHomeAria", "pkg.so package catalog")),
         html_escape(&tx(locale, "mainNavigation", "Main navigation")),
         html_escape(&locale_path("/", locale)),
         html_escape(&tx(locale, "packages", "Explore packages")),
-        html_escape(&locale_path("/pkg/new.json", locale)),
+        html_escape(&format!("{}#pkg-search", locale_path("/", locale))),
+        html_escape(&tx(locale, "search", "Search")),
+        html_escape(&locale_path("/pkg/data/", locale)),
     )
 }
 
 fn site_footer(locale: &Locale) -> String {
     format!(
-        r#"<footer class="site-footer"><p>{}</p><div class="footer-links"><a href="/sitemap.xml">Sitemap</a><a href="/robots.txt">Robots</a><a href="https://github.com/automic-vault/db">Source</a></div></footer>"#,
+        r#"<footer class="site-footer"><p>{}</p><div class="footer-links"><a href="/sitemap.xml">Sitemap</a><a href="/robots.txt">Robots</a><a href="https://github.com/mxcl/pkgdb">Source</a></div></footer>"#,
         html_escape(&tx(
             locale,
             "footer",
@@ -3459,9 +3530,18 @@ fn hub_group_sections(hubs: &[HubSummary], locale: &Locale) -> String {
             tx(locale, "hubEcosystemGroupTitle", "Ecosystem hubs"),
         ),
     ] {
-        let cards = hubs
+        let mut group_hubs = hubs
             .iter()
             .filter(|summary| summary.hub.group == group)
+            .collect::<Vec<_>>();
+        group_hubs.sort_by(|left, right| {
+            right
+                .package_count
+                .cmp(&left.package_count)
+                .then_with(|| left.hub.title.cmp(&right.hub.title))
+        });
+        let cards = group_hubs
+            .into_iter()
             .map(|summary| {
                 format!(
                     r#"<a class="hub-card" href="{}"><span>{}</span><strong>{}</strong><small>{}</small></a>"#,
@@ -5601,7 +5681,10 @@ fn render_sitemap_index(connection: &Connection) -> Result<String, String> {
 
 fn render_hub_sitemap(connection: &Connection) -> Result<String, String> {
     let lastmod = sitemap_lastmod(connection)?;
-    let mut urls = vec![sitemap_url("/", &lastmod)];
+    let mut urls = vec![
+        sitemap_url("/", &lastmod),
+        sitemap_url("/pkg/data/", &lastmod),
+    ];
     for hub in hubs(connection)? {
         urls.push(sitemap_url(&hub.path, &lastmod));
     }
@@ -6767,6 +6850,9 @@ mod tests {
         let new_json = dynamic_response_for_path(db.path(), "/pkg/new.json")
             .expect("query")
             .expect("new json response");
+        let data_page = dynamic_response_for_path(db.path(), "/pkg/data/")
+            .expect("query")
+            .expect("data page response");
         let manifest = dynamic_response_for_path(db.path(), "/pkg/.manifest.json")
             .expect("query")
             .expect("manifest response");
@@ -6777,6 +6863,10 @@ mod tests {
         assert!(root_html.contains("<title>Package catalog | pkg.so</title>"));
         assert!(root_html.contains(r#"<link rel="canonical" href="https://pkg.so/">"#));
         assert!(root_html.contains(r#"<a class="brand" href="/""#));
+        assert!(root_html.contains(r#"href="/#pkg-search">Search</a>"#));
+        assert!(!root_html.contains(r#">Index</a>"#));
+        assert!(root_html.contains(r#"href="/pkg/data/">Data feed</a>"#));
+        assert!(root_html.contains("https://github.com/mxcl/pkgdb"));
         assert!(localized_root_html.contains("<html lang=\"de\">"));
         assert!(
             localized_root_html.contains(r#"<link rel="canonical" href="https://pkg.so/de/">"#)
@@ -6933,6 +7023,7 @@ mod tests {
         assert!(sitemap_index_xml.contains("/pkg/sitemap-cargo.xml"));
         let hub_sitemap_xml = String::from_utf8(hub_sitemap.body).expect("hub sitemap xml");
         assert!(hub_sitemap_xml.contains("<loc>https://pkg.so/</loc>"));
+        assert!(hub_sitemap_xml.contains("<loc>https://pkg.so/pkg/data/</loc>"));
         assert!(hub_sitemap_xml.contains("/pkg/risky-tools/"));
         assert!(hub_sitemap_xml.contains("/pkg/crates-cli-packages/"));
         assert!(
@@ -6958,6 +7049,43 @@ mod tests {
         assert_eq!(new_packages.len(), 2);
         assert_eq!(new_packages[0]["packageKey"], "brew:awscli");
         assert_eq!(new_packages[1]["data"]["aliases"][0], "rg");
+
+        assert_eq!(data_page.content_type, "text/html; charset=utf-8");
+        let data_html = String::from_utf8(data_page.body).expect("data page html");
+        assert!(data_html.contains("Package data and JSON feeds"));
+        assert!(data_html.contains("/pkg/new.json"));
+        assert!(data_html.contains("/pkg/.manifest.json"));
+        assert!(data_html.contains("/pkg/search.json?q=awscli"));
+        assert!(data_html.contains("/pkg/brew/awscli.json"));
+        assert!(data_html.contains("Add .json to a package URL"));
+    }
+
+    #[test]
+    fn landing_hubs_are_sorted_by_package_count_within_each_group() {
+        let hubs = vec![
+            HubSummary {
+                hub: HubRow {
+                    path: "/pkg/small/".into(),
+                    slug: "small".into(),
+                    title: "Small".into(),
+                    description: "Small hub".into(),
+                    group: "topical".into(),
+                },
+                package_count: 2,
+            },
+            HubSummary {
+                hub: HubRow {
+                    path: "/pkg/large/".into(),
+                    slug: "large".into(),
+                    title: "Large".into(),
+                    description: "Large hub".into(),
+                    group: "topical".into(),
+                },
+                package_count: 20,
+            },
+        ];
+        let html = hub_group_sections(&hubs, &LOCALES[0]);
+        assert!(html.find(">Large</span>").unwrap() < html.find(">Small</span>").unwrap());
     }
 
     #[test]
@@ -7095,7 +7223,7 @@ mod tests {
                         {"provider": "pip", "name": "sparse", "label": "sparse-py"}
                     ],
                     "combinedYamlPath": "combined/sparse.yml",
-                    "combinedYamlUrl": "https://github.com/automic-vault/db/blob/main/combined/sparse.yml",
+                    "combinedYamlUrl": "https://github.com/mxcl/pkgdb/blob/main/combined/sparse.yml",
                     "sourceNotes": [42, true, {"label": "fixture note"}]
                 }})
                 .to_string(),
@@ -7164,7 +7292,7 @@ mod tests {
         assert!(html.contains("$XDG_CONFIG_HOME/sparse/config.yml"));
         assert!(html.contains("%AppData%\\Sparse\\config.yml"));
         assert!(html.contains("Combined YAML source"));
-        assert!(html.contains("https://github.com/automic-vault/db/blob/main/combined/sparse.yml"));
+        assert!(html.contains("https://github.com/mxcl/pkgdb/blob/main/combined/sparse.yml"));
         assert!(html.contains("12,345"));
         assert!(html.contains("Source database details"));
         assert!(html.contains("Custom Metric"));
@@ -7197,7 +7325,9 @@ mod tests {
         assert!(markdown.contains("Configuration files"));
         assert!(markdown.contains("Unix: $XDG_CONFIG_HOME/sparse/config.yml"));
         assert!(markdown.contains("Credential files"));
-        assert!(markdown.contains("[combined/sparse.yml](https://github.com/automic-vault/db/blob/main/combined/sparse.yml)"));
+        assert!(markdown.contains(
+            "[combined/sparse.yml](https://github.com/mxcl/pkgdb/blob/main/combined/sparse.yml)"
+        ));
         assert!(markdown.contains("left pad"));
         assert!(markdown.contains("fixture note"));
         assert!(markdown.contains("apk - sparse"));
