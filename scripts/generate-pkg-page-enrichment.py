@@ -1,6 +1,7 @@
 #!/usr/bin/env -S uv run --python 3.10
 import argparse
 import datetime as dt
+import gc
 import html
 import hashlib
 import http.client
@@ -1009,7 +1010,7 @@ def build_enrichment(
     return {
         "schema": SCHEMA_VERSION,
         "generated_at": utc_now(),
-        "packages": dict(sorted(packages.items())),
+        "packages": packages,
     }
 
 
@@ -1035,52 +1036,62 @@ def expected_enrichment(
     db = read_json(PACKAGE_INDEX_PATH)
     if not isinstance(db, dict):
         raise ValueError(f"{PACKAGE_INDEX_PATH} must contain an object")
+    enrichment = build_enrichment(
+        formulae,
+        casks,
+        db,
+    )
+    packages = enrichment["packages"]
+
+    # Registry responses (especially npm packuments) can be several megabytes
+    # each. Transform them one at a time instead of retaining every raw payload
+    # alongside the complete output artifact.
     npms = db.get("npms") or {}
-    npm_payloads: dict[str, Any] = {}
+    del formulae, casks, db
+    gc.collect()
     if isinstance(npms, dict):
-        for name in sorted(npms):
-            if not isinstance(name, str) or not name:
+        for name, info in sorted(npms.items()):
+            if not isinstance(name, str) or not name or not isinstance(info, dict):
                 continue
-            # `--refresh` is intended to invalidate the top-level Homebrew API cache
-            # used to detect changed packages. Registry payloads stay on their own TTL.
-            npm_payloads[name] = fetch_json(
+            payload = fetch_json(
                 npm_package_url(name),
                 ecosystem="registry.npmjs.org",
                 prefer_cache=True,
                 cache_only=registry_cache_only,
             )
+            if isinstance(payload, dict):
+                enriched = npm_enrichment(name, info, payload)
+                if enriched is not None:
+                    key, entry = enriched
+                    packages[key] = entry
+            del payload
+
     pip_overlays = read_json(Path("data/pip.json"))
-    pypi_payloads: dict[str, Any] = {}
     if isinstance(pip_overlays, dict):
-        for name in sorted(pip_overlays):
-            if not isinstance(name, str) or not name:
+        for name, overlay in sorted(pip_overlays.items()):
+            if not isinstance(name, str) or not name or not isinstance(overlay, dict):
                 continue
-            pypi_payloads[name] = fetch_json(
+            payload = fetch_json(
                 pypi_package_url(name),
                 ecosystem="pypi.org",
                 prefer_cache=True,
                 cache_only=registry_cache_only,
             )
-    enrichment = build_enrichment(
-        formulae,
-        casks,
-        db,
-        npm_payloads=npm_payloads,
-        pip_overlays=pip_overlays,
-        pypi_payloads=pypi_payloads,
-    )
+            if isinstance(payload, dict):
+                enriched = pypi_enrichment(name, overlay, payload)
+                if enriched is not None:
+                    key, entry = enriched
+                    packages[key] = entry
+            del payload
+
     if registry_cache_only and previous_packages:
-        packages = enrichment.get("packages")
-        if isinstance(packages, dict):
-            merged_packages = dict(packages)
-            for key, value in previous_packages.items():
-                if (
-                    isinstance(key, str)
-                    and key not in merged_packages
-                    and key.startswith(("npm:", "pip:"))
-                ):
-                    merged_packages[key] = value
-            enrichment["packages"] = dict(sorted(merged_packages.items()))
+        for key, value in previous_packages.items():
+            if (
+                isinstance(key, str)
+                and key not in packages
+                and key.startswith(("npm:", "pip:"))
+            ):
+                packages[key] = value
     return enrichment
 
 

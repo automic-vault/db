@@ -112,6 +112,38 @@ class FetchJsonTests(unittest.TestCase):
         self.assertEqual(entry["registryInsights"]["distTags"]["latest"], "7.8.5")
         self.assertEqual(entry["registryInsights"]["latestPublishedAt"], "2026-06-19T18:32:48.972Z")
 
+    def test_expected_enrichment_processes_registry_payloads_incrementally(self):
+        events = []
+        db = {"npms": {"first": {}, "second": {}}}
+
+        def fetch_json(url, **_kwargs):
+            if url == pkg_page_enrichment.FORMULA_URL:
+                return []
+            if url == pkg_page_enrichment.CASK_URL:
+                return []
+            events.append(f"fetch:{url.rsplit('/', 1)[-1]}")
+            return {"name": url}
+
+        def read_json(path):
+            return db if path == pkg_page_enrichment.PACKAGE_INDEX_PATH else {}
+
+        def npm_enrichment(name, _info, _payload):
+            events.append(f"enrich:{name}")
+            return f"npm:{name}", {"package": {"name": name}}
+
+        with (
+            mock.patch.object(pkg_page_enrichment, "fetch_json", side_effect=fetch_json),
+            mock.patch.object(pkg_page_enrichment, "read_json", side_effect=read_json),
+            mock.patch.object(pkg_page_enrichment, "npm_enrichment", side_effect=npm_enrichment),
+        ):
+            result = pkg_page_enrichment.expected_enrichment()
+
+        self.assertEqual(
+            events,
+            ["fetch:first", "enrich:first", "fetch:second", "enrich:second"],
+        )
+        self.assertEqual(set(result["packages"]), {"npm:first", "npm:second"})
+
 
 if __name__ == "__main__":
     unittest.main()
