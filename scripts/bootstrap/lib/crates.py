@@ -6,6 +6,7 @@ import io
 import json
 import os
 import re
+import sqlite3
 import sys
 import tarfile
 import tempfile
@@ -364,6 +365,79 @@ def executable_version_rows(source: Path | BinaryIO, version_ids: set[str]) -> d
     return result
 
 
+class DefaultVersionStore:
+    """Disk-backed default-version lookup for the crates.io dump.
+
+    The production dump contains enough rows that retaining each CSV row as a
+    Python dictionary can consume gigabytes.  Keep that high-cardinality
+    relation in SQLite and expose compact ID sets/dicts only after popularity
+    and executable filters have reduced it.
+    """
+
+    def __init__(self, directory: Path):
+        directory.mkdir(parents=True, exist_ok=True)
+        handle = tempfile.NamedTemporaryFile(
+            prefix="default-versions-",
+            suffix=".sqlite",
+            dir=directory,
+            delete=False,
+        )
+        handle.close()
+        self.path = Path(handle.name)
+        self.connection = sqlite3.connect(self.path)
+        self.connection.execute("PRAGMA journal_mode=OFF")
+        self.connection.execute("PRAGMA synchronous=OFF")
+        self.connection.execute("PRAGMA temp_store=FILE")
+        self.connection.execute(
+            "CREATE TABLE defaults ("
+            "crate_id TEXT PRIMARY KEY, version_id TEXT NOT NULL, num_versions INTEGER NOT NULL"
+            ") WITHOUT ROWID"
+        )
+        self.connection.execute("CREATE INDEX defaults_version_id ON defaults(version_id)")
+
+    def close(self) -> None:
+        try:
+            self.connection.close()
+        finally:
+            self.path.unlink(missing_ok=True)
+
+    def load(self, source: Path | BinaryIO) -> None:
+        rows: list[tuple[str, str, int]] = []
+        for row in csv_rows(source):
+            crate_id = str(row.get("crate_id") or "").strip()
+            version_id = str(row.get("version_id") or "").strip()
+            if not crate_id or not version_id:
+                continue
+            rows.append((crate_id, version_id, parse_int(row.get("num_versions"))))
+            if len(rows) >= 10_000:
+                self.connection.executemany("INSERT OR REPLACE INTO defaults VALUES (?, ?, ?)", rows)
+                rows.clear()
+        if rows:
+            self.connection.executemany("INSERT OR REPLACE INTO defaults VALUES (?, ?, ?)", rows)
+        self.connection.commit()
+
+    def version_ids(self) -> set[str]:
+        return {row[0] for row in self.connection.execute("SELECT version_id FROM defaults")}
+
+    def candidates_for_versions(self, version_ids: set[str]) -> dict[str, dict[str, Any]]:
+        if not version_ids:
+            return {}
+        self.connection.execute("CREATE TEMP TABLE selected_versions (version_id TEXT PRIMARY KEY) WITHOUT ROWID")
+        self.connection.executemany(
+            "INSERT INTO selected_versions VALUES (?)",
+            ((version_id,) for version_id in version_ids),
+        )
+        result = {
+            str(crate_id): {"version_id": str(version_id), "num_versions": int(num_versions)}
+            for crate_id, version_id, num_versions in self.connection.execute(
+                "SELECT crate_id, version_id, num_versions FROM defaults "
+                "JOIN selected_versions USING (version_id)"
+            )
+        }
+        self.connection.execute("DROP TABLE selected_versions")
+        return result
+
+
 def clean_summary(value: Any) -> str:
     text = re.sub(r"\s+", " ", str(value or "")).strip()
     return text
@@ -601,57 +675,54 @@ def build_index_from_dump(
     cache_hits = 0
     cache_misses = 0
     found: set[str] = set()
-    defaults_by_crate: dict[str, dict[str, Any]] = {}
-    with tarfile.open(dump_path, mode="r:gz") as archive:
-        for member in archive:
-            basename = Path(member.name).name
-            if not member.isfile() or basename != "default_versions.csv":
-                continue
-            handle = archive.extractfile(member)
-            if handle is None:
-                continue
-            found.add(basename)
-            defaults_by_crate = default_versions(handle)
-    default_version_ids = {
-        str(item["version_id"])
-        for item in defaults_by_crate.values()
-        if item.get("version_id")
-    }
-    recent_by_version: dict[str, int] = {}
-    with tarfile.open(dump_path, mode="r:gz") as archive:
-        for member in archive:
-            basename = Path(member.name).name
-            if not member.isfile() or basename != "version_downloads.csv":
-                continue
-            handle = archive.extractfile(member)
-            if handle is None:
-                continue
-            found.add(basename)
-            recent_by_version = {
-                version_id: downloads
-                for version_id, downloads in recent_version_downloads(
-                    handle,
-                    default_version_ids,
-                    window_days=recent_window_days,
-                ).items()
-                if downloads >= min_recent_downloads
-            }
-    versions_by_id: dict[str, dict[str, Any]] = {}
-    with tarfile.open(dump_path, mode="r:gz") as archive:
-        for member in archive:
-            basename = Path(member.name).name
-            if not member.isfile() or basename != "versions.csv":
-                continue
-            handle = archive.extractfile(member)
-            if handle is None:
-                continue
-            found.add(basename)
-            versions_by_id = executable_version_rows(handle, set(recent_by_version))
-    candidate_crate_ids = {
-        crate_id
-        for crate_id, default in defaults_by_crate.items()
-        if str(default["version_id"]) in versions_by_id
-    }
+    default_store = DefaultVersionStore(dump_path.parent)
+    try:
+        with tarfile.open(dump_path, mode="r:gz") as archive:
+            for member in archive:
+                basename = Path(member.name).name
+                if not member.isfile() or basename != "default_versions.csv":
+                    continue
+                handle = archive.extractfile(member)
+                if handle is None:
+                    continue
+                found.add(basename)
+                default_store.load(handle)
+        default_version_ids = default_store.version_ids()
+        recent_by_version: dict[str, int] = {}
+        with tarfile.open(dump_path, mode="r:gz") as archive:
+            for member in archive:
+                basename = Path(member.name).name
+                if not member.isfile() or basename != "version_downloads.csv":
+                    continue
+                handle = archive.extractfile(member)
+                if handle is None:
+                    continue
+                found.add(basename)
+                recent_by_version = {
+                    version_id: downloads
+                    for version_id, downloads in recent_version_downloads(
+                        handle,
+                        default_version_ids,
+                        window_days=recent_window_days,
+                    ).items()
+                    if downloads >= min_recent_downloads
+                }
+        del default_version_ids
+        versions_by_id: dict[str, dict[str, Any]] = {}
+        with tarfile.open(dump_path, mode="r:gz") as archive:
+            for member in archive:
+                basename = Path(member.name).name
+                if not member.isfile() or basename != "versions.csv":
+                    continue
+                handle = archive.extractfile(member)
+                if handle is None:
+                    continue
+                found.add(basename)
+                versions_by_id = executable_version_rows(handle, set(recent_by_version))
+        defaults_by_crate = default_store.candidates_for_versions(set(versions_by_id))
+    finally:
+        default_store.close()
+    candidate_crate_ids = set(defaults_by_crate)
     crates_by_id: dict[str, dict[str, Any]] = {}
     downloads_by_id: dict[str, int] = {}
     with tarfile.open(dump_path, mode="r:gz") as archive:
