@@ -1665,10 +1665,16 @@ fn html_hreflang_links(canonical: &str) -> String {
     let Some(path) = canonical.strip_prefix(SITE_ORIGIN) else {
         return String::new();
     };
-    let (_, canonical_path) = canonical_pkg_route(path);
-    let path = canonical_path
-        .strip_suffix("index.html")
-        .unwrap_or(&canonical_path);
+    let canonical_path;
+    let path = if landing_locale(path).is_some() {
+        "/"
+    } else {
+        let (_, path) = canonical_pkg_route(path);
+        canonical_path = path;
+        canonical_path
+            .strip_suffix("index.html")
+            .unwrap_or(&canonical_path)
+    };
     let mut lines = Vec::new();
     for locale in LOCALES {
         lines.push(format!(
@@ -6737,6 +6743,18 @@ mod tests {
         assert!(
             localized_root_html.contains(r#"<link rel="canonical" href="https://pkg.so/de/">"#)
         );
+        let expected_root_hreflang = [
+            r#"<link rel="alternate" hreflang="en" href="https://pkg.so/">"#,
+            r#"<link rel="alternate" hreflang="de" href="https://pkg.so/de/">"#,
+            r#"<link rel="alternate" hreflang="fr" href="https://pkg.so/fr/">"#,
+            r#"<link rel="alternate" hreflang="ja" href="https://pkg.so/ja/">"#,
+            r#"<link rel="alternate" hreflang="zh-Hans" href="https://pkg.so/zh-hans/">"#,
+            r#"<link rel="alternate" hreflang="x-default" href="https://pkg.so/">"#,
+        ];
+        for link in expected_root_hreflang {
+            assert!(localized_root_html.contains(link), "missing {link}");
+        }
+        assert!(!localized_root_html.contains("https://pkg.so/de/de/"));
         let package_html = String::from_utf8(package.body).expect("package html");
         assert_eq!(robots.content_type, "text/plain; charset=utf-8");
         assert_eq!(
