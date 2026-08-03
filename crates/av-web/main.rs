@@ -1049,43 +1049,30 @@ fn render_index_page(connection: &Connection, locale: &Locale) -> Result<String,
     } else {
         package_count(connection)?
     };
-    let radioisotope_count = manifest
-        .as_ref()
-        .and_then(|manifest| value_i64_key(manifest, "radioisotope_manifest_count"))
-        .unwrap_or_default();
-    let gated = if let Some(count) = manifest
-        .as_ref()
-        .and_then(|manifest| value_i64_key(manifest, "approval_gate_count"))
-    {
-        count
-    } else {
-        approval_gate_count(connection)?
-    };
     let source_files = manifest
         .as_ref()
         .and_then(|manifest| value_i64_key(manifest, "source_file_count"))
         .unwrap_or_default();
     let search_endpoint = locale_path("/pkg/search.json", locale);
-    let catalog_title = tx(locale, "packageCatalogTitle", "Package security catalog");
+    let catalog_title = tx(locale, "packageCatalogTitle", "Package catalog");
     let mut body = String::new();
     body.push_str(&site_nav(locale));
     body.push_str("<main>");
     body.push_str(&format!(
-        r#"<section class="pkg-hero pkg-hero-index" aria-labelledby="pkg-title"><div class="hero-copy"><p class="eyebrow">{}</p><h1 id="pkg-title">{}</h1><p class="lede">{}</p></div><aside class="hero-panel" aria-label="{}">{}{}{}{}</aside></section>"#,
+        r#"<section class="pkg-hero pkg-hero-index" aria-labelledby="pkg-title"><div class="hero-copy"><p class="eyebrow">{}</p><h1 id="pkg-title">{}</h1><p class="lede">{}</p></div><aside class="hero-panel" aria-label="{}">{}{}{}</aside></section>"#,
         html_escape(&tx(locale, "catalogEyebrow", "Nucleus package intelligence")),
         html_escape(&catalog_title),
-        html_escape(&tx(locale, "catalogPagesCopy", "Generated pages for executable packages Nucleus knows about, with local secret-handling manifests, approval-gate metadata, install popularity, executable aliases, and upstream package facts.")),
+        html_escape(&tx(locale, "catalogPagesCopy", "Generated pages for executable packages Nucleus knows about, with install routes, popularity, executable aliases, and upstream package facts.")),
         html_escape(&tx(locale, "catalogCounts", "Catalog counts")),
         metric(&tx(locale, "packages", "packages"), &fmt_int(package_total)),
-        metric(&tx(locale, "radioisotopes", "protected tools"), &fmt_int(radioisotope_count)),
-        metric(&tx(locale, "approvalGates", "approval gates"), &fmt_int(gated)),
+        metric(&tx(locale, "packageHubs", "package hubs"), &fmt_int(hub_summaries.len() as i64)),
         metric(&tx(locale, "sourceFiles", "source files"), &fmt_int(source_files)),
     ));
     body.push_str(&format!(
         r#"<section class="pkg-section pkg-search-section" aria-labelledby="pkg-search-title"><div class="search-copy"><p class="section-kicker">{}</p><h2 id="pkg-search-title">{}</h2><p>{}</p></div><div id="pkg-search" class="pkg-search" data-av-package-search data-locale="{}" data-search-endpoint="{}" data-placeholder="{}"></div></section>"#,
         html_escape(&tx(locale, "siteSearch", "site search")),
         html_escape(&tx(locale, "findPackageCoverage", "Find package coverage")),
-        html_escape(&tx(locale, "catalogSearchCopy", "Search the package catalog, security guides, documentation, and source-backed metadata from one index.")),
+        html_escape(&tx(locale, "catalogSearchCopy", "Search the package catalog, documentation, and source-backed metadata from one index.")),
         html_escape(locale.code),
         html_escape(&search_endpoint),
         html_escape(&tx(locale, "searchPlaceholder", "Search awscli, gh, .env, npm publish"))
@@ -1093,8 +1080,8 @@ fn render_index_page(connection: &Connection, locale: &Locale) -> Result<String,
     body.push_str(&format!(
         r#"<section class="pkg-section" aria-labelledby="pkg-hubs-title"><p class="section-kicker">{}</p><h2 id="pkg-hubs-title">{}</h2><p>{}</p><div class="hub-groups" aria-label="{}">{}</div></section>"#,
         html_escape(&tx(locale, "catalogHubsKicker", "package hubs")),
-        html_escape(&tx(locale, "catalogHubsTitle", "Package groups with security signals")),
-        html_escape(&tx(locale, "catalogHubsCopy", "These crawlable hubs group package families that matter for agent security: cloud CLIs, source-control tools, package publishers, MCP tools, and packages with local secret-risk signals.")),
+        html_escape(&tx(locale, "catalogHubsTitle", "Package groups by ecosystem and workflow")),
+        html_escape(&tx(locale, "catalogHubsCopy", "These crawlable hubs group related package families, including cloud CLIs, source-control tools, package publishers, MCP tools, and language ecosystems.")),
         html_escape(&tx(locale, "catalogHubsAria", "Package category hubs")),
         hub_group_sections(&hub_summaries, locale)
     ));
@@ -1102,7 +1089,7 @@ fn render_index_page(connection: &Connection, locale: &Locale) -> Result<String,
         r#"<section class="pkg-section split-section"><div><p class="section-kicker">{}</p><h2>{}</h2><p>{}</p></div><div class="package-list" aria-label="{}">"#,
         html_escape(&tx(locale, "catalogPagesKicker", "crawlable catalog")),
         html_escape(&tx(locale, "catalogPagesTitle", "Package pages from local source data")),
-        html_escape(&tx(locale, "crawlableCatalog", "Nucleus package metadata, generated package inventories, secret-handling READMEs, migration manifests, and approval-gate seeds are served by the Atlas package origin so search and answer engines can find specific tool coverage.")),
+        html_escape(&tx(locale, "crawlableCatalog", "Nucleus package metadata, generated package inventories, executable indexes, and package-manager facts are served by the Atlas package origin so search and answer engines can find specific tools.")),
         html_escape(&tx(locale, "popularPackages", "Popular packages")),
     ));
     for package in &top_packages {
@@ -1117,7 +1104,7 @@ fn render_index_page(connection: &Connection, locale: &Locale) -> Result<String,
         "url": locale_url("/", locale),
         "inLanguage": locale.hreflang,
         "isPartOf": {"@type": "WebSite", "name": SITE_NAME, "url": format!("{SITE_ORIGIN}/")},
-        "about": tx(locale, "packageCatalogDescription", "Nucleus packages, AI agent package security, approval gates, and secret migration metadata")
+        "about": tx(locale, "packageCatalogDescription", "Source-backed package intelligence for executable tools, install routes, and package metadata")
     });
     let schema_json = serde_json::to_string_pretty(&schema).unwrap_or_else(|_| "{}".to_string());
     Ok(html_doc(
@@ -1126,7 +1113,7 @@ fn render_index_page(connection: &Connection, locale: &Locale) -> Result<String,
         &tx(
             locale,
             "packageCatalogDescription",
-            "Source-backed package intelligence for executable tools, including install metadata, security signals, approval gates, and agent-oriented notes.",
+            "Source-backed package intelligence for executable tools, including install metadata, aliases, popularity, and upstream facts.",
         ),
         &locale_url("/", locale),
         "index,follow",
@@ -3384,7 +3371,7 @@ fn hub_group_sections(hubs: &[HubSummary], locale: &Locale) -> String {
     for (group, label) in [
         (
             "security",
-            tx(locale, "hubSecurityGroupTitle", "Security hubs"),
+            tx(locale, "hubSecurityGroupTitle", "Tooling hubs"),
         ),
         (
             "topical",
@@ -6743,7 +6730,7 @@ mod tests {
         let root_html = String::from_utf8(root.body).expect("root html");
         let localized_root_html =
             String::from_utf8(localized_root.body).expect("localized root html");
-        assert!(root_html.contains("<title>Package security catalog | pkg.so</title>"));
+        assert!(root_html.contains("<title>Package catalog | pkg.so</title>"));
         assert!(root_html.contains(r#"<link rel="canonical" href="https://pkg.so/">"#));
         assert!(root_html.contains(r#"<a class="brand" href="/""#));
         assert!(localized_root_html.contains("<html lang=\"de\">"));

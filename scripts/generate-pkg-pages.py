@@ -2130,9 +2130,6 @@ def render_index(
     manifest: dict[str, Any],
     locale: dict[str, Any] | None = None,
 ) -> str:
-    secured = [page for page in pages if page.isotope]
-    radioisotope_count = int(manifest.get("radioisotope_manifest_count") or len(secured))
-    gated = [page for page in pages if page.approval_gate]
     top_pages = sorted(
         pages,
         key=lambda page: int(page.popularity.get("rank") or 999999),
@@ -2144,10 +2141,10 @@ def render_index(
     hub_links = hub_group_sections(hubs, locale)
     search_placeholder = json.dumps(tx(locale, "searchPlaceholder", "Search awscli, gh, .env, npm publish"), ensure_ascii=False)
     return html_doc(
-        title=tx(locale, "packageCatalogTitle", "Package security catalog") + f" | {SITE_NAME}",
+        title=tx(locale, "packageCatalogTitle", "Package catalog") + f" | {SITE_NAME}",
         description=tx(locale, "packageCatalogDescription", (
             "Source-backed package intelligence for executable tools, including install metadata, "
-            "security signals, approval gates, and agent-oriented notes."
+            "aliases, popularity, and upstream facts."
         )),
         canonical=locale_url("/", locale),
         alternates_path="/",
@@ -2158,13 +2155,12 @@ def render_index(
   <section class="pkg-hero pkg-hero-index" aria-labelledby="pkg-title">
     <div class="hero-copy">
       <p class="eyebrow">{html_escape(tx(locale, 'catalogEyebrow', 'Nucleus package intelligence'))}</p>
-      <h1 id="pkg-title">{html_escape(tx(locale, "packageCatalogTitle", "Package security catalog"))}</h1>
-      <p class="lede">{html_escape(tx(locale, 'catalogPagesCopy', 'Generated pages for executable packages Nucleus knows about, with local secret-handling manifests, approval-gate metadata, install popularity, executable aliases, and upstream package facts.'))}</p>
+      <h1 id="pkg-title">{html_escape(tx(locale, "packageCatalogTitle", "Package catalog"))}</h1>
+      <p class="lede">{html_escape(tx(locale, 'catalogPagesCopy', 'Generated pages for executable packages Nucleus knows about, with install routes, popularity, executable aliases, and upstream package facts.'))}</p>
     </div>
     <aside class="hero-panel" aria-label="{attr(tx(locale, 'catalogCounts', 'Catalog counts'))}">
       {metric(tx(locale, 'packages', 'packages'), fmt_int(len(pages)))}
-      {metric(tx(locale, 'radioisotopes', 'protected tools'), fmt_int(radioisotope_count))}
-      {metric(tx(locale, 'approvalGates', 'approval gates'), fmt_int(len(gated)))}
+      {metric(tx(locale, 'packageHubs', 'package hubs'), fmt_int(len(hubs)))}
       {metric(tx(locale, 'sourceFiles', 'source files'), fmt_int(manifest.get('source_file_count')))}
     </aside>
   </section>
@@ -2172,14 +2168,14 @@ def render_index(
     <div class="search-copy">
       <p class="section-kicker">{html_escape(tx(locale, 'siteSearch', 'site search'))}</p>
       <h2 id="pkg-search-title">{html_escape(tx(locale, 'findPackageCoverage', 'Find package coverage'))}</h2>
-      <p>{html_escape(tx(locale, 'catalogSearchCopy', 'Search the package catalog, security guides, documentation, and source-backed metadata from one index.'))}</p>
+      <p>{html_escape(tx(locale, 'catalogSearchCopy', 'Search the package catalog, documentation, and source-backed metadata from one index.'))}</p>
     </div>
     <div id="pkg-search" class="pkg-search" data-pagefind-ui></div>
   </section>
   <section class="pkg-section" aria-labelledby="pkg-hubs-title">
     <p class="section-kicker">{html_escape(tx(locale, 'catalogHubsKicker', 'package hubs'))}</p>
-    <h2 id="pkg-hubs-title">{html_escape(tx(locale, 'catalogHubsTitle', 'Package groups with security signals'))}</h2>
-    <p>{html_escape(tx(locale, 'catalogHubsCopy', 'These crawlable hubs group package families that matter for agent security: cloud CLIs, source-control tools, package publishers, MCP tools, and packages with local secret-risk signals.'))}</p>
+    <h2 id="pkg-hubs-title">{html_escape(tx(locale, 'catalogHubsTitle', 'Package groups by ecosystem and workflow'))}</h2>
+    <p>{html_escape(tx(locale, 'catalogHubsCopy', 'These crawlable hubs group related package families, including cloud CLIs, source-control tools, package publishers, MCP tools, and language ecosystems.'))}</p>
     <div class="hub-groups" aria-label="{attr(tx(locale, 'catalogHubsAria', 'Package category hubs'))}">
       {hub_links}
     </div>
@@ -2188,7 +2184,7 @@ def render_index(
     <div>
       <p class="section-kicker">{html_escape(tx(locale, 'catalogPagesKicker', 'crawlable catalog'))}</p>
       <h2>{html_escape(tx(locale, 'catalogPagesTitle', 'Package pages from local source data'))}</h2>
-      <p>{html_escape(tx(locale, 'crawlableCatalog', 'Nucleus package metadata, generated package inventories, secret-handling READMEs, migration manifests, and approval-gate seeds are served by the Atlas package origin so search and answer engines can find specific tool coverage.'))}</p>
+      <p>{html_escape(tx(locale, 'crawlableCatalog', 'Nucleus package metadata, generated package inventories, executable indexes, and package-manager facts are served by the Atlas package origin so search and answer engines can find specific tools.'))}</p>
     </div>
     <div class="package-list" aria-label="{attr(tx(locale, 'popularPackages', 'Popular packages'))}">
       {package_links}
@@ -2219,11 +2215,11 @@ def render_index(
         schema={
             "@context": "https://schema.org",
             "@type": "CollectionPage",
-            "name": tx(locale, "packageCatalogTitle", "Package security catalog"),
+            "name": tx(locale, "packageCatalogTitle", "Package catalog"),
             "url": locale_url("/", locale),
             "inLanguage": (locale or {}).get("htmlLang") or "en",
             "isPartOf": {"@type": "WebSite", "name": SITE_NAME, "url": SITE_ORIGIN + "/"},
-            "about": tx(locale, "packageCatalogDescription", "Nucleus packages, AI agent package security, approval gates, and secret migration metadata"),
+            "about": tx(locale, "packageCatalogDescription", "Source-backed package intelligence for executable tools, install routes, and package metadata"),
         },
     )
 
@@ -2233,7 +2229,7 @@ def hub_group_sections(
     locale: dict[str, Any] | None = None,
 ) -> str:
     labels = {
-        "security": tx(locale, "hubSecurityGroupTitle", "Security hubs"),
+        "security": tx(locale, "hubSecurityGroupTitle", "Tooling hubs"),
         "topical": tx(locale, "hubTopicalGroupTitle", "Topical hubs"),
         "ecosystem": tx(locale, "hubEcosystemGroupTitle", "Ecosystem hubs"),
     }
