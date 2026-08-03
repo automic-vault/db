@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import gc
 import gzip
 import hashlib
 import importlib.util
@@ -19,7 +20,7 @@ from typing import Any
 from avdb_paths import PACKAGE_INDEX_PATH
 
 
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 GENERATED_DATA_DIR = Path("cache")
 OUTPUT_PATH = GENERATED_DATA_DIR / "pkg-cross-ecosystem.json"
 PKG_MANAGER_INDEX_PATH = GENERATED_DATA_DIR / "pkg-manager-indexes.json.gz"
@@ -218,7 +219,7 @@ def local_pages() -> dict[str, Any]:
     # so its package facts must not depend on generated graph or prior cross data.
     sources["pkg_graph"] = {}
     sources["pkg_cross_ecosystem"] = {}
-    return pages_module.package_pages_from_sources(sources)
+    return pages_module.package_pages_from_sources(sources, cross_ecosystem_only=True)
 
 
 def local_candidates(pages: dict[str, Any]) -> dict[str, list[dict[str, str]]]:
@@ -288,7 +289,10 @@ def load_manager_indexes() -> dict[str, Any]:
     return read_json(PKG_MANAGER_INDEX_PATH, {})
 
 
-def manager_matcher(manager_indexes: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
+def manager_matcher(
+    manager_indexes: dict[str, Any],
+    wanted_names: set[str] | None = None,
+) -> dict[str, list[dict[str, Any]]]:
     managers = manager_indexes.get("managers") if isinstance(manager_indexes, dict) else None
     if not isinstance(managers, dict):
         return {}
@@ -337,7 +341,7 @@ def manager_matcher(manager_indexes: dict[str, Any]) -> dict[str, list[dict[str,
                 item["source"]["metadata"] = metadata
             for match_name in match_names:
                 normalized = normalize_name(str(match_name))
-                if normalized:
+                if normalized and (wanted_names is None or normalized in wanted_names):
                     result[normalized].append(item)
     for normalized, items in result.items():
         result[normalized] = dedupe_commands(items)
@@ -418,8 +422,9 @@ def source_backed_manager_matches(facts: dict[str, Any], matcher: dict[str, list
 
 
 def source_backed_manager_commands(facts: dict[str, Any], matcher: dict[str, list[dict[str, Any]]]) -> list[dict[str, Any]]:
-    # The previous implementation only added cross-manager guesses for Homebrew
-    # formula pages. Keep that surface, but now require a database-backed match.
+    # Cross-distribution commands are anchored to Homebrew formula identity.
+    # Other ecosystems can share short package names with unrelated software;
+    # retain those as external matches instead of actionable commands.
     if facts.get("provider") != "brew":
         return []
     result = []
@@ -689,15 +694,26 @@ def validate_artifact(artifact: dict[str, Any], page_keys: set[str]) -> list[str
 
 def build_cross_ecosystem(agent_cmd: str = "", existing: dict[str, Any] | None = None) -> dict[str, Any]:
     existing = existing or read_json(OUTPUT_PATH, {})
-    manager_indexes = load_manager_indexes()
-    matcher = manager_matcher(manager_indexes)
-    manager_index_hash = stable_hash(manager_indexes)
     pages = local_pages()
     facts_by_key = {key: page_facts(page) for key, page in pages.items()}
     candidates_by_key = local_candidates(pages)
+    page_keys = set(pages)
+    del pages
+    gc.collect()
+    wanted_names = {
+        normalized
+        for facts in facts_by_key.values()
+        for tier in package_match_tiers(facts)
+        for normalized in tier
+    }
+    manager_index_hash = hashlib.sha256(PKG_MANAGER_INDEX_PATH.read_bytes()).hexdigest()
+    manager_indexes = load_manager_indexes()
+    matcher = manager_matcher(manager_indexes, wanted_names)
+    del manager_indexes
+    gc.collect()
     existing_packages = existing.get("packages") if isinstance(existing, dict) else {}
     packages: dict[str, Any] = {}
-    for package_key in sorted(pages):
+    for package_key in sorted(facts_by_key):
         packages[package_key] = build_entry(
             package_key,
             facts_by_key[package_key],
@@ -722,7 +738,7 @@ def build_cross_ecosystem(agent_cmd: str = "", existing: dict[str, Any] | None =
         },
         "packages": packages,
     }
-    failures = validate_artifact(artifact, set(pages))
+    failures = validate_artifact(artifact, page_keys)
     if failures:
         raise ValueError("; ".join(failures[:8]))
     return artifact

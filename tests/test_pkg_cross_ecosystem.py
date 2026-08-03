@@ -50,6 +50,14 @@ class PackageCrossEcosystemTests(unittest.TestCase):
         self.assertEqual(commands[0]["command"], "sudo dnf install openjpeg")
         self.assertEqual(matches[0]["packageId"], "openjpeg")
 
+    def test_non_brew_name_collisions_are_not_promoted_to_commands(self):
+        matcher = {"example": [dnf_item("example")]}
+
+        for provider in ("npm", "cargo", "pip", "cask"):
+            with self.subTest(provider=provider):
+                facts = {"provider": provider, "name": "example", "executables": []}
+                self.assertEqual(cross.source_backed_manager_commands(facts, matcher), [])
+
 
 if __name__ == "__main__":
     unittest.main()

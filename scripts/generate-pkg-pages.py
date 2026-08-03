@@ -762,7 +762,11 @@ def apply_combined_yaml_locations(pages: dict[str, PackagePage]) -> None:
             page.source_notes.append("curated package history")
 
 
-def package_pages_from_sources(sources: dict[str, Any]) -> dict[str, PackagePage]:
+def package_pages_from_sources(
+    sources: dict[str, Any],
+    *,
+    cross_ecosystem_only: bool = False,
+) -> dict[str, PackagePage]:
     pages: dict[str, PackagePage] = {}
     db = sources.get("db") or {}
 
@@ -867,6 +871,11 @@ def package_pages_from_sources(sources: dict[str, Any]) -> dict[str, PackagePage
                 provider, name = "brew", provider_key
             if provider in PACKAGE_PROVIDERS:
                 get_page(provider, name).aliases.add(executable)
+
+    if cross_ecosystem_only:
+        apply_package_page_enrichment(pages, sources.get("pkg_page_enrichment") or {})
+        apply_package_page_supplements(pages)
+        return executable_package_pages(pages)
 
     stub_exclusions = sources.get("stub_exclusions") or {}
     if isinstance(stub_exclusions, dict):

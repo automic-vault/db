@@ -19,6 +19,7 @@ from typing import Any
 SCHEMA_VERSION = 2
 OUTPUT_PATH = Path("cache/pkg.sqlite")
 PACKAGE_PAGE_SCRIPT = Path("scripts/generate-pkg-pages.py")
+PKG_CROSS_ECOSYSTEM_PATH = Path("cache/pkg-cross-ecosystem.json")
 
 
 @dataclass(frozen=True)
@@ -812,6 +813,12 @@ def main() -> int:
     terminal = Terminal(json_mode=args.json)
     output_path = Path(args.output)
     page_module = load_pkg_pages_module()
+
+    if not PKG_CROSS_ECOSYSTEM_PATH.is_file():
+        terminal.error(
+            f"Missing {PKG_CROSS_ECOSYSTEM_PATH}; run scripts/generate-pkg-cross-ecosystem.py before building SQLite."
+        )
+        return 1
 
     if args.check:
         return check_current(page_module, output_path, terminal)
