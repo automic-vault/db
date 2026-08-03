@@ -7,7 +7,6 @@ import hashlib
 import importlib.util
 import json
 import os
-import re
 import sqlite3
 import sys
 import tempfile
@@ -17,20 +16,9 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 OUTPUT_PATH = Path("cache/pkg.sqlite")
-HTML_CACHE_CONTROL = "public, max-age=86400, s-maxage=86400"
 PACKAGE_PAGE_SCRIPT = Path("scripts/generate-pkg-pages.py")
-
-
-@dataclass(frozen=True)
-class ResponseRecord:
-    path: str
-    content_type: str
-    body: bytes
-    etag: str
-    last_modified: str
-    cache_control: str = HTML_CACHE_CONTROL
 
 
 @dataclass(frozen=True)
@@ -140,34 +128,6 @@ def http_date(value: Any) -> str:
     return format_datetime(parsed.astimezone(dt.timezone.utc), usegmt=True)
 
 
-def response_path(path: str) -> str:
-    if path.endswith("/"):
-        return f"{path}index.html"
-    return path
-
-
-def etag_for(data: bytes) -> str:
-    return '"' + hashlib.sha256(data).hexdigest() + '"'
-
-
-def response_record(
-    path: str,
-    content: str | bytes,
-    content_type: str,
-    last_modified: str,
-    cache_control: str = HTML_CACHE_CONTROL,
-) -> ResponseRecord:
-    data = content if isinstance(content, bytes) else content.encode("utf-8")
-    return ResponseRecord(
-        path=response_path(path),
-        content_type=content_type,
-        body=data,
-        etag=etag_for(data),
-        last_modified=last_modified,
-        cache_control=cache_control,
-    )
-
-
 def create_schema(connection: sqlite3.Connection) -> None:
     connection.executescript(
         """
@@ -177,15 +137,6 @@ def create_schema(connection: sqlite3.Connection) -> None:
         CREATE TABLE metadata (
           key TEXT PRIMARY KEY,
           value TEXT NOT NULL
-        );
-
-        CREATE TABLE responses (
-          path TEXT PRIMARY KEY,
-          content_type TEXT NOT NULL,
-          body BLOB NOT NULL,
-          etag TEXT NOT NULL,
-          last_modified TEXT NOT NULL,
-          cache_control TEXT NOT NULL
         );
 
         CREATE TABLE search_documents (
@@ -256,7 +207,6 @@ def create_schema(connection: sqlite3.Connection) -> None:
 
 def write_sqlite(
     output_path: Path,
-    responses: list[ResponseRecord],
     search_documents: list[SearchDocument],
     packages: list[PackageRecord],
     hubs: list[HubRecord],
@@ -279,23 +229,6 @@ def write_sqlite(
             connection.executemany(
                 "INSERT INTO metadata(key, value) VALUES(?, ?)",
                 [(str(key), json.dumps(value, sort_keys=True)) for key, value in sorted(metadata.items())],
-            )
-            connection.executemany(
-                """
-                INSERT INTO responses(path, content_type, body, etag, last_modified, cache_control)
-                VALUES(?, ?, ?, ?, ?, ?)
-                """,
-                [
-                    (
-                        record.path,
-                        record.content_type,
-                        record.body,
-                        record.etag,
-                        record.last_modified,
-                        record.cache_control,
-                    )
-                    for record in responses
-                ],
             )
             connection.executemany(
                 """
@@ -412,168 +345,6 @@ def previous_manifest_from_sqlite(path: Path) -> dict[str, Any] | None:
             metadata[key] = value
     manifest = metadata.get("manifest")
     return manifest if isinstance(manifest, dict) else None
-
-
-def search_script(default_locale: str) -> str:
-    return f"""(() => {{
-  const defaultLocale = {json.dumps(default_locale)};
-
-  function escapeHtml(value) {{
-    return String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }}
-
-  function resultRow(result) {{
-    const provider = result.provider ? result.provider + " / " : "";
-    return `
-      <a class="av-search-result package-row" href="${{escapeHtml(result.url)}}">
-        <span>${{escapeHtml(result.title)}}</span>
-        <small>${{escapeHtml(provider + (result.summary || result.packageKey || ""))}}</small>
-      </a>`;
-  }}
-
-  function init(root) {{
-    const locale = root.dataset.locale || defaultLocale || "en";
-    const endpoint = root.dataset.searchEndpoint || "/pkg/search.json";
-    const placeholder = root.dataset.placeholder || "Search packages";
-    root.innerHTML = `
-      <form class="av-search-form" role="search">
-        <input class="av-search-input" type="search" name="q" autocomplete="off" placeholder="${{escapeHtml(placeholder)}}" aria-label="${{escapeHtml(placeholder)}}">
-      </form>
-      <div class="av-search-status" aria-live="polite"></div>
-      <div class="av-search-results"></div>`;
-
-    const form = root.querySelector("form");
-    const input = root.querySelector("input");
-    const status = root.querySelector(".av-search-status");
-    const results = root.querySelector(".av-search-results");
-    let activeController = null;
-
-    async function search() {{
-      const query = input.value.trim();
-      if (!query) {{
-        status.textContent = "";
-        results.innerHTML = "";
-        return;
-      }}
-      if (activeController) activeController.abort();
-      activeController = new AbortController();
-      const params = new URLSearchParams({{ q: query, locale, limit: "8" }});
-      status.textContent = "Searching...";
-      try {{
-        const response = await fetch(`${{endpoint}}?${{params}}`, {{
-          signal: activeController.signal,
-          headers: {{ Accept: "application/json" }}
-        }});
-        if (!response.ok) throw new Error(`search failed: ${{response.status}}`);
-        const data = await response.json();
-        const count = Number(data.totalCount || 0);
-        status.textContent = count === 1 ? "1 result" : `${{count}} results`;
-        results.innerHTML = (data.results || []).map(resultRow).join("");
-      }} catch (error) {{
-        if (error.name === "AbortError") return;
-        status.textContent = "Search unavailable";
-        results.innerHTML = "";
-      }}
-    }}
-
-    form.addEventListener("submit", event => {{
-      event.preventDefault();
-      search();
-    }});
-    input.addEventListener("input", () => {{
-      window.clearTimeout(input._avSearchTimer);
-      input._avSearchTimer = window.setTimeout(search, 160);
-    }});
-  }}
-
-  window.addEventListener("DOMContentLoaded", () => {{
-    document.querySelectorAll("[data-av-package-search]").forEach(init);
-  }});
-}})();
-"""
-
-
-def adapt_package_index_search(html_text: str, page_module: Any, locale: dict[str, Any] | None) -> str:
-    code = page_module.locale_code(locale)
-    endpoint = page_module.locale_path("/pkg/search.json", locale)
-    script = page_module.locale_path("/pkg/search.js", locale)
-    placeholder = page_module.tx(locale, "searchPlaceholder", "Search awscli, gh, .env, npm publish")
-    replacement = (
-        '<div id="pkg-search" class="pkg-search" data-av-package-search '
-        f'data-locale="{page_module.attr(code)}" '
-        f'data-search-endpoint="{page_module.attr(endpoint)}" '
-        f'data-placeholder="{page_module.attr(placeholder)}"></div>'
-    )
-    html_text = html_text.replace(
-        '<div id="pkg-search" class="pkg-search" data-pagefind-ui></div>',
-        replacement,
-    )
-    html_text = re.sub(
-        r'\n\s*<link rel="stylesheet" href="/pagefind/pagefind-ui.css">',
-        "",
-        html_text,
-    )
-    html_text = re.sub(
-        r'\n\s*<script src="/pagefind/pagefind-ui\.js"></script>\s*'
-        r"<script>\s*window\.addEventListener\(\"DOMContentLoaded\", \(\) => \{.*?</script>",
-        f'\n  <script src="{page_module.attr(script)}"></script>',
-        html_text,
-        flags=re.DOTALL,
-    )
-    return html_text
-
-
-def css_with_search_styles(page_module: Any) -> str:
-    return page_module.render_css() + """
-.av-search-form {
-  display: grid;
-}
-.av-search-input {
-  width: 100%;
-  min-height: 56px;
-  padding: 13px 16px;
-  border: 1px solid var(--line-strong);
-  border-radius: 8px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
-    #10100f;
-  color: var(--ink);
-  font: 700 0.92rem/1.3 var(--font-mono);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  transition: border-color 180ms cubic-bezier(0.16, 1, 0.3, 1), background 180ms cubic-bezier(0.16, 1, 0.3, 1), transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-.av-search-input::placeholder {
-  color: #8d887f;
-  opacity: 1;
-}
-.av-search-input:focus-visible {
-  border-color: rgba(114, 182, 97, 0.72);
-  background: #22211f;
-  outline: none;
-  transform: translateY(-1px);
-}
-.av-search-status {
-  min-height: 1.3em;
-  margin-top: 12px;
-  color: var(--dim);
-  font: 700 0.74rem/1.3 var(--font-mono);
-  text-transform: uppercase;
-}
-.av-search-results {
-  display: grid;
-  gap: 1px;
-  margin-top: 12px;
-  border: 1px solid var(--line);
-  background: var(--line);
-}
-.av-search-result {
-  border: 0;
-}
-"""
 
 
 def manifest_metadata(manifest: dict[str, Any]) -> dict[str, Any]:
@@ -938,7 +709,7 @@ def hub_record(hub: Any) -> HubRecord:
 def build_records(
     page_module: Any,
     output_path: Path,
-) -> tuple[list[ResponseRecord], list[SearchDocument], list[PackageRecord], list[HubRecord], list[HubPackageRecord], dict[str, Any]]:
+) -> tuple[list[SearchDocument], list[PackageRecord], list[HubRecord], list[HubPackageRecord], dict[str, Any]]:
     sources = page_module.load_sources()
     pages_by_key = page_module.package_pages_from_sources(sources)
     if not pages_by_key:
@@ -950,17 +721,11 @@ def build_records(
     previous_manifest = previous_manifest_from_sqlite(output_path)
     manifest = page_module.build_manifest(len(pages), files, previous_manifest)
     populate_manifest_counts(page_module, manifest, pages, hubs)
-    last_modified = http_date(manifest.get("generated_at"))
-    css = css_with_search_styles(page_module)
-    responses: list[ResponseRecord] = []
     documents: list[SearchDocument] = []
     package_rows: list[PackageRecord] = []
     hub_rows: list[HubRecord] = [hub_record(hub) for hub, _hub_pages in hubs]
     hub_package_rows: list[HubPackageRecord] = []
     indexable_pages = [page for page in pages if page_module.is_indexable_package_page(page)]
-
-    def add(path: str, content: str | bytes, content_type: str) -> None:
-        responses.append(response_record(path, content, content_type, last_modified))
 
     for page in pages:
         search_text = page_search_text(page_module, page, None)
@@ -977,13 +742,6 @@ def build_records(
 
     for locale in page_module.i18n_locales():
         locale_code = page_module.locale_code(locale)
-        add(page_module.locale_path("/pkg/styles.css", locale), css, "text/css; charset=utf-8")
-        add(page_module.locale_path("/pkg/search.js", locale), search_script(locale_code), "application/javascript; charset=utf-8")
-        add(
-            page_module.locale_path("/pkg/.manifest.json", locale),
-            json.dumps(manifest, indent=2, sort_keys=True) + "\n",
-            "application/json; charset=utf-8",
-        )
         for page in pages:
             documents.append(SearchDocument(
                 path=page_module.locale_path(routes[page.key].path, locale),
@@ -999,7 +757,7 @@ def build_records(
     metadata = manifest_metadata(manifest)
     metadata["locales"] = page_module.i18n_locales()
     metadata["providers"] = sorted({page.provider for page in indexable_pages})
-    return responses, documents, package_rows, hub_rows, hub_package_rows, metadata
+    return documents, package_rows, hub_rows, hub_package_rows, metadata
 
 
 def check_current(page_module: Any, output_path: Path, terminal: Terminal) -> int:
@@ -1059,11 +817,11 @@ def main() -> int:
         return check_current(page_module, output_path, terminal)
 
     terminal.step("Rendering package pages into SQLite")
-    responses, documents, packages, hubs, hub_packages, metadata = build_records(page_module, output_path)
-    write_sqlite(output_path, responses, documents, packages, hubs, hub_packages, metadata)
+    documents, packages, hubs, hub_packages, metadata = build_records(page_module, output_path)
+    write_sqlite(output_path, documents, packages, hubs, hub_packages, metadata)
     terminal.ok(
         f"Wrote {len(packages):,} packages, {len(hubs):,} hubs, "
-        f"{len(documents):,} search documents, and {len(responses):,} static responses to {output_path}"
+        f"{len(documents):,} search documents, and metadata to {output_path}"
     )
     if args.json:
         print(json.dumps({
@@ -1071,7 +829,6 @@ def main() -> int:
             "output": str(output_path),
             "packages": len(packages),
             "hubs": len(hubs),
-            "responses": len(responses),
             "search_documents": len(documents),
             "source_hash": metadata.get("source_hash"),
         }, sort_keys=True))

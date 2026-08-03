@@ -14,10 +14,12 @@ use std::thread;
 const DEFAULT_BIND_ADDR: &str = "127.0.0.1:3004";
 const DEFAULT_DB_PATH: &str = "/var/lib/automic-vault-web/pkg.sqlite";
 const DEFAULT_ORIGIN_HEADER: &str = "x-automic-vault-origin";
-const HTML_CACHE_CONTROL: &str = "public, max-age=86400, s-maxage=86400";
+const HTML_CACHE_CONTROL: &str = "public, max-age=300, s-maxage=300";
+const FALLBACK_LAST_MODIFIED: &str = "Thu, 01 Jan 1970 00:00:00 GMT";
 const DEFAULT_SEARCH_LIMIT: usize = 8;
 const MAX_SEARCH_LIMIT: usize = 50;
-const PKG_STYLESHEET_VERSION: &str = "20260802-pkg-so";
+const PKG_CSS: &str = include_str!("pkg.css");
+const SEARCH_JS: &str = include_str!("search.js");
 const I18N_PKG_TEMPLATES_JSON: &str = include_str!("../../data/pkg-i18n/templates.json");
 static I18N_PKG_TEMPLATES: OnceLock<Value> = OnceLock::new();
 
@@ -143,70 +145,56 @@ fn handle_connection(mut stream: TcpStream, state: &AppState) -> Result<(), Stri
     }
 
     if let Some(location) = slash_redirect_location(&request.path, request.query.as_deref()) {
-        return write_response(
+        let response = StoredResponse {
+            content_type: "text/plain; charset=utf-8".to_string(),
+            body: Vec::new(),
+            etag: etag_for_bytes(location.as_bytes()),
+            last_modified: FALLBACK_LAST_MODIFIED.to_string(),
+            cache_control: HTML_CACHE_CONTROL.to_string(),
+        };
+        return write_stored_response(
             &mut stream,
-            &request.method,
+            &request,
             301,
             "Moved Permanently",
-            vec![
-                ("location", location),
-                ("cache-control", HTML_CACHE_CONTROL.to_string()),
-            ],
-            Vec::new(),
+            response,
+            vec![("location", location)],
         );
     }
 
     if is_search_path(&request.path) {
         let query = parse_query(request.query.as_deref().unwrap_or(""));
         let body = search_response_json(&state.db_path, &request.path, &query)?;
-        return write_response(
-            &mut stream,
-            &request.method,
-            200,
-            "OK",
-            vec![
-                (
-                    "content-type",
-                    "application/json; charset=utf-8".to_string(),
-                ),
-                ("cache-control", HTML_CACHE_CONTROL.to_string()),
-            ],
+        let response = stored_response_for_body(
+            &state.db_path,
+            "application/json; charset=utf-8",
             body,
-        );
+            HTML_CACHE_CONTROL,
+        )?;
+        return write_stored_response(&mut stream, &request, 200, "OK", response, Vec::new());
     }
 
-    if let Some(response) = response_for_path(&state.db_path, &request.path)? {
-        return write_response(
-            &mut stream,
-            &request.method,
-            200,
-            "OK",
-            response.headers(),
-            response.body,
-        );
+    if let Some(response) = static_asset_response(&request.path) {
+        return write_stored_response(&mut stream, &request, 200, "OK", response, Vec::new());
     }
 
     if let Some(response) = dynamic_response_for_path(&state.db_path, &request.path)? {
-        return write_response(
-            &mut stream,
-            &request.method,
-            200,
-            "OK",
-            response.headers(),
-            response.body,
-        );
+        return write_stored_response(&mut stream, &request, 200, "OK", response, Vec::new());
     }
 
-    write_response(
+    let response = stored_response_for_body(
+        &state.db_path,
+        "text/plain; charset=utf-8",
+        b"not found\n".to_vec(),
+        HTML_CACHE_CONTROL,
+    )?;
+    write_stored_response(
         &mut stream,
-        &request.method,
+        &request,
         404,
         "Not Found",
-        vec![
-            ("content-type", "text/plain; charset=utf-8".to_string()),
-            ("cache-control", HTML_CACHE_CONTROL.to_string()),
-        ],
-        b"not found\n".to_vec(),
+        response,
+        Vec::new(),
     )
 }
 
@@ -288,7 +276,9 @@ fn write_response(
     mut headers: Vec<(&'static str, String)>,
     body: Vec<u8>,
 ) -> Result<(), String> {
-    headers.push(("content-length", body.len().to_string()));
+    if status != 304 {
+        headers.push(("content-length", body.len().to_string()));
+    }
     let mut response = format!("HTTP/1.1 {status} {reason}\r\n");
     for (name, value) in headers {
         response.push_str(name);
@@ -308,6 +298,64 @@ fn write_response(
     stream
         .flush()
         .map_err(|err| format!("failed to flush response: {err}"))
+}
+
+fn write_stored_response(
+    stream: &mut TcpStream,
+    request: &Request,
+    status: u16,
+    reason: &str,
+    response: StoredResponse,
+    mut extra_headers: Vec<(&'static str, String)>,
+) -> Result<(), String> {
+    let not_modified =
+        request_is_not_modified(&request.headers, &response.etag, &response.last_modified);
+    extra_headers.extend(response.headers());
+    if not_modified {
+        return write_response(
+            stream,
+            &request.method,
+            304,
+            "Not Modified",
+            extra_headers,
+            Vec::new(),
+        );
+    }
+    write_response(
+        stream,
+        &request.method,
+        status,
+        reason,
+        extra_headers,
+        response.body,
+    )
+}
+
+fn request_is_not_modified(
+    headers: &BTreeMap<String, String>,
+    etag: &str,
+    last_modified: &str,
+) -> bool {
+    if let Some(if_none_match) = headers.get("if-none-match") {
+        return if_none_match.split(',').any(|candidate| {
+            let candidate = candidate.trim();
+            candidate == "*" || weak_etag(candidate) == weak_etag(etag)
+        });
+    }
+    let Some(if_modified_since) = headers.get("if-modified-since") else {
+        return false;
+    };
+    let Ok(since) = httpdate::parse_http_date(if_modified_since) else {
+        return false;
+    };
+    httpdate::parse_http_date(last_modified).is_ok_and(|modified| modified <= since)
+}
+
+fn weak_etag(value: &str) -> &str {
+    value
+        .strip_prefix("W/")
+        .or_else(|| value.strip_prefix("w/"))
+        .unwrap_or(value)
 }
 
 fn origin_request_authorized(
@@ -358,19 +406,6 @@ fn is_search_path(path: &str) -> bool {
         || path == "/zh-hans/pkg/search.json"
 }
 
-fn normalize_response_path(path: &str) -> String {
-    if path.ends_with('/') {
-        return format!("{path}index.html");
-    }
-    if path == "/pkg" || path.ends_with("/pkg") {
-        return format!("{path}/index.html");
-    }
-    if path_has_extension(path) {
-        return path.to_string();
-    }
-    format!("{path}/index.html")
-}
-
 fn path_has_extension(path: &str) -> bool {
     path.rsplit('/')
         .next()
@@ -407,25 +442,35 @@ fn open_database(path: &Path) -> Result<Connection, String> {
     .map_err(|err| format!("failed to open {}: {err}", path.display()))
 }
 
-fn response_for_path(db_path: &Path, path: &str) -> Result<Option<StoredResponse>, String> {
-    let path = normalize_response_path(path);
-    let connection = open_database(db_path)?;
-    connection
-        .query_row(
-            "SELECT content_type, body, etag, last_modified, cache_control FROM responses WHERE path = ?1",
-            params![path],
-            |row| {
-                Ok(StoredResponse {
-                    content_type: row.get(0)?,
-                    body: row.get(1)?,
-                    etag: row.get(2)?,
-                    last_modified: row.get(3)?,
-                    cache_control: row.get(4)?,
-                })
-            },
-        )
-        .optional()
-        .map_err(|err| format!("failed to query response: {err}"))
+fn content_version(content: &[u8]) -> String {
+    let hash = content.iter().fold(0xcbf29ce484222325_u64, |hash, byte| {
+        (hash ^ u64::from(*byte)).wrapping_mul(0x100000001b3)
+    });
+    format!("{hash:016x}")
+}
+
+fn asset_version(content: &str) -> String {
+    content_version(content.as_bytes())
+}
+
+fn etag_for_bytes(content: &[u8]) -> String {
+    format!("\"{}\"", content_version(content))
+}
+
+fn static_asset_response(path: &str) -> Option<StoredResponse> {
+    let (_locale, canonical_path) = canonical_pkg_route(path);
+    let (content_type, content) = match canonical_path.as_str() {
+        "/pkg/styles.css" => ("text/css; charset=utf-8", PKG_CSS),
+        "/pkg/search.js" => ("application/javascript; charset=utf-8", SEARCH_JS),
+        _ => return None,
+    };
+    Some(StoredResponse {
+        content_type: content_type.to_string(),
+        body: content.as_bytes().to_vec(),
+        etag: etag_for_bytes(content.as_bytes()),
+        last_modified: FALLBACK_LAST_MODIFIED.to_string(),
+        cache_control: HTML_CACHE_CONTROL.to_string(),
+    })
 }
 
 #[derive(Debug, Clone)]
@@ -560,6 +605,13 @@ fn dynamic_response_for_path(db_path: &Path, path: &str) -> Result<Option<Stored
             render_provider_sitemap(&connection, provider)?,
             "application/xml; charset=utf-8",
         ))
+    } else if canonical_path == "/pkg/.manifest.json" {
+        let manifest = metadata_json(&connection, "manifest")?.unwrap_or_else(|| json!({}));
+        Some((
+            serde_json::to_string_pretty(&manifest)
+                .map_err(|err| format!("failed to encode manifest json: {err}"))?,
+            "application/json; charset=utf-8",
+        ))
     } else if canonical_path == "/pkg/new.json" {
         Some((
             render_new_packages_json(&connection)?,
@@ -692,19 +744,37 @@ fn sitemap_provider(path: &str) -> Option<&str> {
 
 fn dynamic_stored_response(
     connection: &Connection,
-    path: &str,
+    _path: &str,
     content_type: &str,
     body: String,
 ) -> Result<StoredResponse, String> {
-    let source_hash = metadata_string(connection, "source_hash")?.unwrap_or_default();
     let last_modified = metadata_string(connection, "last_modified")?
-        .unwrap_or_else(|| "Wed, 03 Jun 2026 00:00:00 GMT".to_string());
+        .unwrap_or_else(|| FALLBACK_LAST_MODIFIED.to_string());
+    let body = body.into_bytes();
     Ok(StoredResponse {
         content_type: content_type.to_string(),
-        body: body.into_bytes(),
-        etag: format!("\"{}:{}\"", source_hash, path),
+        etag: etag_for_bytes(&body),
+        body,
         last_modified,
         cache_control: HTML_CACHE_CONTROL.to_string(),
+    })
+}
+
+fn stored_response_for_body(
+    db_path: &Path,
+    content_type: &str,
+    body: Vec<u8>,
+    cache_control: &str,
+) -> Result<StoredResponse, String> {
+    let connection = open_database(db_path)?;
+    let last_modified = metadata_string(&connection, "last_modified")?
+        .unwrap_or_else(|| FALLBACK_LAST_MODIFIED.to_string());
+    Ok(StoredResponse {
+        content_type: content_type.to_string(),
+        etag: etag_for_bytes(&body),
+        body,
+        last_modified,
+        cache_control: cache_control.to_string(),
     })
 }
 
@@ -1121,8 +1191,9 @@ fn render_index_page(connection: &Connection, locale: &Locale) -> Result<String,
         &schema_json,
         &body,
         &format!(
-            r#"  <script src="{}"></script>"#,
-            html_escape(&locale_path("/pkg/search.js", locale))
+            r#"  <script src="{}?v={}"></script>"#,
+            html_escape(&locale_path("/pkg/search.js", locale)),
+            asset_version(SEARCH_JS)
         ),
     ))
 }
@@ -1603,7 +1674,7 @@ fn html_doc(
         stylesheet = html_escape(&format!(
             "{}?v={}",
             locale_path("/pkg/styles.css", locale),
-            PKG_STYLESHEET_VERSION
+            asset_version(PKG_CSS)
         )),
         extra_head = extra_head,
         schema_json = schema_json,
@@ -1614,12 +1685,12 @@ fn html_doc(
 
 fn site_nav(locale: &Locale) -> String {
     format!(
-        r#"<header class="masthead"><a class="brand" href="{}" aria-label="{}"><span class="brand-mark" aria-hidden="true">p</span><span class="brand-type">pkg.so</span><span class="brand-tagline">package field notes</span></a><nav class="nav" aria-label="{}"><a href="{}">{}</a><a href="/sitemap.xml">Sitemap</a><a href="{}">JSON feed</a><a href="https://github.com/automic-vault/db">Source</a></nav></header>"#,
+        r#"<header class="masthead"><a class="brand" href="{}" aria-label="{}"><span class="brand-mark" aria-hidden="true">pkg</span><span class="brand-lockup"><span class="brand-type">pkg.so</span><span class="brand-tagline">open package index</span></span></a><nav class="nav" aria-label="{}"><a class="nav-primary" href="{}">{}</a><a href="/sitemap.xml">Index</a><a href="{}">Data feed</a><a href="https://github.com/automic-vault/db">GitHub <span aria-hidden="true">↗</span></a></nav></header>"#,
         html_escape(&locale_path("/", locale)),
         html_escape(&tx(locale, "brandHomeAria", "pkg.so package catalog")),
         html_escape(&tx(locale, "mainNavigation", "Main navigation")),
         html_escape(&locale_path("/", locale)),
-        html_escape(&tx(locale, "packages", "Packages")),
+        html_escape(&tx(locale, "packages", "Explore packages")),
         html_escape(&locale_path("/pkg/new.json", locale)),
     )
 }
@@ -5933,14 +6004,6 @@ mod tests {
                 "
                 CREATE TABLE metadata(key TEXT PRIMARY KEY, value TEXT NOT NULL);
                 INSERT INTO metadata(key, value) VALUES('schema', '1');
-                CREATE TABLE responses(
-                    path TEXT PRIMARY KEY,
-                    content_type TEXT NOT NULL,
-                    body BLOB NOT NULL,
-                    etag TEXT NOT NULL,
-                    last_modified TEXT NOT NULL,
-                    cache_control TEXT NOT NULL
-                );
                 CREATE TABLE search_documents(
                     path TEXT PRIMARY KEY,
                     locale TEXT NOT NULL,
@@ -6008,34 +6071,6 @@ mod tests {
                 )
                 .expect("insert metadata");
         }
-        connection
-            .execute(
-                "INSERT INTO responses(path, content_type, body, etag, last_modified, cache_control)
-                 VALUES(?1, ?2, ?3, ?4, ?5, ?6)",
-                params![
-                    "/pkg/brew/awscli/index.html",
-                    "text/html; charset=utf-8",
-                    b"<html>awscli</html>".to_vec(),
-                    "\"abc\"",
-                    "Tue, 02 Jun 2026 19:54:51 GMT",
-                    HTML_CACHE_CONTROL
-                ],
-            )
-            .expect("insert html");
-        connection
-            .execute(
-                "INSERT INTO responses(path, content_type, body, etag, last_modified, cache_control)
-                 VALUES(?1, ?2, ?3, ?4, ?5, ?6)",
-                params![
-                    "/pkg/brew/awscli/index.md",
-                    "text/markdown; charset=utf-8",
-                    b"# awscli\n".to_vec(),
-                    "\"def\"",
-                    "Tue, 02 Jun 2026 19:54:51 GMT",
-                    HTML_CACHE_CONTROL
-                ],
-            )
-            .expect("insert markdown");
         let aws_registry_insights = serde_json::json!({
             "sourceDatabase": "Homebrew formula API",
             "tap": "homebrew/core",
@@ -6600,12 +6635,6 @@ mod tests {
             Some("/fr/pkg/")
         );
         assert_eq!(slash_redirect_location("/not-pkg", None), None);
-        assert_eq!(normalize_response_path("/pkg"), "/pkg/index.html");
-        assert_eq!(normalize_response_path("/pkg/search.js"), "/pkg/search.js");
-        assert_eq!(
-            normalize_response_path("/pkg/brew/awscli"),
-            "/pkg/brew/awscli/index.html"
-        );
         assert!(is_search_path("/ja/pkg/search.json"));
         assert_eq!(
             locale_for_search("/zh-hans/pkg/search.json", &BTreeMap::new()),
@@ -6646,17 +6675,23 @@ mod tests {
     }
 
     #[test]
-    fn route_lookup_handles_trailing_slash_and_index_html() {
-        let db = test_database();
-        let slash = response_for_path(db.path(), "/pkg/brew/awscli/")
-            .expect("query")
-            .expect("slash response");
-        let index = response_for_path(db.path(), "/pkg/brew/awscli/index.html")
-            .expect("query")
-            .expect("index response");
+    fn static_assets_are_embedded_versioned_and_locale_independent() {
+        let css = static_asset_response("/pkg/styles.css").expect("css response");
+        let localized_css =
+            static_asset_response("/fr/pkg/styles.css").expect("localized css response");
+        let javascript = static_asset_response("/pkg/search.js").expect("javascript response");
 
-        assert_eq!(slash.body, index.body);
-        assert_eq!(slash.content_type, "text/html; charset=utf-8");
+        assert_eq!(css.body, localized_css.body);
+        assert_eq!(css.content_type, "text/css; charset=utf-8");
+        assert_eq!(css.cache_control, HTML_CACHE_CONTROL);
+        assert!(!css.cache_control.contains("immutable"));
+        assert_eq!(css.etag, format!("\"{}\"", asset_version(PKG_CSS)));
+        assert!(String::from_utf8(css.body).unwrap().contains("--surface"));
+        assert_eq!(
+            javascript.content_type,
+            "application/javascript; charset=utf-8"
+        );
+        assert!(static_asset_response("/pkg/brew/awscli/").is_none());
     }
 
     #[test]
@@ -6732,6 +6767,9 @@ mod tests {
         let new_json = dynamic_response_for_path(db.path(), "/pkg/new.json")
             .expect("query")
             .expect("new json response");
+        let manifest = dynamic_response_for_path(db.path(), "/pkg/.manifest.json")
+            .expect("query")
+            .expect("manifest response");
 
         let root_html = String::from_utf8(root.body).expect("root html");
         let localized_root_html =
@@ -6762,6 +6800,12 @@ mod tests {
             "User-agent: *\nAllow: /\nSitemap: https://pkg.so/sitemap.xml\n"
         );
         assert_eq!(root_sitemap.content_type, "application/xml; charset=utf-8");
+        assert_eq!(manifest.content_type, "application/json; charset=utf-8");
+        assert!(
+            String::from_utf8(manifest.body)
+                .unwrap()
+                .contains("source_file_count")
+        );
         assert!(
             String::from_utf8(root_sitemap.body)
                 .expect("root sitemap xml")
@@ -6772,7 +6816,7 @@ mod tests {
                 .contains(r#"<link rel="canonical" href="https://pkg.so/pkg/brew/awscli/">"#)
         );
         assert!(package_html.contains(r#"<meta property="og:site_name" content="pkg.so">"#));
-        assert!(package_html.contains("package field notes"));
+        assert!(package_html.contains("open package index"));
         assert!(!package_html.contains("class=\"brand-mark\" src="));
         assert!(package_html.contains("AWS credential file coverage"));
         assert!(package_html.contains("brew install awscli"));
@@ -7642,11 +7686,6 @@ mod tests {
         let db = test_database();
 
         assert!(
-            response_for_path(db.path(), "/pkg/brew/nope/")
-                .expect("query")
-                .is_none()
-        );
-        assert!(
             dynamic_response_for_path(db.path(), "/pkg/sitemap-gem.xml")
                 .expect("query")
                 .is_none()
@@ -7751,6 +7790,76 @@ mod tests {
             None,
         );
         assert!(missing.starts_with("HTTP/1.1 404 Not Found"));
+    }
+
+    #[test]
+    fn conditional_requests_support_etags_dates_and_precedence() {
+        let mut headers = BTreeMap::new();
+        let etag = "\"current\"";
+        let modified = "Tue, 02 Jun 2026 19:54:51 GMT";
+
+        headers.insert(
+            "if-none-match".to_string(),
+            "\"old\", W/\"current\"".to_string(),
+        );
+        assert!(request_is_not_modified(&headers, etag, modified));
+        headers.insert("if-none-match".to_string(), "*".to_string());
+        assert!(request_is_not_modified(&headers, etag, modified));
+        headers.insert("if-none-match".to_string(), "\"old\"".to_string());
+        headers.insert(
+            "if-modified-since".to_string(),
+            "Wed, 03 Jun 2026 00:00:00 GMT".to_string(),
+        );
+        assert!(!request_is_not_modified(&headers, etag, modified));
+        headers.remove("if-none-match");
+        assert!(request_is_not_modified(&headers, etag, modified));
+        headers.insert(
+            "if-modified-since".to_string(),
+            "Mon, 01 Jun 2026 00:00:00 GMT".to_string(),
+        );
+        assert!(!request_is_not_modified(&headers, etag, modified));
+    }
+
+    #[test]
+    fn handler_returns_empty_304_for_pages_search_redirects_and_misses() {
+        let db = test_database();
+        for target in [
+            "/pkg/brew/awscli/",
+            "/pkg/search.json?q=aws&limit=1",
+            "/pkg",
+            "/pkg/brew/nope/",
+        ] {
+            let initial = handle_raw_request(
+                db.path(),
+                &format!("GET {target} HTTP/1.1\r\nHost: test\r\n\r\n"),
+                None,
+            );
+            let etag = initial
+                .lines()
+                .find_map(|line| line.strip_prefix("etag: "))
+                .expect("cacheable response etag");
+            assert!(initial.contains("cache-control: public, max-age=300, s-maxage=300"));
+
+            let conditional = handle_raw_request(
+                db.path(),
+                &format!("GET {target} HTTP/1.1\r\nHost: test\r\nIf-None-Match: {etag}\r\n\r\n"),
+                None,
+            );
+            assert!(
+                conditional.starts_with("HTTP/1.1 304 Not Modified"),
+                "target {target}: {conditional}"
+            );
+            assert!(conditional.ends_with("\r\n\r\n"));
+            assert!(!conditional.contains("content-length:"));
+        }
+
+        let head = handle_raw_request(
+            db.path(),
+            "HEAD /pkg/brew/awscli/ HTTP/1.1\r\nHost: test\r\nIf-None-Match: *\r\n\r\n",
+            None,
+        );
+        assert!(head.starts_with("HTTP/1.1 304 Not Modified"));
+        assert!(head.ends_with("\r\n\r\n"));
     }
 
     #[test]

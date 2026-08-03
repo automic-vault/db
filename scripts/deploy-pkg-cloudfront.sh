@@ -223,9 +223,9 @@ fi
 
 jq -n --arg name "${cache_policy_name}" '{
   Name: $name,
-  Comment: "pkg.so package origin cache; CloudFront checks Atlas daily",
-  DefaultTTL: 86400,
-  MaxTTL: 86400,
+  Comment: "pkg.so package origin cache; CloudFront revalidates with Atlas every five minutes",
+  DefaultTTL: 300,
+  MaxTTL: 300,
   MinTTL: 0,
   ParametersInCacheKeyAndForwardedToOrigin: {
     EnableAcceptEncodingGzip: true,
@@ -238,9 +238,9 @@ jq -n --arg name "${cache_policy_name}" '{
 
 jq -n --arg name "${search_cache_policy_name}" '{
   Name: $name,
-  Comment: "pkg.so search cache with query parameters",
-  DefaultTTL: 86400,
-  MaxTTL: 86400,
+  Comment: "pkg.so search cache with query parameters; revalidates every five minutes",
+  DefaultTTL: 300,
+  MaxTTL: 300,
   MinTTL: 0,
   ParametersInCacheKeyAndForwardedToOrigin: {
     EnableAcceptEncodingGzip: true,

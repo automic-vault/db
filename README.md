@@ -22,8 +22,9 @@ are:
 - `combined/`: the final merged metadata
 
 Precedence is deterministic < agents < human override. Package-page data,
-search documents, hubs, localized responses, and sitemaps are compiled into
-`cache/pkg.sqlite`. There is no public `db.json` export.
+search documents, hubs, and generation metadata are compiled into
+`cache/pkg.sqlite`. HTML, CSS, JavaScript, and sitemaps are served by the Rust
+origin and are not stored in the database. There is no public `db.json` export.
 
 ## Run the `/pkg/` origin
 
@@ -38,19 +39,21 @@ av-web listening on 127.0.0.1:3004
 
 ## Atlas
 
-Deploy code and systemd units from Pangolin:
+Deploy code and systemd units directly from the Atlas checkout. The script
+builds the current working tree; it does not SSH, fetch, or require a commit:
 
 ```sh
+$ cd /apps/pkgdb
 $ scripts/deploy-atlas.sh
-$ ssh atlas codex login --device-auth
 ```
 
 Set `PKGDB_REBUILD_SQLITE=true` when renderer, stylesheet, crawler, or source
 inputs changed. The deploy generates and validates a new artifact on Atlas and
-atomically swaps it into service:
+coordinates its atomic swap with the matching origin binary. The flag form is
+preferred; the environment variable remains supported for compatibility:
 
 ```sh
-$ PKGDB_REBUILD_SQLITE=true scripts/deploy-atlas.sh
+$ scripts/deploy-atlas.sh --rebuild-sqlite
 ```
 
 `pkgdb-maintenance.timer` refreshes metadata nightly, runs bounded Codex
@@ -61,19 +64,22 @@ no restart. Failed builds leave the previous database serving.
 Inspect it with:
 
 ```sh
-$ ssh atlas systemctl status pkgdb-maintenance.timer automic-vault-web.service
-$ ssh atlas journalctl -u pkgdb-maintenance.service -n 100
+$ systemctl status pkgdb-maintenance.timer automic-vault-web.service
+$ journalctl -u pkgdb-maintenance.service -n 100
 ```
 
-Atlas has no GitHub credentials. Retrieve its metadata commits and push them
-from Pangolin:
+Atlas has no GitHub credentials. From Pangolin, retrieve Atlas metadata commits
+and push them with the external synchronization script:
 
 ```sh
 $ scripts/sync-atlas.sh
 ```
 
 `pkg.so` uses a dedicated CloudFront distribution in front of the same Atlas
-origin. Create or update it from Pangolin with:
+origin. Browser and edge responses are cached for five minutes, then revalidated
+with `ETag` or `Last-Modified` so unchanged content does not need to be
+retransmitted. CloudFront credentials stay off Atlas; create or update the
+distribution from Pangolin with:
 
 ```sh
 $ AV_WEB_ORIGIN_SECRET=... scripts/deploy-pkg-cloudfront.sh --prepare-only

@@ -1,5 +1,7 @@
 import importlib.util
+import sqlite3
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
@@ -21,6 +23,33 @@ pkg_sqlite = load_pkg_sqlite()
 
 
 class PackageSqliteTests(unittest.TestCase):
+    def test_schema_contains_only_structured_data_tables(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "pkg.sqlite"
+            connection = sqlite3.connect(database)
+            try:
+                pkg_sqlite.create_schema(connection)
+                tables = {
+                    row[0]
+                    for row in connection.execute(
+                        "SELECT name FROM sqlite_master WHERE type = 'table'"
+                    )
+                }
+            finally:
+                connection.close()
+
+        self.assertEqual(
+            tables,
+            {
+                "metadata",
+                "search_documents",
+                "packages",
+                "hubs",
+                "hub_packages",
+            },
+        )
+        self.assertNotIn("responses", tables)
+
     def test_stale_no_executable_geiger_reason_is_removed_when_executables_exist(self):
         page = SimpleNamespace(
             executables=[{"name": "aomdec"}],
