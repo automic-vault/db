@@ -91,6 +91,21 @@ def sshfs_page():
 
 
 class PackagePageRenderingTests(unittest.TestCase):
+    def test_catalog_is_canonical_at_the_site_root(self):
+        html = pkg_pages.render_index(
+            [sshfs_page()],
+            [],
+            {
+                "generated_at": "2026-06-12T00:00:00Z",
+                "radioisotope_manifest_count": 0,
+                "source_file_count": 1,
+            },
+        )
+
+        self.assertIn('<link rel="canonical" href="https://pkg.so/">', html)
+        self.assertIn('<a class="brand" href="../"', html)
+        self.assertNotIn('<link rel="canonical" href="https://pkg.so/pkg/">', html)
+
     def test_title_and_description_use_install_intent_and_managers(self):
         page = sshfs_page()
 

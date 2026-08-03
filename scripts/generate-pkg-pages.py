@@ -2149,8 +2149,8 @@ def render_index(
             "Source-backed package intelligence for executable tools, including install metadata, "
             "security signals, approval gates, and agent-oriented notes."
         )),
-        canonical=locale_url("/pkg/", locale),
-        alternates_path="/pkg/",
+        canonical=locale_url("/", locale),
+        alternates_path="/",
         locale=locale,
         body=f"""
 {nav('../', locale)}
@@ -2220,7 +2220,7 @@ def render_index(
             "@context": "https://schema.org",
             "@type": "CollectionPage",
             "name": tx(locale, "packageCatalogTitle", "Package security catalog"),
-            "url": locale_url("/pkg/", locale),
+            "url": locale_url("/", locale),
             "inLanguage": (locale or {}).get("htmlLang") or "en",
             "isPartOf": {"@type": "WebSite", "name": SITE_NAME, "url": SITE_ORIGIN + "/"},
             "about": tx(locale, "packageCatalogDescription", "Nucleus packages, AI agent package security, approval gates, and secret migration metadata"),
@@ -4784,7 +4784,7 @@ def render_sitemap_index(sitemap_names: list[str], manifest: dict[str, Any]) -> 
 
 def render_hub_sitemap(hubs: list[tuple[PackageHub, list[PackagePage]]], manifest: dict[str, Any]) -> str:
     lastmod = fmt_date(manifest.get("generated_at", ""))
-    urls = [sitemap_url(f"{SITE_ORIGIN}/pkg/", lastmod, "/pkg/")]
+    urls = [sitemap_url(f"{SITE_ORIGIN}/", lastmod, "/")]
     urls.extend(sitemap_url(f"{SITE_ORIGIN}{hub.path}", lastmod, hub.path) for hub, _hub_pages in hubs)
     return render_urlset(urls)
 
@@ -4823,13 +4823,13 @@ def sitemap_hreflang_lines(path: str) -> list[str]:
 def nav(root: str, locale: dict[str, Any] | None = None) -> str:
     return f"""
 <header class="masthead">
-  <a class="brand" href="{root}pkg/" aria-label="pkg.so package catalog">
+  <a class="brand" href="{root}" aria-label="pkg.so package catalog">
     <span class="brand-mark" aria-hidden="true">p</span>
     <span class="brand-type">pkg.so</span>
     <span class="brand-tagline">package field notes</span>
   </a>
   <nav class="nav" aria-label="Main navigation">
-    <a href="{root}pkg/">{html_escape(tx(locale, 'packages', 'Packages'))}</a>
+    <a href="{root}">{html_escape(tx(locale, 'packages', 'Packages'))}</a>
     <a href="{root}sitemap.xml">Sitemap</a>
     <a href="{root}pkg/new.json">JSON feed</a>
     <a href="https://github.com/automic-vault/db">Source</a>

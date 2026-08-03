@@ -526,6 +526,15 @@ fn dynamic_response_for_path(db_path: &Path, path: &str) -> Result<Option<Stored
             body,
         )?));
     }
+    if let Some(locale) = landing_locale(path) {
+        let connection = open_database(db_path)?;
+        return Ok(Some(dynamic_stored_response(
+            &connection,
+            path,
+            "text/html; charset=utf-8",
+            render_index_page(&connection, locale)?,
+        )?));
+    }
     let (locale, canonical_path) = canonical_pkg_route(path);
     if !canonical_path.starts_with("/pkg/") && canonical_path != "/pkg/index.html" {
         return Ok(None);
@@ -612,6 +621,12 @@ fn dynamic_response_for_path(db_path: &Path, path: &str) -> Result<Option<Stored
         content_type,
         body,
     )?))
+}
+
+fn landing_locale(path: &str) -> Option<&'static Locale> {
+    LOCALES
+        .iter()
+        .find(|locale| path == locale_path("/", locale))
 }
 
 fn canonical_pkg_route(path: &str) -> (&'static Locale, String) {
@@ -1099,7 +1114,7 @@ fn render_index_page(connection: &Connection, locale: &Locale) -> Result<String,
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         "name": catalog_title.clone(),
-        "url": locale_url("/pkg/", locale),
+        "url": locale_url("/", locale),
         "inLanguage": locale.hreflang,
         "isPartOf": {"@type": "WebSite", "name": SITE_NAME, "url": format!("{SITE_ORIGIN}/")},
         "about": tx(locale, "packageCatalogDescription", "Nucleus packages, AI agent package security, approval gates, and secret migration metadata")
@@ -1113,7 +1128,7 @@ fn render_index_page(connection: &Connection, locale: &Locale) -> Result<String,
             "packageCatalogDescription",
             "Source-backed package intelligence for executable tools, including install metadata, security signals, approval gates, and agent-oriented notes.",
         ),
-        &locale_url("/pkg/", locale),
+        &locale_url("/", locale),
         "index,follow",
         "",
         &schema_json,
@@ -1613,10 +1628,10 @@ fn html_doc(
 fn site_nav(locale: &Locale) -> String {
     format!(
         r#"<header class="masthead"><a class="brand" href="{}" aria-label="{}"><span class="brand-mark" aria-hidden="true">p</span><span class="brand-type">pkg.so</span><span class="brand-tagline">package field notes</span></a><nav class="nav" aria-label="{}"><a href="{}">{}</a><a href="/sitemap.xml">Sitemap</a><a href="{}">JSON feed</a><a href="https://github.com/automic-vault/db">Source</a></nav></header>"#,
-        html_escape(&locale_path("/pkg/", locale)),
+        html_escape(&locale_path("/", locale)),
         html_escape(&tx(locale, "brandHomeAria", "pkg.so package catalog")),
         html_escape(&tx(locale, "mainNavigation", "Main navigation")),
-        html_escape(&locale_path("/pkg/", locale)),
+        html_escape(&locale_path("/", locale)),
         html_escape(&tx(locale, "packages", "Packages")),
         html_escape(&locale_path("/pkg/new.json", locale)),
     )
@@ -5522,7 +5537,7 @@ fn render_sitemap_index(connection: &Connection) -> Result<String, String> {
 
 fn render_hub_sitemap(connection: &Connection) -> Result<String, String> {
     let lastmod = sitemap_lastmod(connection)?;
-    let mut urls = vec![sitemap_url("/pkg/", &lastmod)];
+    let mut urls = vec![sitemap_url("/", &lastmod)];
     for hub in hubs(connection)? {
         urls.push(sitemap_url(&hub.path, &lastmod));
     }
@@ -6669,6 +6684,12 @@ mod tests {
     #[test]
     fn dynamic_routes_render_package_hub_and_sitemap() {
         let db = test_database();
+        let root = dynamic_response_for_path(db.path(), "/")
+            .expect("query")
+            .expect("root response");
+        let localized_root = dynamic_response_for_path(db.path(), "/de/")
+            .expect("query")
+            .expect("localized root response");
         let robots = dynamic_response_for_path(db.path(), "/robots.txt")
             .expect("query")
             .expect("robots response");
@@ -6719,6 +6740,16 @@ mod tests {
             .expect("query")
             .expect("new json response");
 
+        let root_html = String::from_utf8(root.body).expect("root html");
+        let localized_root_html =
+            String::from_utf8(localized_root.body).expect("localized root html");
+        assert!(root_html.contains("<title>Package security catalog | pkg.so</title>"));
+        assert!(root_html.contains(r#"<link rel="canonical" href="https://pkg.so/">"#));
+        assert!(root_html.contains(r#"<a class="brand" href="/""#));
+        assert!(localized_root_html.contains("<html lang=\"de\">"));
+        assert!(
+            localized_root_html.contains(r#"<link rel="canonical" href="https://pkg.so/de/">"#)
+        );
         let package_html = String::from_utf8(package.body).expect("package html");
         assert_eq!(robots.content_type, "text/plain; charset=utf-8");
         assert_eq!(
@@ -6843,6 +6874,7 @@ mod tests {
 
         let index_html = String::from_utf8(index.body).expect("index html");
         assert!(index_html.contains("data-locale=\"de\""));
+        assert!(index_html.contains(r#"<link rel="canonical" href="https://pkg.so/de/">"#));
         assert!(index_html.contains("Risky tools"));
         assert!(index_html.contains("JavaScript"));
         assert!(index_html.contains("crates.io command packages"));
@@ -6851,6 +6883,7 @@ mod tests {
         assert!(sitemap_index_xml.contains("/pkg/sitemap-brew.xml"));
         assert!(sitemap_index_xml.contains("/pkg/sitemap-cargo.xml"));
         let hub_sitemap_xml = String::from_utf8(hub_sitemap.body).expect("hub sitemap xml");
+        assert!(hub_sitemap_xml.contains("<loc>https://pkg.so/</loc>"));
         assert!(hub_sitemap_xml.contains("/pkg/risky-tools/"));
         assert!(hub_sitemap_xml.contains("/pkg/crates-cli-packages/"));
         assert!(
