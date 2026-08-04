@@ -320,6 +320,10 @@ def locale_slug(locale: dict[str, Any] | None) -> str:
 
 
 def locale_path(path: str, locale: dict[str, Any] | None = None) -> str:
+    if path in {"/pkg", "/pkg/"}:
+        path = "/"
+    elif path.startswith("/pkg/"):
+        path = path[4:]
     slug = locale_slug(locale)
     if not slug:
         return path
@@ -440,7 +444,7 @@ class PackagePage:
 
     @property
     def path(self) -> str:
-        return f"/pkg/{self.provider}/{self.slug}/"
+        return f"/{self.provider}/{self.slug}/"
 
     @property
     def display_name(self) -> str:
@@ -475,7 +479,7 @@ class PackageHub:
 
     @property
     def path(self) -> str:
-        return f"/pkg/{self.slug}/"
+        return f"/{self.slug}/"
 
 
 def load_package_hubs() -> tuple[PackageHub, ...]:

@@ -150,7 +150,7 @@ fn handle_connection(mut stream: TcpStream, state: &AppState) -> Result<(), Stri
         );
     }
 
-    if let Some(location) = slash_redirect_location(&request.path, request.query.as_deref()) {
+    if let Some(location) = legacy_pkg_redirect_location(&request.path, request.query.as_deref()) {
         let response = StoredResponse {
             content_type: "text/plain; charset=utf-8".to_string(),
             body: Vec::new(),
@@ -181,9 +181,8 @@ fn handle_connection(mut stream: TcpStream, state: &AppState) -> Result<(), Stri
     }
 
     if request.path == "/db.json" {
-        let body = fs::read(&state.public_db_path).map_err(|err| {
-            format!("failed to read {}: {err}", state.public_db_path.display())
-        })?;
+        let body = fs::read(&state.public_db_path)
+            .map_err(|err| format!("failed to read {}: {err}", state.public_db_path.display()))?;
         let response = StoredResponse {
             content_type: "application/json; charset=utf-8".to_string(),
             etag: etag_for_bytes(&body),
@@ -405,13 +404,11 @@ fn constant_time_eq(left: &[u8], right: &[u8]) -> bool {
     diff == 0
 }
 
-fn slash_redirect_location(path: &str, query: Option<&str>) -> Option<String> {
-    let base = match path {
-        "/pkg" | "/de/pkg" | "/fr/pkg" | "/ja/pkg" | "/zh-hans/pkg" => {
-            format!("{path}/")
-        }
-        _ => return None,
-    };
+fn legacy_pkg_redirect_location(path: &str, query: Option<&str>) -> Option<String> {
+    let base = flatten_legacy_pkg_path(path);
+    if base == path {
+        return None;
+    }
     Some(match query {
         Some(query) if !query.is_empty() => format!("{base}?{query}"),
         _ => base,
@@ -419,11 +416,11 @@ fn slash_redirect_location(path: &str, query: Option<&str>) -> Option<String> {
 }
 
 fn is_search_path(path: &str) -> bool {
-    path == "/pkg/search.json"
-        || path == "/de/pkg/search.json"
-        || path == "/fr/pkg/search.json"
-        || path == "/ja/pkg/search.json"
-        || path == "/zh-hans/pkg/search.json"
+    path == "/search.json"
+        || path == "/de/search.json"
+        || path == "/fr/search.json"
+        || path == "/ja/search.json"
+        || path == "/zh-hans/search.json"
 }
 
 fn path_has_extension(path: &str) -> bool {
@@ -718,19 +715,24 @@ fn feed_locale(path: &str) -> Option<&'static Locale> {
 
 fn canonical_pkg_route(path: &str) -> (&'static Locale, String) {
     let mut locale = &LOCALES[0];
-    let mut canonical = path.to_string();
+    let mut route = path.to_string();
     for candidate in LOCALES.iter().skip(1) {
-        if path == format!("{}/pkg", candidate.prefix) {
+        if path == candidate.prefix || path == format!("{}/", candidate.prefix) {
             locale = candidate;
-            canonical = "/pkg".to_string();
+            route = "/".to_string();
             break;
         }
-        if let Some(rest) = path.strip_prefix(&format!("{}/pkg/", candidate.prefix)) {
+        if let Some(rest) = path.strip_prefix(&format!("{}/", candidate.prefix)) {
             locale = candidate;
-            canonical = format!("/pkg/{rest}");
+            route = format!("/{rest}");
             break;
         }
     }
+    let mut canonical = if route == "/pkg" || route.starts_with("/pkg/") {
+        route
+    } else {
+        format!("/pkg{route}")
+    };
     if canonical == "/pkg" {
         canonical = "/pkg/index.html".to_string();
     } else if canonical.ends_with('/') {
@@ -1093,7 +1095,7 @@ where
 
 fn package_json_value(package: &PackageRow) -> Value {
     json!({
-        "path": package.path,
+        "path": public_catalog_path(&package.path),
         "provider": package.provider,
         "slug": package.slug,
         "packageKey": package.package_key,
@@ -1148,6 +1150,7 @@ fn render_feed_page(locale: &Locale) -> String {
     let manifest = locale_path("/pkg/.manifest.json", locale);
     let search = format!("{}?q=awscli", locale_path("/pkg/search.json", locale));
     let package_example = locale_path("/pkg/brew/awscli.json", locale);
+    let database = "/db.json";
     let mut body = String::new();
     body.push_str(&site_nav(locale));
     body.push_str("<main>");
@@ -1158,7 +1161,7 @@ fn render_feed_page(locale: &Locale) -> String {
         html_escape(&tx(locale, "dataFeedCopy", "All public pkg.so JSON endpoints are free for anyone to use. Browse the catalog feeds below, search programmatically, or add .json to a package URL for its complete record.")),
     ));
     body.push_str(&format!(
-        r#"<section class="pkg-section split-section"><div><p class="section-kicker">{}</p><h2>{}</h2><p>{}</p></div><div class="detail-stack"><article><h3><a href="{}">{}</a></h3><p>{}</p><code>{}</code></article><article><h3><a href="{}">{}</a></h3><p>{}</p><code>{}</code></article><article><h3><a href="{}">{}</a></h3><p>{}</p><code>{}</code></article></div></section>"#,
+        r#"<section class="pkg-section split-section"><div><p class="section-kicker">{}</p><h2>{}</h2><p>{}</p></div><div class="detail-stack"><article><h3><a href="{}">{}</a></h3><p>{}</p><code>{}</code></article><article><h3><a href="{}">{}</a></h3><p>{}</p><code>{}</code></article><article><h3><a href="{}">{}</a></h3><p>{}</p><code>{}</code></article><article><h3><a href="{}">{}</a></h3><p>{}</p><code>{}</code></article></div></section>"#,
         html_escape(&tx(locale, "jsonEndpointsKicker", "JSON endpoints")),
         html_escape(&tx(locale, "catalogFeedsTitle", "Catalog-level feeds")),
         html_escape(&tx(locale, "catalogFeedsCopy", "These endpoints expose recent additions, build metadata, and searchable package records.")),
@@ -1168,6 +1171,8 @@ fn render_feed_page(locale: &Locale) -> String {
         html_escape(&tx(locale, "manifestFeedCopy", "Catalog counts, generation timestamps, source hashes, and sitemap totals.")), html_escape(&manifest),
         html_escape(&search), html_escape(&tx(locale, "searchFeed", "Search API")),
         html_escape(&tx(locale, "searchFeedCopy", "Search package titles, keys, summaries, and indexed metadata. Use q, limit, and offset query parameters.")), html_escape(&search),
+        html_escape(database), html_escape(&tx(locale, "databaseFeed", "Complete database export")),
+        html_escape(&tx(locale, "databaseFeedCopy", "The complete canonical package metadata database as a single JSON document.")), html_escape(database),
     ));
     body.push_str(&format!(
         r#"<section class="pkg-section split-section"><div><p class="section-kicker">{}</p><h2>{}</h2><p>{}</p></div><div class="detail-stack"><article><h3>{}</h3><p>{}</p><code>{}</code><p><a href="{}">{}</a></p></article><article><h3>{}</h3><p>{}</p><code>application/json</code></article></div></section>"#,
@@ -5771,18 +5776,20 @@ fn sitemap_lastmod(connection: &Connection) -> Result<String, String> {
 }
 
 fn sitemap_entry(xml: &mut String, path: &str, lastmod: &str) {
+    let path = public_catalog_path(path);
     xml.push_str(&format!(
         "  <sitemap>\n    <loc>{}{}</loc>\n    <lastmod>{}</lastmod>\n  </sitemap>\n",
         SITE_ORIGIN,
-        html_escape(path),
+        html_escape(&path),
         html_escape(lastmod)
     ));
 }
 
 fn sitemap_url(path: &str, lastmod: &str) -> String {
+    let path = public_catalog_path(path);
     let mut lines = vec![
         "  <url>".to_string(),
-        format!("    <loc>{}{}</loc>", SITE_ORIGIN, html_escape(path)),
+        format!("    <loc>{}{}</loc>", SITE_ORIGIN, html_escape(&path)),
         format!("    <lastmod>{}</lastmod>", html_escape(lastmod)),
     ];
     for locale in LOCALES {
@@ -5790,13 +5797,13 @@ fn sitemap_url(path: &str, lastmod: &str) -> String {
             "    <xhtml:link rel=\"alternate\" hreflang=\"{}\" href=\"{}{}\" />",
             html_escape(locale.hreflang),
             SITE_ORIGIN,
-            html_escape(&locale_path(path, locale))
+            html_escape(&locale_path(&path, locale))
         ));
     }
     lines.push(format!(
         "    <xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"{}{}\" />",
         SITE_ORIGIN,
-        html_escape(path)
+        html_escape(&path)
     ));
     lines.push("  </url>".to_string());
     lines.join("\n")
@@ -5809,9 +5816,37 @@ fn render_urlset(urls: &[String]) -> String {
     )
 }
 
-fn locale_path(path: &str, locale: &Locale) -> String {
-    if locale.prefix.is_empty() {
+fn public_catalog_path(path: &str) -> String {
+    if path == "/pkg" || path == "/pkg/" {
+        "/".to_string()
+    } else if let Some(rest) = path.strip_prefix("/pkg/") {
+        format!("/{rest}")
+    } else {
         path.to_string()
+    }
+}
+
+fn flatten_legacy_pkg_path(path: &str) -> String {
+    for locale in LOCALES {
+        let legacy_prefix = format!("{}/pkg", locale.prefix);
+        if path == legacy_prefix || path == format!("{legacy_prefix}/") {
+            return if locale.prefix.is_empty() {
+                "/".to_string()
+            } else {
+                format!("{}/", locale.prefix)
+            };
+        }
+        if let Some(rest) = path.strip_prefix(&format!("{legacy_prefix}/")) {
+            return format!("{}/{rest}", locale.prefix);
+        }
+    }
+    path.to_string()
+}
+
+fn locale_path(path: &str, locale: &Locale) -> String {
+    let path = public_catalog_path(path);
+    if locale.prefix.is_empty() {
+        path
     } else {
         format!("{}{}", locale.prefix, path)
     }
@@ -5861,10 +5896,10 @@ fn locale_for_search(path: &str, query: &BTreeMap<String, String>) -> String {
         return locale.to_string();
     }
     match path {
-        "/de/pkg/search.json" => "de",
-        "/fr/pkg/search.json" => "fr",
-        "/ja/pkg/search.json" => "ja",
-        "/zh-hans/pkg/search.json" => "zh-Hans",
+        "/de/search.json" => "de",
+        "/fr/search.json" => "fr",
+        "/ja/search.json" => "ja",
+        "/zh-hans/search.json" => "zh-Hans",
         _ => "en",
     }
     .to_string()
@@ -5957,6 +5992,9 @@ fn search_documents(
     let mut results = rows
         .collect::<Result<Vec<_>, _>>()
         .map_err(|err| format!("failed to read search rows: {err}"))?;
+    for result in &mut results {
+        result.url = flatten_legacy_pkg_path(&result.url);
+    }
     results.retain(|result| result.search_rank(&normalized_query).is_some());
     results.sort_by(|left, right| {
         left.search_sort_key(&normalized_query)
@@ -6755,18 +6793,22 @@ mod tests {
             ("/pkg/brew/awscli".to_string(), None)
         );
         assert_eq!(
-            slash_redirect_location("/fr/pkg", None).as_deref(),
-            Some("/fr/pkg/")
+            legacy_pkg_redirect_location("/fr/pkg/brew/awscli/", None).as_deref(),
+            Some("/fr/brew/awscli/")
         );
-        assert_eq!(slash_redirect_location("/not-pkg", None), None);
-        assert!(is_search_path("/ja/pkg/search.json"));
         assert_eq!(
-            locale_for_search("/zh-hans/pkg/search.json", &BTreeMap::new()),
+            legacy_pkg_redirect_location("/pkg/search.json", Some("q=aws")).as_deref(),
+            Some("/search.json?q=aws")
+        );
+        assert_eq!(legacy_pkg_redirect_location("/not-pkg", None), None);
+        assert!(is_search_path("/ja/search.json"));
+        assert_eq!(
+            locale_for_search("/zh-hans/search.json", &BTreeMap::new()),
             "zh-Hans"
         );
         assert_eq!(
             locale_for_search(
-                "/pkg/search.json",
+                "/search.json",
                 &BTreeMap::from([("locale".to_string(), "ja".to_string())])
             ),
             "ja"
@@ -6780,6 +6822,10 @@ mod tests {
                 .contains("hreflang=\"x-default\"")
         );
         assert_eq!(canonical_pkg_route("/fr/pkg").1, "/pkg/index.html");
+        assert_eq!(
+            canonical_pkg_route("/fr/brew/awscli/").1,
+            "/pkg/brew/awscli/index.html"
+        );
         assert_eq!(
             canonical_pkg_route("/pkg/brew/awscli").1,
             "/pkg/brew/awscli/index.html"
@@ -6848,47 +6894,47 @@ mod tests {
         let root_sitemap = dynamic_response_for_path(db.path(), "/sitemap.xml")
             .expect("query")
             .expect("root sitemap response");
-        let package = dynamic_response_for_path(db.path(), "/pkg/brew/awscli/")
+        let package = dynamic_response_for_path(db.path(), "/brew/awscli/")
             .expect("query")
             .expect("package response");
-        let cargo_package = dynamic_response_for_path(db.path(), "/pkg/cargo/ripgrep/")
+        let cargo_package = dynamic_response_for_path(db.path(), "/cargo/ripgrep/")
             .expect("query")
             .expect("cargo package response");
-        let localized_package = dynamic_response_for_path(db.path(), "/fr/pkg/brew/awscli/")
+        let localized_package = dynamic_response_for_path(db.path(), "/fr/brew/awscli/")
             .expect("query")
             .expect("localized package response");
-        let hub = dynamic_response_for_path(db.path(), "/pkg/cloud/")
+        let hub = dynamic_response_for_path(db.path(), "/cloud/")
             .expect("query")
             .expect("hub response");
-        let hub_markdown = dynamic_response_for_path(db.path(), "/pkg/cloud/index.md")
+        let hub_markdown = dynamic_response_for_path(db.path(), "/cloud/index.md")
             .expect("query")
             .expect("hub markdown response");
-        let crates_hub = dynamic_response_for_path(db.path(), "/pkg/crates-cli-packages/")
+        let crates_hub = dynamic_response_for_path(db.path(), "/crates-cli-packages/")
             .expect("query")
             .expect("crates.io hub response");
         let crates_hub_markdown =
-            dynamic_response_for_path(db.path(), "/pkg/crates-cli-packages/index.md")
+            dynamic_response_for_path(db.path(), "/crates-cli-packages/index.md")
                 .expect("query")
                 .expect("crates.io hub markdown response");
-        let index = dynamic_response_for_path(db.path(), "/de/pkg/")
+        let index = dynamic_response_for_path(db.path(), "/de/")
             .expect("query")
             .expect("localized index response");
-        let sitemap_index = dynamic_response_for_path(db.path(), "/pkg/sitemap.xml")
+        let sitemap_index = dynamic_response_for_path(db.path(), "/sitemap.xml")
             .expect("query")
             .expect("sitemap index response");
-        let hub_sitemap = dynamic_response_for_path(db.path(), "/pkg/sitemap-hubs.xml")
+        let hub_sitemap = dynamic_response_for_path(db.path(), "/sitemap-hubs.xml")
             .expect("query")
             .expect("hub sitemap response");
-        let sitemap = dynamic_response_for_path(db.path(), "/pkg/sitemap-brew.xml")
+        let sitemap = dynamic_response_for_path(db.path(), "/sitemap-brew.xml")
             .expect("query")
             .expect("sitemap response");
-        let cargo_sitemap = dynamic_response_for_path(db.path(), "/pkg/sitemap-cargo.xml")
+        let cargo_sitemap = dynamic_response_for_path(db.path(), "/sitemap-cargo.xml")
             .expect("query")
             .expect("cargo sitemap response");
-        let package_json = dynamic_response_for_path(db.path(), "/pkg/brew/awscli.json")
+        let package_json = dynamic_response_for_path(db.path(), "/brew/awscli.json")
             .expect("query")
             .expect("package json response");
-        let new_json = dynamic_response_for_path(db.path(), "/pkg/new.json")
+        let new_json = dynamic_response_for_path(db.path(), "/new.json")
             .expect("query")
             .expect("new json response");
         let feed_page = dynamic_response_for_path(db.path(), "/feed/")
@@ -6897,7 +6943,7 @@ mod tests {
         let localized_feed = dynamic_response_for_path(db.path(), "/de/feed/")
             .expect("query")
             .expect("localized feed response");
-        let manifest = dynamic_response_for_path(db.path(), "/pkg/.manifest.json")
+        let manifest = dynamic_response_for_path(db.path(), "/.manifest.json")
             .expect("query")
             .expect("manifest response");
 
@@ -6946,11 +6992,10 @@ mod tests {
         assert!(
             String::from_utf8(root_sitemap.body)
                 .expect("root sitemap xml")
-                .contains("https://pkg.so/pkg/sitemap-brew.xml")
+                .contains("https://pkg.so/sitemap-brew.xml")
         );
         assert!(
-            package_html
-                .contains(r#"<link rel="canonical" href="https://pkg.so/pkg/brew/awscli/">"#)
+            package_html.contains(r#"<link rel="canonical" href="https://pkg.so/brew/awscli/">"#)
         );
         assert!(package_html.contains(r#"<meta property="og:site_name" content="pkg.so">"#));
         assert!(package_html.contains("open package index"));
@@ -7034,20 +7079,20 @@ mod tests {
         assert!(hub_html.contains("Related hubs"));
         assert!(hub_html.contains("Source control"));
         assert!(hub_html.contains(r#"type="text/markdown""#));
-        assert!(hub_html.contains("/pkg/cloud/index.md"));
+        assert!(hub_html.contains("/cloud/index.md"));
 
         assert_eq!(hub_markdown.content_type, "text/markdown; charset=utf-8");
         let hub_markdown = String::from_utf8(hub_markdown.body).expect("hub markdown");
         assert!(hub_markdown.contains("# Cloud"));
         assert!(hub_markdown.contains("Cloud tools"));
-        assert!(hub_markdown.contains("[awscli](https://pkg.so/pkg/brew/awscli/)"));
+        assert!(hub_markdown.contains("[awscli](https://pkg.so/brew/awscli/)"));
 
         let crates_hub_html = String::from_utf8(crates_hub.body).expect("crates.io hub html");
         assert!(crates_hub_html.contains("crates.io command packages"));
         assert!(crates_hub_html.contains("ripgrep"));
         assert!(crates_hub_html.contains("Cargo"));
         assert!(crates_hub_html.contains("Matched crates.io Cargo package provider."));
-        assert!(crates_hub_html.contains("/pkg/crates-cli-packages/index.md"));
+        assert!(crates_hub_html.contains("/crates-cli-packages/index.md"));
 
         assert_eq!(
             crates_hub_markdown.content_type,
@@ -7056,7 +7101,7 @@ mod tests {
         let crates_hub_markdown =
             String::from_utf8(crates_hub_markdown.body).expect("crates.io hub markdown");
         assert!(crates_hub_markdown.contains("# crates.io command packages"));
-        assert!(crates_hub_markdown.contains("[ripgrep](https://pkg.so/pkg/cargo/ripgrep/)"));
+        assert!(crates_hub_markdown.contains("[ripgrep](https://pkg.so/cargo/ripgrep/)"));
 
         let index_html = String::from_utf8(index.body).expect("index html");
         assert!(index_html.contains("data-locale=\"de\""));
@@ -7066,14 +7111,14 @@ mod tests {
         assert!(index_html.contains("crates.io command packages"));
 
         let sitemap_index_xml = String::from_utf8(sitemap_index.body).expect("sitemap index xml");
-        assert!(sitemap_index_xml.contains("/pkg/sitemap-brew.xml"));
-        assert!(sitemap_index_xml.contains("/pkg/sitemap-cargo.xml"));
+        assert!(sitemap_index_xml.contains("/sitemap-brew.xml"));
+        assert!(sitemap_index_xml.contains("/sitemap-cargo.xml"));
         let hub_sitemap_xml = String::from_utf8(hub_sitemap.body).expect("hub sitemap xml");
         assert!(hub_sitemap_xml.contains("<loc>https://pkg.so/</loc>"));
         assert!(hub_sitemap_xml.contains("<loc>https://pkg.so/feed/</loc>"));
         assert!(!hub_sitemap_xml.contains("/pkg/data/"));
-        assert!(hub_sitemap_xml.contains("/pkg/risky-tools/"));
-        assert!(hub_sitemap_xml.contains("/pkg/crates-cli-packages/"));
+        assert!(hub_sitemap_xml.contains("/risky-tools/"));
+        assert!(hub_sitemap_xml.contains("/crates-cli-packages/"));
         assert!(
             String::from_utf8(sitemap.body)
                 .expect("sitemap xml")
@@ -7082,7 +7127,7 @@ mod tests {
         assert!(
             String::from_utf8(cargo_sitemap.body)
                 .expect("cargo sitemap xml")
-                .contains("/pkg/cargo/ripgrep/")
+                .contains("/cargo/ripgrep/")
         );
 
         assert_eq!(package_json.content_type, "application/json; charset=utf-8");
@@ -7101,11 +7146,12 @@ mod tests {
         assert_eq!(feed_page.content_type, "text/html; charset=utf-8");
         let feed_html = String::from_utf8(feed_page.body).expect("feed page html");
         assert!(feed_html.contains(r#"<link rel="canonical" href="https://pkg.so/feed/">"#));
-        assert!(feed_html.contains("/pkg/new.json"));
-        assert!(feed_html.contains("/pkg/.manifest.json"));
-        assert!(feed_html.contains("/pkg/search.json?q=awscli"));
+        assert!(feed_html.contains("/new.json"));
+        assert!(feed_html.contains("/.manifest.json"));
+        assert!(feed_html.contains("/search.json?q=awscli"));
         assert!(feed_html.contains("q, limit, and offset"));
-        assert!(feed_html.contains("/pkg/brew/awscli.json"));
+        assert!(feed_html.contains("/brew/awscli.json"));
+        assert!(feed_html.contains("/db.json"));
         assert!(feed_html.contains("free of charge"));
         assert!(feed_html.contains("rate-limit, block, or take other action"));
         assert!(
@@ -7171,7 +7217,7 @@ mod tests {
         assert!(text.contains("- 2020: AWS CLI v2 becomes the default generation of the tool."));
         assert!(text.contains("AWS credential file coverage"));
         assert!(text.contains("Upstream latest detected"));
-        assert!(text.contains("[Cloud](https://pkg.so/pkg/cloud/)"));
+        assert!(text.contains("[Cloud](https://pkg.so/cloud/)"));
         assert!(text.contains("Source archive"));
         assert!(text.contains("Source Database Details"));
         assert!(text.contains("Other Package-Manager Records"));
@@ -7905,9 +7951,9 @@ mod tests {
         let decoded = parse_query("q=aws+cli&limit=1&offset=0");
         let query = parse_query("q=aws&limit=1&offset=0");
         let empty = search_documents(db.path(), "   ", "en", 0, 10).expect("empty search");
-        let de = search_response_json(db.path(), "/de/pkg/search.json", &parse_query("q=aws"))
+        let de = search_response_json(db.path(), "/de/search.json", &parse_query("q=aws"))
             .expect("de search");
-        let paged = search_response_json(db.path(), "/pkg/search.json", &query).expect("search");
+        let paged = search_response_json(db.path(), "/search.json", &query).expect("search");
 
         assert_eq!(decoded.get("q").map(String::as_str), Some("aws cli"));
         assert_eq!(empty.results, Vec::new());
@@ -7953,11 +7999,11 @@ mod tests {
             Some("secret"),
         );
         assert!(redirected.starts_with("HTTP/1.1 301 Moved Permanently"));
-        assert!(redirected.contains("location: /pkg/?q=aws"));
+        assert!(redirected.contains("location: /?q=aws"));
 
         let search = handle_raw_request(
             db.path(),
-            "GET /pkg/search.json?q=aws&limit=1 HTTP/1.1\r\nHost: test\r\n\r\n",
+            "GET /search.json?q=aws&limit=1 HTTP/1.1\r\nHost: test\r\n\r\n",
             None,
         );
         assert!(search.starts_with("HTTP/1.1 200 OK"));
@@ -7977,19 +8023,22 @@ mod tests {
 
         let head = handle_raw_request(
             db.path(),
-            "HEAD /pkg/brew/awscli/ HTTP/1.1\r\nHost: test\r\n\r\n",
+            "HEAD /brew/awscli/ HTTP/1.1\r\nHost: test\r\n\r\n",
             None,
         );
         assert!(head.starts_with("HTTP/1.1 200 OK"));
         assert!(!head.contains("AWS credential file coverage"));
 
-        let method =
-            handle_raw_request(db.path(), "POST /pkg/ HTTP/1.1\r\nHost: test\r\n\r\n", None);
+        let method = handle_raw_request(
+            db.path(),
+            "POST /brew/ HTTP/1.1\r\nHost: test\r\n\r\n",
+            None,
+        );
         assert!(method.starts_with("HTTP/1.1 405 Method Not Allowed"));
 
         let missing = handle_raw_request(
             db.path(),
-            "GET /pkg/brew/nope/ HTTP/1.1\r\nHost: test\r\n\r\n",
+            "GET /brew/nope/ HTTP/1.1\r\nHost: test\r\n\r\n",
             None,
         );
         assert!(missing.starts_with("HTTP/1.1 404 Not Found"));
@@ -8027,10 +8076,10 @@ mod tests {
     fn handler_returns_empty_304_for_pages_search_redirects_and_misses() {
         let db = test_database();
         for target in [
-            "/pkg/brew/awscli/",
-            "/pkg/search.json?q=aws&limit=1",
+            "/brew/awscli/",
+            "/search.json?q=aws&limit=1",
             "/pkg",
-            "/pkg/brew/nope/",
+            "/brew/nope/",
         ] {
             let initial = handle_raw_request(
                 db.path(),
@@ -8058,7 +8107,7 @@ mod tests {
 
         let head = handle_raw_request(
             db.path(),
-            "HEAD /pkg/brew/awscli/ HTTP/1.1\r\nHost: test\r\nIf-None-Match: *\r\n\r\n",
+            "HEAD /brew/awscli/ HTTP/1.1\r\nHost: test\r\nIf-None-Match: *\r\n\r\n",
             None,
         );
         assert!(head.starts_with("HTTP/1.1 304 Not Modified"));

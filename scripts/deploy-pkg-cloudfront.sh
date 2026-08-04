@@ -343,11 +343,11 @@ search_behaviors_json="$(jq -cn \
   '{
     Quantity: 5,
     Items: [
-      ($behavior + {PathPattern: "pkg/search.json"}),
-      ($behavior + {PathPattern: "de/pkg/search.json"}),
-      ($behavior + {PathPattern: "fr/pkg/search.json"}),
-      ($behavior + {PathPattern: "ja/pkg/search.json"}),
-      ($behavior + {PathPattern: "zh-hans/pkg/search.json"})
+      ($behavior + {PathPattern: "search.json"}),
+      ($behavior + {PathPattern: "de/search.json"}),
+      ($behavior + {PathPattern: "fr/search.json"}),
+      ($behavior + {PathPattern: "ja/search.json"}),
+      ($behavior + {PathPattern: "zh-hans/search.json"})
     ]
   }')"
 

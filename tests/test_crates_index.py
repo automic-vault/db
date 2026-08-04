@@ -568,7 +568,7 @@ name = "bat"
         page = pages["cargo:ripgrep"]
 
         self.assertEqual(page.provider, "cargo")
-        self.assertEqual(page.path, "/pkg/cargo/ripgrep/")
+        self.assertEqual(page.path, "/cargo/ripgrep/")
         self.assertEqual(pkg_pages.native_install_command(page), "cargo install ripgrep")
         self.assertNotIn("cargo:ripgrep", sources["db"]["entries"].values())
 

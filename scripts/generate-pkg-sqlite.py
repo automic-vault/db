@@ -575,7 +575,7 @@ def package_routes(pages: list[Any]) -> dict[str, PackageRoute]:
                 slug = f"{base_slug}-{route_hash(page)}"
             assigned.add(slug)
             routes[str(getattr(page, "key", ""))] = PackageRoute(
-                path=f"/pkg/{provider}/{slug}/",
+                path=f"/{provider}/{slug}/",
                 slug=slug,
             )
     return routes

@@ -1,6 +1,6 @@
 # Package Metadata Database
 
-The metadata and live SQLite origin behind Automic Vault’s `/pkg/` catalog.
+The metadata and live SQLite origin behind the pkg.so package catalog.
 
 > [!IMPORTANT]
 > CLIs only. Library-only and transitive dependencies don’t belong here.
@@ -27,7 +27,7 @@ search documents, hubs, and generation metadata are compiled into
 `cache/automic-vault/db.json` and served publicly at `https://pkg.so/db.json`.
 HTML, CSS, JavaScript, and sitemaps are served by the Rust origin.
 
-## Run the `/pkg/` origin
+## Run the pkg.so origin
 
 ```sh
 $ AV_WEB_DB_PATH=cache/pkg.sqlite cargo run --release -p av-web
@@ -94,8 +94,8 @@ until that certificate is issued, then attaches the `pkg.so` alias on the next
 run. The script reports the required ACM CNAME but does not change DNS.
 
 The existing `atomicvault.com/pkg/` CloudFront behaviors stay live during the
-migration. Their redirect to `https://pkg.so/pkg/...` is staged in `../av.www`
-and must be enabled separately after DNS and production verification.
+migration. Their redirects into the flattened `https://pkg.so/...` catalog are
+managed separately in `../av.www`.
 
 ## Checks
 

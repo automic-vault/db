@@ -18,7 +18,7 @@
 
   function init(root) {
     const locale = root.dataset.locale || "en";
-    const endpoint = root.dataset.searchEndpoint || "/pkg/search.json";
+    const endpoint = root.dataset.searchEndpoint || "/search.json";
     const placeholder = root.dataset.placeholder || "Search packages";
     root.innerHTML = `
       <form class="av-search-form" role="search">
