@@ -15,7 +15,7 @@ import zipfile
 from collections import defaultdict
 from typing import Any
 
-from .common import fetch_bytes, stable_hash, stable_hash_bytes
+from .common import CACHE_DIR, fetch_bytes, read_json, stable_hash, stable_hash_bytes
 
 
 SCHEMA_VERSION = 1
@@ -225,6 +225,48 @@ def dedupe_records(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [result[key] for key in sorted(result)]
 
 
+def local_match_names() -> set[str]:
+    """Return only names the deterministic Homebrew renderer can query.
+
+    Keeping every package from every external package manager made the cache
+    hundreds of megabytes and retained all of it while later managers were
+    parsed.  The renderer only ever looks up Homebrew formula names and their
+    executables, so retaining unrelated records is pure memory overhead.
+    """
+    formulae = read_json(CACHE_DIR / "brew" / "formulae.json").get("formulae") or []
+    executables = read_json(CACHE_DIR / "brew" / "executables.json").get("packages") or {}
+    names: set[str] = set()
+    for formula in formulae:
+        if not isinstance(formula, dict):
+            continue
+        name = str(formula.get("name") or "").strip()
+        if not name:
+            continue
+        names.add(normalize_match(name))
+        for tier in versioned_name_tiers(name):
+            names.update(tier)
+    if isinstance(executables, dict):
+        for package_name, package_executables in executables.items():
+            names.add(normalize_match(str(package_name)))
+            if isinstance(package_executables, list):
+                names.update(normalize_match(str(item)) for item in package_executables)
+    return {name for name in names if name}
+
+
+def filter_records_for_local_names(
+    records: list[dict[str, Any]],
+    wanted_names: set[str],
+    required_ids: set[str] | None = None,
+) -> list[dict[str, Any]]:
+    required_ids = required_ids or set()
+    return [
+        item
+        for item in records
+        if str(item.get("id") or "") in required_ids
+        or bool(set(item.get("match_names") or []) & wanted_names)
+    ]
+
+
 def parse_debian_packages(data: bytes, source_url: str) -> list[dict[str, Any]]:
     text = maybe_decompress(data, source_url).decode("utf-8", errors="replace")
     return dedupe_records([record(stanza["Package"].strip(), source_url=source_url) for stanza in package_stanzas(text) if stanza.get("Package")])
@@ -394,10 +436,17 @@ def apply_alias_matches(managers: dict[str, Any]) -> None:
                     item["match_names"] = sorted(set(item.get("match_names") or []) | {normalize_match(local_name)})
 
 
-def build_manager_indexes(*, refresh: bool = False) -> dict[str, Any]:
+def build_manager_indexes(*, refresh: bool = False, wanted_names: set[str] | None = None) -> dict[str, Any]:
+    wanted_names = local_match_names() if wanted_names is None else wanted_names
     managers: dict[str, Any] = {}
     for manager, definition in MANAGER_DEFINITIONS.items():
         records, source_fingerprints = build_records_for_manager(manager, definition["urls"], refresh=refresh, max_pages=definition.get("max_pages"))
+        required_ids = {
+            package_id
+            for by_manager in PACKAGE_ALIAS_MATCHES.values()
+            for package_id in by_manager.get(manager, [])
+        }
+        records = filter_records_for_local_names(records, wanted_names, required_ids)
         managers[manager] = {
             "display_name": definition["display_name"],
             "platform": definition["platform"],

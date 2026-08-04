@@ -537,6 +537,76 @@ def dedupe_records(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [result[key] for key in sorted(result)]
 
 
+def local_match_names() -> set[str]:
+    """Return names that a locally served package can query.
+
+    The generated artifact is a lookup accelerator, not a mirror of every
+    upstream package catalog. Retaining unrelated upstream records made the
+    JSON artifact hundreds of megabytes and exhausted Atlas memory.
+    """
+    names: set[str] = set()
+
+    def add(value: Any) -> None:
+        raw = str(value or "").strip()
+        normalized = normalize_match(raw)
+        if normalized:
+            names.add(normalized)
+        if "@" in raw:
+            base, version = raw.split("@", 1)
+            digits = re.sub(r"[^0-9]+", "", version)
+            hyphen = re.sub(r"[^0-9]+", "-", version).strip("-")
+            for candidate in (base, f"{base}{digits}", f"{base}{hyphen}", f"{base}-{hyphen}"):
+                normalized_candidate = normalize_match(candidate)
+                if normalized_candidate:
+                    names.add(normalized_candidate)
+            if base == "python" and digits.startswith("3"):
+                names.update({f"python3{digits[1:]}", f"python3-{digits[1:]}", "python3", "python"})
+            if base == "openssl" and digits:
+                names.update({f"openssl{digits}", f"openssl-{digits}", f"libssl{digits}"})
+
+    package_index = read_json(Path("cache/package-index.json"))
+    if isinstance(package_index, dict):
+        for section in ("formulas", "casks", "npms"):
+            values = package_index.get(section)
+            if isinstance(values, dict):
+                for name in values:
+                    add(name)
+        entries = package_index.get("entries")
+        if isinstance(entries, dict):
+            for executable in entries:
+                add(executable)
+
+    for path in (Path("data/npm.json"), Path("data/pip.json")):
+        payload = read_json(path)
+        if isinstance(payload, dict):
+            for name in payload:
+                add(name)
+
+    crates = read_json(Path("cache/cratesio/index.json"))
+    crate_records = crates.get("crates") if isinstance(crates, dict) else None
+    if isinstance(crate_records, dict):
+        for name, item in crate_records.items():
+            add(name)
+            if isinstance(item, dict):
+                for executable in item.get("executables") or []:
+                    add(executable)
+    return names
+
+
+def filter_records_for_local_names(
+    records: list[dict[str, Any]],
+    wanted_names: set[str],
+    required_ids: set[str] | None = None,
+) -> list[dict[str, Any]]:
+    required_ids = required_ids or set()
+    return [
+        item
+        for item in records
+        if str(item.get("id") or "") in required_ids
+        or bool(set(item.get("match_names") or []) & wanted_names)
+    ]
+
+
 def parse_macports_ports_json(data: bytes, source_url: str) -> list[dict[str, Any]]:
     payload = json.loads(data.decode("utf-8"))
     if isinstance(payload, dict):
@@ -928,7 +998,8 @@ def apply_alias_matches(managers: dict[str, Any]) -> None:
                 item["match_names"] = sorted(names)
 
 
-def build_manager_indexes(*, force_refresh: bool = False) -> dict[str, Any]:
+def build_manager_indexes(*, force_refresh: bool = False, wanted_names: set[str] | None = None) -> dict[str, Any]:
+    wanted_names = local_match_names() if wanted_names is None else wanted_names
     managers: dict[str, Any] = {}
     for manager, definition in MANAGER_DEFINITIONS.items():
         records, source_fingerprints = build_records_for_manager(
@@ -937,6 +1008,12 @@ def build_manager_indexes(*, force_refresh: bool = False) -> dict[str, Any]:
             force_refresh=force_refresh,
             max_pages=definition.get("max_pages"),
         )
+        required_ids = {
+            package_id
+            for by_manager in PACKAGE_ALIAS_MATCHES.values()
+            for package_id in by_manager.get(manager, [])
+        }
+        records = filter_records_for_local_names(records, wanted_names, required_ids)
         managers[manager] = {
             "display_name": definition["display_name"],
             "platform": definition["platform"],

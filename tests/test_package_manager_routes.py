@@ -1,7 +1,13 @@
 import unittest
 import subprocess
 
-from scripts.bootstrap.lib.managers import MANAGER_DEFINITIONS, manager_matcher, package_manager_routes, parse_rpm_primary
+from scripts.bootstrap.lib.managers import (
+    MANAGER_DEFINITIONS,
+    filter_records_for_local_names,
+    manager_matcher,
+    package_manager_routes,
+    parse_rpm_primary,
+)
 
 
 def route_map(name):
@@ -48,6 +54,17 @@ def route_map(name):
 
 
 class PackageManagerRouteTests(unittest.TestCase):
+    def test_external_index_records_are_bounded_to_local_match_names(self):
+        records = [
+            {"id": "wanted", "match_names": ["wanted", "wanted-cli"]},
+            {"id": "alias-target", "match_names": ["unrelated"]},
+            {"id": "discarded", "match_names": ["other"]},
+        ]
+
+        filtered = filter_records_for_local_names(records, {"wanted-cli"}, {"alias-target"})
+
+        self.assertEqual([item["id"] for item in filtered], ["wanted", "alias-target"])
+
     def test_python_versioned_routes_prefer_exact_then_mark_fallbacks(self):
         routes = route_map("python@3.14")
         self.assertEqual(routes["winget"], ("Python.Python.3.14", "exact"))
