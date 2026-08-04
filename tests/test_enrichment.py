@@ -731,6 +731,10 @@ class EnrichmentTests(unittest.TestCase):
         history_object = item_schema["history"]["anyOf"][1]
         self.assertIn("usage", history_object["properties"])
         self.assertNotIn("minProperties", history_object)
+        self.assertEqual(
+            sorted(history_object["required"]),
+            sorted(history_object["properties"]),
+        )
         credentials_object = item_schema["credentials-file-location"]["anyOf"][1]
         self.assertFalse(credentials_object["additionalProperties"])
         self.assertEqual(credentials_object["properties"]["windows"]["type"], "array")
