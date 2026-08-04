@@ -106,6 +106,7 @@ class PackagePageRenderingTests(unittest.TestCase):
         self.assertIn('<a class="brand" href="../"', html)
         self.assertIn('href="../#search">Search</a>', html)
         self.assertIn('href="/feed/">Feed</a>', html)
+        self.assertIn('href="https://github.com/mxcl/pkg.so">GitHub', html)
         self.assertIn('href="https://mxcl.dev">a mxcl project</a>', html)
         self.assertNotIn("Explore packages", html)
         self.assertNotIn("Data feed", html)

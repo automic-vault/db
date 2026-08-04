@@ -4849,7 +4849,7 @@ def nav(root: str, locale: dict[str, Any] | None = None) -> str:
   <nav class="nav" aria-label="Main navigation">
     <a class="nav-primary" href="{root}#search">Search</a>
     <a href="/feed/">Feed</a>
-    <a href="https://github.com/mxcl/pkgdb">GitHub <span aria-hidden="true">↗</span></a>
+    <a href="https://github.com/mxcl/pkg.so">GitHub <span aria-hidden="true">↗</span></a>
   </nav>
 </header>
 """
@@ -4863,7 +4863,7 @@ def footer(root: str, locale: dict[str, Any] | None = None) -> str:
     <a href="https://mxcl.dev">a mxcl project</a>
     <a href="{root}sitemap.xml">Sitemap</a>
     <a href="{root}robots.txt">Robots</a>
-    <a href="https://github.com/mxcl/pkgdb">Source</a>
+    <a href="https://github.com/mxcl/pkg.so">Source</a>
   </div>
 </footer>
 """

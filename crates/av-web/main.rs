@@ -1797,7 +1797,7 @@ fn html_doc(
 
 fn site_nav(locale: &Locale) -> String {
     format!(
-        r#"<header class="masthead"><a class="brand" href="{}" aria-label="{}"><span class="brand-mark" aria-hidden="true">pkg</span><span class="brand-lockup"><span class="brand-type">pkg.so</span><span class="brand-tagline">open package index</span></span></a><nav class="nav" aria-label="{}"><a class="nav-primary" href="{}">{}</a><a href="{}">Feed</a><a href="https://github.com/mxcl/pkgdb">GitHub <span aria-hidden="true">↗</span></a></nav></header>"#,
+        r#"<header class="masthead"><a class="brand" href="{}" aria-label="{}"><span class="brand-mark" aria-hidden="true">pkg</span><span class="brand-lockup"><span class="brand-type">pkg.so</span><span class="brand-tagline">open package index</span></span></a><nav class="nav" aria-label="{}"><a class="nav-primary" href="{}">{}</a><a href="{}">Feed</a><a href="https://github.com/mxcl/pkg.so">GitHub <span aria-hidden="true">↗</span></a></nav></header>"#,
         html_escape(&locale_path("/", locale)),
         html_escape(&tx(locale, "brandHomeAria", "pkg.so package catalog")),
         html_escape(&tx(locale, "mainNavigation", "Main navigation")),
@@ -1809,7 +1809,7 @@ fn site_nav(locale: &Locale) -> String {
 
 fn site_footer(locale: &Locale) -> String {
     format!(
-        r#"<footer class="site-footer"><p>{}</p><div class="footer-links"><a href="https://mxcl.dev">a mxcl project</a><a href="/sitemap.xml">Sitemap</a><a href="/robots.txt">Robots</a><a href="https://github.com/mxcl/pkgdb">Source</a></div></footer>"#,
+        r#"<footer class="site-footer"><p>{}</p><div class="footer-links"><a href="https://mxcl.dev">a mxcl project</a><a href="/sitemap.xml">Sitemap</a><a href="/robots.txt">Robots</a><a href="https://github.com/mxcl/pkg.so">Source</a></div></footer>"#,
         html_escape(&tx(
             locale,
             "footer",
@@ -6913,7 +6913,7 @@ mod tests {
         assert!(!root_html.contains("Explore packages"));
         assert!(root_html.contains(r#"href="/feed/">Feed</a>"#));
         assert!(root_html.contains(r#"href="https://mxcl.dev">a mxcl project</a>"#));
-        assert!(root_html.contains("https://github.com/mxcl/pkgdb"));
+        assert!(root_html.contains("https://github.com/mxcl/pkg.so"));
         assert!(localized_root_html.contains("<html lang=\"de\">"));
         assert!(
             localized_root_html.contains(r#"<link rel="canonical" href="https://pkg.so/de/">"#)
