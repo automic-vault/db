@@ -23,8 +23,9 @@ are:
 
 Precedence is deterministic < agents < human override. Package-page data,
 search documents, hubs, and generation metadata are compiled into
-`cache/pkg.sqlite`. HTML, CSS, JavaScript, and sitemaps are served by the Rust
-origin and are not stored in the database. There is no public `db.json` export.
+`cache/pkg.sqlite`. The aggregate export is generated at
+`cache/automic-vault/db.json` and served publicly at `https://pkg.so/db.json`.
+HTML, CSS, JavaScript, and sitemaps are served by the Rust origin.
 
 ## Run the `/pkg/` origin
 
@@ -57,9 +58,10 @@ $ scripts/deploy-atlas.sh --rebuild-sqlite
 ```
 
 `pkgdb-maintenance.timer` refreshes metadata nightly, runs bounded Codex
-enrichment, generates and validates `pkg.sqlite.next`, then atomically replaces
-the live database. `av-web` opens SQLite per request, so successful swaps need
-no restart. Failed builds leave the previous database serving.
+enrichment, generates and validates `pkg.sqlite.next`, generates `db.json` as
+the final daily job step, then atomically replaces both live files. `av-web`
+opens the artifacts per request, so successful swaps need no restart. Failed
+builds leave the previous files serving.
 
 Inspect it with:
 

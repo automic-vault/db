@@ -167,6 +167,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--no-commit", action="store_true", help="Do not commit stable source changes.")
     parser.add_argument("--skip-sqlite", action="store_true", help="Skip package SQLite generation.")
     parser.add_argument("--sqlite-output", default="cache/pkg.sqlite", help="Package SQLite output path.")
+    parser.add_argument("--db-json-output", default="cache/automic-vault/db.json", help="Public db.json output path.")
     parser.add_argument("--skip-enrichment", action="store_true", help="Skip nightly curated-field enrichment.")
     parser.add_argument(
         "--enrich-limit",
@@ -239,6 +240,8 @@ def main() -> int:
             preserved_untracked_dirty=preserved_untracked_dirty,
         )
         print(f"commit={commit or 'none'}")
+    # Keep this last so the export reflects every successful daily update.
+    run([py, "scripts/export-automic-vault-db.py", "--output", args.db_json_output])
     return 0
 
 

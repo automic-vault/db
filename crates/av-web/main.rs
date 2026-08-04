@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::collections::BTreeMap;
 use std::env;
+use std::fs;
 use std::io::{BufRead, BufReader, Write};
 use std::net::{TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
@@ -13,6 +14,7 @@ use std::thread;
 
 const DEFAULT_BIND_ADDR: &str = "127.0.0.1:3004";
 const DEFAULT_DB_PATH: &str = "/var/lib/automic-vault-web/pkg.sqlite";
+const DEFAULT_PUBLIC_DB_PATH: &str = "/var/lib/automic-vault-web/db.json";
 const DEFAULT_ORIGIN_HEADER: &str = "x-automic-vault-origin";
 const HTML_CACHE_CONTROL: &str = "public, max-age=300, s-maxage=300";
 const FALLBACK_LAST_MODIFIED: &str = "Thu, 01 Jan 1970 00:00:00 GMT";
@@ -68,6 +70,7 @@ fn assert_database_ready(path: &Path) -> Result<(), String> {
 struct AppState {
     bind_addr: String,
     db_path: PathBuf,
+    public_db_path: PathBuf,
     origin_header: String,
     origin_secret: Option<String>,
 }
@@ -80,6 +83,9 @@ impl AppState {
             db_path: env::var_os("AV_WEB_DB_PATH")
                 .map(PathBuf::from)
                 .unwrap_or_else(|| PathBuf::from(DEFAULT_DB_PATH)),
+            public_db_path: env::var_os("AV_WEB_PUBLIC_DB_PATH")
+                .map(PathBuf::from)
+                .unwrap_or_else(|| PathBuf::from(DEFAULT_PUBLIC_DB_PATH)),
             origin_header: env::var("AV_WEB_ORIGIN_HEADER")
                 .unwrap_or_else(|_| DEFAULT_ORIGIN_HEADER.to_string())
                 .to_ascii_lowercase(),
@@ -171,6 +177,20 @@ fn handle_connection(mut stream: TcpStream, state: &AppState) -> Result<(), Stri
             body,
             HTML_CACHE_CONTROL,
         )?;
+        return write_stored_response(&mut stream, &request, 200, "OK", response, Vec::new());
+    }
+
+    if request.path == "/db.json" {
+        let body = fs::read(&state.public_db_path).map_err(|err| {
+            format!("failed to read {}: {err}", state.public_db_path.display())
+        })?;
+        let response = StoredResponse {
+            content_type: "application/json; charset=utf-8".to_string(),
+            etag: etag_for_bytes(&body),
+            body,
+            last_modified: FALLBACK_LAST_MODIFIED.to_string(),
+            cache_control: HTML_CACHE_CONTROL.to_string(),
+        };
         return write_stored_response(&mut stream, &request, 200, "OK", response, Vec::new());
     }
 
@@ -6569,6 +6589,7 @@ mod tests {
         let state = AppState {
             bind_addr: addr.to_string(),
             db_path: db_path.to_path_buf(),
+            public_db_path: db_path.with_extension("json"),
             origin_header: "x-test-origin".to_string(),
             origin_secret: secret.map(str::to_string),
         };
@@ -7942,6 +7963,17 @@ mod tests {
         assert!(search.starts_with("HTTP/1.1 200 OK"));
         assert!(search.contains("application/json; charset=utf-8"));
         assert!(search.contains("\"nextOffset\":1"));
+
+        fs::write(db.path().with_extension("json"), b"{\"entries\":{}}\n")
+            .expect("write public db fixture");
+        let public_db = handle_raw_request(
+            db.path(),
+            "GET /db.json HTTP/1.1\r\nHost: test\r\n\r\n",
+            None,
+        );
+        assert!(public_db.starts_with("HTTP/1.1 200 OK"));
+        assert!(public_db.contains("application/json; charset=utf-8"));
+        assert!(public_db.ends_with("{\"entries\":{}}\n"));
 
         let head = handle_raw_request(
             db.path(),

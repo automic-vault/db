@@ -56,6 +56,14 @@ class HourlyMaintenanceTests(unittest.TestCase):
         self.assertIn("prepare", command)
         self.assertIn("--commit-after-batch", command)
 
+    def test_generates_db_json_as_last_daily_step(self):
+        commands, _ = self.run_hourly("--db-json-output", "db.json.next")
+
+        self.assertEqual(
+            commands[-1],
+            [sys.executable, "scripts/export-automic-vault-db.py", "--output", "db.json.next"],
+        )
+
     def test_nightly_enrichment_uses_daily_capacity(self):
         _, prepare_calls = self.run_hourly()
 
