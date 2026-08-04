@@ -3,7 +3,7 @@
 set -euo pipefail
 
 domain="${PKG_CF_DOMAIN:-pkg.so}"
-origin_domain="${PKG_CF_ORIGIN_DOMAIN:-av-origin.automicvault.com}"
+origin_domain="${PKG_CF_ORIGIN_DOMAIN:-origin.pkg.so}"
 origin_header_name="${PKG_CF_ORIGIN_HEADER_NAME:-${AV_WEB_ORIGIN_HEADER:-X-Automic-Vault-Origin}}"
 origin_secret="${PKG_CF_ORIGIN_HEADER_VALUE:-${AV_WEB_ORIGIN_SECRET:-}}"
 distribution_id="${PKG_CF_DISTRIBUTION_ID:-}"

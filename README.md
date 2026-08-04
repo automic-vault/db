@@ -78,10 +78,10 @@ $ scripts/sync-atlas.sh
 ```
 
 `pkg.so` uses a dedicated CloudFront distribution in front of the same Atlas
-origin. Browser and edge responses are cached for five minutes, then revalidated
-with `ETag` or `Last-Modified` so unchanged content does not need to be
-retransmitted. CloudFront credentials stay off Atlas; create or update the
-distribution from Pangolin with:
+origin at `origin.pkg.so`. Browser and edge responses are cached for five
+minutes, then revalidated with `ETag` or `Last-Modified` so unchanged content
+does not need to be retransmitted. CloudFront credentials stay off Atlas;
+create or update the distribution from Pangolin with:
 
 ```sh
 $ AV_WEB_ORIGIN_SECRET=... scripts/deploy-pkg-cloudfront.sh --prepare-only
