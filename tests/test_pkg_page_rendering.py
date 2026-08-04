@@ -104,6 +104,12 @@ class PackagePageRenderingTests(unittest.TestCase):
 
         self.assertIn('<link rel="canonical" href="https://pkg.so/">', html)
         self.assertIn('<a class="brand" href="../"', html)
+        self.assertIn('href="../#search">Search</a>', html)
+        self.assertIn('href="/feed/">Feed</a>', html)
+        self.assertIn('href="https://mxcl.dev">a mxcl project</a>', html)
+        self.assertNotIn("Explore packages", html)
+        self.assertNotIn("Data feed", html)
+        self.assertIn('id="search" class="pkg-search"', html)
         self.assertNotIn('<link rel="canonical" href="https://pkg.so/pkg/">', html)
 
     def test_title_and_description_use_install_intent_and_managers(self):

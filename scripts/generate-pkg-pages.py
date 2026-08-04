@@ -2179,7 +2179,7 @@ def render_index(
       <h2 id="pkg-search-title">{html_escape(tx(locale, 'findPackageCoverage', 'Find package coverage'))}</h2>
       <p>{html_escape(tx(locale, 'catalogSearchCopy', 'Search the package catalog, documentation, and source-backed metadata from one index.'))}</p>
     </div>
-    <div id="pkg-search" class="pkg-search" data-pagefind-ui></div>
+    <div id="search" class="pkg-search" data-pagefind-ui></div>
   </section>
   <section class="pkg-section" aria-labelledby="pkg-hubs-title">
     <p class="section-kicker">{html_escape(tx(locale, 'catalogHubsKicker', 'package hubs'))}</p>
@@ -2209,7 +2209,7 @@ def render_index(
   <script>
     window.addEventListener("DOMContentLoaded", () => {{
       new PagefindUI({{
-        element: "#pkg-search",
+        element: "#search",
         showImages: false,
         showSubResults: true,
         pageSize: 8,
@@ -2219,6 +2219,17 @@ def render_index(
           placeholder: {search_placeholder}
         }}
       }});
+      const focusSearch = () => {{
+        if (window.location.hash !== "#search") return;
+        window.requestAnimationFrame(() => {{
+          const root = document.querySelector("#search");
+          const input = root?.querySelector("input");
+          root?.scrollIntoView({{ block: "center" }});
+          input?.focus({{ preventScroll: true }});
+        }});
+      }};
+      window.addEventListener("hashchange", focusSearch);
+      focusSearch();
     }});
   </script>''',
         schema={
@@ -4836,9 +4847,8 @@ def nav(root: str, locale: dict[str, Any] | None = None) -> str:
     </span>
   </a>
   <nav class="nav" aria-label="Main navigation">
-    <a class="nav-primary" href="{root}">{html_escape(tx(locale, 'packages', 'Explore packages'))}</a>
-    <a href="{root}#pkg-search">Search</a>
-    <a href="{root}pkg/data/">Data feed</a>
+    <a class="nav-primary" href="{root}#search">Search</a>
+    <a href="/feed/">Feed</a>
     <a href="https://github.com/mxcl/pkgdb">GitHub <span aria-hidden="true">↗</span></a>
   </nav>
 </header>
@@ -4850,6 +4860,7 @@ def footer(root: str, locale: dict[str, Any] | None = None) -> str:
 <footer class="site-footer">
   <p>{html_escape(tx(locale, 'footer', 'Source-backed package intelligence, rebuilt daily.'))}</p>
   <div class="footer-links">
+    <a href="https://mxcl.dev">a mxcl project</a>
     <a href="{root}sitemap.xml">Sitemap</a>
     <a href="{root}robots.txt">Robots</a>
     <a href="https://github.com/mxcl/pkgdb">Source</a>

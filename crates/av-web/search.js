@@ -71,8 +71,11 @@
     });
 
     function focusFromHash() {
-      if (window.location.hash === "#pkg-search") {
-        window.requestAnimationFrame(() => input.focus());
+      if (window.location.hash === "#search") {
+        window.requestAnimationFrame(() => {
+          root.scrollIntoView({ block: "center" });
+          input.focus({ preventScroll: true });
+        });
       }
     }
     window.addEventListener("hashchange", focusFromHash);

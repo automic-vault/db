@@ -580,6 +580,15 @@ fn dynamic_response_for_path(db_path: &Path, path: &str) -> Result<Option<Stored
             render_index_page(&connection, locale)?,
         )?));
     }
+    if let Some(locale) = feed_locale(path) {
+        let connection = open_database(db_path)?;
+        return Ok(Some(dynamic_stored_response(
+            &connection,
+            path,
+            "text/html; charset=utf-8",
+            render_feed_page(locale),
+        )?));
+    }
     let (locale, canonical_path) = canonical_pkg_route(path);
     if !canonical_path.starts_with("/pkg/") && canonical_path != "/pkg/index.html" {
         return Ok(None);
@@ -617,8 +626,6 @@ fn dynamic_response_for_path(db_path: &Path, path: &str) -> Result<Option<Stored
             render_new_packages_json(&connection)?,
             "application/json; charset=utf-8",
         ))
-    } else if canonical_path == "/pkg/data/index.html" {
-        Some((render_data_page(locale), "text/html; charset=utf-8"))
     } else if let Some((provider, slug)) = package_json_route(&canonical_path) {
         let Some(package) = package_by_provider_slug(&connection, provider, slug)? else {
             return Ok(None);
@@ -681,6 +688,12 @@ fn landing_locale(path: &str) -> Option<&'static Locale> {
     LOCALES
         .iter()
         .find(|locale| path == locale_path("/", locale))
+}
+
+fn feed_locale(path: &str) -> Option<&'static Locale> {
+    LOCALES
+        .iter()
+        .find(|locale| path == locale_path("/feed/", locale))
 }
 
 fn canonical_pkg_route(path: &str) -> (&'static Locale, String) {
@@ -1109,8 +1122,8 @@ fn render_new_packages_json(connection: &Connection) -> Result<String, String> {
         .map_err(|err| format!("failed to encode new packages json: {err}"))
 }
 
-fn render_data_page(locale: &Locale) -> String {
-    let title = tx(locale, "dataFeedTitle", "Package data and JSON feeds");
+fn render_feed_page(locale: &Locale) -> String {
+    let title = tx(locale, "dataFeedTitle", "pkg.so JSON feeds");
     let new_feed = locale_path("/pkg/new.json", locale);
     let manifest = locale_path("/pkg/.manifest.json", locale);
     let search = format!("{}?q=awscli", locale_path("/pkg/search.json", locale));
@@ -1120,9 +1133,9 @@ fn render_data_page(locale: &Locale) -> String {
     body.push_str("<main>");
     body.push_str(&format!(
         r#"<section class="pkg-hero pkg-hero-index" aria-labelledby="data-title"><div class="hero-copy"><p class="eyebrow">{}</p><h1 id="data-title">{}</h1><p class="lede">{}</p></div></section>"#,
-        html_escape(&tx(locale, "dataFeedKicker", "machine-readable catalog")),
+        html_escape(&tx(locale, "dataFeedKicker", "free package data")),
         html_escape(&title),
-        html_escape(&tx(locale, "dataFeedCopy", "Use the catalog feeds for discovery, or add .json to an individual package URL to retrieve its complete package record.")),
+        html_escape(&tx(locale, "dataFeedCopy", "All public pkg.so JSON endpoints are free for anyone to use. Browse the catalog feeds below, search programmatically, or add .json to a package URL for its complete record.")),
     ));
     body.push_str(&format!(
         r#"<section class="pkg-section split-section"><div><p class="section-kicker">{}</p><h2>{}</h2><p>{}</p></div><div class="detail-stack"><article><h3><a href="{}">{}</a></h3><p>{}</p><code>{}</code></article><article><h3><a href="{}">{}</a></h3><p>{}</p><code>{}</code></article><article><h3><a href="{}">{}</a></h3><p>{}</p><code>{}</code></article></div></section>"#,
@@ -1137,7 +1150,7 @@ fn render_data_page(locale: &Locale) -> String {
         html_escape(&tx(locale, "searchFeedCopy", "Search package titles, keys, summaries, and indexed metadata. Use q, limit, and offset query parameters.")), html_escape(&search),
     ));
     body.push_str(&format!(
-        r#"<section class="pkg-section split-section"><div><p class="section-kicker">{}</p><h2>{}</h2><p>{}</p></div><div class="detail-stack"><article><h3>{}</h3><p>{}</p><code>{}</code><p><a href="{}">{}</a></p></article><article><h3>{}</h3><p>{}</p><code>application/json</code></article></div></section></main>"#,
+        r#"<section class="pkg-section split-section"><div><p class="section-kicker">{}</p><h2>{}</h2><p>{}</p></div><div class="detail-stack"><article><h3>{}</h3><p>{}</p><code>{}</code><p><a href="{}">{}</a></p></article><article><h3>{}</h3><p>{}</p><code>application/json</code></article></div></section>"#,
         html_escape(&tx(locale, "packageJsonKicker", "per-package JSON")),
         html_escape(&tx(locale, "packageJsonTitle", "Add .json to a package URL")),
         html_escape(&tx(locale, "packageJsonCopy", "Every package page has a JSON representation containing its normalized fields and full source-backed data object.")),
@@ -1148,10 +1161,20 @@ fn render_data_page(locale: &Locale) -> String {
         html_escape(&tx(locale, "contentType", "Content type")),
         html_escape(&tx(locale, "packageJsonContentTypeCopy", "JSON endpoints return UTF-8 JSON and use the same cache validators as the corresponding catalog data.")),
     ));
+    body.push_str(&format!(
+        r#"<section class="pkg-section split-section"><div><p class="section-kicker">{}</p><h2>{}</h2><p>{}</p></div><div class="detail-stack"><article><h3>{}</h3><p>{}</p></article><article><h3>{}</h3><p>{}</p></article></div></section></main>"#,
+        html_escape(&tx(locale, "feedTermsKicker", "terms of use")),
+        html_escape(&tx(locale, "feedTermsTitle", "Free to use, with abuse prevention")),
+        html_escape(&tx(locale, "feedTermsCopy", "Anyone may use, copy, and redistribute data from these public JSON endpoints free of charge. Attribution is appreciated but not required.")),
+        html_escape(&tx(locale, "feedAbuseTitle", "Abuse prevention")),
+        html_escape(&tx(locale, "feedAbuseCopy", "We reserve the right to rate-limit, block, or take other action against traffic that disrupts the service, imposes unreasonable load, attempts unauthorized access, or otherwise abuses these endpoints.")),
+        html_escape(&tx(locale, "feedAvailabilityTitle", "Availability")),
+        html_escape(&tx(locale, "feedAvailabilityCopy", "The feeds are provided as-is without a service-level guarantee. Endpoint formats may evolve; clients should tolerate additional JSON fields.")),
+    ));
     body.push_str(&site_footer(locale));
     let schema = json!({
         "@context": "https://schema.org", "@type": "TechArticle", "name": title,
-        "url": locale_url("/pkg/data/", locale), "inLanguage": locale.hreflang,
+        "url": locale_url("/feed/", locale), "inLanguage": locale.hreflang,
         "isPartOf": {"@type": "WebSite", "name": SITE_NAME, "url": format!("{SITE_ORIGIN}/")}
     });
     let schema_json = serde_json::to_string_pretty(&schema).unwrap_or_else(|_| "{}".to_string());
@@ -1167,7 +1190,7 @@ fn render_data_page(locale: &Locale) -> String {
             "dataFeedDescription",
             "JSON feeds and per-package JSON records for the pkg.so package catalog.",
         ),
-        &locale_url("/pkg/data/", locale),
+        &locale_url("/feed/", locale),
         "index,follow",
         "",
         &schema_json,
@@ -1208,7 +1231,7 @@ fn render_index_page(connection: &Connection, locale: &Locale) -> Result<String,
         metric(&tx(locale, "sourceFiles", "source files"), &fmt_int(source_files)),
     ));
     body.push_str(&format!(
-        r#"<section class="pkg-section pkg-search-section" aria-labelledby="pkg-search-title"><div class="search-copy"><p class="section-kicker">{}</p><h2 id="pkg-search-title">{}</h2><p>{}</p></div><div id="pkg-search" class="pkg-search" data-av-package-search data-locale="{}" data-search-endpoint="{}" data-placeholder="{}"></div></section>"#,
+        r#"<section class="pkg-section pkg-search-section" aria-labelledby="pkg-search-title"><div class="search-copy"><p class="section-kicker">{}</p><h2 id="pkg-search-title">{}</h2><p>{}</p></div><div id="search" class="pkg-search" data-av-package-search data-locale="{}" data-search-endpoint="{}" data-placeholder="{}"></div></section>"#,
         html_escape(&tx(locale, "siteSearch", "site search")),
         html_escape(&tx(locale, "findPackageCoverage", "Find package coverage")),
         html_escape(&tx(locale, "catalogSearchCopy", "Search the package catalog, documentation, and source-backed metadata from one index.")),
@@ -1754,21 +1777,19 @@ fn html_doc(
 
 fn site_nav(locale: &Locale) -> String {
     format!(
-        r#"<header class="masthead"><a class="brand" href="{}" aria-label="{}"><span class="brand-mark" aria-hidden="true">pkg</span><span class="brand-lockup"><span class="brand-type">pkg.so</span><span class="brand-tagline">open package index</span></span></a><nav class="nav" aria-label="{}"><a class="nav-primary" href="{}">{}</a><a href="{}">{}</a><a href="{}">Data feed</a><a href="https://github.com/mxcl/pkgdb">GitHub <span aria-hidden="true">↗</span></a></nav></header>"#,
+        r#"<header class="masthead"><a class="brand" href="{}" aria-label="{}"><span class="brand-mark" aria-hidden="true">pkg</span><span class="brand-lockup"><span class="brand-type">pkg.so</span><span class="brand-tagline">open package index</span></span></a><nav class="nav" aria-label="{}"><a class="nav-primary" href="{}">{}</a><a href="{}">Feed</a><a href="https://github.com/mxcl/pkgdb">GitHub <span aria-hidden="true">↗</span></a></nav></header>"#,
         html_escape(&locale_path("/", locale)),
         html_escape(&tx(locale, "brandHomeAria", "pkg.so package catalog")),
         html_escape(&tx(locale, "mainNavigation", "Main navigation")),
-        html_escape(&locale_path("/", locale)),
-        html_escape(&tx(locale, "packages", "Explore packages")),
-        html_escape(&format!("{}#pkg-search", locale_path("/", locale))),
+        html_escape(&format!("{}#search", locale_path("/", locale))),
         html_escape(&tx(locale, "search", "Search")),
-        html_escape(&locale_path("/pkg/data/", locale)),
+        html_escape(&locale_path("/feed/", locale)),
     )
 }
 
 fn site_footer(locale: &Locale) -> String {
     format!(
-        r#"<footer class="site-footer"><p>{}</p><div class="footer-links"><a href="/sitemap.xml">Sitemap</a><a href="/robots.txt">Robots</a><a href="https://github.com/mxcl/pkgdb">Source</a></div></footer>"#,
+        r#"<footer class="site-footer"><p>{}</p><div class="footer-links"><a href="https://mxcl.dev">a mxcl project</a><a href="/sitemap.xml">Sitemap</a><a href="/robots.txt">Robots</a><a href="https://github.com/mxcl/pkgdb">Source</a></div></footer>"#,
         html_escape(&tx(
             locale,
             "footer",
@@ -1810,6 +1831,8 @@ fn html_hreflang_links(canonical: &str) -> String {
     let canonical_path;
     let path = if landing_locale(path).is_some() {
         "/"
+    } else if feed_locale(path).is_some() {
+        "/feed/"
     } else {
         let (_, path) = canonical_pkg_route(path);
         canonical_path = path;
@@ -5681,10 +5704,7 @@ fn render_sitemap_index(connection: &Connection) -> Result<String, String> {
 
 fn render_hub_sitemap(connection: &Connection) -> Result<String, String> {
     let lastmod = sitemap_lastmod(connection)?;
-    let mut urls = vec![
-        sitemap_url("/", &lastmod),
-        sitemap_url("/pkg/data/", &lastmod),
-    ];
+    let mut urls = vec![sitemap_url("/", &lastmod), sitemap_url("/feed/", &lastmod)];
     for hub in hubs(connection)? {
         urls.push(sitemap_url(&hub.path, &lastmod));
     }
@@ -6850,9 +6870,12 @@ mod tests {
         let new_json = dynamic_response_for_path(db.path(), "/pkg/new.json")
             .expect("query")
             .expect("new json response");
-        let data_page = dynamic_response_for_path(db.path(), "/pkg/data/")
+        let feed_page = dynamic_response_for_path(db.path(), "/feed/")
             .expect("query")
-            .expect("data page response");
+            .expect("feed page response");
+        let localized_feed = dynamic_response_for_path(db.path(), "/de/feed/")
+            .expect("query")
+            .expect("localized feed response");
         let manifest = dynamic_response_for_path(db.path(), "/pkg/.manifest.json")
             .expect("query")
             .expect("manifest response");
@@ -6863,9 +6886,12 @@ mod tests {
         assert!(root_html.contains("<title>Package catalog | pkg.so</title>"));
         assert!(root_html.contains(r#"<link rel="canonical" href="https://pkg.so/">"#));
         assert!(root_html.contains(r#"<a class="brand" href="/""#));
-        assert!(root_html.contains(r#"href="/#pkg-search">Search</a>"#));
+        assert!(root_html.contains(r#"href="/#search">Search</a>"#));
+        assert!(root_html.contains(r#"id="search" class="pkg-search""#));
         assert!(!root_html.contains(r#">Index</a>"#));
-        assert!(root_html.contains(r#"href="/pkg/data/">Data feed</a>"#));
+        assert!(!root_html.contains("Explore packages"));
+        assert!(root_html.contains(r#"href="/feed/">Feed</a>"#));
+        assert!(root_html.contains(r#"href="https://mxcl.dev">a mxcl project</a>"#));
         assert!(root_html.contains("https://github.com/mxcl/pkgdb"));
         assert!(localized_root_html.contains("<html lang=\"de\">"));
         assert!(
@@ -7023,7 +7049,8 @@ mod tests {
         assert!(sitemap_index_xml.contains("/pkg/sitemap-cargo.xml"));
         let hub_sitemap_xml = String::from_utf8(hub_sitemap.body).expect("hub sitemap xml");
         assert!(hub_sitemap_xml.contains("<loc>https://pkg.so/</loc>"));
-        assert!(hub_sitemap_xml.contains("<loc>https://pkg.so/pkg/data/</loc>"));
+        assert!(hub_sitemap_xml.contains("<loc>https://pkg.so/feed/</loc>"));
+        assert!(!hub_sitemap_xml.contains("/pkg/data/"));
         assert!(hub_sitemap_xml.contains("/pkg/risky-tools/"));
         assert!(hub_sitemap_xml.contains("/pkg/crates-cli-packages/"));
         assert!(
@@ -7050,14 +7077,28 @@ mod tests {
         assert_eq!(new_packages[0]["packageKey"], "brew:awscli");
         assert_eq!(new_packages[1]["data"]["aliases"][0], "rg");
 
-        assert_eq!(data_page.content_type, "text/html; charset=utf-8");
-        let data_html = String::from_utf8(data_page.body).expect("data page html");
-        assert!(data_html.contains("Package data and JSON feeds"));
-        assert!(data_html.contains("/pkg/new.json"));
-        assert!(data_html.contains("/pkg/.manifest.json"));
-        assert!(data_html.contains("/pkg/search.json?q=awscli"));
-        assert!(data_html.contains("/pkg/brew/awscli.json"));
-        assert!(data_html.contains("Add .json to a package URL"));
+        assert_eq!(feed_page.content_type, "text/html; charset=utf-8");
+        let feed_html = String::from_utf8(feed_page.body).expect("feed page html");
+        assert!(feed_html.contains(r#"<link rel="canonical" href="https://pkg.so/feed/">"#));
+        assert!(feed_html.contains("/pkg/new.json"));
+        assert!(feed_html.contains("/pkg/.manifest.json"));
+        assert!(feed_html.contains("/pkg/search.json?q=awscli"));
+        assert!(feed_html.contains("q, limit, and offset"));
+        assert!(feed_html.contains("/pkg/brew/awscli.json"));
+        assert!(feed_html.contains("free of charge"));
+        assert!(feed_html.contains("rate-limit, block, or take other action"));
+        assert!(
+            dynamic_response_for_path(db.path(), "/pkg/data/")
+                .expect("query")
+                .is_none()
+        );
+        let localized_feed_html =
+            String::from_utf8(localized_feed.body).expect("localized feed html");
+        assert!(
+            localized_feed_html
+                .contains(r#"<link rel="canonical" href="https://pkg.so/de/feed/">"#)
+        );
+        assert!(localized_feed_html.contains(r#"href="/de/feed/">Feed</a>"#));
     }
 
     #[test]
