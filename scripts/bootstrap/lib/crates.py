@@ -308,10 +308,15 @@ def csv_rows(source: Path | BinaryIO):
             limit //= 10
     if isinstance(source, Path):
         handle = source.open("r", encoding="utf-8", newline="")
-    else:
-        handle = io.TextIOWrapper(source, encoding="utf-8", newline="")
-    with handle:
-        yield from csv.DictReader(handle)
+        with handle:
+            yield from csv.DictReader(handle)
+        return
+
+    # Streaming tar readers deliberately do not implement seekability, which
+    # TextIOWrapper probes during construction.  CSV only needs an iterable of
+    # decoded lines, so keep the archive member forward-only and bounded.
+    lines = (line.decode("utf-8") for line in source)
+    yield from csv.DictReader(lines)
 
 
 def crate_downloads(source: Path | BinaryIO, crate_ids: set[str]) -> dict[str, int]:
@@ -677,7 +682,7 @@ def build_index_from_dump(
     found: set[str] = set()
     default_store = DefaultVersionStore(dump_path.parent)
     try:
-        with tarfile.open(dump_path, mode="r:gz") as archive:
+        with tarfile.open(dump_path, mode="r|gz") as archive:
             for member in archive:
                 basename = Path(member.name).name
                 if not member.isfile() or basename != "default_versions.csv":
@@ -689,7 +694,7 @@ def build_index_from_dump(
                 default_store.load(handle)
         default_version_ids = default_store.version_ids()
         recent_by_version: dict[str, int] = {}
-        with tarfile.open(dump_path, mode="r:gz") as archive:
+        with tarfile.open(dump_path, mode="r|gz") as archive:
             for member in archive:
                 basename = Path(member.name).name
                 if not member.isfile() or basename != "version_downloads.csv":
@@ -709,7 +714,7 @@ def build_index_from_dump(
                 }
         del default_version_ids
         versions_by_id: dict[str, dict[str, Any]] = {}
-        with tarfile.open(dump_path, mode="r:gz") as archive:
+        with tarfile.open(dump_path, mode="r|gz") as archive:
             for member in archive:
                 basename = Path(member.name).name
                 if not member.isfile() or basename != "versions.csv":
@@ -725,7 +730,7 @@ def build_index_from_dump(
     candidate_crate_ids = set(defaults_by_crate)
     crates_by_id: dict[str, dict[str, Any]] = {}
     downloads_by_id: dict[str, int] = {}
-    with tarfile.open(dump_path, mode="r:gz") as archive:
+    with tarfile.open(dump_path, mode="r|gz") as archive:
         for member in archive:
             basename = Path(member.name).name
             if not member.isfile() or basename not in {"crates.csv", "crate_downloads.csv"}:
