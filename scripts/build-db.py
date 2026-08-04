@@ -1642,10 +1642,17 @@ def _npm_full_scan_page_budget(total_rows):
     return max(1, (total_pages + NPM_FULL_SCAN_PARTS - 1) // NPM_FULL_SCAN_PARTS)
 
 
+def _npm_full_scan_shard_complete(page_count, total_rows):
+    page_budget = _npm_full_scan_page_budget(total_rows)
+    if page_budget is None:
+        return False
+    parsed_page_count = _parse_count(page_count) or 0
+    return parsed_page_count > 0 and parsed_page_count % page_budget == 0
+
+
 def _run_npm_full_scan(state):
     packages = state["packages"]
     cursor = state.get("full_scan_cursor")
-    processed_pages = 0
     if not state.get("full_scan_started_at"):
         state["full_scan_started_at"] = datetime.datetime.now(
             datetime.timezone.utc
@@ -1713,7 +1720,6 @@ def _run_npm_full_scan(state):
         state["full_scan_page_count"] = (
             (_parse_count(state.get("full_scan_page_count")) or 0) + 1
         )
-        processed_pages += 1
         _write_npm_index_state(state)
         _npm_full_scan_progress(state, len(packages))
 
@@ -1725,12 +1731,13 @@ def _run_npm_full_scan(state):
             ).isoformat()
             _write_npm_index_state(state)
             break
-        page_budget = _npm_full_scan_page_budget(
-            _parse_count(state.get("full_scan_total_rows"))
-        )
-        if page_budget is not None and processed_pages >= page_budget:
+        if _npm_full_scan_shard_complete(
+            state.get("full_scan_page_count"),
+            state.get("full_scan_total_rows"),
+        ):
             print(
-                f"Paused npm full scan after {processed_pages} pages; "
+                f"Paused npm full scan at cumulative page "
+                f"{state['full_scan_page_count']}; "
                 f"next run resumes at {next_cursor}",
                 file=sys.stderr,
             )

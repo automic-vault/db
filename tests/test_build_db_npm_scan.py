@@ -75,6 +75,19 @@ class NpmFullScanTests(unittest.TestCase):
 
         self.assertEqual(build_db._npm_full_scan_page_budget(1), 1)
 
+    def test_full_scan_restart_preserves_current_shard_boundary(self):
+        build_db = load_build_db()
+        build_db.NPM_FULL_SCAN_PARTS = 7
+
+        self.assertFalse(build_db._npm_full_scan_shard_complete(365, 4_259_642))
+        self.assertTrue(build_db._npm_full_scan_shard_complete(366, 4_259_642))
+
+    def test_uncapped_full_scan_never_reports_a_shard_boundary(self):
+        build_db = load_build_db()
+        build_db.NPM_FULL_SCAN_PARTS = 1
+
+        self.assertFalse(build_db._npm_full_scan_shard_complete(366, 4_259_642))
+
 
 if __name__ == "__main__":
     unittest.main()
