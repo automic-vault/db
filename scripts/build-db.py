@@ -1404,6 +1404,7 @@ def _default_npm_index_state():
         "full_scan_packument_qualified_count": 0,
         "full_scan_page_count": 0,
         "full_scan_total_rows": None,
+        "full_scan_last_shard_at": None,
     }
 
 
@@ -1650,7 +1651,45 @@ def _npm_full_scan_shard_complete(page_count, total_rows):
     return parsed_page_count > 0 and parsed_page_count % page_budget == 0
 
 
+def _npm_full_scan_shard_completed_today(state, now=None):
+    if NPM_FULL_SCAN_PARTS <= 1:
+        return False
+    value = state.get("full_scan_last_shard_at")
+    if not value and _npm_full_scan_shard_complete(
+        state.get("full_scan_page_count"),
+        state.get("full_scan_total_rows"),
+    ):
+        # Backward-compatible recovery for a shard checkpoint written before
+        # full_scan_last_shard_at existed.  Reaching the durable boundary and
+        # atomically writing the state file is sufficient proof of completion.
+        try:
+            value = datetime.datetime.fromtimestamp(
+                os.path.getmtime(NPM_INDEX_STATE_PATH),
+                datetime.timezone.utc,
+            ).isoformat()
+        except OSError:
+            value = None
+    if not isinstance(value, str) or not value:
+        return False
+    try:
+        completed_at = datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    if completed_at.tzinfo is None:
+        completed_at = completed_at.replace(tzinfo=datetime.timezone.utc)
+    current = now or datetime.datetime.now(datetime.timezone.utc)
+    return completed_at.astimezone(datetime.timezone.utc).date() == current.astimezone(
+        datetime.timezone.utc
+    ).date()
+
+
 def _run_npm_full_scan(state):
+    if _npm_full_scan_shard_completed_today(state):
+        print(
+            "Skipping npm full scan; today's durable shard already completed",
+            file=sys.stderr,
+        )
+        return
     packages = state["packages"]
     cursor = state.get("full_scan_cursor")
     if not state.get("full_scan_started_at"):
@@ -1735,6 +1774,10 @@ def _run_npm_full_scan(state):
             state.get("full_scan_page_count"),
             state.get("full_scan_total_rows"),
         ):
+            state["full_scan_last_shard_at"] = datetime.datetime.now(
+                datetime.timezone.utc
+            ).isoformat()
+            _write_npm_index_state(state)
             print(
                 f"Paused npm full scan at cumulative page "
                 f"{state['full_scan_page_count']}; "

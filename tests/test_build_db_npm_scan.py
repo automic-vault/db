@@ -1,4 +1,5 @@
 import importlib.util
+import datetime as dt
 import http.client
 import sys
 import unittest
@@ -87,6 +88,46 @@ class NpmFullScanTests(unittest.TestCase):
         build_db.NPM_FULL_SCAN_PARTS = 1
 
         self.assertFalse(build_db._npm_full_scan_shard_complete(366, 4_259_642))
+
+    def test_retry_skips_a_durable_shard_completed_today(self):
+        build_db = load_build_db()
+        build_db.NPM_FULL_SCAN_PARTS = 7
+        now = dt.datetime(2026, 8, 4, 18, 0, tzinfo=dt.timezone.utc)
+
+        self.assertTrue(
+            build_db._npm_full_scan_shard_completed_today(
+                {"full_scan_last_shard_at": "2026-08-04T12:00:00+00:00"},
+                now,
+            )
+        )
+
+    def test_next_day_runs_the_next_durable_shard(self):
+        build_db = load_build_db()
+        build_db.NPM_FULL_SCAN_PARTS = 7
+        now = dt.datetime(2026, 8, 5, 0, 1, tzinfo=dt.timezone.utc)
+
+        self.assertFalse(
+            build_db._npm_full_scan_shard_completed_today(
+                {"full_scan_last_shard_at": "2026-08-04T23:59:00+00:00"},
+                now,
+            )
+        )
+
+    def test_legacy_boundary_uses_state_file_timestamp(self):
+        build_db = load_build_db()
+        build_db.NPM_FULL_SCAN_PARTS = 7
+        now = dt.datetime(2026, 8, 4, 20, 0, tzinfo=dt.timezone.utc)
+        state = {
+            "full_scan_page_count": 488,
+            "full_scan_total_rows": 4_260_161,
+        }
+
+        with mock.patch.object(
+            build_db.os.path,
+            "getmtime",
+            return_value=dt.datetime(2026, 8, 4, 18, 33, tzinfo=dt.timezone.utc).timestamp(),
+        ):
+            self.assertTrue(build_db._npm_full_scan_shard_completed_today(state, now))
 
 
 if __name__ == "__main__":
