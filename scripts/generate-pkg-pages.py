@@ -695,8 +695,11 @@ def load_sources() -> dict[str, Any]:
         "geiger": load_agent_geiger_data(),
         "isotopes": read_json(ISOTOPES_JSON_PATH, {}),
         "npm": read_json(Path("data/npm.json"), {}),
-        "pkg_graph": read_json(PKG_GRAPH_PATH, {}),
-        "pkg_cross_ecosystem": read_json(PKG_CROSS_ECOSYSTEM_PATH, {}),
+        # These are the two largest inputs. Load them one at a time after the
+        # base pages exist instead of retaining both expanded JSON trees for
+        # the entire build.
+        "pkg_graph": None,
+        "pkg_cross_ecosystem": None,
         "pkg_page_enrichment": read_json(PKG_PAGE_ENRICHMENT_PATH, {}),
         "pkg_version_freshness": read_json(PKG_VERSION_FRESHNESS_PATH, {}),
         "pkg_agent_safety_answers": read_json(PKG_AGENT_SAFETY_ANSWERS_PATH, {}),
@@ -934,8 +937,17 @@ def package_pages_from_sources(
     apply_package_page_supplements(pages)
     apply_package_taxonomy(pages)
     pages = executable_package_pages(pages)
-    apply_package_graph(pages, sources.get("pkg_graph") or {})
-    apply_package_cross_ecosystem(pages, sources.get("pkg_cross_ecosystem") or {})
+    graph = sources.get("pkg_graph", {})
+    if graph is None:
+        graph = read_json(PKG_GRAPH_PATH, {})
+    apply_package_graph(pages, graph or {})
+    del graph
+
+    cross_ecosystem = sources.get("pkg_cross_ecosystem", {})
+    if cross_ecosystem is None:
+        cross_ecosystem = read_json(PKG_CROSS_ECOSYSTEM_PATH, {})
+    apply_package_cross_ecosystem(pages, cross_ecosystem or {})
+    del cross_ecosystem
     prune_missing_relationship_targets(pages)
     verify_local_install_commands(pages)
     apply_agent_safety_answers(pages, sources.get("pkg_agent_safety_answers") or {})

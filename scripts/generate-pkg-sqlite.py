@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import gc
 import hashlib
 import importlib.util
 import json
@@ -13,7 +14,7 @@ import tempfile
 from dataclasses import dataclass
 from email.utils import format_datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 
 SCHEMA_VERSION = 2
@@ -208,10 +209,10 @@ def create_schema(connection: sqlite3.Connection) -> None:
 
 def write_sqlite(
     output_path: Path,
-    search_documents: list[SearchDocument],
-    packages: list[PackageRecord],
-    hubs: list[HubRecord],
-    hub_packages: list[HubPackageRecord],
+    search_documents: Iterable[SearchDocument],
+    packages: Iterable[PackageRecord],
+    hubs: Iterable[HubRecord],
+    hub_packages: Iterable[HubPackageRecord],
     metadata: dict[str, Any],
 ) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -236,7 +237,7 @@ def write_sqlite(
                 INSERT INTO search_documents(path, locale, title, summary, provider, package_key, rank, search_text)
                 VALUES(?, ?, ?, ?, ?, ?, ?, ?)
                 """,
-                [
+                (
                     (
                         document.path,
                         document.locale,
@@ -248,7 +249,7 @@ def write_sqlite(
                         document.search_text,
                     )
                     for document in search_documents
-                ],
+                ),
             )
             connection.executemany(
                 """
@@ -260,7 +261,7 @@ def write_sqlite(
                 )
                 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
-                [
+                (
                     (
                         package.path,
                         package.provider,
@@ -285,14 +286,14 @@ def write_sqlite(
                         package.search_text,
                     )
                     for package in packages
-                ],
+                ),
             )
             connection.executemany(
                 """
                 INSERT INTO hubs(path, slug, title, description, group_name, data_json)
                 VALUES(?, ?, ?, ?, ?, ?)
                 """,
-                [
+                (
                     (
                         hub.path,
                         hub.slug,
@@ -302,17 +303,17 @@ def write_sqlite(
                         json.dumps(hub.data, sort_keys=True, separators=(",", ":")),
                     )
                     for hub in hubs
-                ],
+                ),
             )
             connection.executemany(
                 """
                 INSERT INTO hub_packages(hub_slug, package_key, position, reason)
                 VALUES(?, ?, ?, ?)
                 """,
-                [
+                (
                     (record.hub_slug, record.package_key, record.position, record.reason)
                     for record in hub_packages
-                ],
+                ),
             )
             connection.execute("PRAGMA optimize")
             result = connection.execute("PRAGMA integrity_check").fetchone()
@@ -707,58 +708,75 @@ def hub_record(hub: Any) -> HubRecord:
     )
 
 
-def build_records(
+def build_sqlite(
     page_module: Any,
     output_path: Path,
-) -> tuple[list[SearchDocument], list[PackageRecord], list[HubRecord], list[HubPackageRecord], dict[str, Any]]:
+) -> tuple[int, int, int, dict[str, Any]]:
     sources = page_module.load_sources()
     pages_by_key = page_module.package_pages_from_sources(sources)
     if not pages_by_key:
         raise RuntimeError("no package metadata found")
     pages = sorted(pages_by_key.values(), key=lambda page: (page.provider, page.slug, page.name))
+    del sources, pages_by_key
+    gc.collect()
     routes = package_routes(pages)
     hubs = page_module.package_hub_pages(pages)
     files = page_module.source_files()
     previous_manifest = previous_manifest_from_sqlite(output_path)
     manifest = page_module.build_manifest(len(pages), files, previous_manifest)
     populate_manifest_counts(page_module, manifest, pages, hubs)
-    documents: list[SearchDocument] = []
-    package_rows: list[PackageRecord] = []
-    hub_rows: list[HubRecord] = [hub_record(hub) for hub, _hub_pages in hubs]
-    hub_package_rows: list[HubPackageRecord] = []
     indexable_pages = [page for page in pages if page_module.is_indexable_package_page(page)]
-
-    for page in pages:
-        search_text = page_search_text(page_module, page, None)
-        package_rows.append(package_record(page_module, page, routes[page.key], search_text))
-
-    for hub, hub_pages in hubs:
-        for position, page in enumerate(hub_pages, start=1):
-            hub_package_rows.append(HubPackageRecord(
-                hub_slug=hub.slug,
-                package_key=page.key,
-                position=position,
-                reason=page_module.hub_package_reason(page),
-            ))
-
-    for locale in page_module.i18n_locales():
-        locale_code = page_module.locale_code(locale)
-        for page in pages:
-            documents.append(SearchDocument(
-                path=page_module.locale_path(routes[page.key].path, locale),
-                locale=locale_code,
-                title=page.display_name,
-                summary=page_module.short_text(page_module.clean_summary(page.summary) or page_module.hero_sentence(page), 180),
-                provider=page.provider,
-                package_key=page.key,
-                rank=page.popularity.get("rank") if isinstance(page.popularity, dict) else None,
-                search_text=page_search_text(page_module, page, locale),
-            ))
-
+    locales = page_module.i18n_locales()
     metadata = manifest_metadata(manifest)
-    metadata["locales"] = page_module.i18n_locales()
+    metadata["locales"] = locales
     metadata["providers"] = sorted({page.provider for page in indexable_pages})
-    return documents, package_rows, hub_rows, hub_package_rows, metadata
+
+    def package_rows() -> Iterable[PackageRecord]:
+        for page in pages:
+            yield package_record(
+                page_module,
+                page,
+                routes[page.key],
+                page_search_text(page_module, page, None),
+            )
+
+    def search_documents() -> Iterable[SearchDocument]:
+        for locale in locales:
+            locale_code = page_module.locale_code(locale)
+            for page in pages:
+                yield SearchDocument(
+                    path=page_module.locale_path(routes[page.key].path, locale),
+                    locale=locale_code,
+                    title=page.display_name,
+                    summary=page_module.short_text(
+                        page_module.clean_summary(page.summary) or page_module.hero_sentence(page),
+                        180,
+                    ),
+                    provider=page.provider,
+                    package_key=page.key,
+                    rank=page.popularity.get("rank") if isinstance(page.popularity, dict) else None,
+                    search_text=page_search_text(page_module, page, locale),
+                )
+
+    def hub_package_rows() -> Iterable[HubPackageRecord]:
+        for hub, hub_pages in hubs:
+            for position, page in enumerate(hub_pages, start=1):
+                yield HubPackageRecord(
+                    hub_slug=hub.slug,
+                    package_key=page.key,
+                    position=position,
+                    reason=page_module.hub_package_reason(page),
+                )
+
+    write_sqlite(
+        output_path,
+        search_documents(),
+        package_rows(),
+        (hub_record(hub) for hub, _hub_pages in hubs),
+        hub_package_rows(),
+        metadata,
+    )
+    return len(pages), len(hubs), len(pages) * len(locales), metadata
 
 
 def check_current(page_module: Any, output_path: Path, terminal: Terminal) -> int:
@@ -824,19 +842,18 @@ def main() -> int:
         return check_current(page_module, output_path, terminal)
 
     terminal.step("Rendering package pages into SQLite")
-    documents, packages, hubs, hub_packages, metadata = build_records(page_module, output_path)
-    write_sqlite(output_path, documents, packages, hubs, hub_packages, metadata)
+    package_count, hub_count, document_count, metadata = build_sqlite(page_module, output_path)
     terminal.ok(
-        f"Wrote {len(packages):,} packages, {len(hubs):,} hubs, "
-        f"{len(documents):,} search documents, and metadata to {output_path}"
+        f"Wrote {package_count:,} packages, {hub_count:,} hubs, "
+        f"{document_count:,} search documents, and metadata to {output_path}"
     )
     if args.json:
         print(json.dumps({
             "ok": True,
             "output": str(output_path),
-            "packages": len(packages),
-            "hubs": len(hubs),
-            "search_documents": len(documents),
+            "packages": package_count,
+            "hubs": hub_count,
+            "search_documents": document_count,
             "source_hash": metadata.get("source_hash"),
         }, sort_keys=True))
     return 0
