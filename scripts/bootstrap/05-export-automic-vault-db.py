@@ -6,8 +6,19 @@ import json
 import sys
 from pathlib import Path
 
-from lib.authority import AUTOMIC_VAULT_DB_PATH, write_automic_vault_db
-from lib.common import ensure_root
+from lib.authority import AUTOMIC_VAULT_DB_PATH, build_automic_vault_db, read_cask_cache
+from lib.casks import app_catalog_from_casks
+from lib.common import ROOT, ensure_root, read_json, write_json
+
+
+PUBLIC_SCHEMA_VERSION = 1
+PUBLIC_SOURCES = {
+    "aliases": ROOT / "data/aliases.json",
+    "npm": ROOT / "data/npm.json",
+    "pip": ROOT / "data/pip.json",
+    "security-recommendations": ROOT / "data/security-recommendations.json",
+    "stub_exclusions": ROOT / "data/stub_exclusions.json",
+}
 
 
 def pulse_coverage(items: dict[str, object]) -> dict[str, int]:
@@ -39,10 +50,28 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def write_public_db(path: Path) -> dict[str, object]:
+    db = build_automic_vault_db()
+    apps, app_casks = app_catalog_from_casks(read_cask_cache())
+    db["apps"] = apps
+    db["casks"] = dict(sorted({**app_casks, **db["casks"]}.items()))
+    document = {
+        "schema": PUBLIC_SCHEMA_VERSION,
+        "generated_at": db["generated_at"],
+        "sources": {
+            **{name: read_json(source) for name, source in PUBLIC_SOURCES.items()},
+            "db": db,
+        },
+    }
+    write_json(path, document)
+    return document
+
+
 def main() -> int:
     args = parse_args()
     ensure_root()
-    db = write_automic_vault_db(args.output)
+    document = write_public_db(args.output)
+    db = document["sources"]["db"]
     pulse = {
         "formulas": pulse_coverage(db["formulas"]),
         "casks": pulse_coverage(db["casks"]),

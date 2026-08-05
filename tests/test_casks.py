@@ -1,10 +1,84 @@
+import importlib.util
+import json
+import sys
+import tempfile
 import unittest
+from pathlib import Path
+from unittest import mock
 
-from scripts.bootstrap.lib.casks import cask_metadata, collect_cask_entries, parse_binary_artifact
+from scripts.bootstrap.lib.casks import (
+    app_catalog_from_casks,
+    cask_metadata,
+    collect_cask_entries,
+    parse_binary_artifact,
+)
 from scripts.bootstrap.lib.render import cask_project_record
 
 
+def load_public_db_export():
+    root = Path(__file__).resolve().parents[1]
+    sys.path.insert(0, str(root / "scripts/bootstrap"))
+    spec = importlib.util.spec_from_file_location(
+        "export_public_db",
+        root / "scripts/bootstrap/05-export-automic-vault-db.py",
+    )
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 class CaskAuthorityTests(unittest.TestCase):
+    def test_public_export_preserves_the_combined_database_contract(self):
+        exporter = load_public_db_export()
+        authority = {
+            "schema": 8,
+            "generated_at": "2026-08-05T12:00:00Z",
+            "entries": {},
+            "formulas": {},
+            "casks": {},
+            "npms": {},
+            "crates": {},
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            sources = {name: root / f"{name}.json" for name in exporter.PUBLIC_SOURCES}
+            for source in sources.values():
+                source.write_text("{}\n", encoding="utf-8")
+            output = root / "db.json"
+            with (
+                mock.patch.object(exporter, "PUBLIC_SOURCES", sources),
+                mock.patch.object(exporter, "build_automic_vault_db", return_value=authority),
+                mock.patch.object(exporter, "read_cask_cache", return_value=[]),
+                mock.patch.object(exporter, "app_catalog_from_casks", return_value=({}, {})),
+            ):
+                exporter.write_public_db(output)
+
+            document = json.loads(output.read_text(encoding="utf-8"))
+
+        self.assertEqual(document["schema"], 1)
+        self.assertEqual(document["generated_at"], authority["generated_at"])
+        self.assertEqual(document["sources"]["db"]["schema"], 8)
+        self.assertIn("security-recommendations", document["sources"])
+
+    def test_app_catalog_associates_an_app_cask_by_quit_bundle_identifier(self):
+        apps, casks = app_catalog_from_casks([
+            {
+                "token": "chatgpt",
+                "desc": "OpenAI's official ChatGPT desktop app",
+                "homepage": "https://chatgpt.com/",
+                "version": "26.730.61639",
+                "artifacts": [
+                    {"uninstall": [{"quit": "com.openai.codex"}]},
+                    {"app": ["ChatGPT.app"], "target": "/Applications/ChatGPT.app"},
+                ],
+            }
+        ])
+
+        self.assertEqual(apps, {"com.openai.codex": {"cask": "chatgpt", "version_source": "cask"}})
+        self.assertEqual(casks["chatgpt"]["version"], "26.730.61639")
+
     def test_parse_binary_artifact_supports_target_forms(self):
         self.assertEqual(
             parse_binary_artifact({"binary": "op"}),

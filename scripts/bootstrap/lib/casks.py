@@ -148,12 +148,70 @@ def collect_cask_entries(casks: list[dict[str, Any]]) -> tuple[dict[str, str], d
     return dict(sorted(entries.items())), dict(sorted(metadata.items()))
 
 
-def write_cask_cache(casks: list[dict[str, Any]]) -> None:
+def app_catalog_from_casks(casks: list[dict[str, Any]]) -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]]]:
+    candidates: dict[str, list[tuple[str, dict[str, Any]]]] = {}
+    for cask in casks:
+        token = cask.get("token")
+        artifacts = cask.get("artifacts")
+        if (
+            not isinstance(token, str)
+            or not token
+            or cask.get("disabled")
+            or cask.get("deprecated")
+            or not isinstance(artifacts, list)
+        ):
+            continue
+        has_app = any(isinstance(artifact, dict) and "app" in artifact for artifact in artifacts)
+        if not has_app:
+            continue
+        bundle_identifiers = set()
+        for artifact in artifacts:
+            uninstall = artifact.get("uninstall") if isinstance(artifact, dict) else None
+            if not isinstance(uninstall, list):
+                continue
+            for rule in uninstall:
+                quit_values = rule.get("quit") if isinstance(rule, dict) else None
+                if isinstance(quit_values, str):
+                    quit_values = [quit_values]
+                if not isinstance(quit_values, list):
+                    continue
+                bundle_identifiers.update(
+                    value
+                    for value in quit_values
+                    if isinstance(value, str)
+                    and value.count(".") >= 2
+                    and all(character.isalnum() or character in ".-" for character in value)
+                )
+        if len(bundle_identifiers) != 1:
+            continue
+        metadata = {
+            key: value
+            for key, value in {
+                "summary": cask.get("desc"),
+                "homepage": cask.get("homepage"),
+                "version": cask.get("version"),
+            }.items()
+            if isinstance(value, str) and value
+        }
+        candidates.setdefault(bundle_identifiers.pop(), []).append((token, metadata))
+
+    apps = {}
+    app_casks = {}
+    for bundle_identifier, matches in candidates.items():
+        if len(matches) != 1:
+            continue
+        token, metadata = matches[0]
+        apps[bundle_identifier] = {"cask": token, "version_source": "cask"}
+        app_casks[token] = metadata
+    return dict(sorted(apps.items())), dict(sorted(app_casks.items()))
+
+
+def write_cask_cache(casks: list[dict[str, Any]], *, all_casks: list[dict[str, Any]] | None = None) -> None:
     entries, metadata = collect_cask_entries(casks)
     write_json(CACHE_DIR / "brew" / "casks.json", {
         "schema": 1,
         "source": CASKS_URL,
-        "casks": casks,
+        "casks": all_casks if all_casks is not None else casks,
     })
     write_json(CACHE_DIR / "brew" / "cask-entries.json", {
         "schema": 1,

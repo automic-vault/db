@@ -40,7 +40,7 @@ def main() -> int:
         "source_hash": stable_hash(formulae),
         "formulae": formulae,
     })
-    write_cask_cache(casks)
+    write_cask_cache(casks, all_casks=cask_index)
     executables = build_executable_index(formulae, refresh=args.refresh, fetch_manifests=args.fetch_manifests, limit=args.manifest_limit)
     write_executable_index(executables)
     print(json.dumps({"ok": True, "formulae": len(formulae), "casks": len(casks), "executable_packages": len(executables)}, sort_keys=True))
