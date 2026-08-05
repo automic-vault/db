@@ -174,6 +174,37 @@ class FetchBytesTests(unittest.TestCase):
         self.assertEqual(fetch_url.call_count, 1)
 
 
+class ReplaceIfChangedTests(unittest.TestCase):
+    def test_equal_files_are_compared_without_whole_file_reads(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "source"
+            destination = root / "destination"
+            source.write_bytes(b"same contents")
+            destination.write_bytes(b"same contents")
+
+            with mock.patch.object(Path, "read_bytes", side_effect=AssertionError("whole-file read")):
+                changed = common.replace_if_changed(source, destination)
+
+            self.assertFalse(changed)
+            self.assertFalse(source.exists())
+            self.assertEqual(destination.read_text(encoding="utf-8"), "same contents")
+
+    def test_different_same_size_file_replaces_destination(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "source"
+            destination = root / "destination"
+            source.write_bytes(b"new!")
+            destination.write_bytes(b"old!")
+
+            changed = common.replace_if_changed(source, destination)
+
+            self.assertTrue(changed)
+            self.assertFalse(source.exists())
+            self.assertEqual(destination.read_bytes(), b"new!")
+
+
 class FetchJsonTests(unittest.TestCase):
     def test_fetch_json_retries_incomplete_read(self):
         original_cache_dir = common.CACHE_DIR

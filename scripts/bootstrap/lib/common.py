@@ -221,11 +221,25 @@ def write_text_if_changed(path: Path, text: str) -> bool:
 
 def replace_if_changed(src: Path, dst: Path) -> bool:
     dst.parent.mkdir(parents=True, exist_ok=True)
-    if dst.exists() and src.read_bytes() == dst.read_bytes():
+    if dst.exists() and files_equal(src, dst):
         src.unlink()
         return False
     src.replace(dst)
     return True
+
+
+def files_equal(left: Path, right: Path, *, chunk_size: int = 1024 * 1024) -> bool:
+    """Compare files without retaining their contents in memory."""
+    if left.stat().st_size != right.stat().st_size:
+        return False
+    with left.open("rb") as left_handle, right.open("rb") as right_handle:
+        while True:
+            left_chunk = left_handle.read(chunk_size)
+            right_chunk = right_handle.read(chunk_size)
+            if left_chunk != right_chunk:
+                return False
+            if not left_chunk:
+                return True
 
 
 def cache_path_for_url(url: str, namespace: str, suffix: str = ".json") -> Path:
