@@ -189,11 +189,12 @@ def app_catalog_from_casks(casks: list[dict[str, Any]]) -> tuple[dict[str, dict[
                     if bundle_identifier is None:
                         continue
                     zap_bundle_identifiers[bundle_identifier] += 1
-        bundle_identifiers.update(
-            bundle_identifier
-            for bundle_identifier, count in zap_bundle_identifiers.items()
-            if count >= 2
-        )
+        if not bundle_identifiers:
+            bundle_identifiers.update(
+                bundle_identifier
+                for bundle_identifier, count in zap_bundle_identifiers.items()
+                if count >= 2
+            )
         if len(bundle_identifiers) != 1:
             continue
         metadata = {

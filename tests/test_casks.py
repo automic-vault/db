@@ -72,6 +72,10 @@ class CaskAuthorityTests(unittest.TestCase):
                 "artifacts": [
                     {"uninstall": [{"quit": "com.openai.codex"}]},
                     {"app": ["ChatGPT.app"], "target": "/Applications/ChatGPT.app"},
+                    {"zap": [{"trash": [
+                        "~/Library/Caches/com.openai.sky.CUAService",
+                        "~/Library/Preferences/com.openai.sky.CUAService.plist",
+                    ]}]},
                 ],
             }
         ])
