@@ -100,6 +100,21 @@ class EcosystemCategorizerTests(unittest.TestCase):
 
         self.assertEqual([item["id"] for item in selected], ["cargo:ripgrep"])
 
+    def test_selects_casks_and_respects_base_taxonomy(self):
+        candidates = self.module.cask_packages({
+            "chatgpt": {"displayName": "ChatGPT", "applications": ["ChatGPT.app"]},
+            "vlc": {"displayName": "VLC", "applications": ["VLC.app"]},
+        })
+
+        selected = self.module.selected_candidates(
+            candidates,
+            {"schema": 1, "packages": {}},
+            include_existing=False,
+            existing_ids={"cask:chatgpt"},
+        )
+
+        self.assertEqual([item["id"] for item in selected], ["cask:vlc"])
+
     def test_rejects_invalid_category_roots(self):
         _entries, errors = self.module.validate_payload(
             {

@@ -80,6 +80,7 @@ def steps(refresh: bool, fetch_manifests: bool, manifest_limit: int) -> list[Ste
                 Path("cache/brew/formulae.json"),
                 Path("cache/brew/casks.json"),
                 Path("cache/brew/cask-entries.json"),
+                Path("cache/brew/casks.json"),
                 Path("cache/brew/executables.json"),
                 Path("cache/brew/executable-entries.json"),
             ],

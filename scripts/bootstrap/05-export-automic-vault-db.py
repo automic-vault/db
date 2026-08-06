@@ -6,8 +6,7 @@ import json
 import sys
 from pathlib import Path
 
-from lib.authority import AUTOMIC_VAULT_DB_PATH, build_automic_vault_db, read_cask_cache
-from lib.casks import app_catalog_from_casks
+from lib.authority import AUTOMIC_VAULT_DB_PATH, build_automic_vault_db
 from lib.common import ROOT, ensure_root, read_json, write_json
 
 
@@ -52,9 +51,6 @@ def parse_args() -> argparse.Namespace:
 
 def write_public_db(path: Path) -> dict[str, object]:
     db = build_automic_vault_db()
-    apps, app_casks = app_catalog_from_casks(read_cask_cache())
-    db["apps"] = apps
-    db["casks"] = dict(sorted({**app_casks, **db["casks"]}.items()))
     document = {
         "schema": PUBLIC_SCHEMA_VERSION,
         "generated_at": db["generated_at"],

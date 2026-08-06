@@ -3,7 +3,7 @@
 The metadata and live SQLite origin behind the pkg.so package catalog.
 
 > [!IMPORTANT]
-> CLIs only. Library-only and transitive dependencies don’t belong here.
+> Installable CLIs and macOS apps only. Library-only and transitive dependencies don’t belong here.
 
 ## Build
 

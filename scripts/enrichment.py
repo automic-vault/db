@@ -69,6 +69,7 @@ SOURCE_FACT_KEYS = (
     "repo",
     "description",
     "executables",
+    "applications",
     "package-manager",
     "package-manager-url",
     "version",
@@ -253,12 +254,12 @@ def normalize_tag(value: Any) -> str:
     return TAG_REPLACEMENTS.get(tag, tag)
 
 
-def normalize_tags(values: Any) -> list[str]:
+def normalize_tags(values: Any, *, include_cli: bool = True) -> list[str]:
     if isinstance(values, str):
         values = [values]
     if not isinstance(values, list):
         values = []
-    tags = {"cli"}
+    tags = {"cli"} if include_cli else set()
     for value in values:
         tag = normalize_tag(value)
         if tag and tag not in BANNED_TAGS:
@@ -420,6 +421,7 @@ def source_facts(record: dict[str, Any]) -> dict[str, Any]:
         "repo": normalize_url(record.get("repo")),
         "description": re.sub(r"\s+", " ", str(record.get("description") or "")).strip(),
         "executables": sorted(str(item) for item in record.get("executables") or []),
+        "applications": sorted(str(item) for item in record.get("applications") or []),
         "package-manager": normalize_string_map(record.get("package-manager")),
         "package-manager-url": normalize_url(record.get("package-manager-url")),
         "version": str(record.get("version") or ""),
@@ -451,7 +453,7 @@ def curation_facts(record: dict[str, Any]) -> dict[str, Any]:
         "history": normalize_history(record.get("history")),
         "category_path": path,
         "category": path[0] if path else "",
-        "tags": normalize_tags(record.get("tags")),
+        "tags": normalize_tags(record.get("tags"), include_cli=not str(record.get("id") or "").startswith("cask:")),
     }
 
 
@@ -657,7 +659,7 @@ Do not emit placeholder fallback rows. For every result:
 - Use top-level `null` for `config-file-location` when no official config file location is documented.
 - Use top-level `null` for `credentials-file-location` when credentials are absent, unknown, or not applicable.
 - Cite concise official source notes.
-- For `history`, write neutral Wikipedia-style package history focused on CLI/package-manager culture: project origins, adoption history, common usage, and why package nerds care. Use more paragraphs for significant packages. Use `history: null` when reliable source-backed history is too thin.
+- For `history`, write neutral Wikipedia-style package history focused on package-manager culture: project origins, adoption history, common usage, and why package nerds care. Use more paragraphs for significant packages. Use `history: null` when reliable source-backed history is too thin.
 - `history` fields are arrays of paragraph strings: `summary`, `project-history`, `adoption-history`, `usage`, `package-nerd-significance`, `timeline`, `related-projects`, and `sources`. Use concise timeline strings like `2016: First public release`.
 - If you rely on supplied input rather than web research, cite the specific input field, such as `source_facts.description`, `source_facts.homepage`, or `current_curation.category`.
 
@@ -752,7 +754,7 @@ def normalize_codex_result(item: dict[str, Any]) -> tuple[dict[str, Any], list[s
     repo = normalize_repo(item.get("repo"))
     if item.get("repo") not in (None, "") and not repo:
         errors.append("repo must be an official HTTP(S) source repository URL or null")
-    tags = normalize_tags(item.get("tags"))
+    tags = normalize_tags(item.get("tags"), include_cli=not str(item.get("id") or "").startswith("cask:"))
     display_name = normalize_display_name(item.get("display-name"))
     if not display_name:
         errors.append("display-name is required")
@@ -941,7 +943,7 @@ def merge_result(
         "config-file-location": normalize_path_locations(result.get("config-file-location")),
         "credentials-file-location": normalize_path_locations(result.get("credentials-file-location")),
         "history": normalize_history(result.get("history")),
-        "tags": normalize_tags(result["tags"]),
+        "tags": normalize_tags(result["tags"], include_cli=not str(result.get("id") or "").startswith("cask:")),
     }
     confidence_fields = {
         "repo": result["repo-confidence"],

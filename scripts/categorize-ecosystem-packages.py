@@ -14,12 +14,14 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from scripts.bootstrap.lib.common import read_json, write_json
+from scripts.bootstrap.lib.casks import read_cask_catalog
 from scripts.enrichment import CATEGORIES, normalize_category_path, normalize_tags
 
 
 SCHEMA_VERSION = 1
 RUNS_DIR = ROOT / "cache" / "ecosystem-taxonomy" / "runs"
 OUTPUT_PATH = ROOT / "data" / "pkg-ecosystem-taxonomy.json"
+BASE_TAXONOMY_PATH = ROOT / "data" / "pkg-taxonomy.json"
 PACKAGE_INDEX_PATH = ROOT / "cache" / "package-index.json"
 CRATES_INDEX_PATH = ROOT / "cache" / "cratesio" / "index.json"
 CONFIDENCE = {"high", "medium", "low"}
@@ -38,6 +40,8 @@ def package_url(provider: str, name: str, info: dict[str, Any]) -> str:
         return str(info["packageManagerUrl"])
     if provider == "npm":
         return f"https://www.npmjs.com/package/{urllib.parse.quote(name, safe='@/')}"
+    if provider == "cask":
+        return f"https://formulae.brew.sh/cask/{urllib.parse.quote(name, safe='@+/')}"
     return f"https://crates.io/crates/{urllib.parse.quote(name, safe='')}"
 
 
@@ -96,12 +100,36 @@ def cargo_packages(index: dict[str, Any]) -> list[dict[str, Any]]:
     return result
 
 
+def cask_packages(casks: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    return [{
+        "id": f"cask:{name}",
+        "provider": "cask",
+        "name": name,
+        "displayName": clean_text(info.get("displayName")) or name,
+        "summary": clean_text(info.get("summary")),
+        "homepage": clean_text(info.get("homepage")),
+        "repository": clean_text(info.get("repository")),
+        "version": clean_text(info.get("version")),
+        "packageManagerUrl": package_url("cask", name, info),
+        "executables": [
+            clean_text(item.get("target") or Path(clean_text(item.get("source"))).name)
+            for item in info.get("binaries") or []
+            if isinstance(item, dict) and clean_text(item.get("target") or item.get("source"))
+        ],
+        "applications": list(info.get("applications") or []),
+        "keywords": [],
+    } for name, info in sorted(casks.items())]
+
+
 def load_candidates(provider: str, db_path: Path, crates_index_path: Path) -> list[dict[str, Any]]:
     candidates: list[dict[str, Any]] = []
     if provider in {"all", "npm"}:
         candidates.extend(npm_packages(read_json(db_path, {})))
     if provider in {"all", "cargo"}:
         candidates.extend(cargo_packages(read_json(crates_index_path, {})))
+    if provider in {"all", "cask"}:
+        _entries, _apps, casks = read_cask_catalog()
+        candidates.extend(cask_packages(casks))
     return sorted(candidates, key=lambda item: (item["provider"], item["name"].lower(), item["name"]))
 
 
@@ -115,10 +143,10 @@ def load_taxonomy(path: Path) -> dict[str, Any]:
     return data
 
 
-def selected_candidates(candidates: list[dict[str, Any]], taxonomy: dict[str, Any], include_existing: bool) -> list[dict[str, Any]]:
+def selected_candidates(candidates: list[dict[str, Any]], taxonomy: dict[str, Any], include_existing: bool, existing_ids: set[str] | None = None) -> list[dict[str, Any]]:
     if include_existing:
         return candidates
-    existing = set((taxonomy.get("packages") or {}).keys())
+    existing = set((taxonomy.get("packages") or {}).keys()) | (existing_ids or set())
     return [item for item in candidates if item["id"] not in existing]
 
 
@@ -130,7 +158,7 @@ def batches(items: list[dict[str, Any]], size: int) -> list[list[dict[str, Any]]
 
 def prompt_text(input_path: Path, count: int) -> str:
     roots = ", ".join(sorted(CATEGORIES))
-    return f"""Categorize these npm and Cargo CLI packages for pkgdb package pages.
+    return f"""Categorize these installable packages for pkgdb package pages.
 
 Read the input JSON at `{input_path}`. Return JSON only in `codex-output.json` shape:
 {{"results":[{{"id":"npm:name","displayName":"Name","category":"developer-tools","categoryPath":["developer-tools","subarea"],"categoryConfidence":"high","tags":["cli"],"tagsConfidence":"high","categorySources":["source note"],"tagsSources":["source note"]}}]}}
@@ -139,7 +167,7 @@ Rules:
 - Return exactly one result for each of the {count} package ids in the input.
 - The first categoryPath item and category must be one of: {roots}.
 - Tags and category path parts must be lowercase slug strings.
-- Prefer source facts from summary, homepage, repository, executables, keywords, and package manager URL.
+- Prefer source facts from summary, homepage, repository, executables, applications, keywords, and package manager URL.
 - Use concise source notes. Do not invent repo, docs, history, or install metadata.
 """
 
@@ -236,7 +264,7 @@ def normalize_result(item: Any, expected_ids: set[str]) -> tuple[dict[str, Any] 
         errors.append(f"{package_id}: categoryPath must start with a known category")
     elif category and category != category_path[0]:
         errors.append(f"{package_id}: category must match categoryPath root")
-    tags = normalize_tags(item.get("tags"))
+    tags = normalize_tags(item.get("tags"), include_cli=not package_id.startswith("cask:"))
     category_confidence = clean_text(item.get("categoryConfidence"))
     tags_confidence = clean_text(item.get("tagsConfidence"))
     if category_confidence not in CONFIDENCE:
@@ -311,20 +339,20 @@ def apply_run(run_dir: Path, output_path: Path) -> int:
         all_entries.extend(entries)
         all_errors.extend(errors)
         write_json(ROOT / str(batch["batch_dir"]) / "normalized-output.json", {"results": entries, "errors": errors})
-    write_json(output_path, merge_taxonomy(taxonomy, all_entries))
     write_json(run_dir / "apply-summary.json", {"changed": len(all_entries), "errors": all_errors})
     if all_errors:
         for error in all_errors[:20]:
             print(f"ERROR {error}", file=sys.stderr)
         return 1
+    write_json(output_path, merge_taxonomy(taxonomy, all_entries))
     print(f"Applied {len(all_entries)} taxonomy entries to {output_path.relative_to(ROOT)}")
     return 0
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Prepare or apply npm/Cargo taxonomy curation batches.")
+    parser = argparse.ArgumentParser(description="Prepare or apply ecosystem taxonomy curation batches.")
     parser.add_argument("--phase", choices=["prepare", "apply"], default="prepare")
-    parser.add_argument("--provider", choices=["all", "npm", "cargo"], default="all")
+    parser.add_argument("--provider", choices=["all", "npm", "cargo", "cask"], default="all")
     parser.add_argument("--batch-size", type=int, default=25)
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--include-existing", action="store_true")
@@ -341,10 +369,12 @@ def main() -> int:
     if args.phase == "apply":
         return apply_run(run_dir, args.output)
     taxonomy = load_taxonomy(args.output)
+    base_ids = set((load_taxonomy(BASE_TAXONOMY_PATH).get("packages") or {}).keys())
     candidates = selected_candidates(
         load_candidates(args.provider, args.db, args.crates_index),
         taxonomy,
         args.include_existing,
+        base_ids,
     )
     if args.limit:
         candidates = candidates[:args.limit]

@@ -8,7 +8,7 @@ from typing import Any
 
 from .brew import clean_summary, formula_record, repository_project_url
 from .common import AGENTS_DIR, AGENTS_JSON_DIR, COMBINED_DIR, DETERMINISTIC_DIR, HUMAN_OVERRIDE_DIR, STAGE_DIR, read_json, reset_dir, sync_tree, write_text_if_changed
-from .casks import read_cask_authority
+from .casks import read_cask_catalog
 from .executables import read_executable_index
 from .managers import manager_matcher, package_manager_routes
 from .yaml_writer import yaml_text
@@ -66,14 +66,15 @@ def project_record(formula: dict[str, Any], executables: list[str], matcher: dic
 
 
 def cask_project_record(token: str, metadata: dict[str, Any], executables: list[str]) -> dict[str, Any] | None:
-    if not token or not executables:
+    applications = sorted(set(item for item in metadata.get("applications", []) if isinstance(item, str) and item))
+    if not token or not (executables or applications):
         return None
     homepage = metadata.get("homepage") if isinstance(metadata.get("homepage"), str) else ""
     url = metadata.get("url") if isinstance(metadata.get("url"), str) else ""
     aliases = [alias for alias in metadata.get("aliases", []) if isinstance(alias, str) and alias]
     record = {
         "id": f"cask:{token}",
-        "display-name": token,
+        "display-name": metadata.get("displayName") or token,
         "homepage": homepage,
         "repo": repository_project_url(homepage) or repository_project_url(url) or None,
         "package-manager": {"brew-cask": token},
@@ -81,13 +82,16 @@ def cask_project_record(token: str, metadata: dict[str, Any], executables: list[
         "version": metadata.get("version") if isinstance(metadata.get("version"), str) else "",
         "description": clean_summary(metadata.get("summary")),
         "source-archive": url,
-        "executables": sorted(set(executables)),
         "provenance": {
             "provider": "brew-cask",
             "source": "https://formulae.brew.sh/api/cask.json",
             "cask": token,
         },
     }
+    if executables:
+        record["executables"] = sorted(set(executables))
+    if applications:
+        record["applications"] = applications
     if aliases:
         record["aliases"] = sorted(set(aliases))
     return record
@@ -108,7 +112,7 @@ def render_stage(formulae: list[dict[str, Any]], manager_indexes: dict[str, Any]
             continue
         write_text_if_changed(STAGE_DIR / "deterministic" / f"{name}.yml", yaml_text(record))
         count += 1
-    cask_entries, casks = read_cask_authority()
+    cask_entries, _apps, casks = read_cask_catalog()
     cask_executables: dict[str, list[str]] = {}
     for executable, provider in cask_entries.items():
         if not provider.startswith("cask:"):
@@ -117,7 +121,7 @@ def render_stage(formulae: list[dict[str, Any]], manager_indexes: dict[str, Any]
         cask_executables.setdefault(token, []).append(executable)
     for token, metadata in sorted(casks.items()):
         if token in formula_names:
-            continue
+            raise ValueError(f"Homebrew formula and cask share public project id: {token}")
         record = cask_project_record(token, metadata, cask_executables.get(token, []))
         if record is None:
             continue
@@ -316,8 +320,8 @@ def validate_tree(root: Path) -> list[str]:
         ):
             if deprecated in text:
                 failures.append(f"{path}: contains deprecated Homebrew metadata {deprecated.rstrip(':')}")
-        if "executables:" not in text:
-            failures.append(f"{path}: missing executables")
+        if "executables:" not in text and "applications:" not in text:
+            failures.append(f"{path}: missing executables or applications")
         if "kind: cli" in text or "exposure: global executable" in text:
             failures.append(f"{path}: contains verbose executable metadata")
         failures.extend(validate_curated_fields(path, text))
@@ -334,8 +338,8 @@ def validate_curated_fields(path: Path, text: str) -> list[str]:
         failures.append(f"{path}: category must be one of {sorted(CATEGORIES)}")
     tags = record.get("tags")
     if tags is not None:
-        if not isinstance(tags, list) or "cli" not in tags:
-            failures.append(f"{path}: tags must include cli")
+        if not isinstance(tags, list) or (record.get("executables") and "cli" not in tags):
+            failures.append(f"{path}: executable projects' tags must include cli")
         elif tags != sorted(tags) or any(not is_slug(tag) for tag in tags):
             failures.append(f"{path}: tags must be sorted slug strings")
     docs = record.get("docs")

@@ -23,6 +23,7 @@ KEY_ORDER = [
     "description",
     "source-archive",
     "executables",
+    "applications",
     "geiger",
     "provenance",
 ]

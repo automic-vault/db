@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from .common import CACHE_DIR, COMBINED_DIR, ROOT, read_json, write_json
-from .casks import read_cask_authority
+from .casks import read_cask_cache, read_cask_catalog
 from .crates import CRATES_IO_INDEX_PATH
 from .executables import executable_entries_from_index, executable_index_from_project_yaml
 from .render import parse_simple_yaml, read_formula_cache
@@ -25,6 +25,7 @@ PULSE_NEW_WINDOW_DAYS = 7
 PULSE_HISTORY_WINDOW_DAYS = 90
 PULSE_KINDS = {"new", "updated"}
 PACKAGE_TAXONOMY_FIELDS = (
+    "displayName",
     "category",
     "categoryPath",
     "categoryConfidence",
@@ -261,12 +262,31 @@ def formula_metadata_from_project_yaml(root: Path = COMBINED_DIR, formulae: list
     return result
 
 
-def read_cask_cache() -> list[dict[str, Any]]:
-    payload = read_json(CACHE_DIR / "brew" / "casks.json", {})
-    casks = payload.get("casks") if isinstance(payload, dict) else payload
-    if not isinstance(casks, list):
-        return []
-    return [item for item in casks if isinstance(item, dict)]
+def cask_metadata_from_project_yaml(root: Path = COMBINED_DIR) -> dict[str, dict[str, Any]]:
+    result: dict[str, dict[str, Any]] = {}
+    if not root.exists():
+        return result
+    for path in sorted(root.glob("*.yml")):
+        record = parse_simple_yaml(path.read_text(encoding="utf-8"))
+        identifier = record.get("id")
+        if not isinstance(identifier, str) or not identifier.startswith("cask:"):
+            continue
+        token = identifier.split(":", 1)[1]
+        docs = string_list(record.get("docs"))
+        metadata = {
+            "displayName": record.get("display-name"),
+            "repository": record.get("repo"),
+            "docs": docs,
+            "upstreamDocs": docs[0] if docs else "",
+            "category": record.get("category"),
+            "tags": string_list(record.get("tags")),
+            "configFileLocation": record.get("config-file-location"),
+            "credentialsFileLocation": record.get("credentials-file-location"),
+            "history": record.get("history"),
+        }
+        if token:
+            result[token] = {key: value for key, value in metadata.items() if value not in (None, "", [], {})}
+    return result
 
 
 def cask_lookup(casks: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -445,7 +465,7 @@ def apply_crate_entries(entries: dict[str, str], crates: dict[str, dict[str, Any
 def build_automic_vault_db(root: Path = COMBINED_DIR, formulae: list[dict[str, Any]] | None = None, generated_at: str | None = None) -> dict[str, Any]:
     source_formulae = formulae if formulae is not None else read_formula_cache()
     executable_index = executable_index_from_project_yaml(root)
-    cask_entries, casks = read_cask_authority()
+    cask_entries, apps, casks = read_cask_catalog()
     entries = executable_entries_from_index(executable_index)
     entries.update(cask_entries)
     formulas = formula_metadata_from_project_yaml(root, source_formulae)
@@ -455,8 +475,12 @@ def build_automic_vault_db(root: Path = COMBINED_DIR, formulae: list[dict[str, A
     crates = read_crate_metadata()
     apply_crate_entries(entries, crates)
     taxonomy = read_package_taxonomy_index()
+    apply_package_taxonomy("cask", casks, taxonomy)
     apply_package_taxonomy("npm", npms, taxonomy)
     apply_package_taxonomy("cargo", crates, taxonomy)
+    for token, metadata in cask_metadata_from_project_yaml(root).items():
+        if token in casks:
+            casks[token].update(metadata)
     timestamp = generated_at or datetime.datetime.now(datetime.timezone.utc).isoformat()
     return {
         "schema": DB_SCHEMA_VERSION,
@@ -464,6 +488,7 @@ def build_automic_vault_db(root: Path = COMBINED_DIR, formulae: list[dict[str, A
         "entries": dict(sorted(entries.items())),
         "formulas": formulas,
         "casks": stable_cask_metadata(casks),
+        "apps": apps,
         "npms": npms,
         "crates": crates,
     }

@@ -162,8 +162,13 @@ def app_catalog_from_casks(casks: list[dict[str, Any]]) -> tuple[dict[str, dict[
             or not isinstance(artifacts, list)
         ):
             continue
-        has_app = any(isinstance(artifact, dict) and "app" in artifact for artifact in artifacts)
-        if not has_app:
+        applications = sorted({
+            os.path.basename(app)
+            for artifact in artifacts
+            if isinstance(artifact, dict)
+            for app in artifact_values(artifact.get("app"))
+        })
+        if not applications:
             continue
         bundle_identifiers = set()
         zap_bundle_identifiers = Counter()
@@ -197,15 +202,26 @@ def app_catalog_from_casks(casks: list[dict[str, Any]]) -> tuple[dict[str, dict[
             )
         if len(bundle_identifiers) != 1:
             continue
+        names = artifact_values(cask.get("name"))
+        url = cask.get("url")
+        depends_on = cask.get("depends_on") or {}
+        dependencies = depends_on.get("formula") if isinstance(depends_on, dict) else []
         metadata = {
             key: value
             for key, value in {
+                "displayName": names[0] if names else token,
                 "summary": cask.get("desc"),
                 "homepage": cask.get("homepage"),
                 "version": cask.get("version"),
+                "url": url,
+                "sourceArchive": url,
+                "sha256": cask.get("sha256"),
             }.items()
             if isinstance(value, str) and value
         }
+        metadata["applications"] = applications
+        metadata["aliases"] = sorted(set(artifact_values(cask.get("old_tokens"))))
+        metadata["dependencies"] = sorted(set(artifact_values(dependencies)))
         candidates.setdefault(bundle_identifiers.pop(), []).append((token, metadata))
 
     apps = {}
@@ -217,6 +233,14 @@ def app_catalog_from_casks(casks: list[dict[str, Any]]) -> tuple[dict[str, dict[
         apps[bundle_identifier] = {"cask": token, "version_source": "cask"}
         app_casks[token] = metadata
     return dict(sorted(apps.items())), dict(sorted(app_casks.items()))
+
+
+def artifact_values(value: Any) -> list[str]:
+    if isinstance(value, str):
+        return [value] if value else []
+    if not isinstance(value, list):
+        return []
+    return [item for item in value if isinstance(item, str) and item]
 
 
 def is_bundle_identifier(value: Any) -> bool:
@@ -267,3 +291,17 @@ def read_cask_authority() -> tuple[dict[str, str], dict[str, dict[str, Any]]]:
         {str(key): str(value) for key, value in entries.items() if isinstance(value, str)},
         {str(key): value for key, value in casks.items() if isinstance(value, dict)},
     )
+
+
+def read_cask_cache() -> list[dict[str, Any]]:
+    payload = read_json(CACHE_DIR / "brew" / "casks.json", {})
+    casks = payload.get("casks") if isinstance(payload, dict) else payload
+    if not isinstance(casks, list):
+        return []
+    return [item for item in casks if isinstance(item, dict)]
+
+
+def read_cask_catalog() -> tuple[dict[str, str], dict[str, dict[str, Any]], dict[str, dict[str, Any]]]:
+    entries, binary_casks = read_cask_authority()
+    apps, app_casks = app_catalog_from_casks(read_cask_cache())
+    return entries, apps, dict(sorted({**app_casks, **binary_casks}.items()))

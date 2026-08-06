@@ -11,6 +11,7 @@ from scripts.bootstrap.lib.casks import (
     cask_metadata,
     collect_cask_entries,
     parse_binary_artifact,
+    read_cask_catalog,
 )
 from scripts.bootstrap.lib.render import cask_project_record
 
@@ -50,8 +51,6 @@ class CaskAuthorityTests(unittest.TestCase):
             with (
                 mock.patch.object(exporter, "PUBLIC_SOURCES", sources),
                 mock.patch.object(exporter, "build_automic_vault_db", return_value=authority),
-                mock.patch.object(exporter, "read_cask_cache", return_value=[]),
-                mock.patch.object(exporter, "app_catalog_from_casks", return_value=({}, {})),
             ):
                 exporter.write_public_db(output)
 
@@ -103,6 +102,31 @@ class CaskAuthorityTests(unittest.TestCase):
 
         self.assertEqual(apps, {"org.videolan.vlc": {"cask": "vlc", "version_source": "cask"}})
         self.assertEqual(casks["vlc"]["version"], "3.0.23")
+        self.assertEqual(casks["vlc"]["displayName"], "vlc")
+        self.assertEqual(casks["vlc"]["applications"], ["VLC.app"])
+
+    def test_cask_catalog_combines_apps_with_binary_authority(self):
+        with (
+            mock.patch("scripts.bootstrap.lib.casks.read_cask_cache", return_value=[{
+                "token": "vlc",
+                "name": ["VLC media player"],
+                "version": "3.0.23",
+                "artifacts": [
+                    {"app": ["VLC.app"]},
+                    {"zap": [{"trash": [
+                        "~/Library/Caches/org.videolan.vlc",
+                        "~/Library/Preferences/org.videolan.vlc.plist",
+                    ]}]},
+                ],
+            }]),
+            mock.patch("scripts.bootstrap.lib.casks.read_cask_authority", return_value=({"op": "cask:1password-cli"}, {"1password-cli": {"binaries": [{"source": "op"}]}})),
+        ):
+            entries, apps, casks = read_cask_catalog()
+
+        self.assertEqual(entries, {"op": "cask:1password-cli"})
+        self.assertEqual(apps["org.videolan.vlc"]["cask"], "vlc")
+        self.assertEqual(casks["vlc"]["displayName"], "VLC media player")
+        self.assertIn("1password-cli", casks)
 
     def test_parse_binary_artifact_supports_target_forms(self):
         self.assertEqual(
@@ -215,6 +239,23 @@ class CaskAuthorityTests(unittest.TestCase):
                 "aliases": ["codex-cli"],
             },
         )
+
+    def test_cask_project_record_renders_an_application_without_fake_executables(self):
+        record = cask_project_record(
+            "vlc",
+            {
+                "displayName": "VLC media player",
+                "summary": "Multimedia player",
+                "homepage": "https://www.videolan.org/vlc/",
+                "version": "3.0.23",
+                "applications": ["VLC.app"],
+            },
+            [],
+        )
+
+        self.assertEqual(record["display-name"], "VLC media player")
+        self.assertEqual(record["applications"], ["VLC.app"])
+        self.assertNotIn("executables", record)
 
 
 if __name__ == "__main__":
