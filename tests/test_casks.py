@@ -79,6 +79,27 @@ class CaskAuthorityTests(unittest.TestCase):
         self.assertEqual(apps, {"com.openai.codex": {"cask": "chatgpt", "version_source": "cask"}})
         self.assertEqual(casks["chatgpt"]["version"], "26.730.61639")
 
+    def test_app_catalog_associates_vlc_by_repeated_zap_bundle_identifier(self):
+        apps, casks = app_catalog_from_casks([
+            {
+                "token": "vlc",
+                "desc": "Multimedia player",
+                "homepage": "https://www.videolan.org/vlc/",
+                "version": "3.0.23",
+                "artifacts": [
+                    {"app": ["VLC.app"], "target": "/Applications/VLC.app"},
+                    {"zap": [{"trash": [
+                        "~/Library/Application Support/org.videolan.vlc",
+                        "~/Library/Caches/org.videolan.vlc",
+                        "~/Library/Preferences/org.videolan.vlc.plist",
+                    ]}]},
+                ],
+            }
+        ])
+
+        self.assertEqual(apps, {"org.videolan.vlc": {"cask": "vlc", "version_source": "cask"}})
+        self.assertEqual(casks["vlc"]["version"], "3.0.23")
+
     def test_parse_binary_artifact_supports_target_forms(self):
         self.assertEqual(
             parse_binary_artifact({"binary": "op"}),

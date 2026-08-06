@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import sys
+from collections import Counter
 from typing import Any
 
 from .common import CACHE_DIR, fetch_json, read_json, write_json
@@ -165,23 +166,34 @@ def app_catalog_from_casks(casks: list[dict[str, Any]]) -> tuple[dict[str, dict[
         if not has_app:
             continue
         bundle_identifiers = set()
+        zap_bundle_identifiers = Counter()
         for artifact in artifacts:
-            uninstall = artifact.get("uninstall") if isinstance(artifact, dict) else None
-            if not isinstance(uninstall, list):
+            if not isinstance(artifact, dict):
                 continue
+            uninstall = artifact.get("uninstall")
+            if not isinstance(uninstall, list):
+                uninstall = []
             for rule in uninstall:
-                quit_values = rule.get("quit") if isinstance(rule, dict) else None
-                if isinstance(quit_values, str):
-                    quit_values = [quit_values]
-                if not isinstance(quit_values, list):
-                    continue
-                bundle_identifiers.update(
-                    value
-                    for value in quit_values
-                    if isinstance(value, str)
-                    and value.count(".") >= 2
-                    and all(character.isalnum() or character in ".-" for character in value)
-                )
+                values = rule.get("quit") if isinstance(rule, dict) else None
+                values = [values] if isinstance(values, str) else values if isinstance(values, list) else []
+                bundle_identifiers.update(value for value in values if is_bundle_identifier(value))
+
+            zap = artifact.get("zap")
+            if not isinstance(zap, list):
+                continue
+            for rule in zap:
+                values = rule.get("trash") if isinstance(rule, dict) else None
+                values = [values] if isinstance(values, str) else values if isinstance(values, list) else []
+                for path in values:
+                    bundle_identifier = zap_bundle_identifier(path)
+                    if bundle_identifier is None:
+                        continue
+                    zap_bundle_identifiers[bundle_identifier] += 1
+        bundle_identifiers.update(
+            bundle_identifier
+            for bundle_identifier, count in zap_bundle_identifiers.items()
+            if count >= 2
+        )
         if len(bundle_identifiers) != 1:
             continue
         metadata = {
@@ -204,6 +216,27 @@ def app_catalog_from_casks(casks: list[dict[str, Any]]) -> tuple[dict[str, dict[
         apps[bundle_identifier] = {"cask": token, "version_source": "cask"}
         app_casks[token] = metadata
     return dict(sorted(apps.items())), dict(sorted(app_casks.items()))
+
+
+def is_bundle_identifier(value: Any) -> bool:
+    return (
+        isinstance(value, str)
+        and value.count(".") >= 2
+        and all(character.isalnum() or character in ".-" for character in value)
+    )
+
+
+def zap_bundle_identifier(path: Any) -> str | None:
+    if not isinstance(path, str):
+        return None
+    leaf = os.path.basename(path.rstrip("/")).rstrip("*")
+    for suffix in (".binarycookies", ".savedState", ".plist", ".sfl2", ".sfl"):
+        if leaf.endswith(suffix):
+            leaf = leaf.removesuffix(suffix).rstrip("*")
+            break
+    if leaf.startswith("com.apple.") or not is_bundle_identifier(leaf):
+        return None
+    return leaf
 
 
 def write_cask_cache(casks: list[dict[str, Any]], *, all_casks: list[dict[str, Any]] | None = None) -> None:
