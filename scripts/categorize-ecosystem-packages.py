@@ -4,7 +4,9 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
+import os
 import re
+import subprocess
 import sys
 import urllib.parse
 from pathlib import Path
@@ -13,7 +15,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from scripts.bootstrap.lib.common import read_json, write_json
+from scripts.bootstrap.lib.common import git_commit_if_changed, read_json, write_json
 from scripts.bootstrap.lib.casks import read_cask_catalog
 from scripts.enrichment import CATEGORIES, normalize_category_path, normalize_tags
 
@@ -25,6 +27,7 @@ BASE_TAXONOMY_PATH = ROOT / "data" / "pkg-taxonomy.json"
 PACKAGE_INDEX_PATH = ROOT / "cache" / "package-index.json"
 CRATES_INDEX_PATH = ROOT / "cache" / "cratesio" / "index.json"
 CONFIDENCE = {"high", "medium", "low"}
+DEFAULT_CODEX_TIMEOUT_SECONDS = int(os.environ.get("PKG_TAXONOMY_CODEX_TIMEOUT_SECONDS", "900"))
 
 
 def utc_run_id() -> str:
@@ -245,6 +248,33 @@ def write_run_artifacts(run_dir: Path, selected: list[dict[str, Any]], batch_siz
     return manifest
 
 
+def run_codex_batches(manifest: dict[str, Any], *, timeout: int = DEFAULT_CODEX_TIMEOUT_SECONDS) -> None:
+    for batch in manifest.get("batches") or []:
+        expected_ids = set(str(item) for item in batch.get("expected_ids") or [])
+        output = ROOT / str(batch["codex_output_path"])
+        if output.exists() and not validate_payload(read_json(output), expected_ids)[1]:
+            print(f"SKIP batch {batch['batch']}; valid output exists")
+            continue
+        prompt = (ROOT / str(batch["prompt_path"])).read_text(encoding="utf-8")
+        subprocess.run([
+            "codex",
+            "--ask-for-approval", "never",
+            "exec",
+            "--ephemeral",
+            "--ignore-user-config",
+            "--color", "never",
+            "--sandbox", "read-only",
+            "--output-schema", str(ROOT / str(batch["batch_dir"]) / "output-schema.json"),
+            "-C", str(ROOT),
+            "-o", str(output),
+            prompt,
+        ], cwd=ROOT, check=True, timeout=timeout, stdin=subprocess.DEVNULL)
+        entries, errors = validate_payload(read_json(output), expected_ids)
+        if errors:
+            raise SystemExit(f"batch {batch['batch']} failed validation: {errors[0]}")
+        print(f"CODEX batch {batch['batch']} valid={len(entries)}")
+
+
 def clean_sources(value: Any) -> list[str]:
     if not isinstance(value, list):
         return []
@@ -351,11 +381,12 @@ def apply_run(run_dir: Path, output_path: Path) -> int:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Prepare or apply ecosystem taxonomy curation batches.")
-    parser.add_argument("--phase", choices=["prepare", "apply"], default="prepare")
+    parser.add_argument("--phase", choices=["prepare", "run", "apply"], default="prepare")
     parser.add_argument("--provider", choices=["all", "npm", "cargo", "cask"], default="all")
     parser.add_argument("--batch-size", type=int, default=25)
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--include-existing", action="store_true")
+    parser.add_argument("--commit", action="store_true", help="Commit taxonomy after a successful apply.")
     parser.add_argument("--run-id")
     parser.add_argument("--output", type=Path, default=OUTPUT_PATH)
     parser.add_argument("--db", type=Path, default=PACKAGE_INDEX_PATH)
@@ -367,7 +398,11 @@ def main() -> int:
     args = parse_args()
     run_dir = RUNS_DIR / (args.run_id or utc_run_id())
     if args.phase == "apply":
-        return apply_run(run_dir, args.output)
+        code = apply_run(run_dir, args.output)
+        if code == 0 and args.commit:
+            commit = git_commit_if_changed("bootstrap: categorize ecosystem packages", [str(args.output.relative_to(ROOT))])
+            print(f"COMMIT {commit}" if commit else "COMMIT no changes")
+        return code
     taxonomy = load_taxonomy(args.output)
     base_ids = set((load_taxonomy(BASE_TAXONOMY_PATH).get("packages") or {}).keys())
     candidates = selected_candidates(
@@ -380,6 +415,13 @@ def main() -> int:
         candidates = candidates[:args.limit]
     manifest = write_run_artifacts(run_dir, candidates, args.batch_size)
     print(f"Prepared {manifest['selected_count']} packages in {len(manifest['batches'])} batches under {run_dir.relative_to(ROOT)}")
+    if args.phase == "run":
+        run_codex_batches(manifest)
+        code = apply_run(run_dir, args.output)
+        if code == 0 and args.commit:
+            commit = git_commit_if_changed("bootstrap: categorize ecosystem packages", [str(args.output.relative_to(ROOT))])
+            print(f"COMMIT {commit}" if commit else "COMMIT no changes")
+        return code
     return 0
 
 

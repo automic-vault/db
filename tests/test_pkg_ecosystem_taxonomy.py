@@ -4,6 +4,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from scripts import pkg_hub_data
 
@@ -169,6 +170,65 @@ class EcosystemCategorizerTests(unittest.TestCase):
             text = path.read_text(encoding="utf-8")
 
         self.assertLess(text.index('"cargo:a"'), text.index('"npm:z"'))
+
+    def test_run_skips_a_valid_codex_checkpoint(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            batch = root / "batch"
+            batch.mkdir()
+            result = {
+                "id": "cask:vlc",
+                "displayName": "VLC",
+                "category": "media",
+                "categoryPath": ["media"],
+                "categoryConfidence": "high",
+                "categorySources": ["summary"],
+                "tags": ["video-player"],
+                "tagsConfidence": "high",
+                "tagsSources": ["summary"],
+            }
+            (batch / "codex-output.json").write_text(json.dumps({"results": [result]}), encoding="utf-8")
+            manifest = {"batches": [{
+                "batch": "0001",
+                "batch_dir": "batch",
+                "codex_output_path": "batch/codex-output.json",
+                "expected_ids": ["cask:vlc"],
+                "prompt_path": "batch/prompt.md",
+            }]}
+            original_root = self.module.ROOT
+            try:
+                self.module.ROOT = root
+                with mock.patch.object(self.module.subprocess, "run") as run:
+                    self.module.run_codex_batches(manifest)
+            finally:
+                self.module.ROOT = original_root
+
+        run.assert_not_called()
+
+    def test_apply_is_atomic_when_a_batch_output_is_missing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = root / "run"
+            batch = root / "batch"
+            run_dir.mkdir()
+            batch.mkdir()
+            output = root / "taxonomy.json"
+            original = {"schema": 1, "packages": {"cask:existing": {"id": "cask:existing"}}}
+            output.write_text(json.dumps(original), encoding="utf-8")
+            (run_dir / "controller-manifest.json").write_text(json.dumps({"batches": [{
+                "batch_dir": "batch",
+                "codex_output_path": "batch/missing.json",
+                "expected_ids": ["cask:vlc"],
+            }]}), encoding="utf-8")
+            original_root = self.module.ROOT
+            try:
+                self.module.ROOT = root
+                code = self.module.apply_run(run_dir, output)
+            finally:
+                self.module.ROOT = original_root
+
+            self.assertEqual(code, 1)
+            self.assertEqual(json.loads(output.read_text(encoding="utf-8")), original)
 
 
 if __name__ == "__main__":
