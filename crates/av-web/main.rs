@@ -15,6 +15,7 @@ use std::thread;
 const DEFAULT_BIND_ADDR: &str = "127.0.0.1:3004";
 const DEFAULT_DB_PATH: &str = "/var/lib/automic-vault-web/pkg.sqlite";
 const DEFAULT_PUBLIC_DB_PATH: &str = "/var/lib/automic-vault-web/db.json";
+const DEFAULT_FEED_ROOT: &str = "/var/lib/automic-vault-web/feed/current";
 const DEFAULT_ORIGIN_HEADER: &str = "x-automic-vault-origin";
 const HTML_CACHE_CONTROL: &str = "public, max-age=300, s-maxage=300";
 const FALLBACK_LAST_MODIFIED: &str = "Thu, 01 Jan 1970 00:00:00 GMT";
@@ -71,6 +72,7 @@ struct AppState {
     bind_addr: String,
     db_path: PathBuf,
     public_db_path: PathBuf,
+    feed_root: PathBuf,
     origin_header: String,
     origin_secret: Option<String>,
 }
@@ -86,6 +88,9 @@ impl AppState {
             public_db_path: env::var_os("AV_WEB_PUBLIC_DB_PATH")
                 .map(PathBuf::from)
                 .unwrap_or_else(|| PathBuf::from(DEFAULT_PUBLIC_DB_PATH)),
+            feed_root: env::var_os("AV_WEB_FEED_ROOT")
+                .map(PathBuf::from)
+                .unwrap_or_else(|| PathBuf::from(DEFAULT_FEED_ROOT)),
             origin_header: env::var("AV_WEB_ORIGIN_HEADER")
                 .unwrap_or_else(|_| DEFAULT_ORIGIN_HEADER.to_string())
                 .to_ascii_lowercase(),
@@ -190,6 +195,10 @@ fn handle_connection(mut stream: TcpStream, state: &AppState) -> Result<(), Stri
             last_modified: FALLBACK_LAST_MODIFIED.to_string(),
             cache_control: HTML_CACHE_CONTROL.to_string(),
         };
+        return write_stored_response(&mut stream, &request, 200, "OK", response, Vec::new());
+    }
+
+    if let Some(response) = discover_feed_response(&state.feed_root, &request.path)? {
         return write_stored_response(&mut stream, &request, 200, "OK", response, Vec::new());
     }
 
@@ -488,6 +497,119 @@ fn static_asset_response(path: &str) -> Option<StoredResponse> {
         last_modified: FALLBACK_LAST_MODIFIED.to_string(),
         cache_control: HTML_CACHE_CONTROL.to_string(),
     })
+}
+
+/// Returns a response only for the published feed documents and artwork that a
+/// document in the release explicitly references.  This keeps the release
+/// directory from becoming a general-purpose static file server.
+fn discover_feed_response(feed_root: &Path, request_path: &str) -> Result<Option<StoredResponse>, String> {
+    let Some(relative) = request_path.strip_prefix("/discover/feed/") else {
+        return Ok(None);
+    };
+    let Some(relative) = safe_discover_feed_path(relative) else {
+        return Ok(None);
+    };
+    let root = match fs::canonicalize(feed_root) {
+        Ok(root) => root,
+        Err(_) => return Ok(None),
+    };
+    let candidate = match fs::canonicalize(root.join(&relative)) {
+        Ok(candidate) if candidate.starts_with(&root) => candidate,
+        _ => return Ok(None),
+    };
+    if !candidate.is_file() || (relative.starts_with("assets/") && !feed_artwork_is_referenced(&root, &relative)?) {
+        return Ok(None);
+    }
+    let body = fs::read(&candidate)
+        .map_err(|err| format!("failed to read published Discover feed {}: {err}", candidate.display()))?;
+    let metadata = fs::metadata(&candidate)
+        .map_err(|err| format!("failed to stat published Discover feed {}: {err}", candidate.display()))?;
+    let content_type = discover_feed_content_type(&relative.to_string_lossy())
+        .expect("safe path has a content type");
+    let last_modified = metadata.modified().ok().map(httpdate::fmt_http_date)
+        .unwrap_or_else(|| FALLBACK_LAST_MODIFIED.to_string());
+    Ok(Some(StoredResponse {
+        content_type: content_type.to_string(),
+        etag: etag_for_bytes(&body),
+        body,
+        last_modified,
+        cache_control: HTML_CACHE_CONTROL.to_string(),
+    }))
+}
+
+fn safe_discover_feed_path(path: &str) -> Option<PathBuf> {
+    if path == "v1.json" || path == "v2.json" {
+        return Some(PathBuf::from(path));
+    }
+    if let Some(name) = path.strip_prefix("v2/pages/") {
+        if is_safe_feed_filename(name) && name.ends_with(".json") {
+            return Some(PathBuf::from("v2/pages").join(name));
+        }
+    }
+    if let Some(name) = path.strip_prefix("assets/") {
+        if is_safe_feed_filename(name) && discover_feed_content_type(name).is_some() {
+            return Some(PathBuf::from("assets").join(name));
+        }
+    }
+    None
+}
+
+fn is_safe_feed_filename(name: &str) -> bool {
+    !name.is_empty() && !name.contains('/') && !name.contains('\\') && !name.contains("..")
+}
+
+fn discover_feed_content_type(path: &str) -> Option<&'static str> {
+    if path.ends_with(".json") {
+        Some("application/json; charset=utf-8")
+    } else if path.ends_with(".png") {
+        Some("image/png")
+    } else if path.ends_with(".jpg") || path.ends_with(".jpeg") {
+        Some("image/jpeg")
+    } else if path.ends_with(".webp") {
+        Some("image/webp")
+    } else if path.ends_with(".avif") {
+        Some("image/avif")
+    } else {
+        None
+    }
+}
+
+fn feed_artwork_is_referenced(root: &Path, relative: &Path) -> Result<bool, String> {
+    let expected = format!("feed/{}", relative.display());
+    for document in feed_json_documents(root)? {
+        let raw = fs::read_to_string(&document)
+            .map_err(|err| format!("failed to read feed document {}: {err}", document.display()))?;
+        let value: Value = serde_json::from_str(&raw)
+            .map_err(|err| format!("invalid feed document {}: {err}", document.display()))?;
+        if value_contains_string(&value, &expected) {
+            return Ok(true);
+        }
+    }
+    Ok(false)
+}
+
+fn feed_json_documents(root: &Path) -> Result<Vec<PathBuf>, String> {
+    let mut documents = vec![root.join("v1.json"), root.join("v2.json")];
+    let pages = root.join("v2/pages");
+    if let Ok(entries) = fs::read_dir(pages) {
+        for entry in entries {
+            let entry = entry.map_err(|err| format!("failed to enumerate feed pages: {err}"))?;
+            let path = entry.path();
+            if path.extension().is_some_and(|extension| extension == "json") && path.is_file() {
+                documents.push(path);
+            }
+        }
+    }
+    Ok(documents)
+}
+
+fn value_contains_string(value: &Value, expected: &str) -> bool {
+    match value {
+        Value::String(value) => value == expected,
+        Value::Array(values) => values.iter().any(|value| value_contains_string(value, expected)),
+        Value::Object(values) => values.values().any(|value| value_contains_string(value, expected)),
+        _ => false,
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -6096,7 +6218,7 @@ mod tests {
     use std::net::Shutdown;
     use std::sync::{Mutex, MutexGuard, OnceLock};
     use std::thread;
-    use tempfile::NamedTempFile;
+    use tempfile::{NamedTempFile, tempdir};
 
     struct PackageFixture<'a> {
         path: &'a str,
@@ -6628,6 +6750,7 @@ mod tests {
             bind_addr: addr.to_string(),
             db_path: db_path.to_path_buf(),
             public_db_path: db_path.with_extension("json"),
+            feed_root: db_path.with_extension("feed"),
             origin_header: "x-test-origin".to_string(),
             origin_secret: secret.map(str::to_string),
         };
@@ -6862,6 +6985,52 @@ mod tests {
             "application/javascript; charset=utf-8"
         );
         assert!(static_asset_response("/pkg/brew/awscli/").is_none());
+    }
+
+    #[test]
+    fn discover_feed_only_serves_documents_and_referenced_artwork() {
+        let release = tempdir().expect("feed release");
+        fs::create_dir_all(release.path().join("v2/pages")).expect("feed pages");
+        fs::create_dir_all(release.path().join("assets")).expect("feed artwork");
+        fs::write(release.path().join("v1.json"), br#"{"schemaVersion":1}"#).expect("v1");
+        fs::write(
+            release.path().join("v2.json"),
+            br#"{"artwork":{"path":"feed/assets/cover.png"}}"#,
+        )
+        .expect("v2");
+        fs::write(release.path().join("v2/pages/archive.json"), b"{}")
+            .expect("archive page");
+        fs::write(release.path().join("assets/cover.png"), b"png")
+            .expect("referenced artwork");
+        fs::write(release.path().join("assets/private.png"), b"png")
+            .expect("unreferenced artwork");
+
+        let v2 = discover_feed_response(release.path(), "/discover/feed/v2.json")
+            .expect("read v2")
+            .expect("v2 response");
+        assert_eq!(v2.content_type, "application/json; charset=utf-8");
+        assert_eq!(v2.cache_control, HTML_CACHE_CONTROL);
+        assert!(v2.etag.starts_with('"'));
+        assert!(discover_feed_response(release.path(), "/discover/feed/v2/pages/archive.json")
+            .expect("read archive")
+            .is_some());
+        let artwork = discover_feed_response(release.path(), "/discover/feed/assets/cover.png")
+            .expect("read artwork")
+            .expect("artwork response");
+        assert_eq!(artwork.content_type, "image/png");
+        assert!(discover_feed_response(release.path(), "/discover/feed/assets/private.png")
+            .expect("read private artwork")
+            .is_none());
+        for path in [
+            "/discover/feed/../v1.json",
+            "/discover/feed/v2/pages/../../v1.json",
+            "/discover/feed/assets/cover.png.json",
+            "/discover/feed/anything.txt",
+        ] {
+            assert!(discover_feed_response(release.path(), path)
+                .expect("reject invalid route")
+                .is_none(), "{path}");
+        }
     }
 
     #[test]
