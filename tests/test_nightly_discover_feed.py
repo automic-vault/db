@@ -8,6 +8,12 @@ CONTROLLER = ROOT / "scripts" / "nightly-discover-feed.sh"
 
 
 class NightlyDiscoverFeedTests(unittest.TestCase):
+    def test_maintenance_defaults_to_250_enrichments(self):
+        maintenance = MAINTENANCE.read_text()
+        service = (ROOT / "systemd" / "pkgdb-maintenance.service").read_text()
+        self.assertIn('${AVDB_ENRICH_LIMIT:-250}', maintenance)
+        self.assertIn('Environment=AVDB_ENRICH_LIMIT=250', service)
+
     def test_maintenance_runs_feed_after_database_health_check(self):
         script = MAINTENANCE.read_text()
         health_check = 'curl -fsS http://127.0.0.1:3004/healthz >/dev/null'

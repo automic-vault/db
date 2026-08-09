@@ -17,7 +17,7 @@ cd "${repo_root}"
 git pull --ff-only origin main
 AVDB_ENRICH_BACKEND=codex-cli \
   scripts/hourly-maintenance.py \
-  --enrich-limit "${AVDB_ENRICH_LIMIT:-50}" \
+  --enrich-limit "${AVDB_ENRICH_LIMIT:-250}" \
   --enrich-batch-size "${AVDB_ENRICH_BATCH_SIZE:-5}" \
   --sqlite-output "${next_db}" \
   --db-json-output "${next_json}"

@@ -20,7 +20,7 @@ from scripts.bootstrap.lib.common import git_commit_if_changed, git_dirty_paths
 
 
 STATUS_DIR = ROOT / "cache" / "automation" / "nightly-maintenance"
-DEFAULT_ENRICH_LIMIT = int(os.environ.get("AVDB_ENRICH_LIMIT", "50"))
+DEFAULT_ENRICH_LIMIT = int(os.environ.get("AVDB_ENRICH_LIMIT", "250"))
 DEFAULT_BATCH_SIZE = int(os.environ.get("AVDB_ENRICH_BATCH_SIZE", "5"))
 
 
