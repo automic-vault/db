@@ -1,0 +1,1842 @@
+{
+  "content": [
+    {
+      "artwork": {
+        "alt": "An abstract dark-blue globe linked by cyan resolver arcs, suggesting DNS propagation across a global network.",
+        "attribution": "Generated with OpenAI image generation for Package Manager Manager.",
+        "boxColors": {
+          "backgroundEnd": "#31206A",
+          "backgroundStart": "#07162F",
+          "foreground": "#FFFFFF"
+        },
+        "license": "OpenAI generated asset; use with this feed.",
+        "path": "feed/assets/dnsglobe-global-propagation-2026-08-08.png"
+      },
+      "batchID": "20260808T130159Z-081b1710",
+      "body": "DNS changes have an awkward failure mode: the authoritative configuration can be correct while the internet still appears inconsistent. A resolver may hold an earlier answer until its cache expires; a geographically distributed service may legitimately reply differently; and a deployment team can waste time treating those states as the same incident. **dnsglobe** is a terminal tool built to make that comparison visible instead of relying on a succession of one-off lookups.\n\n## A short, purpose-built release trail\n\nThe project’s public GitHub release history begins in 2026, with tagged releases progressing through 0.5.0 in August. Its README describes a Rust terminal UI that queries 34 public resolvers in parallel, then groups matching answers rather than calling every differing IP a failure. That is a useful framing for domains behind round-robin or geographically aware DNS: agreement is about the record set and the resolver’s point of view, not a promise that every client receives one address.\n\nThe interface is deliberately operational. It presents response state, latency, TTL, and a propagation gauge; on wide terminals it adds a map or globe. A non-interactive `--once` mode prints results and exits, which makes the tool more suitable for a scripted check than an interactive dashboard alone. It also documents EDNS Client Subnet support for comparing how a GeoDNS zone answers for specified client networks.\n\n## What the comparison actually tells you\n\nThe strongest use is after a controlled change: update a record, preserve the change time and intended answer, then compare a spread of public resolvers. A majority result can show that a change is moving through caches; a clustered minority can point to a resolver family or region worth checking. The tool also records failures and stale answers rather than silently collapsing them into a single verdict.\n\nThat visibility has limits. Public resolvers are samples, and anycast means the answering point can vary with the network path. A clean display does not validate an authoritative zone, prove client behavior inside a corporate network, or replace monitoring from the locations that matter to an application. Keep authoritative-provider tools, application probes, and ordinary DNS utilities in the workflow.\n\n## A disciplined rollout check\n\nUse the output as a checkpoint rather than a green light. Before changing DNS, note the expected record values and TTL. After publishing, query the authoritative nameservers directly, then use a resolver comparison to observe cache turnover. If a result is surprising, repeat it after the relevant TTL and test from a real application region. This sequence separates three questions that are often mixed together: whether the zone is correct, whether recursive caches have updated, and whether a user can reach the service. dnsglobe helps most with the middle question. Its world-oriented display adds context, but the response table and a saved `--once` result are the more durable evidence for a change record or incident note.\n\n## A compact field kit, not a platform\n\ndnsglobe pairs naturally with `dig` for a precise authoritative query and with deployment records that explain when a change should have taken effect. Its documented configuration can add or replace resolvers, helpful when an organization needs to include internal infrastructure. It should be treated as an investigation instrument: run it against a known domain, capture the result, and make the next decision from the evidence rather than the visualization alone.\n\nTwo nearby tools illustrate the distinction between focused utilities and broader adoption decisions. **usbtree** is likewise a local diagnostic TUI, but for USB topology and, on Linux, activity metrics. **HTTPX2** is a young Pydantic HTTP-client project intended for application code; its documentation and source are worth following, but a team should verify its API and maintenance posture before replacing an established production client.\n\nFor operators who already use terminal tooling during a DNS rollout, dnsglobe offers a clear new option: compare several resolver views in one place, use `--once` when an artifact is more valuable than a UI, and retain independent checks for the authoritative and client-side parts of the story.",
+      "deck": "A focused new terminal tool for comparing DNS answers across public resolvers while investigating a rollout.",
+      "id": "editorial:2026-08-08:dnsglobe-global-dns-propagation-in-the-terminal",
+      "package": {
+        "agentSummary": "dnsglobe checks DNS records through public resolvers worldwide, grouping responses and showing propagation, latency, TTL, and disagreement in a terminal dashboard for deployment troubleshooting.",
+        "assessment": {
+          "alternatives": [
+            "dnschecker.org, whatsmydns.net, and direct dig queries"
+          ],
+          "audiences": [
+            "DNS operators, platform engineers, and developers shipping domain changes"
+          ],
+          "caveats": [
+            "Public resolver results are vantage-point samples, not proof of every client’s DNS experience"
+          ],
+          "complements": [
+            "Authoritative DNS provider dashboards, dig, and change-management records"
+          ],
+          "prerequisites": [
+            "Network access to public DNS resolvers and a supported terminal"
+          ],
+          "useCases": [
+            "Checking propagation after record changes and comparing resolver-specific answers"
+          ]
+        },
+        "category": null,
+        "displayName": "dnsglobe",
+        "docs": null,
+        "homepage": "https://github.com/514-labs/dnsglobe",
+        "id": "brew:dnsglobe",
+        "installURL": "pkgmgrmgr://install?package=brew%3Adnsglobe",
+        "lastUpdatedAt": "2026-08-08T03:56:20Z",
+        "manager": "homebrew",
+        "repository": "https://github.com/514-labs/dnsglobe",
+        "researchedAt": "2026-08-08T13:01:59Z",
+        "sources": [
+          {
+            "kind": "primary",
+            "title": "dnsglobe README",
+            "url": "https://github.com/514-labs/dnsglobe"
+          },
+          {
+            "kind": "primary",
+            "title": "dnsglobe releases",
+            "url": "https://github.com/514-labs/dnsglobe/releases"
+          }
+        ],
+        "upstreamSummary": "Global DNS propagation checker TUI",
+        "version": null
+      },
+      "primaryPackageID": "brew:dnsglobe",
+      "publishedAt": "2026-08-08T13:01:59Z",
+      "relatedPackages": [
+        {
+          "agentSummary": "dnsglobe checks DNS records through public resolvers worldwide, grouping responses and showing propagation, latency, TTL, and disagreement in a terminal dashboard for deployment troubleshooting.",
+          "assessment": {
+            "alternatives": [
+              "dnschecker.org, whatsmydns.net, and direct dig queries"
+            ],
+            "audiences": [
+              "DNS operators, platform engineers, and developers shipping domain changes"
+            ],
+            "caveats": [
+              "Public resolver results are vantage-point samples, not proof of every client’s DNS experience"
+            ],
+            "complements": [
+              "Authoritative DNS provider dashboards, dig, and change-management records"
+            ],
+            "prerequisites": [
+              "Network access to public DNS resolvers and a supported terminal"
+            ],
+            "useCases": [
+              "Checking propagation after record changes and comparing resolver-specific answers"
+            ]
+          },
+          "category": null,
+          "displayName": "dnsglobe",
+          "docs": null,
+          "homepage": "https://github.com/514-labs/dnsglobe",
+          "id": "brew:dnsglobe",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adnsglobe",
+          "lastUpdatedAt": "2026-08-08T03:56:20Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/514-labs/dnsglobe",
+          "researchedAt": "2026-08-08T13:01:59Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "dnsglobe README",
+              "url": "https://github.com/514-labs/dnsglobe"
+            },
+            {
+              "kind": "primary",
+              "title": "dnsglobe releases",
+              "url": "https://github.com/514-labs/dnsglobe/releases"
+            }
+          ],
+          "upstreamSummary": "Global DNS propagation checker TUI",
+          "version": null
+        },
+        {
+          "agentSummary": "usbtree presents a live USB device tree in a Rust terminal interface, exposing topology and Linux activity metrics without requiring root access or libusb.",
+          "assessment": {
+            "alternatives": [
+              "lsusb, System Information, and Device Manager"
+            ],
+            "audiences": [
+              "Desktop support engineers, hardware developers, and Linux operators"
+            ],
+            "caveats": [
+              "Activity metrics vary by platform; macOS and Windows focus on topology rather than Linux-level metrics"
+            ],
+            "complements": [
+              "System logs, lsusb, and hardware vendor documentation"
+            ],
+            "prerequisites": [
+              "A supported operating system and access to local USB device information"
+            ],
+            "useCases": [
+              "Inspecting attached USB topology and investigating device activity"
+            ]
+          },
+          "category": "system",
+          "displayName": "usbtree",
+          "docs": "https://github.com/gnomeria/usbtree#readme",
+          "homepage": "https://gnomeria.github.io/usbtree/",
+          "id": "brew:usbtree",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ausbtree",
+          "lastUpdatedAt": "2026-08-07T07:32:08Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/gnomeria/usbtree",
+          "researchedAt": "2026-08-08T13:01:59Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "usbtree README",
+              "url": "https://github.com/gnomeria/usbtree"
+            },
+            {
+              "kind": "primary",
+              "title": "usbtree releases",
+              "url": "https://github.com/gnomeria/usbtree/releases"
+            }
+          ],
+          "upstreamSummary": "Live USB device tree in your terminal",
+          "version": null
+        },
+        {
+          "agentSummary": "HTTPX2 is Pydantic’s next-generation Python HTTP client, aiming to provide an ergonomic asynchronous and synchronous request interface for applications that need modern transport behavior.",
+          "assessment": {
+            "alternatives": [
+              "httpx, requests, aiohttp, and urllib3"
+            ],
+            "audiences": [
+              "Python application developers evaluating newer HTTP client APIs"
+            ],
+            "caveats": [
+              "It is young software, so API stability and production readiness require deliberate review"
+            ],
+            "complements": [
+              "Pydantic models, retry policies, observability, and tests"
+            ],
+            "prerequisites": [
+              "A compatible Python environment and careful dependency evaluation"
+            ],
+            "useCases": [
+              "Making synchronous or asynchronous application HTTP requests"
+            ]
+          },
+          "category": "developer-tools",
+          "displayName": "httpx2",
+          "docs": "https://httpx2.pydantic.dev/",
+          "homepage": "https://httpx2.pydantic.dev",
+          "id": "brew:httpx2",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ahttpx2",
+          "lastUpdatedAt": "2026-08-07T09:26:59Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/pydantic/httpx2",
+          "researchedAt": "2026-08-08T13:01:59Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "HTTPX2 documentation",
+              "url": "https://httpx2.pydantic.dev/"
+            },
+            {
+              "kind": "primary",
+              "title": "HTTPX2 source repository",
+              "url": "https://github.com/pydantic/httpx2"
+            }
+          ],
+          "upstreamSummary": "HTTP client library for Python",
+          "version": null
+        }
+      ],
+      "selection": {
+        "firstStableReleaseAt": "2026-06-18T14:13:17Z",
+        "firstStableReleaseSourceURL": "https://github.com/514-labs/dnsglobe/releases",
+        "rationale": "newer"
+      },
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "dnsglobe README",
+          "url": "https://github.com/514-labs/dnsglobe"
+        },
+        {
+          "kind": "primary",
+          "title": "dnsglobe releases",
+          "url": "https://github.com/514-labs/dnsglobe/releases"
+        },
+        {
+          "kind": "primary",
+          "title": "HTTPX2 documentation",
+          "url": "https://httpx2.pydantic.dev/"
+        },
+        {
+          "kind": "primary",
+          "title": "HTTPX2 source repository",
+          "url": "https://github.com/pydantic/httpx2"
+        },
+        {
+          "kind": "primary",
+          "title": "usbtree README",
+          "url": "https://github.com/gnomeria/usbtree"
+        },
+        {
+          "kind": "primary",
+          "title": "usbtree releases",
+          "url": "https://github.com/gnomeria/usbtree/releases"
+        }
+      ],
+      "title": "dnsglobe: Watching DNS Propagation from the Terminal",
+      "type": "editorial"
+    },
+    {
+      "batchID": "20260808T130159Z-08d268a8",
+      "id": "recently-updated:science:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Molecular Dynamics Simulator",
+          "category": "science",
+          "displayName": "lammps",
+          "homepage": "https://docs.lammps.org/",
+          "id": "brew:lammps",
+          "installURL": "pkgmgrmgr://install?package=brew%3Alammps",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Logic and programming language in which you can model computer systems",
+          "category": "science",
+          "displayName": "acl2",
+          "homepage": "https://www.cs.utexas.edu/~moore/acl2/",
+          "id": "brew:acl2",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aacl2",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Reference management and bibliography software",
+          "category": "science",
+          "displayName": "Bookends",
+          "homepage": "https://www.sonnysoftware.com/bookends-for-mac",
+          "id": "brew:cask:bookends",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Abookends",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "3D CAD software",
+          "category": "science",
+          "displayName": "Shapr3D",
+          "homepage": "https://www.shapr3d.com/",
+          "id": "brew:cask:shapr3d",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Ashapr3d",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "3D modeling and numerical simulation software for CAD/CAM/CAE",
+          "category": "science",
+          "displayName": "opencascade",
+          "homepage": "https://dev.opencascade.org/",
+          "id": "brew:opencascade",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aopencascade",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-08T13:01:59Z",
+      "title": "Recently Updated in Science",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260808T130159Z-08d268a8",
+      "id": "for-you:other:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "opencontrol is available through npm for installation and management in Package Manager Manager.",
+          "category": "other",
+          "displayName": "opencontrol",
+          "homepage": null,
+          "id": "npm:opencontrol",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aopencontrol",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "dooboolab welcome console message.",
+          "category": "other",
+          "displayName": "dooboolab-welcome",
+          "homepage": null,
+          "id": "npm:dooboolab-welcome",
+          "installURL": "pkgmgrmgr://install?package=npm%3Adooboolab-welcome",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "conjure-lite is available through npm for installation and management in Package Manager Manager.",
+          "category": "other",
+          "displayName": "conjure-lite",
+          "homepage": null,
+          "id": "npm:conjure-lite",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aconjure-lite",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "xnft is available through npm for installation and management in Package Manager Manager.",
+          "category": "other",
+          "displayName": "xnft",
+          "homepage": null,
+          "id": "npm:xnft",
+          "installURL": "pkgmgrmgr://install?package=npm%3Axnft",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "bluefairy is available through npm for installation and management in Package Manager Manager.",
+          "category": "other",
+          "displayName": "bluefairy",
+          "homepage": null,
+          "id": "npm:bluefairy",
+          "installURL": "pkgmgrmgr://install?package=npm%3Abluefairy",
+          "manager": "npm"
+        }
+      ],
+      "publishedAt": "2026-08-08T13:01:59Z",
+      "title": "For You in Other",
+      "type": "personalizedRecommendations"
+    },
+    {
+      "batchID": "20260808T130159Z-08d268a8",
+      "id": "recently-updated:security:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Protect resources from scraper bots",
+          "category": "security",
+          "displayName": "anubis",
+          "homepage": "https://anubis.techaro.lol",
+          "id": "brew:anubis",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aanubis",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "HTTP/DNS scanner configurable via YAML templates",
+          "category": "security",
+          "displayName": "nuclei",
+          "homepage": "https://docs.projectdiscovery.io/tools/nuclei/overview",
+          "id": "brew:nuclei",
+          "installURL": "pkgmgrmgr://install?package=brew%3Anuclei",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Prevent cloud misconfigurations during build-time for IaC tools",
+          "category": "security",
+          "displayName": "checkov",
+          "homepage": "https://www.checkov.io/",
+          "id": "brew:checkov",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acheckov",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Searches through git repositories for high entropy strings and secrets",
+          "category": "security",
+          "displayName": "tartufo",
+          "homepage": "https://tartufo.readthedocs.io/en/stable/",
+          "id": "brew:tartufo",
+          "installURL": "pkgmgrmgr://install?package=brew%3Atartufo",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Boost security in your dev lifecycle via SAST, SCA, Secrets & IaC scanning",
+          "category": "security",
+          "displayName": "cycode",
+          "homepage": "https://github.com/cycodehq/cycode-cli",
+          "id": "brew:cycode",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acycode",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-08T13:01:59Z",
+      "title": "Recently Updated in Security",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260808T130159Z-08d268a8",
+      "id": "for-you:cloud-infrastructure:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Fun, full-featured, fully-local simulator for Cloudflare Workers",
+          "category": "cloud-infrastructure",
+          "displayName": "miniflare",
+          "homepage": "https://github.com/cloudflare/workers-sdk/tree/main/packages/miniflare#readme",
+          "id": "npm:miniflare",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aminiflare",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Command-line interface for all things Cloudflare Workers",
+          "category": "cloud-infrastructure",
+          "displayName": "wrangler",
+          "homepage": "https://github.com/cloudflare/workers-sdk#readme",
+          "id": "npm:wrangler",
+          "installURL": "pkgmgrmgr://install?package=npm%3Awrangler",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "AWS CDK CLI, the command line tool for CDK apps",
+          "category": "cloud-infrastructure",
+          "displayName": "aws-cdk",
+          "homepage": "https://github.com/aws/aws-cdk",
+          "id": "npm:aws-cdk",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aaws-cdk",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "The command-line interface for Vercel",
+          "category": "cloud-infrastructure",
+          "displayName": "vercel",
+          "homepage": "https://vercel.com",
+          "id": "npm:vercel",
+          "installURL": "pkgmgrmgr://install?package=npm%3Avercel",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "A Mock API for AWS Kinesis",
+          "category": "cloud-infrastructure",
+          "displayName": "kinesis-local",
+          "homepage": "https://github.com/etspaceman/kinesis-mock#readme",
+          "id": "npm:kinesis-local",
+          "installURL": "pkgmgrmgr://install?package=npm%3Akinesis-local",
+          "manager": "npm"
+        }
+      ],
+      "publishedAt": "2026-08-08T13:01:59Z",
+      "title": "For You in Cloud Infrastructure",
+      "type": "personalizedRecommendations"
+    },
+    {
+      "batchID": "20260808T130159Z-08d268a8",
+      "id": "recently-updated:system:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Git-integrated backup tool for macOS and Linux devs",
+          "category": "system",
+          "displayName": "shallow-backup",
+          "homepage": "https://github.com/alichtman/shallow-backup",
+          "id": "brew:shallow-backup",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ashallow-backup",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "System cleaner, optimiser, and malware scanner",
+          "category": "system",
+          "displayName": "Mac Sai",
+          "homepage": "https://github.com/iliyami/MacSai",
+          "id": "brew:cask:mac-sai",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Amac-sai",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Tool to show caps lock status",
+          "category": "system",
+          "displayName": "Captin",
+          "homepage": "https://github.com/cool8jay/public",
+          "id": "brew:cask:captin",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Acaptin",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "List USB devices, just like the Linux lsusb command",
+          "category": "system",
+          "displayName": "lsusb-laniksj",
+          "homepage": "https://laniksj.github.io/lsusb/",
+          "id": "brew:lsusb-laniksj",
+          "installURL": "pkgmgrmgr://install?package=brew%3Alsusb-laniksj",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Plugins for nagios compatible monitoring systems",
+          "category": "system",
+          "displayName": "monitoring-plugins",
+          "homepage": "https://www.monitoring-plugins.org",
+          "id": "brew:monitoring-plugins",
+          "installURL": "pkgmgrmgr://install?package=brew%3Amonitoring-plugins",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-08T13:01:59Z",
+      "title": "Recently Updated in System",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260808T130159Z-08d268a8",
+      "deck": "10 agent CLIs and assistants",
+      "id": "install-pack:agent-pack:20260808T130159Z-b4efaed3",
+      "packages": [
+        {
+          "agentSummary": "OpenAI's coding agent that runs in your terminal",
+          "category": "ai",
+          "displayName": "Codex",
+          "homepage": "https://github.com/openai/codex",
+          "id": "brew:cask:codex",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Acodex",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Terminal-based AI coding assistant",
+          "category": "ai",
+          "displayName": "Claude Code",
+          "homepage": "https://claude.com/product/claude-code",
+          "id": "brew:cask:claude-code",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Aclaude-code",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Open source, extensible AI agent that goes beyond code suggestions",
+          "category": "ai",
+          "displayName": "block-goose-cli",
+          "homepage": "https://goose-docs.ai/",
+          "id": "brew:block-goose-cli",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ablock-goose-cli",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "AI pair programming in your terminal",
+          "category": "ai",
+          "displayName": "aider",
+          "homepage": "https://aider.chat/",
+          "id": "brew:aider",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aaider",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "AI coding agent, built for the terminal",
+          "category": "ai",
+          "displayName": "opencode",
+          "homepage": "https://opencode.ai",
+          "id": "brew:opencode",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aopencode",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Interact with Google Gemini AI models from the command-line",
+          "category": "ai",
+          "displayName": "gemini-cli",
+          "homepage": "https://geminicli.com",
+          "id": "brew:gemini-cli",
+          "installURL": "pkgmgrmgr://install?package=brew%3Agemini-cli",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "AI-powered command-line workflow tool for developers",
+          "category": "ai",
+          "displayName": "qwen-code",
+          "homepage": "https://github.com/QwenLM/qwen-code",
+          "id": "brew:qwen-code",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aqwen-code",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "CLI tool for analyzing Claude Code usage from local JSONL files",
+          "category": "ai",
+          "displayName": "ccusage",
+          "homepage": "https://github.com/ccusage/ccusage",
+          "id": "brew:ccusage",
+          "installURL": "pkgmgrmgr://install?package=brew%3Accusage",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Access large language models from the command-line",
+          "category": "ai",
+          "displayName": "llm",
+          "homepage": "https://llm.datasette.io/",
+          "id": "brew:llm",
+          "installURL": "pkgmgrmgr://install?package=brew%3Allm",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "AI on the command-line",
+          "category": "ai",
+          "displayName": "mods",
+          "homepage": "https://github.com/charmbracelet/mods",
+          "id": "brew:mods",
+          "installURL": "pkgmgrmgr://install?package=brew%3Amods",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-08T13:01:59Z",
+      "title": "Agent Pack",
+      "type": "installPack"
+    },
+    {
+      "batchID": "20260808T130159Z-08d268a8",
+      "id": "new-packages:language-runtime:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Peer-to-peer application runtime",
+          "category": "language-runtime",
+          "displayName": "pear",
+          "homepage": "https://docs.pears.com",
+          "id": "brew:pear",
+          "installURL": "pkgmgrmgr://install?package=brew%3Apear",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-08T13:01:59Z",
+      "title": "New Packages in Language Runtime",
+      "type": "newPackages"
+    },
+    {
+      "artwork": {
+        "alt": "A glowing agent node connects a terminal-like panel to several abstract tool nodes through blue and amber data streams, with a magnifying lens inspecting one stream.",
+        "attribution": "Generated with OpenAI image generation for Package Manager Manager.",
+        "boxColors": {
+          "backgroundEnd": "#073D57",
+          "backgroundStart": "#01051B",
+          "foreground": "#FFFFFF"
+        },
+        "license": "OpenAI terms of use",
+        "path": "feed/assets/mcpsnoop-tool-traffic-2026-08-04.png"
+      },
+      "batchID": "20260804T130159Z-1f0fa0fc",
+      "body": "## The gap between a configured tool and a real call\n\nA Model Context Protocol integration can fail long before anyone sees a clear error. A client may not discover a capability, choose a different tool, send arguments that do not match the server’s expectations, or wait on a response that never arrives. Configuration files and server logs answer only part of that story. **mcpsnoop** takes a more direct approach: it sits in the actual path between a client and an MCP server, then presents the JSON-RPC exchange in a terminal interface. Its upstream documentation describes both a stdio shim and a reverse-proxy mode for streamable HTTP, so it is aimed at the traffic a real client sends rather than a separate test client’s session.\n\nThat makes it a useful debugging boundary. The project’s release history shows rapid 2026 development, and its early v0.8.0 release makes it a genuinely newer tool to evaluate cautiously. The right first use is a disposable client and a non-production server: wrap the existing launch command, reproduce one narrow workflow, and compare what the client intended with what the server received. Start with observation, not a new platform or a fleet-wide policy.\n\n## Observation needs data discipline\n\nTool calls can carry user prompts, file paths, API arguments, tokens, and private business context. A traffic viewer is therefore not automatically safe merely because it helps debug a protocol. mcpsnoop documents key, value, and JSON-path redaction controls, but also describes redaction as best effort. That is the honest tradeoff: redaction reduces exposure, while a capture still deserves the same retention, access, and sharing rules as application logs.\n\nBefore recording a session, decide what may enter it and where the result may go. Use test accounts, synthetic inputs, and an isolated state directory where possible. Review exported traces before attaching them to an issue. Keep the proxy local or inside the intended network boundary, and avoid treating a successful trace as permission to replay a consequential action. The important question is not only *can we see this call?* but also *who can now read it?*\n\nmcpsnoop can also make a test more specific. Its `check` command can fail on protocol errors, invalid frames, warnings, or selected conditions such as hung calls and tool-definition drift. That is valuable when a team has a known integration contract. It is less useful as a generic quality score: a passing capture verifies the observed run, not every possible prompt, server version, or authorization outcome. Keep ordinary integration tests and server-side validation in place.\n\n## n8n-mcp shows why boundaries matter\n\n**n8n-mcp** is a practical companion because it gives compatible AI clients structured access to n8n documentation, node data, templates, and validation; its optional management functions can also work with a configured n8n API. That combination makes an MCP conversation more than a read-only lookup. A wrong tool call can become a workflow change, and a broadly scoped credential can turn a helpful assistant into an overpowered operator.\n\nThe project’s own guidance recommends copying workflows, testing in development, exporting backups, and validating before deployment. Those are sound boundaries even when mcpsnoop makes the exchange legible. Trace the client against a sandbox first, verify which tools the server advertises, and make credentials narrow enough that a capture or configuration mistake cannot modify production. The goal is not to distrust automation; it is to make **intent, authority, and evidence** line up.\n\n## A broader agent system raises the stakes\n\n**LibreFang** illustrates the other end of the scale. Its documentation describes a self-hostable agent operating system with model drivers, channel adapters, MCP and A2A support, scheduling, RBAC, and audit logging. A system with that reach can be appropriate for a team that genuinely needs lifecycle management across agents and integrations. It also has a larger deployment, security, and incident-response surface than a focused traffic inspector.\n\nThat contrast is useful. mcpsnoop can answer whether a specific client-server exchange is shaped as expected; n8n-mcp can expose a rich workflow-building surface; LibreFang can organize larger agent operations. None substitutes for a threat model or an approval boundary. If a call can spend money, publish content, alter workflow state, or reach sensitive data, use explicit authorization and an environment designed for that consequence.\n\nA compact adoption path is enough:\n\n- capture one harmless MCP session with redaction enabled;\n- compare the trace with server logs and expected tool definitions;\n- turn only stable, intentional conditions into CI checks; and\n- expand permissions only after the observation path and rollback process are understood.\n\nVisibility is most valuable when it reduces guesswork without quietly widening access. mcpsnoop earns attention as a small, current tool for making that visible layer easier to inspect.",
+      "deck": "A young MCP traffic inspector can make agent integrations observable—if teams treat captured data and proxy placement as real operational concerns.",
+      "id": "editorial:2026-08-04:making-mcp-tool-traffic-visible-with-mcpsnoop",
+      "package": {
+        "agentSummary": "mcpsnoop is a terminal-first transparent proxy and inspector for observing real Model Context Protocol traffic, recording sessions, redacting sensitive values, comparing behavior, and gating captured runs in CI.",
+        "assessment": {
+          "alternatives": [
+            "MCP Inspector for an independent client session",
+            "Application-specific structured logging"
+          ],
+          "audiences": [
+            "Developers integrating MCP clients and servers",
+            "Teams debugging agent tool calls"
+          ],
+          "caveats": [
+            "Captured arguments can contain sensitive data unless redaction is configured",
+            "A proxy adds another component to diagnose when testing connectivity"
+          ],
+          "complements": [
+            "MCP server logs",
+            "Test environments",
+            "Secret-redaction policies"
+          ],
+          "prerequisites": [
+            "An MCP client and server configuration to inspect",
+            "Careful handling of captured request data"
+          ],
+          "useCases": [
+            "Tracing a client’s actual MCP requests",
+            "Checking captured MCP sessions in continuous integration"
+          ]
+        },
+        "category": null,
+        "displayName": "mcpsnoop",
+        "docs": null,
+        "homepage": "https://github.com/kerlenton/mcpsnoop",
+        "id": "brew:mcpsnoop",
+        "installURL": "pkgmgrmgr://install?package=brew%3Amcpsnoop",
+        "lastUpdatedAt": "2026-07-27T14:30:15Z",
+        "manager": "homebrew",
+        "repository": "https://github.com/kerlenton/mcpsnoop",
+        "researchedAt": "2026-08-04T13:01:59Z",
+        "sources": [
+          {
+            "kind": "primary",
+            "title": "mcpsnoop project repository",
+            "url": "https://github.com/kerlenton/mcpsnoop"
+          },
+          {
+            "kind": "primary",
+            "title": "mcpsnoop release history",
+            "url": "https://github.com/kerlenton/mcpsnoop/releases"
+          }
+        ],
+        "upstreamSummary": "Transparent proxy and TUI for debugging MCP traffic",
+        "version": null
+      },
+      "primaryPackageID": "brew:mcpsnoop",
+      "publishedAt": "2026-08-04T13:01:59Z",
+      "relatedPackages": [
+        {
+          "agentSummary": "mcpsnoop is a terminal-first transparent proxy and inspector for observing real Model Context Protocol traffic, recording sessions, redacting sensitive values, comparing behavior, and gating captured runs in CI.",
+          "assessment": {
+            "alternatives": [
+              "MCP Inspector for an independent client session",
+              "Application-specific structured logging"
+            ],
+            "audiences": [
+              "Developers integrating MCP clients and servers",
+              "Teams debugging agent tool calls"
+            ],
+            "caveats": [
+              "Captured arguments can contain sensitive data unless redaction is configured",
+              "A proxy adds another component to diagnose when testing connectivity"
+            ],
+            "complements": [
+              "MCP server logs",
+              "Test environments",
+              "Secret-redaction policies"
+            ],
+            "prerequisites": [
+              "An MCP client and server configuration to inspect",
+              "Careful handling of captured request data"
+            ],
+            "useCases": [
+              "Tracing a client’s actual MCP requests",
+              "Checking captured MCP sessions in continuous integration"
+            ]
+          },
+          "category": null,
+          "displayName": "mcpsnoop",
+          "docs": null,
+          "homepage": "https://github.com/kerlenton/mcpsnoop",
+          "id": "brew:mcpsnoop",
+          "installURL": "pkgmgrmgr://install?package=brew%3Amcpsnoop",
+          "lastUpdatedAt": "2026-07-27T14:30:15Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/kerlenton/mcpsnoop",
+          "researchedAt": "2026-08-04T13:01:59Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "mcpsnoop project repository",
+              "url": "https://github.com/kerlenton/mcpsnoop"
+            },
+            {
+              "kind": "primary",
+              "title": "mcpsnoop release history",
+              "url": "https://github.com/kerlenton/mcpsnoop/releases"
+            }
+          ],
+          "upstreamSummary": "Transparent proxy and TUI for debugging MCP traffic",
+          "version": null
+        },
+        {
+          "agentSummary": "n8n-mcp exposes structured n8n node documentation, templates, validation, and optional workflow-management tools to compatible AI clients, helping automate workflow design while keeping deployment and credential boundaries explicit.",
+          "assessment": {
+            "alternatives": [
+              "n8n’s native editor and documentation",
+              "Direct n8n API scripts"
+            ],
+            "audiences": [
+              "n8n builders using compatible AI clients",
+              "Teams validating workflow configuration before deployment"
+            ],
+            "caveats": [
+              "Workflow-management features require API credentials",
+              "AI-generated workflow changes need review before production use"
+            ],
+            "complements": [
+              "n8n backups",
+              "Staging workflows",
+              "Secret management"
+            ],
+            "prerequisites": [
+              "An MCP-compatible client",
+              "An n8n environment for workflow-management features"
+            ],
+            "useCases": [
+              "Searching n8n node documentation from an agent",
+              "Validating workflow configurations and templates"
+            ]
+          },
+          "category": "ai",
+          "displayName": "n8n-mcp",
+          "docs": "https://github.com/czlonkowski/n8n-mcp#readme",
+          "homepage": "https://www.n8n-mcp.com/",
+          "id": "brew:n8n-mcp",
+          "installURL": "pkgmgrmgr://install?package=brew%3An8n-mcp",
+          "lastUpdatedAt": "2026-07-27T13:02:58Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/czlonkowski/n8n-mcp",
+          "researchedAt": "2026-08-04T13:01:59Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "n8n-mcp project repository",
+              "url": "https://github.com/czlonkowski/n8n-mcp"
+            },
+            {
+              "kind": "primary",
+              "title": "n8n-mcp deployment guide",
+              "url": "https://github.com/czlonkowski/n8n-mcp/blob/main/docs/N8N_DEPLOYMENT.md"
+            }
+          ],
+          "upstreamSummary": "MCP for Claude Desktop, Claude Code, Windsurf, Cursor to build n8n workflows",
+          "version": null
+        },
+        {
+          "agentSummary": "LibreFang is a self-hostable Rust-based agent operating system with lifecycle management, channels, model drivers, MCP and A2A integration, policy controls, audit logging, and command-capable agent workflows.",
+          "assessment": {
+            "alternatives": [
+              "Purpose-built single-agent services",
+              "Frameworks such as LangGraph or AutoGen"
+            ],
+            "audiences": [
+              "Teams evaluating self-hosted agent platforms",
+              "Developers needing MCP and agent-to-agent integration"
+            ],
+            "caveats": [
+              "A broad agent platform has a larger security and operational surface than a focused tool",
+              "Claims about safeguards still require deployment-specific review"
+            ],
+            "complements": [
+              "Network isolation",
+              "Credential vaults",
+              "Operational monitoring"
+            ],
+            "prerequisites": [
+              "Infrastructure for self-hosting",
+              "A defined authorization and data-handling model"
+            ],
+            "useCases": [
+              "Managing scheduled or multi-channel agents",
+              "Building self-hosted agent workflows with audit trails"
+            ]
+          },
+          "category": "ai",
+          "displayName": "librefang",
+          "docs": "https://docs.librefang.ai/",
+          "homepage": "https://librefang.ai",
+          "id": "brew:librefang",
+          "installURL": "pkgmgrmgr://install?package=brew%3Alibrefang",
+          "lastUpdatedAt": "2026-07-27T13:40:17Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/librefang/librefang",
+          "researchedAt": "2026-08-04T13:01:59Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "LibreFang project repository",
+              "url": "https://github.com/librefang/librefang"
+            },
+            {
+              "kind": "primary",
+              "title": "LibreFang documentation",
+              "url": "https://docs.librefang.ai/"
+            }
+          ],
+          "upstreamSummary": "Self-hostable operating system for autonomous AI agents",
+          "version": null
+        }
+      ],
+      "selection": {
+        "firstStableReleaseAt": "2026-07-09T12:00:00Z",
+        "firstStableReleaseSourceURL": "https://github.com/kerlenton/mcpsnoop/releases/tag/v0.8.0",
+        "rationale": "newer"
+      },
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "mcpsnoop project repository",
+          "url": "https://github.com/kerlenton/mcpsnoop"
+        },
+        {
+          "kind": "primary",
+          "title": "mcpsnoop release history",
+          "url": "https://github.com/kerlenton/mcpsnoop/releases"
+        },
+        {
+          "kind": "primary",
+          "title": "n8n-mcp project repository",
+          "url": "https://github.com/czlonkowski/n8n-mcp"
+        },
+        {
+          "kind": "primary",
+          "title": "LibreFang documentation",
+          "url": "https://docs.librefang.ai/"
+        }
+      ],
+      "title": "mcpsnoop: Inspect the Tool Calls That Actually Happen",
+      "type": "editorial"
+    },
+    {
+      "batchID": "20260804T130159Z-b54f89f3",
+      "deck": "22 modern shell tools",
+      "id": "install-pack:unix-plus-plus:20260808T130159Z-b4efaed3",
+      "packages": [
+        {
+          "agentSummary": "Clone of cat(1) with syntax highlighting and Git integration",
+          "category": "developer-tools",
+          "displayName": "bat",
+          "homepage": "https://github.com/sharkdp/bat",
+          "id": "brew:bat",
+          "installURL": "pkgmgrmgr://install?package=brew%3Abat",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Bash scripts that integrate bat with various command-line tools",
+          "category": "developer-tools",
+          "displayName": "bat-extras",
+          "homepage": "https://github.com/eth-p/bat-extras",
+          "id": "brew:bat-extras",
+          "installURL": "pkgmgrmgr://install?package=brew%3Abat-extras",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Modern, maintained replacement for ls",
+          "category": "system",
+          "displayName": "eza",
+          "homepage": "https://eza.rocks",
+          "id": "brew:eza",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aeza",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Simple, fast and user-friendly alternative to find",
+          "category": "system",
+          "displayName": "fd",
+          "homepage": "https://github.com/sharkdp/fd",
+          "id": "brew:fd",
+          "installURL": "pkgmgrmgr://install?package=brew%3Afd",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Search tool like grep and The Silver Searcher",
+          "category": "developer-tools",
+          "displayName": "ripgrep",
+          "homepage": "https://github.com/BurntSushi/ripgrep",
+          "id": "brew:ripgrep",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aripgrep",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Intuitive find & replace CLI",
+          "category": "developer-tools",
+          "displayName": "sd",
+          "homepage": "https://github.com/chmln/sd",
+          "id": "brew:sd",
+          "installURL": "pkgmgrmgr://install?package=brew%3Asd",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "More intuitive version of du in rust",
+          "category": "system",
+          "displayName": "dust",
+          "homepage": "https://github.com/bootandy/dust",
+          "id": "brew:dust",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adust",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Disk Usage/Free Utility - a better 'df' alternative",
+          "category": "system",
+          "displayName": "duf",
+          "homepage": "https://github.com/muesli/duf",
+          "id": "brew:duf",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aduf",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Modern replacement for ps written in Rust",
+          "category": "system",
+          "displayName": "procs",
+          "homepage": "https://github.com/dalance/procs",
+          "id": "brew:procs",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aprocs",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Yet another cross-platform graphical process/system monitor",
+          "category": "system",
+          "displayName": "bottom",
+          "homepage": "https://clementtsang.github.io/bottom/",
+          "id": "brew:bottom",
+          "installURL": "pkgmgrmgr://install?package=brew%3Abottom",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Shell extension to navigate your filesystem faster",
+          "category": "developer-tools",
+          "displayName": "zoxide",
+          "homepage": "https://github.com/ajeetdsouza/zoxide",
+          "id": "brew:zoxide",
+          "installURL": "pkgmgrmgr://install?package=brew%3Azoxide",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Command-line fuzzy finder written in Go",
+          "category": "developer-tools",
+          "displayName": "fzf",
+          "homepage": "https://junegunn.github.io/fzf/",
+          "id": "brew:fzf",
+          "installURL": "pkgmgrmgr://install?package=brew%3Afzf",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Syntax-highlighting pager for git and diff output",
+          "category": "developer-tools",
+          "displayName": "git-delta",
+          "homepage": "https://dandavison.github.io/delta/",
+          "id": "brew:git-delta",
+          "installURL": "pkgmgrmgr://install?package=brew%3Agit-delta",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Command-line benchmarking tool",
+          "category": "developer-tools",
+          "displayName": "hyperfine",
+          "homepage": "https://github.com/sharkdp/hyperfine",
+          "id": "brew:hyperfine",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ahyperfine",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Program that allows you to count code, quickly",
+          "category": "developer-tools",
+          "displayName": "tokei",
+          "homepage": "https://github.com/XAMPPRocky/tokei",
+          "id": "brew:tokei",
+          "installURL": "pkgmgrmgr://install?package=brew%3Atokei",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Lightweight and flexible command-line JSON processor",
+          "category": "developer-tools",
+          "displayName": "jq",
+          "homepage": "https://jqlang.github.io/jq/",
+          "id": "brew:jq",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ajq",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Process YAML, JSON, XML, CSV and properties documents from the CLI",
+          "category": "developer-tools",
+          "displayName": "yq",
+          "homepage": "https://github.com/mikefarah/yq",
+          "id": "brew:yq",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ayq",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Friendly and fast tool for sending HTTP requests",
+          "category": "developer-tools",
+          "displayName": "xh",
+          "homepage": "https://github.com/ducaale/xh",
+          "id": "brew:xh",
+          "installURL": "pkgmgrmgr://install?package=brew%3Axh",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Command-line DNS Client for Humans",
+          "category": "networking",
+          "displayName": "doggo",
+          "homepage": "https://doggo.mrkaran.dev/",
+          "id": "brew:doggo",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adoggo",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Like sed, awk, cut, join & sort for name-indexed data such as CSV",
+          "category": "data",
+          "displayName": "miller",
+          "homepage": "https://github.com/johnkerl/miller",
+          "id": "brew:miller",
+          "installURL": "pkgmgrmgr://install?package=brew%3Amiller",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Run arbitrary commands when files change",
+          "category": "developer-tools",
+          "displayName": "entr",
+          "homepage": "https://eradman.com/entrproject/",
+          "id": "brew:entr",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aentr",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Execute commands when watched files change",
+          "category": "developer-tools",
+          "displayName": "watchexec",
+          "homepage": "https://watchexec.github.io/",
+          "id": "brew:watchexec",
+          "installURL": "pkgmgrmgr://install?package=brew%3Awatchexec",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-04T13:01:59Z",
+      "title": "UNIX++ Pack",
+      "type": "installPack"
+    },
+    {
+      "batchID": "20260804T130159Z-b54f89f3",
+      "id": "recently-updated:cloud-infrastructure:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Kubectl plugin to render watch output in a more readable fashion",
+          "category": "cloud-infrastructure",
+          "displayName": "kubectl-klock",
+          "homepage": "https://github.com/applejag/kubectl-klock",
+          "id": "brew:kubectl-klock",
+          "installURL": "pkgmgrmgr://install?package=brew%3Akubectl-klock",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Synchronize your DNS to multiple providers from a simple DSL",
+          "category": "cloud-infrastructure",
+          "displayName": "dnscontrol",
+          "homepage": "https://dnscontrol.org/",
+          "id": "brew:dnscontrol",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adnscontrol",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Command-line interface for Vercel",
+          "category": "cloud-infrastructure",
+          "displayName": "vercel",
+          "homepage": "https://vercel.com/home",
+          "id": "brew:vercel",
+          "installURL": "pkgmgrmgr://install?package=brew%3Avercel",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Production Grade K8s Installation, Upgrades, and Management",
+          "category": "cloud-infrastructure",
+          "displayName": "kops",
+          "homepage": "https://kops.sigs.k8s.io/",
+          "id": "brew:kops",
+          "installURL": "pkgmgrmgr://install?package=brew%3Akops",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "AWS Cloud Development Kit - framework for defining AWS infra as code",
+          "category": "cloud-infrastructure",
+          "displayName": "aws-cdk",
+          "homepage": "https://github.com/aws/aws-cdk",
+          "id": "brew:aws-cdk",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aaws-cdk",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-04T13:01:59Z",
+      "title": "Recently Updated in Cloud Infrastructure",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260804T130159Z-b54f89f3",
+      "id": "new-packages:system:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Switch Magic Keyboard, Trackpad and Mouse between Macs",
+          "category": "system",
+          "displayName": "Switchy",
+          "homepage": "https://mangobuns.com/switchy/",
+          "id": "brew:cask:switchy",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Aswitchy",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Live USB device tree in your terminal",
+          "category": "system",
+          "displayName": "usbtree",
+          "homepage": "https://gnomeria.github.io/usbtree/",
+          "id": "brew:usbtree",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ausbtree",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-04T13:01:59Z",
+      "title": "New Packages in System",
+      "type": "newPackages"
+    },
+    {
+      "batchID": "20260804T130159Z-b54f89f3",
+      "id": "recently-updated:networking:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Free open source implementation of TURN and STUN Server",
+          "category": "networking",
+          "displayName": "coturn",
+          "homepage": "https://github.com/coturn/coturn",
+          "id": "brew:coturn",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acoturn",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "CLI tool for a high QPS DNS benchmark",
+          "category": "networking",
+          "displayName": "dnspyre",
+          "homepage": "https://tantalor93.github.io/dnspyre/",
+          "id": "brew:dnspyre",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adnspyre",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Website copier/offline browser",
+          "category": "networking",
+          "displayName": "httrack",
+          "homepage": "https://www.httrack.com/",
+          "id": "brew:httrack",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ahttrack",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Chromium-based web browser",
+          "category": "networking",
+          "displayName": "Helium",
+          "homepage": "https://helium.computer/",
+          "id": "brew:cask:helium-browser",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Ahelium-browser",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "GNMI CLI client and collector",
+          "category": "networking",
+          "displayName": "gnmic",
+          "homepage": "https://gnmic.openconfig.net",
+          "id": "brew:gnmic",
+          "installURL": "pkgmgrmgr://install?package=brew%3Agnmic",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-04T13:01:59Z",
+      "title": "Recently Updated in Networking",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260804T130159Z-b54f89f3",
+      "id": "for-you:data:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "YAML 1.2 parser and serializer",
+          "category": "data",
+          "displayName": "js-yaml",
+          "homepage": "https://github.com/nodeca/js-yaml#readme",
+          "id": "npm:js-yaml",
+          "installURL": "pkgmgrmgr://install?package=npm%3Ajs-yaml",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "JSON for Humans",
+          "category": "data",
+          "displayName": "json5",
+          "homepage": null,
+          "id": "npm:json5",
+          "installURL": "pkgmgrmgr://install?package=npm%3Ajson5",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "JavaScript parser and stringifier for YAML",
+          "category": "data",
+          "displayName": "yaml",
+          "homepage": "https://eemeli.org/yaml/",
+          "id": "npm:yaml",
+          "installURL": "pkgmgrmgr://install?package=npm%3Ayaml",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Given some data, jsesc returns the shortest possible stringified & ASCII-safe representation of that data.",
+          "category": "data",
+          "displayName": "jsesc",
+          "homepage": "https://mths.be/jsesc",
+          "id": "npm:jsesc",
+          "installURL": "pkgmgrmgr://install?package=npm%3Ajsesc",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "A comprehensive library for mime-type mapping",
+          "category": "data",
+          "displayName": "mime",
+          "homepage": "https://github.com/broofa/mime#readme",
+          "id": "npm:mime",
+          "installURL": "pkgmgrmgr://install?package=npm%3Amime",
+          "manager": "npm"
+        }
+      ],
+      "publishedAt": "2026-08-04T13:01:59Z",
+      "title": "For You in Data",
+      "type": "personalizedRecommendations"
+    },
+    {
+      "batchID": "20260804T130159Z-b54f89f3",
+      "id": "recently-updated:games:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Open-source Android/Desktop remake of Civ V",
+          "category": "games",
+          "displayName": "unciv",
+          "homepage": "https://github.com/yairm210/Unciv",
+          "id": "brew:unciv",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aunciv",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Official Hytale Launcher",
+          "category": "games",
+          "displayName": "Hytale",
+          "homepage": "https://hytale.com/",
+          "id": "brew:cask:hytale",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Ahytale",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Minecraft modding platform",
+          "category": "games",
+          "displayName": "Modrinth App",
+          "homepage": "https://modrinth.com/",
+          "id": "brew:cask:modrinth",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Amodrinth",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "DOSBox with accurate emulation and wide testing",
+          "category": "games",
+          "displayName": "dosbox-x",
+          "homepage": "https://dosbox-x.com/",
+          "id": "brew:dosbox-x",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adosbox-x",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Sega Master System, Game Gear and SG-1000 emulator",
+          "category": "games",
+          "displayName": "Gearsystem",
+          "homepage": "https://github.com/drhelius/Gearsystem",
+          "id": "brew:cask:gearsystem",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Agearsystem",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-04T13:01:59Z",
+      "title": "Recently Updated in Games",
+      "type": "recentlyUpdated"
+    },
+    {
+      "artwork": {
+        "alt": "A glowing clockwork schedule ring joins a container panel, a network wave panel, and a timeline on a deep navy background.",
+        "attribution": "Generated with OpenAI image generation for Package Manager Manager.",
+        "boxColors": {
+          "backgroundEnd": "#0B2944",
+          "backgroundStart": "#06172E",
+          "foreground": "#FFFFFF"
+        },
+        "license": "OpenAI terms of use",
+        "path": "feed/assets/cronboard-observability-2026-07-31.png"
+      },
+      "batchID": "20260731T130236Z-ba1811b4",
+      "body": "## Start with the work that runs when nobody is watching\n\nScheduled tasks are easy to overlook because a crontab is deliberately quiet. A backup, report, cleanup, or certificate renewal often exists as one compact line that only becomes visible after it fails. **Cronboard** is a new terminal-first attempt to make that layer easier to inspect. Its project site describes a keyboard-driven dashboard for local cron jobs and remote servers, with creation, editing, pausing, resuming, search, human-readable schedules, and SSH-based management. The goal is not a different scheduling engine. It is a clearer view of the cron configuration already responsible for work.\n\nThat is a useful distinction. A dashboard can reduce the friction of reading a crowded crontab, but it does not make the command correct, give it retries, or prove that an unattended job succeeded. Keep the script itself in version control when practical, write its output somewhere intentional, and decide which failures need an external alert. Cronboard can make an operator's next question faster: *what is meant to run, where, and when?* It should not become the only record of that answer.\n\nThe project reached its stable 1.0.0 release on July 27, 2026, so this is a younger tool than the venerable cron subsystem it works with. That makes a small trial the sensible route. Start on a personal machine or an unimportant server, compare its view to `crontab -l`, and verify exactly which account and remote user each edit reaches.\n\n## Observation is not administration\n\n**dtop** lives one layer above the scheduler. The project's documentation and repository describe a terminal dashboard for monitoring Docker across multiple hosts, including container actions, health information, filtering, and integration with Dozzle for logs. Used together with a scheduler, it can help an operator move from “this job should have run” to “what is the container doing now?” without immediately opening a web control panel.\n\nThat convenience needs a boundary. A view that can start, stop, or remove containers is no longer read-only. Docker socket access and remote host credentials are operationally powerful, so the right setup is the least privileged one that still answers the question. dtop also does not replace a deployment definition, resource limits, central metrics, or paging. For a small fleet, it can shorten an investigation; for a production service, use it alongside durable telemetry and alerts rather than as the signal that wakes someone up.\n\nThe shared theme with Cronboard is **interactive inspection**. Both tools surface state that otherwise hides in configuration files, process lists, or several remote shells. Neither removes the need to document ownership. Before adopting either, name the job or container owner, where logs belong, and the condition that counts as failure. A clean terminal interface is most helpful when it reflects an already-clear operating model.\n\n## Network measurements have a different kind of consequence\n\n**OONI Probe CLI** makes another hidden system visible: network interference. OONI's user guide says the command-line client can test website blocking, messaging apps, circumvention tools, middleboxes, and network performance. Measurements are submitted to OONI and published as open data in near real time; OONI reports more than 400 million measurements from 23,000 networks in 240 countries and territories since 2012. That documented public record is why it belongs here as the underexposed companion rather than merely another diagnostic utility.\n\nIts tradeoff is sharper than the other two tools'. OONI explicitly says the probe is not a privacy tool and that testing can carry legal or personal risk depending on the country, network, sites tested, and threat model. Do not treat it as a casual speed test or run automated measurements for someone else without informed judgment. Read the onboarding and risk guidance, understand whether results will be public, and seek local expertise when the consequences are unclear. A blocked connection can also have multiple explanations, so compare evidence before drawing a conclusion.\n\n## A small, auditable practice\n\nThese tools work best as a compact loop:\n\n- inspect a schedule in Cronboard before changing it;\n- inspect the affected container or logs in dtop when the job touches Docker; and\n- use OONI Probe only when its research purpose and publication model fit the situation.\n\nThe common win is not more dashboards. It is making a specific operational question visible while preserving the underlying boundaries: cron remains the scheduler, Docker permissions remain sensitive, and network measurements can be consequential public research. Start with one question, verify the data against the native tools, and retain the plain-text configuration and logs that let another person audit what happened.",
+      "deck": "Cronboard, dtop, and OONI Probe make different systems visible—provided their operational and privacy boundaries stay explicit.",
+      "id": "editorial:2026-07-31:terminal-observability-with-cronboard",
+      "package": {
+        "agentSummary": "Cronboard is a keyboard-driven terminal dashboard for viewing and editing local or SSH-managed crontabs, showing schedules in human terms and bringing job output closer to operations.",
+        "assessment": {
+          "alternatives": [
+            "Editing crontabs with crontab -e",
+            "Systemd timers for systems that standardize on systemd"
+          ],
+          "audiences": [
+            "People maintaining local cron jobs",
+            "Operators responsible for a small set of SSH-accessible servers"
+          ],
+          "caveats": [
+            "Cronboard manages cron rather than replacing it with a scheduler",
+            "Remote access and job-editing privileges deserve the same care as direct SSH access"
+          ],
+          "complements": [
+            "Version-controlled scripts",
+            "Service monitoring and alerting",
+            "Regular backups of important job configuration"
+          ],
+          "prerequisites": [
+            "A Unix-like system with cron",
+            "SSH key access for remote-server management"
+          ],
+          "useCases": [
+            "Reviewing schedules before changing a crontab",
+            "Creating, pausing, or editing scheduled jobs without manually editing a crontab"
+          ]
+        },
+        "category": "developer-tools",
+        "displayName": "cronboard",
+        "docs": "https://github.com/antoniorodr/cronboard#readme",
+        "homepage": "https://cronboard.dev/",
+        "id": "brew:cronboard",
+        "installURL": "pkgmgrmgr://install?package=brew%3Acronboard",
+        "lastUpdatedAt": "2026-07-27T19:29:23Z",
+        "manager": "homebrew",
+        "repository": "https://github.com/antoniorodr/cronboard",
+        "researchedAt": "2026-07-31T13:02:36Z",
+        "sources": [
+          {
+            "kind": "primary",
+            "title": "Cronboard project site",
+            "url": "https://cronboard.dev/"
+          },
+          {
+            "kind": "primary",
+            "title": "Cronboard getting-started guide",
+            "url": "https://cronboard.dev/getting-started/"
+          }
+        ],
+        "upstreamSummary": "Terminal-based dashboard for managing cron jobs locally and on servers",
+        "version": null
+      },
+      "primaryPackageID": "brew:cronboard",
+      "publishedAt": "2026-07-31T13:02:36Z",
+      "relatedPackages": [
+        {
+          "agentSummary": "Cronboard is a keyboard-driven terminal dashboard for viewing and editing local or SSH-managed crontabs, showing schedules in human terms and bringing job output closer to operations.",
+          "assessment": {
+            "alternatives": [
+              "Editing crontabs with crontab -e",
+              "Systemd timers for systems that standardize on systemd"
+            ],
+            "audiences": [
+              "People maintaining local cron jobs",
+              "Operators responsible for a small set of SSH-accessible servers"
+            ],
+            "caveats": [
+              "Cronboard manages cron rather than replacing it with a scheduler",
+              "Remote access and job-editing privileges deserve the same care as direct SSH access"
+            ],
+            "complements": [
+              "Version-controlled scripts",
+              "Service monitoring and alerting",
+              "Regular backups of important job configuration"
+            ],
+            "prerequisites": [
+              "A Unix-like system with cron",
+              "SSH key access for remote-server management"
+            ],
+            "useCases": [
+              "Reviewing schedules before changing a crontab",
+              "Creating, pausing, or editing scheduled jobs without manually editing a crontab"
+            ]
+          },
+          "category": "developer-tools",
+          "displayName": "cronboard",
+          "docs": "https://github.com/antoniorodr/cronboard#readme",
+          "homepage": "https://cronboard.dev/",
+          "id": "brew:cronboard",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acronboard",
+          "lastUpdatedAt": "2026-07-27T19:29:23Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/antoniorodr/cronboard",
+          "researchedAt": "2026-07-31T13:02:36Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "Cronboard project site",
+              "url": "https://cronboard.dev/"
+            },
+            {
+              "kind": "primary",
+              "title": "Cronboard getting-started guide",
+              "url": "https://cronboard.dev/getting-started/"
+            }
+          ],
+          "upstreamSummary": "Terminal-based dashboard for managing cron jobs locally and on servers",
+          "version": null
+        },
+        {
+          "agentSummary": "Dtop is a Rust terminal dashboard for Docker hosts that surfaces containers, health, resource activity, and Dozzle log access across multiple machines without becoming an orchestrator.",
+          "assessment": {
+            "alternatives": [
+              "docker ps and docker stats",
+              "Portainer or other web-based Docker dashboards"
+            ],
+            "audiences": [
+              "Developers operating Docker hosts",
+              "Small teams that need a terminal view across several container machines"
+            ],
+            "caveats": [
+              "A terminal dashboard is an investigation aid, not a replacement for alerts",
+              "Host and Docker-socket access can expose sensitive operational control"
+            ],
+            "complements": [
+              "Docker Compose or another deployment definition",
+              "Metrics and alerting for unattended production monitoring"
+            ],
+            "prerequisites": [
+              "Docker access on each monitored host",
+              "Network connectivity and credentials appropriate for the configured hosts"
+            ],
+            "useCases": [
+              "Inspecting container health and resource activity",
+              "Opening related logs while investigating a Docker workload"
+            ]
+          },
+          "category": "cloud-infrastructure",
+          "displayName": "dtop",
+          "docs": "https://dtop.dev/",
+          "homepage": "https://dtop.dev/",
+          "id": "brew:dtop",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adtop",
+          "lastUpdatedAt": "2026-07-27T18:28:47Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/amir20/dtop",
+          "researchedAt": "2026-07-31T13:02:36Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "dtop repository",
+              "url": "https://github.com/amir20/dtop"
+            },
+            {
+              "kind": "primary",
+              "title": "dtop documentation",
+              "url": "https://dtop.dev/"
+            }
+          ],
+          "upstreamSummary": "Terminal dashboard for Docker monitoring across multiple hosts",
+          "version": null
+        },
+        {
+          "agentSummary": "OONI Probe CLI runs open network-interference measurements for websites, messaging apps, circumvention tools, and performance, publishing results that can support censorship research and local troubleshooting.",
+          "assessment": {
+            "alternatives": [
+              "Manual connectivity tests that do not create comparable public measurements",
+              "Commercial network-monitoring products for private infrastructure"
+            ],
+            "audiences": [
+              "Researchers and advocates studying internet interference",
+              "Technically confident users investigating access problems on their own network"
+            ],
+            "caveats": [
+              "OONI explicitly warns that running censorship measurements can carry risk in some places",
+              "A measurement is evidence to interpret carefully, not proof of a single cause"
+            ],
+            "complements": [
+              "OONI Explorer",
+              "Local legal and digital-security advice",
+              "Independent network diagnostics"
+            ],
+            "prerequisites": [
+              "A considered threat model",
+              "Awareness that measurements may be uploaded and publicly published"
+            ],
+            "useCases": [
+              "Measuring suspected blocking of a website or app",
+              "Contributing reproducible network measurements to OONI's open-data work"
+            ]
+          },
+          "category": "networking",
+          "displayName": "ooniprobe",
+          "docs": "https://github.com/ooni/probe-cli#readme",
+          "homepage": "https://ooni.org/",
+          "id": "brew:ooniprobe",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aooniprobe",
+          "lastUpdatedAt": "2026-07-28T01:00:56Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/ooni/probe-cli",
+          "researchedAt": "2026-07-31T13:02:36Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "OONI Probe CLI user guide",
+              "url": "https://openobservatory.github.io/support/ooni-probe-cli/"
+            },
+            {
+              "kind": "primary",
+              "title": "OONI Probe CLI repository",
+              "url": "https://github.com/ooni/probe-cli"
+            }
+          ],
+          "upstreamSummary": "Network interference detection tool",
+          "version": null
+        }
+      ],
+      "selection": {
+        "firstStableReleaseAt": "2026-07-27T15:39:00Z",
+        "firstStableReleaseSourceURL": "https://github.com/antoniorodr/cronboard/releases/tag/v1.0.0",
+        "rationale": "newer"
+      },
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "Cronboard releases",
+          "url": "https://github.com/antoniorodr/cronboard/releases"
+        },
+        {
+          "kind": "primary",
+          "title": "Cronboard project site",
+          "url": "https://cronboard.dev/"
+        },
+        {
+          "kind": "primary",
+          "title": "dtop repository",
+          "url": "https://github.com/amir20/dtop"
+        },
+        {
+          "kind": "primary",
+          "title": "OONI Probe CLI user guide",
+          "url": "https://openobservatory.github.io/support/ooni-probe-cli/"
+        }
+      ],
+      "title": "Terminal Observability Starts With What You Schedule",
+      "type": "editorial"
+    },
+    {
+      "batchID": "20260731T130236Z-34ca69db",
+      "id": "for-you:networking:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "ECMAScript parser",
+          "category": "networking",
+          "displayName": "acorn",
+          "homepage": "https://github.com/acornjs/acorn",
+          "id": "npm:acorn",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aacorn",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Share target browsers between different front-end tools, like Autoprefixer, Stylelint and babel-env-preset",
+          "category": "networking",
+          "displayName": "browserslist",
+          "homepage": "https://github.com/browserslist/browserslist#readme",
+          "id": "npm:browserslist",
+          "installURL": "pkgmgrmgr://install?package=npm%3Abrowserslist",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "A library for obtaining browser versions with their maximum supported Baseline feature set and Widely Available status.",
+          "category": "networking",
+          "displayName": "baseline-browser-mapping",
+          "homepage": "https://github.com/web-platform-dx/baseline-browser-mapping#readme",
+          "id": "npm:baseline-browser-mapping",
+          "installURL": "pkgmgrmgr://install?package=npm%3Abaseline-browser-mapping",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website",
+          "category": "networking",
+          "displayName": "autoprefixer",
+          "homepage": "https://github.com/postcss/autoprefixer#readme",
+          "id": "npm:autoprefixer",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aautoprefixer",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Minimal H(TTP) framework built for high performance and portability.",
+          "category": "networking",
+          "displayName": "h3",
+          "homepage": "https://h3.dev",
+          "id": "npm:h3",
+          "installURL": "pkgmgrmgr://install?package=npm%3Ah3",
+          "manager": "npm"
+        }
+      ],
+      "publishedAt": "2026-07-31T13:02:36Z",
+      "title": "For You in Networking",
+      "type": "personalizedRecommendations"
+    },
+    {
+      "batchID": "20260731T130236Z-34ca69db",
+      "id": "recently-updated:language-runtime:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Tool for creating isolated virtual python environments",
+          "category": "language-runtime",
+          "displayName": "virtualenv",
+          "homepage": "https://virtualenv.pypa.io/",
+          "id": "brew:virtualenv",
+          "installURL": "pkgmgrmgr://install?package=brew%3Avirtualenv",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "GNU compiler collection",
+          "category": "language-runtime",
+          "displayName": "gcc@11",
+          "homepage": "https://gcc.gnu.org/",
+          "id": "brew:gcc@11",
+          "installURL": "pkgmgrmgr://install?package=brew%3Agcc%4011",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "GNU compiler collection",
+          "category": "language-runtime",
+          "displayName": "gcc@10",
+          "homepage": "https://gcc.gnu.org/",
+          "id": "brew:gcc@10",
+          "installURL": "pkgmgrmgr://install?package=brew%3Agcc%4010",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "GNU compiler collection",
+          "category": "language-runtime",
+          "displayName": "gcc@9",
+          "homepage": "https://gcc.gnu.org/",
+          "id": "brew:gcc@9",
+          "installURL": "pkgmgrmgr://install?package=brew%3Agcc%409",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Scheme framework for extension and scripting languages on macOS and iOS",
+          "category": "language-runtime",
+          "displayName": "lispkit",
+          "homepage": "https://lisppad.app",
+          "id": "brew:lispkit",
+          "installURL": "pkgmgrmgr://install?package=brew%3Alispkit",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-31T13:02:36Z",
+      "title": "Recently Updated in Language Runtime",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260731T130236Z-34ca69db",
+      "id": "for-you:science:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Miller Rabin algorithm for primality test",
+          "category": "science",
+          "displayName": "miller-rabin",
+          "homepage": "https://github.com/indutny/miller-rabin",
+          "id": "npm:miller-rabin",
+          "installURL": "pkgmgrmgr://install?package=npm%3Amiller-rabin",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Math.js is an extensive math library for JavaScript and Node.js. It features a flexible expression parser with support for symbolic computation, comes with a large set of built-in functions and constants, and offers an integrated solution to work with dif",
+          "category": "science",
+          "displayName": "mathjs",
+          "homepage": "https://mathjs.org",
+          "id": "npm:mathjs",
+          "installURL": "pkgmgrmgr://install?package=npm%3Amathjs",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "convert wkt to geojson",
+          "category": "science",
+          "displayName": "wellknown",
+          "homepage": "https://github.com/mapbox/wellknown#readme",
+          "id": "npm:wellknown",
+          "installURL": "pkgmgrmgr://install?package=npm%3Awellknown",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Simple and Performant Language detection library (pure JS and zero dependencies)",
+          "category": "science",
+          "displayName": "tinyld",
+          "homepage": null,
+          "id": "npm:tinyld",
+          "installURL": "pkgmgrmgr://install?package=npm%3Atinyld",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Package implements data structures and algorithms for processing various types of graphs",
+          "category": "science",
+          "displayName": "js-graph-algorithms",
+          "homepage": "https://github.com/chen0040/js-graph-algorithms#readme",
+          "id": "npm:js-graph-algorithms",
+          "installURL": "pkgmgrmgr://install?package=npm%3Ajs-graph-algorithms",
+          "manager": "npm"
+        }
+      ],
+      "publishedAt": "2026-07-31T13:02:36Z",
+      "title": "For You in Science",
+      "type": "personalizedRecommendations"
+    },
+    {
+      "batchID": "20260731T130236Z-34ca69db",
+      "id": "recently-updated:developer-tools:20260808T130159Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Memory profiler for Python applications",
+          "category": "developer-tools",
+          "displayName": "memray",
+          "homepage": "https://bloomberg.github.io/memray/",
+          "id": "brew:memray",
+          "installURL": "pkgmgrmgr://install?package=brew%3Amemray",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Menu bar app for using AI subscriptions with coding tools",
+          "category": "developer-tools",
+          "displayName": "VibeProxy",
+          "homepage": "https://github.com/automazeio/vibeproxy",
+          "id": "brew:cask:vibeproxy",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Avibeproxy",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "AST-based pattern checker for JavaScript",
+          "category": "developer-tools",
+          "displayName": "eslint",
+          "homepage": "https://eslint.org",
+          "id": "brew:eslint",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aeslint",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Quickly manage and navigate project directories for experiments",
+          "category": "developer-tools",
+          "displayName": "try",
+          "homepage": "https://github.com/tobi/try",
+          "id": "brew:try",
+          "installURL": "pkgmgrmgr://install?package=brew%3Atry",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Find newer versions of dependencies than what your package.json allows",
+          "category": "developer-tools",
+          "displayName": "npm-check-updates",
+          "homepage": "https://github.com/raineorshine/npm-check-updates",
+          "id": "brew:npm-check-updates",
+          "installURL": "pkgmgrmgr://install?package=brew%3Anpm-check-updates",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-31T13:02:36Z",
+      "title": "Recently Updated in Developer Tools",
+      "type": "recentlyUpdated"
+    }
+  ],
+  "generatedAt": "2026-08-09T13:00:49Z",
+  "nextPageURL": "https://mxcl.dev/package-manager-manager/feed/v2/pages/20260809T130049Z-7307ee0b.json",
+  "pageID": "20260809T130049Z-e13154c2",
+  "schemaVersion": 2
+}

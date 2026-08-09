@@ -97,6 +97,16 @@ The existing `atomicvault.com/pkg/` CloudFront behaviors stay live during the
 migration. Their redirects into the flattened `https://pkg.so/...` catalog are
 managed separately in `../av.www`.
 
+## Discover feed
+
+The canonical Discover feed is committed at `www/feed/` and served at
+`https://pkg.so/discover/feed/`. Run `scripts/update-discover-feed` to refresh
+it; the script validates the rolling v1 snapshot and append-only v2 archive,
+then performs its reentrant research handoff when needed. Use
+`scripts/update-discover-feed --self-test` before changing the generator and
+`--check` before publishing. New v2 archive links use pkg.so; links embedded in
+the frozen former `mxcl.dev` archive remain unchanged for historical traversal.
+
 ## Checks
 
 ```sh

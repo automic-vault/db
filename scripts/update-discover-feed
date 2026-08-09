@@ -1,0 +1,1870 @@
+#!/usr/bin/env python3
+"""Build the hosted PMM Discover feed with one reentrant Codex handoff."""
+
+from __future__ import annotations
+
+import json
+import hashlib
+import os
+import random
+import re
+import subprocess
+import sys
+import tempfile
+import urllib.parse
+import urllib.error
+import urllib.request
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+CATALOG_URL = "https://www.automicvault.com/db.json"
+SCHEMA_VERSION = 1
+V2_SCHEMA_VERSION = 2
+V2_PAGE_LIMIT = 20
+V2_RECOMMENDATION_LIMIT = 10
+V2_RECENTLY_UPDATED_LIMIT = 10
+V2_CATEGORY_SHELF_LIMIT = 5
+# New archive pages are published by the pkg.so origin.  Frozen pages from the
+# former mxcl.dev archive retain their original continuation URLs forever.
+V2_PAGE_BASE_URL = "https://pkg.so/discover/feed/v2/pages/"
+LEGACY_V2_PAGE_BASE_URL = "https://mxcl.dev/package-manager-manager/feed/v2/pages/"
+V2_PAGE_BASE_URLS = (V2_PAGE_BASE_URL, LEGACY_V2_PAGE_BASE_URL)
+SUPPORTED_MANAGERS = {"homebrew", "npm"}
+SUMMARY_WORDS = range(20, 31)
+EDITORIAL_WORDS = range(600, 1001)
+NEW_PACKAGE_MAX_AGE = timedelta(days=365)
+EDITORIAL_NEWER_MAX_AGE = timedelta(days=730)
+EDITORIAL_WINDOW = 20
+EDITORIAL_NEWER_TARGET = 13
+EDITORIAL_CANONICAL_COOLDOWN = timedelta(days=90)
+# These are excellent projects, but general introductions to them are already abundant.
+# Keep this deliberately small and explicit: it is a policy list, not a popularity proxy.
+CANONICAL_EDITORIAL_PACKAGE_IDS = {
+    "brew:docker", "brew:node", "brew:python", "brew:react", "brew:typescript",
+    "npm:docker", "npm:node", "npm:react", "npm:typescript",
+}
+EDITORIAL_RATIONALES = {"newer", "underexposed", "canonicalFreshAngle"}
+ASSESSMENT_FIELDS = (
+    "audiences",
+    "useCases",
+    "prerequisites",
+    "complements",
+    "alternatives",
+    "caveats",
+)
+ARTWORK_BOX_COLOR_FIELDS = ("backgroundStart", "backgroundEnd", "foreground")
+
+
+class FeedError(Exception):
+    pass
+
+
+def now() -> datetime:
+    value = os.environ.get("PMM_FEED_NOW")
+    return parse_date(value) if value else datetime.now(timezone.utc)
+
+
+def parse_date(value: str | None) -> datetime:
+    if not isinstance(value, str):
+        raise FeedError(f"invalid date: {value!r}")
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as error:
+        raise FeedError(f"invalid date: {value}") from error
+    if parsed.tzinfo is None:
+        raise FeedError(f"date must include a timezone: {value}")
+    return parsed.astimezone(timezone.utc)
+
+
+def timestamp(value: datetime) -> str:
+    return value.astimezone(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def words(value: object) -> int:
+    return len(re.findall(r"\b[\w’'-]+\b", value if isinstance(value, str) else ""))
+
+
+def read_json(path: Path) -> dict:
+    try:
+        value = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError) as error:
+        raise FeedError(f"cannot read {path}: {error}") from error
+    if not isinstance(value, dict):
+        raise FeedError(f"{path} must contain a JSON object")
+    return value
+
+
+def write_json(path: Path, value: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    data = (json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n").encode()
+    fd, temporary = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    try:
+        with os.fdopen(fd, "wb") as file:
+            file.write(data)
+            file.flush()
+            os.fsync(file.fileno())
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+
+
+def safe_url(value: object, field: str, allow_relative_artwork: bool = False) -> str:
+    if not isinstance(value, str) or not value:
+        raise FeedError(f"{field} must be a non-empty URL")
+    if allow_relative_artwork and value.startswith("feed/assets/") and ".." not in value:
+        return value
+    parsed = urllib.parse.urlparse(value)
+    if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password:
+        raise FeedError(f"{field} must be an https URL")
+    return value
+
+
+def hex_color(value: object, field: str) -> str:
+    if not isinstance(value, str) or not re.fullmatch(r"#[0-9A-Fa-f]{6}", value):
+        raise FeedError(f"{field} must be a #RRGGBB color")
+    return value.upper()
+
+
+def source_list(value: object, field: str, minimum: int, primary_minimum: int = 0) -> list[dict]:
+    if not isinstance(value, list) or len(value) < minimum:
+        raise FeedError(f"{field} needs at least {minimum} sources")
+    result, seen = [], set()
+    for index, source in enumerate(value):
+        if not isinstance(source, dict):
+            raise FeedError(f"{field}[{index}] must be an object")
+        title = source.get("title")
+        kind = source.get("kind")
+        url = safe_url(source.get("url"), f"{field}[{index}].url")
+        if not isinstance(title, str) or not title.strip():
+            raise FeedError(f"{field}[{index}].title is required")
+        if kind not in {"primary", "independent"}:
+            raise FeedError(f"{field}[{index}].kind must be primary or independent")
+        if url in seen:
+            raise FeedError(f"{field} contains duplicate URL {url}")
+        seen.add(url)
+        result.append({"kind": kind, "title": title.strip(), "url": url})
+    if sum(source["kind"] == "primary" for source in result) < primary_minimum:
+        raise FeedError(f"{field} needs at least {primary_minimum} primary sources")
+    return result
+
+
+def install_url(identifier: str) -> str:
+    return "pkgmgrmgr://install?package=" + urllib.parse.quote(identifier, safe="")
+
+
+def first_string(value: object) -> str | None:
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+    if isinstance(value, list):
+        return next((item.strip() for item in value if isinstance(item, str) and item.strip()), None)
+    return None
+
+
+def https_string(value: object) -> str | None:
+    value = first_string(value)
+    if not value:
+        return None
+    parsed = urllib.parse.urlparse(value)
+    return value if parsed.scheme == "https" and parsed.netloc and not parsed.username and not parsed.password else None
+
+
+def normalize_catalog(raw: dict) -> tuple[str, dict[str, dict]]:
+    try:
+        sources = raw.get("sources")
+        database = sources.get("db") if isinstance(sources, dict) and isinstance(sources.get("db"), dict) else raw
+        generated_at = timestamp(parse_date(database["generated_at"]))
+    except (KeyError, TypeError) as error:
+        raise FeedError("catalog is missing sources.db.generated_at") from error
+    packages: dict[str, dict] = {}
+    sources = (
+        ("formulas", "brew:", "homebrew"),
+        ("casks", "brew:cask:", "homebrew"),
+        ("npms", "npm:", "npm"),
+    )
+    for collection, prefix, manager in sources:
+        values = database.get(collection)
+        if not isinstance(values, dict):
+            raise FeedError(f"catalog is missing sources.db.{collection}")
+        for name, metadata in values.items():
+            if not isinstance(name, str) or not isinstance(metadata, dict):
+                continue
+            identifier = prefix + name
+            popularity = metadata.get("popularity") if isinstance(metadata.get("popularity"), dict) else {}
+            updated = metadata.get("last_updated_at")
+            try:
+                updated = timestamp(parse_date(updated)) if updated else None
+            except FeedError:
+                updated = None
+            packages[identifier] = {
+                "category": first_string(metadata.get("category")),
+                "displayName": first_string(metadata.get("displayName")) or name,
+                "docs": https_string(metadata.get("upstreamDocs")) or https_string(metadata.get("docs")),
+                "homepage": https_string(metadata.get("homepage")),
+                "id": identifier,
+                "lastUpdatedAt": updated,
+                "manager": manager,
+                "popularityRank": popularity.get("rank") if isinstance(popularity.get("rank"), int) else None,
+                "pulseKind": first_string(metadata.get("pulse_kind")),
+                "repository": https_string(metadata.get("repository")) or https_string(metadata.get("repo")),
+                "upstreamSummary": first_string(metadata.get("summary")),
+                "version": first_string(metadata.get("version")),
+            }
+    if not packages:
+        raise FeedError("catalog contains no installable packages")
+    return generated_at, packages
+
+
+def fetch_catalog() -> dict:
+    location = os.environ.get("PMM_FEED_CATALOG", CATALOG_URL)
+    try:
+        if urllib.parse.urlparse(location).scheme in {"", "file"}:
+            path = Path(urllib.parse.urlparse(location).path if location.startswith("file:") else location)
+            return json.loads(path.read_text())
+        request = urllib.request.Request(location, headers={"User-Agent": "PMM-Discover-Feed/1"})
+        with urllib.request.urlopen(request, timeout=30) as response:
+            return json.load(response)
+    except (OSError, ValueError, urllib.error.URLError, json.JSONDecodeError) as error:
+        raise FeedError(f"cannot fetch catalog: {error}") from error
+
+
+def root_paths() -> tuple[Path, Path, Path]:
+    root = Path(os.environ.get("PMM_FEED_ROOT", Path(__file__).resolve().parent.parent))
+    return root, root / "www/feed/v1.json", root / ".feed-work"
+
+
+def v2_path(feed_path: Path) -> Path:
+    return feed_path.with_name("v2.json")
+
+
+def v2_page_filename(url: object) -> str:
+    """Return a local archive filename for a canonical or frozen legacy URL."""
+    url = safe_url(url, "nextPageURL")
+    for base_url in V2_PAGE_BASE_URLS:
+        if url.startswith(base_url):
+            filename = url.removeprefix(base_url)
+            if filename and "/" not in filename:
+                return filename
+    raise FeedError("nextPageURL must reference a hosted v2 page")
+
+
+def empty_feed(at: datetime) -> dict:
+    return {
+        "content": [],
+        "generatedAt": timestamp(at),
+        "packages": {},
+        "schemaVersion": SCHEMA_VERSION,
+        "source": {"generatedAt": None, "url": CATALOG_URL},
+    }
+
+
+def content(feed: dict, kind: str) -> list[dict]:
+    return [item for item in feed.get("content", []) if isinstance(item, dict) and item.get("type") == kind]
+
+
+def editorial_due(feed: dict, at: datetime) -> bool:
+    dates = [parse_date(item.get("publishedAt")) for item in content(feed, "editorial")]
+    return not dates or at - max(dates) >= timedelta(days=3)
+
+
+def is_canonical_editorial(identifier: object) -> bool:
+    return isinstance(identifier, str) and identifier in CANONICAL_EDITORIAL_PACKAGE_IDS
+
+
+def is_underexposed(package: dict) -> bool:
+    """A modest boost for tools outside the catalog's most-visible ranks."""
+    rank = package.get("popularityRank")
+    return rank is None or rank > 100
+
+
+def editorial_history_policy(history: list[dict], at: datetime) -> dict:
+    """The policy state supplied to the researcher and used to validate a response."""
+    recent = sorted(history, key=lambda item: (item.get("publishedAt", ""), item.get("id", "")), reverse=True)[:EDITORIAL_WINDOW]
+    # Reserve one slot for the edition being selected; when the window is already
+    # full, its oldest entry will fall out before the quota is evaluated.
+    retained = recent[:EDITORIAL_WINDOW - 1]
+    newer = sum(
+        isinstance(item.get("selection"), dict) and item["selection"].get("rationale") == "newer"
+        for item in retained
+    )
+    cooldown = []
+    for item in recent:
+        if not is_canonical_editorial(item.get("primaryPackageID")):
+            continue
+        try:
+            published = parse_date(item.get("publishedAt"))
+        except FeedError:
+            continue
+        if at - published < EDITORIAL_CANONICAL_COOLDOWN:
+            cooldown.append(item["primaryPackageID"])
+    return {
+        "canonicalCooldownDays": EDITORIAL_CANONICAL_COOLDOWN.days,
+        "canonicalCooldownPackageIDs": sorted(set(cooldown)),
+        "minimumNewerInRollingWindow": EDITORIAL_NEWER_TARGET,
+        # Until the 13-slot target is met, a non-newer choice is an auditable exception.
+        "newerRequired": newer < EDITORIAL_NEWER_TARGET,
+        "rollingWindow": EDITORIAL_WINDOW,
+    }
+
+
+def validate_editorial_selection(item: dict, history: list[dict], at: datetime) -> None:
+    """Validate policy metadata on a post-policy editorial against older editions."""
+    selection = item.get("selection")
+    if selection is None:
+        # Frozen editions predate this policy. They remain valid, but do not count as newer.
+        return
+    if not isinstance(selection, dict):
+        raise FeedError(f"{item['id']}.selection must be an object")
+    allowed = {"rationale", "firstStableReleaseAt", "firstStableReleaseSourceURL", "newerOverride", "underexposedReason", "freshAngle", "policy_exception"}
+    if set(selection) - allowed or selection.get("rationale") not in EDITORIAL_RATIONALES:
+        raise FeedError(f"{item['id']}.selection has invalid fields or rationale")
+    rationale = selection["rationale"]
+    if rationale == "newer":
+        release = selection.get("firstStableReleaseAt")
+        override = selection.get("newerOverride")
+        if release is None:
+            if not isinstance(override, dict) or set(override) != {"reason", "sourceURL"}:
+                raise FeedError(f"{item['id']}.selection.newer needs firstStableReleaseAt or an explicit newerOverride")
+            if not isinstance(override["reason"], str) or len(override["reason"].strip()) < 20:
+                raise FeedError(f"{item['id']}.selection.newerOverride.reason is too short")
+            safe_url(override["sourceURL"], f"{item['id']}.selection.newerOverride.sourceURL")
+        else:
+            released = parse_date(release)
+            safe_url(selection.get("firstStableReleaseSourceURL"), f"{item['id']}.selection.firstStableReleaseSourceURL")
+            if released > at or at - released > EDITORIAL_NEWER_MAX_AGE:
+                if not isinstance(override, dict) or set(override) != {"reason", "sourceURL"}:
+                    raise FeedError(f"{item['id']}.selection.firstStableReleaseAt is older than 24 months; newerOverride is required")
+                if not isinstance(override["reason"], str) or len(override["reason"].strip()) < 20:
+                    raise FeedError(f"{item['id']}.selection.newerOverride.reason is too short")
+                safe_url(override["sourceURL"], f"{item['id']}.selection.newerOverride.sourceURL")
+    elif selection.get("firstStableReleaseAt") is not None or selection.get("firstStableReleaseSourceURL") is not None or selection.get("newerOverride") is not None:
+        raise FeedError(f"{item['id']}.selection release fields are only valid for newer editorials")
+    if rationale == "underexposed":
+        if not isinstance(selection.get("underexposedReason"), str) or len(selection["underexposedReason"].strip()) < 20:
+            raise FeedError(f"{item['id']}.selection.underexposedReason is required")
+    elif selection.get("underexposedReason") is not None:
+        raise FeedError(f"{item['id']}.selection.underexposedReason is only valid for underexposed editorials")
+    if is_canonical_editorial(item.get("primaryPackageID")):
+        if rationale != "canonicalFreshAngle" or not isinstance(selection.get("freshAngle"), str) or len(selection["freshAngle"].strip()) < 20:
+            raise FeedError(f"{item['id']} is canonical and needs a specific freshAngle")
+    elif selection.get("freshAngle") is not None:
+        raise FeedError(f"{item['id']}.selection.freshAngle is only valid for canonical editorials")
+
+    policy = editorial_history_policy(history, at)
+    breaches = []
+    if policy["newerRequired"] and rationale != "newer":
+        breaches.append("rolling newer-tool target")
+    if item.get("primaryPackageID") in policy["canonicalCooldownPackageIDs"]:
+        breaches.append("canonical-tool cooldown")
+    exception = selection.get("policy_exception")
+    if breaches:
+        if not isinstance(exception, dict) or set(exception) != {"reason"} or not isinstance(exception["reason"], str) or len(exception["reason"].strip()) < 20:
+            raise FeedError(f"{item['id']} breaches {', '.join(breaches)} and needs selection.policy_exception.reason")
+    elif exception is not None:
+        raise FeedError(f"{item['id']}.selection.policy_exception is only valid for a quota or cooldown breach")
+
+
+def validate_editorial_history_policy(editorials: list[dict]) -> None:
+    """Validate oldest to newest so each edition sees its actual preceding window."""
+    history: list[dict] = []
+    for item in sorted(editorials, key=lambda item: (item.get("publishedAt", ""), item.get("id", ""))):
+        validate_editorial_selection(item, history, parse_date(item["publishedAt"]))
+        history.append(item)
+
+
+def candidate_pool(packages: dict[str, dict], new_ids: list[str], limit: int = 160) -> list[dict]:
+    popular = sorted(
+        packages.values(),
+        key=lambda package: (
+            package["popularityRank"] is None,
+            package["popularityRank"] or 10**9,
+            package["id"],
+        ),
+    )[:40]
+    by_category: dict[str, list[dict]] = {}
+    for package in packages.values():
+        by_category.setdefault(package.get("category") or "other", []).append(package)
+    recent = []
+    for category in sorted(by_category):
+        recent.extend(sorted(by_category[category], key=lambda package: (package.get("lastUpdatedAt") or "", package["id"]), reverse=True)[:8])
+    underexposed = [package for package in packages.values() if is_underexposed(package)]
+    underexposed.sort(key=lambda package: (package.get("lastUpdatedAt") or "", package["id"]), reverse=True)
+    # The researcher still verifies the rationale, but this ordering makes newer and
+    # less-covered tools the default editorial starting point.
+    ordered = [packages[identifier] for identifier in new_ids] + underexposed + popular + recent
+    seen, result = set(), []
+    for package in ordered:
+        if package["id"] not in seen:
+            seen.add(package["id"])
+            result.append(package)
+    return result[:limit]
+
+
+def build_request(
+    feed: dict,
+    generated_at: str,
+    packages: dict[str, dict],
+    at: datetime,
+    force_editorial: bool = False,
+    force_recommendations: int = 0,
+    editorial_history: list[dict] | None = None,
+) -> dict | None:
+    is_bootstrap = not feed.get("packages")
+    watermark = feed.get("source", {}).get("generatedAt")
+    cutoff = at - timedelta(days=14)
+    new_ids = []
+    for package in packages.values():
+        if package.get("pulseKind") != "new" or not package.get("lastUpdatedAt"):
+            continue
+        updated = parse_date(package["lastUpdatedAt"])
+        if updated >= cutoff and (not watermark or updated > parse_date(watermark)):
+            new_ids.append(package["id"])
+    new_ids.sort(key=lambda identifier: (packages[identifier].get("lastUpdatedAt") or "", identifier), reverse=True)
+
+    recommendation = next(iter(content(feed, "personalizedRecommendations")), {})
+    current_recommendations = recommendation.get("candidatePackageIDs", [])
+    stale = []
+    for identifier in current_recommendations:
+        researched = feed.get("packages", {}).get(identifier, {}).get("researchedAt")
+        if not researched or at - parse_date(researched) >= timedelta(days=30):
+            stale.append(identifier)
+    needed = max(0, 24 - len(current_recommendations))
+    replace = current_recommendations[:force_recommendations] if force_recommendations else (stale[:3] if not needed else [])
+    recommendation_count = needed or len(replace)
+    needs_editorial = force_editorial or editorial_due(feed, at)
+    if not new_ids and not recommendation_count and not needs_editorial:
+        return None
+
+    pool = candidate_pool(packages, new_ids)
+    excluded = set(current_recommendations) - set(replace)
+    recommendation_candidates = [package for package in pool if package["id"] not in excluded]
+    history = editorial_history if editorial_history is not None else content(feed, "editorial")
+    history = sorted(history, key=lambda item: (item.get("publishedAt", ""), item.get("id", "")), reverse=True)[:EDITORIAL_WINDOW]
+    return {
+        "catalog": {"generatedAt": generated_at, "url": CATALOG_URL},
+        "createdAt": timestamp(at),
+        "editorialCandidates": pool,
+        "editorialHistory": history,
+        "editorialPolicy": editorial_history_policy(history, at),
+        "editorialRequired": needs_editorial,
+        "existingEditorialPackageIDs": [item.get("primaryPackageID") for item in content(feed, "editorial")],
+        "newCandidateLimit": min(8 if is_bootstrap else 6, len(new_ids)),
+        "newCandidates": [packages[identifier] for identifier in new_ids[:40]],
+        "recommendationCandidates": recommendation_candidates,
+        "recommendationCount": min(recommendation_count, len(recommendation_candidates)),
+        "recommendationReplaceIDs": replace,
+        "responsePath": ".feed-work/response.json",
+    }
+
+
+def prompt(request: dict) -> str:
+    editorial = "Write one 600–1,000 word editorial." if request["editorialRequired"] else "Do not write an editorial this run."
+    return f"""PMM_FEED_STATUS=NEEDS_AGENT
+
+You are the editorial researcher for Package Manager Manager's Discover feed.
+Read .feed-work/request.json. Research without installing or executing any candidate package.
+Prefer official repositories, documentation, release history, and registries, supplemented by credible evidence of real-world use. Paraphrase claims, cite URLs, describe tradeoffs honestly, and choose a different candidate if a package cannot be substantiated.
+
+Write .feed-work/response.json as one JSON object with:
+- newPackages: up to {request['newCandidateLimit']} IDs chosen only from newCandidates.
+- newPackageEvidence: an object for every chosen newPackages ID. Each value needs firstPublishedAt (an ISO 8601 timestamp), a concise reason, and one primary source URL proving the upstream project or package was first published within the last year. A catalog, formula, cask, or registry listing date alone does not prove a package is new; do not select a longstanding project newly added to a manager.
+- recommendations: exactly {request['recommendationCount']} IDs chosen only from recommendationCandidates.
+- packages: an object containing a card for every chosen ID and every editorial relatedPackageIDs entry. Each card needs agentSummary (20–30 words), all six assessment arrays (audiences, useCases, prerequisites, complements, alternatives, caveats), and at least two unique sources with title, https URL, and kind primary or independent.
+- editorial: {"null" if not request['editorialRequired'] else "an object with slug, title, deck, body, primaryPackageID, 2–4 relatedPackageIDs including the primary package, coverage containing history and actualUsage, sources, artwork, and selection"}.
+
+{editorial} The editorial selection policy is {json.dumps(request['editorialPolicy'], sort_keys=True)}. Choose in this order: a newer tool, then an underexposed tool, then another substantiated candidate. A newer tool means its first stable release is within 24 months: selection must use rationale "newer", firstStableReleaseAt, and firstStableReleaseSourceURL. A documented new major direction may instead use newerOverride with a reason and primary source URL. Underexposed tools use rationale "underexposed" and a concrete underexposedReason. Canonical tools on the cooldown list should not be chosen; if one is truly necessary, it needs rationale "canonicalFreshAngle", a concrete freshAngle, and a policy_exception explaining the cooldown. If newerRequired is true and you cannot substantiate a newer tool, any other rationale needs a policy_exception explaining the quota breach. Do not invent an exception.
+Structure the body as readable Markdown with at least three descriptive `##` subheadings and inline formatting or a list. Raw HTML is not allowed. For every editorial, use image_gen to create a wide, text-free editorial illustration that reflects the story. Save it under www/feed/assets/ and set artwork.path to its feed/assets/ path. Artwork must contain alt, attribution, license, and boxColors. Derive boxColors by visually sampling the generated image: backgroundStart and backgroundEnd are the two dominant colors the app should use behind the editorial box, and foreground is a high-contrast text color. All three colors must be #RRGGBB. Do not use a generic placeholder or a package icon.
+Do not add install URLs, publication dates, researched dates, or catalog metadata; the script derives those.
+
+When the response is ready, reentrantly run exactly:
+./scripts/update-discover-feed
+
+After it reports PMM_FEED_STATUS=COMMITTED, run ./scripts/update-discover-feed --check, verify the generated commit is limited to allowed feed files and does not modify or remove archived pages, then push main normally to origin. Never force-push.
+"""
+
+
+def clean_strings(value: object, field: str) -> list[str]:
+    if not isinstance(value, list):
+        raise FeedError(f"{field} must be an array")
+    result = []
+    for item in value:
+        if not isinstance(item, str) or not item.strip():
+            raise FeedError(f"{field} entries must be non-empty strings")
+        if re.search(r"<[A-Za-z/][^>]*>", item):
+            raise FeedError(f"{field} cannot contain raw HTML")
+        result.append(item.strip())
+    return result
+
+
+def new_package_evidence(value: object, identifiers: list[str], at: datetime) -> dict[str, dict]:
+    if not isinstance(value, dict) or set(value) != set(identifiers):
+        raise FeedError("newPackageEvidence must contain exactly the selected newPackages IDs")
+    result = {}
+    for identifier in identifiers:
+        evidence = value[identifier]
+        if not isinstance(evidence, dict) or set(evidence) != {"firstPublishedAt", "reason", "sourceURL"}:
+            raise FeedError(f"newPackageEvidence.{identifier} must contain firstPublishedAt, reason, and sourceURL")
+        published = parse_date(evidence["firstPublishedAt"])
+        if published > at or at - published > NEW_PACKAGE_MAX_AGE:
+            raise FeedError(f"newPackageEvidence.{identifier}.firstPublishedAt must be within the last year")
+        reason = evidence["reason"]
+        if not isinstance(reason, str) or len(reason.strip()) < 20:
+            raise FeedError(f"newPackageEvidence.{identifier}.reason must explain why the package is genuinely new")
+        result[identifier] = {
+            "firstPublishedAt": timestamp(published),
+            "reason": reason.strip(),
+            "sourceURL": safe_url(evidence["sourceURL"], f"newPackageEvidence.{identifier}.sourceURL"),
+        }
+    return result
+
+
+def package_card(identifier: str, raw: object, catalog: dict[str, dict], at: datetime) -> dict:
+    if identifier not in catalog:
+        raise FeedError(f"unknown package ID {identifier}")
+    if not isinstance(raw, dict):
+        raise FeedError(f"packages.{identifier} must be an object")
+    summary = raw.get("agentSummary")
+    if words(summary) not in SUMMARY_WORDS:
+        raise FeedError(f"packages.{identifier}.agentSummary must be 20–30 words")
+    if re.search(r"<[A-Za-z/][^>]*>", summary):
+        raise FeedError(f"packages.{identifier}.agentSummary cannot contain raw HTML")
+    assessment = raw.get("assessment")
+    if not isinstance(assessment, dict) or set(assessment) != set(ASSESSMENT_FIELDS):
+        raise FeedError(f"packages.{identifier}.assessment must contain exactly {', '.join(ASSESSMENT_FIELDS)}")
+    package = dict(catalog[identifier])
+    package.pop("popularityRank", None)
+    package.pop("pulseKind", None)
+    for field in ("homepage", "repository", "docs"):
+        if package.get(field):
+            safe_url(package[field], f"packages.{identifier}.{field}")
+    package.update({
+        "agentSummary": summary.strip(),
+        "assessment": {field: clean_strings(assessment[field], f"packages.{identifier}.assessment.{field}") for field in ASSESSMENT_FIELDS},
+        "installURL": install_url(identifier),
+        "researchedAt": timestamp(at),
+        "sources": source_list(raw.get("sources"), f"packages.{identifier}.sources", 2),
+    })
+    return package
+
+
+def validate_artwork(raw: object, root: Path) -> dict | None:
+    if raw is None:
+        return None
+    if not isinstance(raw, dict) or set(raw) != {"path", "alt", "attribution", "license", "boxColors"}:
+        raise FeedError("editorial.artwork must contain path, alt, attribution, license, and boxColors")
+    path = safe_url(raw["path"], "editorial.artwork.path", allow_relative_artwork=True)
+    if not (root / "www" / path).is_file():
+        raise FeedError(f"editorial artwork does not exist: www/{path}")
+    for field in ("alt", "attribution", "license"):
+        if not isinstance(raw[field], str) or not raw[field].strip():
+            raise FeedError(f"editorial.artwork.{field} is required")
+    box_colors = raw["boxColors"]
+    if not isinstance(box_colors, dict) or set(box_colors) != set(ARTWORK_BOX_COLOR_FIELDS):
+        raise FeedError("editorial.artwork.boxColors must contain backgroundStart, backgroundEnd, and foreground")
+    result = {field: raw[field].strip() for field in ("path", "alt", "attribution", "license")}
+    result["boxColors"] = {field: hex_color(box_colors[field], f"editorial.artwork.boxColors.{field}") for field in ARTWORK_BOX_COLOR_FIELDS}
+    return result
+
+
+def validate_editorial_body(body: object, field: str = "editorial.body") -> str:
+    if not isinstance(body, str) or words(body) not in EDITORIAL_WORDS:
+        raise FeedError(f"{field} must be 600–1,000 words")
+    if re.search(r"<[A-Za-z/][^>]*>", body):
+        raise FeedError(f"{field} cannot contain raw HTML")
+    if len(re.findall(r"(?m)^## [^#\n].+$", body)) < 3:
+        raise FeedError(f"{field} needs at least three ## subheadings")
+    if not re.search(r"(?m)(`[^`]+`|\*\*[^*]+\*\*|^[-*] )", body):
+        raise FeedError(f"{field} needs inline Markdown or a list")
+    return body.strip()
+
+
+def editorial(raw: object, request: dict, catalog: dict[str, dict], root: Path, at: datetime, existing_ids: set[str]) -> dict | None:
+    if not request["editorialRequired"]:
+        if raw is not None:
+            raise FeedError("editorial must be null when it was not requested")
+        return None
+    if not isinstance(raw, dict):
+        raise FeedError("editorial is required")
+    slug = raw.get("slug")
+    if not isinstance(slug, str) or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug):
+        raise FeedError("editorial.slug must be lowercase kebab-case")
+    identifier = f"editorial:{at.date().isoformat()}:{slug}"
+    if identifier in existing_ids:
+        raise FeedError(f"duplicate editorial ID {identifier}")
+    package_id = raw.get("primaryPackageID")
+    allowed = {package["id"] for package in request["editorialCandidates"]}
+    if package_id not in allowed or package_id not in catalog:
+        raise FeedError("editorial.primaryPackageID must be an editorial candidate")
+    title, deck, body = raw.get("title"), raw.get("deck"), raw.get("body")
+    if not all(isinstance(value, str) and value.strip() for value in (title, deck, body)):
+        raise FeedError("editorial title, deck, and body are required")
+    body = validate_editorial_body(body)
+    related_ids = unique_ids(raw.get("relatedPackageIDs"), "editorial.relatedPackageIDs")
+    if len(related_ids) not in range(2, 5) or package_id not in related_ids or not set(related_ids).issubset(allowed):
+        raise FeedError("editorial.relatedPackageIDs must contain 2–4 editorial candidates including the primary package")
+    coverage = clean_strings(raw.get("coverage"), "editorial.coverage")
+    if not {"history", "actualUsage"}.issubset(coverage):
+        raise FeedError("editorial.coverage must include history and actualUsage")
+    result = {
+        "deck": deck.strip(),
+        "id": identifier,
+        "primaryPackageID": package_id,
+        "relatedPackageIDs": related_ids,
+        "publishedAt": timestamp(at),
+        "sources": source_list(raw.get("sources"), "editorial.sources", 4, 2),
+        "title": title.strip(),
+        "type": "editorial",
+        "body": body,
+    }
+    selection = raw.get("selection")
+    result["selection"] = selection
+    history = request.get("editorialHistory", [])
+    if not isinstance(history, list):
+        raise FeedError("request editorialHistory must be an array")
+    validate_editorial_selection(result, history, at)
+    artwork = validate_artwork(raw.get("artwork"), root)
+    if not artwork:
+        raise FeedError("editorial.artwork is required")
+    result["artwork"] = artwork
+    return result
+
+
+def catalog_from_request(request: dict) -> dict[str, dict]:
+    packages = request["newCandidates"] + request["recommendationCandidates"] + request["editorialCandidates"]
+    return {package["id"]: package for package in packages}
+
+
+def unique_ids(value: object, field: str) -> list[str]:
+    if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
+        raise FeedError(f"{field} must be an array of package IDs")
+    if len(set(value)) != len(value):
+        raise FeedError(f"{field} contains duplicate IDs")
+    return value
+
+
+def apply_response(feed: dict, request: dict, response: dict, root: Path, at: datetime) -> dict:
+    new_ids = unique_ids(response.get("newPackages"), "newPackages")
+    recommendation_ids = unique_ids(response.get("recommendations"), "recommendations")
+    allowed_new = {package["id"] for package in request["newCandidates"]}
+    allowed_recommendations = {package["id"] for package in request["recommendationCandidates"]}
+    if len(new_ids) > request["newCandidateLimit"] or not set(new_ids).issubset(allowed_new):
+        raise FeedError("newPackages exceeds its limit or contains a non-candidate")
+    new_package_evidence(response.get("newPackageEvidence"), new_ids, at)
+    if len(recommendation_ids) != request["recommendationCount"] or not set(recommendation_ids).issubset(allowed_recommendations):
+        raise FeedError(f"recommendations must contain exactly {request['recommendationCount']} candidate IDs")
+    raw_cards = response.get("packages")
+    if not isinstance(raw_cards, dict):
+        raise FeedError("packages must be an object")
+    catalog = catalog_from_request(request)
+    next_editorial = editorial(
+        response.get("editorial"), request, catalog, root, at,
+        {item.get("id") for item in content(feed, "editorial")},
+    )
+    required_cards = set(new_ids + recommendation_ids)
+    if next_editorial:
+        required_cards.update(next_editorial["relatedPackageIDs"])
+    if set(raw_cards) != required_cards:
+        raise FeedError("packages must contain exactly the selected and editorial package IDs")
+    generated_cards = {identifier: package_card(identifier, raw_cards[identifier], catalog, at) for identifier in sorted(required_cards)}
+
+    old_new = next(iter(content(feed, "newPackages")), {}).get("packageIDs", [])
+    merged_new = []
+    for identifier in new_ids + old_new:
+        card = generated_cards.get(identifier) or feed.get("packages", {}).get(identifier)
+        updated = card.get("lastUpdatedAt") if isinstance(card, dict) else None
+        if card and updated and at - parse_date(updated) <= timedelta(days=14) and identifier not in merged_new:
+            merged_new.append(identifier)
+    merged_new = sorted(merged_new, key=lambda identifier: ((generated_cards.get(identifier) or feed["packages"][identifier]).get("lastUpdatedAt") or "", identifier), reverse=True)[:12]
+
+    old_recommendations = next(iter(content(feed, "personalizedRecommendations")), {}).get("candidatePackageIDs", [])
+    retained = [identifier for identifier in old_recommendations if identifier not in request["recommendationReplaceIDs"] and identifier not in recommendation_ids]
+    merged_recommendations = (retained + recommendation_ids)[:24]
+    editorials = ([next_editorial] if next_editorial else []) + content(feed, "editorial")
+    editorials = sorted(editorials, key=lambda item: (item["publishedAt"], item["id"]), reverse=True)[:12]
+
+    cards = dict(feed.get("packages", {}))
+    cards.update(generated_cards)
+    recently_updated = sorted(
+        (identifier for identifier, card in cards.items() if card.get("lastUpdatedAt")),
+        key=lambda identifier: (cards[identifier]["lastUpdatedAt"], identifier),
+        reverse=True,
+    )[:12]
+    referenced = set(merged_new + merged_recommendations + recently_updated)
+    for item in editorials:
+        referenced.update(item["relatedPackageIDs"])
+    cards = {identifier: cards[identifier] for identifier in sorted(referenced)}
+    shelves = [
+        {
+            "candidatePackageIDs": merged_recommendations,
+            "fallbackPackageIDs": sorted(merged_recommendations, key=lambda identifier: (cards[identifier]["researchedAt"], identifier), reverse=True),
+            "id": "for-you",
+            "title": "For You",
+            "type": "personalizedRecommendations",
+        },
+        {"id": "new-packages", "packageIDs": merged_new, "title": "New Packages", "type": "newPackages"},
+        {"id": "recently-updated", "packageIDs": recently_updated, "title": "Recently Updated", "type": "recentlyUpdated"},
+    ]
+    result = {
+        "content": editorials[:1] + shelves + editorials[1:],
+        "generatedAt": timestamp(at),
+        "packages": cards,
+        "schemaVersion": SCHEMA_VERSION,
+        "source": request["catalog"],
+    }
+    validate_feed(result, root)
+    return result
+
+
+def publication_token(at: datetime, values: list[str]) -> str:
+    stamp = timestamp(at).replace("-", "").replace(":", "")
+    digest = hashlib.sha256("\n".join(values).encode()).hexdigest()[:8]
+    return f"{stamp}-{digest}"
+
+
+def v2_package(package: dict) -> dict:
+    return json.loads(json.dumps(package))
+
+
+def category_title(category: str) -> str:
+    return " ".join(word.capitalize() for word in category.split("-"))
+
+
+def catalog_v2_package(package: dict) -> dict:
+    summary = package.get("upstreamSummary")
+    if not summary:
+        manager = "Homebrew" if package["manager"] == "homebrew" else "npm"
+        summary = f"{package['displayName']} is available through {manager} for installation and management in Package Manager Manager."
+    return {
+        "agentSummary": summary,
+        "category": package.get("category"),
+        "displayName": package["displayName"],
+        "homepage": package.get("homepage"),
+        "id": package["id"],
+        "installURL": install_url(package["id"]),
+        "manager": package["manager"],
+    }
+
+
+def install_pack_blocks(root: Path, packages: dict[str, dict], published_at: datetime) -> list[dict]:
+    index_path = root / "www/packs/index.json"
+    if not index_path.exists():
+        return []
+    entries = read_json(index_path).get("packs")
+    if not isinstance(entries, list):
+        raise FeedError("pack index is missing packs")
+    batch_id = publication_token(published_at, ["install-packs"])
+    blocks = []
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise FeedError("pack index contains an invalid pack")
+        identifiers = entry.get("packages")
+        if not isinstance(identifiers, list) or not identifiers or not all(isinstance(identifier, str) for identifier in identifiers):
+            raise FeedError(f"install pack {entry.get('slug')} is missing packageIDs")
+        if len(identifiers) != len(set(identifiers)):
+            raise FeedError(f"install pack {entry.get('slug')} repeats packages")
+        missing = [identifier for identifier in identifiers if identifier not in packages]
+        if missing:
+            raise FeedError(f"install pack {entry.get('slug')} contains unknown packages: {', '.join(missing)}")
+        blocks.append({
+            "batchID": batch_id,
+            "deck": entry.get("subtitle"),
+            "id": f"install-pack:{entry['slug']}:{batch_id}",
+            "packages": [catalog_v2_package(packages[identifier]) for identifier in identifiers],
+            "publishedAt": timestamp(published_at),
+            "title": entry["title"],
+            "type": "installPack",
+        })
+    return blocks
+
+
+def catalog_shelf_blocks(root: Path, packages: dict[str, dict], published_at: datetime) -> list[dict]:
+    """Build stable, category-specific shelves without repeating a section identity."""
+    by_category: dict[str, list[dict]] = {}
+    for package in packages.values():
+        category = package.get("category")
+        if category:
+            by_category.setdefault(category, []).append(package)
+
+    batch_id = publication_token(published_at, ["catalog-shelves", *sorted(by_category)])
+    blocks: list[tuple[dict, str]] = []
+
+    def shelf(kind: str, prefix: str, title: str, category: str, candidates: list[dict]) -> None:
+        if not candidates:
+            return
+        blocks.append(({
+            "batchID": batch_id,
+            "id": f"{prefix}:{category}:{batch_id}",
+            "packages": [catalog_v2_package(package) for package in candidates[:V2_CATEGORY_SHELF_LIMIT]],
+            "publishedAt": timestamp(published_at),
+            "title": f"{title} in {category_title(category)}",
+            "type": kind,
+        }, category))
+
+    for category in sorted(by_category):
+        category_packages = by_category[category]
+        popular = sorted(category_packages, key=lambda package: (
+            package.get("popularityRank") is None,
+            package.get("popularityRank") or 10**9,
+            package["id"],
+        ))
+        new = sorted(
+            (package for package in category_packages if package.get("pulseKind") == "new"),
+            key=lambda package: (package.get("lastUpdatedAt") or "", package["id"]),
+            reverse=True,
+        )
+        updated = sorted(
+            (package for package in category_packages if package.get("pulseKind") == "updated" and package.get("lastUpdatedAt")),
+            key=lambda package: (package["lastUpdatedAt"], package["id"]),
+            reverse=True,
+        )
+        shelf("personalizedRecommendations", "for-you", "For You", category, popular)
+        shelf("newPackages", "new-packages", "New Packages", category, new)
+        shelf("recentlyUpdated", "recently-updated", "Recently Updated", category, updated)
+    blocks.extend((block, f"pack:{block['id']}") for block in install_pack_blocks(root, packages, published_at))
+    random.Random(batch_id).shuffle(blocks)
+    varied, last_category, last_kind = [], None, None
+    while blocks:
+        index = next((
+            index for index, (block, category) in enumerate(blocks)
+            if category != last_category and block["type"] != last_kind
+        ), next((index for index, (_, category) in enumerate(blocks) if category != last_category), 0))
+        block, last_category = blocks.pop(index)
+        last_kind = block["type"]
+        varied.append(block)
+    return varied
+
+
+def rebuild_v2_catalog(
+    root: Path,
+    head: dict,
+    packages: dict[str, dict],
+    at: datetime,
+) -> tuple[dict, list[Path]]:
+    """Replace rotating shelves with a deep catalog snapshot while retaining editorials."""
+    editorials, seen_editorials = [], set()
+    for editorial in v2_editorial_history(root, head):
+        identity = editorial.get("title", "").strip().lower() or editorial["id"]
+        if identity not in seen_editorials:
+            seen_editorials.add(identity)
+            editorials.append(editorial)
+    published_at = parse_date(editorials[0]["publishedAt"]) if editorials else at
+    shelves = catalog_shelf_blocks(root, packages, published_at)
+    blocks = []
+    if editorials:
+        offset = 0
+        group_random = random.Random(publication_token(published_at, [editorial["id"] for editorial in editorials] + [shelf["id"] for shelf in shelves]))
+        for index, editorial in enumerate(editorials):
+            blocks.append(editorial)
+            remaining_editorials = len(editorials) - index
+            remaining_shelves = len(shelves) - offset
+            if remaining_editorials == 1:
+                shelf_count = remaining_shelves
+            else:
+                target = remaining_shelves // remaining_editorials
+                minimum = max(1, target - 3)
+                maximum = min(target + 3, remaining_shelves - remaining_editorials + 1)
+                shelf_count = group_random.randint(minimum, maximum)
+            for shelf in shelves[offset:offset + shelf_count]:
+                shelf = json.loads(json.dumps(shelf))
+                shelf["batchID"] = publication_token(parse_date(editorial["publishedAt"]), ["catalog-shelves", editorial["id"]])
+                shelf["publishedAt"] = editorial["publishedAt"]
+                blocks.append(shelf)
+            offset += shelf_count
+    else:
+        blocks = shelves
+    if not blocks:
+        raise FeedError("cannot build an empty v2 catalog")
+
+    chunks = [blocks[index:index + V2_PAGE_LIMIT] for index in range(0, len(blocks), V2_PAGE_LIMIT)]
+    next_url = None
+    continuation_paths = []
+    continuation_pages = []
+    for chunk in reversed(chunks[1:]):
+        page_id = publication_token(at, [item["id"] for item in chunk])
+        page = {
+            "content": chunk,
+            "generatedAt": timestamp(at),
+            "nextPageURL": next_url,
+            "pageID": page_id,
+            "schemaVersion": V2_SCHEMA_VERSION,
+        }
+        page_path = root / "www/feed/v2/pages" / f"{page_id}.json"
+        if page_path.exists() and read_json(page_path) != page:
+            raise FeedError(f"refusing to rewrite v2 catalog page {page_path.name}")
+        continuation_pages.append((page_path, page))
+        next_url = V2_PAGE_BASE_URL + page_path.name
+
+    for page_path, page in reversed(continuation_pages):
+        write_json(page_path, page)
+        continuation_paths.append(page_path)
+
+    first = chunks[0]
+    result = {
+        "content": first,
+        "generatedAt": timestamp(at),
+        "nextPageURL": next_url,
+        "pageID": publication_token(at, [item["id"] for item in first]),
+        "schemaVersion": V2_SCHEMA_VERSION,
+    }
+    validate_v2_chain(root, result)
+    return result, continuation_paths
+
+
+def shelf_chunk(feed: dict, head: dict, kind: str, limit: int) -> list[str]:
+    shelf = next(iter(content(feed, kind)))
+    identifiers = shelf.get("fallbackPackageIDs") or shelf["packageIDs"]
+    previous = next(iter(content(head, kind)), {})
+    previous_ids = [package.get("id") for package in previous.get("packages", []) if isinstance(package, dict)]
+    start = 0
+    if previous_ids and len(previous_ids) <= limit and previous_ids[-1] in identifiers:
+        start = (identifiers.index(previous_ids[-1]) + 1) % len(identifiers)
+    return identifiers[start:start + limit]
+
+
+def v2_blocks_from_v1(feed: dict) -> list[dict]:
+    at = parse_date(feed["generatedAt"])
+    batch_id = publication_token(at, [item["id"] for item in feed["content"]])
+    blocks = []
+    for item in feed["content"]:
+        block = json.loads(json.dumps(item))
+        block["batchID"] = batch_id
+        block["publishedAt"] = block.get("publishedAt") or timestamp(at)
+        if block["type"] == "editorial":
+            block["package"] = v2_package(feed["packages"][block["primaryPackageID"]])
+            block["relatedPackages"] = [v2_package(feed["packages"][identifier]) for identifier in block.pop("relatedPackageIDs")]
+        elif block["type"] in {"newPackages", "recentlyUpdated"}:
+            prefix = "new-packages" if block["type"] == "newPackages" else "recently-updated"
+            block["id"] = f"{prefix}:{batch_id}"
+            identifiers = block.pop("packageIDs")
+            if block["type"] == "recentlyUpdated":
+                identifiers = identifiers[:V2_RECENTLY_UPDATED_LIMIT]
+            block["packages"] = [v2_package(feed["packages"][identifier]) for identifier in identifiers]
+        elif block["type"] == "personalizedRecommendations":
+            block["id"] = f"for-you:{batch_id}"
+            identifiers = block.pop("fallbackPackageIDs", None) or block["candidatePackageIDs"]
+            block.pop("candidatePackageIDs", None)
+            block["packages"] = [v2_package(feed["packages"][identifier]) for identifier in identifiers[:V2_RECOMMENDATION_LIMIT]]
+        blocks.append(block)
+    return blocks
+
+
+def v2_head_from_v1(feed: dict) -> dict:
+    blocks = v2_blocks_from_v1(feed)
+    at = parse_date(feed["generatedAt"])
+    return {
+        "content": blocks,
+        "generatedAt": timestamp(at),
+        "nextPageURL": None,
+        "pageID": publication_token(at, [block["id"] for block in blocks]),
+        "schemaVersion": V2_SCHEMA_VERSION,
+    }
+
+
+def v2_blocks_from_update(before: dict, after: dict, response: dict, head: dict, at: datetime) -> list[dict]:
+    new_ids = response["newPackages"]
+    recommendation_ids = response["recommendations"]
+    old_editorials = {item["id"] for item in content(before, "editorial")}
+    next_editorial = next((item for item in content(after, "editorial") if item["id"] not in old_editorials), None)
+    if not next_editorial:
+        return []
+    seed = [next_editorial["id"], *new_ids, *recommendation_ids]
+    batch_id = publication_token(at, seed)
+    blocks = []
+    block = json.loads(json.dumps(next_editorial))
+    block["batchID"] = batch_id
+    block["package"] = v2_package(after["packages"][block["primaryPackageID"]])
+    block["relatedPackages"] = [v2_package(after["packages"][identifier]) for identifier in block.pop("relatedPackageIDs")]
+    blocks.append(block)
+    def package_shelf(kind: str, identifier: str, title: str, package_ids: list[str] | None = None) -> dict:
+        shelf = next(iter(content(after, kind)))
+        identifiers = package_ids or shelf.get("fallbackPackageIDs") or shelf["packageIDs"]
+        return {
+            "batchID": batch_id,
+            "id": f"{identifier}:{batch_id}",
+            "packages": [v2_package(after["packages"][package_id]) for package_id in identifiers],
+            "publishedAt": timestamp(at),
+            "title": title,
+            "type": kind,
+        }
+
+    # An editorial is a complete Discover unit: story, then three useful shelves.
+    blocks.append(package_shelf("personalizedRecommendations", "for-you", "For You", shelf_chunk(after, head, "personalizedRecommendations", V2_RECOMMENDATION_LIMIT)))
+    if next(iter(content(after, "newPackages")))["packageIDs"]:
+        block = package_shelf("newPackages", "new-packages", "New Packages")
+        blocks.append(block)
+    blocks.append(package_shelf("recentlyUpdated", "recently-updated", "Recently Updated", shelf_chunk(after, head, "recentlyUpdated", V2_RECENTLY_UPDATED_LIMIT)))
+    return blocks
+
+
+def append_v2(root: Path, head: dict, blocks: list[dict], at: datetime) -> tuple[dict, list[Path]]:
+    if not blocks:
+        return head, []
+    validate_v2_page(head, root)
+    frozen = []
+    if len(head["content"]) + len(blocks) > V2_PAGE_LIMIT:
+        pages = root / "www/feed/v2/pages"
+        page_path = pages / f"{head['pageID']}.json"
+        if page_path.exists() and read_json(page_path) != head:
+            raise FeedError(f"refusing to rewrite frozen v2 page {page_path.name}")
+        if not page_path.exists():
+            write_json(page_path, head)
+        frozen.append(page_path)
+        token = publication_token(at, [block["id"] for block in blocks])
+        result = {
+            "content": blocks,
+            "generatedAt": timestamp(at),
+            "nextPageURL": V2_PAGE_BASE_URL + page_path.name,
+            "pageID": token,
+            "schemaVersion": V2_SCHEMA_VERSION,
+        }
+    else:
+        result = json.loads(json.dumps(head))
+        result["content"] = blocks + result["content"]
+        result["generatedAt"] = timestamp(at)
+    validate_v2_page(result, root)
+    return result, frozen
+
+
+def validate_feed(feed: dict, root: Path) -> None:
+    if set(feed) != {"content", "generatedAt", "packages", "schemaVersion", "source"}:
+        raise FeedError("feed has unexpected or missing top-level fields")
+    if feed["schemaVersion"] != SCHEMA_VERSION:
+        raise FeedError(f"unsupported schemaVersion {feed['schemaVersion']!r}")
+    parse_date(feed["generatedAt"])
+    source = feed["source"]
+    if not isinstance(source, dict) or set(source) != {"generatedAt", "url"}:
+        raise FeedError("source must contain generatedAt and url")
+    safe_url(source["url"], "source.url")
+    if source["generatedAt"] is not None:
+        parse_date(source["generatedAt"])
+    packages = feed["packages"]
+    items = feed["content"]
+    if not isinstance(packages, dict) or not isinstance(items, list):
+        raise FeedError("packages must be an object and content must be an array")
+    identifiers = [item.get("id") for item in items if isinstance(item, dict)]
+    if len(identifiers) != len(items) or len(set(identifiers)) != len(identifiers):
+        raise FeedError("content IDs must be present and unique")
+    referenced = set()
+    for item in items:
+        kind = item.get("type")
+        if kind == "editorial":
+            parse_date(item.get("publishedAt"))
+            validate_editorial_body(item.get("body"), f"{item['id']}.body")
+            source_list(item.get("sources"), f"{item['id']}.sources", 4, 2)
+            related_ids = unique_ids(item.get("relatedPackageIDs"), f"{item['id']}.relatedPackageIDs")
+            if len(related_ids) not in range(2, 5) or item.get("primaryPackageID") not in related_ids:
+                raise FeedError(f"{item['id']} must link 2–4 related packages including its primary package")
+            referenced.update(related_ids)
+            if "artwork" in item:
+                validate_artwork(item["artwork"], root)
+        elif kind in {"newPackages", "recentlyUpdated"}:
+            referenced.update(unique_ids(item.get("packageIDs"), f"{item['id']}.packageIDs"))
+        elif kind == "personalizedRecommendations":
+            candidates = unique_ids(item.get("candidatePackageIDs"), f"{item['id']}.candidatePackageIDs")
+            fallback = unique_ids(item.get("fallbackPackageIDs"), f"{item['id']}.fallbackPackageIDs")
+            if set(candidates) != set(fallback):
+                raise FeedError("personalized recommendation fallback must contain the same IDs")
+            referenced.update(candidates)
+        else:
+            raise FeedError(f"unknown content type {kind!r}")
+    if referenced != set(packages):
+        raise FeedError("packages must contain exactly the packages referenced by content")
+    for identifier, package in packages.items():
+        validate_package_card(package, identifier)
+
+
+def validate_package_card(package: object, identifier: str) -> None:
+    if not isinstance(package, dict) or package.get("id") != identifier or package.get("manager") not in SUPPORTED_MANAGERS:
+        raise FeedError(f"invalid package card {identifier}")
+    if package.get("installURL") != install_url(identifier):
+        raise FeedError(f"invalid install URL for {identifier}")
+    if words(package.get("agentSummary")) not in SUMMARY_WORDS:
+        raise FeedError(f"{identifier} summary must be 20–30 words")
+    parse_date(package.get("researchedAt"))
+    source_list(package.get("sources"), f"packages.{identifier}.sources", 2)
+    assessment = package.get("assessment")
+    if not isinstance(assessment, dict) or set(assessment) != set(ASSESSMENT_FIELDS):
+        raise FeedError(f"invalid assessment for {identifier}")
+    for field in ASSESSMENT_FIELDS:
+        clean_strings(assessment[field], f"packages.{identifier}.assessment.{field}")
+    for field in ("homepage", "repository", "docs"):
+        if package.get(field):
+            safe_url(package[field], f"packages.{identifier}.{field}")
+
+
+def validate_v2_page(page: dict, root: Path) -> None:
+    expected = {"content", "generatedAt", "nextPageURL", "pageID", "schemaVersion"}
+    if set(page) != expected or page.get("schemaVersion") != V2_SCHEMA_VERSION:
+        raise FeedError("invalid v2 page envelope")
+    parse_date(page["generatedAt"])
+    if not isinstance(page["pageID"], str) or not re.fullmatch(r"[0-9TZ]+-[0-9a-f]{8}", page["pageID"]):
+        raise FeedError("invalid v2 pageID")
+    if page["nextPageURL"] is not None:
+        v2_page_filename(page["nextPageURL"])
+    items = page["content"]
+    if not isinstance(items, list) or len(items) > V2_PAGE_LIMIT:
+        raise FeedError(f"v2 pages may contain at most {V2_PAGE_LIMIT} blocks")
+    identifiers = [item.get("id") for item in items if isinstance(item, dict)]
+    if len(identifiers) != len(items) or len(set(identifiers)) != len(identifiers):
+        raise FeedError("v2 content IDs must be present and unique")
+    for item in items:
+        if not isinstance(item.get("batchID"), str) or not item["batchID"]:
+            raise FeedError(f"{item['id']} is missing batchID")
+        parse_date(item.get("publishedAt"))
+        kind = item.get("type")
+        if kind == "editorial":
+            validate_editorial_body(item.get("body"), f"{item['id']}.body")
+            source_list(item.get("sources"), f"{item['id']}.sources", 4, 2)
+            validate_artwork(item.get("artwork"), root)
+            package = item.get("package")
+            if not isinstance(package, dict) or package.get("id") != item.get("primaryPackageID"):
+                raise FeedError(f"{item['id']} has invalid primary package")
+            validate_package_card(package, package["id"])
+            related = item.get("relatedPackages")
+            if not isinstance(related, list) or len(related) not in range(2, 5):
+                raise FeedError(f"{item['id']} must contain 2–4 related package snapshots")
+            related_ids = [related_package.get("id") for related_package in related if isinstance(related_package, dict)]
+            if len(related_ids) != len(related) or len(set(related_ids)) != len(related_ids) or package["id"] not in related_ids:
+                raise FeedError(f"{item['id']} contains invalid related packages")
+            for identifier, related_package in zip(related_ids, related):
+                validate_package_card(related_package, identifier)
+        elif kind in {"installPack", "newPackages", "personalizedRecommendations", "recentlyUpdated"}:
+            packages = item.get("packages")
+            if not isinstance(packages, list) or not packages:
+                raise FeedError(f"{item['id']} must contain package snapshots")
+            package_ids = [package.get("id") for package in packages if isinstance(package, dict)]
+            if len(package_ids) != len(packages) or len(set(package_ids)) != len(package_ids):
+                raise FeedError(f"{item['id']} contains invalid or duplicate packages")
+            for identifier, package in zip(package_ids, packages):
+                validate_v2_package_card(package, identifier)
+            if kind == "installPack":
+                if not isinstance(item.get("title"), str) or not item["title"].strip():
+                    raise FeedError(f"{item['id']} is missing an install-pack title")
+            elif kind == "newPackages":
+                evidence = item.get("evidence")
+                if evidence is not None and (not isinstance(evidence, dict) or set(evidence) != set(package_ids)):
+                    raise FeedError(f"{item['id']} has invalid new-package evidence")
+                if evidence is not None:
+                    new_package_evidence(evidence, package_ids, parse_date(item["publishedAt"]))
+            elif kind == "personalizedRecommendations" and len(packages) > V2_RECOMMENDATION_LIMIT:
+                raise FeedError(f"{item['id']} may contain at most {V2_RECOMMENDATION_LIMIT} recommendations")
+            elif kind == "recentlyUpdated" and len(packages) > V2_RECENTLY_UPDATED_LIMIT:
+                raise FeedError(f"{item['id']} may contain at most {V2_RECENTLY_UPDATED_LIMIT} recently updated packages")
+        else:
+            raise FeedError(f"unknown v2 content type {kind!r}")
+
+
+def validate_v2_package_card(package: object, identifier: str) -> None:
+    if not isinstance(package, dict) or package.get("id") != identifier or package.get("manager") not in SUPPORTED_MANAGERS:
+        raise FeedError(f"invalid v2 package card {identifier}")
+    if package.get("installURL") != install_url(identifier):
+        raise FeedError(f"invalid v2 install URL for {identifier}")
+    if not isinstance(package.get("displayName"), str) or not package["displayName"].strip():
+        raise FeedError(f"{identifier} is missing a display name")
+    if not isinstance(package.get("agentSummary"), str) or not package["agentSummary"].strip():
+        raise FeedError(f"{identifier} is missing a summary")
+
+
+def validate_v2_chain(root: Path, head: dict) -> None:
+    page = head
+    page_ids, content_ids, editorials = set(), set(), []
+    previous_date = None
+    while True:
+        validate_v2_page(page, root)
+        if page["pageID"] in page_ids:
+            raise FeedError("v2 page chain contains a cycle")
+        page_ids.add(page["pageID"])
+        for item in page["content"]:
+            if item["id"] in content_ids:
+                raise FeedError(f"duplicate v2 content ID {item['id']}")
+            content_ids.add(item["id"])
+            item_date = parse_date(item["publishedAt"])
+            if previous_date is not None and item_date > previous_date:
+                raise FeedError("v2 content is not newest-first")
+            previous_date = item_date
+            if item.get("type") == "editorial":
+                editorials.append(item)
+        next_url = page["nextPageURL"]
+        if next_url is None:
+            validate_editorial_history_policy(editorials)
+            return
+        filename = v2_page_filename(next_url)
+        page_path = root / "www/feed/v2/pages" / filename
+        if not page_path.is_file():
+            raise FeedError(f"missing v2 page {filename}")
+        page = read_json(page_path)
+
+
+def v2_editorial_history(root: Path, head: dict) -> list[dict]:
+    """Return the permanent archive's editorials, newest first, after validation."""
+    validate_v2_chain(root, head)
+    result, page = [], head
+    while True:
+        result.extend(item for item in page["content"] if item.get("type") == "editorial")
+        next_url = page["nextPageURL"]
+        if next_url is None:
+            return result
+        page = read_json(root / "www/feed/v2/pages" / v2_page_filename(next_url))
+
+
+def commit_feed(root: Path, feed_path: Path, feed: dict, extra_paths: list[Path] | None = None) -> bool:
+    if os.environ.get("PMM_FEED_NO_COMMIT") == "1":
+        return True
+    artwork = []
+    for item in content(feed, "editorial"):
+        if item.get("artwork"):
+            artwork.append(str(root / "www" / item["artwork"]["path"]))
+    paths = [str(feed_path), *(str(path) for path in (extra_paths or [])), *artwork]
+    subprocess.run(["git", "-C", str(root), "add", "--", *paths], check=True)
+    changed = subprocess.run(["git", "-C", str(root), "diff", "--cached", "--quiet", "--", *paths]).returncode != 0
+    if changed:
+        subprocess.run(["git", "-C", str(root), "commit", "--only", "-m", f"Update Discover feed {now().date().isoformat()}", "--", *paths], check=True)
+    return changed
+
+
+def backfill_editorial_artwork(feed: dict, raw: object, root: Path) -> dict:
+    if not isinstance(raw, dict) or set(raw) != {"editorialID", "artwork"}:
+        raise FeedError("artwork backfill must contain editorialID and artwork")
+    identifier = raw["editorialID"]
+    if not isinstance(identifier, str):
+        raise FeedError("artwork backfill editorialID is required")
+    artwork = validate_artwork(raw["artwork"], root)
+    for item in content(feed, "editorial"):
+        if item.get("id") == identifier:
+            if item.get("artwork"):
+                raise FeedError("editorial already has artwork")
+            result = json.loads(json.dumps(feed))
+            next(item for item in content(result, "editorial") if item["id"] == identifier)["artwork"] = artwork
+            validate_feed(result, root)
+            return result
+    raise FeedError("artwork backfill editorial was not found")
+
+
+def backfill_editorials(feed: dict, head: dict, raw: object, root: Path) -> tuple[dict, dict]:
+    if not isinstance(raw, dict) or set(raw) != {"editorials"} or not isinstance(raw["editorials"], list):
+        raise FeedError("editorial backfill must contain an editorials array")
+    next_feed, next_head = json.loads(json.dumps(feed)), json.loads(json.dumps(head))
+    feed_items = {item["id"]: item for item in content(next_feed, "editorial")}
+    head_items = {item["id"]: item for item in content(next_head, "editorial")}
+    seen = set()
+    for index, update in enumerate(raw["editorials"]):
+        expected = {"editorialID", "sections", "inlineCode", "relatedPackageIDs"}
+        if not isinstance(update, dict) or set(update) != expected:
+            raise FeedError(f"editorials[{index}] must contain {', '.join(sorted(expected))}")
+        identifier = update["editorialID"]
+        if identifier in seen or identifier not in feed_items:
+            raise FeedError(f"invalid or duplicate editorial backfill ID {identifier!r}")
+        if identifier not in head_items:
+            raise FeedError(f"cannot rewrite frozen editorial {identifier}")
+        seen.add(identifier)
+        item = feed_items[identifier]
+        paragraphs = item["body"].split("\n\n")
+        sections = update["sections"]
+        if not isinstance(sections, list) or len(sections) < 3:
+            raise FeedError(f"editorials[{index}].sections needs at least three sections")
+        body_parts, offset = [], 0
+        for section_index, section in enumerate(sections):
+            if not isinstance(section, dict) or set(section) != {"title", "paragraphs"}:
+                raise FeedError(f"editorials[{index}].sections[{section_index}] must contain title and paragraphs")
+            title, count = section["title"], section["paragraphs"]
+            if not isinstance(title, str) or not title.strip() or not isinstance(count, int) or count < 1:
+                raise FeedError(f"editorials[{index}].sections[{section_index}] is invalid")
+            body_parts.extend([f"## {title.strip()}", *paragraphs[offset:offset + count]])
+            offset += count
+        if offset != len(paragraphs):
+            raise FeedError(f"editorials[{index}].sections must consume all {len(paragraphs)} paragraphs")
+        body = "\n\n".join(body_parts)
+        inline_code = clean_strings(update["inlineCode"], f"editorials[{index}].inlineCode")
+        for value in inline_code:
+            if value not in body:
+                raise FeedError(f"editorials[{index}].inlineCode value was not found: {value}")
+            body = body.replace(value, f"`{value}`")
+        body = validate_editorial_body(body, f"editorials[{index}].body")
+        related_ids = unique_ids(update["relatedPackageIDs"], f"editorials[{index}].relatedPackageIDs")
+        if len(related_ids) not in range(2, 5) or item["primaryPackageID"] not in related_ids or not set(related_ids).issubset(next_feed["packages"]):
+            raise FeedError(f"editorials[{index}].relatedPackageIDs must contain 2–4 feed packages including the primary package")
+        item["body"] = body
+        item["relatedPackageIDs"] = related_ids
+        head_item = head_items[identifier]
+        head_item["body"] = body
+        head_item["relatedPackages"] = [v2_package(next_feed["packages"][package_id]) for package_id in related_ids]
+    if seen != set(feed_items):
+        raise FeedError("editorial backfill must update every live editorial")
+    validate_feed(next_feed, root)
+    validate_v2_chain(root, next_head)
+    return next_feed, next_head
+
+
+def reflow_discover_variety(feed: dict, head: dict, root: Path) -> tuple[dict, dict]:
+    """One-time migration of the mutable head into editorial + three-shelf units."""
+    next_feed = json.loads(json.dumps(feed))
+    recently_updated = sorted(
+        (identifier for identifier, card in next_feed["packages"].items() if card.get("lastUpdatedAt")),
+        key=lambda identifier: (next_feed["packages"][identifier]["lastUpdatedAt"], identifier),
+        reverse=True,
+    )[:12]
+    updated = {"id": "recently-updated", "packageIDs": recently_updated, "title": "Recently Updated", "type": "recentlyUpdated"}
+    editorials = content(next_feed, "editorial")
+    recommendations = next(iter(content(next_feed, "personalizedRecommendations")))
+    new_packages = next(iter(content(next_feed, "newPackages")))
+    next_feed["content"] = editorials[:1] + [recommendations, new_packages, updated] + editorials[1:]
+
+    editorial_blocks = [item for item in head["content"] if item.get("type") == "editorial"]
+    blocks = []
+    pools = {
+        "personalizedRecommendations": recommendations["fallbackPackageIDs"],
+        "recentlyUpdated": updated["packageIDs"],
+    }
+    limits = {
+        "personalizedRecommendations": V2_RECOMMENDATION_LIMIT,
+        "recentlyUpdated": V2_RECENTLY_UPDATED_LIMIT,
+    }
+    starts = {kind: 0 for kind in limits}
+    for editorial_block in editorial_blocks:
+        batch_id = editorial_block["batchID"]
+        published_at = editorial_block["publishedAt"]
+        blocks.append(editorial_block)
+        for item in (recommendations, new_packages, updated):
+            kind = item["type"]
+            identifiers = item.get("fallbackPackageIDs") or item["packageIDs"]
+            if kind in limits:
+                identifiers = pools[kind][starts[kind]:starts[kind] + limits[kind]]
+                starts[kind] = (starts[kind] + len(identifiers)) % len(pools[kind])
+            prefix = {"personalizedRecommendations": "for-you", "newPackages": "new-packages", "recentlyUpdated": "recently-updated"}[kind]
+            blocks.append({
+                "batchID": batch_id,
+                "id": f"{prefix}:{batch_id}",
+                "packages": [v2_package(next_feed["packages"][identifier]) for identifier in identifiers],
+                "publishedAt": published_at,
+                "title": item["title"],
+                "type": kind,
+            })
+    if len(blocks) > V2_PAGE_LIMIT:
+        raise FeedError("variety reflow would exceed the mutable v2 page limit")
+    next_head = json.loads(json.dumps(head))
+    next_head["content"] = blocks
+    next_head["pageID"] = publication_token(parse_date(head["generatedAt"]), [block["id"] for block in blocks])
+    validate_feed(next_feed, root)
+    validate_v2_chain(root, next_head)
+    return next_feed, next_head
+
+
+def repair_editorial_first(head: dict, root: Path) -> dict:
+    leading_count = next((index for index, item in enumerate(head["content"]) if item.get("type") == "editorial"), None)
+    if leading_count is None:
+        raise FeedError("cannot repair a v2 head with no editorial")
+    if leading_count == 0:
+        return head
+    result = json.loads(json.dumps(head))
+    leading, remaining = result["content"][:leading_count], result["content"][leading_count:]
+    anchor = remaining[0]
+    batch_end = next((index for index, item in enumerate(remaining) if item["batchID"] != anchor["batchID"]), len(remaining))
+    for item in leading:
+        item["batchID"] = anchor["batchID"]
+        item["publishedAt"] = anchor["publishedAt"]
+    result["content"] = remaining[:batch_end] + leading + remaining[batch_end:]
+    result["pageID"] = publication_token(parse_date(result["generatedAt"]), [item["id"] for item in result["content"]])
+    validate_v2_chain(root, result)
+    return result
+
+
+def backfill_summaries(feed: dict, head: dict, raw: object, root: Path) -> tuple[dict, dict]:
+    if not isinstance(raw, dict) or set(raw) != set(feed["packages"]):
+        raise FeedError("summary backfill must contain exactly every live package ID")
+    summaries = {}
+    for identifier, summary in raw.items():
+        if not isinstance(summary, str) or words(summary) not in SUMMARY_WORDS or re.search(r"<[A-Za-z/][^>]*>", summary):
+            raise FeedError(f"summary backfill for {identifier} must be 20–30 words without raw HTML")
+        summaries[identifier] = summary.strip()
+    next_feed, next_head = json.loads(json.dumps(feed)), json.loads(json.dumps(head))
+    for identifier, package in next_feed["packages"].items():
+        package["agentSummary"] = summaries[identifier]
+    for block in next_head["content"]:
+        snapshots = ([block["package"]] if isinstance(block.get("package"), dict) else []) + (block.get("packages") or []) + (block.get("relatedPackages") or [])
+        for package in snapshots:
+            if package.get("id") in summaries:
+                package["agentSummary"] = summaries[package["id"]]
+    validate_feed(next_feed, root)
+    validate_v2_chain(root, next_head)
+    return next_feed, next_head
+
+
+def run() -> int:
+    root, feed_path, work = root_paths()
+    archive_path = v2_path(feed_path)
+    try:
+        if "--check" in sys.argv:
+            validate_feed(read_json(feed_path), root)
+            validate_v2_chain(root, read_json(archive_path))
+            print("PMM_FEED_STATUS=VALID")
+            return 0
+        if "--self-test" in sys.argv:
+            self_test()
+            print("PMM_FEED_STATUS=SELF_TESTED")
+            return 0
+        if "--refresh-v2-catalog" in sys.argv:
+            feed = read_json(feed_path)
+            _, packages = normalize_catalog(fetch_catalog())
+            head, pages = rebuild_v2_catalog(root, read_json(archive_path), packages, now())
+            write_json(archive_path, head)
+            changed = commit_feed(root, feed_path, feed, [archive_path, *pages])
+            print("PMM_FEED_STATUS=COMMITTED" if changed else "PMM_FEED_STATUS=NOOP")
+            return 0
+        if "--backfill-artwork" in sys.argv:
+            payload = read_json(work / "artwork-backfill.json")
+            result = backfill_editorial_artwork(read_json(feed_path), payload, root)
+            write_json(feed_path, result)
+            changed = commit_feed(root, feed_path, result)
+            (work / "artwork-backfill.json").unlink()
+            print("PMM_FEED_STATUS=COMMITTED" if changed else "PMM_FEED_STATUS=NOOP")
+            return 0
+        if "--backfill-editorials" in sys.argv:
+            payload_path = work / "editorial-backfill.json"
+            result, head = backfill_editorials(read_json(feed_path), read_json(archive_path), read_json(payload_path), root)
+            write_json(feed_path, result)
+            write_json(archive_path, head)
+            changed = commit_feed(root, feed_path, result, [archive_path])
+            payload_path.unlink()
+            try:
+                work.rmdir()
+            except OSError:
+                pass
+            print("PMM_FEED_STATUS=COMMITTED" if changed else "PMM_FEED_STATUS=NOOP")
+            return 0
+        if "--reflow-variety" in sys.argv:
+            result, head = reflow_discover_variety(read_json(feed_path), read_json(archive_path), root)
+            write_json(feed_path, result)
+            write_json(archive_path, head)
+            changed = commit_feed(root, feed_path, result, [archive_path])
+            print("PMM_FEED_STATUS=COMMITTED" if changed else "PMM_FEED_STATUS=NOOP")
+            return 0
+        if "--repair-editorial-first" in sys.argv:
+            feed = read_json(feed_path)
+            head = repair_editorial_first(read_json(archive_path), root)
+            write_json(archive_path, head)
+            changed = commit_feed(root, feed_path, feed, [archive_path])
+            print("PMM_FEED_STATUS=COMMITTED" if changed else "PMM_FEED_STATUS=NOOP")
+            return 0
+        if "--backfill-summaries" in sys.argv:
+            payload_path = work / "summary-backfill.json"
+            feed, head = backfill_summaries(read_json(feed_path), read_json(archive_path), read_json(payload_path), root)
+            write_json(feed_path, feed)
+            write_json(archive_path, head)
+            changed = commit_feed(root, feed_path, feed, [archive_path])
+            payload_path.unlink()
+            try:
+                work.rmdir()
+            except OSError:
+                pass
+            print("PMM_FEED_STATUS=COMMITTED" if changed else "PMM_FEED_STATUS=NOOP")
+            return 0
+        request_path, response_path = work / "request.json", work / "response.json"
+        if request_path.exists():
+            request = read_json(request_path)
+            if not response_path.exists():
+                print(prompt(request))
+                return 0
+            published_at = parse_date(request["createdAt"])
+            feed = read_json(feed_path) if feed_path.exists() else empty_feed(now())
+            response = read_json(response_path)
+            result = apply_response(feed, request, response, root, published_at)
+            head = read_json(archive_path) if archive_path.exists() else v2_head_from_v1(feed)
+            blocks = v2_blocks_from_update(feed, result, response, head, published_at)
+            next_head, frozen = append_v2(root, head, blocks, published_at)
+            _, catalog_packages = normalize_catalog(fetch_catalog())
+            next_head, catalog_pages = rebuild_v2_catalog(root, next_head, catalog_packages, published_at)
+            write_json(feed_path, result)
+            write_json(archive_path, next_head)
+            changed = commit_feed(root, feed_path, result, [archive_path, *frozen, *catalog_pages])
+            response_path.unlink()
+            request_path.unlink()
+            try:
+                work.rmdir()
+            except OSError:
+                pass
+            print("PMM_FEED_STATUS=COMMITTED" if changed else "PMM_FEED_STATUS=NOOP")
+            return 0
+        feed = read_json(feed_path) if feed_path.exists() else empty_feed(now())
+        validate_feed(feed, root)
+        if not archive_path.exists():
+            head = v2_head_from_v1(feed)
+            validate_v2_chain(root, head)
+            write_json(archive_path, head)
+            changed = commit_feed(root, archive_path, feed)
+            print("PMM_FEED_STATUS=COMMITTED" if changed else "PMM_FEED_STATUS=NOOP")
+            return 0
+        archive = read_json(archive_path)
+        editorial_history = v2_editorial_history(root, archive)
+        force_recommendations = 0
+        for argument in sys.argv[1:]:
+            if argument.startswith("--force-recommendations="):
+                try:
+                    force_recommendations = int(argument.partition("=")[2])
+                except ValueError as error:
+                    raise FeedError("--force-recommendations must be an integer") from error
+                if force_recommendations not in range(1, 25):
+                    raise FeedError("--force-recommendations must be between 1 and 24")
+        generated_at, packages = normalize_catalog(fetch_catalog())
+        request = build_request(
+            feed,
+            generated_at,
+            packages,
+            now(),
+            force_editorial="--force-editorial" in sys.argv,
+            force_recommendations=force_recommendations,
+            editorial_history=editorial_history,
+        )
+        if request is None:
+            print("PMM_FEED_STATUS=NOOP")
+            return 0
+        write_json(request_path, request)
+        print(prompt(request))
+        return 0
+    except FeedError as error:
+        print(f"PMM_FEED_STATUS=ERROR\n{error}", file=sys.stderr)
+        return 1
+    except subprocess.CalledProcessError as error:
+        print(f"PMM_FEED_STATUS=ERROR\ngit command failed with status {error.returncode}", file=sys.stderr)
+        return 1
+
+
+def fixture_catalog(at: datetime, count: int = 32) -> dict:
+    formulas = {}
+    for index in range(count):
+        formulas[f"tool-{index:02}"] = {
+            "category": ["developer-tools", "productivity", "security"][index % 3],
+            "homepage": f"https://example.com/tool-{index:02}",
+            "last_updated_at": timestamp(at - timedelta(hours=index)),
+            "pulse_kind": "new" if index < 8 else "updated",
+            "repository": f"https://github.com/example/tool-{index:02}",
+            "summary": f"Fixture tool {index}",
+            "version": "1.0.0",
+        }
+    return {"generated_at": timestamp(at), "formulas": formulas, "casks": {}, "npms": {}}
+
+
+def fixture_card() -> dict:
+    summary = "A focused command-line tool for developers who need repeatable local workflows, predictable output, and straightforward automation without depending on a hosted service."
+    return {
+        "agentSummary": summary,
+        "assessment": {field: [f"Fixture {field}"] for field in ASSESSMENT_FIELDS},
+        "sources": [
+            {"kind": "primary", "title": "Project documentation", "url": "https://example.com/docs"},
+            {"kind": "independent", "title": "Usage report", "url": "https://example.org/usage"},
+        ],
+    }
+
+
+def fixture_response(request: dict) -> dict:
+    fixture_at = parse_date(request["catalog"]["generatedAt"])
+    new_ids = [package["id"] for package in request["newCandidates"][:request["newCandidateLimit"]]]
+    rec_ids = [package["id"] for package in request["recommendationCandidates"][:request["recommendationCount"]]]
+    editorial_id = request["editorialCandidates"][0]["id"] if request["editorialRequired"] else None
+    related_ids = [package["id"] for package in request["editorialCandidates"][:3]] if editorial_id else []
+    selected = set(new_ids + rec_ids + related_ids)
+    paragraphs = " ".join(["Package history and actual usage show a practical tool with clear tradeoffs."] * 24)
+    body = f"## History\n\n{paragraphs}\n\n## Actual usage\n\n**Teams** use the tool in documented workflows. {paragraphs}\n\n## Tradeoffs\n\n`Configuration` deserves review. {paragraphs}"
+    editorial_value = None
+    if editorial_id:
+        editorial_value = {
+            "artwork": {
+                "alt": "Abstract fixture artwork",
+                "attribution": "Generated fixture artwork",
+                "boxColors": {"backgroundStart": "#201047", "backgroundEnd": "#662A84", "foreground": "#FFFFFF"},
+                "license": "Fixture",
+                "path": "feed/assets/fixture.webp",
+            },
+            "body": body,
+            "coverage": ["history", "actualUsage"],
+            "deck": "A researched fixture editorial.",
+            "primaryPackageID": editorial_id,
+            "relatedPackageIDs": related_ids,
+            "selection": {
+                "firstStableReleaseAt": timestamp(fixture_at - timedelta(days=1)),
+                "firstStableReleaseSourceURL": "https://example.com/releases",
+                "rationale": "newer",
+            },
+            "slug": "fixture-tool",
+            "sources": [
+                {"kind": "primary", "title": "Docs", "url": "https://example.com/docs"},
+                {"kind": "primary", "title": "Releases", "url": "https://example.com/releases"},
+                {"kind": "independent", "title": "History", "url": "https://example.org/history"},
+                {"kind": "independent", "title": "Usage", "url": "https://example.org/usage"},
+            ],
+            "title": "A Fixture Tool Worth Understanding",
+        }
+    evidence = {
+        identifier: {
+            "firstPublishedAt": timestamp(fixture_at - timedelta(days=1)),
+            "reason": "The fixture treats this as a recently first-published package for validation.",
+            "sourceURL": "https://example.com/releases",
+        }
+        for identifier in new_ids
+    }
+    return {"editorial": editorial_value, "newPackageEvidence": evidence, "newPackages": new_ids, "packages": {identifier: fixture_card() for identifier in selected}, "recommendations": rec_ids}
+
+
+def self_test() -> None:
+    _, normalized = normalize_catalog({
+        "generated_at": "2026-07-16T12:00:00Z",
+        "formulas": {},
+        "casks": {"vlc": {"displayName": "VLC media player", "category": "media"}},
+        "npms": {},
+    })
+    assert normalized["brew:cask:vlc"]["displayName"] == "VLC media player"
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        (root / "www/feed").mkdir(parents=True)
+        fixture_artwork = root / "www/feed/assets/fixture.webp"
+        fixture_artwork.parent.mkdir(parents=True)
+        fixture_artwork.write_bytes(b"fixture artwork")
+        (root / "scripts").mkdir()
+        (root / "www/packs").mkdir()
+        at = datetime(2026, 7, 16, 12, tzinfo=timezone.utc)
+        catalog_path = root / "catalog.json"
+        write_json(catalog_path, fixture_catalog(at))
+        write_json(root / "www/packs/index.json", {
+            "packs": [{
+                "packages": ["brew:tool-00", "brew:tool-01", "brew:tool-02"],
+                "slug": "fixture-pack",
+                "subtitle": "Three fixture tools",
+                "title": "Fixture Pack",
+            }],
+        })
+        initial_feed = empty_feed(at)
+        write_json(root / "www/feed/v1.json", initial_feed)
+        write_json(root / "www/feed/v2.json", v2_head_from_v1(initial_feed))
+        subprocess.run(["git", "init", "-q", str(root)], check=True)
+        subprocess.run(["git", "-C", str(root), "config", "user.email", "feed@example.com"], check=True)
+        subprocess.run(["git", "-C", str(root), "config", "user.name", "Feed Test"], check=True)
+        (root / "unrelated.txt").write_text("leave me alone\n")
+        subprocess.run(["git", "-C", str(root), "add", "www/feed/v1.json", "www/feed/v2.json", "www/feed/assets/fixture.webp", "unrelated.txt"], check=True)
+        subprocess.run(["git", "-C", str(root), "commit", "-qm", "fixture"], check=True)
+        (root / "unrelated.txt").write_text("dirty and unrelated\n")
+        subprocess.run(["git", "-C", str(root), "add", "unrelated.txt"], check=True)
+        env = os.environ | {
+            "PMM_FEED_CATALOG": str(catalog_path),
+            "PMM_FEED_NOW": timestamp(at),
+            "PMM_FEED_ROOT": str(root),
+        }
+        command = [sys.executable, str(Path(__file__).resolve())]
+        first = subprocess.run(command, env=env, text=True, capture_output=True)
+        assert first.returncode == 0 and "PMM_FEED_STATUS=NEEDS_AGENT" in first.stdout
+        request = read_json(root / ".feed-work/request.json")
+        old_evidence = {
+            request["newCandidates"][0]["id"]: {
+                "firstPublishedAt": timestamp(at - NEW_PACKAGE_MAX_AGE - timedelta(seconds=1)),
+                "reason": "This deliberately stale fixture must never qualify as genuinely new.",
+                "sourceURL": "https://example.com/releases",
+            }
+        }
+        try:
+            new_package_evidence(old_evidence, list(old_evidence), at)
+            raise AssertionError("stale new-package evidence was accepted")
+        except FeedError:
+            pass
+        policy_item = {
+            "id": "editorial:policy:underexposed",
+            "primaryPackageID": "brew:tool-00",
+            "publishedAt": timestamp(at),
+            "selection": {"rationale": "underexposed", "underexposedReason": "The fixture represents a focused tool outside the catalog's most prominent popularity ranks."},
+        }
+        try:
+            validate_editorial_selection(policy_item, [], at)
+            raise AssertionError("quota breach without policy_exception was accepted")
+        except FeedError:
+            pass
+        policy_item["selection"]["policy_exception"] = {"reason": "No candidate with a documented recent stable release was available in this catalog run."}
+        validate_editorial_selection(policy_item, [], at)
+        canonical = {
+            "id": "editorial:policy:typescript",
+            "primaryPackageID": "npm:typescript",
+            "publishedAt": timestamp(at),
+            "selection": {"rationale": "canonicalFreshAngle", "freshAngle": "This edition examines a newly documented package-manager workflow rather than TypeScript fundamentals."},
+        }
+        cooldown_history = [{"id": "editorial:previous:typescript", "primaryPackageID": "npm:typescript", "publishedAt": timestamp(at - timedelta(days=1))}]
+        try:
+            validate_editorial_selection(canonical, cooldown_history, at)
+            raise AssertionError("canonical cooldown without policy_exception was accepted")
+        except FeedError:
+            pass
+        canonical["selection"]["policy_exception"] = {"reason": "The documented package-manager change is time-sensitive and cannot wait for the normal cooldown."}
+        validate_editorial_selection(canonical, cooldown_history, at)
+        overridden = {
+            "id": "editorial:policy:override",
+            "primaryPackageID": "brew:tool-01",
+            "publishedAt": timestamp(at),
+            "selection": {"rationale": "newer", "firstStableReleaseAt": timestamp(at - EDITORIAL_NEWER_MAX_AGE - timedelta(days=1)), "firstStableReleaseSourceURL": "https://example.com/releases"},
+        }
+        try:
+            validate_editorial_selection(overridden, [], at)
+            raise AssertionError("stale newer classification without override was accepted")
+        except FeedError:
+            pass
+        overridden["selection"]["newerOverride"] = {"reason": "A newly stable major direction substantially changes the package's intended audience and workflow.", "sourceURL": "https://example.com/releases"}
+        validate_editorial_selection(overridden, [], at)
+        rolling_history = []
+        for index in range(EDITORIAL_WINDOW):
+            newer_rationale = index < 12 or index == EDITORIAL_WINDOW - 1
+            rolling_history.append({
+                "id": f"editorial:policy:rolling:{index}",
+                "primaryPackageID": f"brew:tool-{index:02}",
+                "publishedAt": timestamp(at - timedelta(days=index)),
+                "selection": {"rationale": "newer" if newer_rationale else "underexposed"},
+            })
+        assert editorial_history_policy(rolling_history, at)["newerRequired"], "the expiring newer editorial must be replaced to preserve 13/20"
+        original = (root / "www/feed/v1.json").read_bytes()
+        write_json(root / ".feed-work/response.json", {})
+        invalid = subprocess.run(command, env=env, text=True, capture_output=True)
+        assert invalid.returncode == 1 and (root / "www/feed/v1.json").read_bytes() == original
+        write_json(root / ".feed-work/response.json", fixture_response(request))
+        completed = subprocess.run(command, env=env | {"PMM_FEED_NOW": timestamp(at + timedelta(seconds=5))}, text=True, capture_output=True)
+        assert completed.returncode == 0 and "PMM_FEED_STATUS=COMMITTED" in completed.stdout, completed.stderr
+        completed_feed = read_json(root / "www/feed/v1.json")
+        assert next(iter(content(completed_feed, "editorial")))["publishedAt"] == timestamp(at)
+        validate_feed(completed_feed, root)
+        completed_archive = read_json(root / "www/feed/v2.json")
+        validate_v2_chain(root, completed_archive)
+        assert completed_archive["content"][0]["type"] == "editorial"
+        fixture_pack = next(iter(content(completed_archive, "installPack")))
+        assert fixture_pack["title"] == "Fixture Pack"
+        assert [package["id"] for package in fixture_pack["packages"]] == ["brew:tool-00", "brew:tool-01", "brew:tool-02"]
+        shelf_keys = [(item["type"], item["title"]) for item in completed_archive["content"] if item["type"] != "editorial"]
+        assert len(shelf_keys) == len(set(shelf_keys))
+        assert sum(len(item.get("packages", [])) for item in completed_archive["content"]) >= 35
+        assert v2_blocks_from_update(completed_feed, completed_feed, {"newPackages": ["ignored"], "recommendations": []}, completed_archive, at) == []
+        stray = json.loads(json.dumps(completed_archive["content"][1]))
+        stray["id"] = "for-you:stray"
+        stray["batchID"] = "stray"
+        stray["publishedAt"] = timestamp(at + timedelta(hours=1))
+        broken_head = json.loads(json.dumps(completed_archive))
+        broken_head["content"] = [stray, *broken_head["content"]]
+        validate_v2_chain(root, broken_head)
+        repaired_head = repair_editorial_first(broken_head, root)
+        assert repaired_head["content"][0]["type"] == "editorial"
+        assert {item["id"] for item in repaired_head["content"]} == {item["id"] for item in broken_head["content"]}
+        long_summary = "A deliberately long package summary for migration testing that explains workflows, compatibility, adoption, maintenance, security, automation, documentation, prerequisites, alternatives, caveats, and operational tradeoffs in much more detail than the compact Discover card should display."
+        long_feed, long_head = json.loads(json.dumps(completed_feed)), json.loads(json.dumps(completed_archive))
+        for package in long_feed["packages"].values():
+            package["agentSummary"] = long_summary
+        for block in long_head["content"]:
+            snapshots = ([block["package"]] if isinstance(block.get("package"), dict) else []) + (block.get("packages") or []) + (block.get("relatedPackages") or [])
+            for package in snapshots:
+                package["agentSummary"] = long_summary
+        short_feed, short_head = backfill_summaries(long_feed, long_head, {identifier: fixture_card()["agentSummary"] for identifier in long_feed["packages"]}, root)
+        assert all(words(package["agentSummary"]) in SUMMARY_WORDS for package in short_feed["packages"].values())
+        validate_v2_chain(root, short_head)
+        recommendation_shelf = next(iter(content(completed_archive, "personalizedRecommendations")))
+        assert len(recommendation_shelf["packages"]) == V2_CATEGORY_SHELF_LIMIT
+        fallback_ids = next(iter(content(completed_feed, "personalizedRecommendations")))["fallbackPackageIDs"]
+        rotation_head = {"content": [{"type": "personalizedRecommendations", "packages": [completed_feed["packages"][identifier] for identifier in fallback_ids[:10]]}]}
+        assert shelf_chunk(completed_feed, rotation_head, "personalizedRecommendations", V2_RECOMMENDATION_LIMIT) == fallback_ids[10:20]
+        tail_head = {"content": [{"type": "personalizedRecommendations", "packages": [completed_feed["packages"][identifier] for identifier in fallback_ids[10:20]]}]}
+        assert shelf_chunk(completed_feed, tail_head, "personalizedRecommendations", V2_RECOMMENDATION_LIMIT) == fallback_ids[20:24]
+        variety_head = json.loads(json.dumps(completed_archive))
+        editorial_template = next(iter(content(completed_archive, "editorial")))
+        variety_head["content"] = []
+        for index in range(4):
+            item = json.loads(json.dumps(editorial_template))
+            item["id"] = f"editorial:variety:{index}"
+            item["batchID"] = f"variety-{index}"
+            item["publishedAt"] = timestamp(at - timedelta(days=index))
+            item["selection"]["firstStableReleaseAt"] = timestamp(at - timedelta(days=index + 1))
+            variety_head["content"].append(item)
+        _, varied_head = reflow_discover_variety(completed_feed, variety_head, root)
+        varied_shelves = content(varied_head, "personalizedRecommendations")
+        assert [len(item["packages"]) for item in varied_shelves] == [10, 10, 4, 10]
+        assert [package["id"] for package in varied_shelves[0]["packages"]] == [package["id"] for package in varied_shelves[3]["packages"]]
+        varied_updates = content(varied_head, "recentlyUpdated")
+        assert [len(item["packages"]) for item in varied_updates] == [10, 2, 10, 2]
+        assert [package["id"] for package in varied_updates[0]["packages"]] == [package["id"] for package in varied_updates[2]["packages"]]
+        assert len({(item["type"], item.get("title")) for item in completed_archive["content"] if item["type"] != "editorial"}) == len(completed_archive["content"]) - 1
+        legacy_feed, legacy_archive = json.loads(json.dumps(completed_feed)), json.loads(json.dumps(completed_archive))
+        legacy_paragraph = " ".join(["Package history and actual usage show a practical tool with clear tradeoffs."] * 24)
+        legacy_body = "\n\n".join([legacy_paragraph] * 3)
+        legacy_editorial = next(iter(content(legacy_feed, "editorial")))
+        legacy_editorial["body"] = legacy_body
+        legacy_editorial.pop("relatedPackageIDs")
+        legacy_block = next(iter(content(legacy_archive, "editorial")))
+        legacy_block["body"] = legacy_body
+        legacy_block.pop("relatedPackages")
+        migrated_feed, migrated_archive = backfill_editorials(legacy_feed, legacy_archive, {"editorials": [{
+            "editorialID": legacy_editorial["id"],
+            "inlineCode": ["Package"],
+            "relatedPackageIDs": [package["id"] for package in request["editorialCandidates"][:3]],
+            "sections": [
+                {"paragraphs": 1, "title": "History"},
+                {"paragraphs": 1, "title": "Actual usage"},
+                {"paragraphs": 1, "title": "Tradeoffs"},
+            ],
+        }]}, root)
+        assert migrated_feed["content"][0]["body"].startswith("## History")
+        assert len(migrated_archive["content"][0]["relatedPackages"]) == 3
+        assert completed_feed["content"][0]["artwork"]["boxColors"]["foreground"] == "#FFFFFF"
+        missing_artwork_feed = json.loads(json.dumps(completed_feed))
+        missing_artwork_feed["content"][0].pop("artwork")
+        backfilled = backfill_editorial_artwork(missing_artwork_feed, {
+            "editorialID": missing_artwork_feed["content"][0]["id"],
+            "artwork": fixture_response(request)["editorial"]["artwork"],
+        }, root)
+        assert backfilled["content"][0]["artwork"]["path"] == "feed/assets/fixture.webp"
+        assert [item["type"] for item in completed_feed["content"][:4]] == ["editorial", "personalizedRecommendations", "newPackages", "recentlyUpdated"]
+        assert list(completed_feed["packages"]) == sorted(completed_feed["packages"])
+        changed = subprocess.run(["git", "-C", str(root), "show", "--pretty=", "--name-only", "HEAD"], text=True, capture_output=True, check=True).stdout.splitlines()
+        assert changed == ["www/feed/v1.json", "www/feed/v2.json"]
+        staged = subprocess.run(["git", "-C", str(root), "diff", "--cached", "--name-only"], text=True, capture_output=True, check=True).stdout.splitlines()
+        assert staged == ["unrelated.txt"]
+        check = subprocess.run(command + ["--check"], env=env, text=True, capture_output=True)
+        assert check.returncode == 0 and "PMM_FEED_STATUS=VALID" in check.stdout
+        noop = subprocess.run(command, env=env, text=True, capture_output=True)
+        assert noop.returncode == 0 and "PMM_FEED_STATUS=NOOP" in noop.stdout
+        forced = subprocess.run(command + ["--force-editorial", "--force-recommendations=2"], env=env, text=True, capture_output=True)
+        assert forced.returncode == 0 and "PMM_FEED_STATUS=NEEDS_AGENT" in forced.stdout
+        forced_request = read_json(root / ".feed-work/request.json")
+        assert forced_request["editorialRequired"] and forced_request["recommendationCount"] == 2
+        (root / ".feed-work/request.json").unlink()
+        later_env = env | {"PMM_FEED_NOW": timestamp(at + timedelta(days=3))}
+        due = subprocess.run(command, env=later_env, text=True, capture_output=True)
+        assert due.returncode == 0 and "PMM_FEED_STATUS=NEEDS_AGENT" in due.stdout
+        later_request = read_json(root / ".feed-work/request.json")
+        assert later_request["editorialRequired"] and later_request["recommendationCount"] == 0
+        retention_feed = json.loads(json.dumps(completed_feed))
+        shelf = next(item for item in retention_feed["content"] if item["type"] == "newPackages")
+        shelf["packageIDs"] = list(retention_feed["packages"])[:18]
+        original_editorial = next(item for item in retention_feed["content"] if item["type"] == "editorial")
+        older_editorials = []
+        for days in range(1, 14):
+            item = dict(original_editorial)
+            item["id"] = f"editorial:fixture:{days}"
+            item["publishedAt"] = timestamp(at - timedelta(days=days))
+            older_editorials.append(item)
+        retention_feed["content"].extend(older_editorials)
+        retained = apply_response(retention_feed, later_request, fixture_response(later_request), root, at + timedelta(days=4))
+        retained_new = next(item for item in retained["content"] if item["type"] == "newPackages")["packageIDs"]
+        assert len(retained_new) == 12
+        assert len(content(retained, "editorial")) == 12
+
+        snapshot = completed_archive["content"][-1]
+        crowded = json.loads(json.dumps(completed_archive))
+        crowded["content"] = [json.loads(json.dumps(editorial_template))]
+        for index in range(18):
+            item = json.loads(json.dumps(snapshot))
+            item["id"] = f"for-you:fixture-{index}"
+            item["publishedAt"] = timestamp(at - timedelta(minutes=index + 1))
+            crowded["content"].append(item)
+        new_blocks = json.loads(json.dumps(completed_archive["content"]))
+        for item in new_blocks:
+            item["id"] += ":next"
+            item["batchID"] += ":next"
+            item["publishedAt"] = timestamp(at + timedelta(days=1))
+        rolled, frozen = append_v2(root, crowded, new_blocks, at + timedelta(days=1))
+        assert len(rolled["content"]) == len(new_blocks) and len(frozen) == 1
+        assert rolled["nextPageURL"] == V2_PAGE_BASE_URL + frozen[0].name
+        assert v2_page_filename(LEGACY_V2_PAGE_BASE_URL + "fixture.json") == "fixture.json"
+        assert read_json(frozen[0])["content"] == crowded["content"]
+        write_json(root / "www/feed/v2.json", rolled)
+        validate_v2_chain(root, rolled)
+
+
+if __name__ == "__main__":
+    raise SystemExit(run())

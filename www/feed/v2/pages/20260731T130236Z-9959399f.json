@@ -1,0 +1,1518 @@
+{
+  "content": [
+    {
+      "artwork": {
+        "alt": "A glowing clockwork schedule ring joins a container panel, a network wave panel, and a timeline on a deep navy background.",
+        "attribution": "Generated with OpenAI image generation for Package Manager Manager.",
+        "boxColors": {
+          "backgroundEnd": "#0B2944",
+          "backgroundStart": "#06172E",
+          "foreground": "#FFFFFF"
+        },
+        "license": "OpenAI terms of use",
+        "path": "feed/assets/cronboard-observability-2026-07-31.png"
+      },
+      "batchID": "20260731T130236Z-ba1811b4",
+      "body": "## Start with the work that runs when nobody is watching\n\nScheduled tasks are easy to overlook because a crontab is deliberately quiet. A backup, report, cleanup, or certificate renewal often exists as one compact line that only becomes visible after it fails. **Cronboard** is a new terminal-first attempt to make that layer easier to inspect. Its project site describes a keyboard-driven dashboard for local cron jobs and remote servers, with creation, editing, pausing, resuming, search, human-readable schedules, and SSH-based management. The goal is not a different scheduling engine. It is a clearer view of the cron configuration already responsible for work.\n\nThat is a useful distinction. A dashboard can reduce the friction of reading a crowded crontab, but it does not make the command correct, give it retries, or prove that an unattended job succeeded. Keep the script itself in version control when practical, write its output somewhere intentional, and decide which failures need an external alert. Cronboard can make an operator's next question faster: *what is meant to run, where, and when?* It should not become the only record of that answer.\n\nThe project reached its stable 1.0.0 release on July 27, 2026, so this is a younger tool than the venerable cron subsystem it works with. That makes a small trial the sensible route. Start on a personal machine or an unimportant server, compare its view to `crontab -l`, and verify exactly which account and remote user each edit reaches.\n\n## Observation is not administration\n\n**dtop** lives one layer above the scheduler. The project's documentation and repository describe a terminal dashboard for monitoring Docker across multiple hosts, including container actions, health information, filtering, and integration with Dozzle for logs. Used together with a scheduler, it can help an operator move from “this job should have run” to “what is the container doing now?” without immediately opening a web control panel.\n\nThat convenience needs a boundary. A view that can start, stop, or remove containers is no longer read-only. Docker socket access and remote host credentials are operationally powerful, so the right setup is the least privileged one that still answers the question. dtop also does not replace a deployment definition, resource limits, central metrics, or paging. For a small fleet, it can shorten an investigation; for a production service, use it alongside durable telemetry and alerts rather than as the signal that wakes someone up.\n\nThe shared theme with Cronboard is **interactive inspection**. Both tools surface state that otherwise hides in configuration files, process lists, or several remote shells. Neither removes the need to document ownership. Before adopting either, name the job or container owner, where logs belong, and the condition that counts as failure. A clean terminal interface is most helpful when it reflects an already-clear operating model.\n\n## Network measurements have a different kind of consequence\n\n**OONI Probe CLI** makes another hidden system visible: network interference. OONI's user guide says the command-line client can test website blocking, messaging apps, circumvention tools, middleboxes, and network performance. Measurements are submitted to OONI and published as open data in near real time; OONI reports more than 400 million measurements from 23,000 networks in 240 countries and territories since 2012. That documented public record is why it belongs here as the underexposed companion rather than merely another diagnostic utility.\n\nIts tradeoff is sharper than the other two tools'. OONI explicitly says the probe is not a privacy tool and that testing can carry legal or personal risk depending on the country, network, sites tested, and threat model. Do not treat it as a casual speed test or run automated measurements for someone else without informed judgment. Read the onboarding and risk guidance, understand whether results will be public, and seek local expertise when the consequences are unclear. A blocked connection can also have multiple explanations, so compare evidence before drawing a conclusion.\n\n## A small, auditable practice\n\nThese tools work best as a compact loop:\n\n- inspect a schedule in Cronboard before changing it;\n- inspect the affected container or logs in dtop when the job touches Docker; and\n- use OONI Probe only when its research purpose and publication model fit the situation.\n\nThe common win is not more dashboards. It is making a specific operational question visible while preserving the underlying boundaries: cron remains the scheduler, Docker permissions remain sensitive, and network measurements can be consequential public research. Start with one question, verify the data against the native tools, and retain the plain-text configuration and logs that let another person audit what happened.",
+      "deck": "Cronboard, dtop, and OONI Probe make different systems visible—provided their operational and privacy boundaries stay explicit.",
+      "id": "editorial:2026-07-31:terminal-observability-with-cronboard",
+      "package": {
+        "agentSummary": "Cronboard is a keyboard-driven terminal dashboard for viewing and editing local or SSH-managed crontabs, showing schedules in human terms and bringing job output closer to operations.",
+        "assessment": {
+          "alternatives": [
+            "Editing crontabs with crontab -e",
+            "Systemd timers for systems that standardize on systemd"
+          ],
+          "audiences": [
+            "People maintaining local cron jobs",
+            "Operators responsible for a small set of SSH-accessible servers"
+          ],
+          "caveats": [
+            "Cronboard manages cron rather than replacing it with a scheduler",
+            "Remote access and job-editing privileges deserve the same care as direct SSH access"
+          ],
+          "complements": [
+            "Version-controlled scripts",
+            "Service monitoring and alerting",
+            "Regular backups of important job configuration"
+          ],
+          "prerequisites": [
+            "A Unix-like system with cron",
+            "SSH key access for remote-server management"
+          ],
+          "useCases": [
+            "Reviewing schedules before changing a crontab",
+            "Creating, pausing, or editing scheduled jobs without manually editing a crontab"
+          ]
+        },
+        "category": "developer-tools",
+        "displayName": "cronboard",
+        "docs": "https://github.com/antoniorodr/cronboard#readme",
+        "homepage": "https://cronboard.dev/",
+        "id": "brew:cronboard",
+        "installURL": "pkgmgrmgr://install?package=brew%3Acronboard",
+        "lastUpdatedAt": "2026-07-27T19:29:23Z",
+        "manager": "homebrew",
+        "repository": "https://github.com/antoniorodr/cronboard",
+        "researchedAt": "2026-07-31T13:02:36Z",
+        "sources": [
+          {
+            "kind": "primary",
+            "title": "Cronboard project site",
+            "url": "https://cronboard.dev/"
+          },
+          {
+            "kind": "primary",
+            "title": "Cronboard getting-started guide",
+            "url": "https://cronboard.dev/getting-started/"
+          }
+        ],
+        "upstreamSummary": "Terminal-based dashboard for managing cron jobs locally and on servers",
+        "version": null
+      },
+      "primaryPackageID": "brew:cronboard",
+      "publishedAt": "2026-07-31T13:02:36Z",
+      "relatedPackages": [
+        {
+          "agentSummary": "Cronboard is a keyboard-driven terminal dashboard for viewing and editing local or SSH-managed crontabs, showing schedules in human terms and bringing job output closer to operations.",
+          "assessment": {
+            "alternatives": [
+              "Editing crontabs with crontab -e",
+              "Systemd timers for systems that standardize on systemd"
+            ],
+            "audiences": [
+              "People maintaining local cron jobs",
+              "Operators responsible for a small set of SSH-accessible servers"
+            ],
+            "caveats": [
+              "Cronboard manages cron rather than replacing it with a scheduler",
+              "Remote access and job-editing privileges deserve the same care as direct SSH access"
+            ],
+            "complements": [
+              "Version-controlled scripts",
+              "Service monitoring and alerting",
+              "Regular backups of important job configuration"
+            ],
+            "prerequisites": [
+              "A Unix-like system with cron",
+              "SSH key access for remote-server management"
+            ],
+            "useCases": [
+              "Reviewing schedules before changing a crontab",
+              "Creating, pausing, or editing scheduled jobs without manually editing a crontab"
+            ]
+          },
+          "category": "developer-tools",
+          "displayName": "cronboard",
+          "docs": "https://github.com/antoniorodr/cronboard#readme",
+          "homepage": "https://cronboard.dev/",
+          "id": "brew:cronboard",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acronboard",
+          "lastUpdatedAt": "2026-07-27T19:29:23Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/antoniorodr/cronboard",
+          "researchedAt": "2026-07-31T13:02:36Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "Cronboard project site",
+              "url": "https://cronboard.dev/"
+            },
+            {
+              "kind": "primary",
+              "title": "Cronboard getting-started guide",
+              "url": "https://cronboard.dev/getting-started/"
+            }
+          ],
+          "upstreamSummary": "Terminal-based dashboard for managing cron jobs locally and on servers",
+          "version": null
+        },
+        {
+          "agentSummary": "Dtop is a Rust terminal dashboard for Docker hosts that surfaces containers, health, resource activity, and Dozzle log access across multiple machines without becoming an orchestrator.",
+          "assessment": {
+            "alternatives": [
+              "docker ps and docker stats",
+              "Portainer or other web-based Docker dashboards"
+            ],
+            "audiences": [
+              "Developers operating Docker hosts",
+              "Small teams that need a terminal view across several container machines"
+            ],
+            "caveats": [
+              "A terminal dashboard is an investigation aid, not a replacement for alerts",
+              "Host and Docker-socket access can expose sensitive operational control"
+            ],
+            "complements": [
+              "Docker Compose or another deployment definition",
+              "Metrics and alerting for unattended production monitoring"
+            ],
+            "prerequisites": [
+              "Docker access on each monitored host",
+              "Network connectivity and credentials appropriate for the configured hosts"
+            ],
+            "useCases": [
+              "Inspecting container health and resource activity",
+              "Opening related logs while investigating a Docker workload"
+            ]
+          },
+          "category": "cloud-infrastructure",
+          "displayName": "dtop",
+          "docs": "https://dtop.dev/",
+          "homepage": "https://dtop.dev/",
+          "id": "brew:dtop",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adtop",
+          "lastUpdatedAt": "2026-07-27T18:28:47Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/amir20/dtop",
+          "researchedAt": "2026-07-31T13:02:36Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "dtop repository",
+              "url": "https://github.com/amir20/dtop"
+            },
+            {
+              "kind": "primary",
+              "title": "dtop documentation",
+              "url": "https://dtop.dev/"
+            }
+          ],
+          "upstreamSummary": "Terminal dashboard for Docker monitoring across multiple hosts",
+          "version": null
+        },
+        {
+          "agentSummary": "OONI Probe CLI runs open network-interference measurements for websites, messaging apps, circumvention tools, and performance, publishing results that can support censorship research and local troubleshooting.",
+          "assessment": {
+            "alternatives": [
+              "Manual connectivity tests that do not create comparable public measurements",
+              "Commercial network-monitoring products for private infrastructure"
+            ],
+            "audiences": [
+              "Researchers and advocates studying internet interference",
+              "Technically confident users investigating access problems on their own network"
+            ],
+            "caveats": [
+              "OONI explicitly warns that running censorship measurements can carry risk in some places",
+              "A measurement is evidence to interpret carefully, not proof of a single cause"
+            ],
+            "complements": [
+              "OONI Explorer",
+              "Local legal and digital-security advice",
+              "Independent network diagnostics"
+            ],
+            "prerequisites": [
+              "A considered threat model",
+              "Awareness that measurements may be uploaded and publicly published"
+            ],
+            "useCases": [
+              "Measuring suspected blocking of a website or app",
+              "Contributing reproducible network measurements to OONI's open-data work"
+            ]
+          },
+          "category": "networking",
+          "displayName": "ooniprobe",
+          "docs": "https://github.com/ooni/probe-cli#readme",
+          "homepage": "https://ooni.org/",
+          "id": "brew:ooniprobe",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aooniprobe",
+          "lastUpdatedAt": "2026-07-28T01:00:56Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/ooni/probe-cli",
+          "researchedAt": "2026-07-31T13:02:36Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "OONI Probe CLI user guide",
+              "url": "https://openobservatory.github.io/support/ooni-probe-cli/"
+            },
+            {
+              "kind": "primary",
+              "title": "OONI Probe CLI repository",
+              "url": "https://github.com/ooni/probe-cli"
+            }
+          ],
+          "upstreamSummary": "Network interference detection tool",
+          "version": null
+        }
+      ],
+      "selection": {
+        "firstStableReleaseAt": "2026-07-27T15:39:00Z",
+        "firstStableReleaseSourceURL": "https://github.com/antoniorodr/cronboard/releases/tag/v1.0.0",
+        "rationale": "newer"
+      },
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "Cronboard releases",
+          "url": "https://github.com/antoniorodr/cronboard/releases"
+        },
+        {
+          "kind": "primary",
+          "title": "Cronboard project site",
+          "url": "https://cronboard.dev/"
+        },
+        {
+          "kind": "primary",
+          "title": "dtop repository",
+          "url": "https://github.com/amir20/dtop"
+        },
+        {
+          "kind": "primary",
+          "title": "OONI Probe CLI user guide",
+          "url": "https://openobservatory.github.io/support/ooni-probe-cli/"
+        }
+      ],
+      "title": "Terminal Observability Starts With What You Schedule",
+      "type": "editorial"
+    },
+    {
+      "batchID": "20260731T130236Z-34ca69db",
+      "id": "new-packages:data:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "CLI for Deepline data enrichment and durable plays",
+          "category": "data",
+          "displayName": "deepline",
+          "homepage": "https://code.deepline.com",
+          "id": "brew:deepline",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adeepline",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "JSONiq and XQuery query engine on Apache Spark",
+          "category": "data",
+          "displayName": "rumbledb",
+          "homepage": "https://rumbledb.org/",
+          "id": "brew:rumbledb",
+          "installURL": "pkgmgrmgr://install?package=brew%3Arumbledb",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-31T13:02:36Z",
+      "title": "New Packages in Data",
+      "type": "newPackages"
+    },
+    {
+      "batchID": "20260731T130236Z-34ca69db",
+      "id": "recently-updated:games:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Sega Model 3 arcade emulator",
+          "category": "games",
+          "displayName": "supermodel",
+          "homepage": "https://github.com/trzy/Supermodel",
+          "id": "brew:supermodel",
+          "installURL": "pkgmgrmgr://install?package=brew%3Asupermodel",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Atari 8-bit machine emulator",
+          "category": "games",
+          "displayName": "atari800",
+          "homepage": "https://atari800.github.io/",
+          "id": "brew:atari800",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aatari800",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Action-RPG game engine",
+          "category": "games",
+          "displayName": "solarus",
+          "homepage": "https://www.solarus-games.org/",
+          "id": "brew:solarus",
+          "installURL": "pkgmgrmgr://install?package=brew%3Asolarus",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Open-source Android/Desktop remake of Civ V",
+          "category": "games",
+          "displayName": "unciv",
+          "homepage": "https://github.com/yairm210/Unciv",
+          "id": "brew:unciv",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aunciv",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Space Invaders in your terminal written in Go",
+          "category": "games",
+          "displayName": "spaceinvaders-go",
+          "homepage": "https://github.com/asib/spaceinvaders",
+          "id": "brew:spaceinvaders-go",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aspaceinvaders-go",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-31T13:02:36Z",
+      "title": "Recently Updated in Games",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260731T130236Z-34ca69db",
+      "id": "new-packages:security:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Adversarial security testing engine, SDK, and CLI for AI agents",
+          "category": "security",
+          "displayName": "humanbound",
+          "homepage": "https://docs.humanbound.ai/",
+          "id": "brew:humanbound",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ahumanbound",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-31T13:02:36Z",
+      "title": "New Packages in Security",
+      "type": "newPackages"
+    },
+    {
+      "batchID": "20260731T130236Z-34ca69db",
+      "id": "recently-updated:language-runtime:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Dynamic, general-purpose programming language",
+          "category": "language-runtime",
+          "displayName": "clojure",
+          "homepage": "https://clojure.org",
+          "id": "brew:clojure",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aclojure",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Rye is a homoiconic programming language focused on fluid expressions",
+          "category": "language-runtime",
+          "displayName": "ryelang",
+          "homepage": "https://ryelang.org/",
+          "id": "brew:ryelang",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aryelang",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Fast and flexible scripting for Go developers and DevOps",
+          "category": "language-runtime",
+          "displayName": "risor",
+          "homepage": "https://risor.io/",
+          "id": "brew:risor",
+          "installURL": "pkgmgrmgr://install?package=brew%3Arisor",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Modern CLI scripts made easy",
+          "category": "language-runtime",
+          "displayName": "rad",
+          "homepage": "https://amterp.dev/rad/",
+          "id": "brew:rad",
+          "installURL": "pkgmgrmgr://install?package=brew%3Arad",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Programming language for highly scalable real-time systems",
+          "category": "language-runtime",
+          "displayName": "erlang@28",
+          "homepage": "https://www.erlang.org/",
+          "id": "brew:erlang@28",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aerlang%4028",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-31T13:02:36Z",
+      "title": "Recently Updated in Language Runtime",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260731T130236Z-34ca69db",
+      "id": "new-packages:media:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Self-hosted media streaming server and Plex alternative for movies and TV",
+          "category": "media",
+          "displayName": "lunarr",
+          "homepage": "https://github.com/lunarr-app/lunarr-go",
+          "id": "brew:lunarr",
+          "installURL": "pkgmgrmgr://install?package=brew%3Alunarr",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-31T13:02:36Z",
+      "title": "New Packages in Media",
+      "type": "newPackages"
+    },
+    {
+      "batchID": "20260731T130236Z-34ca69db",
+      "id": "for-you:system:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Like which(1) unix command. Find the first instance of an executable in the PATH.",
+          "category": "system",
+          "displayName": "which",
+          "homepage": "https://github.com/npm/node-which#readme",
+          "id": "npm:which",
+          "installURL": "pkgmgrmgr://install?package=npm%3Awhich",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Recursively mkdir, like `mkdir -p`",
+          "category": "system",
+          "displayName": "mkdirp",
+          "homepage": "https://github.com/isaacs/node-mkdirp#readme",
+          "id": "npm:mkdirp",
+          "installURL": "pkgmgrmgr://install?package=npm%3Amkdirp",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "A deep deletion module for node (like `rm -rf`)",
+          "category": "system",
+          "displayName": "rimraf",
+          "homepage": "https://github.com/isaacs/rimraf#readme",
+          "id": "npm:rimraf",
+          "installURL": "pkgmgrmgr://install?package=npm%3Arimraf",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Check if the process is running inside a Docker container",
+          "category": "system",
+          "displayName": "is-docker",
+          "homepage": "https://github.com/sindresorhus/is-docker#readme",
+          "id": "npm:is-docker",
+          "installURL": "pkgmgrmgr://install?package=npm%3Ais-docker",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "kill trees of processes",
+          "category": "system",
+          "displayName": "tree-kill",
+          "homepage": "https://github.com/pkrumins/node-tree-kill",
+          "id": "npm:tree-kill",
+          "installURL": "pkgmgrmgr://install?package=npm%3Atree-kill",
+          "manager": "npm"
+        }
+      ],
+      "publishedAt": "2026-07-31T13:02:36Z",
+      "title": "For You in System",
+      "type": "personalizedRecommendations"
+    },
+    {
+      "batchID": "20260731T130236Z-34ca69db",
+      "id": "new-packages:cloud-infrastructure:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Command-line interface for Vercel",
+          "category": "cloud-infrastructure",
+          "displayName": "vercel",
+          "homepage": "https://vercel.com/home",
+          "id": "brew:vercel",
+          "installURL": "pkgmgrmgr://install?package=brew%3Avercel",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-31T13:02:36Z",
+      "title": "New Packages in Cloud Infrastructure",
+      "type": "newPackages"
+    },
+    {
+      "artwork": {
+        "alt": "A luminous origami rulebook connects by teal, amber, and violet paths to six abstract developer workspaces on a deep navy background.",
+        "attribution": "Generated with OpenAI image generation",
+        "boxColors": {
+          "backgroundEnd": "#112548",
+          "backgroundStart": "#061329",
+          "foreground": "#FFFFFF"
+        },
+        "license": "OpenAI terms of use",
+        "path": "feed/assets/rulesync-unified-agent-rules.png"
+      },
+      "batchID": "20260727T130116Z-f872b433",
+      "body": "## Configuration Is Becoming a Compatibility Problem\n\nA repository can now carry instructions for several coding agents: project rules, commands, skills, tool permissions, hooks, ignore lists, and MCP servers. Each agent has useful ideas about filenames and structure, but the formats are not interchangeable. A change to one policy can become a small, error-prone copy-and-paste campaign. The obvious shortcut—keeping only one tool's file—makes the setup less portable and gives contributors different behavior depending on the agent they choose.\n\n**Rulesync** takes a different route. It keeps a source tree for shared AI-agent guidance, imports some existing configurations, and generates target-specific output. Its repository documents targets for Claude Code, Codex CLI, GitHub Copilot, Cursor, OpenCode, and many other tools, alongside an `AGENTS.md` target. The intent is not to claim every agent behaves identically. It is to make the differences explicit while giving the common policy one place to live.\n\n## A Young Tool in a Fast-Moving Space\n\nRulesync published its first stable `0.1.0` release on June 18, 2025. That timing matters: the surrounding agent ecosystem changes quickly, with new configuration surfaces appearing alongside familiar instruction files. The project's release history shows steady iteration, and the documentation tracks feature support per target rather than pretending every output can represent every capability. That is the right posture for a compatibility tool: generation is useful only if it is honest about what can be generated.\n\nThe basic workflow is deliberately small. Initialize a rulesync layout, put reusable rules and components in it, then generate selected targets. Existing repositories can also import tool-specific files before adopting the source-of-truth layout. A conversion command supports direct translation when a repository needs to move from one format to another without immediately adopting a managed tree. Generated files should still be reviewed like any other derived artifact; they influence how tools read, edit, and execute inside a repository.\n\n## What Belongs in the Shared Layer\n\nThe shared layer works best for stable repository facts and working agreements:\n\n- architecture boundaries and naming conventions;\n- test and validation commands;\n- security or data-handling constraints;\n- review expectations and prohibited shortcuts;\n- reusable agent skills and task commands.\n\nIt works less well for instructions that only make sense in a single product. One agent may support a hook event, permission rule, or custom-agent setting that another does not expose. Flattening that distinction can create a configuration that looks standardized but silently loses behavior. Rulesync's supported-tools matrix is useful here: treat it as a compatibility map, not a promise of semantic equivalence. Keep genuinely tool-specific settings scoped to the target that needs them.\n\nA shared file also needs normal software ownership. Put changes through review, pin the generator version where repeatability matters, and decide whether CI should regenerate and fail on a diff. A generated configuration file is not documentation someone can casually edit in a panic; the source layout is the place to make the enduring change. That discipline prevents the source and output from drifting apart.\n\n## Evidence of Use, With Limits\n\nThe upstream repository shows an active project with over a thousand GitHub stars, forks, issue activity, releases, and documentation for a broad set of agent targets. Those signals demonstrate attention and public use beyond an unpublished experiment. They do not measure production deployments, reliability in a particular organization, or the quality of every generated integration. The project is still young enough that a cautious evaluation is sensible.\n\nStart with one repository that already has two or three agent configurations. Import or recreate only the instructions that are actually shared, generate those targets, and inspect the diff line by line. Run each agent's normal workflow against a disposable branch. Pay special attention to permissions, hooks, commands, and MCP settings because those surfaces can have real operational consequences. If the generated output is clearer and remains in sync through one policy change, expand from there.\n\n## Adjacent Tools, Different Jobs\n\nThis pattern is broader than agent configuration. **vfox** offers one command surface for selecting several language runtimes, while recognizing familiar version files; it is a practical companion when teams want fewer per-language setup rituals. **yutu** shows the opposite boundary: it automates authenticated YouTube work, where capabilities are intentionally specific and account permissions matter. Neither tool is a Rulesync substitute, but together they underline the principle: consolidate the policy that is truly shared, and leave specialized behavior close to the system that owns it.\n\nRulesync earns its place when a team already maintains multiple agent files and can name the common rules. For a single agent or a small repository, a well-kept `AGENTS.md` may be all that is needed. The value begins when duplication is real—and ends if the generator obscures more than it removes.",
+      "deck": "A focused CLI for turning one maintained ruleset into the differing files that modern coding agents expect.",
+      "id": "editorial:2026-07-27:rulesync-shared-agent-instructions",
+      "package": {
+        "agentSummary": "Rulesync keeps AI coding-agent instructions in one source tree, then generates and imports tool-specific rules, commands, skills, hooks, permissions, and MCP configuration.",
+        "assessment": {
+          "alternatives": [
+            "Maintaining each agent configuration by hand",
+            "Using only a cross-tool AGENTS.md file"
+          ],
+          "audiences": [
+            "Teams using more than one AI coding agent",
+            "Maintainers standardizing repository guidance"
+          ],
+          "caveats": [
+            "Tool capabilities and file formats differ, so generated output cannot make every feature portable",
+            "A shared source still needs careful ownership and review"
+          ],
+          "complements": [
+            "Version control review",
+            "Repository-local AGENTS.md guidance",
+            "CI checks for generated configuration"
+          ],
+          "prerequisites": [
+            "A repository with AI-agent configuration worth maintaining",
+            "Time to review generated files before committing them"
+          ],
+          "useCases": [
+            "Generating agent-specific configuration from shared rules",
+            "Migrating existing agent instructions into a managed source tree"
+          ]
+        },
+        "category": "ai",
+        "displayName": "rulesync",
+        "docs": "https://rulesync.dyoshikawa.com/",
+        "homepage": "https://github.com/dyoshikawa/rulesync",
+        "id": "brew:rulesync",
+        "installURL": "pkgmgrmgr://install?package=brew%3Arulesync",
+        "lastUpdatedAt": "2026-07-26T04:19:04Z",
+        "manager": "homebrew",
+        "repository": "https://github.com/dyoshikawa/rulesync",
+        "researchedAt": "2026-07-27T13:01:16Z",
+        "sources": [
+          {
+            "kind": "primary",
+            "title": "Rulesync project repository",
+            "url": "https://github.com/dyoshikawa/rulesync"
+          },
+          {
+            "kind": "primary",
+            "title": "Rulesync documentation",
+            "url": "https://rulesync.dyoshikawa.com/"
+          }
+        ],
+        "upstreamSummary": "Unified AI rules management CLI tool",
+        "version": null
+      },
+      "primaryPackageID": "brew:rulesync",
+      "publishedAt": "2026-07-27T13:01:16Z",
+      "relatedPackages": [
+        {
+          "agentSummary": "Rulesync keeps AI coding-agent instructions in one source tree, then generates and imports tool-specific rules, commands, skills, hooks, permissions, and MCP configuration.",
+          "assessment": {
+            "alternatives": [
+              "Maintaining each agent configuration by hand",
+              "Using only a cross-tool AGENTS.md file"
+            ],
+            "audiences": [
+              "Teams using more than one AI coding agent",
+              "Maintainers standardizing repository guidance"
+            ],
+            "caveats": [
+              "Tool capabilities and file formats differ, so generated output cannot make every feature portable",
+              "A shared source still needs careful ownership and review"
+            ],
+            "complements": [
+              "Version control review",
+              "Repository-local AGENTS.md guidance",
+              "CI checks for generated configuration"
+            ],
+            "prerequisites": [
+              "A repository with AI-agent configuration worth maintaining",
+              "Time to review generated files before committing them"
+            ],
+            "useCases": [
+              "Generating agent-specific configuration from shared rules",
+              "Migrating existing agent instructions into a managed source tree"
+            ]
+          },
+          "category": "ai",
+          "displayName": "rulesync",
+          "docs": "https://rulesync.dyoshikawa.com/",
+          "homepage": "https://github.com/dyoshikawa/rulesync",
+          "id": "brew:rulesync",
+          "installURL": "pkgmgrmgr://install?package=brew%3Arulesync",
+          "lastUpdatedAt": "2026-07-26T04:19:04Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/dyoshikawa/rulesync",
+          "researchedAt": "2026-07-27T13:01:16Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "Rulesync project repository",
+              "url": "https://github.com/dyoshikawa/rulesync"
+            },
+            {
+              "kind": "primary",
+              "title": "Rulesync documentation",
+              "url": "https://rulesync.dyoshikawa.com/"
+            }
+          ],
+          "upstreamSummary": "Unified AI rules management CLI tool",
+          "version": null
+        },
+        {
+          "agentSummary": "vfox is a cross-platform, plugin-driven SDK version manager that installs and selects language runtimes globally or per project while recognizing several existing version files.",
+          "assessment": {
+            "alternatives": [
+              "asdf for a long-established plugin ecosystem",
+              "Dedicated managers such as nvm, pyenv, or sdkman"
+            ],
+            "audiences": [
+              "Developers who work across several language runtimes",
+              "Teams seeking one version-manager command surface"
+            ],
+            "caveats": [
+              "Plugin quality and maintenance vary by runtime",
+              "Shell hooks add another startup integration to support"
+            ],
+            "complements": [
+              "Pinned runtime files",
+              "CI runtime setup",
+              "Project onboarding documentation"
+            ],
+            "prerequisites": [
+              "A shell activation hook",
+              "Plugins for the runtimes a project needs"
+            ],
+            "useCases": [
+              "Selecting project-specific Node, Python, Go, or Java versions",
+              "Migrating from existing runtime-version files"
+            ]
+          },
+          "category": "developer-tools",
+          "displayName": "vfox",
+          "docs": "https://vfox.dev/",
+          "homepage": "https://vfox.dev/",
+          "id": "brew:vfox",
+          "installURL": "pkgmgrmgr://install?package=brew%3Avfox",
+          "lastUpdatedAt": "2026-07-25T22:30:01Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/version-fox/vfox",
+          "researchedAt": "2026-07-27T13:01:16Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "vfox project repository",
+              "url": "https://github.com/version-fox/vfox"
+            },
+            {
+              "kind": "primary",
+              "title": "vfox documentation",
+              "url": "https://vfox.dev/"
+            }
+          ],
+          "upstreamSummary": "Version manager with support for Java, Node.js, Flutter, .NET & more",
+          "version": null
+        },
+        {
+          "agentSummary": "yutu is an AI-assisted command-line and agent toolkit for authenticated YouTube workflows, including research, uploads, metadata, playlists, comments, captions, and channel management.",
+          "assessment": {
+            "alternatives": [
+              "YouTube Studio for manual management",
+              "Purpose-built scripts using the YouTube Data API"
+            ],
+            "audiences": [
+              "YouTube channel operators comfortable with command-line tools",
+              "Developers automating approved YouTube workflows"
+            ],
+            "caveats": [
+              "Automation can make consequential public changes",
+              "OAuth tokens and channel permissions require careful handling"
+            ],
+            "complements": [
+              "YouTube Studio",
+              "Secure credential storage",
+              "A human editorial review process"
+            ],
+            "prerequisites": [
+              "A Google OAuth client and authorized YouTube account",
+              "Understanding of YouTube permissions and API quotas"
+            ],
+            "useCases": [
+              "Managing video metadata and playlists",
+              "Researching channel and video information through authenticated APIs"
+            ]
+          },
+          "category": "ai",
+          "displayName": "yutu",
+          "docs": "https://github.com/eat-pray-ai/yutu#readme",
+          "homepage": "https://yutu.ifor.dev",
+          "id": "brew:yutu",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ayutu",
+          "lastUpdatedAt": "2026-07-25T22:12:53Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/eat-pray-ai/yutu",
+          "researchedAt": "2026-07-27T13:01:16Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "yutu project repository",
+              "url": "https://github.com/eat-pray-ai/yutu"
+            },
+            {
+              "kind": "primary",
+              "title": "yutu product documentation",
+              "url": "https://yutu.ifor.dev/"
+            }
+          ],
+          "upstreamSummary": "MCP server and CLI for YouTube",
+          "version": null
+        }
+      ],
+      "selection": {
+        "firstStableReleaseAt": "2025-06-18T14:13:17Z",
+        "firstStableReleaseSourceURL": "https://github.com/dyoshikawa/rulesync/releases/tag/0.1.0",
+        "rationale": "newer"
+      },
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "Rulesync project repository",
+          "url": "https://github.com/dyoshikawa/rulesync"
+        },
+        {
+          "kind": "primary",
+          "title": "Rulesync releases",
+          "url": "https://github.com/dyoshikawa/rulesync/releases"
+        },
+        {
+          "kind": "primary",
+          "title": "Rulesync documentation",
+          "url": "https://rulesync.dyoshikawa.com/"
+        },
+        {
+          "kind": "independent",
+          "title": "AGENTS.md open format",
+          "url": "https://agents.md/"
+        }
+      ],
+      "title": "Rulesync: One Set of Instructions, Many Agents",
+      "type": "editorial"
+    },
+    {
+      "batchID": "20260727T130116Z-edd93d29",
+      "id": "for-you:developer-tools:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "The semantic version parser used by npm.",
+          "category": "developer-tools",
+          "displayName": "semver",
+          "homepage": "https://github.com/npm/node-semver#readme",
+          "id": "npm:semver",
+          "installURL": "pkgmgrmgr://install?package=npm%3Asemver",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "RFC9562 UUIDs",
+          "category": "developer-tools",
+          "displayName": "uuid",
+          "homepage": "https://github.com/uuidjs/uuid#readme",
+          "id": "npm:uuid",
+          "installURL": "pkgmgrmgr://install?package=npm%3Auuid",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "An extremely fast JavaScript and CSS bundler and minifier.",
+          "category": "developer-tools",
+          "displayName": "esbuild",
+          "homepage": "https://github.com/evanw/esbuild#readme",
+          "id": "npm:esbuild",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aesbuild",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "resolve like require.resolve() on behalf of files asynchronously and synchronously",
+          "category": "developer-tools",
+          "displayName": "resolve",
+          "homepage": "https://github.com/browserify/resolve#readme",
+          "id": "npm:resolve",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aresolve",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "CLI tool to update caniuse-lite to refresh target browsers from Browserslist config",
+          "category": "developer-tools",
+          "displayName": "update-browserslist-db",
+          "homepage": "https://github.com/browserslist/update-db#readme",
+          "id": "npm:update-browserslist-db",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aupdate-browserslist-db",
+          "manager": "npm"
+        }
+      ],
+      "publishedAt": "2026-07-27T13:01:16Z",
+      "title": "For You in Developer Tools",
+      "type": "personalizedRecommendations"
+    },
+    {
+      "batchID": "20260727T130116Z-edd93d29",
+      "id": "new-packages:networking:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Dynamic DNS client with multiple providers support",
+          "category": "networking",
+          "displayName": "godns",
+          "homepage": "https://github.com/TimothyYe/godns",
+          "id": "brew:godns",
+          "installURL": "pkgmgrmgr://install?package=brew%3Agodns",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-27T13:01:16Z",
+      "title": "New Packages in Networking",
+      "type": "newPackages"
+    },
+    {
+      "batchID": "20260727T130116Z-edd93d29",
+      "id": "recently-updated:toys:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Creates ASCII Art from text. A full implementation of the FIGfont spec.",
+          "category": "toys",
+          "displayName": "figlet",
+          "homepage": "https://github.com/patorjk/figlet.js#readme",
+          "id": "npm:figlet",
+          "installURL": "pkgmgrmgr://install?package=npm%3Afiglet",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Cowsay but with ponies",
+          "category": "toys",
+          "displayName": "ponysay",
+          "homepage": "https://github.com/erkin/ponysay/",
+          "id": "brew:ponysay",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aponysay",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Generates ASCII tractor art",
+          "category": "toys",
+          "displayName": "tractorgen",
+          "homepage": "https://vergenet.net/~conrad/software/tractorgen/",
+          "id": "brew:tractorgen",
+          "installURL": "pkgmgrmgr://install?package=brew%3Atractorgen",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Small, configurable CLI that displays Japanese quotes in the terminal",
+          "category": "toys",
+          "displayName": "kotofetch",
+          "homepage": "https://github.com/hxpe-dev/kotofetch",
+          "id": "brew:kotofetch",
+          "installURL": "pkgmgrmgr://install?package=brew%3Akotofetch",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Infamous electronic fortune-cookie generator",
+          "category": "toys",
+          "displayName": "fortune",
+          "homepage": "https://www.ibiblio.org/pub/linux/games/amusements/fortune/!INDEX.html",
+          "id": "brew:fortune",
+          "installURL": "pkgmgrmgr://install?package=brew%3Afortune",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-27T13:01:16Z",
+      "title": "Recently Updated in Toys",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260727T130116Z-edd93d29",
+      "id": "for-you:cloud-infrastructure:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Fun, full-featured, fully-local simulator for Cloudflare Workers",
+          "category": "cloud-infrastructure",
+          "displayName": "miniflare",
+          "homepage": "https://github.com/cloudflare/workers-sdk/tree/main/packages/miniflare#readme",
+          "id": "npm:miniflare",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aminiflare",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Command-line interface for all things Cloudflare Workers",
+          "category": "cloud-infrastructure",
+          "displayName": "wrangler",
+          "homepage": "https://github.com/cloudflare/workers-sdk#readme",
+          "id": "npm:wrangler",
+          "installURL": "pkgmgrmgr://install?package=npm%3Awrangler",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "AWS CDK CLI, the command line tool for CDK apps",
+          "category": "cloud-infrastructure",
+          "displayName": "aws-cdk",
+          "homepage": "https://github.com/aws/aws-cdk",
+          "id": "npm:aws-cdk",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aaws-cdk",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "The command-line interface for Vercel",
+          "category": "cloud-infrastructure",
+          "displayName": "vercel",
+          "homepage": "https://vercel.com",
+          "id": "npm:vercel",
+          "installURL": "pkgmgrmgr://install?package=npm%3Avercel",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "A Mock API for AWS Kinesis",
+          "category": "cloud-infrastructure",
+          "displayName": "kinesis-local",
+          "homepage": "https://github.com/etspaceman/kinesis-mock#readme",
+          "id": "npm:kinesis-local",
+          "installURL": "pkgmgrmgr://install?package=npm%3Akinesis-local",
+          "manager": "npm"
+        }
+      ],
+      "publishedAt": "2026-07-27T13:01:16Z",
+      "title": "For You in Cloud Infrastructure",
+      "type": "personalizedRecommendations"
+    },
+    {
+      "batchID": "20260727T130116Z-edd93d29",
+      "id": "new-packages:ai:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Fast local AI engine for Apple Silicon with an OpenAI-compatible API",
+          "category": "ai",
+          "displayName": "rapid-mlx",
+          "homepage": "https://github.com/raullenchai/Rapid-MLX",
+          "id": "brew:rapid-mlx",
+          "installURL": "pkgmgrmgr://install?package=brew%3Arapid-mlx",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Dependency manager for AI agent configuration",
+          "category": "ai",
+          "displayName": "apm",
+          "homepage": "https://microsoft.github.io/apm/",
+          "id": "brew:apm",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aapm",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-27T13:01:16Z",
+      "title": "New Packages in Ai",
+      "type": "newPackages"
+    },
+    {
+      "batchID": "20260727T130116Z-edd93d29",
+      "id": "recently-updated:cloud-infrastructure:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Command-line tool for interacting with the balenaCloud and balena API",
+          "category": "cloud-infrastructure",
+          "displayName": "balena-cli",
+          "homepage": "https://docs.balena.io/reference/balena-cli/latest/",
+          "id": "brew:balena-cli",
+          "installURL": "pkgmgrmgr://install?package=brew%3Abalena-cli",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "CLI tool for managed OpenShift clusters",
+          "category": "cloud-infrastructure",
+          "displayName": "osdctl",
+          "homepage": "https://github.com/openshift/osdctl",
+          "id": "brew:osdctl",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aosdctl",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Terminal dashboard for Docker monitoring across multiple hosts",
+          "category": "cloud-infrastructure",
+          "displayName": "dtop",
+          "homepage": "https://dtop.dev/",
+          "id": "brew:dtop",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adtop",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "RedHat OpenShift Service on AWS (ROSA) command-line interface",
+          "category": "cloud-infrastructure",
+          "displayName": "rosa-cli",
+          "homepage": "https://www.openshift.com/products/amazon-openshift",
+          "id": "brew:rosa-cli",
+          "installURL": "pkgmgrmgr://install?package=brew%3Arosa-cli",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Linux-native \"fake root\" for implementing rootless containers",
+          "category": "cloud-infrastructure",
+          "displayName": "rootlesskit",
+          "homepage": "https://github.com/rootless-containers/rootlesskit",
+          "id": "brew:rootlesskit",
+          "installURL": "pkgmgrmgr://install?package=brew%3Arootlesskit",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-27T13:01:16Z",
+      "title": "Recently Updated in Cloud Infrastructure",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260727T130116Z-edd93d29",
+      "id": "for-you:games:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Query for the status of any game server in Node.JS",
+          "category": "games",
+          "displayName": "gamedig",
+          "homepage": "https://github.com/gamedig/node-gamedig#readme",
+          "id": "npm:gamedig",
+          "installURL": "pkgmgrmgr://install?package=npm%3Agamedig",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "The Stockfish chess engine in Web Assembly (WASM)",
+          "category": "games",
+          "displayName": "stockfish",
+          "homepage": "https://github.com/nmrugg/stockfish.js#readme",
+          "id": "npm:stockfish",
+          "installURL": "pkgmgrmgr://install?package=npm%3Astockfish",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Rom manager for AdvanceMAME/MESS",
+          "category": "games",
+          "displayName": "advancescan",
+          "homepage": "https://www.advancemame.it/scan-readme.html",
+          "id": "brew:advancescan",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aadvancescan",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Near-future Sci-Fi roguelike and tactical squad combat game",
+          "category": "games",
+          "displayName": "allureofthestars",
+          "homepage": "https://allureofthestars.com/",
+          "id": "brew:allureofthestars",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aallureofthestars",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Dungeon exploration game",
+          "category": "games",
+          "displayName": "angband",
+          "homepage": "https://rephial.org/",
+          "id": "brew:angband",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aangband",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-27T13:01:16Z",
+      "title": "For You in Games",
+      "type": "personalizedRecommendations"
+    },
+    {
+      "batchID": "20260727T130116Z-edd93d29",
+      "id": "new-packages:developer-tools:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Opinionated Dockerfile linter",
+          "category": "developer-tools",
+          "displayName": "droast",
+          "homepage": "https://ewry.net/droast-dockerfile-linter/",
+          "id": "brew:droast",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adroast",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Manage multiple git repos with sanity",
+          "category": "developer-tools",
+          "displayName": "gita",
+          "homepage": "https://github.com/nosarthur/gita",
+          "id": "brew:gita",
+          "installURL": "pkgmgrmgr://install?package=brew%3Agita",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Language server implementation for WGSL and WESL",
+          "category": "developer-tools",
+          "displayName": "wgsl-analyzer",
+          "homepage": "https://wgsl-analyzer.github.io",
+          "id": "brew:wgsl-analyzer",
+          "installURL": "pkgmgrmgr://install?package=brew%3Awgsl-analyzer",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Very fast linker for Linux",
+          "category": "developer-tools",
+          "displayName": "wild",
+          "homepage": "https://github.com/wild-linker/wild",
+          "id": "brew:wild",
+          "installURL": "pkgmgrmgr://install?package=brew%3Awild",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-27T13:01:16Z",
+      "title": "New Packages in Developer Tools",
+      "type": "newPackages"
+    },
+    {
+      "artwork": {
+        "alt": "An abstract compass joins three looping paths on a luminous mountain grid at sunrise.",
+        "attribution": "Generated with OpenAI image generation",
+        "boxColors": {
+          "backgroundEnd": "#B8DCCB",
+          "backgroundStart": "#09253A",
+          "foreground": "#FFFFFF"
+        },
+        "license": "OpenAI-generated asset for PMM Discover",
+        "path": "feed/assets/feedback-loops-2026-07-23.png"
+      },
+      "batchID": "20260723T140545Z-5a5a6745",
+      "body": "## A faster tool is not automatically a faster team\n\nDeveloper tooling earns its keep by shortening the interval between a change and a trustworthy decision. A formatter that finishes quickly is useful when it lets a pull request move from \"did we agree on this file?\" to the next substantive question. A type checker is useful when its diagnostics arrive while the code is still in the editor, not after a long CI queue. Browser automation is useful when it makes a real workflow observable without turning every verification into a manual ritual.\n\nThat framing matters because tool speed is easy to measure and team feedback is not. The three projects here—Oxfmt, ty, and agent-browser—sit at different points in the loop. Their appeal is not that every repository should replace its existing stack. It is that they make the boundaries of the loop visible: formatting, static analysis, and behavior in an actual browser.\n\n## Oxfmt: a new formatter direction\n\nOxfmt entered alpha in December 2025 and reached beta in February 2026. The Oxc team describes it as a Rust-powered, Prettier-compatible formatter for JavaScript and TypeScript. Its stated early performance figures are impressive, but compatibility is the more practical reason to look: formatters only save time when they produce stable, reviewable output across the code a team actually owns.\n\nFor a repository already using Prettier, the safe question is not \"is Oxfmt faster?\" It is **which files, options, embedded languages, and plugins behave the same enough for us?** Start with `--check` on a representative branch, then inspect differences by category. A one-off formatting migration can create a noisy diff; a gradual trial on new or contained packages gives the team a clean rollback path.\n\nBeta status is a real tradeoff. Oxfmt's roadmap still includes compatibility and plugin work, and a formatter's edge cases can be exactly where a mature codebase has accumulated conventions. That does not rule it out. It argues for treating it as a measured experiment, with a baseline and an exit.\n\n## Ty: keep type feedback near the edit\n\nAstral's ty is a Rust-based Python type checker with official binaries, package installation paths, and editor-oriented documentation. It belongs in the same conversation because formatting is only one kind of cheap feedback. Type diagnostics can turn an integration mistake into a local correction before it becomes a failed test, a review comment, or a production bug.\n\nPython teams should expect differences from their current checker. Annotation interpretation, supported features, configuration, and diagnostic wording all affect adoption. That makes a shadow run more useful than a wholesale switch: run ty beside Pyright or mypy in CI, classify the new findings, and decide which are signal. The goal is not to maximize the number of warnings. The goal is to make **useful** warnings arrive early enough to change behavior.\n\n## Agent Browser: the boundary where state becomes real\n\nAgent-browser addresses the last, messier segment of the loop: observing and interacting with a browser. Its release history documents a fast-moving command-line surface for snapshots, navigation, sessions, network inspection, and browser providers. That can be a strong fit for agent workflows and repeatable browser checks, especially when raw browser state is easier to inspect than a screenshot alone.\n\nBut browser automation has a different failure mode from formatting and type checking: it can cause side effects. A script that clicks a destructive control, submits a form, or operates with a logged-in session needs explicit limits. Keep production credentials out of exploratory runs, use test accounts where possible, and constrain destinations with allowlists or environment-level safeguards. Speed without containment is merely a quicker route to a bad action.\n\n## Build the loop in layers\n\nA pragmatic trial can be small:\n\n- Use Oxfmt in check-only mode on one JavaScript or TypeScript package.\n- Run ty alongside the existing Python checker and review only the disagreements.\n- Point agent-browser at a staging workflow with a deliberately narrow action policy.\n\nThe shared lesson is that fast tools work best as **small, reversible feedback loops**. Measure wall-clock time, but also measure review noise, false positives, and whether a developer can act on the result without opening another ticket. Retain the tools that make a decision faster; leave the rest at the boundary until their maturity catches up.",
+      "deck": "Three newer developer tools show why speed matters most when it shortens a decision, not simply a benchmark.",
+      "id": "editorial:2026-07-23:feedback-loops-where-fast-tools-help-and-where-they-dont",
+      "package": {
+        "agentSummary": "Oxfmt is a Rust-powered formatter for JavaScript and TypeScript projects, aiming for Prettier compatibility while reducing formatting time in large repositories and continuous-integration workflows.",
+        "assessment": {
+          "alternatives": [
+            "Prettier",
+            "Biome formatter"
+          ],
+          "audiences": [
+            "JavaScript and TypeScript teams with slow formatting checks"
+          ],
+          "caveats": [
+            "Oxfmt is beta and compatibility gaps may remain",
+            "Plugin and embedded-language support should be verified per repository"
+          ],
+          "complements": [
+            "Type checking",
+            "Linting",
+            "Pre-commit hooks"
+          ],
+          "prerequisites": [
+            "A JavaScript or TypeScript project",
+            "Tolerance for a beta-stage formatter"
+          ],
+          "useCases": [
+            "Replacing or evaluating Prettier-compatible repository formatting",
+            "Running formatting checks in CI"
+          ]
+        },
+        "category": "developer-tools",
+        "displayName": "oxfmt",
+        "docs": "https://github.com/oxc-project/oxc#readme",
+        "homepage": "https://oxc.rs/",
+        "id": "brew:oxfmt",
+        "installURL": "pkgmgrmgr://install?package=brew%3Aoxfmt",
+        "lastUpdatedAt": "2026-07-23T01:09:21Z",
+        "manager": "homebrew",
+        "repository": "https://github.com/oxc-project/oxc",
+        "researchedAt": "2026-07-23T14:05:45Z",
+        "sources": [
+          {
+            "kind": "primary",
+            "title": "Oxfmt beta announcement",
+            "url": "https://oxc.rs/blog/2026-02-24-oxfmt-beta"
+          },
+          {
+            "kind": "primary",
+            "title": "Oxfmt alpha announcement",
+            "url": "https://oxc.rs/blog/2025-12-01-oxfmt-alpha.html"
+          }
+        ],
+        "upstreamSummary": "High-performance formatting tool for JavaScript and TypeScript",
+        "version": null
+      },
+      "primaryPackageID": "brew:oxfmt",
+      "publishedAt": "2026-07-23T14:05:45Z",
+      "relatedPackages": [
+        {
+          "agentSummary": "Oxfmt is a Rust-powered formatter for JavaScript and TypeScript projects, aiming for Prettier compatibility while reducing formatting time in large repositories and continuous-integration workflows.",
+          "assessment": {
+            "alternatives": [
+              "Prettier",
+              "Biome formatter"
+            ],
+            "audiences": [
+              "JavaScript and TypeScript teams with slow formatting checks"
+            ],
+            "caveats": [
+              "Oxfmt is beta and compatibility gaps may remain",
+              "Plugin and embedded-language support should be verified per repository"
+            ],
+            "complements": [
+              "Type checking",
+              "Linting",
+              "Pre-commit hooks"
+            ],
+            "prerequisites": [
+              "A JavaScript or TypeScript project",
+              "Tolerance for a beta-stage formatter"
+            ],
+            "useCases": [
+              "Replacing or evaluating Prettier-compatible repository formatting",
+              "Running formatting checks in CI"
+            ]
+          },
+          "category": "developer-tools",
+          "displayName": "oxfmt",
+          "docs": "https://github.com/oxc-project/oxc#readme",
+          "homepage": "https://oxc.rs/",
+          "id": "brew:oxfmt",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aoxfmt",
+          "lastUpdatedAt": "2026-07-23T01:09:21Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/oxc-project/oxc",
+          "researchedAt": "2026-07-23T14:05:45Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "Oxfmt beta announcement",
+              "url": "https://oxc.rs/blog/2026-02-24-oxfmt-beta"
+            },
+            {
+              "kind": "primary",
+              "title": "Oxfmt alpha announcement",
+              "url": "https://oxc.rs/blog/2025-12-01-oxfmt-alpha.html"
+            }
+          ],
+          "upstreamSummary": "High-performance formatting tool for JavaScript and TypeScript",
+          "version": null
+        },
+        {
+          "agentSummary": "Ty is Astral's Rust-based Python type checker, designed for rapid feedback and gradual adoption while its evolving diagnostics, configuration, and language support continue to mature.",
+          "assessment": {
+            "alternatives": [
+              "Pyright",
+              "mypy"
+            ],
+            "audiences": [
+              "Python developers adding or accelerating static analysis"
+            ],
+            "caveats": [
+              "Ty remains pre-1.0",
+              "Migration may expose different interpretation of annotations"
+            ],
+            "complements": [
+              "Ruff",
+              "Pyright",
+              "pytest"
+            ],
+            "prerequisites": [
+              "Python code with useful annotations",
+              "A plan for handling checker differences"
+            ],
+            "useCases": [
+              "Editor diagnostics",
+              "CI type-checking experiments",
+              "Comparing type checker behavior"
+            ]
+          },
+          "category": "developer-tools",
+          "displayName": "ty",
+          "docs": "https://docs.astral.sh/ty",
+          "homepage": "https://docs.astral.sh/ty/",
+          "id": "brew:ty",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aty",
+          "lastUpdatedAt": "2026-07-23T04:05:44Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/astral-sh/ty",
+          "researchedAt": "2026-07-23T14:05:45Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "Ty documentation",
+              "url": "https://docs.astral.sh/ty/"
+            },
+            {
+              "kind": "primary",
+              "title": "Ty installation documentation",
+              "url": "https://docs.astral.sh/ty/installation/"
+            }
+          ],
+          "upstreamSummary": "Extremely fast Python type checker, written in Rust",
+          "version": null
+        },
+        {
+          "agentSummary": "Agent Browser is a command-line browser automation tool for AI agents, exposing structured navigation, inspection, interaction, and session controls through a compact terminal-first interface.",
+          "assessment": {
+            "alternatives": [
+              "Playwright",
+              "Selenium",
+              "Puppeteer"
+            ],
+            "audiences": [
+              "Developers building browser-using agents",
+              "Teams testing browser workflows"
+            ],
+            "caveats": [
+              "Browser automation can trigger real side effects",
+              "Version changes may alter commands and integrations"
+            ],
+            "complements": [
+              "End-to-end tests",
+              "Domain allowlists",
+              "CI isolation"
+            ],
+            "prerequisites": [
+              "A supported browser or remote browser provider",
+              "Clear safeguards for real-world actions"
+            ],
+            "useCases": [
+              "Structured browser automation",
+              "Inspecting page state",
+              "Repeatable agent-driven checks"
+            ]
+          },
+          "category": "ai",
+          "displayName": "agent-browser",
+          "docs": "https://agent-browser.dev/",
+          "homepage": "https://agent-browser.dev/",
+          "id": "brew:agent-browser",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aagent-browser",
+          "lastUpdatedAt": "2026-07-23T03:37:51Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/vercel-labs/agent-browser",
+          "researchedAt": "2026-07-23T14:05:45Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "Agent Browser documentation",
+              "url": "https://agent-browser.dev/"
+            },
+            {
+              "kind": "primary",
+              "title": "Agent Browser release history",
+              "url": "https://github.com/vercel-labs/agent-browser/releases"
+            }
+          ],
+          "upstreamSummary": "Browser automation CLI for AI agents",
+          "version": null
+        }
+      ],
+      "selection": {
+        "newerOverride": {
+          "reason": "Oxfmt is a newly introduced formatter direction: it entered alpha in December 2025 and beta in February 2026, with a distinct Prettier-compatible Rust implementation.",
+          "sourceURL": "https://oxc.rs/blog/2026-02-24-oxfmt-beta"
+        },
+        "rationale": "newer"
+      },
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "Oxfmt alpha announcement",
+          "url": "https://oxc.rs/blog/2025-12-01-oxfmt-alpha.html"
+        },
+        {
+          "kind": "primary",
+          "title": "Oxfmt beta announcement",
+          "url": "https://oxc.rs/blog/2026-02-24-oxfmt-beta"
+        },
+        {
+          "kind": "primary",
+          "title": "Ty documentation",
+          "url": "https://docs.astral.sh/ty/"
+        },
+        {
+          "kind": "primary",
+          "title": "Agent Browser release history",
+          "url": "https://github.com/vercel-labs/agent-browser/releases"
+        }
+      ],
+      "title": "Faster Feedback Loops Need Clear Boundaries",
+      "type": "editorial"
+    },
+    {
+      "batchID": "20260723T140545Z-264ab575",
+      "id": "for-you:security:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "A tiny (118 bytes), secure URL-friendly unique string ID generator",
+          "category": "security",
+          "displayName": "nanoid",
+          "homepage": "https://github.com/ai/nanoid#readme",
+          "id": "npm:nanoid",
+          "installURL": "pkgmgrmgr://install?package=npm%3Ananoid",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Streamable SHA hashes in pure javascript",
+          "category": "security",
+          "displayName": "sha.js",
+          "homepage": "https://github.com/crypto-browserify/sha.js",
+          "id": "npm:sha.js",
+          "installURL": "pkgmgrmgr://install?package=npm%3Asha.js",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Optimized bcrypt in plain JavaScript with zero dependencies, with TypeScript support. Compatible to 'bcrypt'.",
+          "category": "security",
+          "displayName": "bcryptjs",
+          "homepage": "https://github.com/dcodeIO/bcrypt.js#readme",
+          "id": "npm:bcryptjs",
+          "installURL": "pkgmgrmgr://install?package=npm%3Abcryptjs",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "detect possibly catastrophic, exponential-time regular expressions",
+          "category": "security",
+          "displayName": "safe-regex2",
+          "homepage": "https://github.com/fastify/safe-regex2",
+          "id": "npm:safe-regex2",
+          "installURL": "pkgmgrmgr://install?package=npm%3Asafe-regex2",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Sanitize untrusted HTML (to prevent XSS) with a configuration specified by a Whitelist",
+          "category": "security",
+          "displayName": "xss",
+          "homepage": "https://github.com/leizongmin/js-xss",
+          "id": "npm:xss",
+          "installURL": "pkgmgrmgr://install?package=npm%3Axss",
+          "manager": "npm"
+        }
+      ],
+      "publishedAt": "2026-07-23T14:05:45Z",
+      "title": "For You in Security",
+      "type": "personalizedRecommendations"
+    },
+    {
+      "batchID": "20260723T140545Z-264ab575",
+      "id": "recently-updated:networking:20260731T130236Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Modern, easy to use download automation for torrents and usenet",
+          "category": "networking",
+          "displayName": "autobrr",
+          "homepage": "https://autobrr.com/",
+          "id": "brew:autobrr",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aautobrr",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Network interference detection tool",
+          "category": "networking",
+          "displayName": "ooniprobe",
+          "homepage": "https://ooni.org/",
+          "id": "brew:ooniprobe",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aooniprobe",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Monitor DHCP traffic for debugging purposes",
+          "category": "networking",
+          "displayName": "dhcpdump",
+          "homepage": "https://github.com/dhcpdump-org/dhcpdump",
+          "id": "brew:dhcpdump",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adhcpdump",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Active monitoring software to detect failures before your customers do",
+          "category": "networking",
+          "displayName": "cloudprober",
+          "homepage": "https://cloudprober.org",
+          "id": "brew:cloudprober",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acloudprober",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Cloudflare-based speed test with optional TUI",
+          "category": "networking",
+          "displayName": "cloudflare-speed-cli",
+          "homepage": "https://github.com/kavehtehrani/cloudflare-speed-cli",
+          "id": "brew:cloudflare-speed-cli",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acloudflare-speed-cli",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-23T14:05:45Z",
+      "title": "Recently Updated in Networking",
+      "type": "recentlyUpdated"
+    }
+  ],
+  "generatedAt": "2026-07-31T13:02:36Z",
+  "nextPageURL": "https://mxcl.dev/package-manager-manager/feed/v2/pages/20260731T130236Z-45c3054e.json",
+  "pageID": "20260731T130236Z-9959399f",
+  "schemaVersion": 2
+}
