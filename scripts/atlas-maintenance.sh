@@ -29,3 +29,4 @@ chmod 0640 "${next_json}"
 mv -f "${next_db}" "${live_db}"
 mv -f "${next_json}" "${live_json}"
 curl -fsS http://127.0.0.1:3004/healthz >/dev/null
+scripts/nightly-discover-feed.sh
