@@ -69,7 +69,7 @@ class NightlyMaintenanceTests(unittest.TestCase):
         enrich_projects = load_enrich_projects()
 
         with mock.patch.dict("os.environ", {}, clear=True):
-            self.assertEqual(enrich_projects.codex_timeout_seconds(), 900)
+            self.assertEqual(enrich_projects.codex_timeout_seconds(), 1800)
 
     def test_codex_cli_timeout_can_be_customized_or_disabled(self):
         enrich_projects = load_enrich_projects()

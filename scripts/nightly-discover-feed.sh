@@ -50,7 +50,6 @@ for ((pass = 1; pass <= max_agent_passes; pass++)); do
       echo "error: Discover feed left tracked changes after validation" >&2
       exit 1
     }
-    git push origin main
     "${repo_root}/scripts/publish-discover-feed-atlas.sh"
     exit 0
   fi

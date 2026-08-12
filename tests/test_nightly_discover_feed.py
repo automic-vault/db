@@ -27,7 +27,7 @@ class NightlyDiscoverFeedTests(unittest.TestCase):
         self.assertIn('PMM_FEED_STATUS=NEEDS_AGENT', script)
         self.assertIn('codex --search --ask-for-approval never exec', script)
         self.assertIn('"${repo_root}/scripts/update-discover-feed" --check', script)
-        self.assertIn('git push origin main', script)
+        self.assertNotIn('git push', script)
         self.assertIn('"${repo_root}/scripts/publish-discover-feed-atlas.sh"', script)
         self.assertLess(
             script.index('"${repo_root}/scripts/update-discover-feed" --check'),

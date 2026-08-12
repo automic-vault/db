@@ -891,6 +891,49 @@ class EnrichmentTests(unittest.TestCase):
             self.assertEqual(manifest["batches"][0]["status"], "checkpointed")
             invoke_codex.assert_not_called()
 
+    def test_codex_timeout_isolated_to_one_batch(self):
+        module = load_enrich_projects_module()
+        args = sample_enrich_project_args()
+        args.batch_size = 1
+        first = {**sample_record(), "id": "brew:first"}
+        second = {**sample_record(), "id": "brew:second"}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            run_dir = tmp_root / "cache" / "enrichment" / "runs" / "unit-run"
+            with mock.patch.object(module, "ROOT", tmp_root):
+                manifest = module.prepare_run(args, [first, second], run_dir)
+                with mock.patch.object(module, "invoke_codex", side_effect=[False, True]) as invoke_codex:
+                    module.invoke_codex_cli_for_pending_batches(args, manifest)
+
+            self.assertEqual(invoke_codex.call_count, 2)
+            first_status = json.loads((run_dir / "batches" / "0001" / "status.json").read_text())
+            second_status = json.loads((run_dir / "batches" / "0002" / "status.json").read_text())
+            self.assertEqual(first_status["status"], "timed-out")
+            self.assertEqual(second_status["status"], "codex-cli-completed")
+
+    def test_timed_out_batch_does_not_fail_apply_phase(self):
+        module = load_enrich_projects_module()
+        args = sample_enrich_project_args()
+        record = sample_record()
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_root = Path(tmp)
+            run_dir = tmp_root / "cache" / "enrichment" / "runs" / "unit-run"
+            state_path = tmp_root / "cache" / "enrichment" / "state.json"
+            state_path.parent.mkdir(parents=True)
+            with mock.patch.object(module, "ROOT", tmp_root):
+                manifest = module.prepare_run(args, [record], run_dir)
+                batch_dir = run_dir / "batches" / "0001"
+                module.write_batch_status(batch_dir, {"batch": "0001", "status": "timed-out"})
+                exit_code = module.apply_prepared_batches(
+                    args, manifest, [record], {}, state_path, run_dir, date.today().isoformat()
+                )
+
+            self.assertEqual(exit_code, 0)
+            status = json.loads((batch_dir / "status.json").read_text())
+            self.assertEqual(status["status"], "timed-out")
+
     def test_validation_aggregates_duplicate_errors_and_counts_rejected_ids(self):
         normalized, errors, invalid_results = validate_codex_payload_partial(
             {

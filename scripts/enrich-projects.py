@@ -33,7 +33,7 @@ from scripts.enrichment import (
 
 
 SCHEMA_PATH = ROOT / "schemas" / "codex-project-enrichment-output.schema.json"
-DEFAULT_CODEX_TIMEOUT_SECONDS = 15 * 60
+DEFAULT_CODEX_TIMEOUT_SECONDS = 30 * 60
 PATH_LOCATION_PLATFORMS = ("unix", "linux", "macos", "windows")
 ENRICH_BACKENDS = ("codex-cli", "external")
 ENRICH_PHASES = ("run", "prepare", "apply")
@@ -146,7 +146,7 @@ def write_output_schema(output_schema_path: Path, expected_ids: set[str]) -> Non
     write_json(output_schema_path, schema)
 
 
-def invoke_codex(prompt_path: Path, output_path: Path, output_schema_path: Path) -> None:
+def invoke_codex(prompt_path: Path, output_path: Path, output_schema_path: Path) -> bool:
     prompt = prompt_path.read_text(encoding="utf-8")
     command = [
         "codex",
@@ -173,7 +173,9 @@ def invoke_codex(prompt_path: Path, output_path: Path, output_schema_path: Path)
         subprocess.run(command, cwd=ROOT, check=True, timeout=timeout, stdin=subprocess.DEVNULL)
     except subprocess.TimeoutExpired as err:
         seconds = int(timeout) if timeout is not None else 0
-        raise SystemExit(f"Codex enrichment timed out after {seconds}s for {prompt_path}") from err
+        print(f"WARN: Codex enrichment timed out after {seconds}s for {prompt_path}", file=sys.stderr)
+        return False
+    return True
 
 
 def batches(items: list[dict[str, Any]], size: int) -> list[list[dict[str, Any]]]:
@@ -334,11 +336,15 @@ def invoke_codex_cli_for_pending_batches(args: argparse.Namespace, manifest: dic
             write_batch_status(batch_dir, {"batch": batch["batch"], "status": "checkpointed"})
             print(f"SKIP batch {batch['batch']}; valid checkpoint exists")
             continue
-        invoke_codex(
+        completed = invoke_codex(
             ROOT / str(batch["prompt_path"]),
             ROOT / str(batch["codex_output_path"]),
             ROOT / str(batch["output_schema_path"]),
         )
+        if not completed:
+            write_batch_status(batch_dir, {"batch": batch["batch"], "status": "timed-out"})
+            print(f"TIMEOUT batch {batch['batch']}; continuing with remaining batches", file=sys.stderr)
+            continue
         write_batch_status(batch_dir, {"batch": batch["batch"], "status": "codex-cli-completed"})
         print(f"CODEX-CLI batch {batch['batch']} completed")
 
@@ -366,6 +372,8 @@ def apply_prepared_batches(
         batch_summary = empty_summary(len(expected_ids))
         normalized_path = ROOT / str(batch["normalized_output_path"])
         codex_output_path = ROOT / str(batch["codex_output_path"])
+        batch_status = read_json(batch_status_path(batch_dir), default={})
+        timed_out = isinstance(batch_status, dict) and batch_status.get("status") == "timed-out"
 
         checkpoint = None if args.force else load_valid_checkpoint(normalized_path, expected_ids)
         if checkpoint is not None:
@@ -373,7 +381,7 @@ def apply_prepared_batches(
             error_summary = []
             write_batch_status(batch_dir, {"batch": batch_name, "status": "checkpointed"})
             print(f"SKIP batch {batch_name}; valid checkpoint exists")
-        elif codex_output_path.exists():
+        elif codex_output_path.exists() and not timed_out:
             normalized, errors, invalid, error_summary = validate_and_write_batch(
                 codex_output_path,
                 normalized_path,
@@ -382,7 +390,12 @@ def apply_prepared_batches(
             write_batch_status(batch_dir, {"batch": batch_name, "status": "validated", "errors": len(errors)})
             print(f"VALIDATED batch {batch_name} valid={len(normalized)} errors={len(errors)}")
         else:
-            errors = [f"missing codex output for batch {batch_name}: {codex_output_path}"]
+            error = (
+                f"codex timed out for batch {batch_name}"
+                if timed_out
+                else f"missing codex output for batch {batch_name}: {codex_output_path}"
+            )
+            errors = [error]
             normalized = []
             invalid = []
             error_summary = validation_error_summary(errors)
@@ -390,8 +403,9 @@ def apply_prepared_batches(
                 normalized_path,
                 {"results": [], "errors": errors, "error_summary": error_summary, "invalid": []},
             )
-            write_batch_status(batch_dir, {"batch": batch_name, "status": "missing-output", "errors": len(errors)})
-            print(f"Batch {batch_name} missing output; see {codex_output_path}", file=sys.stderr)
+            status = "timed-out" if timed_out else "missing-output"
+            write_batch_status(batch_dir, {"batch": batch_name, "status": status, "errors": len(errors)})
+            print(f"Batch {batch_name} {status}; see {codex_output_path}", file=sys.stderr)
 
         batch_summary["rejected"] += validation_rejection_count(expected_ids, normalized)
         all_normalized.extend(normalized)
@@ -399,10 +413,12 @@ def apply_prepared_batches(
         all_invalid.extend(invalid)
 
         if not normalized:
-            failed_batches += 1
+            if not timed_out:
+                failed_batches += 1
             write_json(batch_dir / "apply-summary.json", batch_summary)
             write_json(state_path, state)
-            print(f"Batch {batch_name} failed validation; see {normalized_path}", file=sys.stderr)
+            outcome = "timed out" if timed_out else "failed validation"
+            print(f"Batch {batch_name} {outcome}; see {normalized_path}", file=sys.stderr)
             if error_summary:
                 top_error = error_summary[0]
                 print(f"Top validation error: {top_error['error']} ({top_error['count']})", file=sys.stderr)
