@@ -2,64 +2,54 @@
   "content": [
     {
       "artwork": {
-        "alt": "An abstract dark-blue globe linked by cyan resolver arcs, suggesting DNS propagation across a global network.",
-        "attribution": "Generated with OpenAI image generation for Package Manager Manager.",
+        "alt": "A glowing cursor path travels from an abstract keyboard through connected teal database tables across a dark layered landscape.",
+        "attribution": "Generated with OpenAI image generation",
         "boxColors": {
-          "backgroundEnd": "#31206A",
-          "backgroundStart": "#07162F",
+          "backgroundEnd": "#0B2940",
+          "backgroundStart": "#061326",
           "foreground": "#FFFFFF"
         },
-        "license": "OpenAI generated asset; use with this feed.",
-        "path": "feed/assets/dnsglobe-global-propagation-2026-08-08.png"
+        "license": "OpenAI terms of use",
+        "path": "feed/assets/vi-sql-keyboard-database-2026-08-13.png"
       },
-      "body": "DNS changes have an awkward failure mode: the authoritative configuration can be correct while the internet still appears inconsistent. A resolver may hold an earlier answer until its cache expires; a geographically distributed service may legitimately reply differently; and a deployment team can waste time treating those states as the same incident. **dnsglobe** is a terminal tool built to make that comparison visible instead of relying on a succession of one-off lookups.\n\n## A short, purpose-built release trail\n\nThe project’s public GitHub release history begins in 2026, with tagged releases progressing through 0.5.0 in August. Its README describes a Rust terminal UI that queries 34 public resolvers in parallel, then groups matching answers rather than calling every differing IP a failure. That is a useful framing for domains behind round-robin or geographically aware DNS: agreement is about the record set and the resolver’s point of view, not a promise that every client receives one address.\n\nThe interface is deliberately operational. It presents response state, latency, TTL, and a propagation gauge; on wide terminals it adds a map or globe. A non-interactive `--once` mode prints results and exits, which makes the tool more suitable for a scripted check than an interactive dashboard alone. It also documents EDNS Client Subnet support for comparing how a GeoDNS zone answers for specified client networks.\n\n## What the comparison actually tells you\n\nThe strongest use is after a controlled change: update a record, preserve the change time and intended answer, then compare a spread of public resolvers. A majority result can show that a change is moving through caches; a clustered minority can point to a resolver family or region worth checking. The tool also records failures and stale answers rather than silently collapsing them into a single verdict.\n\nThat visibility has limits. Public resolvers are samples, and anycast means the answering point can vary with the network path. A clean display does not validate an authoritative zone, prove client behavior inside a corporate network, or replace monitoring from the locations that matter to an application. Keep authoritative-provider tools, application probes, and ordinary DNS utilities in the workflow.\n\n## A disciplined rollout check\n\nUse the output as a checkpoint rather than a green light. Before changing DNS, note the expected record values and TTL. After publishing, query the authoritative nameservers directly, then use a resolver comparison to observe cache turnover. If a result is surprising, repeat it after the relevant TTL and test from a real application region. This sequence separates three questions that are often mixed together: whether the zone is correct, whether recursive caches have updated, and whether a user can reach the service. dnsglobe helps most with the middle question. Its world-oriented display adds context, but the response table and a saved `--once` result are the more durable evidence for a change record or incident note.\n\n## A compact field kit, not a platform\n\ndnsglobe pairs naturally with `dig` for a precise authoritative query and with deployment records that explain when a change should have taken effect. Its documented configuration can add or replace resolvers, helpful when an organization needs to include internal infrastructure. It should be treated as an investigation instrument: run it against a known domain, capture the result, and make the next decision from the evidence rather than the visualization alone.\n\nTwo nearby tools illustrate the distinction between focused utilities and broader adoption decisions. **usbtree** is likewise a local diagnostic TUI, but for USB topology and, on Linux, activity metrics. **HTTPX2** is a young Pydantic HTTP-client project intended for application code; its documentation and source are worth following, but a team should verify its API and maintenance posture before replacing an established production client.\n\nFor operators who already use terminal tooling during a DNS rollout, dnsglobe offers a clear new option: compare several resolver views in one place, use `--once` when an artifact is more valuable than a UI, and retain independent checks for the authoritative and client-side parts of the story.",
-      "deck": "A focused new terminal tool for comparing DNS answers across public resolvers while investigating a rollout.",
-      "id": "editorial:2026-08-08:dnsglobe-global-dns-propagation-in-the-terminal",
-      "primaryPackageID": "brew:dnsglobe",
-      "publishedAt": "2026-08-08T13:01:59Z",
+      "body": "## The database client is becoming a workspace\n\nA database terminal used to mean a prompt, a query, and a stream of rows. That model remains dependable, but it asks users to remember schema details, juggle output formatting, and reach for separate tools when a query plan or table relationship matters. Full graphical clients solve those problems with persistent panels and rich inspectors, yet they can feel detached from a terminal-centered development loop.\n\n**vi-sql** occupies the increasingly interesting space between those poles. It is a full-screen terminal interface with a schema browser, SQL editor, result tables, query-plan views, import and export tools, and connection profiles. Its defining choice is keyboard control: Vim and conventional profiles are included, bindings are remappable, and a command palette makes less-familiar actions discoverable. The result is not simply `psql` with color. It is an attempt to make database exploration feel like navigating an editor.\n\n## A genuinely young client\n\nThe upstream repository was created on February 27, 2026, and the project published stable release `v0.1.0` on June 2. That makes vi-sql a clear fit for a newer-tool slot, but the date should calibrate expectations as much as generate interest. Its release history is active, and the current documentation lists PostgreSQL, MySQL, MariaDB, SQLite, SQL Server, Oracle, DuckDB, CockroachDB, Turso, TiDB, and Redshift support. Breadth on a feature list is not the same as years of compatibility testing across each engine.\n\nThe public launch discussion provides unusually useful evidence of actual use. Readers asked about SQLite files, SSH tunneling, exports, and comparisons with Vim-oriented alternatives. One user traced a navigation problem to tmux intercepting `Ctrl-h`; another reported differences between vi-sql's word motion and Neovim's. The maintainer responded with fixes and described rewriting motion behavior. That exchange is more informative than a download badge: people tried real combinations, found boundaries, and fed them back into the project. It also shows why “Vim mode” is a demanding promise rather than a checkbox.\n\n## What it brings into one screen\n\nThe appealing workflow is compact:\n\n- browse schemas and inspect DDL without leaving the terminal;\n- compose SQL with highlighting and completion;\n- examine results, export them, or open an `EXPLAIN` view;\n- switch among saved connections through the same keyboard model.\n\nFor someone moving repeatedly between source code, logs, and a development database, reducing application switching can preserve context. Custom themes and bindings matter here less as decoration than as integration: the client can fit an existing terminal setup instead of demanding a second interaction language.\n\nThere are two boundaries worth keeping visible. First, a terminal multiplexer, shell, editor, and database client all compete for a limited set of keys. Remapping is necessary, but teams should document the resulting profile rather than assume defaults work everywhere. Second, connection convenience concentrates credentials. vi-sql documents encrypted storage through an operating-system keyring or an Argon2id-protected master password. That is preferable to plaintext, but it does not replace least-privilege accounts, short-lived credentials where available, or separate production and development identities.\n\n## MCP changes the risk calculation\n\nvi-sql also includes a Model Context Protocol server, allowing compatible assistants to inspect or query configured databases. This can shorten the route from “why did this request fail?” to examining relevant data, but it also changes who can initiate a query. A helpful agent can misunderstand scope as easily as a person can paste SQL into the wrong connection.\n\nStart with a disposable database or a read-only replica. Limit exposed connections, inspect the tool descriptions the agent receives, and keep destructive operations outside the first evaluation. Logs should make it possible to distinguish queries run by a person from those initiated through an agent. **Convenience is not a permission model.** The MCP feature deserves a separate security decision from adopting the interactive client itself.\n\n## Choosing the right level of interface\n\nvi-sql is not automatically a replacement for every database tool. **mycli** is a mature choice when the job is primarily interactive MySQL and completion at a traditional prompt. **DBX** moves in the other direction, offering a graphical surface across many SQL and non-SQL systems, plus schema comparison and data-transfer features. Native clients remain the conservative option for engine-specific scripting, recovery, and operational procedures.\n\nA sensible evaluation uses a sanitized database and a representative task: find a table, inspect its definition, write a join, review the plan, and export a small result. Note where completion helps, where keybindings collide, and whether output remains legible for wide or nested data. Then repeat with a read-only remote connection.\n\nvi-sql's strongest argument is not novelty alone. It makes a database feel close to the rest of a keyboard-driven workflow while retaining enough visual structure to explore unfamiliar schemas. Its youth, multi-engine ambition, and agent integration are also reasons to adopt it deliberately. If the interface reduces friction without weakening credential boundaries or query review, it can earn a place beside—not necessarily instead of—the native client.",
+      "deck": "A young terminal client makes database exploration fast and tactile, while reminding us that convenience, credentials, and query safety travel together.",
+      "id": "editorial:2026-08-13:vi-sql-keyboard-first-database-work",
+      "primaryPackageID": "brew:vi-sql",
+      "publishedAt": "2026-08-13T09:40:34Z",
       "relatedPackageIDs": [
-        "brew:dnsglobe",
-        "brew:usbtree",
-        "brew:httpx2"
+        "brew:vi-sql",
+        "brew:mycli",
+        "brew:cask:dbx"
       ],
       "selection": {
-        "firstStableReleaseAt": "2026-06-18T14:13:17Z",
-        "firstStableReleaseSourceURL": "https://github.com/514-labs/dnsglobe/releases",
+        "firstStableReleaseAt": "2026-06-02T17:54:51Z",
+        "firstStableReleaseSourceURL": "https://github.com/kopecmaciej/vi-sql/releases/tag/v0.1.0",
         "rationale": "newer"
       },
       "sources": [
         {
           "kind": "primary",
-          "title": "dnsglobe README",
-          "url": "https://github.com/514-labs/dnsglobe"
+          "title": "vi-sql project repository",
+          "url": "https://github.com/kopecmaciej/vi-sql"
         },
         {
           "kind": "primary",
-          "title": "dnsglobe releases",
-          "url": "https://github.com/514-labs/dnsglobe/releases"
+          "title": "vi-sql v0.1.0 release",
+          "url": "https://github.com/kopecmaciej/vi-sql/releases/tag/v0.1.0"
         },
         {
           "kind": "primary",
-          "title": "HTTPX2 documentation",
-          "url": "https://httpx2.pydantic.dev/"
+          "title": "vi-sql product documentation",
+          "url": "https://vi-sql.com/"
         },
         {
-          "kind": "primary",
-          "title": "HTTPX2 source repository",
-          "url": "https://github.com/pydantic/httpx2"
-        },
-        {
-          "kind": "primary",
-          "title": "usbtree README",
-          "url": "https://github.com/gnomeria/usbtree"
-        },
-        {
-          "kind": "primary",
-          "title": "usbtree releases",
-          "url": "https://github.com/gnomeria/usbtree/releases"
+          "kind": "independent",
+          "title": "Neovim community launch discussion",
+          "url": "https://www.reddit.com/r/neovim/comments/1tuzdw7/visql_another_sql_terminal_app_with_vim_mode/"
         }
       ],
-      "title": "dnsglobe: Watching DNS Propagation from the Terminal",
+      "title": "vi-sql and the Return of Keyboard-First Database Work",
       "type": "editorial"
     },
     {
@@ -122,11 +112,14 @@
     {
       "id": "new-packages",
       "packageIDs": [
-        "brew:open-code-review",
-        "brew:network-doctor",
-        "brew:lazy-tmux",
-        "brew:cask:caskhub",
+        "brew:vi-sql",
         "brew:cask:headroom",
+        "brew:lazy-tmux",
+        "brew:evnx",
+        "brew:network-doctor",
+        "brew:kata",
+        "brew:open-code-review",
+        "brew:cask:caskhub",
         "brew:cask:textream",
         "brew:dnsglobe",
         "brew:httpx2",
@@ -138,21 +131,83 @@
     {
       "id": "recently-updated",
       "packageIDs": [
-        "brew:open-code-review",
-        "brew:network-doctor",
-        "brew:lazy-tmux",
-        "brew:cask:caskhub",
+        "brew:cask:dbx",
+        "brew:mycli",
+        "brew:vi-sql",
         "brew:cask:headroom",
+        "brew:lazy-tmux",
+        "brew:evnx",
+        "brew:network-doctor",
+        "brew:kata",
+        "brew:open-code-review",
+        "brew:cask:caskhub",
         "brew:cask:textream",
-        "brew:dnsglobe",
-        "brew:httpx2",
-        "brew:usbtree",
-        "brew:ooniprobe",
-        "brew:cronboard",
-        "brew:dtop"
+        "brew:dnsglobe"
       ],
       "title": "Recently Updated",
       "type": "recentlyUpdated"
+    },
+    {
+      "artwork": {
+        "alt": "An abstract dark-blue globe linked by cyan resolver arcs, suggesting DNS propagation across a global network.",
+        "attribution": "Generated with OpenAI image generation for Package Manager Manager.",
+        "boxColors": {
+          "backgroundEnd": "#31206A",
+          "backgroundStart": "#07162F",
+          "foreground": "#FFFFFF"
+        },
+        "license": "OpenAI generated asset; use with this feed.",
+        "path": "feed/assets/dnsglobe-global-propagation-2026-08-08.png"
+      },
+      "body": "DNS changes have an awkward failure mode: the authoritative configuration can be correct while the internet still appears inconsistent. A resolver may hold an earlier answer until its cache expires; a geographically distributed service may legitimately reply differently; and a deployment team can waste time treating those states as the same incident. **dnsglobe** is a terminal tool built to make that comparison visible instead of relying on a succession of one-off lookups.\n\n## A short, purpose-built release trail\n\nThe project’s public GitHub release history begins in 2026, with tagged releases progressing through 0.5.0 in August. Its README describes a Rust terminal UI that queries 34 public resolvers in parallel, then groups matching answers rather than calling every differing IP a failure. That is a useful framing for domains behind round-robin or geographically aware DNS: agreement is about the record set and the resolver’s point of view, not a promise that every client receives one address.\n\nThe interface is deliberately operational. It presents response state, latency, TTL, and a propagation gauge; on wide terminals it adds a map or globe. A non-interactive `--once` mode prints results and exits, which makes the tool more suitable for a scripted check than an interactive dashboard alone. It also documents EDNS Client Subnet support for comparing how a GeoDNS zone answers for specified client networks.\n\n## What the comparison actually tells you\n\nThe strongest use is after a controlled change: update a record, preserve the change time and intended answer, then compare a spread of public resolvers. A majority result can show that a change is moving through caches; a clustered minority can point to a resolver family or region worth checking. The tool also records failures and stale answers rather than silently collapsing them into a single verdict.\n\nThat visibility has limits. Public resolvers are samples, and anycast means the answering point can vary with the network path. A clean display does not validate an authoritative zone, prove client behavior inside a corporate network, or replace monitoring from the locations that matter to an application. Keep authoritative-provider tools, application probes, and ordinary DNS utilities in the workflow.\n\n## A disciplined rollout check\n\nUse the output as a checkpoint rather than a green light. Before changing DNS, note the expected record values and TTL. After publishing, query the authoritative nameservers directly, then use a resolver comparison to observe cache turnover. If a result is surprising, repeat it after the relevant TTL and test from a real application region. This sequence separates three questions that are often mixed together: whether the zone is correct, whether recursive caches have updated, and whether a user can reach the service. dnsglobe helps most with the middle question. Its world-oriented display adds context, but the response table and a saved `--once` result are the more durable evidence for a change record or incident note.\n\n## A compact field kit, not a platform\n\ndnsglobe pairs naturally with `dig` for a precise authoritative query and with deployment records that explain when a change should have taken effect. Its documented configuration can add or replace resolvers, helpful when an organization needs to include internal infrastructure. It should be treated as an investigation instrument: run it against a known domain, capture the result, and make the next decision from the evidence rather than the visualization alone.\n\nTwo nearby tools illustrate the distinction between focused utilities and broader adoption decisions. **usbtree** is likewise a local diagnostic TUI, but for USB topology and, on Linux, activity metrics. **HTTPX2** is a young Pydantic HTTP-client project intended for application code; its documentation and source are worth following, but a team should verify its API and maintenance posture before replacing an established production client.\n\nFor operators who already use terminal tooling during a DNS rollout, dnsglobe offers a clear new option: compare several resolver views in one place, use `--once` when an artifact is more valuable than a UI, and retain independent checks for the authoritative and client-side parts of the story.",
+      "deck": "A focused new terminal tool for comparing DNS answers across public resolvers while investigating a rollout.",
+      "id": "editorial:2026-08-08:dnsglobe-global-dns-propagation-in-the-terminal",
+      "primaryPackageID": "brew:dnsglobe",
+      "publishedAt": "2026-08-08T13:01:59Z",
+      "relatedPackageIDs": [
+        "brew:dnsglobe",
+        "brew:usbtree",
+        "brew:httpx2"
+      ],
+      "selection": {
+        "firstStableReleaseAt": "2026-06-18T14:13:17Z",
+        "firstStableReleaseSourceURL": "https://github.com/514-labs/dnsglobe/releases",
+        "rationale": "newer"
+      },
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "dnsglobe README",
+          "url": "https://github.com/514-labs/dnsglobe"
+        },
+        {
+          "kind": "primary",
+          "title": "dnsglobe releases",
+          "url": "https://github.com/514-labs/dnsglobe/releases"
+        },
+        {
+          "kind": "primary",
+          "title": "HTTPX2 documentation",
+          "url": "https://httpx2.pydantic.dev/"
+        },
+        {
+          "kind": "primary",
+          "title": "HTTPX2 source repository",
+          "url": "https://github.com/pydantic/httpx2"
+        },
+        {
+          "kind": "primary",
+          "title": "usbtree README",
+          "url": "https://github.com/gnomeria/usbtree"
+        },
+        {
+          "kind": "primary",
+          "title": "usbtree releases",
+          "url": "https://github.com/gnomeria/usbtree/releases"
+        }
+      ],
+      "title": "dnsglobe: Watching DNS Propagation from the Terminal",
+      "type": "editorial"
     },
     {
       "artwork": {
@@ -602,7 +657,7 @@
       "type": "editorial"
     }
   ],
-  "generatedAt": "2026-08-11T07:17:57Z",
+  "generatedAt": "2026-08-13T09:40:34Z",
   "packages": {
     "brew:agent-browser": {
       "agentSummary": "Agent Browser is a command-line browser automation tool for AI agents, exposing structured navigation, inspection, interaction, and session controls through a compact terminal-first interface.",
@@ -707,26 +762,92 @@
       "upstreamSummary": "Native GUI for Homebrew casks",
       "version": "0.7.0"
     },
-    "brew:cask:headroom": {
-      "agentSummary": "Headroom is a macOS proxy that compacts tool output before it reaches Claude Code or Codex, aiming to reduce context consumption locally.",
+    "brew:cask:dbx": {
+      "agentSummary": "DBX is a cross-platform graphical database client covering SQL, document, search, and key-value systems, with schema tools, data transfer, AI assistance, and MCP access.",
       "assessment": {
         "alternatives": [
-          "Native context controls, shorter command output, and manual session compaction"
+          "DBeaver",
+          "DataGrip",
+          "vi-sql or native command-line clients"
         ],
         "audiences": [
-          "macOS developers using Claude Code or Codex on tool-output-heavy tasks"
+          "Developers managing several database technologies",
+          "Teams wanting a graphical cross-platform client"
         ],
         "caveats": [
-          "Compaction can remove useful diagnostic detail; proxying also introduces another local trust boundary and potential compatibility point"
+          "Its broad feature set creates a larger permission and configuration surface",
+          "AI-generated SQL requires review before execution",
+          "Engine-specific administration may still require native tooling"
         ],
         "complements": [
-          "Concise tool configuration, scoped searches, context monitoring, and repository-specific agent instructions"
+          "Database-native backup tooling",
+          "Least-privilege service accounts",
+          "Query and audit logging"
         ],
         "prerequisites": [
-          "macOS, a supported coding agent, and willingness to route local agent traffic through a proxy"
+          "Credentials for each configured database",
+          "Review of optional AI provider and MCP permissions"
         ],
         "useCases": [
-          "Reducing repetitive terminal, file, search, test, and browser output sent into coding-agent contexts"
+          "Browsing and editing data across multiple engines",
+          "Comparing schemas and transferring data",
+          "Providing permission-scoped database access through MCP"
+        ]
+      },
+      "category": "data",
+      "displayName": "DBX",
+      "docs": "https://dbxio.com/docs",
+      "homepage": "https://dbxio.com/",
+      "id": "brew:cask:dbx",
+      "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Adbx",
+      "lastUpdatedAt": "2026-08-13T07:08:03Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/t8y2/dbx",
+      "researchedAt": "2026-08-13T09:40:34Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "DBX repository",
+          "url": "https://github.com/t8y2/dbx"
+        },
+        {
+          "kind": "primary",
+          "title": "DBX documentation",
+          "url": "https://dbxio.com/docs"
+        }
+      ],
+      "upstreamSummary": "Database management tool",
+      "version": "0.5.82"
+    },
+    "brew:cask:headroom": {
+      "agentSummary": "Headroom is a local desktop proxy that compacts coding-agent tool output and conversation context, aiming to reduce token use while preserving recent and important details.",
+      "assessment": {
+        "alternatives": [
+          "Manual conversation resets and concise prompts",
+          "Provider-native context compaction",
+          "Narrower tool output and repository exclusions"
+        ],
+        "audiences": [
+          "Developers using supported coding agents",
+          "Teams monitoring agent context consumption"
+        ],
+        "caveats": [
+          "Compaction can remove details that later prove important",
+          "A proxy becomes part of the trust path for prompts and tool results",
+          "Supported agents and operating systems remain limited"
+        ],
+        "complements": [
+          "Repository-scoped agent instructions",
+          "Usage and cost monitoring",
+          "Human review of compressed context"
+        ],
+        "prerequisites": [
+          "A supported macOS coding-agent workflow",
+          "Willingness to route agent traffic through a local proxy"
+        ],
+        "useCases": [
+          "Compacting verbose tool output before it reaches an agent",
+          "Inspecting token savings and proxy activity locally"
         ]
       },
       "category": "developer-tools",
@@ -735,14 +856,14 @@
       "homepage": "https://extraheadroom.com/",
       "id": "brew:cask:headroom",
       "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Aheadroom",
-      "lastUpdatedAt": "2026-08-10T13:15:21Z",
+      "lastUpdatedAt": "2026-08-12T16:18:18Z",
       "manager": "homebrew",
       "repository": "https://github.com/gglucass/headroom-desktop",
-      "researchedAt": "2026-08-11T07:17:57Z",
+      "researchedAt": "2026-08-13T09:40:34Z",
       "sources": [
         {
           "kind": "primary",
-          "title": "Headroom desktop repository",
+          "title": "Headroom Desktop repository",
           "url": "https://github.com/gglucass/headroom-desktop"
         },
         {
@@ -752,7 +873,7 @@
         }
       ],
       "upstreamSummary": "Reduce token usage for Claude Code and Codex",
-      "version": "0.7.7"
+      "version": "0.7.9"
     },
     "brew:cask:textream": {
       "agentSummary": "Textream is a macOS teleprompter that follows spoken words and highlights a script inside a compact overlay for recordings, interviews, and presentations.",
@@ -1099,6 +1220,63 @@
       "upstreamSummary": "Terminal dashboard for Docker monitoring across multiple hosts",
       "version": null
     },
+    "brew:evnx": {
+      "agentSummary": "evnx is a command-line workspace for creating, validating, comparing, encrypting, and sharing environment files, with templates and provider integrations for team workflows.",
+      "assessment": {
+        "alternatives": [
+          "dotenv tooling",
+          "SOPS with a cloud key service",
+          "Provider-native secret managers"
+        ],
+        "audiences": [
+          "Developers managing multiple environment files",
+          "Teams standardizing application configuration"
+        ],
+        "caveats": [
+          "Encrypted files still require careful key distribution",
+          "A convenience layer does not prevent applications from leaking secrets",
+          "Provider integrations broaden the credential surface"
+        ],
+        "complements": [
+          "A managed secrets service",
+          "Repository secret scanning",
+          "Deployment-platform configuration"
+        ],
+        "prerequisites": [
+          "Existing environment-variable conventions",
+          "A key-management plan when using encryption"
+        ],
+        "useCases": [
+          "Comparing environment keys across stages",
+          "Encrypting and sharing environment configuration",
+          "Validating values against a schema"
+        ]
+      },
+      "category": "security",
+      "displayName": "evnx",
+      "docs": "https://www.evnx.dev/guides",
+      "homepage": "https://evnx.dev",
+      "id": "brew:evnx",
+      "installURL": "pkgmgrmgr://install?package=brew%3Aevnx",
+      "lastUpdatedAt": "2026-08-11T14:26:50Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/urwithajit9/evnx",
+      "researchedAt": "2026-08-13T09:40:34Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "evnx repository",
+          "url": "https://github.com/urwithajit9/evnx"
+        },
+        {
+          "kind": "primary",
+          "title": "evnx guides",
+          "url": "https://www.evnx.dev/guides"
+        }
+      ],
+      "upstreamSummary": "Comprehensive CLI tool for managing .env files",
+      "version": null
+    },
     "brew:ggshield": {
       "agentSummary": "ggshield scans repositories, commits, files, and CI changes for exposed secrets using GitGuardian, helping teams catch credentials before they reach production.",
       "assessment": {
@@ -1197,6 +1375,63 @@
       "upstreamSummary": "HTTP client library for Python",
       "version": null
     },
+    "brew:kata": {
+      "agentSummary": "Kata is a local-first issue tracker for people and coding agents, storing work in Git-friendly files while supporting federation, dependencies, comments, and assignments.",
+      "assessment": {
+        "alternatives": [
+          "GitHub Issues",
+          "Linear",
+          "Plain Markdown task files"
+        ],
+        "audiences": [
+          "Developers wanting repository-adjacent issue state",
+          "Teams coordinating people and coding agents"
+        ],
+        "caveats": [
+          "Local-first synchronization introduces conflict and governance questions",
+          "A young tracker has fewer integrations than established services",
+          "Agent assignments still require permission and execution controls"
+        ],
+        "complements": [
+          "Code review",
+          "Repository agent instructions",
+          "A remote Git host"
+        ],
+        "prerequisites": [
+          "Git",
+          "A workflow for reviewing and synchronizing local issue changes"
+        ],
+        "useCases": [
+          "Tracking tasks locally beside code",
+          "Synchronizing federated issue repositories",
+          "Representing task dependencies for agents"
+        ]
+      },
+      "category": null,
+      "displayName": "kata",
+      "docs": null,
+      "homepage": "https://katatracker.com",
+      "id": "brew:kata",
+      "installURL": "pkgmgrmgr://install?package=brew%3Akata",
+      "lastUpdatedAt": "2026-08-11T12:20:24Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/kenn-io/kata",
+      "researchedAt": "2026-08-13T09:40:34Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "Kata repository",
+          "url": "https://github.com/kenn-io/kata"
+        },
+        {
+          "kind": "primary",
+          "title": "Kata project site",
+          "url": "https://katatracker.com/"
+        }
+      ],
+      "upstreamSummary": "Local-first, federated issue tracker for humans and coding agents",
+      "version": null
+    },
     "brew:kew": {
       "agentSummary": "kew is a keyboard-driven terminal music player with library indexing, playlists, search, gapless playback, album art, and visualizations for local collections.",
       "assessment": {
@@ -1249,25 +1484,34 @@
       "version": null
     },
     "brew:lazy-tmux": {
-      "agentSummary": "lazy-tmux provides a terminal interface for saving and restoring tmux sessions, windows, panes, layouts, working directories, and selected running commands.",
+      "agentSummary": "lazy-tmux saves tmux session structure and working directories, then offers an interactive terminal interface for restoring selected sessions after restarts or interruptions.",
       "assessment": {
         "alternatives": [
-          "tmux-resurrect, tmux-continuum, and scripted tmux sessions"
+          "tmux-resurrect",
+          "tmux-continuum",
+          "Handwritten tmuxinator or teamocil layouts"
         ],
         "audiences": [
-          "Terminal-heavy developers and operators who maintain multiple tmux workspaces"
+          "Developers who keep long-lived tmux workspaces",
+          "Terminal users recovering multi-pane project layouts"
         ],
         "caveats": [
-          "Restoring commands is not equivalent to restoring process state, and saved session data may expose command details"
+          "Session layout recovery does not recover unsaved process memory",
+          "Applications inside panes may require separate restore support",
+          "Users should inspect saved state before relying on it"
         ],
         "complements": [
-          "Shell startup files, project launch scripts, and tmux configuration"
+          "Shell history",
+          "Project-specific startup scripts",
+          "Regular backups for unsaved work"
         ],
         "prerequisites": [
-          "tmux and a compatible Unix-like terminal environment"
+          "tmux",
+          "A shell environment compatible with the project"
         ],
         "useCases": [
-          "Persisting tmux workspace structure across restarts and restoring recurring project sessions"
+          "Saving named tmux sessions",
+          "Restoring windows, panes, and working directories after reboot"
         ]
       },
       "category": "productivity",
@@ -1276,20 +1520,20 @@
       "homepage": "https://lazy-tmux.xyz",
       "id": "brew:lazy-tmux",
       "installURL": "pkgmgrmgr://install?package=brew%3Alazy-tmux",
-      "lastUpdatedAt": "2026-08-10T21:39:03Z",
+      "lastUpdatedAt": "2026-08-12T09:59:26Z",
       "manager": "homebrew",
       "repository": "https://github.com/alchemmist/lazy-tmux",
-      "researchedAt": "2026-08-11T07:17:57Z",
+      "researchedAt": "2026-08-13T09:40:34Z",
       "sources": [
         {
           "kind": "primary",
-          "title": "lazy-tmux repository and README",
+          "title": "lazy-tmux repository",
           "url": "https://github.com/alchemmist/lazy-tmux"
         },
         {
           "kind": "primary",
-          "title": "lazy-tmux releases",
-          "url": "https://github.com/alchemmist/lazy-tmux/releases"
+          "title": "lazy-tmux documentation",
+          "url": "https://lazy-tmux.xyz/"
         }
       ],
       "upstreamSummary": "Save all your tmux sessions and lazy restore them",
@@ -1403,6 +1647,62 @@
       "upstreamSummary": "Transparent proxy and TUI for debugging MCP traffic",
       "version": null
     },
+    "brew:mycli": {
+      "agentSummary": "mycli is a mature interactive MySQL-family shell with context-aware completion, syntax highlighting, multiline editing, favorite queries, table formatting, and optional database reconnection.",
+      "assessment": {
+        "alternatives": [
+          "The standard mysql client",
+          "vi-sql for a full-screen multi-database TUI",
+          "DBeaver or DBX for graphical administration"
+        ],
+        "audiences": [
+          "MySQL and MariaDB users",
+          "Developers wanting shell-like database interaction"
+        ],
+        "caveats": [
+          "It focuses on MySQL-family databases rather than one interface for many engines",
+          "Completion metadata can lag schema changes",
+          "Terminal clients still make destructive SQL easy to run"
+        ],
+        "complements": [
+          "Database migrations",
+          "Read-only development credentials",
+          "Server-side performance monitoring"
+        ],
+        "prerequisites": [
+          "A reachable MySQL-compatible database",
+          "Python-compatible runtime supplied through the package"
+        ],
+        "useCases": [
+          "Running ad hoc MySQL queries with completion",
+          "Saving and recalling frequently used statements"
+        ]
+      },
+      "category": "data",
+      "displayName": "mycli",
+      "docs": "https://www.mycli.net/docs",
+      "homepage": "https://www.mycli.net/",
+      "id": "brew:mycli",
+      "installURL": "pkgmgrmgr://install?package=brew%3Amycli",
+      "lastUpdatedAt": "2026-08-12T20:59:32Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/dbcli/mycli",
+      "researchedAt": "2026-08-13T09:40:34Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "mycli repository",
+          "url": "https://github.com/dbcli/mycli"
+        },
+        {
+          "kind": "primary",
+          "title": "mycli documentation",
+          "url": "https://www.mycli.net/docs"
+        }
+      ],
+      "upstreamSummary": "CLI for MySQL with auto-completion and syntax highlighting",
+      "version": null
+    },
     "brew:n8n-mcp": {
       "agentSummary": "n8n-mcp exposes structured n8n node documentation, templates, validation, and optional workflow-management tools to compatible AI clients, helping automate workflow design while keeping deployment and credential boundaries explicit.",
       "assessment": {
@@ -1458,25 +1758,34 @@
       "version": null
     },
     "brew:network-doctor": {
-      "agentSummary": "network-doctor runs DNS, TCP, TLS, HTTP, and proxy checks in a cross-platform terminal interface, then explains likely failure layers and possible fixes.",
+      "agentSummary": "network-doctor is a terminal troubleshooting interface that combines connectivity checks, DNS inspection, route analysis, port scans, packet capture, and report export in one workflow.",
       "assessment": {
         "alternatives": [
-          "Manual dig, openssl, curl, and traceroute workflows"
+          "Individual tools such as dig, traceroute, ping, and nmap",
+          "Wireshark",
+          "Netdata or other continuous monitoring systems"
         ],
         "audiences": [
-          "Developers, support engineers, and operators diagnosing connectivity failures"
+          "Developers diagnosing local connectivity",
+          "Operators gathering first-pass network evidence"
         ],
         "caveats": [
-          "Client-side probes cannot establish server health for every region, and suggested fixes still require operator judgment"
+          "Active probes and scans may trigger monitoring or violate network policy",
+          "A local diagnosis cannot establish remote service health by itself",
+          "Packet capture can expose sensitive traffic metadata"
         ],
         "complements": [
-          "dig, curl, traceroute, packet capture, and service-side observability"
+          "Wireshark for deep packet inspection",
+          "Authoritative service telemetry",
+          "Documented incident-response procedures"
         ],
         "prerequisites": [
-          "A supported terminal and network access to the target being diagnosed"
+          "Network access to the targets being tested",
+          "Elevated permissions for packet capture or selected probes"
         ],
         "useCases": [
-          "Tracing a failed connection through DNS resolution, transport, TLS, HTTP, and proxy configuration"
+          "Running grouped DNS, routing, and connectivity diagnostics",
+          "Exporting a troubleshooting report for escalation"
         ]
       },
       "category": "networking",
@@ -1485,19 +1794,19 @@
       "homepage": "https://github.com/heymaikol/network-doctor/",
       "id": "brew:network-doctor",
       "installURL": "pkgmgrmgr://install?package=brew%3Anetwork-doctor",
-      "lastUpdatedAt": "2026-08-11T06:18:46Z",
+      "lastUpdatedAt": "2026-08-11T12:37:09Z",
       "manager": "homebrew",
       "repository": "https://github.com/heymaikol/network-doctor",
-      "researchedAt": "2026-08-11T07:17:57Z",
+      "researchedAt": "2026-08-13T09:40:34Z",
       "sources": [
         {
           "kind": "primary",
-          "title": "network-doctor repository and README",
+          "title": "network-doctor repository",
           "url": "https://github.com/heymaikol/network-doctor"
         },
         {
           "kind": "primary",
-          "title": "network-doctor releases",
+          "title": "network-doctor release history",
           "url": "https://github.com/heymaikol/network-doctor/releases"
         }
       ],
@@ -2011,6 +2320,67 @@
         }
       ],
       "upstreamSummary": "Version manager with support for Java, Node.js, Flutter, .NET & more",
+      "version": null
+    },
+    "brew:vi-sql": {
+      "agentSummary": "vi-sql is a customizable terminal database client with Vim-style navigation, multiple SQL backends, schema browsing, query plans, encrypted credentials, exports, and an MCP server.",
+      "assessment": {
+        "alternatives": [
+          "mycli for a mature MySQL-focused interactive shell",
+          "DBX or DBeaver for graphical database administration",
+          "Database-native clients such as psql or sqlite3"
+        ],
+        "audiences": [
+          "Terminal-focused developers",
+          "Database users who prefer keyboard navigation"
+        ],
+        "caveats": [
+          "The project is young and its Vim emulation still has behavioral edge cases",
+          "Terminal multiplexers can intercept default control-key bindings",
+          "MCP access expands the credential and query-execution threat surface"
+        ],
+        "complements": [
+          "Database-native backup tools",
+          "A reviewed read-only database account",
+          "Neovim or another terminal editor"
+        ],
+        "prerequisites": [
+          "Access credentials for a supported database",
+          "Comfort with terminal interfaces and keyboard shortcuts"
+        ],
+        "useCases": [
+          "Browsing schemas and running SQL without leaving the terminal",
+          "Inspecting query plans and exporting result sets"
+        ]
+      },
+      "category": "data",
+      "displayName": "vi-sql",
+      "docs": "https://github.com/kopecmaciej/vi-sql#readme",
+      "homepage": "https://vi-sql.com",
+      "id": "brew:vi-sql",
+      "installURL": "pkgmgrmgr://install?package=brew%3Avi-sql",
+      "lastUpdatedAt": "2026-08-12T18:59:19Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/kopecmaciej/vi-sql",
+      "researchedAt": "2026-08-13T09:40:34Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "vi-sql project repository",
+          "url": "https://github.com/kopecmaciej/vi-sql"
+        },
+        {
+          "kind": "primary",
+          "title": "vi-sql product site",
+          "url": "https://vi-sql.com/"
+        },
+        {
+          "kind": "independent",
+          "title": "Neovim community launch discussion",
+          "url": "https://www.reddit.com/r/neovim/comments/1tuzdw7/visql_another_sql_terminal_app_with_vim_mode/"
+        }
+      ],
+      "upstreamSummary": "Terminal UI for SQL databases",
       "version": null
     },
     "brew:yutu": {
@@ -2919,7 +3289,7 @@
   },
   "schemaVersion": 1,
   "source": {
-    "generatedAt": "2026-08-11T07:17:20Z",
+    "generatedAt": "2026-08-13T09:39:46Z",
     "url": "https://www.automicvault.com/db.json"
   }
 }
