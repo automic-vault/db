@@ -54,9 +54,6 @@
     },
     {
       "candidatePackageIDs": [
-        "npm:nanoid",
-        "npm:browserslist",
-        "npm:yaml",
         "npm:jiti",
         "npm:eslint",
         "npm:vite",
@@ -77,9 +74,15 @@
         "brew:deno",
         "brew:ggshield",
         "brew:topgrade",
-        "brew:kew"
+        "brew:kew",
+        "brew:open-code-review",
+        "brew:threatcl",
+        "brew:fluent-bit"
       ],
       "fallbackPackageIDs": [
+        "brew:threatcl",
+        "brew:open-code-review",
+        "brew:fluent-bit",
         "npm:vitest",
         "npm:playwright-core",
         "brew:deno",
@@ -87,7 +90,6 @@
         "brew:pnpm",
         "brew:kew",
         "brew:ggshield",
-        "npm:yaml",
         "npm:vite",
         "npm:tsx",
         "npm:terser",
@@ -95,11 +97,9 @@
         "npm:prettier",
         "npm:pnpm",
         "npm:playwright",
-        "npm:nanoid",
         "npm:jiti",
         "npm:fast-xml-parser",
         "npm:eslint",
-        "npm:browserslist",
         "npm:autoprefixer",
         "brew:vals",
         "brew:dolt",
@@ -112,6 +112,7 @@
     {
       "id": "new-packages",
       "packageIDs": [
+        "brew:open-code-review",
         "brew:network-doctor",
         "brew:cask:caskhub",
         "brew:vi-sql",
@@ -119,7 +120,6 @@
         "brew:lazy-tmux",
         "brew:evnx",
         "brew:kata",
-        "brew:open-code-review",
         "brew:cask:textream",
         "brew:dnsglobe",
         "brew:httpx2",
@@ -131,6 +131,9 @@
     {
       "id": "recently-updated",
       "packageIDs": [
+        "brew:fluent-bit",
+        "brew:open-code-review",
+        "brew:threatcl",
         "brew:network-doctor",
         "brew:cask:caskhub",
         "brew:cask:dbx",
@@ -139,10 +142,7 @@
         "brew:cask:headroom",
         "brew:lazy-tmux",
         "brew:evnx",
-        "brew:kata",
-        "brew:open-code-review",
-        "brew:cask:textream",
-        "brew:dnsglobe"
+        "brew:kata"
       ],
       "title": "Recently Updated",
       "type": "recentlyUpdated"
@@ -657,7 +657,7 @@
       "type": "editorial"
     }
   ],
-  "generatedAt": "2026-08-15T10:09:11Z",
+  "generatedAt": "2026-08-16T06:29:16Z",
   "packages": {
     "brew:agent-browser": {
       "agentSummary": "Agent Browser is a command-line browser automation tool for AI agents, exposing structured navigation, inspection, interaction, and session controls through a compact terminal-first interface.",
@@ -1290,6 +1290,72 @@
       "upstreamSummary": "Comprehensive CLI tool for managing .env files",
       "version": null
     },
+    "brew:fluent-bit": {
+      "agentSummary": "Fluent Bit collects, transforms, and routes logs, metrics, and traces with a small footprint, fitting edge agents and central cloud-native telemetry pipelines.",
+      "assessment": {
+        "alternatives": [
+          "Vector for a Rust-based telemetry pipeline",
+          "Fluentd for richer legacy plugin coverage",
+          "OpenTelemetry Collector for OpenTelemetry-centric pipelines",
+          "Filebeat for Elastic-focused log shipping"
+        ],
+        "audiences": [
+          "Platform and site-reliability engineers",
+          "Kubernetes operators",
+          "Teams building vendor-neutral observability pipelines",
+          "Embedded and edge-system developers"
+        ],
+        "caveats": [
+          "Production reliability depends on careful buffering, retry, and storage configuration",
+          "Plugin behavior and configuration vary by source and destination",
+          "High-cardinality enrichment can increase resource use and downstream cost",
+          "Its frequent major-release cadence requires deliberate upgrade testing"
+        ],
+        "complements": [
+          "Kubernetes",
+          "OpenTelemetry",
+          "Prometheus",
+          "Kafka and cloud object storage",
+          "Fluentd for workflows needing its broader Ruby plugin ecosystem"
+        ],
+        "prerequisites": [
+          "A planned input, filter, and output pipeline",
+          "Credentials and network access for destination backends",
+          "Operational capacity to monitor buffering and backpressure"
+        ],
+        "useCases": [
+          "Collecting container and host logs",
+          "Enriching Kubernetes telemetry",
+          "Routing records to multiple observability backends",
+          "Aggregating logs, metrics, and traces centrally",
+          "Processing telemetry on resource-constrained systems"
+        ]
+      },
+      "category": "data",
+      "displayName": "fluent-bit",
+      "docs": "https://docs.fluentbit.io/manual",
+      "homepage": "https://fluentbit.io",
+      "id": "brew:fluent-bit",
+      "installURL": "pkgmgrmgr://install?package=brew%3Afluent-bit",
+      "lastUpdatedAt": "2026-08-16T05:29:15Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/fluent/fluent-bit",
+      "researchedAt": "2026-08-16T06:29:16Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "What is Fluent Bit?",
+          "url": "https://docs.fluentbit.io/manual/about/what-is-fluent-bit"
+        },
+        {
+          "kind": "independent",
+          "title": "Fluent Bit reaches one billion downloads",
+          "url": "https://www.cncf.io/blog/2022/03/22/fluent-bit-reaches-1-billion-downloads/"
+        }
+      ],
+      "upstreamSummary": "Fast and Lightweight Logs and Metrics processor",
+      "version": null
+    },
     "brew:ggshield": {
       "agentSummary": "ggshield scans repositories, commits, files, and CI changes for exposed secrets using GitGuardian, helping teams catch credentials before they reach production.",
       "assessment": {
@@ -1888,25 +1954,39 @@
       "version": null
     },
     "brew:open-code-review": {
-      "agentSummary": "Open Code Review combines deterministic diff handling with an LLM agent to produce structured, line-level review findings across local and continuous-integration workflows.",
+      "agentSummary": "Open Code Review combines deterministic change selection with an LLM agent to produce repository-aware, line-level reviews, trading some recall for fewer noisy findings.",
       "assessment": {
         "alternatives": [
-          "GitHub Copilot code review, CodeRabbit, and general-purpose coding agents"
+          "CodeRabbit for hosted pull-request review",
+          "SonarQube for deterministic static analysis",
+          "General-purpose coding agents with review prompts"
         ],
         "audiences": [
-          "Development teams seeking focused AI-assisted code review in terminals or CI"
+          "Teams adding AI-assisted review to Git workflows",
+          "Maintainers reviewing large or multi-file changes",
+          "Developers who want configurable model providers"
         ],
         "caveats": [
-          "Its precision-oriented design can trade away recall, and model-backed reviews add latency, cost, and data-governance considerations"
+          "Model-backed review can incur API cost and expose code to the configured provider",
+          "The published benchmark reports lower recall than a general-purpose agent, reflecting a deliberate precision-first tradeoff",
+          "AI findings still require human validation",
+          "The open-source release is young despite claimed prior internal use"
         ],
         "complements": [
-          "Git hosting review controls, static analyzers, tests, and human reviewers"
+          "Existing pull-request review processes",
+          "Repository-specific coding and security rules",
+          "OpenTelemetry collectors when optional telemetry is enabled"
         ],
         "prerequisites": [
-          "Git 2.41 or newer and access to a supported LLM provider, except when using delegation mode"
+          "Git 2.41 or newer",
+          "An OpenAI- or Anthropic-compatible model endpoint for managed review",
+          "A Git repository for diff-oriented modes"
         ],
         "useCases": [
-          "Reviewing working-tree changes, commit ranges, pull requests, and complete files with configurable rules"
+          "Reviewing staged, branch, or commit diffs",
+          "Scanning whole files without meaningful Git history",
+          "Applying path-specific review rules",
+          "Delegating review execution to supported coding agents"
         ]
       },
       "category": "developer-tools",
@@ -1915,14 +1995,14 @@
       "homepage": "https://github.com/alibaba/open-code-review",
       "id": "brew:open-code-review",
       "installURL": "pkgmgrmgr://install?package=brew%3Aopen-code-review",
-      "lastUpdatedAt": "2026-08-11T06:18:46Z",
+      "lastUpdatedAt": "2026-08-15T06:45:57Z",
       "manager": "homebrew",
       "repository": "https://github.com/alibaba/open-code-review",
-      "researchedAt": "2026-08-11T07:17:57Z",
+      "researchedAt": "2026-08-16T06:29:16Z",
       "sources": [
         {
           "kind": "primary",
-          "title": "Open Code Review README",
+          "title": "Open Code Review repository and documentation",
           "url": "https://github.com/alibaba/open-code-review"
         },
         {
@@ -2089,6 +2169,68 @@
         }
       ],
       "upstreamSummary": "Unified AI rules management CLI tool",
+      "version": null
+    },
+    "brew:threatcl": {
+      "agentSummary": "threatcl stores threat models as reviewable HCL or JSON, then validates, queries, diagrams, and exports them for version-controlled security workflows.",
+      "assessment": {
+        "alternatives": [
+          "OWASP Threat Dragon for diagram-led modeling",
+          "IriusRisk for a managed modeling platform",
+          "Markdown templates for simpler documentation-only workflows"
+        ],
+        "audiences": [
+          "Application security engineers",
+          "Platform teams practicing threat modeling as code",
+          "Developers who already review infrastructure definitions"
+        ],
+        "caveats": [
+          "A schema cannot replace security judgment or stakeholder review",
+          "JSON input does not support imports and variables",
+          "Custom classifications require consistently supplying the same configuration",
+          "The smaller ecosystem offers fewer integrations than commercial platforms"
+        ],
+        "complements": [
+          "OWASP threat-modeling guidance",
+          "MITRE ATT&CK mitigation references",
+          "Terraform workflows",
+          "GitHub Actions through the companion threatcl action"
+        ],
+        "prerequisites": [
+          "Familiarity with HCL or structured JSON",
+          "A defined threat-modeling process and accountable reviewers",
+          "Version control for its intended DevOps-first workflow"
+        ],
+        "useCases": [
+          "Keeping threat models beside application code",
+          "Validating threat-model structure in continuous integration",
+          "Generating data-flow diagrams and Markdown dashboards",
+          "Querying models through GraphQL or an MCP server"
+        ]
+      },
+      "category": "security",
+      "displayName": "threatcl",
+      "docs": "https://github.com/threatcl/threatcl#readme",
+      "homepage": "https://github.com/threatcl/threatcl",
+      "id": "brew:threatcl",
+      "installURL": "pkgmgrmgr://install?package=brew%3Athreatcl",
+      "lastUpdatedAt": "2026-08-15T04:29:59Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/threatcl/threatcl",
+      "researchedAt": "2026-08-16T06:29:16Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "threatcl repository README",
+          "url": "https://github.com/threatcl/threatcl"
+        },
+        {
+          "kind": "primary",
+          "title": "threatcl documentation",
+          "url": "https://threatcl.dev/"
+        }
+      ],
+      "upstreamSummary": "Documenting your Threat Models with HCL",
       "version": null
     },
     "brew:topgrade": {
@@ -2504,53 +2646,6 @@
       "upstreamSummary": "Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website",
       "version": "10.5.3"
     },
-    "npm:browserslist": {
-      "agentSummary": "Browserslist lets frontend tools share one browser-support policy, keeping Babel, Autoprefixer, Stylelint, and related project build steps consistently and predictably targeted.",
-      "assessment": {
-        "alternatives": [
-          "Built-in platform tools or another package in the same category"
-        ],
-        "audiences": [
-          "Developers and teams whose workflow matches the documented scope"
-        ],
-        "caveats": [
-          "Confirm compatibility, update policy, and operational impact before production use"
-        ],
-        "complements": [
-          "Version control, CI, and project-specific documentation"
-        ],
-        "prerequisites": [
-          "A compatible runtime, operating system, or project configuration"
-        ],
-        "useCases": [
-          "Automating the task described by the upstream project"
-        ]
-      },
-      "category": "networking",
-      "displayName": "browserslist",
-      "docs": null,
-      "homepage": "https://github.com/browserslist/browserslist#readme",
-      "id": "npm:browserslist",
-      "installURL": "pkgmgrmgr://install?package=npm%3Abrowserslist",
-      "lastUpdatedAt": "2026-07-11T18:35:23Z",
-      "manager": "npm",
-      "repository": null,
-      "researchedAt": "2026-07-16T17:09:55Z",
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "browserslist documentation",
-          "url": "https://github.com/browserslist/browserslist#readme"
-        },
-        {
-          "kind": "primary",
-          "title": "browserslist project and release information",
-          "url": "https://www.npmjs.com/package/browserslist"
-        }
-      ],
-      "upstreamSummary": "Share target browsers between different front-end tools, like Autoprefixer, Stylelint and babel-env-preset",
-      "version": "4.28.6"
-    },
     "npm:esbuild": {
       "agentSummary": "esbuild bundles and transforms JavaScript and TypeScript quickly, making it a pragmatic build component when its compatibility targets and plugin boundaries suit a project.",
       "assessment": {
@@ -2738,53 +2833,6 @@
       ],
       "upstreamSummary": "Runtime typescript and ESM support for Node.js",
       "version": "2.7.0"
-    },
-    "npm:nanoid": {
-      "agentSummary": "Nano ID generates compact, secure, URL-friendly unique identifiers with a tiny package footprint and customizable alphabets for modern JavaScript applications.",
-      "assessment": {
-        "alternatives": [
-          "Built-in platform tools or another package in the same category"
-        ],
-        "audiences": [
-          "Developers and teams whose workflow matches the documented scope"
-        ],
-        "caveats": [
-          "Confirm compatibility, update policy, and operational impact before production use"
-        ],
-        "complements": [
-          "Version control, CI, and project-specific documentation"
-        ],
-        "prerequisites": [
-          "A compatible runtime, operating system, or project configuration"
-        ],
-        "useCases": [
-          "Automating the task described by the upstream project"
-        ]
-      },
-      "category": "security",
-      "displayName": "nanoid",
-      "docs": null,
-      "homepage": "https://github.com/ai/nanoid#readme",
-      "id": "npm:nanoid",
-      "installURL": "pkgmgrmgr://install?package=npm%3Ananoid",
-      "lastUpdatedAt": "2026-06-24T18:37:08Z",
-      "manager": "npm",
-      "repository": null,
-      "researchedAt": "2026-07-16T17:09:55Z",
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "nanoid documentation",
-          "url": "https://github.com/ai/nanoid#readme"
-        },
-        {
-          "kind": "primary",
-          "title": "nanoid project and release information",
-          "url": "https://www.npmjs.com/package/nanoid"
-        }
-      ],
-      "upstreamSummary": "A tiny (118 bytes), secure URL-friendly unique string ID generator",
-      "version": "5.1.16"
     },
     "npm:playwright": {
       "agentSummary": "Playwright automates Chromium, Firefox, and WebKit through one API, supporting reliable end-to-end testing across browsers, devices, platforms, and isolated contexts.",
@@ -3258,58 +3306,11 @@
       ],
       "upstreamSummary": "Next generation testing framework powered by Vite",
       "version": "4.1.10"
-    },
-    "npm:yaml": {
-      "agentSummary": "yaml parses and serializes YAML in JavaScript while preserving documents, comments, aliases, and custom schema behavior for robust configuration tooling.",
-      "assessment": {
-        "alternatives": [
-          "Built-in platform tools or another package in the same category"
-        ],
-        "audiences": [
-          "Developers and teams whose workflow matches the documented scope"
-        ],
-        "caveats": [
-          "Confirm compatibility, update policy, and operational impact before production use"
-        ],
-        "complements": [
-          "Version control, CI, and project-specific documentation"
-        ],
-        "prerequisites": [
-          "A compatible runtime, operating system, or project configuration"
-        ],
-        "useCases": [
-          "Automating the task described by the upstream project"
-        ]
-      },
-      "category": "data",
-      "displayName": "yaml",
-      "docs": null,
-      "homepage": "https://eemeli.org/yaml/",
-      "id": "npm:yaml",
-      "installURL": "pkgmgrmgr://install?package=npm%3Ayaml",
-      "lastUpdatedAt": "2026-05-11T10:16:24Z",
-      "manager": "npm",
-      "repository": null,
-      "researchedAt": "2026-07-16T17:09:55Z",
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "yaml documentation",
-          "url": "https://eemeli.org/yaml/"
-        },
-        {
-          "kind": "primary",
-          "title": "yaml project and release information",
-          "url": "https://www.npmjs.com/package/yaml"
-        }
-      ],
-      "upstreamSummary": "JavaScript parser and stringifier for YAML",
-      "version": "2.9.0"
     }
   },
   "schemaVersion": 1,
   "source": {
-    "generatedAt": "2026-08-15T10:06:22Z",
+    "generatedAt": "2026-08-16T06:27:31Z",
     "url": "https://www.automicvault.com/db.json"
   }
 }
