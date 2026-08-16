@@ -5,6 +5,7 @@ import unittest
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 MAINTENANCE = ROOT / "scripts" / "atlas-maintenance.sh"
 CONTROLLER = ROOT / "scripts" / "nightly-discover-feed.sh"
+GENERATOR = ROOT / "scripts" / "update-discover-feed"
 
 
 class NightlyDiscoverFeedTests(unittest.TestCase):
@@ -33,6 +34,11 @@ class NightlyDiscoverFeedTests(unittest.TestCase):
             script.index('"${repo_root}/scripts/update-discover-feed" --check'),
             script.index('"${repo_root}/scripts/publish-discover-feed-atlas.sh"'),
         )
+
+    def test_atlas_feed_prompt_does_not_instruct_agent_to_push(self):
+        script = GENERATOR.read_text()
+        self.assertNotIn("push main normally to origin", script)
+        self.assertNotIn("Never force-push", script)
 
 
 if __name__ == "__main__":
