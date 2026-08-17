@@ -54,10 +54,7 @@
     },
     {
       "candidatePackageIDs": [
-        "npm:tsx",
         "npm:vitest",
-        "npm:playwright",
-        "brew:vals",
         "brew:dolt",
         "brew:datasette",
         "npm:playwright-core",
@@ -77,9 +74,15 @@
         "brew:croc",
         "brew:osv-scanner",
         "brew:rainfrog",
-        "brew:apko"
+        "brew:apko",
+        "brew:aube",
+        "brew:cargo-llvm-cov",
+        "brew:octodns"
       ],
       "fallbackPackageIDs": [
+        "brew:octodns",
+        "brew:cargo-llvm-cov",
+        "brew:aube",
         "brew:rainfrog",
         "brew:osv-scanner",
         "brew:apko",
@@ -99,9 +102,6 @@
         "brew:pnpm",
         "brew:kew",
         "brew:ggshield",
-        "npm:tsx",
-        "npm:playwright",
-        "brew:vals",
         "brew:dolt",
         "brew:datasette"
       ],
@@ -134,15 +134,15 @@
         "brew:osv-scanner",
         "brew:rainfrog",
         "brew:apko",
+        "brew:octodns",
+        "brew:cargo-llvm-cov",
+        "brew:aube",
         "brew:postgresql@18",
         "brew:pgstream",
         "brew:letta-code",
         "brew:ipsw",
         "brew:fluent-bit",
-        "brew:nushell",
-        "brew:ty",
-        "brew:croc",
-        "brew:diffoscope"
+        "brew:nushell"
       ],
       "title": "Recently Updated",
       "type": "recentlyUpdated"
@@ -709,7 +709,7 @@
       "type": "editorial"
     }
   ],
-  "generatedAt": "2026-08-17T06:25:37Z",
+  "generatedAt": "2026-08-17T06:30:55Z",
   "packages": {
     "brew:agent-browser": {
       "agentSummary": "Agent Browser is a command-line browser automation tool for AI agents, exposing structured navigation, inspection, interaction, and session controls through a compact terminal-first interface.",
@@ -824,6 +824,138 @@
         }
       ],
       "upstreamSummary": "Build OCI images from APK packages directly without Dockerfile",
+      "version": null
+    },
+    "brew:aube": {
+      "agentSummary": "Aube is a newer Node.js package manager that auto-installs before scripts, reuses existing lockfiles, shares package storage, and applies unusually cautious dependency defaults.",
+      "assessment": {
+        "alternatives": [
+          "npm for the bundled, conventional Node.js workflow",
+          "pnpm for a mature content-addressed store and strict dependency layout",
+          "Yarn or Bun where their ecosystems and command surfaces are already established"
+        ],
+        "audiences": [
+          "Node.js developers evaluating newer package-manager workflows",
+          "Teams that want to trial a manager without immediately replacing their lockfile",
+          "Security-conscious maintainers willing to review dependency build permissions"
+        ],
+        "caveats": [
+          "Older pnpm lockfiles must be upgraded, and Yarn Plug'n'Play projects must switch to node_modules",
+          "Some pnpm account and setup commands are intentionally only compatibility stubs",
+          "Build-script jailing is opt-in today, so teams must enable and tune it deliberately",
+          "The project's performance comparisons are maintainer-run benchmarks, not neutral guarantees for every workload"
+        ],
+        "complements": [
+          "mise for tool and Node.js version management",
+          "Existing npm, pnpm, Yarn, or Bun lockfiles",
+          "Continuous-integration workflows using frozen dependency state"
+        ],
+        "prerequisites": [
+          "A Node.js project and a supported modern lockfile format",
+          "Team agreement on one canonical lockfile",
+          "Explicit approval for dependencies that require lifecycle scripts"
+        ],
+        "useCases": [
+          "Automatically refreshing dependencies before package scripts run",
+          "Sharing dependency files across multiple local projects",
+          "Running frozen installs in continuous integration",
+          "Adding cooling periods and approval gates to dependency installation"
+        ]
+      },
+      "category": "developer-tools",
+      "displayName": "aube",
+      "docs": "https://aube.jdx.dev/",
+      "homepage": "https://aube.en.dev",
+      "id": "brew:aube",
+      "installURL": "pkgmgrmgr://install?package=brew%3Aaube",
+      "lastUpdatedAt": "2026-08-16T22:39:56Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/jdx/aube",
+      "researchedAt": "2026-08-17T06:30:55Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "Aube project repository and usage guide",
+          "url": "https://github.com/jdx/aube"
+        },
+        {
+          "kind": "primary",
+          "title": "Aube documentation",
+          "url": "https://aube.jdx.dev/"
+        },
+        {
+          "kind": "independent",
+          "title": "mise tool registry lock data referencing Aube releases",
+          "url": "https://github.com/jdx/mise/blob/main/mise.lock"
+        }
+      ],
+      "upstreamSummary": "Fast Node.js package manager",
+      "version": null
+    },
+    "brew:cargo-llvm-cov": {
+      "agentSummary": "Cargo LLVM Cov wraps Rust’s LLVM source coverage, producing several report formats while supporting workspaces, nextest, merged runs, continuous integration, and linked native code.",
+      "assessment": {
+        "alternatives": [
+          "Tarpaulin for a Linux-oriented Rust coverage workflow",
+          "Direct rustc instrumentation with llvm-profdata and llvm-cov",
+          "Language-neutral CI coverage wrappers where Rust-specific controls are unnecessary"
+        ],
+        "audiences": [
+          "Rust crate and workspace maintainers",
+          "Teams publishing coverage reports from continuous integration",
+          "Developers testing Rust projects that include C or C++ components"
+        ],
+        "caveats": [
+          "Branch coverage and doctest coverage still rely on nightly or unstable Rust capabilities",
+          "Cached instrumented artifacts can produce misleading results when no-clean workflows are used carelessly",
+          "Cross-compilation and foreign-function coverage require extra target and LLVM configuration",
+          "Some report consumers expose only line coverage even when richer LLVM data exists"
+        ],
+        "complements": [
+          "cargo-nextest for alternative Rust test execution",
+          "Codecov or GitLab coverage reporting",
+          "Coverage Gutters for displaying LCOV results in Visual Studio Code"
+        ],
+        "prerequisites": [
+          "A Rust project built with Cargo",
+          "The llvm-tools-preview component or compatible LLVM tools",
+          "Matching Clang and LLVM tool versions when including linked C or C++ code"
+        ],
+        "useCases": [
+          "Generating text, HTML, JSON, LCOV, Cobertura, or Codecov reports",
+          "Combining coverage collected under multiple feature sets",
+          "Collecting coverage through cargo test, cargo run, or cargo nextest",
+          "Uploading Rust coverage artifacts from CI"
+        ]
+      },
+      "category": "developer-tools",
+      "displayName": "cargo-llvm-cov",
+      "docs": "https://github.com/taiki-e/cargo-llvm-cov#readme",
+      "homepage": "https://github.com/taiki-e/cargo-llvm-cov",
+      "id": "brew:cargo-llvm-cov",
+      "installURL": "pkgmgrmgr://install?package=brew%3Acargo-llvm-cov",
+      "lastUpdatedAt": "2026-08-16T23:17:53Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/taiki-e/cargo-llvm-cov",
+      "researchedAt": "2026-08-17T06:30:55Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "cargo-llvm-cov repository and documentation",
+          "url": "https://github.com/taiki-e/cargo-llvm-cov"
+        },
+        {
+          "kind": "independent",
+          "title": "cargo-nextest coverage workflow using cargo-llvm-cov",
+          "url": "https://github.com/nextest-rs/nextest/blob/main/.github/workflows/coverage.yml"
+        },
+        {
+          "kind": "independent",
+          "title": "Sentry Codecov action format support",
+          "url": "https://github.com/getsentry/codecov-action"
+        }
+      ],
+      "upstreamSummary": "Cargo subcommand to easily use LLVM source-based code coverage",
       "version": null
     },
     "brew:cask:caskhub": {
@@ -2319,6 +2451,72 @@
       "upstreamSummary": "Modern shell for the GitHub era",
       "version": null
     },
+    "brew:octodns": {
+      "agentSummary": "octoDNS manages reviewed DNS configuration as code across many providers, separating reusable core planning from provider modules and supporting custom sources, targets, and processors.",
+      "assessment": {
+        "alternatives": [
+          "Terraform DNS providers for teams standardizing all infrastructure on Terraform",
+          "DNSControl for a JavaScript-based DNS-as-code workflow",
+          "Provider-native infrastructure templates for single-provider environments"
+        ],
+        "audiences": [
+          "Infrastructure teams managing DNS through version control",
+          "Organizations operating zones across multiple DNS providers",
+          "Python developers building custom DNS sources or provider integrations"
+        ],
+        "caveats": [
+          "Provider capabilities and release schedules vary because integrations are separate modules",
+          "Advanced GeoDNS behavior is provider-specific and can be inconsistent",
+          "Applying an incorrect desired state can change authoritative DNS broadly, so plan review and scoped credentials are essential",
+          "Teams committed to another infrastructure-as-code system may prefer avoiding a separate DNS configuration stack"
+        ],
+        "complements": [
+          "Git pull-request review and protected deployment branches",
+          "octoDNS provider modules such as Route 53, Cloudflare, or Google Cloud DNS",
+          "octoDNS-Sync for GitHub Actions automation"
+        ],
+        "prerequisites": [
+          "Credentials and API access for each target DNS provider",
+          "Separate provider modules for services beyond the built-in YAML provider",
+          "A deployment workflow that previews and reviews plans before applying them"
+        ],
+        "useCases": [
+          "Reviewing DNS record changes through normal repository workflows",
+          "Synchronizing one zone definition to multiple providers",
+          "Migrating or comparing records between DNS services",
+          "Filtering, validating, or augmenting planned DNS changes with processors"
+        ]
+      },
+      "category": "networking",
+      "displayName": "octodns",
+      "docs": "https://octodns.readthedocs.io/en/latest",
+      "homepage": "https://github.com/octodns/octodns",
+      "id": "brew:octodns",
+      "installURL": "pkgmgrmgr://install?package=brew%3Aoctodns",
+      "lastUpdatedAt": "2026-08-17T00:02:42Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/octodns/octodns",
+      "researchedAt": "2026-08-17T06:30:55Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "octoDNS documentation",
+          "url": "https://octodns.readthedocs.io/en/latest/"
+        },
+        {
+          "kind": "primary",
+          "title": "octoDNS project repository",
+          "url": "https://github.com/octodns/octodns"
+        },
+        {
+          "kind": "independent",
+          "title": "Cloudflare on improving DNS resilience with octoDNS",
+          "url": "https://blog.cloudflare.com/improving-the-resiliency-of-our-infrastructure-dns-zone/"
+        }
+      ],
+      "upstreamSummary": "Tools for managing DNS across multiple providers",
+      "version": null
+    },
     "brew:ooniprobe": {
       "agentSummary": "OONI Probe CLI runs open network-interference measurements for websites, messaging apps, circumvention tools, and performance, publishing results that can support censorship research and local troubleshooting.",
       "assessment": {
@@ -3038,53 +3236,6 @@
         }
       ],
       "upstreamSummary": "Live USB device tree in your terminal",
-      "version": null
-    },
-    "brew:vals": {
-      "agentSummary": "vals loads configuration values from secrets managers and other sources, bringing Helm-like external value resolution to deployment and automation workflows.",
-      "assessment": {
-        "alternatives": [
-          "Built-in platform tools or another package in the same category"
-        ],
-        "audiences": [
-          "Developers and teams whose workflow matches the documented scope"
-        ],
-        "caveats": [
-          "Confirm compatibility, update policy, and operational impact before production use"
-        ],
-        "complements": [
-          "Version control, CI, and project-specific documentation"
-        ],
-        "prerequisites": [
-          "A compatible runtime, operating system, or project configuration"
-        ],
-        "useCases": [
-          "Automating the task described by the upstream project"
-        ]
-      },
-      "category": "cloud-infrastructure",
-      "displayName": "vals",
-      "docs": "https://github.com/helmfile/vals#readme",
-      "homepage": "https://github.com/helmfile/vals",
-      "id": "brew:vals",
-      "installURL": "pkgmgrmgr://install?package=brew%3Avals",
-      "lastUpdatedAt": "2026-07-16T04:48:52Z",
-      "manager": "homebrew",
-      "repository": "https://github.com/helmfile/vals",
-      "researchedAt": "2026-07-16T17:09:55Z",
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "vals documentation",
-          "url": "https://github.com/helmfile/vals#readme"
-        },
-        {
-          "kind": "primary",
-          "title": "vals project and release information",
-          "url": "https://github.com/helmfile/vals"
-        }
-      ],
-      "upstreamSummary": "Helm-like configuration values loader with support for various sources",
       "version": null
     },
     "brew:vfox": {
