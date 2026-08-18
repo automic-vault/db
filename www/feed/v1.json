@@ -55,8 +55,6 @@
     {
       "candidatePackageIDs": [
         "npm:vitest",
-        "brew:topgrade",
-        "brew:kew",
         "brew:open-code-review",
         "brew:threatcl",
         "brew:fluent-bit",
@@ -77,9 +75,13 @@
         "brew:fzf",
         "brew:pup",
         "brew:rattler-build",
-        "brew:b4n"
+        "brew:b4n",
+        "brew:qwen-code",
+        "brew:alive2"
       ],
       "fallbackPackageIDs": [
+        "brew:qwen-code",
+        "brew:alive2",
         "brew:rattler-build",
         "brew:pup",
         "brew:b4n",
@@ -101,9 +103,7 @@
         "brew:threatcl",
         "brew:open-code-review",
         "brew:fluent-bit",
-        "npm:vitest",
-        "brew:topgrade",
-        "brew:kew"
+        "npm:vitest"
       ],
       "id": "for-you",
       "title": "For You",
@@ -133,6 +133,8 @@
       "packageIDs": [
         "brew:rattler-build",
         "brew:pup",
+        "brew:qwen-code",
+        "brew:alive2",
         "brew:b4n",
         "brew:osv-scanner",
         "brew:hermes-agent",
@@ -140,9 +142,7 @@
         "brew:sourcedocs",
         "brew:rainfrog",
         "brew:apko",
-        "brew:octodns",
-        "brew:cargo-llvm-cov",
-        "brew:aube"
+        "brew:octodns"
       ],
       "title": "Recently Updated",
       "type": "recentlyUpdated"
@@ -709,7 +709,7 @@
       "type": "editorial"
     }
   ],
-  "generatedAt": "2026-08-18T06:37:16Z",
+  "generatedAt": "2026-08-18T06:39:33Z",
   "packages": {
     "brew:agent-browser": {
       "agentSummary": "Agent Browser is a command-line browser automation tool for AI agents, exposing structured navigation, inspection, interaction, and session controls through a compact terminal-first interface.",
@@ -765,6 +765,71 @@
         }
       ],
       "upstreamSummary": "Browser automation CLI for AI agents",
+      "version": null
+    },
+    "brew:alive2": {
+      "agentSummary": "Alive2 checks whether LLVM IR transformations preserve behavior, offering standalone and compiler-integrated translation validation while explicitly bounding unsupported interprocedural cases and solver limits.",
+      "assessment": {
+        "alternatives": [
+          "Alive for specifying and verifying peephole optimizations in its dedicated language",
+          "LLVM differential and regression testing for broader behavioral checks",
+          "Interactive theorem provers when a fully machine-checked proof is required"
+        ],
+        "audiences": [
+          "LLVM optimization authors and reviewers",
+          "Compiler researchers studying semantics, undefined behavior, or translation validation",
+          "Toolchain teams investigating suspected optimizer miscompilations"
+        ],
+        "caveats": [
+          "Interprocedural transformations are unsupported and can yield spurious counterexamples",
+          "Unsupported LLVM features, including some address-space cases, can hide unsound transformations",
+          "SMT solving may time out or become expensive on difficult transformations",
+          "Translation-validation integrations track current LLVM closely and require a specialized LLVM build"
+        ],
+        "complements": [
+          "LLVM lit regression tests",
+          "Clang and opt transformation pipelines",
+          "Compiler Explorer for quickly experimenting with small IR examples"
+        ],
+        "prerequisites": [
+          "Familiarity with LLVM IR and compiler optimization semantics",
+          "Recent CMake, a C++ compiler, re2c, and the Z3 SMT solver",
+          "A compatible LLVM build with RTTI and exceptions for translation-validation integrations"
+        ],
+        "useCases": [
+          "Proving refinement between source and optimized LLVM IR fragments",
+          "Checking LLVM transformation tests for unsound results",
+          "Validating IR-level transformations during Clang or opt runs"
+        ]
+      },
+      "category": "developer-tools",
+      "displayName": "alive2",
+      "docs": "https://alive2.llvm.org/ce",
+      "homepage": "https://github.com/AliveToolkit/alive2",
+      "id": "brew:alive2",
+      "installURL": "pkgmgrmgr://install?package=brew%3Aalive2",
+      "lastUpdatedAt": "2026-08-18T03:16:47Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/AliveToolkit/alive2",
+      "researchedAt": "2026-08-18T06:39:33Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "Alive2 repository and usage documentation",
+          "url": "https://github.com/AliveToolkit/alive2"
+        },
+        {
+          "kind": "independent",
+          "title": "LLVM Project Blog: Byte Type verification with Alive2",
+          "url": "https://blog.llvm.org/posts/2025-08-29-gsoc-byte-type/"
+        },
+        {
+          "kind": "independent",
+          "title": "Cornell CS 6120: Provably Correct Peephole Optimizations with Alive",
+          "url": "https://www.cs.cornell.edu/courses/cs6120/2023fa/blog/automatic-verification/"
+        }
+      ],
+      "upstreamSummary": "Automatic verification of LLVM optimizations",
       "version": null
     },
     "brew:apko": {
@@ -1973,57 +2038,6 @@
       "upstreamSummary": "Local-first, federated issue tracker for humans and coding agents",
       "version": null
     },
-    "brew:kew": {
-      "agentSummary": "kew is a keyboard-driven terminal music player with library indexing, playlists, search, gapless playback, album art, and visualizations for local collections.",
-      "assessment": {
-        "alternatives": [
-          "cmus",
-          "mpd with a terminal client",
-          "A graphical local-library player"
-        ],
-        "audiences": [
-          "Terminal users with a local music collection"
-        ],
-        "caveats": [
-          "Codec and artwork support vary by platform",
-          "It focuses on local files rather than streaming subscriptions"
-        ],
-        "complements": [
-          "Accurate music tags, terminal image protocols, and command-line audio tools"
-        ],
-        "prerequisites": [
-          "Local audio files, a supported audio device, and compatible terminal features"
-        ],
-        "useCases": [
-          "Browsing and playing albums without leaving the terminal",
-          "Controlling music from a keyboard-focused workstation"
-        ]
-      },
-      "category": "media",
-      "displayName": "kew",
-      "docs": "https://github.com/ravachol/kew#readme",
-      "homepage": "https://github.com/ravachol/kew",
-      "id": "brew:kew",
-      "installURL": "pkgmgrmgr://install?package=brew%3Akew",
-      "lastUpdatedAt": "2026-07-16T00:52:22Z",
-      "manager": "homebrew",
-      "repository": "https://github.com/ravachol/kew",
-      "researchedAt": "2026-07-16T22:49:02Z",
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "kew source and documentation",
-          "url": "https://github.com/ravachol/kew"
-        },
-        {
-          "kind": "primary",
-          "title": "kew releases",
-          "url": "https://github.com/ravachol/kew/releases"
-        }
-      ],
-      "upstreamSummary": "Command-line music player",
-      "version": null
-    },
     "brew:lazy-tmux": {
       "agentSummary": "lazy-tmux saves tmux session structure and working directories, then offers an interactive terminal interface for restoring selected sessions after restarts or interruptions.",
       "assessment": {
@@ -3004,6 +3018,70 @@
       "upstreamSummary": "CLI companion with 200+ commands across 33+ Datadog products",
       "version": null
     },
+    "brew:qwen-code": {
+      "agentSummary": "Qwen Code is an open-source terminal coding agent with interactive and headless workflows, multiple model-provider protocols, extensible tools, and optional sandboxed execution.",
+      "assessment": {
+        "alternatives": [
+          "Claude Code for a hosted Anthropic-centered terminal agent",
+          "Gemini CLI for the upstream project from which Qwen Code originally evolved",
+          "OpenAI Codex for agentic repository work with OpenAI models"
+        ],
+        "audiences": [
+          "Developers who want an inspectable, open-source coding agent in the terminal",
+          "Teams evaluating coding agents across hosted, third-party, or locally served models"
+        ],
+        "caveats": [
+          "Model quality, latency, privacy, and cost depend on the selected provider",
+          "Sandboxing is disabled by default and automatic approval does not enable it",
+          "The former Qwen OAuth route was discontinued, so users now need another authentication option",
+          "Agent-generated edits and commands still require human review and independent verification"
+        ],
+        "complements": [
+          "Git for reviewing and reverting agent-generated changes",
+          "Project tests, linters, and type checkers for independently validating output",
+          "A sandbox when prompts may trigger untrusted shell commands or file edits"
+        ],
+        "prerequisites": [
+          "An API key, Coding Plan subscription, or compatible local or third-party model endpoint",
+          "Node.js 22 or newer when using the npm-distributed CLI",
+          "Careful review of tool permissions before granting write or shell access"
+        ],
+        "useCases": [
+          "Interactive repository exploration, implementation, debugging, and code review",
+          "Headless scripting, CI tasks, and repeatable batch prompts",
+          "Connecting coding workflows to MCP servers, IDEs, SDKs, or messaging channels"
+        ]
+      },
+      "category": "ai",
+      "displayName": "qwen-code",
+      "docs": "https://github.com/QwenLM/qwen-code#readme",
+      "homepage": "https://github.com/QwenLM/qwen-code",
+      "id": "brew:qwen-code",
+      "installURL": "pkgmgrmgr://install?package=brew%3Aqwen-code",
+      "lastUpdatedAt": "2026-08-18T04:23:52Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/QwenLM/qwen-code",
+      "researchedAt": "2026-08-18T06:39:33Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "Qwen Code repository and documentation",
+          "url": "https://github.com/QwenLM/qwen-code"
+        },
+        {
+          "kind": "primary",
+          "title": "Qwen Code configuration and sandbox settings",
+          "url": "https://github.com/QwenLM/qwen-code/blob/main/docs/users/configuration/settings.md"
+        },
+        {
+          "kind": "independent",
+          "title": "InfoQ: Qwen Team Releases Qwen3-Coder with Open Tooling",
+          "url": "https://www.infoq.com/news/2025/07/qwen3-coder/"
+        }
+      ],
+      "upstreamSummary": "AI-powered command-line workflow tool for developers",
+      "version": null
+    },
     "brew:rainfrog": {
       "agentSummary": "A keyboard-friendly database TUI for PostgreSQL, MySQL, SQLite, and other engines, combining query editing, schema browsing, history, filtering, and favorites in one terminal.",
       "assessment": {
@@ -3298,55 +3376,6 @@
         }
       ],
       "upstreamSummary": "Documenting your Threat Models with HCL",
-      "version": null
-    },
-    "brew:topgrade": {
-      "agentSummary": "Topgrade discovers package managers and update tools on your machine, then coordinates their upgrade routines through one configurable command-line workflow.",
-      "assessment": {
-        "alternatives": [
-          "Updating each manager directly",
-          "Pinned environments managed by Nix or containers"
-        ],
-        "audiences": [
-          "Developers maintaining workstations with several package ecosystems"
-        ],
-        "caveats": [
-          "One run can change many unrelated tools",
-          "Interactive managers and breaking upgrades still need human attention"
-        ],
-        "complements": [
-          "Version managers, system backups, changelog review, and reproducible project environments"
-        ],
-        "prerequisites": [
-          "Existing package managers, backups, and enough familiarity to inspect their upgrade output"
-        ],
-        "useCases": [
-          "Reviewing and running many routine upgrades from one interface"
-        ]
-      },
-      "category": "system",
-      "displayName": "topgrade",
-      "docs": "https://github.com/topgrade-rs/topgrade#readme",
-      "homepage": "https://github.com/topgrade-rs/topgrade",
-      "id": "brew:topgrade",
-      "installURL": "pkgmgrmgr://install?package=brew%3Atopgrade",
-      "lastUpdatedAt": "2026-07-15T20:49:28Z",
-      "manager": "homebrew",
-      "repository": "https://github.com/topgrade-rs/topgrade",
-      "researchedAt": "2026-07-16T22:49:02Z",
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "Topgrade source and documentation",
-          "url": "https://github.com/topgrade-rs/topgrade"
-        },
-        {
-          "kind": "primary",
-          "title": "Topgrade releases",
-          "url": "https://github.com/topgrade-rs/topgrade/releases"
-        }
-      ],
-      "upstreamSummary": "Upgrade all the things",
       "version": null
     },
     "brew:ty": {

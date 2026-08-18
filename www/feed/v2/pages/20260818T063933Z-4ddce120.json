@@ -1,0 +1,600 @@
+{
+  "content": [
+    {
+      "artwork": {
+        "alt": "Translucent package blocks flow into a luminous shared vault and branch into several project folders on a dark indigo field.",
+        "attribution": "Generated with OpenAI image generation",
+        "boxColors": {
+          "backgroundEnd": "#06244D",
+          "backgroundStart": "#11183E",
+          "foreground": "#FFFFFF"
+        },
+        "license": "OpenAI terms of use",
+        "path": "feed/assets/pnpm-one-store-many-projects.png"
+      },
+      "batchID": "20260716T224902Z-d416c6f1",
+      "body": "## The Duplicate Dependency Problem\n\nJavaScript projects collect dependencies fast. A modest application can pull thousands of files into `node_modules`, and a laptop with ten related repositories may store the same versions ten times. pnpm approaches that waste as a storage problem. It keeps package contents in a shared, content-addressed store, then links the files each project needs into place. The result looks familiar to Node.js tooling while using far less physical space across projects.\n\nThe project dates to 2016 and grew alongside two pressures in JavaScript development: dependency trees became larger, and monorepos moved from unusual infrastructure to an ordinary way of keeping applications, libraries, and configuration together. npm and Yarn have changed a great deal during the same period, so pnpm cannot claim every speed or storage win in every environment. Its lasting contribution is a clear model: identical package content belongs in one store, and a project should access only the dependencies it declares.\n\n## A Stricter Dependency Graph\n\nThat second property catches teams by surprise. Traditional flat `node_modules` layouts can make transitive dependencies appear importable from application code. The package exists on disk because another dependency requested it, even though your own `package.json` says nothing about it. Code built on that accident can break when the dependency tree changes. pnpm's linked layout makes those undeclared imports harder to get away with. A migration may expose failures on day one, but each failure identifies a missing contract that was already present in the codebase.\n\nThe shared store does not mean projects share mutable package files. pnpm addresses package content by integrity and links it into a virtual store before constructing the dependency view a project expects. Different projects can pin different versions. A changed file gets new content rather than rewriting the old object under another project's feet. Developers still get a `node_modules` directory, lifecycle scripts, registry configuration, and a lockfile. The machinery underneath is different, while the working surface stays close to the npm ecosystem.\n\n## Workspaces and CI\n\nWorkspaces make the design more compelling. A repository can declare several packages in `pnpm-workspace.yaml`, run commands across them, and use the `workspace:` protocol when one local package depends on another. The lockfile records the resolved graph for repeatable installs. Teams often pair this with a task runner, but pnpm's filtering and recursive commands cover many release, test, and build routines on their own. The official project site lists Next.js, Vue, Vite, Nuxt, Prisma, and other open-source projects among its users. State of JavaScript's 2024 monorepo results also place pnpm at the front of that survey's respondents. Those examples do not predict performance in your repository, but they show that the layout works beyond small demonstrations.\n\nCI needs deliberate setup. Caching the pnpm store can save downloads, though restoring a huge cache may cost more than fetching the missing packages. A committed lockfile and `--frozen-lockfile` give the build a stable input. Corepack or an explicit setup action can pin the package-manager version so local machines and CI interpret that lockfile with the same release. Container builds need another decision: copy only the manifests first for layer reuse, then install and build, or use pnpm's deployment commands to produce a pruned application tree.\n\n## Plan the Migration\n\nMigration starts with the lockfile and the dependency graph, not the install command. Remove the previous manager's artifacts, generate `pnpm-lock.yaml`, run the complete test suite, and inspect failures for undeclared dependencies or tools that resolve modules through undocumented paths. Native modules and postinstall scripts deserve attention. Deployment platforms may need a package-manager declaration in `package.json`, and contributor documentation should name the expected version. Keep the change separate from dependency upgrades so reviewers can distinguish layout problems from new package behavior.\n\npnpm will not rescue a disorganized workspace. Catalogs, overrides, peer-dependency settings, and filters can become another configuration language if a team adopts them without a concrete need. The symlinked layout can confuse software that assumes every file has a conventional physical path. Security controls around dependency age and script execution help only when teams understand their settings and review exceptions. npm remains a sensible default for many repositories because it ships with Node and asks less of new contributors. Yarn and Bun offer their own workspace, performance, and runtime choices.\n\n## Measure the Result\n\nThe useful test is small: convert one representative repository, measure clean and warm installs, compare disk use, run CI, and ask maintainers whether the stricter graph exposed real defects or created busywork. pnpm earns its place when the shared store reduces waste and the workspace model clarifies ownership. If those gains do not appear, switching package managers adds churn without improving the software.",
+      "deck": "A package manager built around shared files, stricter dependency boundaries, and the practical demands of JavaScript monorepos.",
+      "id": "editorial:2026-07-16:pnpm-one-store-many-projects",
+      "package": {
+        "agentSummary": "pnpm installs JavaScript dependencies through a shared content-addressed store, saving disk space while enforcing stricter, more predictable dependency boundaries across projects.",
+        "assessment": {
+          "alternatives": [
+            "npm for the Node.js default",
+            "Yarn or Bun for different workspace and runtime tradeoffs"
+          ],
+          "audiences": [
+            "JavaScript and TypeScript teams managing several projects or a monorepo"
+          ],
+          "caveats": [
+            "Some tools still assume a flat dependency tree",
+            "Changing package managers creates a large lockfile and CI review"
+          ],
+          "complements": [
+            "Corepack, committed lockfiles, CI dependency caches, and workspace-aware build tools"
+          ],
+          "prerequisites": [
+            "A supported JavaScript runtime and a project whose tooling accepts pnpm's node_modules layout"
+          ],
+          "useCases": [
+            "Reducing repeated dependency storage",
+            "Running workspace commands across related packages"
+          ]
+        },
+        "category": "developer-tools",
+        "displayName": "pnpm",
+        "docs": "https://pnpm.io/",
+        "homepage": "https://pnpm.io/",
+        "id": "brew:pnpm",
+        "installURL": "pkgmgrmgr://install?package=brew%3Apnpm",
+        "lastUpdatedAt": "2026-07-16T04:48:52Z",
+        "manager": "homebrew",
+        "repository": "https://github.com/pnpm/pnpm",
+        "researchedAt": "2026-07-16T22:49:02Z",
+        "sources": [
+          {
+            "kind": "primary",
+            "title": "pnpm documentation",
+            "url": "https://pnpm.io/"
+          },
+          {
+            "kind": "primary",
+            "title": "pnpm source repository",
+            "url": "https://github.com/pnpm/pnpm"
+          }
+        ],
+        "upstreamSummary": "Fast, disk space efficient package manager",
+        "version": null
+      },
+      "primaryPackageID": "brew:pnpm",
+      "publishedAt": "2026-07-16T22:49:02Z",
+      "relatedPackages": [
+        {
+          "agentSummary": "pnpm installs JavaScript dependencies through a shared content-addressed store, saving disk space while enforcing stricter, more predictable dependency boundaries across projects.",
+          "assessment": {
+            "alternatives": [
+              "npm for the Node.js default",
+              "Yarn or Bun for different workspace and runtime tradeoffs"
+            ],
+            "audiences": [
+              "JavaScript and TypeScript teams managing several projects or a monorepo"
+            ],
+            "caveats": [
+              "Some tools still assume a flat dependency tree",
+              "Changing package managers creates a large lockfile and CI review"
+            ],
+            "complements": [
+              "Corepack, committed lockfiles, CI dependency caches, and workspace-aware build tools"
+            ],
+            "prerequisites": [
+              "A supported JavaScript runtime and a project whose tooling accepts pnpm's node_modules layout"
+            ],
+            "useCases": [
+              "Reducing repeated dependency storage",
+              "Running workspace commands across related packages"
+            ]
+          },
+          "category": "developer-tools",
+          "displayName": "pnpm",
+          "docs": "https://pnpm.io/",
+          "homepage": "https://pnpm.io/",
+          "id": "brew:pnpm",
+          "installURL": "pkgmgrmgr://install?package=brew%3Apnpm",
+          "lastUpdatedAt": "2026-07-16T04:48:52Z",
+          "manager": "homebrew",
+          "repository": "https://github.com/pnpm/pnpm",
+          "researchedAt": "2026-07-16T22:49:02Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "pnpm documentation",
+              "url": "https://pnpm.io/"
+            },
+            {
+              "kind": "primary",
+              "title": "pnpm source repository",
+              "url": "https://github.com/pnpm/pnpm"
+            }
+          ],
+          "upstreamSummary": "Fast, disk space efficient package manager",
+          "version": null
+        },
+        {
+          "agentSummary": "Vite provides a fast development server and optimized production builds for modern web projects, with native modules and a broad plugin ecosystem.",
+          "assessment": {
+            "alternatives": [
+              "Built-in platform tools or another package in the same category"
+            ],
+            "audiences": [
+              "Developers and teams whose workflow matches the documented scope"
+            ],
+            "caveats": [
+              "Confirm compatibility, update policy, and operational impact before production use"
+            ],
+            "complements": [
+              "Version control, CI, and project-specific documentation"
+            ],
+            "prerequisites": [
+              "A compatible runtime, operating system, or project configuration"
+            ],
+            "useCases": [
+              "Automating the task described by the upstream project"
+            ]
+          },
+          "category": "developer-tools",
+          "displayName": "vite",
+          "docs": null,
+          "homepage": "https://vite.dev",
+          "id": "npm:vite",
+          "installURL": "pkgmgrmgr://install?package=npm%3Avite",
+          "lastUpdatedAt": "2026-07-09T04:44:45Z",
+          "manager": "npm",
+          "repository": null,
+          "researchedAt": "2026-07-16T17:09:55Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "vite documentation",
+              "url": "https://vite.dev"
+            },
+            {
+              "kind": "primary",
+              "title": "vite project and release information",
+              "url": "https://www.npmjs.com/package/vite"
+            }
+          ],
+          "upstreamSummary": "Native-ESM powered web dev build tool",
+          "version": "8.1.4"
+        },
+        {
+          "agentSummary": "Vitest is a Vite-native testing framework with fast watch mode, TypeScript support, familiar assertions, mocking, coverage, and flexible workspace-aware configuration.",
+          "assessment": {
+            "alternatives": [
+              "Built-in platform tools or another package in the same category"
+            ],
+            "audiences": [
+              "Developers and teams whose workflow matches the documented scope"
+            ],
+            "caveats": [
+              "Confirm compatibility, update policy, and operational impact before production use"
+            ],
+            "complements": [
+              "Version control, CI, and project-specific documentation"
+            ],
+            "prerequisites": [
+              "A compatible runtime, operating system, or project configuration"
+            ],
+            "useCases": [
+              "Automating the task described by the upstream project"
+            ]
+          },
+          "category": "developer-tools",
+          "displayName": "vitest",
+          "docs": null,
+          "homepage": "https://vitest.dev",
+          "id": "npm:vitest",
+          "installURL": "pkgmgrmgr://install?package=npm%3Avitest",
+          "lastUpdatedAt": "2026-07-06T06:44:42Z",
+          "manager": "npm",
+          "repository": null,
+          "researchedAt": "2026-07-16T17:09:55Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "vitest documentation",
+              "url": "https://vitest.dev"
+            },
+            {
+              "kind": "primary",
+              "title": "vitest project and release information",
+              "url": "https://www.npmjs.com/package/vitest"
+            }
+          ],
+          "upstreamSummary": "Next generation testing framework powered by Vite",
+          "version": "4.1.10"
+        },
+        {
+          "agentSummary": "TypeScript adds static types and tooling to JavaScript, catching mistakes during development while compiling to portable code for browsers and runtimes.",
+          "assessment": {
+            "alternatives": [
+              "Built-in platform tools or another package in the same category"
+            ],
+            "audiences": [
+              "Developers and teams whose workflow matches the documented scope"
+            ],
+            "caveats": [
+              "Confirm compatibility, update policy, and operational impact before production use"
+            ],
+            "complements": [
+              "Version control, CI, and project-specific documentation"
+            ],
+            "prerequisites": [
+              "A compatible runtime, operating system, or project configuration"
+            ],
+            "useCases": [
+              "Automating the task described by the upstream project"
+            ]
+          },
+          "category": null,
+          "displayName": "typescript",
+          "docs": null,
+          "homepage": "https://www.typescriptlang.org/",
+          "id": "npm:typescript",
+          "installURL": "pkgmgrmgr://install?package=npm%3Atypescript",
+          "lastUpdatedAt": "2026-07-08T15:55:18Z",
+          "manager": "npm",
+          "repository": null,
+          "researchedAt": "2026-07-16T17:09:55Z",
+          "sources": [
+            {
+              "kind": "primary",
+              "title": "typescript documentation",
+              "url": "https://www.typescriptlang.org/"
+            },
+            {
+              "kind": "primary",
+              "title": "typescript project and release information",
+              "url": "https://www.npmjs.com/package/typescript"
+            }
+          ],
+          "upstreamSummary": "TypeScript is a language for application scale JavaScript development",
+          "version": "7.0.2"
+        }
+      ],
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "pnpm documentation and project users",
+          "url": "https://pnpm.io/"
+        },
+        {
+          "kind": "primary",
+          "title": "pnpm source repository",
+          "url": "https://github.com/pnpm/pnpm"
+        },
+        {
+          "kind": "primary",
+          "title": "pnpm release history",
+          "url": "https://github.com/pnpm/pnpm/releases"
+        },
+        {
+          "kind": "independent",
+          "title": "State of JavaScript 2024 monorepo tools results",
+          "url": "https://2024.stateofjs.com/en-US/libraries/monorepo_tools/"
+        }
+      ],
+      "title": "pnpm: One Store, Many Projects",
+      "type": "editorial"
+    },
+    {
+      "batchID": "20260716T224902Z-c0b4136e",
+      "id": "recently-updated:data:20260817T062537Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Persistent key-value database, with built-in net interface",
+          "category": "data",
+          "displayName": "redis@8.2",
+          "homepage": "https://redis.io/",
+          "id": "brew:redis@8.2",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aredis%408.2",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Database management tool",
+          "category": "data",
+          "displayName": "DBX",
+          "homepage": "https://dbxio.com/",
+          "id": "brew:cask:dbx",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Adbx",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Command-Line Interface for DataStax Astra",
+          "category": "data",
+          "displayName": "astra",
+          "homepage": "https://docs.datastax.com/en/astra-cli",
+          "id": "brew:astra",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aastra",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Persistent key-value database, with built-in net interface",
+          "category": "data",
+          "displayName": "redis",
+          "homepage": "https://redis.io/",
+          "id": "brew:redis",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aredis",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Enables developers to manage Confluent Cloud or Confluent Platform",
+          "category": "data",
+          "displayName": "Confluent CLI",
+          "homepage": "https://docs.confluent.io/confluent-cli/current/overview.html",
+          "id": "brew:cask:confluent-cli",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Aconfluent-cli",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-16T22:49:02Z",
+      "title": "Recently Updated in Data",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260716T224902Z-c0b4136e",
+      "id": "new-packages:productivity:20260817T062537Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Answer to your Wayland Wallpaper Woes",
+          "category": "productivity",
+          "displayName": "awww",
+          "homepage": "https://codeberg.org/LGFae/awww",
+          "id": "brew:awww",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aawww",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Workplace search and AI assistant",
+          "category": "productivity",
+          "displayName": "Glean for Desktop",
+          "homepage": "https://www.glean.com/glean-for-desktop",
+          "id": "brew:cask:glean",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Aglean",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Wayland clipboard manager with support for multimedia",
+          "category": "productivity",
+          "displayName": "cliphist",
+          "homepage": "https://github.com/sentriz/cliphist",
+          "id": "brew:cliphist",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acliphist",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-16T22:49:02Z",
+      "title": "New Packages in Productivity",
+      "type": "newPackages"
+    },
+    {
+      "batchID": "20260716T224902Z-c0b4136e",
+      "id": "recently-updated:language-runtime:20260817T062537Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Compiler for the C3 language",
+          "category": "language-runtime",
+          "displayName": "c3c",
+          "homepage": "https://c3-lang.org",
+          "id": "brew:c3c",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ac3c",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Fast, Dynamic Programming Language",
+          "category": "language-runtime",
+          "displayName": "julia",
+          "homepage": "https://julialang.org/",
+          "id": "brew:julia",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ajulia",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Fast and flexible scripting for Go developers and DevOps",
+          "category": "language-runtime",
+          "displayName": "risor",
+          "homepage": "https://risor.io/",
+          "id": "brew:risor",
+          "installURL": "pkgmgrmgr://install?package=brew%3Arisor",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Digital Mars D compiler",
+          "category": "language-runtime",
+          "displayName": "dmd",
+          "homepage": "https://dlang.org/",
+          "id": "brew:dmd",
+          "installURL": "pkgmgrmgr://install?package=brew%3Admd",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Powerful, clean, object-oriented scripting language",
+          "category": "language-runtime",
+          "displayName": "ruby",
+          "homepage": "https://www.ruby-lang.org/",
+          "id": "brew:ruby",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aruby",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-16T22:49:02Z",
+      "title": "Recently Updated in Language Runtime",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260716T224902Z-c0b4136e",
+      "id": "recently-updated:ai:20260817T062537Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Remove background from images and video using AI",
+          "category": "ai",
+          "displayName": "backgroundremover",
+          "homepage": "https://backgroundremoverai.com",
+          "id": "brew:backgroundremover",
+          "installURL": "pkgmgrmgr://install?package=brew%3Abackgroundremover",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Memory-first coding agent",
+          "category": "ai",
+          "displayName": "letta-code",
+          "homepage": "https://docs.letta.com/letta-code",
+          "id": "brew:letta-code",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aletta-code",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "AI-powered command-line workflow tool for developers",
+          "category": "ai",
+          "displayName": "qwen-code",
+          "homepage": "https://github.com/QwenLM/qwen-code",
+          "id": "brew:qwen-code",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aqwen-code",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Portable multi-agent harness for .agents-based skills and workflows",
+          "category": "ai",
+          "displayName": "oh-my-agent",
+          "homepage": "https://firstfluke.com/oh-my-agent/",
+          "id": "brew:oh-my-agent",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aoh-my-agent",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Open-source coding-agent harness you can actually change — own the loop (prompts, gates, routing, skills, terminal states), use any model, run long tasks while you're away.",
+          "category": "ai",
+          "displayName": "agent-afk",
+          "homepage": "https://docs.agentafk.com",
+          "id": "npm:agent-afk",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aagent-afk",
+          "manager": "npm"
+        }
+      ],
+      "publishedAt": "2026-07-16T22:49:02Z",
+      "title": "Recently Updated in Ai",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260716T224902Z-c0b4136e",
+      "id": "recently-updated:developer-tools:20260817T062537Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Universal conda package builder",
+          "category": "developer-tools",
+          "displayName": "rattler-build",
+          "homepage": "https://rattler.build",
+          "id": "brew:rattler-build",
+          "installURL": "pkgmgrmgr://install?package=brew%3Arattler-build",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Header-only PEG (Parsing Expression Grammars) library for C++",
+          "category": "developer-tools",
+          "displayName": "cpp-peglib",
+          "homepage": "https://yhirose.github.io/cpp-peglib/",
+          "id": "brew:cpp-peglib",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acpp-peglib",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Multi-Stage GitOps Continuous Promotion",
+          "category": "developer-tools",
+          "displayName": "kargo",
+          "homepage": "https://kargo.io/",
+          "id": "brew:kargo",
+          "installURL": "pkgmgrmgr://install?package=brew%3Akargo",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "C library for encoding and decoding Protocol Buffer messages",
+          "category": "developer-tools",
+          "displayName": "nanopb",
+          "homepage": "https://jpa.kapsi.fi/nanopb/docs/index.html",
+          "id": "brew:nanopb",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ananopb",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "CLI companion with 200+ commands across 33+ Datadog products",
+          "category": "developer-tools",
+          "displayName": "pup",
+          "homepage": "https://www.datadoghq.com",
+          "id": "brew:pup",
+          "installURL": "pkgmgrmgr://install?package=brew%3Apup",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-16T22:49:02Z",
+      "title": "Recently Updated in Developer Tools",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260716T224902Z-c0b4136e",
+      "id": "recently-updated:science:20260817T062537Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Interactive computing suite",
+          "category": "science",
+          "displayName": "nteract",
+          "homepage": "https://github.com/nteract/desktop",
+          "id": "brew:cask:nteract",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Anteract",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Structural variant discovery by paired-end and split-read analysis",
+          "category": "science",
+          "displayName": "delly",
+          "homepage": "https://github.com/dellytools/delly",
+          "id": "brew:delly",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adelly",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Collect, organise, cite, and share research sources",
+          "category": "science",
+          "displayName": "Zotero",
+          "homepage": "https://www.zotero.org/",
+          "id": "brew:cask:zotero",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Azotero",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "SDK for signal processing blocks to implement software radios",
+          "category": "science",
+          "displayName": "gnuradio",
+          "homepage": "https://www.gnuradio.org/",
+          "id": "brew:gnuradio",
+          "installURL": "pkgmgrmgr://install?package=brew%3Agnuradio",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "3D CAD software",
+          "category": "science",
+          "displayName": "Shapr3D",
+          "homepage": "https://www.shapr3d.com/",
+          "id": "brew:cask:shapr3d",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Ashapr3d",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-07-16T22:49:02Z",
+      "title": "Recently Updated in Science",
+      "type": "recentlyUpdated"
+    }
+  ],
+  "generatedAt": "2026-08-18T06:39:33Z",
+  "nextPageURL": null,
+  "pageID": "20260818T063933Z-4ddce120",
+  "schemaVersion": 2
+}
