@@ -10,28 +10,49 @@ credentials-file-location:
   unix:
     - config.json
 history:
-  - >
-    overtls is a Rust proxy-tunnel project created under ShadowsocksR-Live in 2022. The
-    upstream README describes it as a SOCKS5-style proxy that carries TCP and UDP
-    traffic through TLS, and frames it as a Rust implementation of the OverTLS part of
-    SSRoT from shadowsocksr-native, without the broader ShadowsocksR and Shadowsocks
-    pieces.
-  - >
-    The project's ecosystem role is within censorship-circumvention and proxy tooling
-    rather than general web infrastructure. Its design uses a client/server
-    configuration with a shared `tunnel_path`: the client connects to the server over
-    TLS, traffic matching the secret path is treated as proxy traffic, and other
-    server-side traffic can be forwarded to an ordinary web service for camouflage. The
-    README recommends a VPS, domain name or IP certificate, TLS certificates, and an
-    HTTP server or reverse proxy such as nginx or Caddy.
-  - >
-    Practitioners run `overtls-bin -r server -c config.json` on the server and
-    `overtls-bin -r client -c config.json` locally, with the local client listening as a
-    SOCKS endpoint. The repository ships install scripts, Android and Apple build
-    scripts, a reusable Rust library target, and release artifacts for several operating
-    systems and mobile library formats. Homebrew packages the `overtls-bin` executable
-    from tagged source, but public history beyond the upstream README, Cargo manifest,
-    releases, and package metadata is thin.
+  adoption-history:
+    - >
+      The project provides Cargo installation, release binaries, source builds, Docker
+      material, and Linux installation scripts. The supplied metadata confirms Homebrew
+      packaging, while the repository's platform code and scripts cover additional
+      client and server environments.
+  package-nerd-significance:
+    - >
+      overtls is of interest as a compact Rust networking package that combines client
+      and server roles in one executable and represents a specialized
+      censorship-circumvention approach built directly around TLS traffic.
+  project-history:
+    - >
+      The ShadowsocksR-Live project developed overtls as a Rust implementation of the
+      OverTLS portion of SSRoT, omitting the broader Shadowsocks and ShadowsocksR
+      protocol layers. Its stated goal is a concise SOCKS5 proxy tunnel carrying TCP and
+      UDP traffic through TLS.
+  related-projects:
+    - 'SSRoT: The related design from which overtls retains the OverTLS component.'
+    - >
+      nginx and Caddy: Reverse proxies documented for fronting or disguising an overtls
+      server.
+    - "Let's Encrypt: The certificate authority recommended by the installation documentation."
+  sources:
+    - https://github.com/ShadowsocksR-Live/overtls#readme
+    - https://github.com/ShadowsocksR-Live/overtls/blob/master/config.json
+    - source_facts.package-manager
+  summary:
+    - >
+      overtls is a Rust client-and-server SOCKS5 proxy tunnel that transports TCP and
+      UDP traffic over TLS. It is explicitly intended for circumventing network
+      filtering by making the tunnel resemble ordinary TLS traffic.
+  timeline:
+    - '2020: The public overtls repository began its release and development history.'
+    - >
+      2026: The repository remained active with Rust, Docker, Apple, Android, and
+      installation components.
+  usage:
+    - >
+      Both roles use `overtls-bin` with `-r server` or `-r client` and a configuration
+      selected with `-c config.json`. The shared JSON configuration defines a unique
+      tunnel path plus server certificate, forwarding, listening, and client endpoint
+      settings.
 tags:
   - cli
   - gfw-bypass
@@ -57,13 +78,9 @@ provenance:
   docs-sources:
     - Official GitHub README is the primary documentation surface for the project.
   history-sources:
-    - https://github.com/ShadowsocksR-Live/overtls
-    - https://raw.githubusercontent.com/ShadowsocksR-Live/overtls/master/readme.md
-    - https://raw.githubusercontent.com/ShadowsocksR-Live/overtls/master/Cargo.toml
-    - https://raw.githubusercontent.com/ShadowsocksR-Live/overtls/master/config.json
-    - https://api.github.com/repos/ShadowsocksR-Live/overtls
-    - https://github.com/ShadowsocksR-Live/overtls/releases/tag/v0.3.10
-    - https://formulae.brew.sh/api/formula/overtls.json
+    - https://github.com/ShadowsocksR-Live/overtls#readme
+    - https://github.com/ShadowsocksR-Live/overtls/blob/master/config.json
+    - source_facts.package-manager
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -76,6 +93,6 @@ category-path:
   - proxy
 display-name-confidence: high
 docs-confidence: high
-history-confidence: low
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
