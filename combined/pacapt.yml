@@ -8,26 +8,62 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pacapt grew out of a very specific sysadmin itch: users familiar with Arch Linux's
-    `pacman` wanted the same command shape on systems using apt, yum, zypper, Homebrew,
-    MacPorts, pkg, apk, and other package managers. The project presents itself as an
-    Arch Linux pacman-like shell wrapper, small enough to distribute as a single script
-    but broad enough to dispatch to many native back ends.
-  - >
-    Its adoption story is mostly cross-distro convenience rather than platform
-    dominance. The README lists support for Linux, BSD, OpenWrt, and macOS package
-    managers, while tutorials framed it as a way to avoid memorizing different install,
-    search, update, remove, and cleanup verbs when hopping between distributions. The
-    project explicitly warns against installing it on Arch-based systems, because there
-    the real `pacman` already exists.
-  - >
-    Under the hood pacapt is intentionally not a new package manager. Its architecture
-    documentation describes a generated main program assembled from shell-library files,
-    one per backend, plus a small argument parser that switches from `sh` to `bash`
-    where needed and invokes the host system's real package manager. Practitioners use
-    it as a compatibility shim: `pacapt -S htop`, `pacapt -Ss wget`, or a `pacman`
-    symlink on non-Arch machines for muscle-memory-friendly package operations.
+  adoption-history:
+    - >
+      pacapt has circulated as a convenience tool for people who move among Linux
+      distributions, macOS, and BSD systems. Its standalone shell implementation
+      supports direct installation, while Homebrew provides a managed package for macOS
+      and Linux users.
+    - >
+      Contributors expanded its dispatch table across apt, dnf and yum, zypper, emerge,
+      apk, Homebrew, MacPorts, BSD pkg, and other native managers while retaining a
+      pacman-like vocabulary.
+  package-nerd-significance:
+    - >
+      pacapt captures a recognizable piece of package-manager culture: users can carry
+      pacman command habits between otherwise incompatible systems without introducing
+      another package database.
+    - >
+      The abstraction is intentionally thin. It helps with interactive muscle memory and
+      simple portable scripts but cannot erase differences in package names,
+      repositories, dependency resolution, upgrade semantics, or privilege policy.
+  project-history:
+    - >
+      Nguyễn Thái Ngọc Duy, known as icy, created pacapt as a small shell wrapper that
+      translates Arch Linux pacman-style operations into commands for many native
+      package managers.
+    - >
+      The project grew into a portable script with numerous backends and optional helper
+      links such as pacman, allowing the same interface to be used across several
+      Unix-like operating-system families.
+  related-projects:
+    - Arch Linux pacman supplies the command style emulated by pacapt.
+    - >
+      apt, dnf, yum, zypper, emerge, apk, Homebrew, MacPorts, and BSD pkg are among the
+      native systems to which it delegates.
+  sources:
+    - https://github.com/icy/pacapt#readme
+    - https://github.com/icy/pacapt/blob/ng/lib/help.txt
+  summary:
+    - >
+      pacapt is a portable shell wrapper that maps pacman-style commands onto the
+      package manager installed on the host system.
+  timeline:
+    - '2010: The pacapt public repository was created.'
+    - >
+      2010s: Contributions expanded support across major Linux, macOS, and BSD package
+      managers.
+    - '2020s: pacapt remained available as a standalone script and through Homebrew.'
+  usage:
+    - >
+      Users place pacapt in PATH, optionally link it as pacman, and issue familiar
+      operations for repository refresh, search, installation, removal, and upgrades.
+      pacapt detects a supported backend and delegates the work to that system's native
+      manager.
+    - >
+      Authentication and authorization are handled by the underlying manager and
+      operating system. The official documentation identifies no persistent pacapt
+      configuration or credentials file.
 category: system
 package-manager:
   brew: pacapt

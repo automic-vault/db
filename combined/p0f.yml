@@ -4,32 +4,68 @@ homepage: https://lcamtuf.coredump.cx/p0f3/
 repo: null
 docs:
   - https://lcamtuf.coredump.cx/p0f3
-config-file-location: null
+config-file-location:
+  unix: ./p0f.fp
 credentials-file-location: null
 history:
-  - >
-    p0f is Michal Zalewski's passive operating-system fingerprinting tool. Zalewski
-    announced a beta release to Bugtraq on 2000-06-10, describing passive OS
-    fingerprinting as deriving fingerprints from traffic a remote host already sends,
-    without active probes. The announcement's README excerpt described version 1.0,
-    libpcap-based packet capture, a fingerprint database in `/etc/p0f.fp` or `./p0f.fp`,
-    and early differentiation from the older passive tool Siphon.
-  - >
-    Version 3 reframed p0f as a broader passive traffic fingerprinting engine. The p0f3
-    README says the tool can identify operating systems and software on both endpoints
-    of ordinary TCP connections, measure distance, link type, and uptime, and detect
-    NAT, load balancing, proxying, and other inconsistencies, often from a single SYN
-    packet and without interfering with the traffic. It also describes HTTP
-    application-level fingerprinting based on header ordering and syntax rather than
-    simply trusting user-agent declarations.
-  - >
-    p0f's adoption has been in security operations, network forensics, honeypots,
-    intrusion-detection workflows, and research where active scanning is too noisy,
-    blocked, or operationally inappropriate. Practitioners run `p0f` against live
-    interfaces or packet captures to enrich observed connections with OS, distance,
-    link, uptime, and masquerade hints; distributions and package managers keep it
-    available as a small C/libpcap utility in the same mental toolbox as tcpdump, Nmap,
-    and IDS sensors.
+  adoption-history:
+    - >
+      p0f became a widely packaged Unix security utility; the input records packages for
+      Alpine, Debian, Fedora-family systems, Homebrew, MacPorts, Nix, Arch Linux,
+      Ubuntu, and openSUSE.
+    - >
+      Its daemon mode and local query API also made passive observations usable by
+      monitoring, abuse-prevention, and forensic systems rather than only by an
+      interactive operator.
+  package-nerd-significance:
+    - >
+      p0f is a classic small Unix security tool that derives substantial endpoint
+      intelligence without transmitting probes. Its fingerprint database and
+      libpcap-based operation make it both a standalone command and useful systems
+      plumbing.
+    - >
+      For packagers, p0f is notable for its long-lived signature database and
+      build-time-selectable default database path. Packaged layouts can therefore differ
+      from the upstream ./p0f.fp default.
+  project-history:
+    - >
+      Michał Zalewski created the original p0f around 2000. The version 2 README
+      describes a complete rewrite that made signatures more flexible and added checks
+      for subtle TCP/IP packet characteristics.
+    - >
+      Zalewski released p0f version 3 in 2012. It expanded the passive engine to
+      identify operating systems and applications, estimate network properties, and
+      detect signs of NAT, load balancing, proxying, and misleading application
+      identifiers.
+  related-projects:
+    - >
+      Nmap performs active operating-system and service detection, contrasting with
+      p0f's passive approach.
+    - libpcap provides packet capture and filtering on Unix-like systems.
+  sources:
+    - https://lcamtuf.coredump.cx/p0f3/
+    - https://lcamtuf.coredump.cx/p0f3/README
+  summary:
+    - >
+      p0f is a passive TCP/IP fingerprinting tool that identifies endpoint
+      characteristics and network topology clues from observed traffic without probing
+      the endpoints.
+  timeline:
+    - '2000: Michał Zalewski wrote the original p0f.'
+    - '2001: William Stearns took over maintenance of the early project.'
+    - '2006: The p0f 2.0.8 documentation described the rewritten version 2 engine.'
+    - '2012: p0f version 3 introduced a substantially redesigned passive-fingerprinting system.'
+    - '2014: The official site published p0f 3.09b.'
+  usage:
+    - >
+      p0f can inspect live traffic, read saved pcap captures, write structured logs, or
+      run as a daemon with a Unix-socket query API. Typical uses include
+      penetration-test reconnaissance, routine monitoring, forensic analysis, and
+      detecting unauthorized network interconnections.
+    - >
+      The p0f.fp fingerprint database is required for identification. Upstream defaults
+      to ./p0f.fp and documents that packagers may change FP_FILE at build time; -f
+      explicitly selects a database.
 category: security
 package-manager:
   apk: p0f

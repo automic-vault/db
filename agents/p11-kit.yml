@@ -9,37 +9,74 @@ config-file-location:
     - '*.module files in the p11-kit modules configuration directory'
 credentials-file-location: null
 history:
-  - >
-    p11-kit comes from the p11-glue effort, whose stated goal is to use PKCS#11 as glue
-    between crypto libraries and security applications on the open-source desktop. The
-    p11-kit project page describes the core problem it solves: loading and enumerating
-    PKCS#11 modules, providing standard module configuration so modules are
-    discoverable, and coordinating multiple components or libraries using PKCS#11 inside
-    one process. Its NEWS file records the project from a 0.1 initial release through
-    later module-configuration, proxy, trust, remote, and PKCS#11 3.x work.
-  - >
-    The project became especially important because certificate trust stores were
-    fragmented across crypto stacks. The p11-glue trust-storage module page describes a
-    PKCS#11 module exposing read-only system certificates and trust policy so crypto
-    libraries can share certificate authority anchors, blocklists, and locally stored
-    policy. The same page documents `p11-kit extract-trust`, later represented through
-    the `trust` command family, for exporting trust information for libraries that
-    cannot consume the PKCS#11 trust module directly.
-  - >
-    Distribution adoption followed that system-integration role. Fedora's Shared System
-    Certificates plan used p11-kit to provide a PKCS#11 trust module and extraction
-    formats for OpenSSL-style PEM bundles, Java cacerts, and other consumers; Fedora
-    packages split out `p11-kit-trust` as the system trust module containing certificate
-    anchors and blocklists. GNOME integration notes also describe Gcr, Gck, and Gnome
-    Keyring using p11-kit configuration and PKCS#11 discovery.
-  - >
-    Practitioners encounter p11-kit less as an app and more as plumbing. The `p11-kit`
-    command lists modules, extracts certificates, exposes modules through a local
-    server, and supports remote module forwarding; the `trust` command operates on the
-    trust-policy store. Package maintainers ship `.module` files and `pkcs11.conf`
-    snippets so smart cards, hardware security modules, NSS/GnuTLS/OpenSSL-adjacent
-    consumers, desktop keyrings, and certificate trust policy can interoperate without
-    every library inventing its own discovery mechanism.
+  adoption-history:
+    - >
+      p11-kit became common Linux security infrastructure because it gives applications
+      a shared mechanism for discovering PKCS #11 providers and coordinating their
+      initialization.
+    - >
+      Its trust module is also used by distributions to expose centrally managed
+      certificate trust policy and to extract that policy into formats consumed by TLS
+      libraries and applications. The input records packages across major Linux
+      families, Homebrew, MacPorts, Nix, and Arch Linux.
+  package-nerd-significance:
+    - >
+      p11-kit centralizes two areas that otherwise tend to fragment across applications:
+      PKCS #11 module discovery and system trust policy. This reduces duplicated
+      provider configuration and helps distributions apply certificate policy
+      consistently.
+    - >
+      It is often an invisible dependency, but its module files and trust extraction can
+      affect smart cards, hardware tokens, TLS clients, desktop components, and
+      system-wide certificate validation.
+  project-history:
+    - >
+      p11-kit was established within the p11-glue project family to coordinate PKCS #11
+      modules used by multiple components in the same process and to define a consistent
+      module-discovery configuration.
+    - >
+      The project subsequently incorporated trust-policy tooling, module proxying,
+      remoting, and command-line facilities for inspecting configured modules and
+      tokens. It remains actively maintained, with releases in the 0.26 series during
+      2026.
+  related-projects:
+    - >
+      PKCS #11 defines the Cryptoki interface implemented by providers managed through
+      p11-kit.
+    - >
+      GnuTLS, NSS, OpenSSL, smart-card middleware, and hardware security modules are
+      common consumers or adjacent components.
+  sources:
+    - https://github.com/p11-glue/p11-kit/releases
+    - https://p11-glue.github.io/p11-glue/p11-kit.html
+    - https://p11-glue.github.io/p11-glue/p11-kit/manual/
+  summary:
+    - >
+      p11-kit provides shared infrastructure for discovering, loading, and coordinating
+      PKCS #11 modules and for exposing system trust policy.
+  timeline:
+    - >
+      2011: Early p11-kit releases established shared PKCS #11 module loading and
+      configuration.
+    - >
+      2013: Trust extraction and certificate-policy work formed a significant part of
+      the project.
+    - >
+      2026: The actively maintained project released the 0.26 series with updated PKCS
+      #11 support and security fixes.
+  usage:
+    - >
+      Applications use the p11-kit library or proxy to load configured PKCS #11
+      providers. Administrators install one .module file per provider and can apply
+      global or per-user overrides.
+    - >
+      The p11-kit command lists modules and operates on configured tokens; the trust
+      command lists, stores, removes, and extracts trust anchors. Secret keys and PINs
+      belong to the backing PKCS #11 token or provider, not to a p11-kit credentials
+      file.
+    - >
+      The documented paths are build-time configurable. The listed /etc/pkcs11 and
+      $HOME/.pkcs11 locations are the upstream usual/default layouts.
 tags:
   - certificates
   - cli
@@ -67,16 +104,9 @@ provenance:
       Official p11-glue generated p11-kit manual includes configuration, command manual
       pages, API reference, and build/contribution documentation.
   history-sources:
-    - https://p11-glue.github.io/p11-glue/
+    - https://github.com/p11-glue/p11-kit/releases
     - https://p11-glue.github.io/p11-glue/p11-kit.html
-    - https://github.com/p11-glue/p11-kit
-    - https://raw.githubusercontent.com/p11-glue/p11-kit/master/NEWS
-    - https://p11-glue.github.io/p11-glue/trust-module.html
-    - https://fedoraproject.org/wiki/Features/SharedSystemCertificates
-    - https://packages.fedoraproject.org/pkgs/p11-kit/p11-kit-trust/
-    - https://wiki.gnome.org/Projects/CryptoGlue/Integration
-    - https://manpages.ubuntu.com/manpages/bionic/man8/p11-kit.8.html
-    - https://formulae.brew.sh/formula/p11-kit
+    - https://p11-glue.github.io/p11-glue/p11-kit/manual/
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/p11-glue/p11-kit, so
