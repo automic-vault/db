@@ -6,25 +6,53 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pacparser began as Manu Garg's C library for evaluating Proxy Auto-Config files
-    outside web browsers. Garg announced version 1.0.0 on the curl-users mailing list on
-    17 December 2007, explaining that PAC files had become a widely accepted
-    proxy-configuration mechanism and that the goal was to make PAC parsing easy to
-    embed in tools such as wget, curl, and Python's urllib.
-  - >
-    The library's role comes from the odd shape of PAC itself: proxy rules are
-    JavaScript programs that expose browser-specific helper functions. pacparser embeds
-    a JavaScript engine, implements standard PAC helper functions, and exposes the
-    result as a C API, Python bindings, and the `pactester` CLI. The project README says
-    it uses QuickJS and Mozilla-derived PAC helper behavior, with pacparser-defined DNS
-    helpers filling gaps.
-  - >
-    In practice, pacparser is infrastructure glue for network tools, test suites, and
-    scripts that need to answer the same question as a browser: which proxy string does
-    `FindProxyForURL` return for this URL and host? It moved from its original Google
-    Code-era distribution into a GitHub-hosted project, gained PyPI distribution for the
-    Python binding, and is packaged by Homebrew as `pacparser`.
+  adoption-history:
+    - >
+      The official README reports support for Linux, FreeBSD, macOS, and Windows, and
+      distributes the project as a C shared library, Python module, and pactester
+      command-line utility. The input package metadata also records packaging across
+      Homebrew, Debian/Ubuntu, Alpine, MacPorts, Nix, Arch, and Scoop.
+  package-nerd-significance:
+    - >
+      pacparser gives programs a reusable implementation of browser-style PAC evaluation
+      rather than requiring each consumer to embed and reproduce PAC JavaScript helper
+      behavior. It is useful for testing PAC rules independently with pactester and for
+      adding PAC awareness to C or Python software.
+  project-history:
+    - >
+      Manu Garg developed pacparser to make Proxy Auto-Config parsing easy to embed in
+      other programs. The implementation evaluates PAC JavaScript and supplies the
+      additional helper functions expected by PAC files.
+    - >
+      The current official README says pacparser embeds QuickJS. Its API remains
+      available through C and Python interfaces alongside the pactester CLI.
+  related-projects:
+    - >
+      QuickJS provides the embedded JavaScript engine in the current implementation.
+      Mozilla's PAC implementation supplied the basis for standard PAC helper functions.
+  sources:
+    - https://github.com/manugarg/pacparser#readme
+    - https://pacparser.manugarg.com/
+    - source_facts.package-manager
+  summary:
+    - >
+      pacparser is a portable C library, Python module, and command-line toolset for
+      parsing and testing Proxy Auto-Config files.
+  timeline:
+    - >
+      Current generation: The official README documents QuickJS as the embedded
+      JavaScript engine.
+    - >
+      Current distribution: Prebuilt Python packages cover Linux, Windows, Intel macOS,
+      and Apple-silicon macOS.
+  usage:
+    - >
+      Applications initialize the parser, load a PAC file or string, and query which
+      proxy should handle a URL and host. Administrators and developers can use
+      pactester to exercise PAC behavior from the command line.
+    - >
+      The official README warns that parser state is process-global and the API is not
+      thread-safe; multithreaded consumers must serialize calls.
 tags:
   - cli
   - library
@@ -51,11 +79,9 @@ provenance:
       Official pacparser site and repository homepage provide API and usage
       documentation for PAC parsing
   history-sources:
-    - https://curl.se/mail/archive-2007-12/0059.html
-    - https://github.com/manugarg/pacparser
+    - https://github.com/manugarg/pacparser#readme
     - https://pacparser.manugarg.com/
-    - https://pypi.org/project/pacparser/
-    - https://formulae.brew.sh/formula/pacparser
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/manugarg/pacparser; repo
@@ -69,6 +95,6 @@ category-path:
   - pac
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

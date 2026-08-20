@@ -13,31 +13,69 @@ credentials-file-location:
     - ~/.config/Yubico/u2f_keys
     - /etc/u2f_mappings
 history:
-  - >
-    pam-u2f is Yubico's Pluggable Authentication Module for Universal 2nd Factor and
-    FIDO2 authenticators. Its NEWS file records an initial 0.0.0 release on 2014-12-16,
-    followed by 1.0.0 on 2015-06-17 with XDG config-file defaults, manual mode,
-    interactive mode, and verbose mode.
-  - >
-    The module bridges the Unix PAM stack with hardware-backed WebAuthn-era credentials.
-    Administrators add pam_u2f.so lines to PAM service files under /etc/pam.d, and users
-    or fleet tooling generate mapping lines with pamu2fcfg. By default, per-user
-    credentials live under $XDG_CONFIG_HOME/Yubico/u2f_keys or
-    ~/.config/Yubico/u2f_keys, while deployments can point authfile at a central mapping
-    file.
-  - >
-    The project's lineage changed materially in version 1.1.0, released 2020-09-17, when
-    it added FIDO2 support and moved from libu2f-host/libu2f-server to libfido2. Later
-    releases added support for EdDSA and SSH ed25519-sk credentials, username expansion
-    in authfile paths, CMake builds, and a module configuration file at
-    /etc/security/pam_u2f.conf.
-  - >
-    pam-u2f's adoption reflects PAM's distribution model rather than a single app
-    ecosystem: it is packaged as libpam-u2f on Debian and Ubuntu, pam-u2f on Fedora and
-    Homebrew, and equivalents across several Unix-like package managers. Practitioners
-    use it to require a YubiKey or other U2F/FIDO2 authenticator for sudo, login, screen
-    unlock, or selected PAM services, with care because a bad PAM rule can lock users
-    out.
+  adoption-history:
+    - >
+      Yubico documents packages for Ubuntu, Fedora, and macOS/Homebrew, while the input
+      metadata additionally records packages for Alpine, Debian, MacPorts, Nix, Arch,
+      Ubuntu, and openSUSE.
+    - >
+      The module originally targeted U2F authenticators and broadened into FIDO2, PIN,
+      user-verification, resident-credential, and OpenSSH security-key workflows.
+  package-nerd-significance:
+    - >
+      pam-u2f connects hardware-backed FIDO authentication to the traditional Unix PAM
+      stack. It is attractive to system integrators because it supports both per-user
+      and centrally administered mappings and can provide either a second factor or
+      passwordless authentication.
+    - >
+      Its authentication-critical placement makes packaging and upgrades unusually
+      sensitive: incorrect PAM configuration can cause lockouts, and its release history
+      includes security hardening and fixes for authentication bypass or unsafe debug
+      handling.
+  project-history:
+    - >
+      Yubico released the initial pam-u2f version in December 2014. Version 1.0.0
+      followed in June 2015 with XDG-based per-user mappings plus manual and interactive
+      modes.
+    - >
+      Version 1.1.0 migrated the implementation from the older U2F libraries to libfido2
+      in September 2020, adding FIDO2 capabilities including user verification, PIN
+      verification, resident credentials, and SSH credential format.
+    - >
+      Version 1.4.0 in March 2025 introduced the default /etc/security/pam_u2f.conf
+      module configuration file and began a build-system transition from Autotools to
+      CMake.
+  related-projects:
+    - >
+      libfido2 supplies current FIDO device support. pamu2fcfg enrolls authenticators
+      and emits authorization mappings. OpenSSH security-key credentials can be consumed
+      with sshformat. YubiKey Touch Detector is related to user-presence notifications.
+  sources:
+    - https://developers.yubico.com/pam-u2f/
+    - https://developers.yubico.com/pam-u2f/Manuals/
+    - https://developers.yubico.com/pam-u2f/Release_Notes.html
+    - https://github.com/Yubico/pam-u2f
+    - source_facts.package-manager
+  summary:
+    - >
+      pam-u2f is Yubico's PAM module for authenticating Unix users with YubiKeys and
+      other U2F- or FIDO2-compliant authenticators.
+  timeline:
+    - '2014-12-16: Initial release.'
+    - '2015-06-17: Version 1.0.0 added XDG-based mappings and manual and interactive modes.'
+    - '2020-09-17: Version 1.1.0 migrated to libfido2 and added major FIDO2 features.'
+    - '2021-05-19: Version 1.1.1 fixed a PIN-authentication bypass.'
+    - '2023-03-14: Version 1.3.0 added username expansion in authorization-file paths.'
+    - '2025-03-25: Version 1.4.0 added module configuration-file support and CMake builds.'
+  usage:
+    - >
+      Administrators add pam_u2f.so to the relevant files under /etc/pam.d, typically as
+      a required second factor after primary authentication or as a sufficient module
+      for passwordless PIN or biometric authentication.
+    - >
+      Users enroll a connected authenticator with pamu2fcfg and store its mapping in the
+      per-user XDG location, while administrators can instead maintain a central mapping
+      such as /etc/u2f_mappings.
 tags:
   - authentication
   - cli
@@ -64,12 +102,11 @@ provenance:
   docs-sources:
     - Official Yubico developer site is the dedicated pam-u2f documentation surface
   history-sources:
-    - https://github.com/Yubico/pam-u2f
-    - https://github.com/Yubico/pam-u2f/blob/main/NEWS
     - https://developers.yubico.com/pam-u2f/
-    - https://developers.yubico.com/pam-u2f/Manuals/pamu2fcfg.1.html
-    - https://developers.yubico.com/libfido2/
-    - https://formulae.brew.sh/formula/pam-u2f
+    - https://developers.yubico.com/pam-u2f/Manuals/
+    - https://developers.yubico.com/pam-u2f/Release_Notes.html
+    - https://github.com/Yubico/pam-u2f
+    - source_facts.package-manager
   repo-sources:
     - >
       Official Yubico pam-u2f repository identifies itself as the PAM module for U2F and

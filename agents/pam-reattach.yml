@@ -8,26 +8,46 @@ config-file-location:
     - /etc/pam.d/*
 credentials-file-location: null
 history:
-  - >
-    pam-reattach is a macOS-specific PAM module created for a very particular
-    consequence of Apple's per-session bootstrap namespaces. The repository was created
-    in August 2018, and the README describes the goal as reattaching the authenticating
-    user's process to the active Aqua login session so GUI-tied services are visible
-    during PAM authentication.
-  - >
-    The immediate use case was Touch ID inside long-lived terminal multiplexers. tmux
-    and GNU Screen can outlive the login session that launched them, but services such
-    as the pasteboard and pam_tid-backed Touch ID are tied to the active GUI session.
-    pam-reattach runs before pam_tid in files such as /etc/pam.d/sudo so sudo inside a
-    detached or reattached terminal session can still reach the correct session
-    services.
-  - >
-    Its ecosystem role is small but durable in the macOS power-user stack: it is
-    packaged by Homebrew and MacPorts, and the README documents Apple Silicon Homebrew
-    paths such as /opt/homebrew/lib/pam/pam_reattach.so because PAM module search paths
-    matter. The package also ships an optional reattach-to-session-namespace
-    command-line helper for running arbitrary commands inside the user's session
-    namespace.
+  adoption-history:
+    - >
+      The project is distributed through both Homebrew and MacPorts. Its focused
+      audience is macOS users who run sudo or other PAM clients from persistent terminal
+      multiplexers.
+  package-nerd-significance:
+    - >
+      pam_reattach is a small compatibility module at the intersection of macOS
+      bootstrap namespaces, PAM, terminal multiplexers, and Touch ID. It is notable
+      because it restores GUI-session services without replacing Apple's pam_tid
+      authentication module.
+  project-history:
+    - >
+      pam_reattach was created to move an authenticating process into the active user's
+      per-session bootstrap namespace on macOS. This addresses GUI-session facilities
+      such as Touch ID being unavailable from background sessions maintained by tmux or
+      GNU Screen.
+  related-projects:
+    - >
+      Apple pam_tid performs Touch ID authentication. tmux and GNU Screen are the
+      persistent-session programs highlighted by the project. The optional
+      reattach-to-session-namespace utility exposes related namespace reattachment for
+      arbitrary programs.
+  sources:
+    - https://github.com/fabianishere/pam_reattach#readme
+  summary:
+    - >
+      pam_reattach is a macOS PAM module that reconnects authentication performed from a
+      background terminal session to the active Aqua login session.
+  timeline:
+    - 'Project packaging: The module became available through Homebrew and MacPorts.'
+    - "Current usage: The module is placed before pam_tid in a target service's PAM stack."
+  usage:
+    - >
+      Administrators edit a service file such as /etc/pam.d/sudo and place pam_reattach
+      before pam_tid. The author recommends marking it optional to reduce lockout risk.
+    - >
+      On Apple-silicon Homebrew installations, the PAM service entry may need the full
+      /opt/homebrew/lib/pam/pam_reattach.so path. The ignore_ssh option makes the module
+      a no-op when SSH environment variables are present.
 tags:
   - aqua
   - authentication
@@ -54,11 +74,7 @@ provenance:
       Official fabianishere/pam_reattach README is the primary documentation for
       installation and PAM configuration
   history-sources:
-    - https://github.com/fabianishere/pam_reattach
-    - https://api.github.com/repos/fabianishere/pam_reattach
-    - https://developer.apple.com/library/archive/technotes/tn2083/_index.html
-    - https://formulae.brew.sh/formula/pam-reattach
-    - https://ports.macports.org/port/pam-reattach/
+    - https://github.com/fabianishere/pam_reattach#readme
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/fabianishere/pam_reattach;
@@ -74,6 +90,6 @@ category-path:
   - authentication
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

@@ -4,29 +4,76 @@ homepage: https://lierdakil.github.io/pandoc-crossref/
 repo: https://github.com/lierdakil/pandoc-crossref
 docs:
   - https://lierdakil.github.io/pandoc-crossref
-config-file-location: null
+config-file-location:
+  unix:
+    - ./pandoc-crossref.yaml
+    - ~/.pandoc-crossref/config.yaml
+    - ~/.pandoc-crossref/config-$FORMAT.yaml
+    - path specified by the crossrefYaml metadata variable
+  windows:
+    - .\pandoc-crossref.yaml
+    - '%USERPROFILE%\.pandoc-crossref\config.yaml'
+    - '%USERPROFILE%\.pandoc-crossref\config-$FORMAT.yaml'
+    - path specified by the crossrefYaml metadata variable
 credentials-file-location: null
 history:
-  - >
-    Origin and lineage: pandoc-crossref is a Haskell Pandoc filter by Nikolay Yakimov
-    for numbering figures, equations, tables, and cross-references. Version 0.1.0.0 was
-    uploaded to Hackage on 2015-04-15, depended on Pandoc 1.13-era APIs, and its early
-    README credited pandoc-fignos and pandoc-eqnos as inspirations. It grew in the space
-    left by Markdown's lack of native scholarly cross-reference syntax.
-  - >
-    Ecosystem role and use: Practitioners insert labels such as `{#fig:...}`,
-    `{#eq:...}`, and `{#tbl:...}` into Pandoc Markdown, then run Pandoc with `--filter
-    pandoc-crossref` or `-F pandoc-crossref`. The filter reuses Pandoc-style citation
-    syntax for references, supports caption and reference templates through YAML
-    metadata, can read separate `pandoc-crossref.yaml` configuration files, and can
-    cooperate with LaTeX mechanisms such as `cleveref` for PDF/LaTeX output.
-  - >
-    Adoption: pandoc-crossref became one of the canonical Pandoc ecosystem add-ons for
-    academic and technical writing. Pandoc's extras page lists it under numbering and
-    cross-references, Hackage records a long release series and tens of thousands of
-    downloads, and downstream package metadata shows distribution through Hackage plus
-    operating-system and package-manager channels such as Arch, Nix, Homebrew, pacman,
-    and Scoop.
+  adoption-history:
+    - >
+      The official repository documents prebuilt executables for Windows, macOS, and
+      Linux, installation from Hackage or source, and availability through Arch, Nix,
+      Homebrew/Linuxbrew, FreeBSD, Gentoo, and Scoop.
+    - >
+      Its release binaries are tied closely to Pandoc versions, so package maintainers
+      commonly update or rebuild pandoc-crossref alongside Pandoc API changes.
+  package-nerd-significance:
+    - >
+      pandoc-crossref fills a frequently requested gap in reproducible scholarly and
+      technical publishing: stable numbering and references for figures, equations,
+      tables, sections, subfigures, and code listings across Pandoc output formats.
+    - >
+      Package maintainers care about its unusually tight compatibility relationship with
+      Pandoc. Users must select a build produced for their Pandoc version, making
+      coordinated upgrades more important than for a typical standalone filter.
+  project-history:
+    - >
+      pandoc-crossref was developed as a Haskell Pandoc filter inspired by the
+      pandoc-fignos and pandoc-eqnos filters. It expanded the same general approach into
+      a unified cross-reference system for multiple document element types.
+    - >
+      The project evolved to cover HTML, LaTeX, PDF, Markdown, and other Pandoc outputs,
+      with format-sensitive behavior such as delegating labels and references to LaTeX
+      where possible.
+  related-projects:
+    - >
+      Pandoc supplies the document conversion pipeline and abstract syntax tree.
+      pandoc-fignos and pandoc-eqnos are named by the maintainer as inspirations. LaTeX
+      packages such as cleveref and listings can be integrated for relevant outputs.
+  sources:
+    - https://github.com/lierdakil/pandoc-crossref#readme
+    - https://lierdakil.github.io/pandoc-crossref/
+    - source_facts.package-manager
+  summary:
+    - >
+      pandoc-crossref is a Haskell filter that adds numbering and cross-references for
+      structured elements in Pandoc documents.
+  timeline:
+    - 'Early design: The project drew inspiration from pandoc-fignos and pandoc-eqnos.'
+    - >
+      Current distribution: Official prebuilt releases target Windows, macOS, and Linux
+      and must match the user's Pandoc version.
+    - >
+      Current configuration: Settings may come from document metadata, a selected YAML
+      file, the working directory, or per-user format-specific and general configuration
+      files.
+  usage:
+    - >
+      Users run Pandoc with --filter pandoc-crossref or -F pandoc-crossref, label
+      document objects with prefixes such as fig:, eq:, tbl:, sec:, and lst:, and refer
+      to them using Pandoc citation-like syntax.
+    - >
+      Configuration can be placed in document metadata, supplied through crossrefYaml,
+      stored as pandoc-crossref.yaml in the working directory, or kept in per-user
+      general and output-format-specific configuration files.
 category: developer-tools
 package-manager:
   brew: pandoc-crossref
