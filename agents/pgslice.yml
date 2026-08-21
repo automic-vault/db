@@ -6,26 +6,57 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pgslice is Andrew Kane's command-line tool for PostgreSQL table partitioning. The
-    GitHub repository was created on April 24, 2016, and the changelog lists v0.1.0 on
-    the same date as the first release. Its early releases focused on generating and
-    executing the SQL needed to split an existing table into time-based partitions, with
-    dry-run output and batch filling so operators could see and control the migration.
-  - >
-    The project evolved alongside PostgreSQL's partitioning story. pgslice added
-    declarative partitioning support in v0.4.0 on October 7, 2017, followed by
-    PostgreSQL 11 index and foreign-key improvements in 2018, generated-column support
-    in v0.6.0 in April 2023, and a support floor of PostgreSQL 13 and Ruby 3 in v0.7.0
-    in May 2025.
-  - >
-    In practice, pgslice sits in the operational gap between raw DDL and a full
-    migration framework. Users point it at a database with PGSLICE_URL, create an
-    intermediate partitioned table with pgslice prep, add partitions, copy data in
-    batches with pgslice fill, analyze, then swap the partitioned table into the
-    original name with a short lock timeout. The README also documents recurring
-    partition creation via cron, archiving old partitions with pg_dump, Rails
-    primary-key considerations, and a no-partition mode for table slimming.
+  adoption-history:
+    - The official project describes pgslice as battle-tested at Instacart.
+    - >
+      Distribution expanded beyond RubyGems to include Homebrew and Docker, making the
+      command available through several packaging cultures.
+  package-nerd-significance:
+    - >
+      pgslice packages a careful, multi-stage PostgreSQL partition migration into a
+      repeatable CLI while still printing the SQL it executes and offering dry-run and
+      lock-safety controls.
+    - >
+      It is useful to database operators who want declarative partitioning or rolling
+      archival without installing a PostgreSQL server extension.
+  project-history:
+    - >
+      Andrew Kane's pgslice first shipped in April 2016 as a Ruby command-line tool for
+      partitioning PostgreSQL tables with minimal downtime.
+    - >
+      The project added PostgreSQL declarative partitioning and foreign-key support in
+      2017, then continued tracking PostgreSQL and Ruby compatibility, including
+      generated columns and newer PostgreSQL releases.
+  related-projects:
+    - pgsync is recommended by the project for transferring data between databases.
+    - pg_dump and psql are used in the documented retirement and backup workflow.
+  sources:
+    - >
+      https://github.com/ankane/pgslice#readme — official purpose, Instacart adoption
+      statement, installation, workflow, and usage.
+    - >
+      https://github.com/ankane/pgslice/blob/master/CHANGELOG.md — official dated
+      release history.
+  summary:
+    - >
+      pgslice is a PostgreSQL partition-management CLI designed to convert new or
+      populated tables to range partitioning with minimal application changes and
+      downtime.
+  timeline:
+    - '2016-04-24: Version 0.1.0, the first release.'
+    - '2017-10-07: Version 0.4.0 added declarative partitioning and foreign-key support.'
+    - >
+      2023-04-22: Version 0.6.0 added generated-column support and updated runtime
+      requirements.
+    - '2026-01-05: Version 0.7.2 added Ruby 4.0 support.'
+  usage:
+    - >
+      Operators set the `PGSLICE_URL` environment variable, prepare an intermediate
+      partitioned table, create partitions, fill it in batches, analyze it, swap it with
+      the original table, and then capture any remaining rows.
+    - >
+      The CLI prints executed SQL and supports `--dry-run`; rolling partition creation
+      and archival can keep database size under control.
 tags:
   - cli
   - database-maintenance
@@ -50,11 +81,12 @@ provenance:
       source_facts.homepage is the official GitHub project; README is the primary
       documentation surface
   history-sources:
-    - https://github.com/ankane/pgslice
-    - https://raw.githubusercontent.com/ankane/pgslice/master/CHANGELOG.md
-    - https://rubygems.org/gems/pgslice
-    - https://api.github.com/repos/ankane/pgslice
-    - https://formulae.brew.sh/formula/pgslice
+    - >
+      https://github.com/ankane/pgslice#readme — official purpose, Instacart adoption
+      statement, installation, workflow, and usage.
+    - >
+      https://github.com/ankane/pgslice/blob/master/CHANGELOG.md — official dated
+      release history.
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/ankane/pgslice; per

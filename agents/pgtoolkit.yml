@@ -6,29 +6,62 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    PgToolkit is an older PostgreSQL maintenance toolkit whose packaged command is
-    pgcompact. Its changelog begins with alpha releases in August 2011 and records
-    v1.0.0 on October 1, 2013, when pgcompactor was renamed to pgcompact. The GitHub
-    repository was created on October 3, 2013, and the README describes PgToolkit as
-    PostgreSQL maintenance tools with pgcompact as the only included tool.
-  - >
-    pgcompact automates a pre-pg_repack style approach to reducing table and index bloat
-    without long exclusive locks or full table rebuilds. The README credits Joshua
-    Tolley's End Point article on reducing bloat without locking and Hubert
-    Lubaczewski's depesz.com article on reducing table bloat without long exclusive
-    locks as the original solutions it automated. It can use pgstattuple for better
-    bloat statistics, process a whole cluster or selected databases/schemas/tables,
-    rebuild indexes using non-blocking techniques, and run through Perl, DBD::Pg,
-    DBD::PgPP, or psql fallbacks.
-  - >
-    The package's ecosystem role is administrator-oriented rather than
-    application-facing. Operators deploy autonomous Perl scripts from the fatpack
-    directory or use package-manager builds, then run pgcompact to identify and compact
-    bloated tables and indexes with progress output and load-sensitive behavior.
-    Evidence for broad modern adoption is thinner than for the other tools in this
-    shard, but the repository, Homebrew formula, and 2011-2014 changelog support a
-    concise history of pgcompact as a specialized PostgreSQL bloat-maintenance utility.
+  adoption-history:
+    - >
+      PgToolkit was designed for lightweight deployment: its autonomous fatpack scripts
+      require only Perl and can be copied directly to a server, while non-autonomous
+      scripts can use DBD::Pg, DBD::PgPP, or psql.
+    - >
+      The project credits testing and operational input from PostgreSQL-Consulting.com
+      and several PostgreSQL community contributors.
+  package-nerd-significance:
+    - >
+      PgToolkit reflects the sysadmin tradition of portable database-maintenance
+      scripts: pgcompact can be deployed without a large runtime stack and adapts to
+      whichever PostgreSQL client interface is available.
+    - >
+      pgcompact is notable for addressing table and index bloat incrementally, avoiding
+      heavy locks and full-table rebuilding while adjusting its behavior to database
+      load.
+  project-history:
+    - >
+      PgToolkit was created as a collection of PostgreSQL maintenance utilities,
+      although its documented package currently centers on pgcompact.
+    - >
+      The authors describe pgcompact as an automation of established community
+      techniques for reducing PostgreSQL bloat without prolonged exclusive locking. The
+      repository copyright record covers 2011–2014 and names Sergey Konoplev and Maxim
+      Boguk.
+  related-projects:
+    - >
+      PostgreSQL's pgstattuple extension is recommended for more precise table and index
+      bloat estimates.
+    - PgCookbook is listed by the project as a related PostgreSQL documentation project.
+    - DBD::Pg, DBD::PgPP, and psql are alternative database access backends used by pgcompact.
+  sources:
+    - >
+      https://github.com/grayhemp/pgtoolkit#readme — official history notes,
+      installation, pgcompact design, features, authorship, and usage.
+    - https://github.com/grayhemp/pgtoolkit/wiki — official project wiki.
+  summary:
+    - >
+      PgToolkit is a Perl-based PostgreSQL maintenance toolkit whose principal utility,
+      pgcompact, reduces table and index bloat with limited locking and incremental
+      operation.
+  timeline:
+    - '2011–2014: Copyright period recorded in the official project README.'
+    - >
+      Documented package state: PgToolkit contains pgcompact as its sole current tool,
+      with additional tools planned.
+  usage:
+    - >
+      Administrators use `pgcompact` to analyze and compact selected tables, databases,
+      or an entire cluster, optionally reindexing bloated indexes and excluding
+      specified schemas or objects.
+    - >
+      The tool supports incremental and parallel runs, load-aware throttling, and
+      portable fatpack scripts. Installing pgstattuple is recommended for more accurate
+      bloat estimates.
 tags:
   - cli
   - database-maintenance
@@ -53,10 +86,10 @@ provenance:
       source_facts.homepage is the official GitHub project; README is the primary
       documentation surface
   history-sources:
-    - https://github.com/grayhemp/pgtoolkit
-    - https://raw.githubusercontent.com/grayhemp/pgtoolkit/master/CHANGES.md
-    - https://api.github.com/repos/grayhemp/pgtoolkit
-    - https://formulae.brew.sh/formula/pgtoolkit
+    - >
+      https://github.com/grayhemp/pgtoolkit#readme — official history notes,
+      installation, pgcompact design, features, authorship, and usage.
+    - https://github.com/grayhemp/pgtoolkit/wiki — official project wiki.
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/grayhemp/pgtoolkit; per

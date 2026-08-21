@@ -10,48 +10,63 @@ config-file-location:
     - config.env
 credentials-file-location: null
 history:
-  - >
-    pgstream is Xata's open-source PostgreSQL change-data-capture tool and Go library
-    for replication streams that include schema changes. The repository was created on
-    April 10, 2024, and Xata introduced the project publicly on July 17, 2024 as part of
-    its open-source Postgres platform. Xata described the origin as a product need:
-    keeping Postgres-backed features such as Elasticsearch/OpenSearch search stores in
-    sync when both data and DDL change, because established CDC tools did not cover
-    continuous schema-change replication in the way Xata needed.
-  - >
-    The first architecture modeled pgstream as a streaming pipeline of WAL listeners and
-    processors. It used PostgreSQL triggers and a pgstream.schema_log table to record
-    schema changes as JSON, then sent schema and row changes through the same ordered
-    stream so downstream consumers could observe DDL before data that depended on it.
-    Early targets included Elasticsearch/OpenSearch, webhooks, and Kafka; the project
-    roadmap and later releases expanded the practical surface with PostgreSQL targets,
-    snapshots, transformations, observability, cloud permission guides, and pipeline
-    configuration through CLI flags, YAML, or environment files.
-  - >
-    pgstream's ecosystem role is narrow but important: it handles the DDL gap in
-    PostgreSQL logical-replication workflows. The README describes it as a CDC
-    command-line tool and library that can stream to PostgreSQL,
-    OpenSearch/Elasticsearch, Kafka, and webhooks; perform initial and on-demand
-    snapshots; transform column values for anonymization; and run in small direct
-    topologies or larger Kafka-buffered pipelines. Practitioners use pgstream by
-    initializing state in the source database, creating a replication slot, then running
-    pgstream with source and target modules or using snapshot mode for point-in-time
-    copies.
-  - >
-    Version 1.0.0, announced on February 4, 2026, was a major architectural milestone.
-    Xata replaced the schema-log approach with stateless schema-change replication:
-    event triggers capture DDL, attach relevant context, and emit logical WAL messages
-    with pg_logical_emit_message, removing the source-side schema_log table and making
-    DDL events themselves the source of truth. The release also standardized schema
-    snapshots around pg_dump/pg_restore-style flows and changed search-target mapping to
-    reduce dependence on a managed schema index.
-  - >
-    Adoption signals are public but young: the project passed 1,000 GitHub stars by the
-    v1.0.0 announcement, GitHub metadata lists more than a thousand stars and dozens of
-    forks, and Homebrew packages the pgstream CLI. Its strongest role is in teams
-    building CDC pipelines where schema drift is expected, especially
-    Postgres-to-search, Postgres-to-Postgres, Kafka fan-out, webhook notifications, and
-    sanitized clone or snapshot workflows.
+  adoption-history:
+    - >
+      The maintainers state that pgrx is used in production by many users, while
+      retaining a pre-1.0 version because unresolved safety and ergonomics questions may
+      require breaking changes.
+    - >
+      Its development environment supports Linux, macOS, and Windows targets and can
+      manage several PostgreSQL versions from one extension codebase.
+  package-nerd-significance:
+    - >
+      pgrx joins the Rust and PostgreSQL ecosystems: cargo-pgrx provides a Cargo-native
+      workflow while the framework exposes PostgreSQL extension facilities through Rust
+      types, macros, and guarded interfaces.
+    - >
+      It is notable to package users because installation involves more than placing a
+      binary on PATH: initialization builds or registers PostgreSQL installations and
+      records them under PGRX_HOME.
+  project-history:
+    - >
+      pgrx developed as a Rust framework and associated Cargo tooling for building
+      PostgreSQL extensions with more idiomatic and safer interfaces than direct use of
+      PostgreSQL's C extension API.
+    - >
+      The project is maintained under the PgCentral Foundation organization and combines
+      the pgrx library, procedural macros, generated bindings, examples, tests, and the
+      cargo-pgrx development command.
+  related-projects:
+    - PostgreSQL provides the extension API and server installations managed by cargo-pgrx.
+    - >
+      Rust, Cargo, rustup, bindgen, and libclang form the principal development
+      toolchain around pgrx.
+  sources:
+    - >
+      https://github.com/pgcentralfoundation/pgrx#readme — official overview, supported
+      platforms, features, production-use note, and workflow.
+    - >
+      https://github.com/pgcentralfoundation/pgrx/blob/develop/cargo-pgrx/README.md —
+      official cargo-pgrx initialization, configuration, and command documentation.
+  summary:
+    - >
+      pgrx is an open-source Rust framework and Cargo toolchain for creating, testing,
+      running, and packaging PostgreSQL extensions.
+  timeline:
+    - >
+      Pre-1.0 era: The maintainers intentionally retain a pre-1.0 version while safety
+      and ergonomics questions remain.
+    - >
+      Current development: pgrx supports building one extension codebase against
+      multiple supported PostgreSQL major versions.
+  usage:
+    - >
+      Users install cargo-pgrx, run `cargo pgrx init` to download or register PostgreSQL
+      installations, create an extension with `cargo pgrx new`, and use commands such as
+      `run`, `test`, and `package` during development.
+    - >
+      `cargo pgrx init` creates `${PGRX_HOME}/config.toml`, which records PostgreSQL
+      `pg_config` locations and configurable development ports.
 tags:
   - cli
   - ddl
@@ -76,13 +91,12 @@ provenance:
       source_facts.homepage is the official GitHub project; official repository includes
       README and docs directory
   history-sources:
-    - https://github.com/xataio/pgstream
-    - https://xata.io/blog/pgstream-postgres-replication-schema-changes
-    - https://xata.io/blog/pgstream-v100-stateless-schema-change-replication
-    - https://xata.io/blog/postgres-cafe-pgstream
-    - https://xata.io/docs/opensource/pgstream/overview
-    - https://api.github.com/repos/xataio/pgstream
-    - https://formulae.brew.sh/formula/pgstream
+    - >
+      https://github.com/pgcentralfoundation/pgrx#readme — official overview, supported
+      platforms, features, production-use note, and workflow.
+    - >
+      https://github.com/pgcentralfoundation/pgrx/blob/develop/cargo-pgrx/README.md —
+      official cargo-pgrx initialization, configuration, and command documentation.
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/xataio/pgstream; per
@@ -98,6 +112,6 @@ category-path:
   - postgresql
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
