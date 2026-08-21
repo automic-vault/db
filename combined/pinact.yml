@@ -12,22 +12,48 @@ config-file-location:
     - ./.github/pinact.yml
 credentials-file-location: null
 history:
-  - >
-    pinact is a Go CLI by suzuki-shunsuke for the GitHub Actions supply-chain hardening
-    niche. The GitHub repository was created on 2023-04-13, and its README frames the
-    project around replacing mutable action tags or branch refs with full commit SHAs
-    while preserving a readable version comment.
-  - >
-    The tool occupies the space between a dependency updater and a linter. It edits
-    GitHub workflow files, composite action files, and even documentation snippets; it
-    can also run in check-only or offline mode, update pins, verify version comments,
-    apply a minimum release-age policy, emit SARIF for review tooling, and limit work to
-    changed lines in pull-request CI.
-  - >
-    In practice, teams use pinact when they want SHA pinning before merge or outside
-    Renovate's normal update flow. Its package-manager footprint spans Homebrew,
-    MacPorts, Nix, winget, and zypper, which fits a small but cross-platform
-    developer-security CLI rather than an application framework.
+  adoption-history:
+    - >
+      The input records distribution through Homebrew, MacPorts, Nix, openSUSE, and
+      Windows Package Manager. Its check-only and SARIF modes also make it suitable for
+      CI enforcement as well as local rewriting.
+  package-nerd-significance:
+    - >
+      pinact packages a concrete supply-chain hardening practice: replacing mutable
+      GitHub Action tags with immutable full commit hashes while retaining version
+      annotations for readability. It is useful both as a migration tool and as a policy
+      check in continuous integration.
+  project-history:
+    - >
+      Shunsuke Suzuki developed pinact as a focused command-line editor and validator
+      for GitHub Actions workflows and composite actions. Its scope expanded beyond
+      initial pinning to updating actions, checking annotations, processing reusable
+      workflows, emitting SARIF, enforcing minimum release ages, and supporting
+      configurable policy rules.
+  related-projects:
+    - GitHub Actions workflow and composite-action files are pinact's primary inputs.
+    - reviewdog and GitHub code scanning can consume pinact's SARIF output.
+    - GitHub's API supplies release, tag, and commit information used for resolution.
+  sources:
+    - https://github.com/suzuki-shunsuke/pinact#readme
+    - https://github.com/suzuki-shunsuke/pinact/blob/main/docs/config.md
+    - source_facts.package-manager
+  summary:
+    - >
+      pinact is a command-line supply-chain tool that pins GitHub Actions and reusable
+      workflows to full commit hashes, updates them, and validates their version
+      annotations.
+  timeline:
+    - 'Initial scope: Pin GitHub Actions references to immutable full commit hashes.'
+    - >
+      Later development: Added updating, check-only and offline validation, SARIF
+      output, minimum-release-age checks, and global configuration.
+  usage:
+    - >
+      Run `pinact run` to process conventional workflow and action paths, or pass
+      explicit files. `-check` validates without editing, `-no-api` performs an offline
+      full-SHA syntax check, and `-update` resolves newer versions. API-backed
+      operations can use a GitHub access token to avoid anonymous rate limits.
 category: developer-tools
 package-manager:
   brew: pinact

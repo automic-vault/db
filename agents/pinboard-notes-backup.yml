@@ -6,21 +6,49 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pinboard-notes-backup is a small Haskell utility created by Benjamin D. Esham, with
-    an initial 1.0.0 release dated 2016-06-28. It solves one narrow archival problem:
-    backing up Pinboard notes, not bookmarks, into a local SQLite database.
-  - >
-    The program uses a Pinboard API token, performs one-way synchronization from the
-    Pinboard service to the local database, downloads changed or new notes, deletes
-    local notes removed from the server, and never writes changes back to Pinboard. The
-    README calls out Pinboard API pacing and the fact that note bodies require separate
-    requests, which explains the tool's incremental-sync design.
-  - >
-    Its ecosystem role is pragmatic personal-data preservation. Distribution through
-    Homebrew and Nix, prebuilt macOS/Linux binaries, shell completions, a man page, and
-    a stable SQLite schema make it useful for scripted backups even though the project
-    remains intentionally niche.
+  adoption-history:
+    - >
+      The official README documents Homebrew and Nix installation, matching the package
+      mappings supplied in the input. Prebuilt binaries are also published for macOS and
+      Linux.
+  package-nerd-significance:
+    - >
+      The utility gives users a locally queryable, open SQLite copy of notes held by a
+      hosted bookmarking service. Its incremental, one-way synchronization model is
+      especially attractive to users who value data portability, inspectable formats,
+      and repeatable personal backups.
+  project-history:
+    - >
+      Benjamin D. Esham created pinboard-notes-backup to export Pinboard notes into
+      SQLite. The official copyright notice dates the project to 2016 and records
+      continued work through 2025.
+    - >
+      The program fetches the user's note list, downloads new or changed notes, removes
+      locally backed-up records deleted from Pinboard, and never writes changes back to
+      the service.
+  related-projects:
+    - Pinboard is the remote notes service and API used by the utility.
+    - SQLite is the local backup format.
+    - The project can be built with the Haskell Stack or Cabal toolchains.
+  sources:
+    - https://github.com/bdesham/pinboard-notes-backup#readme
+    - https://github.com/bdesham/pinboard-notes-backup/blob/main/CHANGELOG.md
+    - source_facts.package-manager
+  summary:
+    - >
+      pinboard-notes-backup is a Haskell command-line utility, exposed as `pnbackup`,
+      that incrementally mirrors a user's Pinboard notes into a local SQLite database.
+  timeline:
+    - "2016: The project's official copyright history begins."
+    - '2025: The official copyright notice records continued project work through this year.'
+  usage:
+    - >
+      Obtain a Pinboard API token and run `pnbackup -t TOKEN OUTPUT.sqlite`. Subsequent
+      executions incrementally reconcile the local database with Pinboard. The token is
+      supplied as a command-line option; the official README does not document a
+      credentials file. Initial synchronization can be slow because Pinboard requires a
+      delay between API requests and exposes each note's text through a separate
+      request.
 tags:
   - backup
   - cli
@@ -44,9 +72,8 @@ provenance:
   docs-sources:
     - Official GitHub repository README is the primary documentation surface
   history-sources:
-    - https://api.github.com/repos/bdesham/pinboard-notes-backup
-    - https://raw.githubusercontent.com/bdesham/pinboard-notes-backup/main/README.md
-    - https://raw.githubusercontent.com/bdesham/pinboard-notes-backup/main/CHANGELOG.md
+    - https://github.com/bdesham/pinboard-notes-backup#readme
+    - https://github.com/bdesham/pinboard-notes-backup/blob/main/CHANGELOG.md
     - source_facts.package-manager
   repo-sources:
     - >
@@ -63,6 +90,6 @@ category-path:
   - backup
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

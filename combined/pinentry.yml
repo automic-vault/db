@@ -7,29 +7,44 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    Pinentry is part of the GnuPG toolchain rather than a standalone end-user
-    application. GnuPG describes it as a small collection of dialog programs that let
-    GnuPG read passphrases and PINs securely, with graphical GTK and Qt frontends plus
-    terminal-oriented curses and tty frontends.
-  - >
-    Its lineage is deliberately protocol-centered. The Pinentry README says the dialogs
-    use the Assuan protocol specified by Libassuan, and also notes that some code came
-    from Robert Bihlmeyer's Quintuple-Agent. That design lets gpg-agent act as the
-    caller while the actual prompt can be swapped for the user's desktop, terminal, or
-    platform policy.
-  - >
-    Pinentry became especially important with the gpg-agent architecture. The GnuPG
-    gpg-agent manual tells users to make sure a proper pinentry program is installed or
-    to set `pinentry-program` to the full path of the desired implementation;
-    distributions often expose that choice through package variants or alternatives.
-  - >
-    For practitioners, pinentry is the piece that decides where a secret-key passphrase
-    is typed: a Qt dialog on KDE, a GTK dialog on GNOME, a curses prompt over SSH, a
-    simple tty prompt in minimal environments, or a platform-specific implementation
-    such as pinentry-mac. Its package-manager reach across Linux distributions,
-    BSD-style ports, Homebrew, and MacPorts reflects that it is infrastructure for GnuPG
-    workflows, not an app users normally launch by hand.
+  adoption-history:
+    - >
+      The input records pinentry packages across Homebrew, Alpine, Debian, Ubuntu,
+      Fedora-family, Arch, openSUSE, and MacPorts. Distributions commonly split or
+      select frontends such as curses, TTY, GTK, or Qt according to the target
+      environment.
+  package-nerd-significance:
+    - >
+      pinentry separates secret entry from applications such as GnuPG and gpg-agent.
+      That separation—and the choice among graphical, curses, and plain-terminal
+      frontends—makes pinentry a small but conspicuous integration point in desktop,
+      headless, SSH, smart-card, and package-signing setups.
+  project-history:
+    - >
+      The GnuPG Project maintains pinentry as a collection of secure passphrase and
+      PIN-entry dialogs. It supports common GTK and Qt environments as well as
+      curses-based terminal interaction and communicates through the Assuan protocol.
+  related-projects:
+    - GnuPG and gpg-agent invoke pinentry for protected secret input.
+    - Assuan is the interprocess protocol used by the GnuPG ecosystem for this interaction.
+    - GTK, Qt, curses, and TTY implementations provide environment-specific frontends.
+  sources:
+    - https://dev.gnupg.org/source/pinentry.git
+    - https://www.gnupg.org/related_software/pinentry/index.html
+    - source_facts.package-manager
+  summary:
+    - >
+      pinentry is the GnuPG Project's family of dialog programs for securely obtaining
+      passphrases and PINs through graphical or terminal interfaces.
+  timeline:
+    - Established within the GnuPG software family as the dedicated secure-entry component.
+    - "Ongoing development: Maintained in the GnuPG Project's official Pinentry Git repository."
+  usage:
+    - >
+      Applications normally invoke pinentry through gpg-agent rather than asking users
+      to run it directly. Install or select the frontend appropriate to the
+      session—graphical, curses, or TTY—so GnuPG can request secrets without reading
+      them through its ordinary command interface.
 category: security
 package-manager:
   apk: pinentry
