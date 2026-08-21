@@ -8,27 +8,45 @@ config-file-location:
     - ./.pint.hcl
 credentials-file-location: null
 history:
-  - >
-    Origin and lineage: pint is Cloudflare's Prometheus rule linter and validator. The
-    public GitHub repository was created on 2021-04-23, and an April 2021 announcement
-    to the Prometheus Users group described it as a small Cloudflare tool for managing a
-    growing collection of recording and alerting rules.
-  - >
-    Adoption history: Cloudflare introduced pint publicly after using it internally to
-    review rule-file pull requests, estimate alert behavior, estimate recording-rule
-    time-series growth, and check whether rule queries referenced series present in real
-    Prometheus installations. A Cloudflare engineering post in 2022 positioned it as an
-    open-source answer to a common Prometheus problem: syntactically valid alert rules
-    can silently do nothing when metrics, labels, or range windows do not match
-    production data.
-  - >
-    Ecosystem role and usage: pint sits between Prometheus rule unit testing and live
-    monitoring operations. Practitioners run `pint lint` against rule files or
-    directories, use `pint ci` in pull requests, or run `pint watch` as a daemon that
-    exposes Prometheus metrics for detected rule problems. Its value is strongest in
-    larger observability estates where recording rules chain together, exporters rename
-    metrics, and alerting conventions such as runbook links or severity labels need
-    automated enforcement.
+  adoption-history:
+    - >
+      pint is distributed as native binaries, a container image, and packages including
+      Homebrew and Arch Linux's pacman ecosystem. It is also designed for repository CI
+      workflows, with reporting integrations for GitHub, GitLab, and Bitbucket.
+  package-nerd-significance:
+    - >
+      pint brings compiler-like feedback to Prometheus rule repositories. It is notable
+      for going beyond YAML parsing: configured checks can query Prometheus servers,
+      examine PromQL behavior, and annotate code-review workflows.
+  project-history:
+    - >
+      Cloudflare developed pint as an open-source linter and validator for Prometheus
+      alerting and recording rules. Its changelog records an expanding set of static,
+      PromQL, repository, and CI-oriented checks.
+  related-projects:
+    - Prometheus
+    - PromQL
+    - promtool
+    - GitHub Actions
+    - GitLab CI
+  sources:
+    - https://cloudflare.github.io/pint/
+    - https://cloudflare.github.io/pint/changelog.html
+    - https://github.com/cloudflare/pint
+  summary:
+    - >
+      pint is Cloudflare's command-line linter and validator for Prometheus alerting and
+      recording rules.
+  timeline:
+    - 'Early releases: pint established lint, CI, and watch workflows for Prometheus rules.'
+    - >
+      Later releases: Added broader PromQL checks and GitHub, GitLab, and Bitbucket
+      reporting integrations.
+  usage:
+    - >
+      Users run pint lint against rule files for local validation or pint ci in
+      repository automation. An optional .pint.hcl enables path selection, repository
+      reporting, Prometheus connections, and check-specific behavior.
 tags:
   - cli
   - linter
@@ -55,10 +73,8 @@ provenance:
   docs-sources:
     - Official Cloudflare GitHub Pages site is the dedicated pint documentation
   history-sources:
-    - https://api.github.com/repos/cloudflare/pint
-    - https://groups.google.com/g/prometheus-users/c/WKMYPnDZRG8
-    - https://blog.cloudflare.com/monitoring-our-monitoring/
     - https://cloudflare.github.io/pint/
+    - https://cloudflare.github.io/pint/changelog.html
     - https://github.com/cloudflare/pint
   repo-sources:
     - >
@@ -74,6 +90,6 @@ category-path:
   - code-quality
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

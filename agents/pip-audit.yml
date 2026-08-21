@@ -7,38 +7,52 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    Origin and lineage: pip-audit is a Python packaging security tool for finding known
-    vulnerabilities in installed environments, requirements files, lock files, and
-    project dependency trees. The PyPI release history begins with 0.0.1rc0 uploaded on
-    2021-09-16, and the GitHub repository under the Python Packaging Authority was
-    created on 2021-09-02.
-  - >
-    Institutional history: LWN's 2022 coverage traces the tool to Dustin Ingram's work
-    on Google's open-source security team with Trail of Bits, with an explicit goal of
-    useful, free, community-owned vulnerability tooling that could become canonical for
-    Python users. The PyPI project page states that pip-audit is maintained in part by
-    Trail of Bits with support from Google, while the repository lives under PyPA.
-  - >
-    Ecosystem role: pip-audit grew out of the same supply-chain-security wave that gave
-    other ecosystems package-manager audit commands. It uses the Python Packaging
-    Advisory Database through the PyPI JSON API and also supports other vulnerability
-    services such as OSV. The PyPA advisory database documents pip-audit as the CLI that
-    exposes that advisory data for environments and projects.
-  - >
-    Usage in practice: Developers run `pip-audit` directly against an environment, use
-    `pip-audit -r requirements.txt` for requirements-style inputs, point it at local
-    projects, emit JSON or CycloneDX SBOM formats, or use `--fix` to attempt upgrades to
-    fixed versions. The project ships integration patterns for GitHub Actions and
-    pre-commit, making it common in CI pipelines where dependency vulnerability checks
-    should fail a build or produce machine-readable results.
-  - >
-    Packaging significance: pip-audit is intentionally not a general malware detector
-    and its security model warns that auditing requirement inputs behaves much like
-    installing them for resolution purposes. That constraint is part of its package-nerd
-    importance: it is a focused vulnerability database client for PyPI-style packages,
-    not a substitute for trust, sandboxing, distro backport awareness, or broader
-    software composition analysis.
+  adoption-history:
+    - >
+      pip-audit became part of the Python Packaging Authority's project ecosystem and is
+      maintained in part by Trail of Bits with support from Google. It is available
+      through PyPI, Homebrew, Nix, conda-forge, pre-commit, and an official GitHub
+      Action.
+  package-nerd-significance:
+    - >
+      pip-audit gives Python users a packaging-aware vulnerability scanner that can
+      resolve dependency trees, consume requirements files, emit CycloneDX SBOMs, and
+      optionally fix vulnerable dependencies. Its security model explicitly
+      distinguishes dependency auditing from static code analysis and malicious-package
+      detection.
+  project-history:
+    - >
+      pip-audit was created as a dedicated Python dependency-auditing command and is now
+      hosted by the Python Packaging Authority. It uses vulnerability data from the
+      Python Packaging Advisory Database through PyPI and can also query OSV.
+  related-projects:
+    - pip
+    - PyPI
+    - Python Packaging Advisory Database
+    - OSV
+    - CycloneDX
+    - pypa/gh-action-pip-audit
+  sources:
+    - https://github.com/pypa/pip-audit#readme
+    - https://github.com/pypa/pip-audit/blob/main/CHANGELOG.md
+    - https://pypi.org/project/pip-audit/
+  summary:
+    - >
+      pip-audit is a PyPA command-line tool that scans Python environments, project
+      dependencies, and requirements files for known vulnerabilities.
+  timeline:
+    - >
+      2021: Early public pip-audit releases established Python dependency vulnerability
+      auditing.
+    - >
+      Later releases: Added OSV support, CycloneDX output, automatic fixes,
+      environment-variable options, and improved authenticated-index handling.
+  usage:
+    - >
+      Users run pip-audit against the active Python environment, requirements files, or
+      a local project. It returns status 0 when no known vulnerabilities are found and 1
+      when vulnerabilities are detected; CI use is supported through pre-commit and an
+      official GitHub Action.
 tags:
   - cli
   - dependency-audit
@@ -72,12 +86,9 @@ provenance:
       source_facts.homepage points to the official PyPI project page, whose project
       details and README content document usage.
   history-sources:
-    - https://pypi.org/pypi/pip-audit/json
+    - https://github.com/pypa/pip-audit#readme
+    - https://github.com/pypa/pip-audit/blob/main/CHANGELOG.md
     - https://pypi.org/project/pip-audit/
-    - https://github.com/pypa/pip-audit
-    - https://github.com/pypa/advisory-database
-    - https://lwn.net/Articles/904197/
-    - https://github.com/pypa/gh-action-pip-audit
   repo-sources:
     - >
       PyPI project metadata and search results identify the source repository as

@@ -7,38 +7,52 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    Origin and lineage: pip-tools is the long-running `pip-compile` plus `pip-sync`
-    workflow for deterministic pip-based requirements files. The GitHub repository was
-    created on 2012-09-10, and PyPI records the first 0.1 source release on 2012-09-26.
-  - >
-    Evolution: The project settled around a deliberately small model: keep human-edited
-    abstract requirements in inputs such as `requirements.in`, `setup.py`, `setup.cfg`,
-    or `pyproject.toml`, compile a fully pinned `requirements.txt`, then sync an
-    environment to match that output. A 2015 issue about the removed `pip-review`
-    command shows the project moving away from general upgrade notification toward the
-    `pip-compile` and `pip-sync` pair.
-  - >
-    Adoption history: pip-tools became popular because it fit existing pip and
-    requirements-file workflows without requiring a new project manager or publishing
-    model. The docs explicitly recommend committing both input and compiled requirement
-    files when reproducible installation matters, and they document layered
-    requirements, constraints between production and development files, hashes,
-    pre-commit hooks, and cross-environment caveats.
-  - >
-    Usage in practice: Teams use `pip-compile` to resolve and pin dependencies, preserve
-    existing pins unless upgrades are requested, update everything with `--upgrade`,
-    selectively update with `--upgrade-package`, generate hash-checking requirements
-    with `--generate-hashes`, and emit separate files for different Python or
-    operating-system targets. They use `pip-sync` after compilation to install, upgrade,
-    or uninstall packages so the virtual environment matches the compiled files.
-  - >
-    Ecosystem role: pip-tools occupies the pragmatic middle ground between raw `pip
-    freeze` and full lockfile-centered tools. Its significance is that it made
-    reproducible Python application deployments possible while staying close to the
-    standard pip requirements format, which is why it remains relevant in packaging
-    recipes, CI jobs, Docker builds, and applications that want pinned transitive
-    dependencies without adopting Poetry, Pipenv, or another project framework.
+  adoption-history:
+    - >
+      pip-tools became a widely packaged companion to pip and is listed by the Python
+      Packaging Authority among key packaging projects. Stewardship under Jazzband gives
+      it a community-maintained project home, while integrations such as pre-commit
+      support place dependency compilation in routine development workflows.
+  package-nerd-significance:
+    - >
+      pip-tools popularized a lightweight input-versus-lock workflow before Python
+      standardized a universal application lock file: developers declare broad
+      requirements, compile exact transitive pins, and synchronize environments to those
+      pins. It remains attractive because its output is ordinary pip-compatible
+      requirements files.
+  project-history:
+    - >
+      pip-tools evolved as a pair of focused commands around pip: pip-compile resolves
+      abstract dependency declarations into pinned requirements, while pip-sync makes an
+      environment match compiled files. The project is now maintained in the Jazzband
+      organization.
+  related-projects:
+    - pip
+    - PyPI
+    - Jazzband
+    - pipenv
+    - Poetry
+    - uv
+  sources:
+    - https://github.com/jazzband/pip-tools
+    - https://packaging.python.org/en/latest/key_projects/
+    - https://pip-tools.readthedocs.io/en/stable/
+  summary:
+    - >
+      pip-tools is a community-maintained set of Python command-line tools for producing
+      pinned requirements and synchronizing installed environments.
+  timeline:
+    - '2010s: pip-tools established the pip-compile and pip-sync workflow.'
+    - >
+      Later development: Project stewardship moved under Jazzband and support expanded
+      to modern pyproject.toml metadata and pip's backtracking resolver.
+  usage:
+    - >
+      pip-compile reads dependencies from pyproject.toml, setup.cfg, setup.py, or
+      requirements.in and writes pinned requirements files. pip-sync then installs,
+      upgrades, or removes packages so an environment matches those compiled files.
+      Compilation should be performed for each target Python environment when dependency
+      markers can produce platform-specific results.
 tags:
   - cli
   - dependency-locking
@@ -66,11 +80,9 @@ provenance:
     - Official Read the Docs CLI page documents pip-tools commands.
     - source_facts.homepage points to the official Read the Docs documentation site.
   history-sources:
-    - https://pypi.org/pypi/pip-tools/json
-    - https://pypi.org/project/pip-tools/
     - https://github.com/jazzband/pip-tools
+    - https://packaging.python.org/en/latest/key_projects/
     - https://pip-tools.readthedocs.io/en/stable/
-    - https://github.com/jazzband/pip-tools/issues/185
   repo-sources:
     - >
       source_facts.repo is empty; official PyPI project metadata/search result lists
@@ -84,6 +96,6 @@ category-path:
   - dependency-management
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
