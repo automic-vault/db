@@ -8,28 +8,52 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    `pv`, short for Pipe Viewer, is a small Unix pipeline tool by Andrew Wood for making
-    otherwise silent data movement visible. Its basic model is deliberately Unix-like:
-    insert `pv` between two processes and it copies standard input to standard output
-    while reporting elapsed time, throughput, bytes transferred, progress, and ETA on
-    standard error. The official page demonstrates the same use case across decades,
-    including archive recompression pipelines.
-  - >
-    The tool's adoption came from solving a common shell problem without changing the
-    commands around it. Long-running `dd`, `tar`, `gzip`, database import, disk imaging,
-    backup, and network-transfer pipelines often provide little feedback; `pv` became
-    the simple middle stage that showed whether bytes were moving and how fast. Later
-    features such as rate limiting, buffer tuning, cursor mode for multiple meters,
-    `--watchfd`, and `--monitor` extended that idea while preserving the core filter
-    behavior.
-  - >
-    In the ecosystem, `pv` is a classic small sysadmin utility: it does one job,
-    composes with pipes, and is packaged broadly by Unix-like distributions and package
-    managers including Homebrew, Debian, Ubuntu, Fedora, Arch, Alpine, MacPorts, Nix,
-    and openSUSE. Practitioners use it interactively during ad hoc operations and in
-    scripts where progress, throughput caps, or observability of a long-running stream
-    matter more than introducing a larger backup or transfer framework.
+  adoption-history:
+    - >
+      pv became a broadly packaged Unix utility. The official site lists packages or
+      ports for Debian, Ubuntu, Arch Linux, Gentoo, Slackware, openSUSE, Fedora, the
+      BSDs, Solaris, AIX, macOS package managers, Nix, Spack, and other systems.
+  package-nerd-significance:
+    - >
+      pv is a classic composable Unix tool: it adds progress, throughput, elapsed-time,
+      and ETA reporting without requiring the programs on either side of a pipe to
+      understand progress reporting. Its small interface and broad packaging make it a
+      common shell-toolbox dependency.
+  project-history:
+    - >
+      Andrew Wood's Pipe Viewer is a terminal utility for observing and controlling data
+      flowing through a pipeline. Beyond its cat-like mode, it gained support for
+      monitoring another process's file descriptors, coordinating multiple displays,
+      rate limiting, and command monitoring.
+    - >
+      The project moved its public Git repository from GitHub to Codeberg in the 1.8.0
+      release cycle and changed its license from Artistic 2.0 to GPLv3 or later.
+  related-projects:
+    - >
+      Related pipeline tools include cat, dd, tar, gzip, and nc; pv is commonly inserted
+      between such commands to expose transfer progress.
+  sources:
+    - https://codeberg.org/a-j-wood/pv
+    - https://www.ivarch.com/programs/pv.shtml
+    - https://www.ivarch.com/programs/quickref/pv.shtml
+  summary:
+    - >
+      pv, or Pipe Viewer, monitors data flowing through Unix pipelines and reports
+      measurements such as bytes transferred, throughput, elapsed time, progress, and
+      estimated completion time.
+  timeline:
+    - '2002: The official project page preserves an early archive-recompression usage example.'
+    - >
+      2023: Version 1.8.0 moved the repository from GitHub to Codeberg and changed the
+      license to GPLv3 or later.
+    - '2025: Version 1.10.0 added querying of another running pv process.'
+    - '2026: Version 1.11.0 was released on 11 June.'
+  usage:
+    - >
+      A typical invocation places pv between a producer and consumer, such as an archive
+      command and a compressor or network client. It can also rate-limit transfers,
+      watch file descriptors belonging to another process, coordinate several instances,
+      or monitor a child command's input and output.
 category: system
 package-manager:
   apk: pv
