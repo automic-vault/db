@@ -6,24 +6,61 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pipgrip is a Python dependency-resolution CLI by ddelange. The GitHub repository was
-    created on 2019-12-29, and PyPI records the first pipgrip release, 0.0.1, on
-    2020-01-09. Its README describes it as a lightweight pip dependency resolver with
-    dependency-tree preview functionality based on the PubGrub algorithm, the same
-    resolver family associated with Poetry.
-  - >
-    The tool appeared during the Python ecosystem's long shift from naive pip installs
-    toward explicit resolution, lock files, and conflict explanation. pipgrip's niche is
-    not replacing pip as an installer; it recursively fetches wheel metadata for PEP 508
-    requirements, solves a compatible set, optionally renders the full dependency tree,
-    and can emit a lock/constraints file for reproducible installs.
-  - >
-    Adoption has stayed specialist. GitHub API metadata reported 211 stars and 16 forks
-    on 2026-07-02, PyPI records version 0.13.0 uploaded on 2026-02-22, and Homebrew's
-    formula API reported 521 install-on-request events over its 365-day analytics
-    window. It is most useful to people debugging resolver behavior, preparing
-    constraints, or inspecting why a Python dependency set lands on particular versions.
+  adoption-history:
+    - >
+      pipgrip is distributed through PyPI and Homebrew. Its official repository presents
+      it as an OS-independent, pure-Python tool that works with conventional
+      pip-compatible packages.
+  package-nerd-significance:
+    - >
+      pipgrip brought PubGrub-style solving to pip-compatible package inputs without
+      requiring users to adopt a complete project-management replacement.
+    - >
+      It is useful for previewing dependency trees before installation, explaining
+      conflicts, combining constraints from multiple packages, and generating pinned
+      working sets for reproducible installs.
+  project-history:
+    - >
+      pipgrip was developed as a lightweight resolver around the PubGrub algorithm. Its
+      design targets ordinary PEP 508 dependency specifications and recursively
+      retrieves wheel metadata, building wheels only when metadata cannot otherwise be
+      obtained.
+    - >
+      The project deliberately distinguishes itself from pipdeptree: pipdeptree
+      historically explains one installed environment, whereas pipgrip considers
+      versions available to pip and resolves a viable combination before installation.
+  related-projects:
+    - Poetry also uses PubGrub but provides a broader package-management workflow.
+    - >
+      pipdeptree inspects installed dependency relationships, while pipgrip resolves
+      candidate versions before packages are installed.
+    - >
+      pip remains the compatible package and index interface used to obtain project
+      metadata and packages.
+  sources:
+    - https://github.com/ddelange/pipgrip
+    - source_facts.package-manager
+  summary:
+    - >
+      pipgrip is a Python dependency resolver and dependency-tree preview tool based on
+      PubGrub and designed for pip-compatible packages.
+  timeline:
+    - >
+      Project era: Introduced lightweight PubGrub-based resolution for ordinary
+      pip-compatible requirements.
+    - >
+      Current documented capabilities: Tree previews, conflict and cycle reporting,
+      installation, JSON output, and lock-file generation.
+  usage:
+    - >
+      Pass one or more PEP 508 requirements to resolve compatible versions; add `--tree`
+      to preview the complete dependency graph.
+    - >
+      Use `--lock` to write pins to `./pipgrip.lock`, or JSON and tree options for
+      machine-readable inspection.
+    - >
+      The `PIPGRIP_ADDITIONAL_REQUIREMENTS` environment variable can append
+      requirements, while index URL options support alternate Python package indexes.
 tags:
   - cli
   - dependency-resolver
@@ -50,9 +87,7 @@ provenance:
       source_facts.homepage.
   history-sources:
     - https://github.com/ddelange/pipgrip
-    - https://pypi.org/pypi/pipgrip/json
-    - https://api.github.com/repos/ddelange/pipgrip
-    - https://formulae.brew.sh/api/formula/pipgrip.json
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is empty; source_facts.homepage is the official GitHub
@@ -68,6 +103,6 @@ category-path:
   - dependency-management
 display-name-confidence: high
 docs-confidence: high
-history-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
