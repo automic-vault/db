@@ -8,31 +8,73 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pgloader is Dimitri Fontaine's PostgreSQL data-loading and migration tool. Fontaine
-    describes it as having been around since 2005, with an early implementation in
-    Python and a later rewrite in Common Lisp for concurrency and performance. A 2013
-    paper used the rewrite, "from python to Common Lisp", as a case study for
-    dynamic-language implementation choices in a real PostgreSQL loader.
-  - >
-    The tool's original niche was bulk loading external files into PostgreSQL without
-    making a single bad row abort the whole job. Its documentation describes a
-    COPY-protocol loader that can transform data on the fly, run SQL before and after a
-    load, and write rejected rows and errors to reject.dat and reject.log.
-  - >
-    pgloader grew from a file loader into a migration utility. Its manuals cover CSV,
-    fixed-width, PostgreSQL COPY, DBF, IXF, archive inputs, and database-to-database
-    migrations from SQLite, MySQL, MS SQL Server, PostgreSQL, and Redshift into
-    PostgreSQL-compatible targets. The canonical MySQL path can be a single command from
-    a MySQL URL to a PostgreSQL URL, while command files expose casting rules, schema
-    transforms, pre/post SQL, parallel readers, index handling, and partial migration
-    controls.
-  - >
-    In the PostgreSQL ecosystem, pgloader became a standard practical bridge for teams
-    moving applications toward PostgreSQL. Citus Data's 2018 hackathon write-up treated
-    it as the obvious base for a Citus-aware migration path, noting support for MySQL,
-    SQL Server, SQLite, DBF/IXF, CSV/fixed files, and resume-on-bad-line behavior
-    compared with plain COPY.
+  adoption-history:
+    - >
+      pgloader is packaged by Homebrew, Debian, Ubuntu, Alpine Linux, Nix, and openSUSE
+      according to source_facts.package-manager. That breadth reflects its established
+      role in PostgreSQL migration workflows.
+    - >
+      Its one-command migrations from SQLite, MySQL, Microsoft SQL Server, and
+      structured files have made it a common bridge for teams moving workloads into
+      PostgreSQL.
+  package-nerd-significance:
+    - >
+      pgloader is notable for combining database discovery, type casting,
+      transformation, error handling, and PostgreSQL COPY streaming in one tool. It is
+      also an unusual systems utility whose established implementation is written in
+      Common Lisp after an earlier Python implementation.
+    - >
+      For package maintainers, pgloader is interesting because its database drivers and
+      Common Lisp build chain historically made packaging more involved than
+      distributing an ordinary script, while delivering a native executable and
+      substantial migration functionality.
+  project-history:
+    - >
+      Dimitri Fontaine originally implemented pgloader in Python and later rewrote it in
+      Common Lisp. The rewrite enabled a richer command language, runtime-compiled
+      transformations, and higher performance.
+    - >
+      The 3.x series established the SQL-like `.load` command syntax and direct
+      database-to-PostgreSQL migration workflow. Official documentation now also
+      describes a v4 Clojure/JVM rewrite while retaining the command-file model.
+  related-projects:
+    - >
+      pgloader relies on PostgreSQL's COPY protocol for high-throughput loading and
+      complements PostgreSQL tools such as `psql` and `createdb`. It targets migration
+      use cases that otherwise require combinations of database dump tools, ETL scripts,
+      and manual schema conversion.
+  sources:
+    - 'Official documentation: https://pgloader.readthedocs.io/en/latest/'
+    - >
+      Official project article on the Python-to-Common-Lisp rewrite:
+      https://pgloader.io/blog/pgloader-your-migration-companion/
+    - 'Official quick start: https://pgloader.readthedocs.io/en/latest/quickstart.html'
+    - source_facts.package-manager
+  summary:
+    - >
+      pgloader is a data-loading and database-migration utility that streams data into
+      PostgreSQL, performs transformations, and can discover and migrate schemas from
+      several database systems.
+  timeline:
+    - 'Early project: pgloader began as a Python program.'
+    - 'Later rewrite: The project moved from Python to Common Lisp.'
+    - >
+      3.x era: The SQL-like load-command language and direct database migration workflow
+      became the established interface.
+    - >
+      Current development: Official documentation describes a Clojure/JVM v4 rewrite
+      alongside the Common Lisp implementation.
+  usage:
+    - >
+      Simple migrations can be expressed as `pgloader SOURCE TARGET`; more complex jobs
+      use explicitly supplied `.load` command files. These files can define sources,
+      targets, casts, transformations, PostgreSQL settings, and SQL to execute before or
+      after loading.
+    - >
+      Connection strings may contain database credentials, but the official
+      documentation does not designate a separate credentials file. Load-command files
+      are user-selected inputs rather than a configuration file at a fixed filesystem
+      location.
 category: data
 package-manager:
   apk: pgloader

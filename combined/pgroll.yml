@@ -8,36 +8,70 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pgroll is Xata's open-source PostgreSQL schema-migration tool for zero-downtime,
-    reversible changes. Its repository describes the central idea: serve multiple schema
-    versions at the same time so old and new application versions can keep working while
-    a database migration is in progress.
-  - >
-    The tool packages the expand/contract migration pattern for PostgreSQL. Xata's
-    write-up explains that pgroll grew from the need to apply schema changes without
-    interrupting applications, turning expand/contract into an explicit command-line
-    workflow rather than a hand-written production playbook.
-  - >
-    Internally, pgroll uses versioned schemas, views, triggers, and backfills to bridge
-    old and new shapes of the same data. Xata's 2025 project update says pgroll creates
-    virtual schemas with views over physical tables, stores migration history in a
-    pgroll schema, uses search_path so clients choose a schema version, and relies on
-    up/down trigger expressions to keep old and new columns synchronized during active
-    migrations.
-  - >
-    Practitioners use pgroll by writing declarative migrations, then running commands
-    such as init, start, complete, rollback, status, and migrate. The start phase
-    applies additive changes and prepares compatibility machinery; the complete phase
-    drops the previous schema version; rollback can abandon an active migration before
-    completion.
-  - >
-    Adoption spread through the PostgreSQL operations and developer-tooling community
-    because pgroll attacks a common production problem: ALTER TABLE and related DDL can
-    require strong locks, while application rollouts often need old and new code to
-    coexist. Xata reported that pgroll passed 5,000 GitHub stars on July 18, 2025, and
-    noted outside contributors, outside-filed issues, conference feedback, and
-    integration into Xata's platform.
+  adoption-history:
+    - >
+      pgroll is distributed through Homebrew, MacPorts, Nix, and Scoop according to
+      source_facts.package-manager, providing native package routes across macOS, Linux,
+      and Windows.
+    - >
+      The project supports PostgreSQL 14 and later and is designed to work with hosted
+      PostgreSQL services, including Amazon RDS and Aurora, broadening its relevance
+      beyond self-managed installations.
+  package-nerd-significance:
+    - >
+      pgroll brings deployment-oriented expand-and-contract ideas into a standalone
+      PostgreSQL CLI. Its defining feature is serving old and new schema versions
+      simultaneously through views, enabling application rollouts and database
+      migrations to proceed independently.
+    - >
+      Package users care about its single Go binary, reversible migration files,
+      automated backfills, short lock timeout strategy, and ability to introduce its
+      migration model to an existing schema through a baseline operation.
+  project-history:
+    - >
+      Xata created pgroll as an open-source PostgreSQL migration tool focused on
+      zero-downtime and reversible schema changes. The project drew inspiration from
+      Reshape, PgHaMigrations, and established expand-and-contract migration practices.
+    - >
+      The tool evolved around versioned schemas and views over physical tables. Its
+      release series added broader migration operations and workflow commands while
+      retaining the start, complete, and rollback lifecycle.
+  related-projects:
+    - >
+      The official project materials cite Reshape and PgHaMigrations as related or
+      inspirational projects. pgroll also addresses the same deployment problem as
+      expand-and-contract migration patterns, but automates versioned database
+      interfaces for PostgreSQL.
+  sources:
+    - 'Official documentation: https://pgroll.com/docs'
+    - 'Official releases: https://github.com/xataio/pgroll/releases'
+    - 'Official repository README: https://github.com/xataio/pgroll#readme'
+    - source_facts.package-manager
+  summary:
+    - >
+      pgroll is Xata's open-source PostgreSQL schema-migration tool for applying
+      reversible changes without application downtime. It exposes multiple schema
+      versions concurrently so old and new application releases can operate during a
+      rollout.
+  timeline:
+    - >
+      Initial project era: Xata introduced pgroll as an open-source zero-downtime
+      migration tool for PostgreSQL.
+    - >
+      Release evolution: The project expanded its migration operations and added
+      workflow commands such as baseline, pull, create, validate, and migrate.
+    - 'Current support: Official documentation targets PostgreSQL 14 and later.'
+  usage:
+    - >
+      A typical workflow initializes pgroll's internal database state, optionally
+      baselines an existing schema, starts a migration from a YAML or JSON file, moves
+      applications to the new versioned schema, and then completes or rolls back the
+      migration.
+    - >
+      The PostgreSQL connection is supplied through a command-line URL or related
+      runtime configuration. Official documentation does not designate a fixed config
+      file or separate credentials file; migration definitions are project inputs stored
+      wherever the user chooses.
 category: data
 package-manager:
   brew: pgroll
