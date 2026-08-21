@@ -7,19 +7,40 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    psql2csv is Philipe Fatio's small wrapper for a common PostgreSQL export task: run a
-    query through psql and emit CSV. The README presents both installation routes that
-    match its size: install via Homebrew on macOS, or copy the single psql2csv script
-    into PATH and mark it executable.
-  - >
-    The tool's role is to make PostgreSQL's COPY-based CSV export feel like a shell
-    filter. It accepts a query from standard input or as an argument, forwards ordinary
-    connection arguments to psql, and handles CSV-specific switches such as delimiter,
-    quote, escape, NULL representation, forced quoting, encoding, headers, timezone,
-    search_path, and dry-run output. Practitioners use it in reporting scripts, cron
-    jobs, and one-off data pulls where `psql` is already the deployment dependency but
-    the desired artifact is a CSV file for another program.
+  adoption-history:
+    - >
+      The official README documents distribution through Homebrew, while the supplied
+      package metadata also records Nix packaging. Its deliberately small, single-script
+      form also supports manual installation into PATH.
+  package-nerd-significance:
+    - >
+      psql2csv exemplifies the Unix package tradition of wrapping a capable lower-level
+      client with a narrowly focused command. It makes scripted PostgreSQL-to-CSV export
+      convenient while preserving access to psql connection and variable options.
+  project-history:
+    - >
+      Philipe Fatio created psql2csv as a shell-based frontend that runs a PostgreSQL
+      query through psql and emits CSV. The repository's official documentation presents
+      it as a compact command-line utility rather than a separate database client.
+  related-projects:
+    - PostgreSQL psql performs the database connection and query work.
+    - PostgreSQL COPY provides the underlying export semantics documented by the project.
+  sources:
+    - 'Official project README: https://github.com/fphilipe/psql2csv#readme'
+  summary:
+    - >
+      psql2csv is a command-line wrapper for running PostgreSQL queries with psql and
+      writing the results as configurable CSV.
+  timeline:
+    - 'Initial project phase: Published as a standalone shell script for psql-to-CSV export.'
+    - 'Homebrew adoption: The official README documents installation with brew.'
+    - "2019: The README's advanced example documents parameterized recurring-report workflows."
+  usage:
+    - >
+      A query can be supplied as the final argument or through standard input, with CSV
+      written to standard output. Users can control delimiters, quoting, escaping, NULL
+      representation, headers, encoding, time zone, and search path; remaining arguments
+      are forwarded to psql.
 category: data
 package-manager:
   brew: psql2csv
