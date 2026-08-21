@@ -7,30 +7,50 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    Origin and lineage: pg-schema-diff is Stripe's Go project for comparing PostgreSQL
-    database schemas and generating SQL migration plans. The GitHub repository was
-    created on 2023-04-11, with public releases beginning at v0.1.0 on 2023-06-05 and
-    reaching v1.0.0 on 2025-08-25.
-  - >
-    Ecosystem role: The tool sits in the declarative-migrations niche for PostgreSQL:
-    users describe the desired schema in plain DDL, and the program plans the SQL needed
-    to move an existing database to that state. Its README emphasizes native PostgreSQL
-    operations, minimal downtime and locks, hazards that warn about dangerous
-    operations, temporary-database validation of generated plans, and support for
-    partitions.
-  - >
-    Usage: Practitioners use the CLI to dump an existing schema, plan/apply changes from
-    a schema directory, and approve hazards such as concurrent index builds. Go users
-    can also consume the library API; the README leaves plan application to callers so
-    teams can add their own advisory locks, approval workflows, timeouts, and
-    operational controls.
-  - >
-    Adoption history: Distribution through Homebrew and Nix makes it convenient for
-    developer workstations and CI jobs, while the Go module and pkg.go.dev documentation
-    position it as a reusable diff engine. Its role is narrower than full migration
-    frameworks such as Flyway or Sqitch: it focuses on deriving PostgreSQL DDL changes
-    and making online operations safer where PostgreSQL supports them.
+  adoption-history:
+    - >
+      Stripe publishes the project as both a Go library and a command-line program.
+      Official installation instructions support `go install`, Go modules, and Homebrew,
+      enabling use in application tooling and database deployment workflows.
+  package-nerd-significance:
+    - >
+      pg-schema-diff brings declarative, plan-oriented migration behavior to PostgreSQL
+      while exposing operational hazards before execution. Database tooling enthusiasts
+      care about its use of native concurrent and staged PostgreSQL operations to reduce
+      locks and downtime rather than relying only on handwritten sequential migrations.
+  project-history:
+    - >
+      Stripe developed pg-schema-diff to compare PostgreSQL schemas and generate the SQL
+      needed to transform one into another. The project grew around online-migration
+      techniques, temporary-database validation, hazard reporting, partition support,
+      and both CLI and reusable Go-library interfaces.
+  related-projects:
+    - >
+      The tool consumes PostgreSQL DDL and connection strings, uses native PostgreSQL
+      migration operations, and publishes its library API through the official Go
+      package documentation.
+  sources:
+    - 'Official Go documentation: https://pkg.go.dev/github.com/stripe/pg-schema-diff'
+    - 'Official README: https://github.com/stripe/pg-schema-diff#readme'
+  summary:
+    - >
+      pg-schema-diff is a Stripe-maintained Go library and CLI for comparing PostgreSQL
+      schemas and producing migration plans designed to minimize downtime and locking.
+  timeline:
+    - >
+      Initial project direction: Published by Stripe as a PostgreSQL schema-diffing Go
+      library and CLI.
+    - >
+      Later development: Added safety-oriented planning features including hazard
+      warnings, temporary-database validation, online index replacement, and strong
+      partition support.
+    - 'Package-manager adoption: Distributed through Homebrew in addition to the Go toolchain.'
+  usage:
+    - >
+      Users describe a desired database schema with one or more DDL files, compare it
+      with a live database, inspect the generated plan and hazards, and then apply
+      approved changes. The CLI accepts DSNs and recommends PGPASSWORD for supplying a
+      password without embedding it in the connection string.
 category: developer-tools
 package-manager:
   brew: pg-schema-diff

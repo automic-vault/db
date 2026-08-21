@@ -8,41 +8,47 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pex is Peter Eisentraut's lightweight package manager for PostgreSQL add-on
-    packages. The main repository and its companion `pex-packages` repository were both
-    created on January 22, 2013. The README positions it as a developer-oriented tool
-    for managing multiple PostgreSQL installations, influenced by Homebrew but unrelated
-    to it.
-  - >
-    The problem pex addressed was the awkward middle ground between source archives,
-    PostgreSQL extension build systems, and operating-system packages. A pex package
-    description is a small YAML file naming a homepage, source URL, and SHA1 hash. `pex
-    init` clones the package-description repository, `pex search` lists available
-    packages, and `pex install` downloads, unpacks, builds, and installs the extension
-    or loadable module into the selected PostgreSQL installation.
-  - >
-    Its design is intentionally Unixy. The man page says pex uses curl and Git under the
-    hood, relies on PostgreSQL's `pg_config` to choose an installation, and leaves
-    database-level steps such as `CREATE EXTENSION` or configuration edits to the
-    operator. It can also fetch sources without installing, check package descriptions
-    with `audit`, and experimentally build Debian or RPM packages from the same
-    metadata.
-  - >
-    pex's ecosystem role was as a curated, forkable package layer for PostgreSQL
-    extension developers rather than a central registry. The default `pex-packages`
-    repository contained descriptors for extensions and related packages such as citus,
-    cstore_fdw, orafce, pg_partman, pgaudit, pgxnclient, plproxy, plv8, and postgis.
-    Because descriptions are just files in a Git repository, teams could fork the
-    package set, pin hashes, and add private packages without running new
-    infrastructure.
-  - >
-    The adoption footprint stayed niche. Homebrew packaged the 1.20140409 release, while
-    GitHub metadata shows the main pex repository last pushed in 2016 and the
-    package-description repository last pushed in 2022. That history makes pex a useful
-    snapshot of early-2010s PostgreSQL extension packaging experiments: small shell
-    tooling, cryptographic source pins, Git-managed metadata, and explicit support for
-    developers juggling several PostgreSQL builds.
+  adoption-history:
+    - >
+      The source tree includes Debian packaging, and the input records distribution
+      through Homebrew, Debian, and Ubuntu. The project remains deliberately small and
+      developer-oriented rather than operating a centralized package service.
+  package-nerd-significance:
+    - >
+      Pex applies familiar source-package-manager ideas to PostgreSQL extensions:
+      curated package descriptions, reproducible archive hashes, Git-based metadata,
+      multiple installation targets, and locally forkable repositories. It is a compact
+      example of Homebrew-style package culture adapted to database add-ons.
+  project-history:
+    - >
+      Peter Eisentraut developed Pex as a lightweight PostgreSQL package manager based
+      on POSIX shell, curl, Git, and standard Unix tools. Its 2013 man page identifies
+      the early public interface. The project explicitly credits Homebrew as an
+      influence while remaining unrelated to it.
+  related-projects:
+    - >
+      Pex's default package-description repository is the official petere/pex-packages
+      project. The README cites Homebrew as an influence, and installed packages
+      ultimately target PostgreSQL installations.
+  sources:
+    - 'Official README: https://github.com/petere/pex#readme'
+    - 'Official man page: https://github.com/petere/pex/blob/master/pex.1'
+    - 'Official package repository: https://github.com/petere/pex-packages'
+  summary:
+    - >
+      Pex is a developer-focused package manager that downloads, builds, installs,
+      tracks, and upgrades PostgreSQL extensions and loadable modules.
+  timeline:
+    - >
+      2013: The bundled man page identifies the Pex command and its package-management
+      interface.
+    - 'Subsequent packaging: Pex became available through Debian-family packaging and Homebrew.'
+  usage:
+    - >
+      After `pex init` fetches package descriptions and initializes state, users can
+      search, install, update, and upgrade PostgreSQL add-ons. Options support multiple
+      PostgreSQL installations, while package metadata lives in a Git repository that
+      organizations can fork for private packages.
 category: data
 package-manager:
   brew: pex
