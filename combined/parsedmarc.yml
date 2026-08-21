@@ -9,25 +9,58 @@ config-file-location:
 credentials-file-location:
   unix: /etc/parsedmarc.ini
 history:
-  - >
-    `parsedmarc` grew out of the operational pain of DMARC reporting: aggregate and
-    failure reports arrive as machine-readable XML, often compressed, and are hard to
-    interpret manually at mailbox scale. Sean Whalen introduced the tool publicly in
-    2018 as a Python module and CLI for fetching DMARC reports, producing consistent
-    JSON or CSV, and helping organizations use DMARC reporting without buying a hosted
-    reporting service.
-  - >
-    Its adoption path has been self-hosted email-security infrastructure. The project
-    documentation positions it as an open-source alternative to commercial DMARC
-    processors when paired with Elasticsearch and Kibana, OpenSearch, or Splunk.
-    Package-manager availability through Homebrew and Nix reflects that it is used both
-    as a workstation inspection tool and as a server-side scheduled mailbox watcher.
-  - >
-    In practice, administrators run `parsedmarc` against IMAP mailboxes, Microsoft Graph
-    or Gmail API sources, Maildir or mbox archives, or local report files. Outputs can
-    feed JSON/CSV workflows or observability backends such as Elasticsearch/OpenSearch,
-    Splunk, Kafka, S3, syslog, and webhooks, turning raw DMARC reports into searchable
-    sender, SPF, DKIM, and policy-alignment evidence.
+  adoption-history:
+    - >
+      source_facts.package-manager records Homebrew and Nix packaging. The project also
+      provides a Python package and official container-oriented deployment guidance.
+    - >
+      Its integrations with Elasticsearch/Kibana, OpenSearch/Grafana, Splunk,
+      PostgreSQL, Kafka, object storage, and mailbox APIs broadened it from a report
+      parser into a self-hosted DMARC processing component.
+  package-nerd-significance:
+    - >
+      parsedmarc packages a standards-heavy email-security workflow into both a reusable
+      Python library and a Unix-friendly CLI. It is notable for connecting mailbox
+      ingestion and compressed report parsing to many operational analytics backends.
+  project-history:
+    - >
+      parsedmarc was created as an open-source Python package and CLI for parsing DMARC
+      aggregate and failure reports. Its scope later expanded to SMTP TLS reporting and
+      multiple mailbox and output integrations.
+    - >
+      Starting with version 6.0.0, the project moved most CLI options into an INI
+      configuration file, making persistent service deployments a central usage pattern.
+  related-projects:
+    - >
+      The project is closely associated with DMARC, DKIM, SPF, SMTP TLS Reporting,
+      Elasticsearch, OpenSearch, Kibana, Grafana, Splunk, and the maintainer's
+      checkdmarc project.
+  sources:
+    - https://domainaware.github.io/parsedmarc/
+    - https://domainaware.github.io/parsedmarc/usage.html
+    - https://github.com/domainaware/parsedmarc
+    - source_facts.package-manager
+  summary:
+    - >
+      parsedmarc is an open-source Python library and command-line utility for
+      collecting, parsing, enriching, and exporting DMARC and SMTP TLS reports.
+  timeline:
+    - 'Version 6.0.0: Most command-line options moved to the configuration file.'
+    - >
+      2026: Official documentation describes the 10.x series with support for the
+      finalized DMARC report schemas and multiple analytics backends.
+  usage:
+    - >
+      Users can parse local report files or collect reports through IMAP, Microsoft
+      Graph, or Gmail API, then emit JSON/CSV or forward structured data to supported
+      storage and analytics systems.
+    - >
+      The documented service configuration uses /etc/parsedmarc.ini. That same INI file
+      may contain mailbox passwords and backend tokens, although environment variables
+      provide a fileless alternative.
+    - >
+      Configuration precedence is CLI arguments, environment variables, configuration
+      file, then defaults.
 category: security
 package-manager:
   brew: parsedmarc
