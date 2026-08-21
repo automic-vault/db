@@ -8,27 +8,53 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    PMTiles was created in the Protomaps ecosystem as a single-file archive format for
-    tiled map data. Its design answers a practical deployment problem in web mapping:
-    instead of serving millions of z/x/y tile objects from a tile server or object
-    bucket, a PMTiles archive stores the tile pyramid in one file that clients can
-    access with HTTP range requests from commodity storage.
-  - >
-    The format's adoption grew with cloud-native geospatial workflows and static map
-    publishing. Protomaps documentation positions PMTiles as a way to build low-cost,
-    zero-maintenance map applications, while the Cloud-Optimized Geospatial Formats
-    guide explains it as an archive format for visualization that is easier to move and
-    host than many tiny files. The 2022 PMTiles v3 posts show the format maturing around
-    cloud access patterns, compressed directories, and a disk layout optimized for
-    remote reads.
-  - >
-    Practitioners use the pmtiles CLI to create archives from tile sources, inspect
-    metadata, extract or convert tiles, and upload archives to object storage or static
-    hosting. In application stacks, PMTiles often sits beside vector tile renderers,
-    browser map libraries, and Protomaps basemap data, giving front-end developers a
-    packaging format for static or mostly static tile sets without operating a custom
-    tile backend.
+  adoption-history:
+    - >
+      PMTiles has been integrated into the broader web-mapping toolchain: official
+      material documents clients for MapLibre, Leaflet, OpenLayers, Go, JavaScript, and
+      Python, while Tippecanoe 2.17 and later can write PMTiles directly. The format is
+      designed for deployment on ordinary HTTP servers and object stores such as
+      S3-compatible services.
+  package-nerd-significance:
+    - >
+      PMTiles turns a tiled map pyramid into one seekable file, replacing large
+      directory trees and specialized tile backends with HTTP Range requests against
+      static storage. For packaging and infrastructure enthusiasts, the appeal is a
+      dependency-free CLI and a serverless deployment model with few moving parts.
+  project-history:
+    - >
+      Protomaps introduced PMTiles as an open single-file archive format for tiled data.
+      The reference implementations carry a BSD 3-Clause license, while the
+      specification is public domain or CC0 where applicable. Version 3 is the current
+      documented format generation.
+  related-projects:
+    - >
+      Official documentation connects PMTiles with MBTiles, Tippecanoe, MapLibre,
+      Leaflet, OpenLayers, Rasterio/rio-pmtiles, cloud object storage, and Protomaps
+      basemaps.
+  sources:
+    - 'Official CLI documentation: https://docs.protomaps.com/pmtiles/cli'
+    - 'Official PMTiles repository and specification: https://github.com/protomaps/PMTiles'
+    - 'Official Protomaps documentation: https://docs.protomaps.com/pmtiles'
+    - 'Official creation guide: https://docs.protomaps.com/pmtiles/create'
+  summary:
+    - >
+      PMTiles is an open, single-file archive format for tiled map data and a companion
+      Go command-line tool for inspecting, converting, extracting, serving, and
+      uploading those archives.
+  timeline:
+    - '2021: The official PMTiles repository records Protomaps copyright beginning in 2021.'
+    - 'Version 3: PMTiles adopted its current documented archive specification.'
+    - >
+      Tippecanoe 2.17: Direct PMTiles output became supported by the established
+      vector-tile generator.
+  usage:
+    - >
+      The pmtiles CLI can inspect local or remote archives, verify structure, extract
+      geographic or zoom subsets, merge and cluster archives, convert MBTiles, serve
+      Z/X/Y endpoints, edit metadata, and upload files to cloud storage. Private cloud
+      access uses each provider's default authentication, such as AWS_ACCESS_KEY_ID and
+      AWS_SECRET_ACCESS_KEY for S3-compatible services.
 category: data
 package-manager:
   brew: pmtiles
