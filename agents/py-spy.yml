@@ -6,31 +6,48 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    py-spy appeared in the late 2010s as Ben Frederickson's Rust-written sampling
-    profiler for Python programs. Its central design choice was to inspect a running
-    Python process from the outside, avoiding code changes and process restarts while
-    keeping overhead low enough for production investigations.
-  - >
-    The project arrived in a Python performance-tooling landscape that already had
-    deterministic profilers such as `cProfile`, statistical profilers, and
-    flamegraph-oriented tools, but many workflows still required instrumentation,
-    restarts, or platform-specific compromises. py-spy's external-process model, Rust
-    implementation, and commands such as `record`, `top`, and `dump` made it attractive
-    for diagnosing live services, long-running jobs, and containerized workloads.
-  - >
-    Adoption spread through a practical developer-operations route: engineers could
-    install a single CLI, attach to a Python PID, generate flamegraphs, or watch hot
-    functions without modifying application code. Julia Evans's 2018 write-up helped
-    explain the tool to a broader Python/Rust audience by comparing it with the rbspy
-    approach and showing why reading process memory was powerful for live profiling.
-  - >
-    Packaging reflects its role as both a developer tool and an operations tool. It is
-    distributed through PyPI and Rust's crate ecosystem, while system package managers
-    such as Homebrew, Alpine, and Nix package the `py-spy` executable for workstation
-    and CI/server use. In practice it is used when teams need a low-friction answer to
-    'where is this Python process spending time?' before deciding whether deeper
-    instrumentation is worth the cost.
+  adoption-history:
+    - >
+      py-spy is available as PyPI binary wheels, a Cargo package, a Homebrew formula,
+      and packages for Alpine, Nix, and other ecosystems. Its prebuilt binaries and
+      ability to attach to existing processes helped make production profiling
+      accessible without application instrumentation.
+  package-nerd-significance:
+    - >
+      py-spy is notable for combining Python-aware profiling with a Rust implementation
+      that runs outside the target interpreter. It gives operators flame graphs and live
+      top-like views while avoiding the code changes and in-process overhead associated
+      with many traditional Python profilers.
+  project-history:
+    - >
+      Ben Frederickson created py-spy as a low-overhead sampling profiler inspired by
+      rbspy. It reads CPython process memory externally, enabling profiling of an
+      already-running program without restarting it or injecting profiling code.
+  related-projects:
+    - rbspy directly inspired py-spy's approach.
+    - FlameGraph and speedscope are supported output and visualization ecosystems.
+    - >
+      Traditional Python profilers provide related functionality but commonly execute
+      inside the profiled process.
+  sources:
+    - 'Official releases: https://github.com/benfred/py-spy/releases'
+    - 'Official repository README: https://github.com/benfred/py-spy#readme'
+    - source_facts.package-manager
+  summary:
+    - >
+      py-spy is a Rust-based sampling profiler that observes running Python programs
+      with low overhead and without modifying their code.
+  timeline:
+    - >
+      2018: Early public py-spy releases established the external Python
+      sampling-profiler workflow.
+    - '2026: Version 0.4.2 added Python 3.14 support and further platform fixes.'
+  usage:
+    - >
+      Its record command produces flame graphs, speedscope profiles, or raw samples; top
+      provides a live view; and dump captures thread stacks. Attaching to unrelated
+      processes may require elevated privileges or ptrace capabilities, especially in
+      containers and Kubernetes.
 tags:
   - cli
   - performance
@@ -58,11 +75,9 @@ provenance:
       Official GitHub repository README documents installation and usage; no separate
       official docs site was found.
   history-sources:
-    - https://github.com/benfred/py-spy
-    - https://pypi.org/project/py-spy/0.1.5/
-    - https://crates.io/crates/py-spy/0.1.10
-    - https://jvns.ca/blog/2018/09/08/an-awesome-new-python-profiler--py-spy-/
-    - https://formulae.brew.sh/formula/py-spy
+    - 'Official releases: https://github.com/benfred/py-spy/releases'
+    - 'Official repository README: https://github.com/benfred/py-spy#readme'
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/benfred/py-spy, so repo is
