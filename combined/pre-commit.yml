@@ -8,35 +8,75 @@ config-file-location:
   unix: .pre-commit-config.yaml
 credentials-file-location: null
 history:
-  - >
-    pre-commit was created by Anthony Sottile to solve a common Git-hook maintenance
-    problem: teams copied shell snippets between repositories, then had to keep those
-    snippets working across languages, tool versions, and developer machines. The
-    project reframed hooks as a package-managed, multi-language layer configured in
-    `.pre-commit-config.yaml`, with hook repositories pinned by revision and installed
-    into isolated environments.
-  - >
-    The adoption path started in Python-heavy open source but expanded because the model
-    is language-neutral. A repository can run Python formatters, JavaScript linters,
-    Ruby tools, Go binaries, Docker-based checks, or small system commands behind the
-    same `pre-commit run` interface. The official hook ecosystem, mirror repositories,
-    and third-party hook manifests made it a common lowest-friction way to standardize
-    whitespace checks, YAML validation, import sorting, formatters, secret scanners, and
-    generated-file checks before code reaches review.
-  - >
-    pre-commit's ecosystem role is a bridge between local developer ergonomics and CI
-    policy. It does not replace Git hooks; it installs and manages them, handles hook
-    environments without requiring root access, and lets projects share exact hook
-    definitions through versioned Git URLs. The companion pattern of running `pre-commit
-    run --all-files` in CI made local checks and server-side checks line up without
-    every tool needing bespoke CI wiring.
-  - >
-    Package managers distribute it as a normal CLI: the input records Homebrew, Alpine,
-    Debian, Fedora, MacPorts, Nix, Arch, and Ubuntu packages, while PyPI publishes the
-    Python package by Anthony Sottile. Daily usage is repetitive by design: install the
-    tool, commit `.pre-commit-config.yaml`, run `pre-commit install`, let hooks run on
-    staged files during `git commit`, use `pre-commit run --all-files` when adding or
-    changing hooks, and use `pre-commit autoupdate` to advance pinned hook revisions.
+  adoption-history:
+    - >
+      pre-commit became broadly distributed across Linux and macOS package managers in
+      addition to its native Python installation routes. Its language adapters let
+      repositories consume hooks implemented in ecosystems such as Python, Node, Ruby,
+      Go, Rust, Docker, and others without requiring every toolchain to be managed
+      directly by each project.
+    - >
+      The framework's configuration convention and reusable hook repositories made it a
+      common integration point for formatters, linters, security checks, and
+      repository-policy tools. It is also routinely run in CI against all files,
+      complementing its local Git-hook role.
+  package-nerd-significance:
+    - >
+      pre-commit describes itself as a multi-language package manager for hooks. That
+      framing is important to package enthusiasts: it resolves hook repositories and
+      revisions, creates isolated environments, bootstraps supported runtimes where
+      possible, and reuses cached installations.
+    - >
+      Its ecosystem separates the orchestration framework, hook-provider repositories,
+      and project-local YAML policy. This makes heterogeneous developer tooling
+      reproducible without forcing an application's primary dependency manager to own
+      every linter or formatter.
+  project-history:
+    - >
+      pre-commit began in 2014 to replace copied, project-specific Git-hook scripts with
+      reusable hooks that could be shared across repositories and implemented in
+      different languages. Anthony Sottile has been the principal maintainer.
+    - >
+      Version 1.0.0 in 2017 formalized semantic versioning and introduced the modern
+      top-level-map configuration format. The project continued broadening language
+      support and refining isolated toolchain installation, reaching the 4.x series in
+      2024.
+  related-projects:
+    - >
+      pre-commit/pre-commit-hooks is the official collection of general-purpose hooks
+      released alongside the framework.
+    - pre-commit.ci applies the same configuration in hosted continuous integration.
+    - >
+      Individual formatter, linter, and security-tool repositories can publish hooks
+      through a .pre-commit-hooks.yaml manifest.
+  sources:
+    - https://github.com/pre-commit/pre-commit
+    - https://github.com/pre-commit/pre-commit/blob/main/CHANGELOG.md
+    - https://pre-commit.com/
+    - source_facts.package-manager
+  summary:
+    - >
+      pre-commit is a framework and multi-language package manager for installing and
+      running reusable Git hooks.
+  timeline:
+    - '2014: Version 0.1.0 was released.'
+    - >
+      2017: Version 1.0.0 adopted semantic versioning and introduced the modern
+      configuration structure.
+    - >
+      2024: Version 4.0.0 removed the deprecated python_venv language alias and updated
+      hook-stage naming.
+    - '2025: Version 4.1.0 added Julia hook support.'
+  usage:
+    - >
+      A project places .pre-commit-config.yaml at its repository root, listing hook
+      repositories, pinned revisions, and selected hooks. Running pre-commit install
+      writes the Git hook, after which configured checks run during commits or other
+      selected Git stages.
+    - >
+      pre-commit run --all-files is commonly used for initial adoption and CI.
+      pre-commit autoupdate refreshes configured hook revisions, while the framework
+      caches isolated hook environments for reuse.
 category: developer-tools
 package-manager:
   apk: pre-commit
