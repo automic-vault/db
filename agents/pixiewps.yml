@@ -6,25 +6,46 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    Pixiewps appeared in 2015 as a C implementation of the WPS "pixie-dust" attack, an
-    offline attack based on low or missing entropy in some Wi-Fi Protected Setup
-    implementations. Its README credits Dominique Bongard's 2014 research as the basis
-    for the attack and describes the tool as a community-originated project from the
-    Kali forums.
-  - >
-    The tool filled a very specific gap in wireless-audit workflows: instead of
-    repeatedly trying WPS PINs against an access point over the air, practitioners
-    collect WPS exchange values with tools such as Reaver or Bully and give pixiewps the
-    public keys, enrollee hashes, authentication key, and nonce material. On vulnerable
-    devices the PIN search can complete in seconds or minutes rather than the hours
-    typical of online WPS brute forcing.
-  - >
-    Pixiewps became part of the standard wireless-testing package set: Kali documents it
-    as an 802.11/wireless tool, Ubuntu ships a manpage for it, and the upstream README
-    says version 1.4.1 was included in OpenWrt and LEDE repositories. Later releases
-    added multi-threading and, starting with version 1.4, limited recovery of WPA-PSK
-    material from complete passive WPS captures for some mode-3 devices.
+  adoption-history:
+    - >
+      The input records packages across Homebrew, Debian, Ubuntu, Fedora, Arch Linux,
+      Alpine, and Nix. Upstream notes that pixiewps has also been included in the
+      official OpenWrt and LEDE repositories since version 1.4.1.
+  package-nerd-significance:
+    - >
+      pixiewps packages a specialized cryptographic attack into a small C command-line
+      utility. It is commonly paired with wireless-auditing tools such as Reaver or
+      Bully, which can collect the WPS exchange values required for offline analysis.
+  project-history:
+    - >
+      pixiewps grew from work in the Kali Linux community to implement the Pixie Dust
+      attack discovered by Dominique Bongard in summer 2014. Unlike traditional online
+      WPS brute forcing, it exploits weak entropy in vulnerable implementations to test
+      candidate PINs offline.
+  related-projects:
+    - Reaver
+    - Bully
+    - OpenWrt
+    - LEDE
+    - Wi-Fi Protected Setup
+  sources:
+    - https://github.com/wiire-a/pixiewps
+    - https://github.com/wiire-a/pixiewps/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      pixiewps is a C command-line utility for authorized offline testing of WPS
+      implementations vulnerable to Pixie Dust attacks.
+  timeline:
+    - '2014: Dominique Bongard disclosed the Pixie Dust attack underlying pixiewps.'
+    - '2015: The early pixiewps community project became publicly available.'
+    - 'Version 1.4.1: pixiewps entered the official OpenWrt and LEDE repositories.'
+  usage:
+    - >
+      Authorized testers provide public keys, enrollee hashes, an authentication session
+      key, and related values captured during a WPS exchange. pixiewps then attempts
+      offline PIN recovery and, for some supported captures, WPA-PSK recovery. The tool
+      documents no persistent application configuration or credential store.
 tags:
   - brute-force
   - cli
@@ -52,10 +73,8 @@ provenance:
     - source_facts.homepage is the official GitHub repository.
   history-sources:
     - https://github.com/wiire-a/pixiewps
-    - https://raw.githubusercontent.com/wiire-a/pixiewps/master/README.md
-    - https://api.github.com/repos/wiire-a/pixiewps
-    - https://www.kali.org/tools/pixiewps/
-    - https://manpages.ubuntu.com/manpages/focal/man1/pixiewps.1.html
+    - https://github.com/wiire-a/pixiewps/releases
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/wiire-a/pixiewps, so repo
