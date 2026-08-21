@@ -4,27 +4,56 @@ repo: null
 docs:
   - https://manpages.debian.org/unstable/posh/posh.1.en.html
   - https://salsa.debian.org/clint/posh
-config-file-location: null
+config-file-location:
+  unix:
+    - /etc/profile
+    - ~/.profile
+    - /etc/suid_profile
 credentials-file-location: null
 history:
-  - >
-    posh, the Policy-compliant Ordinary SHell, is a Debian-oriented shell derived from
-    pdksh. Its purpose is not to be an interactive feature shell like bash, zsh, or
-    modern ksh, but to implement a deliberately strict /bin/sh-style environment for
-    checking scripts against policy and POSIX expectations.
-  - >
-    The shell's adoption history is tied to Debian packaging and portability work.
-    Debian and Ubuntu package it as posh, and the upstream repository lives on Debian's
-    Salsa infrastructure. The manpage describes bugs in terms of inconsistencies with
-    the manpage or Debian policy, which captures the project's role as a
-    conformance-oriented shell rather than a general-purpose scripting innovation.
-  - >
-    Practitioners use posh as a portability test tool: if a script runs under posh, it
-    is less likely to rely on bashisms, zsh extensions, or permissive behavior from
-    looser /bin/sh implementations. It complements linters such as ShellCheck and
-    runtime checks under dash or busybox ash, especially for maintainers of Debian
-    packages, installation scripts, and project scripts meant to run on varied Unix-like
-    systems.
+  adoption-history:
+    - >
+      posh is distributed by Debian and Ubuntu and is also available through Homebrew
+      and MacPorts. Its strongest association remains Debian, where policy compliance
+      and portable maintainer scripting are recurring packaging concerns.
+  package-nerd-significance:
+    - >
+      posh is valuable as a deliberately conservative shell and as a portability check:
+      scripts that accidentally depend on Bash-specific behavior are more likely to fail
+      visibly when tested under a smaller Bourne-style implementation.
+  project-history:
+    - >
+      posh is a reimplementation of the Bourne shell based on pdksh. Its name expands to
+      Policy-compliant Ordinary SHell, reflecting its focus on behavior suitable for
+      Debian policy and broadly portable shell scripting.
+  related-projects:
+    - pdksh is the codebase on which posh is based.
+    - >
+      dash is another small Bourne/POSIX-oriented shell widely associated with Debian
+      scripting.
+    - >
+      The Bourne shell and POSIX shell specification define the programming model posh
+      targets.
+  sources:
+    - https://manpages.debian.org/unstable/posh/posh.1.en.html
+    - https://salsa.debian.org/clint/posh
+  summary:
+    - >
+      posh is a compact Bourne-style command interpreter for interactive use and shell
+      scripts, maintained with Debian policy compatibility as a central goal.
+  timeline:
+    - 'Before posh: pdksh supplied the implementation base.'
+    - >
+      2011: The official manual revision documents posh's Debian-policy and SUSv3
+      compatibility goals.
+    - >
+      2018: The current official Salsa repository was created during Debian's GitLab-era
+      source-hosting transition.
+  usage:
+    - >
+      Users can invoke posh interactively, run a script file, read commands from
+      standard input, or pass a command with `-c`. Login shells read `/etc/profile` and
+      `~/.profile`; privileged shells use `/etc/suid_profile`.
 tags:
   - cli
   - debian
@@ -54,10 +83,6 @@ provenance:
   history-sources:
     - https://manpages.debian.org/unstable/posh/posh.1.en.html
     - https://salsa.debian.org/clint/posh
-    - https://people.redhat.com/~thuth/blog/general/2021/04/27/portable-shell.html
-    - source_facts.description
-    - source_facts.package-manager
-    - source_facts.executables
   repo-sources:
     - source_facts.repo already supplied; not re-evaluated per instruction.
   tags-sources:
@@ -70,6 +95,6 @@ category-path:
   - shell
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

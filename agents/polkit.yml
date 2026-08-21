@@ -10,30 +10,52 @@ config-file-location:
     - /usr/share/polkit-1/rules.d/*.rules
 credentials-file-location: null
 history:
-  - >
-    polkit began as PolicyKit, a freedesktop.org authorization framework written by
-    David Zeuthen at Red Hat for Unix-like desktops and system services. Early releases
-    were part of the late-2000s desktop plumbing around D-Bus, HAL, ConsoleKit,
-    PackageKit, NetworkManager, and other privileged services that needed controlled
-    interaction with unprivileged clients.
-  - >
-    The project became a common Linux distribution component because it solved a
-    recurring integration problem: a graphical or session process needed to ask a
-    privileged mechanism to perform an operation, and the system needed a central policy
-    decision rather than ad hoc setuid helpers. Fedora adopted PolicyKit early, and
-    other major distributions followed through desktop and system-service integration.
-  - >
-    The project name changed from PolicyKit to polkit with the 0.105 rewrite in 2012,
-    marking API and implementation changes. The `polkitd` daemon, `.policy` action
-    descriptions, JavaScript `.rules` files, authentication agents, and command-line
-    tools such as `pkcheck`, `pkaction`, `pkexec`, and `pkttyagent` define the interface
-    most administrators and developers encounter.
-  - >
-    In the ecosystem, polkit sits below desktop control panels, package managers,
-    service managers, and administrative tools. Practitioners use it by installing
-    policy files with applications, writing local rules under `/etc/polkit-1/rules.d`,
-    checking authorizations from mechanisms, and using `pkexec` or authentication agents
-    when an operation needs elevated privileges.
+  adoption-history:
+    - >
+      polkit is packaged across major Linux and Unix-oriented package ecosystems and is
+      commonly installed as infrastructure beneath desktop environments and system
+      services rather than invoked directly by most users.
+  package-nerd-significance:
+    - >
+      polkit matters to package maintainers because it sits at the boundary between
+      desktop applications, D-Bus services, and privileged system operations. Packaging
+      it often also means packaging action-policy files and JavaScript authorization
+      rules with security-sensitive installation paths.
+  project-history:
+    - >
+      The project was originally known as PolicyKit and later adopted the shorter polkit
+      name. It provides a service and policy framework through which unprivileged
+      processes can request authorization for privileged operations.
+  related-projects:
+    - >
+      D-Bus is the principal interprocess-communication mechanism used by polkit-aware
+      applications and services.
+    - >
+      pkexec is polkit's command-line program for executing a command as another user,
+      subject to authorization policy.
+  sources:
+    - https://github.com/polkit-org/polkit
+    - https://polkit.pages.freedesktop.org/polkit/
+    - https://polkit.pages.freedesktop.org/polkit/polkit.8.html
+  summary:
+    - >
+      polkit is a system authorization framework for defining actions, evaluating
+      policy, and mediating requests by unprivileged processes.
+  timeline:
+    - 'PolicyKit era: The framework was introduced under the PolicyKit name.'
+    - >
+      Later releases: The project adopted the name polkit and JavaScript-based
+      authorization rules.
+    - >
+      Current project: Development and reference documentation are maintained by the
+      polkit organization.
+  usage:
+    - >
+      Administrators install `.policy` action definitions under
+      `/usr/share/polkit-1/actions` and place local authorization rules under
+      `/etc/polkit-1/rules.d`. Applications and services query the authority over D-Bus;
+      administrators can inspect or test authorization through tools such as `pkaction`,
+      `pkcheck`, and `pkexec`.
 tags:
   - authorization
   - cli
@@ -64,12 +86,9 @@ provenance:
       Official GitHub README points to the freedesktop.org polkit reference manual and
       API documentation.
   history-sources:
-    - https://www.freedesktop.org/software/polkit/docs/0.111/polkit.8.html
-    - https://polkit.pages.freedesktop.org/polkit/
     - https://github.com/polkit-org/polkit
-    - https://lists.freedesktop.org/archives/hal/2007-June/008815.html
-    - https://en.wikipedia.org/wiki/Polkit
-    - https://formulae.brew.sh/formula/polkit
+    - https://polkit.pages.freedesktop.org/polkit/
+    - https://polkit.pages.freedesktop.org/polkit/polkit.8.html
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/polkit-org/polkit, so repo
