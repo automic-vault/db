@@ -7,34 +7,57 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pdftk-java is Marc Vinyals's Java port of PDFtk, the long-lived PDF Toolkit
-    command-line program. The GitLab project was created on 2017-12-30, and its 3.0.0
-    release on 2018-09-04 marked the translated Java implementation. The port exists
-    because the original PDFtk Server was a C++/GCJ-era tool whose final upstream
-    release, 2.02, appeared on 2013-07-24.
-  - >
-    The project set out to remain compatible with the original command-line behavior
-    while fixing correctness problems and cleaning up the translated code. Its README
-    says the Java sources were manually translated, the project passed the php-pdftk
-    test suite, and compatibility can give way to correctness where the original
-    behavior was wrong. The bundled code also carries an old modified iText codebase
-    inherited from the original C++ sources.
-  - >
-    pdftk-java filled an important packaging gap after GCJ disappeared from many
-    platforms. It provides the familiar `pdftk` executable through Java packaging rather
-    than the original native toolchain, and its README lists packages in Arch,
-    Debian/Ubuntu, Fedora/EPEL, Gentoo, Homebrew, MacPorts, Mageia, and SUSE. That made
-    it the practical replacement for scripts already using PDFtk to concatenate, split,
-    burst, rotate, encrypt or decrypt, attach files, fill forms, flatten forms, stamp or
-    watermark pages, and dump or update metadata.
-  - >
-    The changelog shows the adoption pressure points: releases from 2019 through 2022
-    repeatedly fixed crashes on malformed inputs and forms, added AES encryption
-    support, improved stdin and page-range behavior, added native-image build support,
-    and improved FDF/XFDF and UTF-8 form handling. That history matches how the tool is
-    used: not as a library for new Java applications, but as a stable command-line
-    compatibility layer for existing automation.
+  adoption-history:
+    - >
+      The official README lists packages for Arch, Debian and Ubuntu, Fedora and EPEL,
+      Gentoo, Homebrew, MacPorts, Mageia, and SUSE. The supplied mappings additionally
+      show the `pdftk` command across several package ecosystems.
+  package-nerd-significance:
+    - >
+      PDFtk Java preserved the widely used `pdftk` command when the original C++
+      implementation became difficult for distributions to build against changing
+      toolchains. Compatibility with familiar PDFtk commands, broad distro packaging,
+      and a JVM implementation make it notable to package maintainers.
+  project-history:
+    - >
+      Marc Vinyals began manually translating the original PDFtk C++ code into Java,
+      prioritizing correctness while retaining reasonable command compatibility. Source
+      notices date the Java port from 2017 and identify the original PDFtk work as
+      dating from 2003–2013.
+    - >
+      The project developed standard and standalone JAR builds plus an experimental
+      GraalVM native-image path. Its README reports validation against the php-pdftk
+      test suite while acknowledging possible porting differences.
+  related-projects:
+    - PDFtk is the original toolkit being ported.
+    - php-pdftk supplies the test suite cited by the project.
+    - Bouncy Castle and Apache Commons Lang are documented Java dependencies.
+  sources:
+    - >
+      https://gitlab.com/pdftk-java/pdftk/-/blob/master/README.md — official project
+      goals, installation, adoption, builds, and compatibility notes.
+    - >
+      https://gitlab.com/pdftk-java/pdftk/-/blob/master/java/com/gitlab/pdftk_java/pdftk.java
+      — official source copyright history.
+    - https://gitlab.com/pdftk-java/pdftk/-/tags — official release history.
+    - source_facts.package-manager — supplied ecosystem mappings.
+  summary:
+    - >
+      PDFtk Java is a manual Java port of the original PDF Toolkit command-line
+      application, intended to preserve reasonable PDFtk compatibility while correcting
+      defects and cleaning up the code.
+  timeline:
+    - '2003–2013: Copyright period stated for the original PDFtk implementation.'
+    - "2017: Copyright history begins for Marc Vinyals's Java port."
+    - '2019-05-02: Version 3.0.4 released, later highlighted as fixing many crashes.'
+    - '2021-08-16: Version 3.3.0 released.'
+    - '2022-09-22: Version 3.3.3 released.'
+  usage:
+    - >
+      Users employ the `pdftk` command for operations such as merging, splitting,
+      rotating, repairing, and otherwise manipulating PDFs. Installation through a
+      distribution package is recommended; standalone JAR and experimental native-image
+      builds are alternatives.
 category: developer-tools
 package-manager:
   brew: pdftk-java
