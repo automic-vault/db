@@ -7,24 +7,54 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    `pod2man` belongs to the podlators distribution, the Perl tooling that converts POD,
-    Perl's Plain Old Documentation format, into manual-page roff and terminal text
-    formats. The implementation is maintained by Russ Allbery and is based on earlier
-    `pod2man` work by Larry Wall and Tom Christiansen, tying the tool directly to Perl's
-    long-standing convention of shipping documentation beside code.
-  - >
-    Podlators became part of the core Perl documentation pipeline because it provides
-    the Pod::Man and Pod::Text modules included with Perl. A notable 2005 podlators 2.00
-    release switched the underlying parser from Pod::Parser to Pod::Simple, aligning
-    manpage generation with the newer POD parser used by the Perl toolchain.
-  - >
-    Its ecosystem role is deliberately boring and important: Perl authors write POD in
-    modules, scripts, and distributions, and `pod2man` turns that source into Unix
-    manual pages suitable for installation by package managers. Homebrew packages it
-    separately as `pod2man`, exposing `pod2man` and `pod2text`, while CPAN and Perl core
-    users encounter the same functionality through the podlators source package and the
-    Pod::Man and Pod::Text modules.
+  adoption-history:
+    - >
+      Russ Allbery's implementation entered Perl core with Perl 5.6.0 and is used to
+      generate Perl's own manual pages. The separately packaged podlators distribution
+      remains useful when users need fixes or features newer than their bundled Perl
+      version.
+  package-nerd-significance:
+    - >
+      pod2man connects three durable Unix packaging traditions: Perl's POD documentation
+      format, generated manual pages, and reproducible package builds. Its support for
+      SOURCE_DATE_EPOCH and multiple roff implementations makes it particularly relevant
+      to distribution maintainers.
+  project-history:
+    - >
+      Russ Allbery created podlators after encountering bugs in Perl's earlier
+      POD-to-text and POD-to-roff translators. The replacement used a generic parser and
+      supplied Pod::Man, Pod::Text, and the pod2man and pod2text command-line drivers.
+    - >
+      The package was substantially rewritten for the 2.00 release in 2005. Version
+      6.0.0, released in July 2024, adopted semantic versioning, required Perl 5.12 or
+      later, and changed the default non-EBCDIC manual-page output to UTF-8.
+  related-projects:
+    - Perl POD
+    - Pod::Man
+    - Pod::Text
+    - Pod::Simple
+    - groff
+    - mandoc
+  sources:
+    - https://www.eyrie.org/~eagle/software/podlators/
+    - https://www.eyrie.org/~eagle/software/podlators/news.html
+    - https://www.eyrie.org/~eagle/software/podlators/pod2man.html
+  summary:
+    - >
+      pod2man is the command-line driver for Pod::Man in the podlators distribution. It
+      converts Perl Plain Old Documentation into roff input suitable for man, nroff,
+      troff, groff, and mandoc.
+  timeline:
+    - '1999: Upstream copyright history begins.'
+    - '2000: The implementation was included in Perl 5.6.0.'
+    - '2005: podlators 2.00 delivered a substantial rewrite.'
+    - '2024: podlators 6.0.0 adopted semantic versioning and default UTF-8 output.'
+  usage:
+    - >
+      Developers and package maintainers run pod2man on POD embedded in Perl code or
+      stored in standalone files to generate manual-page sources. Input and output can
+      be files or standard streams, and command options control section, title, release,
+      date, encoding, and formatting.
 tags:
   - cli
   - documentation
@@ -42,11 +72,8 @@ provenance:
     - Official podlators homepage lists pod2man documentation and a general overview.
   history-sources:
     - https://www.eyrie.org/~eagle/software/podlators/
+    - https://www.eyrie.org/~eagle/software/podlators/news.html
     - https://www.eyrie.org/~eagle/software/podlators/pod2man.html
-    - https://perldoc.perl.org/pod2man
-    - https://metacpan.org/pod/Pod%3A%3AMan
-    - https://groups.google.com/g/perl.perl5.porters/c/P9gy6KqXunA
-    - https://formulae.brew.sh/formula/pod2man
   repo-sources:
     - >
       Official podlators homepage lists the GitHub repository

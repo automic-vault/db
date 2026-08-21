@@ -4,27 +4,59 @@ homepage: https://github.com/containers/podman-compose
 repo: https://github.com/containers/podman-compose
 docs:
   - https://github.com/containers/podman-compose#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - ./compose.yaml
+    - ./compose.yml
+    - ./docker-compose.yaml
+    - ./docker-compose.yml
 credentials-file-location: null
 history:
-  - >
-    podman-compose grew out of the practical gap between Podman's Docker-compatible
-    single-container workflow and the widespread use of docker-compose.yml files for
-    local multi-container stacks. Its upstream project describes it as an implementation
-    of the Compose Specification with a Podman backend, aimed at running Compose-style
-    applications while preserving Podman's rootless and daemonless execution model.
-  - >
-    Adoption followed Podman's spread among Linux users and distributions that wanted
-    Docker Compose-like ergonomics without depending on the Docker daemon. The package
-    is distributed through Homebrew and several Linux package managers, including apk,
-    Debian/Ubuntu, dnf, MacPorts, Nix, pacman, and zypper, which reflects its role as a
-    small compatibility layer rather than a separate container platform.
-  - >
-    Practitioners use podman-compose to keep existing Compose files useful while moving
-    services to Podman. Typical workflows are development stacks, self-hosted services,
-    and CI experiments where a familiar `podman-compose up` style command is more
-    convenient than manually creating pods, networks, and containers with lower-level
-    Podman commands.
+  adoption-history:
+    - >
+      podman-compose is available from PyPI and numerous operating-system package
+      repositories. The supplied package facts list Alpine, Homebrew, Debian, Fedora,
+      MacPorts, Nix, Arch, Ubuntu, and openSUSE-family packaging, reflecting broad
+      demand for a Compose workflow around Podman.
+  package-nerd-significance:
+    - >
+      The project matters to container-tooling users because it preserves the familiar
+      Compose model while retaining Podman's daemonless and rootless execution style. It
+      also illustrates the packaging ecosystem's effort to offer Docker-compatible
+      workflows without requiring a Docker daemon.
+  project-history:
+    - >
+      podman-compose began as a Python script that translates Compose workloads into
+      direct Podman commands. It is now maintained in the containers organization and
+      implements the Compose Specification with a Podman backend.
+    - >
+      The legacy 0.1.x line contained mappings and workarounds for early Podman rootless
+      limitations. Modern Podman releases support the stable 1.x line without those
+      older compatibility mechanisms.
+  related-projects:
+    - Podman
+    - Docker Compose
+    - Compose Specification
+    - Kubernetes
+    - OpenShift
+  sources:
+    - https://github.com/containers/podman-compose
+    - https://github.com/containers/podman-compose/tree/main/docs
+    - source_facts.package-manager
+  summary:
+    - >
+      Podman Compose is a daemonless, rootless-oriented implementation of the Compose
+      Specification that runs Compose workloads through Podman.
+  timeline:
+    - 'Legacy era: The 0.1.x branch supplied workarounds for Podman versions before 3.1.'
+    - 'Modern era: Podman 3.4 and later use the stable 1.x branch.'
+    - '2025: The official repository published the v1.5.0 release.'
+  usage:
+    - >
+      Users run podman-compose in a project containing a Compose file to build, create,
+      start, stop, and manage multi-container applications through Podman. It can be
+      installed through pip, operating-system packages, Homebrew, or as a standalone
+      script.
 category: system
 package-manager:
   apk: podman-compose
