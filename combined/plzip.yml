@@ -8,28 +8,49 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    Plzip is Antonio Diaz Diaz's massively parallel implementation of lzip, the
-    LZMA-family Unix compressor that uses the `.lz` file format. The lzip family was
-    designed with gzip- and bzip2-like command-line conventions, stronger integrity
-    checking, interoperability between implementations, and recoverability as core
-    goals; plzip extends that design to multiprocessor machines by splitting input into
-    independently compressed lzip members.
-  - >
-    The program's adoption follows the lzip ecosystem rather than a standalone
-    application ecosystem. It is packaged by Homebrew and Debian, depends on lzlib, and
-    is distributed from the Nongnu/Savannah lzip release area. Debian describes it as
-    especially suited to large software distribution and large-scale data archiving
-    because sufficiently large files can use many processors while remaining compatible
-    with the lzip file format.
-  - >
-    Practitioners use plzip where single-threaded lzip is too slow for large inputs:
-    compressed tar archives, dataset archives, source release artifacts, and other bulk
-    files. Its usage remains Unix-like: compress or decompress files directly, or stream
-    `plzip -cd foo.tar.lz | tar -xf -` when unpacking tar content. The project
-    documentation also points out the boundary of the design: files produced as one lzip
-    member cannot be decompressed faster merely by switching to plzip, while
-    plzip-created multimember files can be decompressed in parallel.
+  adoption-history:
+    - >
+      Plzip was positioned for large files and multiprocessor machines, including
+      software distribution and large-scale archival work. Its compatibility with the
+      lzip format lets it participate in the wider lzip tool family rather than creating
+      a separate parallel-compression format.
+  package-nerd-significance:
+    - >
+      Plzip gives lzip users a parallel counterpart analogous in role to pigz for gzip,
+      while retaining lzip's multimember structure and integrity properties. It is
+      especially interesting on high-core-count systems, although its documentation
+      notes that small inputs cannot usefully employ many threads.
+  project-history:
+    - >
+      Plzip was written and is maintained by Antonio Diaz Diaz. An official release
+      announcement documents version 0.5 in February 2010 and notes that this release
+      added parallel decompression. The current official manual identifies version 1.13,
+      dated 7 March 2026.
+  related-projects:
+    - >
+      Plzip uses lzlib and belongs to the lzip family alongside lzip, lziprecover,
+      tarlz, clzip, lunzip, pdlzip, zutils, and other compatible tools. The project
+      recommends tarlz when tar-member alignment is important.
+  sources:
+    - https://lists.nongnu.org/archive/html/lzip-bug/2010-02/msg00003.html
+    - https://lzip.nongnu.org/manual/plzip_manual.html
+    - https://www.nongnu.org/lzip/
+    - https://www.nongnu.org/lzip/plzip.html
+  summary:
+    - >
+      Plzip is a massively parallel implementation of the lzip lossless compressor,
+      designed to compress and decompress large lzip files across multiple processor
+      cores.
+  timeline:
+    - '2009: Copyright history for Plzip begins in the official manual.'
+    - '2010: Plzip 0.5 was released with parallel decompression.'
+    - '2026: Plzip 1.13 was released on 7 March.'
+  usage:
+    - >
+      Plzip replaces input files with .lz output by default and can also stream data,
+      test integrity, list members, or select an explicit output. It divides compression
+      input into independently compressed members and can decompress multiple members
+      concurrently; the available parallelism depends on file size and member structure.
 category: system
 package-manager:
   apk: plzip
