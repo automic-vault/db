@@ -7,28 +7,47 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    PingTunnel, packaged as `ptunnel`, was written by Daniel Stodle as a small
-    networking tool for the specific case where TCP and UDP traffic are blocked but ICMP
-    echo request and reply packets are allowed. Its homepage described the motivating
-    scenario as using a reachable proxy host to carry ordinary TCP connections over ping
-    packets, turning ICMP into a transport for tasks such as SSH or mail access.
-  - >
-    The project predates GitHub-centered distribution: the official page offered source
-    tarballs, changelog entries, and build instructions rather than a public forge
-    repository. Version history on the page records authentication support in 0.60 on 15
-    April 2005, 0.61 on 26 May 2005, Windows build support and experimental DNS-over-UDP
-    tunneling in 0.70 on 12 January 2009, and 0.72 on 5 September 2011. Packaging spread
-    through Unix ports and package managers, including Homebrew, Debian, Ubuntu,
-    MacPorts, Nix, Arch, and related Unix package collections.
-  - >
-    Its ecosystem niche is diagnostic, experimental, and sometimes adversarial
-    networking rather than general-purpose VPN use. Practitioners run a proxy on an
-    internet-reachable machine, run the client with a local listening port plus
-    destination address and port, and then point an application such as SSH at
-    localhost. The workflow depends on raw sockets or packet capture, often requires
-    elevated privileges, and is bounded by ICMP filtering, modest throughput, and
-    network policy.
+  adoption-history:
+    - >
+      The official project page documents testing on Linux and macOS, a Windows port
+      added by version 0.70, an iPhone port for jailbroken devices, and historical
+      Debian packaging instructions. The input also records packages in Homebrew,
+      Debian, MacPorts, Nix, Arch Linux, and Ubuntu.
+  package-nerd-significance:
+    - >
+      Ping Tunnel is a classic example of protocol tunneling used to traverse unusually
+      restrictive networks. Package maintainers care about its raw-socket and libpcap
+      requirements, elevated privileges, aging upstream surface, and security-sensitive
+      proxy behavior.
+  project-history:
+    - >
+      Daniel Stødle created Ping Tunnel to carry TCP connections through ICMP echo
+      requests and replies when ordinary TCP or UDP access is blocked. The official page
+      documents version 0.72 and was last updated on September 5, 2011.
+  related-projects:
+    - >
+      SSH: The official usage example forwards an SSH connection through a local Ping
+      Tunnel endpoint.
+    - 'libpcap: Used for packet capture where raw-socket behavior is insufficient.'
+  sources:
+    - https://www.cs.uit.no/~daniels/PingTunnel/
+    - source_facts.package-manager
+  summary:
+    - >
+      Ping Tunnel, whose executable is ptunnel, tunnels reliable TCP streams over ICMP
+      echo traffic using a client and an internet-accessible proxy.
+  timeline:
+    - 'Version 0.70: Windows support was incorporated.'
+    - 'January 2010: The official page noted an iPhone port.'
+    - >
+      September 5, 2011: The official project page was last updated and documented
+      version 0.72.
+  usage:
+    - >
+      Run ptunnel on an accessible proxy host, then run a local client specifying the
+      proxy, listening port, destination address, and destination port. Raw sockets
+      normally require root privileges. Optional password authentication is supplied on
+      the command line rather than through a credentials file.
 category: networking
 package-manager:
   brew: ptunnel
