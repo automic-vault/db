@@ -7,32 +7,49 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pbzip2 is Jeff Gilchrist's parallel implementation of bzip2 for shared-memory
-    multiprocessor machines. Its origin is tightly bound to a simple systems problem:
-    bzip2 compresses well but can be slow, while bzip2's block structure makes much of
-    the work parallelizable. pbzip2 keeps bzip2 compatibility while spreading
-    compression and decompression work across pthread workers.
-  - >
-    The compatibility guarantee drove adoption. Solaris and Debian manpage/package
-    descriptions both describe pbzip2 as a parallel implementation of the bzip2
-    block-sorting compressor that uses pthreads, achieves near-linear speedup on SMP
-    systems, and produces output compatible with bzip2 1.0.2 or newer. That meant users
-    could create `.bz2` files faster with pbzip2 while leaving existing decompression
-    tools and archive conventions alone.
-  - >
-    Package adoption followed the classic Unix utility path: small CLI, stable file
-    format, measurable benefit on multi-core hardware. The tool is packaged by Homebrew,
-    Debian, Fedora, MacPorts, Nix, Arch, Ubuntu, and openSUSE, and it ships common
-    command aliases `pbzip2`, `pbunzip2`, and `pbzcat`. Oracle Solaris documented the
-    original community source as Launchpad's pbzip2 1.1.13 tarball, and Homebrew
-    packages the same 1.1.13 line.
-  - >
-    In practice pbzip2 is used where the archive format is already bzip2 but CPU
-    parallelism matters: compressing large tar streams, decompression pipelines such as
-    `pbzip2 -dc myfile.tar.bz2 | tar x`, and batch jobs on workstations or servers with
-    multiple cores. It is not a new archive format and it is not a general compressor
-    suite; its value is being a mostly drop-in faster path for `.bz2` data.
+  adoption-history:
+    - >
+      Launchpad records pbzip2 packages across multiple Ubuntu releases, while
+      source_facts.package-manager lists Homebrew, Debian, Fedora-family, MacPorts, Nix,
+      Arch, Ubuntu, and openSUSE packaging. This broad packaging reflects its usefulness
+      as a format-compatible multicore alternative to bzip2.
+  package-nerd-significance:
+    - >
+      PBZIP2 is a classic package-manager optimization: it preserves an established
+      compression format while exploiting SMP and multicore hardware. That makes it
+      useful in existing archive workflows without requiring a new file format.
+  project-history:
+    - >
+      Jeff Gilchrist created and maintains PBZIP2 as a pthreads-based parallel
+      implementation of the bzip2 block-sorting compressor. Launchpad identifies C++ as
+      its implementation language and Bazaar as its official version-control system.
+    - >
+      The project emphasizes compatibility: files compressed by PBZIP2 can be
+      decompressed by bzip2 1.0.2 or newer.
+  related-projects:
+    - bzip2 defines the compatible compression format and conventional command-line workflow.
+    - pbunzip2 and pbzcat are companion executable names supplied by the package.
+    - pigz applies a similar parallel-compression approach to the gzip format.
+  sources:
+    - https://code.launchpad.net/pbzip2
+    - https://launchpad.net/pbzip2
+    - source_facts.package-manager
+  summary:
+    - >
+      PBZIP2 is a parallel implementation of bzip2 that uses pthreads to compress data
+      across multiple processors while producing bzip2-compatible output.
+  timeline:
+    - '2010: Jeff Gilchrist registered the project on Launchpad.'
+    - '2015: PBZIP2 1.1.13 was released.'
+    - '2016: The project announced the 1.1.13 bug-fix release.'
+  usage:
+    - >
+      Users invoke pbzip2, pbunzip2, or pbzcat in bzip2-style compression and
+      decompression workflows. Its main benefit appears when compressing large inputs on
+      systems with multiple processor cores.
+    - >
+      No official persistent configuration or credentials file is documented; behavior
+      is selected through command-line options.
 category: system
 package-manager:
   brew: pbzip2
