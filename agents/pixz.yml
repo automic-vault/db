@@ -6,30 +6,40 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    Pixz, pronounced "pixie", is Dave Vasilevsky's parallel, indexed variant of xz. The
-    GitHub repository was created on January 13, 2010, and the manpage credits Dave
-    Vasilevsky with copyright years 2009-2020, placing the project in the early wave of
-    multicore-friendly Unix compression tools.
-  - >
-    The project was written to address a concrete limitation of ordinary XZ Utils usage
-    for large archives. XZ gives strong compression, but traditional single-stream
-    output behaves like one large compressed block. Pixz instead emits smaller blocks
-    and, when the input is a tar archive, records an index of the files inside the
-    archive.
-  - >
-    That indexing made pixz especially useful for large tarballs. Users can compress
-    with multiple CPU cores, list archive contents quickly, and extract a selected path
-    without decompressing the entire archive. Its README contrasts this design with
-    tools such as pxz, pbzip2, pigz, plzip, and stream-splitting approaches, emphasizing
-    that parallelism alone was not the whole point; random access to tar members was the
-    differentiator.
-  - >
-    Pixz settled into the packaging ecosystem as a small specialist archiver rather than
-    a replacement for xz. It is packaged by Homebrew, Debian/Ubuntu-family systems,
-    Alpine, Arch, MacPorts, Nix, and openSUSE-style repositories in the input metadata,
-    and OpenBSD's port description repeats the same core positioning: indexed xz output
-    is most valuable for large tarballs.
+  adoption-history:
+    - >
+      pixz is packaged across Homebrew, Debian, Ubuntu, Alpine, Arch, Nix, MacPorts, and
+      openSUSE ecosystems, indicating broad availability on Unix-like systems.
+  package-nerd-significance:
+    - >
+      pixz combines multicore xz compression with block indexing and tar-aware random
+      access. This makes it especially interesting for large tarballs where users want
+      xz compression without treating the archive as one indivisible compressed stream.
+  project-history:
+    - >
+      pixz was created as a parallel, indexing alternative to XZ Utils. Its design
+      divides input into smaller xz blocks, enabling parallel decompression and random
+      access while retaining the xz container format.
+  related-projects:
+    - XZ Utils is the underlying format and compression-library ecosystem.
+    - The official comparison discusses plzip, ChopZip, pxz, pbzip2, pigz, dictzip, and idzip.
+  sources:
+    - 'Official project README: https://github.com/vasi/pixz#readme'
+    - 'Official releases: https://github.com/vasi/pixz/releases'
+    - 'Package adoption evidence: source_facts.package-manager'
+  summary:
+    - >
+      pixz is a command-line compressor that adds parallel processing and indexing to
+      xz, with special handling for indexed tar archives commonly given the .tpxz
+      extension.
+  timeline:
+    - Project established as a parallel, indexed xz implementation.
+    - Subsequent releases distributed through the official GitHub releases page.
+  usage:
+    - >
+      Use pixz for multicore compression or decompression of individual files and tar
+      archives. It can quickly list an indexed tarball or extract selected members, and
+      it can be selected directly as tar's compression program with tar -I pixz.
 tags:
   - cli
   - compression
@@ -56,12 +66,9 @@ provenance:
     - Official GitHub README is the best available documentation surface for pixz.
     - source_facts.homepage is the official GitHub repository.
   history-sources:
-    - https://github.com/vasi/pixz
-    - https://raw.githubusercontent.com/vasi/pixz/master/README.md
-    - https://raw.githubusercontent.com/vasi/pixz/master/src/pixz.1.asciidoc
-    - https://api.github.com/repos/vasi/pixz
-    - https://openports.pl/path/archivers/pixz
-    - 'source_facts.description: Parallel, indexed, xz compressor.'
+    - 'Official project README: https://github.com/vasi/pixz#readme'
+    - 'Official releases: https://github.com/vasi/pixz/releases'
+    - 'Package adoption evidence: source_facts.package-manager'
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/vasi/pixz, so repo was not
@@ -75,6 +82,6 @@ category-path:
   - compression
 display-name-confidence: high
 docs-confidence: medium
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

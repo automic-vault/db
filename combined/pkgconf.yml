@@ -8,34 +8,75 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pkgconf was written from scratch in summer 2011 as a replacement for pkg-config, the
-    long-standing freedesktop.org tool used by Autoconf, Meson, Makefiles, language
-    build systems, and distribution packaging to discover compiler and linker flags from
-    .pc metadata files. The project positions itself as a superset of pkg-config
-    functionality, with an important caveat for package maintainers: it does not try to
-    preserve every bug-compatible behavior of the original implementation.
-  - >
-    The project split the role into a command-line frontend and libpkgconf, a C library
-    that exposes the resolver to other tools. That library API is a major part of
-    pkgconf's ecosystem role: Fedora's system-pkg-config change explicitly cited
-    build-file generators, IDEs, and compilers as consumers that could embed smarter
-    handling of pkg-config files rather than shelling out to a command.
-  - >
-    Distribution adoption turned pkgconf from an alternate implementation into
-    infrastructure. Fedora switched the system-wide pkg-config provider to pkgconf
-    through a pkgconf-pkg-config compatibility subpackage, arguing that pkgconf
-    supported more of the .pc specification, handled Provides and Cflags.private rules,
-    avoided a GLib bootstrap cycle, and had a less costly dependency resolver. A Debian
-    transition proposal in 2022 made the same case and noted existing use in Fedora,
-    Gentoo, and Arch.
-  - >
-    Practitioners usually encounter pkgconf in one of two ways: by running pkgconf
-    directly during builds, or indirectly through a /usr/bin/pkg-config shim supplied by
-    their distribution. In both modes it resolves .pc dependency graphs and prints
-    CFLAGS/LIBS for compilers and linkers. The project also added bomtool and spdxtool,
-    using pkg-config module metadata as input for SBOM generation, which shows how its
-    internal package graph model grew beyond simple flag printing.
+  adoption-history:
+    - >
+      pkgconf has been adopted across many operating-system package ecosystems and is
+      frequently exposed through a pkg-config-compatible command name. The supplied
+      package facts list Alpine, Homebrew, Debian, Fedora-family, MacPorts, Nix, Arch,
+      Ubuntu, openSUSE, Scoop, and WinGet packages.
+    - >
+      The upstream project deliberately leaves creation of the pkg-config symlink to
+      operating-system vendors, making the compatibility command an explicit
+      packaging-policy decision.
+  package-nerd-significance:
+    - >
+      pkgconf sits on a critical seam between package metadata and native compilation.
+      It resolves .pc module relationships and emits the include paths, compiler
+      options, and linker flags consumed by build systems.
+    - >
+      Compared with the original pkg-config implementation, pkgconf emphasizes
+      graph-based dependency solving, large dependency graphs, virtual packages,
+      Conflicts handling, and avoiding unnecessary overlinking. It also exposes
+      libpkgconf for integration into compilers and IDEs and includes tools for
+      generating SPDX software bills of materials.
+  project-history:
+    - >
+      pkgconf emerged as an alternative implementation of the pkg-config interface and
+      developed into a broader package compiler and linker metadata toolkit. Upstream
+      describes it as a functional superset of freedesktop.org pkg-config while
+      explicitly declining bug-for-bug compatibility.
+    - >
+      The project expanded beyond its command-line frontend to provide libpkgconf and
+      SBOM-oriented utilities. Its current build uses Meson, with a lightweight Makefile
+      option for pkg-config-only bootstrap use and Muon support where Python is
+      unavailable.
+  related-projects:
+    - freedesktop.org pkg-config is the original implementation and compatibility reference.
+    - libpkgconf exposes pkgconf functionality to other developer tools.
+    - >
+      bomtool and spdxtool generate SPDX-family software bills of materials from
+      pkg-config module graphs.
+    - >
+      Meson is the recommended upstream build system; Muon is supported for bootstrap
+      environments.
+  sources:
+    - 'Official project site: https://pkgconf.org/'
+    - 'Official release history: https://github.com/pkgconf/pkgconf/blob/main/NEWS'
+    - 'Official repository and README: https://github.com/pkgconf/pkgconf'
+    - 'Package adoption evidence: source_facts.package-manager'
+  summary:
+    - >
+      pkgconf is a cross-platform implementation and extension of the pkg-config model
+      for discovering development libraries and calculating their compiler and linker
+      flags.
+  timeline:
+    - Project established as an alternative implementation of the pkg-config interface.
+    - >
+      The project added libpkgconf for embedding metadata resolution in compilers, IDEs,
+      and other tools.
+    - Later development added bomtool and spdxtool for SPDX-oriented SBOM generation.
+    - >
+      Current releases use Meson and retain lightweight bootstrap paths through
+      Makefile.lite and Muon.
+  usage:
+    - >
+      Build systems and developers query pkgconf with package names to obtain compiler
+      and linker flags derived from installed .pc metadata. It can be invoked directly
+      as pkgconf or, when the operating-system vendor provides a symlink, as pkg-config.
+    - >
+      Users should depend on stable query interfaces rather than parsing --debug output.
+      Correct dependency declarations in .pc files allow pkgconf to flatten dependency
+      graphs and reduce overlinking.
 category: developer-tools
 package-manager:
   apk: pkgconf

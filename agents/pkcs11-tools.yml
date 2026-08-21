@@ -4,42 +4,85 @@ repo: null
 docs:
   - https://github.com/Mastercard/pkcs11-tools/blob/master/docs/INSTALL.md
   - https://github.com/Mastercard/pkcs11-tools/blob/master/docs/MANUAL.md
-config-file-location: null
-credentials-file-location: null
+config-file-location:
+  unix:
+    - ./.pkcs11rc
+    - ./.pkcs11rc.<vendor>
+    - ~/.pkcs11rc
+    - ~/.pkcs11rc.<vendor>
+credentials-file-location:
+  unix:
+    - ./.pkcs11rc
+    - ./.pkcs11rc.<vendor>
+    - ~/.pkcs11rc
+    - ~/.pkcs11rc.<vendor>
 history:
-  - >
-    pkcs11-tools is Mastercard's C toolkit for managing objects on PKCS#11 cryptographic
-    tokens. The public GitHub repository was created on December 5, 2018, and the first
-    tagged 1.0.0 release is present in the upstream tag list, while later README news
-    documents the 2.x line of key-management features.
-  - >
-    The project exists because PKCS#11 is widely implemented by smart cards, HSMs,
-    SoftHSM, NSS, and language/runtime integrations, but vendor tooling and object
-    conventions are fragmented. The manual explicitly calls out differences in labels
-    and CKA_ID handling across public/private keys and certificates, especially when
-    making objects interoperable between Sun/Oracle and IBM JVM keystores.
-  - >
-    Its design deliberately maps token management onto Unix-like verbs. Commands such as
-    p11ls, p11cat, p11more, p11od, p11mv, and p11rm inspect and manipulate token
-    objects, while p11keygen, p11req, p11mkcert, p11importcert, p11wrap, p11unwrap, and
-    p11rewrap cover generation, certificate workflows, wrapping, unwrapping, and
-    rewrapping. The README shows the normal operating pattern: point the command at a
-    PKCS#11 library, select a slot or token, authenticate, and then work with keys,
-    certificates, and data objects by label.
-  - >
-    The toolkit's adoption niche is operational cryptography rather than application
-    development. It gives security engineers and platform teams a portable way to script
-    key lifecycle tasks across HSMs and software tokens, including NSS and SoftHSM, and
-    it ships wrapper scripts such as with_softhsm, with_nss, with_luna, with_nfast,
-    with_utimaco, with_beid, and with_aws to hide vendor-library paths and repeated
-    environment setup.
-  - >
-    The 2.x series broadened the toolset: version 2.0 in December 2020 required OpenSSL
-    1.1.1+, reworked wrapping and unwrapping, added session-key wrapping and p11rewrap;
-    2021 releases added Edwards-curve support, FreeBSD-port packaging work, templates,
-    and CKA_ALLOWED_MECHANISMS support; version 2.6 in 2023 added AWS CloudHSM and JWK
-    output. In June 2026 the README records an OpenSSL 3.x transition and support for
-    NIST/PKCS#11 v3.2 post-quantum algorithms ML-KEM, ML-DSA, and SLH-DSA.
+  adoption-history:
+    - >
+      The toolkit targets a range of hardware and software PKCS#11 implementations
+      rather than a single vendor. Official documentation covers major HSM brands and
+      software tokens including SoftHSM, NSS, and Kryoptic, as well as interoperability
+      with IBM and Oracle Java environments.
+    - >
+      It is available through Homebrew, while the source documentation also covers
+      Linux, macOS, AIX, Solaris, and cross-compiled Windows builds.
+  package-nerd-significance:
+    - >
+      The project supplies Unix-like commands such as p11ls, p11mv, p11rm, p11od, and
+      p11more for a security API whose vendor tooling is often proprietary and
+      inconsistent. That composable command vocabulary makes heterogeneous HSM and token
+      administration more approachable.
+    - >
+      Its breadth extends beyond object inspection to key generation, wrapping,
+      certificate import, CSR creation, token initialization, vendor wrapper scripts,
+      shell completion, and post-quantum PKCS#11 algorithms.
+  project-history:
+    - >
+      pkcs11-tools was created to provide unified, interoperable key-management
+      primitives for cryptographic tokens implementing PKCS#11. The official manual
+      cites underspecified object conventions, differences between Java implementations,
+      cumbersome JVM setup, and proprietary vendor tools as motivations.
+    - >
+      The toolkit evolved through releases adding templates and broader attribute
+      handling, CKA_ALLOWED_MECHANISMS support, JWK output, reworked vendor wrappers,
+      OpenSSL 3 migration, and support for the ML-KEM, ML-DSA, and SLH-DSA post-quantum
+      algorithms.
+  related-projects:
+    - PKCS#11 is the standard interface around which the toolkit is built.
+    - SoftHSM, NSS, and Kryoptic are supported software-token implementations.
+    - >
+      libpkcs11shim can be installed separately to trace PKCS#11 calls through the
+      wrapper scripts.
+  sources:
+    - >
+      Official installation guide:
+      https://github.com/Mastercard/pkcs11-tools/blob/master/docs/INSTALL.md
+    - 'Official manual: https://github.com/Mastercard/pkcs11-tools/blob/master/docs/MANUAL.md'
+    - 'Official repository: https://github.com/Mastercard/pkcs11-tools'
+  summary:
+    - >
+      PKCS#11 tools is a suite of small command-line programs for managing cryptographic
+      keys, certificates, and other objects across interoperable hardware and software
+      tokens.
+  timeline:
+    - 'July 2021: Version 2.4 added template support to numerous key-management commands.'
+    - >
+      October 2021: Version 2.5 added CKA_ALLOWED_MECHANISMS support and advanced the
+      wrapped-key grammar.
+    - 'June 2023: Version 2.6 added JWK output to key-generation and wrapping commands.'
+    - >
+      Later development: The toolkit moved to OpenSSL 3 and added PKCS#11 v3.2
+      post-quantum algorithms.
+  usage:
+    - >
+      Users select a PKCS#11 library and token by command options or environment
+      variables, then use focused p11 commands to list, inspect, generate, import, move,
+      remove, wrap, or unwrap objects and to create CSRs or certificates.
+    - >
+      Vendor-oriented with_* wrappers can auto-detect libraries and read .pkcs11rc or
+      .pkcs11rc.<vendor> files. The search begins in the current directory and proceeds
+      upward to $HOME. These shell-sourced files may contain PKCS11PASSWORD, so they can
+      also act as credential-bearing files and require appropriate permissions.
 tags:
   - certificate-management
   - cli
@@ -68,12 +111,11 @@ provenance:
     - Official README points to docs/INSTALL.md for installation instructions.
     - Official README points to docs/MANUAL.md for instructions and how-to guide.
   history-sources:
-    - https://github.com/Mastercard/pkcs11-tools
-    - https://raw.githubusercontent.com/Mastercard/pkcs11-tools/master/README.md
-    - https://raw.githubusercontent.com/Mastercard/pkcs11-tools/master/docs/MANUAL.md
-    - https://api.github.com/repos/Mastercard/pkcs11-tools
-    - https://api.github.com/repos/Mastercard/pkcs11-tools/tags?per_page=30
-    - https://formulae.brew.sh/api/formula/pkcs11-tools.json
+    - >
+      Official installation guide:
+      https://github.com/Mastercard/pkcs11-tools/blob/master/docs/INSTALL.md
+    - 'Official manual: https://github.com/Mastercard/pkcs11-tools/blob/master/docs/MANUAL.md'
+    - 'Official repository: https://github.com/Mastercard/pkcs11-tools'
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/Mastercard/pkcs11-tools, so
