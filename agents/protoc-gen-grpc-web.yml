@@ -7,23 +7,43 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    protoc-gen-grpc-web is the code generator for gRPC-Web browser clients. It comes
-    from grpc/grpc-web, a JavaScript implementation of gRPC for web clients that
-    connects browser code to gRPC services through a proxy; the project documentation
-    names Envoy as the default proxy path.
-  - >
-    The plugin emerged to adapt the protoc/gRPC generated-code model to the browser,
-    where native HTTP/2 gRPC semantics are not exposed in the same way as server and
-    mobile runtimes. Its role is to generate JavaScript or TypeScript client stubs from
-    .proto service definitions, while protoc-gen-js or another protobuf generator
-    supplies the message classes.
-  - >
-    Practitioners install protoc, protoc-gen-js, and protoc-gen-grpc-web, then run
-    protoc with --js_out and --grpc-web_out. The repository's helloworld example shows
-    import_style and mode options such as commonjs and grpcwebtext; production builds
-    wire the generated client into React, Angular, Vue, or plain browser bundles and
-    point calls at an Envoy or compatible gRPC-Web proxy.
+  adoption-history:
+    - >
+      The generator is distributed in gRPC-Web release assets and packaged by multiple
+      package managers. It serves the standard gRPC-Web JavaScript workflow documented
+      by the gRPC project.
+  package-nerd-significance:
+    - >
+      It is the compiler-pipeline component that turns service definitions into
+      browser-facing gRPC-Web clients, making it a useful example of protoc's
+      external-plugin architecture.
+  project-history:
+    - >
+      The plugin is developed in the grpc/grpc-web project as the official gRPC-Web
+      client code generator. Later releases added prebuilt generator binaries for
+      supported Linux and macOS architectures.
+  related-projects:
+    - >
+      grpc-web provides the generated-code runtime; protoc-gen-js generates the Protocol
+      Buffer message classes used alongside generated gRPC-Web service clients; protoc
+      supplies the plugin host.
+  sources:
+    - https://github.com/grpc/grpc-web
+    - https://github.com/grpc/grpc-web/releases
+    - https://grpc.io/docs/platforms/web/basics/
+  summary:
+    - >
+      protoc-gen-grpc-web is the official protoc plugin for generating JavaScript or
+      TypeScript-compatible gRPC-Web service clients from Protocol Buffer service
+      definitions.
+  timeline:
+    - The grpc-web project established protoc-gen-grpc-web as its client stub generator.
+    - Current releases publish prebuilt protoc-gen-grpc-web binaries for Linux and macOS.
+  usage:
+    - >
+      Users place the plugin on PATH and invoke protoc with `--grpc-web_out`, selecting
+      an import style and either binary `grpcweb` or text `grpcwebtext` transport mode.
+      It is commonly paired with protoc-gen-js.
 tags:
   - cli
   - code-generation
@@ -52,10 +72,8 @@ provenance:
     - Official grpc-web helloworld example documents generated client usage.
   history-sources:
     - https://github.com/grpc/grpc-web
-    - >
-      https://github.com/grpc/grpc-web/blob/master/net/grpc/gateway/examples/helloworld/README.md
-    - https://grpc.io/docs/platforms/web/
-    - https://formulae.brew.sh/formula/protoc-gen-grpc-web
+    - https://github.com/grpc/grpc-web/releases
+    - https://grpc.io/docs/platforms/web/basics/
   repo-sources:
     - >
       source_facts.repo already has https://github.com/grpc/grpc-web, so repo was not
