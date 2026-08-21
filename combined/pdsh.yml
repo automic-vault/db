@@ -7,34 +7,59 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pdsh, the Parallel Distributed Shell, comes from the high-performance computing
-    administration world rather than from general DevOps fashion. Packaging descriptions
-    trace it to Lawrence Livermore National Laboratory, where it was written as a
-    replacement for IBM's DSH on clusters. Its source tree still carries LLNL/University
-    of California provenance, and the project is maintained in the chaos/pdsh GitHub
-    repository.
-  - >
-    The tool's core idea is deliberately small: run the same command on many hosts in
-    parallel and label the results. The README describes pdsh as a multithreaded remote
-    shell client that executes commands across multiple remote hosts and can use rsh,
-    Kerberos IV, ssh, and other remote command modules. Its thread fanout model
-    conserves client resources while letting slow or unreachable hosts time out
-    independently.
-  - >
-    pdsh became part of the everyday toolbox for cluster and HPC administrators because
-    it solves unglamorous but constant work: checking kernel versions, package versions,
-    load, logs, swap, node health, and configuration drift across sets of machines.
-    ADMIN Magazine describes parallel shells as a fundamental HPC administration
-    primitive and calls pdsh one of the most popular tools in that category, with
-    SSH-only builds common for encrypted transport.
-  - >
-    Practitioners typically invoke `pdsh -w host[1-32] command`, point WCOLL at a host
-    list, or integrate pdsh with host-selection modules such as genders, dshgroups,
-    netgroups, nodeupdown, or Slurm allocations. Companion tools `pdcp` and `rpdcp` copy
-    files across nodes, while `dshbak` formats gathered output. That small suite keeps
-    pdsh relevant in places where a full configuration-management system would be too
-    slow, too stateful, or simply unnecessary for a one-shot cluster query.
+  adoption-history:
+    - >
+      pdsh is packaged across Homebrew, Debian, Ubuntu, Fedora-family systems, openSUSE,
+      Alpine, MacPorts, and Nix, reflecting its longstanding role in Unix and HPC
+      administration.
+  package-nerd-significance:
+    - >
+      pdsh is a classic cluster-administration package: a small Unix command suite whose
+      usefulness comes from pluggable remote-shell and host-selection modules rather
+      than a centralized agent.
+    - >
+      Its packaging exposes optional integrations such as SSH, genders, Slurm, Torque,
+      netgroups, and dsh-style groups, making build configuration unusually important to
+      package maintainers.
+  project-history:
+    - >
+      pdsh was developed as a multithreaded remote-shell client for executing commands
+      concurrently across many hosts. The source carries Lawrence Livermore and
+      University of California notices and is now maintained in the official chaos
+      GitHub organization.
+    - >
+      The project expanded beyond rsh through dynamically loadable modules for SSH and
+      cluster-specific host-selection systems. Companion commands include pdcp and rpdcp
+      for copying files and dshbak for consolidating parallel output.
+  related-projects:
+    - rsh and SSH provide remote transports used by pdsh modules.
+    - >
+      Slurm, Torque, genders, netgroups, and dsh groups can supply cluster or
+      host-selection context.
+  sources:
+    - https://github.com/chaos/pdsh
+    - https://github.com/chaos/pdsh/blob/master/NEWS
+    - https://github.com/chaos/pdsh/blob/master/README.modules
+    - source_facts.package-manager
+  summary:
+    - >
+      pdsh is a multithreaded parallel remote-shell suite for running commands and
+      copying files across groups of Unix hosts.
+  timeline:
+    - >
+      Early project era: Developed with Lawrence Livermore and University of California
+      provenance.
+    - >
+      Later development: Added a modular architecture spanning remote-shell, scheduler,
+      and host-selection integrations.
+    - 'Current era: Maintained by the chaos organization on GitHub.'
+  usage:
+    - >
+      Administrators use pdsh to run the same command concurrently on selected hosts,
+      pdcp or rpdcp to distribute files, and dshbak to group or format returned output.
+    - >
+      Targets may be supplied directly or obtained from optional machines-file,
+      dsh-group, genders, netgroup, Slurm, or Torque modules.
 category: system
 package-manager:
   apk: pdsh
