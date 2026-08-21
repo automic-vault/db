@@ -3,36 +3,50 @@ display-name: pastebinit
 repo: null
 docs:
   - https://github.com/pastebinit/pastebinit#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - ~/.pastebin.d
+    - /etc/pastebin.d
+    - XDG config directories
+    - XDG data directories
 credentials-file-location: null
 history:
-  - >
-    pastebinit was started by Stéphane Graber at the end of 2006 as a command-line
-    client for pastebin.com. By 2008, Graber described it as a small Python script that
-    sent input to an online pastebin and returned the resulting URL, useful for IRC
-    support and command-line systems where pasting large logs directly into chat was a
-    problem.
-  - >
-    The tool's history follows the changing pastebin landscape. Graber's 2011 notes
-    describe the project as packaged in many distributions, expanded from pastebin.com
-    to more than 15 supported pastebin services, and translated through Launchpad.
-    Version 1.2 added size-limit support, distro-specific default pastebins, FHS
-    compliance, more supported pastebins, tests, manpage updates, and 28 supported
-    locales; the planned 1.3 work merged pbget, pbput, and pbputs helper scripts and
-    added or removed service definitions as paste sites changed.
-  - >
-    pastebinit's practical model stayed deliberately simple: read text from stdin or
-    files, post it to a configured pastebin, and print the URL. The Debian manpage
-    documents the ordinary support workflow with pipes and files, options for
-    author/title/format/privacy/expiry where services support them, and user or site
-    configuration through ~/.pastebinit.xml and pastebin.d files. The GitHub README
-    documents pastebin.d service definitions with fields for post pages, paste URL
-    extraction, format mappings, defaults, and optional size limits.
-  - >
-    In package-manager terms, pastebinit is a classic distribution utility rather than a
-    platform. The source record shows it available through Homebrew, Debian, Fedora,
-    MacPorts, Nix, Arch, Ubuntu, and openSUSE, matching its role as a small CLI
-    convenience installed on developer machines, support boxes, and server shells.
+  adoption-history:
+    - >
+      pastebinit is packaged by Homebrew, Debian, Ubuntu, Fedora-family repositories,
+      Arch, Nix, MacPorts, and openSUSE according to source_facts.package-manager,
+      making it a familiar utility on many Unix-like systems.
+  package-nerd-significance:
+    - >
+      The utility turns shell output and files into shareable paste URLs without
+      requiring a browser. Its data-driven pastebin.d definitions let distributions and
+      users add or repair service integrations independently of the main command.
+  project-history:
+    - >
+      pastebinit developed as a small command-line frontend for multiple pastebin
+      services. Its provider-specific request formats are described through pastebin.d
+      files rather than being limited to a single service.
+  related-projects:
+    - pbput, pbputs, and pbget are companion commands shipped by the package.
+    - Individual pastebin services provide the remote endpoints consumed by its definitions.
+  sources:
+    - 'Official repository and README: https://github.com/pastebinit/pastebinit'
+    - 'Package availability: source_facts.package-manager'
+  summary:
+    - >
+      pastebinit submits files or standard input to supported pastebin services and
+      prints the resulting URL.
+  timeline:
+    - 'Early project: Established as a Python command-line pastebin client.'
+    - >
+      Later development: Provider behavior was organized around extensible pastebin.d
+      definition files.
+    - 'Current packaging: Available across several major Unix package ecosystems.'
+  usage:
+    - >
+      Users pipe command output into pastebinit or give it a file, optionally selecting
+      a service and paste properties. Administrators and users can add service
+      definitions under system, per-user, or XDG pastebin.d directories.
 tags:
   - cli
   - pastebin
@@ -57,12 +71,8 @@ provenance:
   docs-sources:
     - Official GitHub repository README is the primary documentation surface.
   history-sources:
-    - https://stgraber.org/category/pastebinit/
-    - https://manpages.debian.org/testing/pastebinit/pastebinit.1.en.html
-    - https://github.com/pastebinit/pastebinit
-    - https://raw.githubusercontent.com/pastebinit/pastebinit/master/README.md
-    - source_facts.package-manager
-    - source_facts.executables
+    - 'Official repository and README: https://github.com/pastebinit/pastebinit'
+    - 'Package availability: source_facts.package-manager'
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
@@ -74,6 +84,6 @@ category-path:
   - pastebin-client
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

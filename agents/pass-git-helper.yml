@@ -11,24 +11,43 @@ credentials-file-location:
   unix:
     - ~/.password-store
 history:
-  - >
-    `pass-git-helper` is a narrow bridge between two Unix-style systems: Git's
-    credential-helper protocol and `pass`, the GPG-backed password store. Git's own
-    documentation treats credential helpers as pluggable programs, while the
-    `pass-git-helper` README defines the project as an implementation that uses `pass`
-    as the credential backend for HTTPS Git remotes.
-  - >
-    The tool fits the password-store ecosystem's preference for small composable
-    helpers. Instead of adopting a platform keychain or storing credentials in Git's
-    plaintext `store` helper, users can keep tokens and passwords in `~/.password-store`
-    and let Git ask the helper for the matching username and password when pushing,
-    pulling, or cloning over HTTPS.
-  - >
-    Operationally, users configure Git with a `credential.helper` command and create
-    `~/.config/pass-git-helper/git-pass-mapping.ini`. The mapping file uses INI sections
-    and wildcard patterns to map hosts or host/path combinations to entries in the
-    password store; the helper can also be chained after Git's in-memory `cache` helper
-    so repeated commands avoid repeated GPG prompts.
+  adoption-history:
+    - >
+      It is packaged by Homebrew and several Linux-oriented package collections
+      identified in source_facts.package-manager, reflecting cross-distribution interest
+      among pass and Git users.
+  package-nerd-significance:
+    - >
+      It composes two established Unix tools through Git's credential-helper protocol
+      while allowing users to retain an arbitrary pass-store layout. Its explicit
+      host-to-entry mapping is especially useful to users managing several Git forges or
+      identities.
+  project-history:
+    - >
+      The project was developed as a Python implementation of a Git credential helper
+      backed by pass, the standard Unix password-store utility.
+  related-projects:
+    - pass (password-store) supplies the encrypted credential store.
+    - Git invokes the program through its credential-helper interface.
+    - GnuPG encrypts and unlocks the underlying pass entries.
+  sources:
+    - 'Official README: https://github.com/languitar/pass-git-helper#readme'
+    - 'Package availability: source_facts.package-manager'
+  summary:
+    - >
+      pass-git-helper connects HTTPS Git authentication to credentials stored by pass. A
+      mapping file associates repository hosts or paths with entries in the user's
+      password store.
+  timeline:
+    - Project established as a Python-based bridge between Git's credential protocol and pass.
+    - >
+      Later releases expanded mapping and extraction strategies, including alternate
+      stores, path-aware matching, and configurable username and password extraction.
+  usage:
+    - >
+      Users register the executable through Git's credential.helper setting, then define
+      host-pattern mappings in git-pass-mapping.ini. The helper retrieves usernames and
+      passwords from matching pass entries when Git accesses HTTPS remotes.
 tags:
   - cli
   - credential-helper
@@ -54,12 +73,8 @@ provenance:
       source_facts.homepage is the official GitHub repository; README is the best
       official documentation surface located.
   history-sources:
-    - https://github.com/languitar/pass-git-helper
-    - https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage
-    - https://git-scm.com/doc/credential-helpers
-    - https://packages.debian.org/bullseye/pass-git-helper
-    - https://formulae.brew.sh/formula/pass-git-helper
-    - source_facts.package-manager
+    - 'Official README: https://github.com/languitar/pass-git-helper#readme'
+    - 'Package availability: source_facts.package-manager'
   repo-sources:
     - >
       source_facts.repo already has value https://github.com/languitar/pass-git-helper;

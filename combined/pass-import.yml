@@ -4,29 +4,58 @@ homepage: https://www.passwordstore.org/
 repo: https://github.com/roddhjav/pass-import
 docs:
   - https://github.com/roddhjav/pass-import#readme
-config-file-location: null
+config-file-location:
+  unix: ~/.password-store/.import
 credentials-file-location:
   unix: ~/.password-store
 history:
-  - >
-    `pass-import` is a migration tool from the `pass` ecosystem. The original
-    password-store homepage collected many one-off import scripts for managers such as
-    1Password, KeePass, LastPass, KWallet, Revelation, and Password Gorilla;
-    `pass-import` consolidated that pattern into a maintained extension with format
-    detection and a shared importer framework.
-  - >
-    The project describes itself as a password-store extension for importing a password
-    database into an existing password-store repository. Its documentation says the
-    store must already be initialized with `pass init`, which keeps the tool's
-    responsibility intentionally small: transform exported password-manager data into
-    `pass` entries rather than own encryption or synchronization itself.
-  - >
-    Its role is strongest during migration and disaster-recovery workflows. Users run
-    `pass import` or the standalone `pimport` command against exports from supported
-    managers, keep core fields such as password, login, email, URL, and group, and can
-    target the root or a subpath of the password store. Later releases also exposed the
-    code as an independent CLI and Python library, broadening it beyond a shell-only
-    `pass` extension.
+  adoption-history:
+    - >
+      The project supports imports from dozens of password managers and is distributed
+      through Homebrew, MacPorts, and openSUSE package tooling according to
+      source_facts.package-manager. Compatibility with browserpass and pass-otp places
+      it within the broader pass extension ecosystem.
+  package-nerd-significance:
+    - >
+      Password-manager migration is often obstructed by incompatible export formats.
+      pass-import provides a scriptable, open-source conversion layer centered on pass
+      while also exposing pimport for conversions to other supported managers.
+  project-history:
+    - >
+      pass-import originated as an extension for the pass password manager and evolved
+      into a broad importer supporting many password-manager formats. It also gained
+      pimport, a standalone conversion command capable of exporting to selected
+      alternative managers.
+  related-projects:
+    - pass is the primary destination password store.
+    - pass-otp and browserpass are explicitly supported companion projects.
+    - pimport exposes the project's import and export machinery outside pass.
+  sources:
+    - 'Official releases: https://github.com/roddhjav/pass-import/releases'
+    - 'Official repository and README: https://github.com/roddhjav/pass-import'
+    - 'Package availability: source_facts.package-manager'
+  summary:
+    - >
+      pass-import migrates exported or encrypted password databases into pass and can
+      also convert between selected password-manager formats through pimport.
+  timeline:
+    - 'Early project: Introduced as a pass extension for password-database imports.'
+    - >
+      Later development: Added support for dozens of password-manager formats and the
+      standalone pimport workflow.
+    - >
+      Current 3.x series: Continues to add and repair import formats, filtering, and OTP
+      handling.
+  usage:
+    - >
+      After initializing a pass store, users normally run pass import against an
+      exported database; explicit source-manager names can be supplied when automatic
+      detection fails. The .import file at the password-store root supplies defaults
+      that command-line options may override.
+    - >
+      Because exports may contain plaintext secrets, the official documentation
+      recommends importing encrypted input directly when possible or securely removing
+      plaintext exports afterward.
 category: security
 package-manager:
   brew: pass-import
