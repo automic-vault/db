@@ -3,36 +3,50 @@ display-name: pius
 repo: null
 docs:
   - https://github.com/jaymzh/pius#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - ~/.pius/piusrc
 credentials-file-location: null
 history:
-  - >
-    PIUS, the PGP Individual UID Signer, grew out of the older PGP keysigning-party
-    workflow: after meeting people and checking fingerprints, a signer still had to sign
-    each user ID separately and send the resulting certification only to the address on
-    that UID. The project README says PIUS began as several shell scripts accumulated
-    over years of keysigning parties, then became a unified Python utility after direct
-    shell driving of GnuPG proved too fragile.
-  - >
-    Its niche is deliberately narrow but important for the web-of-trust era of OpenPGP.
-    PIUS automates the high-friction parts of post-party signing: verify fingerprints,
-    choose signing levels, sign individual UIDs, export per-UID signatures, and send
-    encrypted mail to the UID address. The Ubuntu manpage describes the same security
-    goal: recipients can choose which signatures to import, and inactive UIDs are not
-    delivered.
-  - >
-    PIUS is used as a terminal workflow around GnuPG rather than as a cryptographic
-    library. Operators typically point it at a party keyring with `pius -A -s <keyid> -r
-    <keyring> -m <email>`, configure SMTP details or a local mail agent, and let
-    GnuPG/gpg-agent handle private-key access. Version 3.0 and later require
-    gpg2/gpg-agent, so PIUS does not handle the passphrase or unencrypted private key
-    itself.
-  - >
-    Adoption is mostly distribution-packaging adoption rather than broad application
-    embedding. The README notes packaging across many operating systems, and package
-    metadata exists in Homebrew, Debian/Ubuntu, Nix, and Arch-derived ecosystems. That
-    placement fits a specialist CLI: it is installed when a user needs OpenPGP
-    keysigning operations, not pulled in as a library dependency.
+  adoption-history:
+    - >
+      PIUS was packaged by several Unix-like distribution ecosystems, including Debian,
+      Ubuntu, Arch Linux, Nix, and Homebrew, reflecting its specialized use in the
+      OpenPGP keysigning community.
+  package-nerd-significance:
+    - >
+      PIUS preserves a workflow associated with in-person OpenPGP keysigning parties:
+      verifying fingerprints, signing individual user IDs, and returning separately
+      encrypted signed keys. It is notable as packaging for a specialized web-of-trust
+      practice rather than a general-purpose encryption utility.
+  project-history:
+    - >
+      PIUS began as a collection of shell scripts written by Phil Dibowitz to automate
+      parts of post-keysigning-party work. The scripts were consolidated into a Python
+      utility after direct scripting around GnuPG proved fragile. Earlier versions used
+      pexpect, but that dependency was removed from the signing workflow as GnuPG agent
+      support became required and stable.
+  related-projects:
+    - >
+      PIUS operates with GnuPG and its agent. The repository also contains companion
+      tools for keyring management, party worksheets, and reports.
+  sources:
+    - https://github.com/jaymzh/pius#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      PIUS automates the secure, per-user-ID signing and distribution of OpenPGP keys
+      after keysigning parties.
+  timeline:
+    - 'Origins: Phil Dibowitz assembled shell scripts to automate repetitive keysigning work.'
+    - 'Python rewrite: the scripts were combined into PIUS and rewritten in Python.'
+    - '2019: PIUS 3.0.0 was released with GnuPG 2 and GPG Agent requirements.'
+  usage:
+    - >
+      A typical invocation processes every key in a keysigning-party keyring, prompts
+      the signer to verify fingerprints and select certification levels, signs
+      individual UIDs, then exports and encrypted-emails the results. SMTP, output,
+      temporary-directory, and signing options can be stored in `~/.pius/piusrc`.
 tags:
   - cli
   - cryptography
@@ -58,11 +72,8 @@ provenance:
       Official GitHub README is the primary documentation surface linked by
       source_facts.homepage/repo.
   history-sources:
-    - https://github.com/jaymzh/pius
-    - https://raw.githubusercontent.com/jaymzh/pius/main/README.md
-    - https://manpages.ubuntu.com/manpages/bionic/man1/pius.1.html
-    - https://formulae.brew.sh/formula/pius
-    - https://api.github.com/repos/jaymzh/pius
+    - https://github.com/jaymzh/pius#readme
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/jaymzh/pius; per instruction
@@ -78,6 +89,6 @@ category-path:
   - pgp
 display-name-confidence: high
 docs-confidence: high
-history-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
