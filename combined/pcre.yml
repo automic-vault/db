@@ -7,31 +7,73 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    PCRE, the original Perl Compatible Regular Expressions library, was written by
-    Philip Hazel for the Exim mail transfer agent and first released in 1997. Its
-    purpose was to provide a C library with Perl 5-style regular-expression syntax and
-    semantics, plus a native API and POSIX-wrapper API that made it usable in programs
-    expecting regex.h-style calls.
-  - >
-    PCRE's importance came from embedding. The official site names Apache, PHP, KDE,
-    Postfix, Nmap, Safari, and other projects as users; the practical pattern was to
-    link libpcre into servers, scripting languages, desktop software, scanners, and
-    command-line tools that needed Perl-like regular expressions without embedding Perl
-    itself. The permissive license also made it acceptable in proprietary software.
-  - >
-    The PCRE1 API accumulated broad encoding and tooling support over time: the README
-    describes 8-bit, 16-bit, and 32-bit libraries, a C++ wrapper contributed by Google
-    for the 8-bit library, POSIX wrapper functions, pcregrep, pcretest, and conventional
-    autotools/CMake build paths. Users met PCRE either indirectly through host
-    applications or directly through libpcre, pcregrep for grep-like searches, and
-    pcretest for pattern debugging.
-  - >
-    PCRE1 entered its maintenance-only phase after PCRE2. The upstream PCRE page and
-    original README say January 2015 brought the first PCRE2 release with a new API; the
-    PCRE1 8.xx series reached final release 8.45 in June 2021 and is end-of-life. Its
-    package remains historically relevant because older applications and
-    compatibility-sensitive platforms still depend on the original libpcre ABI.
+  adoption-history:
+    - >
+      PCRE became a widely packaged compatibility layer for Perl-style regular
+      expressions in C and in software embedding a C regex engine. The supplied metadata
+      records availability across Homebrew, Alpine, Arch, Nix, MacPorts, Scoop, and
+      Ubuntu ecosystems.
+    - >
+      The original API remains relevant for legacy consumers, but the official
+      documentation marks PCRE1 end-of-life and advises new projects to use PCRE2.
+  package-nerd-significance:
+    - >
+      PCRE helped make Perl-like regex syntax available outside the Perl runtime through
+      a small, embeddable C library. Package maintainers care about the distinction
+      between the ABI-incompatible PCRE1 and PCRE2 families because migration requires
+      source changes rather than a simple library replacement.
+    - >
+      The package also supplies pcregrep, pcretest, and pcre-config, making it both a
+      development dependency and a useful command-line regex toolkit.
+  project-history:
+    - >
+      Philip Hazel wrote PCRE at the University of Cambridge as a C implementation of
+      regular-expression matching broadly compatible with Perl syntax and semantics.
+    - >
+      The original series expanded from an 8-bit library to optional 16-bit support in
+      release 8.30 and 32-bit support in 8.32. A redesigned API appeared as PCRE2 10.00
+      in January 2015.
+    - >
+      PCRE1 concluded with release 8.45. The official documentation now describes it as
+      obsolete and unmaintained while retaining its manuals for existing applications.
+  related-projects:
+    - PCRE2 is the actively maintained successor with a redesigned, incompatible API.
+    - Perl 5 provides the syntax and semantics that originally inspired PCRE.
+    - >
+      The PCRE distribution includes POSIX-compatible wrapper functions and the pcregrep
+      and pcretest tools.
+  sources:
+    - 'Official PCRE homepage: https://www.pcre.org/'
+    - 'Official PCRE1 documentation index: https://www.pcre.org/original/doc/html/index.html'
+    - 'Official PCRE1 specification: https://www.pcre.org/original/doc/html/pcre.html'
+    - 'Official PCRE2 NEWS: https://github.com/PCRE2Project/pcre2/blob/main/NEWS'
+    - 'Official PCRE2 README: https://github.com/PCRE2Project/pcre2/blob/main/README'
+    - source_facts.package-manager
+  summary:
+    - >
+      PCRE, now commonly called PCRE1, is Philip Hazel's C library implementing
+      Perl-compatible regular-expression matching. The Homebrew pcre formula represents
+      the legacy 8.x API rather than its actively maintained successor, PCRE2.
+  timeline:
+    - >
+      1997: Copyright and authorship notices identify the beginning of Philip Hazel's
+      PCRE work.
+    - '8.30: PCRE added an optional 16-bit library.'
+    - '8.32: PCRE added an optional 32-bit library.'
+    - '2015-01-05: PCRE2 10.00 introduced the redesigned successor API.'
+    - '2021: PCRE1 8.45 became the final original-series release.'
+  usage:
+    - >
+      Developers link libpcre, libpcre16, or libpcre32 to compile and match Perl-style
+      patterns from C or through language bindings. The legacy distribution also offers
+      a restricted POSIX wrapper and a C++ wrapper.
+    - >
+      pcregrep applies PCRE matching from the command line, pcretest exercises patterns
+      and library behavior, and pcre-config reports build and linkage settings.
+    - >
+      PCRE has no documented per-user credentials or runtime configuration file; its
+      feature set is principally selected at build time and queried programmatically or
+      with pcre-config.
 category: developer-tools
 package-manager:
   apk: libpcre16

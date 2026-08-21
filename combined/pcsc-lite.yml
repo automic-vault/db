@@ -9,39 +9,71 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pcsc-lite is the Unix-oriented implementation of the PC/SC, or WinSCard, smart-card
-    API. The upstream project page summarizes its role as middleware for accessing smart
-    cards through the SCard API, and the README describes the project as a PC/SC Lite
-    implementation for communicating with smart cards and readers.
-  - >
-    The project began in 1999 under David Corcoran in the MUSCLE smart-card development
-    community. The upstream authors section identifies Ludovic Rousseau as the main
-    author since 2001, and the license block preserves the long-running copyright
-    lineage from Corcoran to Rousseau. That continuity matters because pcsc-lite sits
-    between applications, reader drivers, USB/CCID support, and operating-system service
-    managers.
-  - >
-    pcsc-lite's adoption history is tied to making the Windows smart-card programming
-    model available on free Unix-like systems. The project documents GNU/Linux support
-    through libudev or libusb, notes macOS's separate PC/SC layer above CryptoTokenKit,
-    and points to Solaris and BSD variants or support notes. Distribution packages
-    typically provide the pcscd resource-manager daemon, libpcsclite development
-    headers, and diagnostic tools.
-  - >
-    In actual use, pcscd coordinates access to readers and cards while applications call
-    SCardEstablishContext, SCardListReaders, SCardConnect, SCardTransmit,
-    SCardGetStatusChange, and related functions. The API documentation frames the
-    library as client-facing smart-card reader communication over message queues, with
-    SCardTransmit sending APDUs to cards and SCardControl talking directly to reader
-    drivers.
-  - >
-    The package is also part of a broader security and identity stack. Smart-card tools
-    such as OpenSC, PKCS#11 consumers, authentication modules, browser certificate
-    flows, PIV/CAC workflows, and hardware-token utilities rely on a PC/SC provider
-    underneath. pcsc-spy and verbose pcscd debugging support the package's practical
-    maintenance role: diagnosing reader names, driver behavior, APDU traffic, daemon
-    startup, and platform-specific PC/SC differences.
+  adoption-history:
+    - >
+      PC/SC Lite supplies the Windows-compatible SCard programming model on Unix-like
+      systems and is packaged as a daemon, runtime library, and development headers by
+      major distributions. The supplied metadata records packages in Homebrew, Alpine,
+      Debian/Ubuntu, Fedora, and openSUSE.
+    - >
+      The official project page documents GNU/Linux as the principal supported platform.
+      Apple reimplemented PC/SC over CryptoTokenKit on macOS, while Solaris carries a
+      fork and BSD support is described as possible but not routinely tested by the
+      maintainer.
+  package-nerd-significance:
+    - >
+      PC/SC Lite is a classic plumbing package: most users encounter it indirectly when
+      authentication tokens, identity cards, SIM tools, or other smart-card applications
+      need a standardized reader service.
+    - >
+      Its split between pcscd, libpcsclite, reader drivers such as CCID, and client
+      applications makes daemon activation and device discovery frequent packaging
+      integration points.
+  project-history:
+    - >
+      David Corcoran started the pcsc-lite project in 1999 to provide a portable
+      implementation of the PC/SC smart-card API. Ludovic Rousseau has been the main
+      author since 2001.
+    - >
+      The implementation evolved into a client library and server daemon communicating
+      over IPC. Its C API emulates the Windows WinSCard interface so applications can
+      access readers and cards through a common abstraction.
+    - >
+      Current development is published through the maintainer's PCSC repositories on
+      Debian Salsa and GitHub, and the project now uses Meson as its build system.
+  related-projects:
+    - >
+      libccid provides a widely used USB CCID smart-card reader driver consumed
+      alongside pcsc-lite.
+    - The PC/SC Workgroup specification defines the cross-vendor smart-card API model.
+    - >
+      Apple's CryptoTokenKit underlies the contemporary macOS PC/SC compatibility
+      implementation.
+  sources:
+    - 'Official API documentation: https://pcsclite.apdu.fr/api/index.html'
+    - 'Official project page: https://pcsclite.apdu.fr/'
+    - 'Official source repository: https://salsa.debian.org/rousseau/PCSC'
+    - source_facts.package-manager
+  summary:
+    - >
+      PC/SC Lite is Unix smart-card middleware implementing the SCard/WinSCard API
+      through the pcscd resource-manager daemon and libpcsclite client library.
+  timeline:
+    - '1999: David Corcoran started pcsc-lite.'
+    - "2001: Ludovic Rousseau became the project's main author."
+    - '2018: The current PCSC project was created on Debian Salsa.'
+    - 'Current releases: Meson is the documented build system.'
+  usage:
+    - >
+      Applications link libpcsclite and call SCard-compatible functions to discover
+      readers, connect to cards, transmit commands, and monitor card state. pcscd
+      brokers access to readers and cards.
+    - >
+      Administrators commonly combine pcsc-lite with a reader driver such as libccid.
+      pcsc-spy can trace client API activity for debugging.
+    - >
+      The official support instructions warn that APDU debug logs can contain a
+      smart-card PIN and recommend changing the PIN before producing such logs.
 category: security
 package-manager:
   apk: pcsc-lite

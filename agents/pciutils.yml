@@ -7,32 +7,71 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pciutils is Martin Mares's long-running PCI inspection toolkit, with upstream
-    copyright notices beginning in 1997. It packages libpci, a portable C library for
-    reading PCI bus configuration registers, together with command-line utilities built
-    on that library.
-  - >
-    The package became part of the standard Unix/Linux hardware-diagnostics toolbox
-    because lspci gives a concise or verbose view of PCI buses and devices, setpci can
-    read and write configuration registers, update-pciids refreshes the separately
-    maintained PCI ID database, and pcilmr adds PCIe link-margining support. The README
-    documents back ends for Linux, BSDs, Solaris, AIX, Hurd, Windows, Cygwin, Darwin,
-    DOS/DJGPP, Haiku, AmigaOS-on-PPC, RT-Thread Smart, and other systems, which explains
-    why the same package appears across distribution package managers.
-  - >
-    Its history tracks the evolution of PCI and PCI Express hardware. Later changelog
-    entries added or updated decoding for CXL, PCIe Data Object Exchange, IDE, TEE-IO,
-    lane margining, ECAM access, Windows back ends, and Gen7 PCIe capabilities. That
-    steady decode work is why lspci output is often requested in kernel and driver bug
-    reports: the man page explicitly recommends detailed lspci dumps when reporting
-    driver or pciutils bugs.
-  - >
-    In day-to-day use, system administrators and developers run lspci to identify
-    chipsets, GPUs, network adapters, storage controllers, kernel drivers, NUMA/IOMMU
-    placement, and raw configuration-space details. setpci is the lower-level escape
-    hatch for experiments or repair, while update-pciids keeps numeric vendor/device IDs
-    mapped to readable names from the pci.ids database.
+  adoption-history:
+    - >
+      The portable libpci backend and command-line tools have been carried by numerous
+      Unix-like package ecosystems. The supplied package metadata records packages for
+      Homebrew, Alpine, Debian/Ubuntu, Fedora, Arch, Nix, MacPorts, openSUSE, and Scoop.
+    - >
+      Although portable across many systems, the official project page states that the
+      recent Linux backend provides the complete feature set; other backends can be
+      read-only or use less reliable direct hardware access.
+  package-nerd-significance:
+    - >
+      lspci is one of the canonical first-line hardware-enumeration commands on
+      Unix-like systems. It turns kernel-visible PCI identifiers and configuration data
+      into compact diagnostics useful for drivers, virtualization, installation
+      troubleshooting, and hardware inventory.
+    - >
+      The separately maintained pci.ids database is a notable packaging concern because
+      hardware identifiers change more rapidly than pciutils releases. update-pciids and
+      online lookup support decouple identifier freshness from binary package updates.
+  project-history:
+    - >
+      Martin Mareš maintains pciutils as a collection of PCI inspection and
+      configuration tools built on the portable libpci library. Development occurs
+      primarily in the kernel.org Git repository, with an official GitHub mirror used
+      for issues and pull requests.
+    - >
+      The suite grew around lspci and setpci and now also includes update-pciids and
+      pcilmr. Its PCI identifier list is maintained separately through the PCI ID
+      Database and mirrored in the pciutils/pciids repository.
+  related-projects:
+    - The PCI ID Database maintains the vendor and device names consumed by pciutils.
+    - The pciutils/pciids repository records generated pci.ids history.
+    - >
+      The Linux PCI subsystem and linux-pci mailing list are the project's principal
+      development context.
+  sources:
+    - 'Official PCI IDs repository: https://github.com/pciutils/pciids'
+    - 'Official pci.ids manual: https://github.com/pciutils/pciutils/blob/master/pci.ids.man'
+    - 'Official project page: https://mj.ucw.cz/sw/pciutils/'
+    - 'Official repository README: https://github.com/pciutils/pciutils#readme'
+    - source_facts.package-manager
+  summary:
+    - >
+      pciutils is the portable user-space toolkit for listing, inspecting, and modifying
+      PCI-device configuration. Its best-known command is lspci, backed by the reusable
+      libpci library and the pci.ids hardware-name database.
+  timeline:
+    - >
+      Ongoing: Martin Mareš maintains the suite and announces releases through the
+      linux-pci community.
+    - '2026-04-05: Official project page lists pciutils 3.15.0 as released.'
+    - >
+      Current development: The primary Git tree is hosted at kernel.org and mirrored by
+      the official pciutils organization on GitHub.
+  usage:
+    - >
+      lspci enumerates PCI buses and devices and can show detailed configuration and
+      kernel-driver information. setpci reads or writes PCI configuration registers and
+      therefore warrants elevated privileges and care.
+    - >
+      update-pciids refreshes the identifier list, while lspci can also query the
+      central database online. pcilmr performs PCIe link margining.
+    - >
+      The pci.ids data file is runtime reference data rather than a user preference or
+      application configuration file, so it is not reported as a config-file location.
 tags:
   - cli
   - device-ids
@@ -62,11 +101,10 @@ provenance:
     - official README contains build and usage notes plus manpage references
     - official README lists the pciutils homepage as the current version location
   history-sources:
-    - https://github.com/pciutils/pciutils
-    - https://raw.githubusercontent.com/pciutils/pciutils/master/README
-    - https://raw.githubusercontent.com/pciutils/pciutils/master/ChangeLog
-    - https://man7.org/linux/man-pages/man8/lspci.8.html
-    - source_facts.executables
+    - 'Official PCI IDs repository: https://github.com/pciutils/pciids'
+    - 'Official pci.ids manual: https://github.com/pciutils/pciutils/blob/master/pci.ids.man'
+    - 'Official project page: https://mj.ucw.cz/sw/pciutils/'
+    - 'Official repository README: https://github.com/pciutils/pciutils#readme'
     - source_facts.package-manager
   repo-sources:
     - source_facts.repo already has a value; per instructions repo returned as null
