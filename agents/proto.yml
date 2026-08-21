@@ -9,26 +9,62 @@ config-file-location:
     - ~/.proto/.prototools
 credentials-file-location: null
 history:
-  - >
-    proto is part of the moonrepo developer-tooling ecosystem and was introduced as a
-    Rust-based multi-language toolchain manager in 2023. Its launch material positioned
-    it as a successor to single-runtime version managers: one CLI downloads language
-    runtimes and tools by version, places them on PATH through shims, and lets projects
-    declare expected tool versions.
-  - >
-    The project's adoption path followed the needs of polyglot repositories. Early
-    support covered Bun, Deno, Node.js with JavaScript package managers, and Go; later
-    releases emphasized plugins, .prototools configuration, GitHub Actions setup, static
-    plugin discovery, and backend support for third-party plugin ecosystems such as
-    asdf. That made proto less a package manager itself than a coordination layer for
-    language runtimes and developer tools.
-  - >
-    Practitioners use proto to pin per-project toolchains in TOML-based .prototools
-    files, install all declared tools with a single command, and rely on shims for
-    version detection when invoking node, bun, go, deno, or plugin-provided tools. In
-    Homebrew it is distributed as the `proto` formula with the `proto` and `proto-shim`
-    executables, matching its role as a local developer-environment bootstrapper rather
-    than an application runtime.
+  adoption-history:
+    - >
+      proto is developed within the moonrepo ecosystem and powers moon's toolchain.
+      Official documentation emphasizes consistent behavior across macOS, Linux, and
+      Windows and support for additional tools through WASM plugins and compatible
+      third-party plugin ecosystems.
+    - >
+      Distribution through Homebrew and Nix, as recorded in
+      source_facts.package-manager, places proto alongside other developer-environment
+      version managers used to bootstrap language toolchains.
+  package-nerd-significance:
+    - >
+      proto offers one version-management interface for languages and their package
+      managers while retaining extensibility through plugins. Package enthusiasts care
+      about its checksum verification, contextual version detection, shims,
+      cross-platform configuration, and ability to replace several language-specific
+      managers with one Rust binary.
+  project-history:
+    - >
+      moonrepo developed proto as a modern, holistic version manager and unified
+      toolchain. It uses Rust for the host application and WebAssembly for its pluggable
+      tool architecture.
+    - >
+      Its configuration model evolved to support project-local, user, and global
+      `.prototools` files, layered resolution modes, environment-specific variants,
+      custom backends, and optional lockfiles.
+  related-projects:
+    - proto powers the moon build system's toolchain.
+    - >
+      Its plugin model supports moonrepo-maintained tools, third-party plugins, and a
+      large body of asdf-compatible plugins.
+  sources:
+    - 'Official configuration reference: https://moonrepo.dev/docs/proto/config'
+    - 'Official proto overview: https://moonrepo.dev/docs/proto'
+    - 'Official repository: https://github.com/moonrepo/proto'
+  summary:
+    - >
+      proto is moonrepo's cross-platform, pluggable version manager for programming
+      languages, package managers, and custom development tools.
+  timeline:
+    - 'Initial design: Created by moonrepo as a Rust and WebAssembly-based unified toolchain.'
+    - >
+      Configuration evolution: Added layered local, user, and global `.prototools`
+      locations and environment-aware resolution.
+    - 'Later development: Added backend plugins and configuration-scoped lockfile support.'
+  usage:
+    - >
+      Pin tool versions in a `.prototools` file, install them with proto, and expose
+      them through activation or shims on `PATH`.
+    - >
+      Project files can be committed to keep language and package-manager versions
+      consistent across a team. User and global files provide shared preferences and
+      fallback versions.
+    - >
+      Plugins extend proto to additional languages, package managers, or
+      organization-specific tooling.
 tags:
   - cli
   - developer-environment
@@ -59,15 +95,9 @@ provenance:
       Official moonrepo documentation has a dedicated proto docs section at
       https://moonrepo.dev/docs/proto.
   history-sources:
-    - https://moonrepo.dev/blog/proto
-    - https://moonrepo.dev/docs/proto
-    - https://moonrepo.dev/docs/proto/config
-    - https://moonrepo.dev/docs/proto/plugins
-    - https://moonrepo.dev/blog/proto-v0.7
-    - https://moonrepo.dev/blog/proto-v0.36
-    - https://github.com/moonrepo/proto
-    - source_facts.package-manager
-    - source_facts.executables
+    - 'Official configuration reference: https://moonrepo.dev/docs/proto/config'
+    - 'Official proto overview: https://moonrepo.dev/docs/proto'
+    - 'Official repository: https://github.com/moonrepo/proto'
   repo-sources:
     - >
       source_facts.repo already has https://github.com/moonrepo/proto, so repo is
@@ -82,6 +112,6 @@ category-path:
   - toolchains
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

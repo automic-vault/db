@@ -8,26 +8,75 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    protobuf-c grew out of the gap left by Google's original Protocol Buffers
-    implementation, whose core releases centered on C++ plus generated bindings for
-    higher-level languages rather than a pure C runtime. The project provides
-    libprotobuf-c for encoding and decoding Protocol Buffers messages in C and a protoc
-    plugin, protoc-gen-c, that turns .proto schemas into C descriptor and support code.
-  - >
-    Its ecosystem role is deliberately narrower than Protocol Buffers itself: protobuf-c
-    is a binding and runtime for projects that need protobuf wire-format compatibility
-    from C codebases, embedded-adjacent systems, native libraries, or applications that
-    cannot take a C++ dependency. The project formerly included an RPC implementation,
-    later split into protobuf-c-rpc, keeping the core package focused on serialization
-    support and code generation.
-  - >
-    Practitioners use protobuf-c by writing ordinary .proto files, running protoc with
-    the C generator, compiling the generated .c and .h files, and linking them against
-    libprotobuf-c. Distribution across Homebrew, Debian, Ubuntu, Fedora, Arch, Alpine,
-    MacPorts, and openSUSE reflects its role as a system library and compiler plugin:
-    package managers often split the compiler, development headers, and shared runtime
-    so C build systems can depend on the correct layer.
+  adoption-history:
+    - >
+      protobuf-c is widely distributed as both a development library and command-line
+      code generator. The supplied package facts record packages across Homebrew,
+      Alpine, Debian, Ubuntu, Fedora, Arch Linux, openSUSE, and MacPorts.
+    - >
+      The project survived a maintainer transition after Dave Benson maintained it
+      through version 0.15. A new team continued development, standardized semantic
+      versioning at 1.0.0, and maintained compatibility with successive releases of
+      Google's protobuf compiler and runtime.
+  package-nerd-significance:
+    - >
+      protobuf-c provides Protocol Buffers interoperability for programs that need a C
+      ABI and runtime rather than the upstream C++ implementation. Its split between
+      generated descriptor code and a packaged runtime library makes compiler/runtime
+      version skew an important concern for distribution maintainers.
+    - >
+      It is a classic systems-package dependency: distributions commonly separate
+      runtime and development packages, while builds discover it through `pkg-config`.
+      Package maintainers must coordinate the C library, `protoc-gen-c`, and the
+      upstream protobuf compiler.
+  project-history:
+    - >
+      Dave Benson originally wrote protobuf-c as a C implementation of Google's Protocol
+      Buffers and maintained it through version 0.15. Maintenance later passed to a new
+      team.
+    - >
+      The project includes `libprotobuf-c` for encoding and decoding and `protoc-gen-c`,
+      formerly commonly invoked as `protoc-c`, for generating C descriptors and bindings
+      from `.proto` definitions. Its former RPC implementation was separated into the
+      protobuf-c-rpc project.
+    - >
+      Beginning with version 1.0.0, protobuf-c adopted Semantic Versioning and generated
+      headers gained version guards to detect incompatible compiler and runtime
+      combinations.
+  related-projects:
+    - >
+      Google Protocol Buffers provides the data format and the upstream `protoc`
+      compiler on which protobuf-c code generation depends.
+    - protobuf-c-rpc contains the RPC functionality formerly included in protobuf-c.
+    - protobuf-c-text provides text-format routines for the C library.
+  sources:
+    - 'Official generated API documentation: https://protobuf-c.github.io/protobuf-c/'
+    - 'Official releases: https://github.com/protobuf-c/protobuf-c/releases'
+    - 'Official repository and README: https://github.com/protobuf-c/protobuf-c'
+  summary:
+    - >
+      protobuf-c is a C implementation of Protocol Buffers comprising a serialization
+      runtime library and a `protoc` code-generation plugin.
+  timeline:
+    - >
+      2008: Copyright history in the official API documentation begins with Dave
+      Benson's implementation.
+    - 'Through 0.15: Dave Benson maintained the original project.'
+    - '1.0.0: The project adopted Semantic Versioning and compiler/runtime version guards.'
+    - 'Later development: The RPC component was maintained separately as protobuf-c-rpc.'
+    - '2025: Version 1.5.2 continued compatibility work for newer Google protobuf releases.'
+  usage:
+    - >
+      Write message schemas as `.proto` files and run the upstream `protoc` compiler
+      with the protobuf-c plugin to generate `.pb-c.c` and `.pb-c.h` files.
+    - >
+      Compile the generated C source into the application and link it with
+      `libprotobuf-c`; the official README documents discovering compiler and linker
+      flags with `pkg-config`.
+    - >
+      The maintainers recommend regenerating bindings during the build rather than
+      committing stale generated files, because generated headers and the installed
+      runtime may become incompatible.
 category: developer-tools
 package-manager:
   apk: protobuf-c
