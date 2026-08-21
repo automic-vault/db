@@ -7,27 +7,50 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    patch-package began as a JavaScript dependency-maintenance workaround: the npm
-    registry records the package as created on May 8, 2017, and the project describes
-    itself as a way for app authors to make and keep local fixes to npm dependencies.
-    Its core workflow is deliberately simple: edit a package under node_modules, run
-    patch-package to generate a file under patches/, commit that patch, and have it
-    reapplied after installs.
-  - >
-    The tool fit a gap in the npm and Yarn v1 era, when teams often needed a one-line
-    fix in a transitive dependency but did not want to maintain a fork or wait for an
-    upstream pull request and release. Its README centers the postinstall hook, npm >=5,
-    Yarn v1, workspaces, CI cache keys, Docker ordering, and production/dev-dependency
-    edge cases, which reflects how it became operational glue in application
-    repositories rather than a general patch-management system.
-  - >
-    Its ecosystem role narrowed after Yarn 2+ and pnpm added native package-patching
-    workflows. The patch-package README explicitly points Yarn 2+ and pnpm users to
-    those built-in mechanisms, while Yarn and pnpm document their own patch and
-    patch-commit flows. That leaves patch-package most important for npm, Yarn v1, older
-    projects, React Native-style dependency fixes, and teams that prefer committed patch
-    files colocated with the application.
+  adoption-history:
+    - >
+      The project became a widely used workaround in npm and Yarn applications because
+      it lets teams version local dependency fixes without publishing a fork. Its
+      official repository documents automatic application through package-manager
+      lifecycle hooks and has accumulated substantial community use.
+  package-nerd-significance:
+    - >
+      patch-package formalized a pragmatic pattern familiar to package maintainers:
+      carry a small downstream patch while waiting for upstream. It makes those changes
+      visible in ordinary code review and reproducible on developer machines and CI,
+      occupying a useful middle ground between directly editing node_modules and
+      maintaining a permanent fork.
+  project-history:
+    - >
+      patch-package was created for JavaScript application authors who needed to
+      preserve fixes made inside installed npm dependencies. The project evolved beyond
+      basic patch creation and application to support nested packages, dev-only patches,
+      ordered patch sequences, rebasing, partial application, reverse application, CI
+      behavior, and alternate patch directories.
+  related-projects:
+    - >
+      The project integrates with npm and Yarn workflows. Its documentation also
+      discusses postinstall-postinstall for older Yarn lifecycle behavior and contrasts
+      its workflow with maintaining dependency forks.
+  sources:
+    - 'Official changelog: https://github.com/ds300/patch-package/blob/master/CHANGELOG.md'
+    - 'Official releases: https://github.com/ds300/patch-package/releases'
+    - 'Official repository and README: https://github.com/ds300/patch-package'
+  summary:
+    - >
+      patch-package creates versioned diff files from local changes to Node.js
+      dependencies and reapplies them after dependency installation.
+  timeline:
+    - >
+      The project expanded from basic dependency patches to CI-aware application,
+      dev-only patches, partial application, and ordered patch sequences.
+  usage:
+    - >
+      A developer edits an installed dependency under node_modules and runs
+      patch-package for that package. The tool writes a versioned patch under the
+      application's patches directory; the patch is committed with the application and
+      normally reapplied from a postinstall script. Teams should keep patches focused
+      and reassess them when dependency versions change.
 category: developer-tools
 package-manager:
   brew: patch-package
