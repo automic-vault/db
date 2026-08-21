@@ -3,28 +3,71 @@ display-name: pay
 repo: null
 docs:
   - https://github.com/solana-foundation/pay#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - ~/.config/pay/accounts.yml
 credentials-file-location: null
 history:
-  - >
-    pay is a Solana Foundation command-line tool for the newer HTTP 402 payment
-    ecosystem. The GitHub repository was created on October 19, 2021, but the public
-    project identity captured in its README is the 402-era product: a wrapper that lets
-    command-line tools and agents pay for API calls after a server returns a payment
-    challenge.
-  - >
-    Its lineage is tied to Solana Pay and x402 rather than to traditional HTTP clients.
-    Solana Pay supplies the broader decentralized-payments context, while x402 revives
-    the HTTP 402 Payment Required flow for per-request API access. pay's README
-    describes support for both Machine Payments Protocol and x402 challenges on Solana,
-    with stablecoin signing authorized through a local wallet.
-  - >
-    The tool is used as a shim around existing workflows rather than as a replacement
-    for curl or agent CLIs. Examples include `pay curl ...`, `pay claude`, and `pay
-    codex`, where pay detects a 402 response, prepares the payment proof, asks for local
-    wallet approval, retries the request, and can expose a local debugger for the
-    challenge-response sequence. Homebrew packages it as an MIT-licensed HTTP client
-    that automatically handles 402 Payment Required.
+  adoption-history:
+    - >
+      pay is distributed through Homebrew, npm, and Windows Package Manager, giving the
+      client coverage across major desktop command-line package ecosystems.
+    - >
+      The project integrates with existing tools such as curl, wget, Claude Code, and
+      Codex, and also exposes an MCP server for agent-driven paid HTTP requests.
+  package-nerd-significance:
+    - >
+      pay packages an emerging HTTP payment workflow as a composable Unix-style wrapper.
+      It is noteworthy because it preserves familiar client commands while adding
+      challenge detection, local authorization, payment proof, and request replay.
+    - >
+      Its design also illustrates a newer packaging pattern: one binary combines a CLI,
+      an agent protocol server, a local debugger, and secure-store integrations across
+      operating systems.
+  project-history:
+    - >
+      The Solana Foundation developed pay as a client for agentic HTTP payments. The
+      current project handles x402 and Machine Payments Protocol challenges and supports
+      stablecoin settlement on Solana.
+    - >
+      The project expanded beyond a simple HTTP wrapper to include account management,
+      an MCP server, an API catalog, a payment gateway, sandbox facilities, and a local
+      debugging interface.
+  related-projects:
+    - >
+      pay-kit supplies multi-language building blocks for adding stablecoin payment
+      behavior to applications.
+    - pay-skills is the open catalog of paid APIs consumed by the CLI and agents.
+    - x402 and MPP are the supported HTTP payment protocols.
+  sources:
+    - https://github.com/solana-foundation/pay
+    - https://pay.sh/docs
+    - https://pay.sh/docs/pay-for-apis/accounts
+    - source_facts.package-manager
+  summary:
+    - >
+      pay is a Solana Foundation command-line payment layer that wraps HTTP tools,
+      handles supported HTTP 402 challenges, obtains local wallet authorization, and
+      retries requests with payment proof.
+  timeline:
+    - >
+      2020s: The Solana Foundation developed the pay command-line project for HTTP-based
+      payments.
+    - >
+      2026: Official documentation describes x402 and MPP support, agent integrations,
+      sandbox use, an MCP server, and a public API catalog.
+  usage:
+    - >
+      Users prefix supported clients or agents with `pay`, such as `pay curl`, so a 402
+      response can trigger payment preparation, local approval, signing, and an
+      authenticated retry.
+    - >
+      Official guidance recommends sandbox mode for examples, making the smallest useful
+      paid request first, checking pricing, and retaining local user authorization for
+      real payments.
+    - >
+      Account metadata resides in `~/.config/pay/accounts.yml`; private keys are kept in
+      supported secure stores rather than in that YAML file.
 tags:
   - cli
   - http-client
@@ -52,11 +95,9 @@ provenance:
       surface.
   history-sources:
     - https://github.com/solana-foundation/pay
-    - https://api.github.com/repos/solana-foundation/pay
-    - https://pay.sh/
-    - https://docs.solanapay.com/
-    - https://solana.com/developers/guides/getstarted/intro-to-x402
-    - https://formulae.brew.sh/formula/pay
+    - https://pay.sh/docs
+    - https://pay.sh/docs/pay-for-apis/accounts
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already has value https://github.com/solana-foundation/pay; per
@@ -71,6 +112,6 @@ category-path:
   - payments
 display-name-confidence: high
 docs-confidence: high
-history-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
