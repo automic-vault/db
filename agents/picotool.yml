@@ -6,32 +6,64 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    picotool is part of Raspberry Pi's tooling around the RP-series microcontrollers.
-    Its README defines the tool's original center of gravity: inspecting RP2040 and
-    RP2350 binaries and talking to RP-series devices in BOOTSEL mode. It is therefore
-    tied to the Pico SDK workflow, where UF2, ELF, and BIN artifacts carry metadata that
-    can be inspected or loaded onto boards.
-  - >
-    The tag and commit history shows the 1.0.x line in April 2021, shortly after the
-    Raspberry Pi Pico/RP2040 tooling became broadly visible to C/C++ developers. Version
-    1.1.0, committed on November 1, 2021, added a version command, CMake installability,
-    `stdio_usb` access, a no-overwrite load option, and force-reset options for
-    cooperative boards not already in BOOTSEL mode.
-  - >
-    The 2.0.0 release commit on August 8, 2024 explicitly names RP2350 and SDK 2.0.0
-    changes. Subsequent 2.1 and 2.2 releases continued to follow Pico SDK releases; the
-    2.2.0 release notes mention self-decrypting binary support, OTP dump conversion,
-    signed/encrypted binary handling, and speedups for `info`, `save`, `verify`, and
-    `load`. That evolution mirrors the RP2350 generation, where secure boot, OTP memory,
-    partition tables, and encryption became first-class tool concerns.
-  - >
-    Practitioners use picotool both as a device utility and as a build-tool companion.
-    The command set covers `info`, `config`, `load`, `save`, `erase`, `verify`,
-    `reboot`, `otp`, `partition`, `uf2`, `encrypt`, and related binary-postprocessing
-    operations. The README warns that installing for SDK discovery is not the same as
-    merely copying the executable onto `PATH`, because CMake projects need picotool
-    discoverability through `picotool_DIR` or installation metadata.
+  adoption-history:
+    - >
+      picotool is maintained under the Raspberry Pi GitHub organization and is
+      distributed by Homebrew, Debian, Nix, and openSUSE packaging ecosystems.
+    - >
+      Its role expanded beyond an optional inspection and flashing utility when
+      Raspberry Pi Pico SDK 2.0 began using picotool for ELF-to-UF2 conversion,
+      replacing the earlier elf2uf2 utility in that workflow.
+  package-nerd-significance:
+    - >
+      picotool is both a user-facing board utility and part of the Pico SDK toolchain.
+      Package maintainers care about matching its version and capabilities to Pico SDK
+      and silicon generations, particularly around RP2350 support and binary-format
+      changes.
+    - >
+      It provides a native command-line route to tasks often performed through
+      drag-and-drop BOOTSEL storage, making Pico workflows scriptable and suitable for
+      automated development environments.
+  project-history:
+    - >
+      Raspberry Pi developed picotool for inspecting RP2040 binaries and communicating
+      with devices in BOOTSEL mode. Version 1.1 added interaction with running devices
+      that expose compatible USB stdio support.
+    - >
+      Version 2.0 accompanied Pico SDK 2.0 and introduced RP2350-aware operations.
+      Subsequent releases expanded support for partitions, one-time-programmable memory,
+      signing, encryption, embedded block devices, and UF2 manipulation.
+  related-projects:
+    - >
+      picotool is closely coupled to the Raspberry Pi Pico SDK and the UF2 firmware
+      format. Its build uses libusb for device communication, and its ELF-to-UF2 role
+      superseded the SDK’s earlier elf2uf2 tool.
+  sources:
+    - >
+      Official build documentation:
+      https://github.com/raspberrypi/picotool/blob/master/BUILDING.md
+    - 'Official releases: https://github.com/raspberrypi/picotool/releases'
+    - 'Official repository: https://github.com/raspberrypi/picotool'
+  summary:
+    - >
+      picotool is Raspberry Pi’s command-line utility for inspecting, converting,
+      loading, saving, verifying, and managing binaries and devices built around RP2040
+      and RP2350 microcontrollers.
+  timeline:
+    - >
+      Version 1.1: Added support for interacting with compatible running RP2040 devices
+      via USB stdio.
+    - '2022: Version 1.1.0 expanded USB access, loading behavior, and installation support.'
+    - '2024: Version 2.0 added RP2350 support alongside Pico SDK 2.0.'
+    - >
+      2025: Versions 2.1 and 2.2 expanded metadata, partitions, OTP, signing,
+      encryption, and performance.
+    - '2026: Version 2.3.0 added embedded block-device and UF2-combination commands.'
+  usage:
+    - >
+      Developers use picotool to inspect ELF and UF2 metadata, load or save flash
+      contents, verify images, reboot boards into or out of BOOTSEL-related modes,
+      convert binaries to UF2, and perform RP2350 OTP and security operations.
 tags:
   - cli
   - embedded
@@ -61,12 +93,11 @@ provenance:
       Official GitHub README at source_facts.homepage is the best official documentation
       surface for picotool.
   history-sources:
-    - https://github.com/raspberrypi/picotool
-    - https://raw.githubusercontent.com/raspberrypi/picotool/master/README.md
-    - https://github.com/raspberrypi/picotool/commit/a49dc0b3c211b8b73d4ec7967cf134710ce104c2
-    - https://github.com/raspberrypi/picotool/commit/55fd880c3dc029b961fc1a0967a6cfdc0af02721
-    - https://github.com/raspberrypi/picotool/commit/8a9af99ab10b20b1c6afb30cd9384e562a6647f9
-    - https://github.com/raspberrypi/picotool/releases/tag/2.2.0
+    - >
+      Official build documentation:
+      https://github.com/raspberrypi/picotool/blob/master/BUILDING.md
+    - 'Official releases: https://github.com/raspberrypi/picotool/releases'
+    - 'Official repository: https://github.com/raspberrypi/picotool'
   repo-sources:
     - >
       source_facts.repo is already populated with
