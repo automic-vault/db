@@ -9,34 +9,51 @@ config-file-location:
     - $PLENV_ROOT/version
 credentials-file-location: null
 history:
-  - >
-    plenv was introduced by Tokuhiro Matsuno in January 2013 as a Perl 5 version manager
-    inspired by Ruby's `rbenv`. The author framed it as filling a gap he saw in
-    `perlbrew`: project-local version selection through a `.perl-version` file, fast
-    shell startup, and a lightweight PATH/shim model rather than shell functions that
-    rewrite the environment before each command.
-  - >
-    The tool arrived as part of a wider family of language-specific `*env` managers,
-    alongside rbenv, pyenv, phpenv, ndenv, jenv, and related tools. Tatsuhiko Miyagawa
-    summarized the positioning in 2013 as "plenv is to perlbrew what rbenv is to RVM":
-    it installs Perls in the user's home directory, wraps Perl executables and installed
-    scripts through shims, and selects versions via `PLENV_VERSION`, a local
-    `.perl-version`, or the global `~/.plenv/version` file.
-  - >
-    plenv's adoption was strongest among Perl developers who wanted per-project
-    reproducibility without disturbing the system Perl. Its README explicitly recommends
-    using plenv to pick a Perl version for an application and pair it with Carton for
-    upgrades and deployments; community setup guides used it with `perl-build`, `cpanm`,
-    and project-local dependency management to keep development and production Perl
-    versions aligned.
-  - >
-    The package is used from the shell: install plenv, install the `perl-build` plugin
-    or equivalent build helper, run `plenv install` for a Perl release, set `plenv
-    global` or `plenv local`, then run normal Perl tools through shims. Because
-    CPAN-installed scripts such as `prove`, `plackup`, or `cpanm` also become shim
-    targets, users run `plenv rehash` after installing new executables. Compared with
-    perlbrew, plenv's ecosystem role is narrower and more Unix-shim-oriented, but it
-    fits projects that want the selected Perl version committed in `.perl-version`.
+  adoption-history:
+    - >
+      plenv became available through Homebrew for macOS while retaining a
+      source-checkout installation usable on Unix-like systems. It occupies the Perl
+      version-management niche alongside perlbrew and is commonly paired with perl-build
+      to compile Perl releases.
+  package-nerd-significance:
+    - >
+      plenv brings the rbenv shim model to Perl: version choice is represented by a
+      small project file rather than by rewriting the shell environment for every
+      switch. This makes per-project runtime selection transparent, reproducible, and
+      friendly to shell tooling.
+  project-history:
+    - >
+      Tokuhiro Matsuno created plenv as a Perl binary manager inspired substantially by
+      rbenv. The project adopted rbenv's shims and directory-local version-selection
+      model while adding Perl-specific commands such as `install-cpanm` and
+      `migrate-modules`.
+    - >
+      The README explicitly contrasts plenv with perlbrew: both install user-local Perl
+      runtimes, but plenv is implemented in Bash, uses executable shims, and selects a
+      local runtime through `.perl-version`.
+  related-projects:
+    - >
+      perl-build supplies the usual `plenv install` command; Carton supports application
+      dependency workflows; plenv-contrib adds extensions; perlbrew is the principal
+      alternative discussed by the project; and rbenv supplied the core design
+      inspiration.
+  sources:
+    - https://github.com/tokuhirom/plenv#readme
+  summary:
+    - >
+      plenv is a shell-oriented Perl version manager that selects system, global,
+      project-local, or shell-specific Perl installations through shims.
+  timeline:
+    - "2013: The inherited rbenv code identified in plenv's license dates from this period."
+    - >
+      Later releases: `.perl-version` replaced the older `.plenv-version` name, with
+      backward-compatible reading retained.
+  usage:
+    - >
+      Users initialize plenv in their shell, install Perl versions through the
+      perl-build plugin, select a global version with `plenv global`, or write a
+      project-local `.perl-version` with `plenv local`. After installing executables or
+      CPAN tools, `plenv rehash` refreshes the shims.
 tags:
   - cli
   - perl
@@ -60,11 +77,7 @@ provenance:
   docs-sources:
     - Official tokuhirom/plenv repository README.
   history-sources:
-    - https://blog.64p.org/entry/2013/01/21/134639
-    - https://github.com/tokuhirom/plenv
-    - https://miyagawa.co/blog/plenv-alternative-for-perlbrew
-    - https://github.com/tokuhirom/Perl-Build
-    - https://xdg.me/setting-up-a-perl-development-environment-with-plenv/
+    - https://github.com/tokuhirom/plenv#readme
   repo-sources:
     - >
       source_facts.repo is already populated; per instructions, repo returned as null
@@ -77,6 +90,6 @@ category-path:
   - version-manager
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
