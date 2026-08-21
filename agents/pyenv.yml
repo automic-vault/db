@@ -9,40 +9,50 @@ config-file-location:
     - $(pyenv root)/version
 credentials-file-location: null
 history:
-  - >
-    pyenv began as a Python adaptation of the rbenv approach from the Ruby world. The
-    project repository was created in August 2012, and pyenv's README states that it was
-    forked from rbenv and ruby-build and modified for Python. Yuu Yamashita also
-    described pyenv in 2012 as a fork of Ruby's rbenv, positioned alongside earlier
-    Python version tools such as pythonz.
-  - >
-    The design stayed deliberately small: pyenv installs and selects Python
-    interpreters, but leaves package management to pip, virtualenv, conda, Poetry, or
-    other tools. Its README describes the project as a simple, unobtrusive version
-    manager following the Unix tradition of single-purpose tools. That framing helped it
-    fit into shell-based developer workflows rather than replacing Python's packaging
-    stack.
-  - >
-    pyenv's core adoption mechanism is the shim directory it inserts at the front of
-    `PATH`. Commands such as `python`, `pip`, and console scripts resolve first to pyenv
-    shims; pyenv then chooses a Python version from `PYENV_VERSION`, a local
-    `.python-version` file, a parent directory's `.python-version`, or the global
-    `$(pyenv root)/version` file. This model made per-project interpreter selection easy
-    to review and commit because `.python-version` can live beside source code.
-  - >
-    The project also absorbed an ecosystem role beyond its main `pyenv` command. The
-    bundled python-build plugin supplies install recipes for CPython and alternate
-    implementations, while external plugins add virtualenv integration, migration
-    helpers, update commands, and shell conveniences. Package managers distribute pyenv
-    directly across Homebrew, Debian-family, Fedora-family, Arch, Nix, Scoop, and other
-    ecosystems, which helped make it a common baseline tool for Python developers who
-    need multiple interpreter versions on one workstation.
-  - >
-    In day-to-day use, practitioners install Python versions with `pyenv install`,
-    select them with `pyenv global`, `pyenv local`, or `pyenv shell`, and combine pyenv
-    with environment and dependency tools. Its practical value is strongest for testing
-    libraries against several Python releases, pinning project runtimes, maintaining old
-    applications, and avoiding conflicts with the operating system's Python.
+  adoption-history:
+    - >
+      pyenv developed into a widely packaged cross-platform Unix-oriented Python version
+      manager, with official installation guidance for Git checkout, Homebrew, and the
+      pyenv installer. Its plugin interface also fostered companion packages for virtual
+      environments and package migration.
+  package-nerd-significance:
+    - >
+      pyenv separates interpreter selection from the system Python and does not require
+      Python to bootstrap itself. Package enthusiasts value its shims, per-project
+      version files, shell implementation, extensible command model, and ability to
+      build many historical or alternative Python implementations.
+  project-history:
+    - >
+      pyenv was forked from rbenv and ruby-build and adapted to manage Python
+      installations. Its official changelog records an initial public release in August
+      2012 and continuing development under the pyenv organization.
+  related-projects:
+    - rbenv
+    - ruby-build
+    - python-build
+    - pyenv-installer
+    - pyenv-virtualenv
+    - tox
+  sources:
+    - https://github.com/pyenv/pyenv#readme
+    - https://github.com/pyenv/pyenv/blob/master/CHANGELOG.md
+    - https://github.com/pyenv/pyenv/blob/master/COMMANDS.md
+  summary:
+    - >
+      pyenv is a shell-oriented Python version manager that installs and selects
+      interpreters globally, per project, or for an individual shell session.
+  timeline:
+    - '2012-08-31: Initial public release'
+    - '2013-02-18: Version 0.2.0 imported changes from rbenv 0.4.0'
+    - >
+      2021: The 2.x release line expanded support for contemporary CPython and
+      alternative runtimes
+  usage:
+    - >
+      Use pyenv install to build an interpreter, pyenv global to select a user default,
+      pyenv local to write a project .python-version file, and pyenv shell for a session
+      override. Shims placed on PATH dispatch Python commands to the selected
+      installation.
 tags:
   - cli
   - python
@@ -72,11 +82,9 @@ provenance:
       Official GitHub README is the primary documentation surface linked by
       source_facts.homepage.
   history-sources:
-    - https://github.com/pyenv/pyenv
-    - https://github.com/pyenv/pyenv/blob/master/README.md
-    - https://stackoverflow.com/questions/2812471/is-there-a-python-equivalent-of-rubys-rvm
-    - https://formulae.brew.sh/formula/pyenv
-    - https://api.github.com/repos/pyenv/pyenv
+    - https://github.com/pyenv/pyenv#readme
+    - https://github.com/pyenv/pyenv/blob/master/CHANGELOG.md
+    - https://github.com/pyenv/pyenv/blob/master/COMMANDS.md
   repo-sources:
     - source_facts.repo is already populated, so repo is returned as null per instruction.
   tags-sources:
