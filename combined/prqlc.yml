@@ -7,36 +7,55 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    PRQL, the Pipelined Relational Query Language pronounced "Prequel", began as an
-    attempt to make relational querying read like a typed data-transformation pipeline
-    while preserving SQL as the execution target. The project published a proposal at
-    the end of January 2022; its 0.2.0 release notes on June 27, 2022, describe several
-    months of building after that proposal and call the language ready for users willing
-    to experiment.
-  - >
-    `prqlc` is the Rust compiler and command-line face of that language. The repository
-    organization describes `prqlc` as the compiler whose main role is compiling PRQL
-    into SQL, and the PRQL book's CLI page describes `prqlc` as a single dependency-free
-    binary. That separation is important: PRQL is the language and ecosystem, while
-    `prqlc` is the distributable compiler package exposed by Homebrew, Nix, Scoop, and
-    winget.
-  - >
-    Adoption has grown through the same routes that query languages usually spread: a
-    browser playground, a language book, VS Code support, Jupyter/Python integration,
-    JavaScript bindings, R bindings, and library bindings around the Rust compiler. The
-    project has remained contributor-driven, with release notes documenting
-    multi-contributor releases, dialect work, bindings cleanup, modules/multi-file
-    experiments, formatter and resolver work, and compatibility changes across the
-    pre-1.0 line.
-  - >
-    In the data ecosystem, PRQL sits between SQL and dataframe-style APIs. Practitioners
-    write pipelines with `from`, `filter`, `derive`, `group`, `aggregate`, `sort`, and
-    `take`, then compile them to SQL for databases that already speak SQL; `prqlc` is
-    used in shell workflows, editor integrations, build steps, notebooks, and
-    applications that want PRQL authoring while keeping warehouse or embedded-database
-    execution. Its package-manager distribution makes the compiler easy to install as a
-    CLI without adopting a runtime service.
+  adoption-history:
+    - >
+      The January 2022 proposal reached second place on Hacker News and brought roughly
+      2,500 GitHub stars within days, according to the project's changelog. The compiler
+      later gained Homebrew packaging, release binaries, Linux packages, a stable Snap,
+      and bindings for several programming-language ecosystems.
+  package-nerd-significance:
+    - >
+      prqlc is interesting to language and data-tooling packagers because it turns an
+      alternative relational syntax into ordinary SQL rather than requiring a new
+      database runtime. Its Rust implementation, cross-platform binaries, many bindings,
+      dialect targets, and formatter and language-tooling work give it a footprint
+      beyond a single CLI.
+  project-history:
+    - >
+      PRQL began with a January 2022 proposal for a pipelined relational query language.
+      A growing open-source group spent the following months building the compiler and
+      integrations, declaring version 0.2.0 ready for use in June 2022. The CLI binary
+      became prqlc around the 0.4 series, and the compiler crate was later renamed from
+      prql-compiler to prqlc as part of a consistent project-wide naming scheme.
+  related-projects:
+    - >
+      The wider PRQL project includes language bindings, a web playground, editor
+      integrations, and Lutra query-runner work. prqlc emits SQL for existing databases
+      rather than executing queries itself.
+  sources:
+    - 'Official PRQL Language Book: https://prql-lang.org/book/'
+    - 'Official changelog: https://prql-lang.org/book/project/changelog.html'
+    - 'Official releases: https://github.com/PRQL/prql/releases'
+    - 'Official repository: https://github.com/PRQL/prql'
+  summary:
+    - >
+      prqlc is the Rust compiler and CLI for PRQL, a pipelined relational query language
+      that compiles to SQL.
+  timeline:
+    - 'January 2022: The initial PRQL proposal was published.'
+    - 'June 2022: PRQL 0.2.0 was declared ready for use.'
+    - >
+      July 2022: The compiler became available through Homebrew Core under its earlier
+      prql-compiler name.
+    - 'January 2023: A directly installable prqlc CLI crate was released.'
+    - 'February 2024: The compiler naming was standardized on prqlc.'
+    - 'July 2026: Version 0.13.14 shipped cross-platform binaries and Linux packages.'
+  usage:
+    - >
+      Users write relational transformations as left-to-right pipelines and run prqlc to
+      compile them into SQL for a selected database dialect. The CLI also supports
+      formatting, watching files, debugging compiler stages, lineage output, and
+      experimental syntax highlighting.
 category: data
 package-manager:
   brew: prqlc

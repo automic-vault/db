@@ -8,24 +8,48 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    proxytunnel is an older Unix-style tunneling utility by Jos Visser and Mark Janssen
-    for carrying arbitrary TCP streams through an HTTP or HTTPS proxy. The upstream
-    README explains its original motivation: connecting stdin and stdout to an origin
-    server through a standard HTTPS proxy, originally as an SSH extension for reaching a
-    home machine through a proxy.
-  - >
-    Its adoption history follows the classic corporate-firewall workaround niche:
-    OpenSSH `ProxyCommand`, PuTTY proxy backends, and other tools that need to pass
-    non-HTTP protocols through a CONNECT-capable proxy. The man page describes it as
-    mostly used behind OpenSSH and PuTTY, while also supporting proxy bouncing and other
-    proxy-traversal patterns.
-  - >
-    Distribution across Homebrew, Debian/Ubuntu, Fedora/DNF, MacPorts, Nix, Arch/pacman,
-    and zypper reflects its long-lived role as infrastructure glue. Practitioners
-    usually configure it inside SSH client configuration or call `proxytunnel` directly
-    with a proxy host and destination host, letting the surrounding tool treat the
-    tunnel as a normal byte stream.
+  adoption-history:
+    - >
+      Proxytunnel became broadly packaged across Unix-like systems, including Debian,
+      Ubuntu, Fedora-family distributions, Arch, Nix, Homebrew, and MacPorts. That
+      breadth reflects its long-standing role as a small compatibility tool for
+      restricted networks.
+  package-nerd-significance:
+    - >
+      Proxytunnel is a classic Unix plumbing utility: it connects standard input and
+      output to a remote TCP service while handling the proxy negotiation. Its age,
+      small scope, SSH ProxyCommand use, and unusually broad distro coverage make it a
+      recognizable package-manager staple.
+  project-history:
+    - >
+      Jos Visser originally wrote Proxytunnel so SSH could reach a home machine through
+      an HTTPS proxy; Mark Janssen is also credited by the project. The built-in version
+      text dates the project to 2001, and maintenance has continued through modern
+      releases with authentication, IPv4/IPv6, TLS, and daemon-mode improvements.
+  related-projects:
+    - >
+      It is commonly paired with OpenSSH through ProxyCommand and is conceptually
+      related to HTTP CONNECT helpers such as corkscrew.
+  sources:
+    - 'Official README: https://github.com/proxytunnel/proxytunnel#readme'
+    - >
+      Official documentation directory:
+      https://github.com/proxytunnel/proxytunnel/tree/master/docs
+    - 'Official releases: https://github.com/proxytunnel/proxytunnel/releases'
+  summary:
+    - >
+      Proxytunnel is a long-lived command-line utility for creating generic TCP tunnels
+      through HTTP or HTTPS proxies, especially for SSH.
+  timeline:
+    - "2001: Proxytunnel's documented copyright history begins."
+    - '2024: The official CLI still identifies the maintained 1.12.x line.'
+    - '2026: The official release page lists the 1.13.0 release.'
+  usage:
+    - >
+      The program connects stdin and stdout to an origin server through a proxy. Its
+      canonical use is as an OpenSSH ProxyCommand, though any stream-oriented
+      application can use the tunnel. It supports proxy authentication and generic HTTP
+      CONNECT-style tunneling.
 category: networking
 package-manager:
   brew: proxytunnel
