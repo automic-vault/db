@@ -8,39 +8,62 @@ config-file-location:
     - ~/.config/planetscale/pscale.yml
 credentials-file-location: null
 history:
-  - >
-    pscale is the official command-line client for PlanetScale, the database platform
-    built around branching, deploy requests, and managed database workflows. The CLI
-    repository describes its purpose as bringing PlanetScale concepts to the terminal,
-    and the documentation presents it as the way to interact with PlanetScale databases
-    from the command line.
-  - >
-    The tool appeared as PlanetScale's developer workflow matured around database
-    branching: a May 2021 PlanetScale discussion already referred to the CLI as `pscale`
-    and pointed users to installation instructions for macOS, Linux, and Windows. That
-    cross-platform framing mattered because PlanetScale's model asks developers to treat
-    database changes more like code changes, with branch creation, connection, schema
-    review, and deploy requests exposed as repeatable commands.
-  - >
-    Adoption expanded through both local developer use and automation. PlanetScale
-    documentation lists commands for creating, deleting, and listing databases and
-    branches, opening secure MySQL shell sessions, and managing deploy requests; later
-    PlanetScale material showed pscale in GitHub Actions workflows for creating
-    branches, managing branch passwords, opening deploy requests, and commenting schema
-    diffs on pull requests.
-  - >
-    In practice, pscale is used by developers and platform teams as a thin operational
-    interface over PlanetScale: logging in, selecting organizations, creating database
-    branches, connecting local clients through secure tunnels, inspecting schema
-    changes, and driving deploy-request workflows from CI. Its `api` command also gives
-    scripts a lower-level way to call PlanetScale API endpoints when a dedicated
-    high-level command is not available.
-  - >
-    The package is distributed as the `pscale` executable through Homebrew and Nix in
-    the input record, while PlanetScale also supports installation in CI through its
-    setup action. Its configuration path under `~/.config/planetscale/pscale.yml`
-    reflects its role as a developer-authenticated infrastructure CLI rather than a
-    library embedded in applications.
+  adoption-history:
+    - >
+      PlanetScale distributes the CLI as release binaries and packages for macOS, Linux,
+      and Windows, as well as an official container image. Homebrew and Nix coverage is
+      recorded in source_facts.package-manager.
+    - >
+      The CLI is also designed for automation: official guidance documents service-token
+      environment variables, machine-readable output, GitHub Actions usage, and
+      agent-oriented commands.
+  package-nerd-significance:
+    - >
+      pscale packages a hosted database control plane into a scriptable Unix-style
+      interface. It is especially notable for exposing PlanetScale's branching and
+      deploy-request concepts alongside conventional database shells and SQL execution,
+      making infrastructure workflows reproducible from terminals and CI systems.
+  project-history:
+    - >
+      PlanetScale created pscale as the command-line interface to its managed database
+      platform. The tool grew beyond basic connection commands to cover organizations,
+      databases, branches, deploy requests, backups, workflows, webhooks, service
+      tokens, Postgres roles and passwords, and Vitess-specific operations.
+    - >
+      The project later added container distribution, structured output, service-token
+      automation, GitHub Actions integration, and guidance for non-interactive agents.
+  related-projects:
+    - 'PlanetScale: The managed database service controlled by the CLI.'
+    - 'Vitess: One of the database technologies supported by PlanetScale commands.'
+    - 'PostgreSQL: Supported by current command families alongside Vitess.'
+    - 'MySQL client: Required for certain interactive database commands.'
+    - 'PlanetScale MCP server: The documented successor to the deprecated CLI-hosted MCP mode.'
+  sources:
+    - 'Input package coverage: source_facts.package-manager'
+    - 'Official CLI documentation: https://planetscale.com/docs/cli'
+    - 'Official CLI repository README: https://github.com/planetscale/cli'
+  summary:
+    - >
+      PlanetScale CLI, invoked as pscale, manages PlanetScale databases and platform
+      resources from interactive terminals, scripts, CI jobs, and agent workflows.
+  timeline:
+    - '2021: Official project discussions documented an available pscale container image.'
+    - >
+      Later releases: Structured JSON and CSV output, service-token automation, Postgres
+      command families, and agent guidance expanded non-interactive use.
+    - >
+      Current direction: The CLI-hosted MCP server is deprecated in favor of the
+      dedicated PlanetScale MCP server.
+  usage:
+    - >
+      Users authenticate interactively with pscale auth login or supply
+      PLANETSCALE_SERVICE_TOKEN_ID and PLANETSCALE_SERVICE_TOKEN for automation.
+      Commands manage databases, branches, deploy requests, organizations, backups,
+      passwords, roles, webhooks, and workflows.
+    - >
+      The CLI opens database shells and connections, and pscale sql supports
+      non-interactive queries. The global --config option defaults to
+      $HOME/.config/planetscale/pscale.yml.
 tags:
   - cli
   - database
@@ -66,16 +89,9 @@ provenance:
   docs-sources:
     - Official PlanetScale CLI documentation page.
   history-sources:
-    - https://github.com/planetscale/cli
-    - https://planetscale.com/docs/cli
-    - https://github.com/planetscale/discussion/discussions/10
-    - https://planetscale.com/blog/using-the-planetscale-cli-with-github-actions-workflows
-    - https://planetscale.com/blog/announcing-the-planetscale-github-actions
-    - https://github.com/planetscale/setup-pscale-action
-    - https://github.com/planetscale/docs/blob/main/docs/reference/cli-api.md
-    - source_facts.description
-    - source_facts.package-manager
-    - source_facts.repo
+    - 'Input package coverage: source_facts.package-manager'
+    - 'Official CLI documentation: https://planetscale.com/docs/cli'
+    - 'Official CLI repository README: https://github.com/planetscale/cli'
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/planetscale/cli; per
