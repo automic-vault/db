@@ -9,33 +9,76 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    protoc-gen-go is the canonical Protocol Buffers code generator for Go. The
-    protocolbuffers/protobuf-go repository describes itself as both the Go runtime
-    implementation for protocol buffers and the tool that generates Go bindings from
-    .proto schemas. Its job is to map protobuf messages, enums, oneofs, extensions,
-    reflection metadata, and file descriptors into Go packages.
-  - >
-    The package sits in a long Go protobuf lineage. Earlier Go projects commonly used
-    github.com/golang/protobuf and its protoc-gen-go binary; the protobuf-go module
-    under google.golang.org/protobuf became the successor implementation, with a
-    redesigned reflection/runtime layer and a clearer separation from gRPC service
-    generation. gRPC-Go's generator moved to protoc-gen-go-grpc, leaving protoc-gen-go
-    focused on protobuf data structures.
-  - >
-    Adoption followed the broader move of Go protobuf users toward
-    google.golang.org/protobuf imports and generated APIs. The generated-code reference
-    documents the package and import-path rules that matter in large Go module trees,
-    especially go_package options and M command-line mappings. Distribution through
-    Homebrew, Debian/Ubuntu, Alpine, Nix, Fedora-family packaging, and source
-    installation with Go made the binary a normal part of Go build images and developer
-    machines.
-  - >
-    Practitioners invoke it through protoc with --go_out and usually pair it with
-    --go_opt=paths=source_relative or module-aware import mapping. In gRPC projects it
-    is run next to protoc-gen-go-grpc; in non-RPC projects it still provides the
-    generated types consumed by storage layers, wire protocols, APIs, and config
-    schemas.
+  adoption-history:
+    - >
+      The Go protobuf bindings grew alongside Go from their initial pre-Go-1 form into a
+      widely used serialization foundation. The 2020 APIv2 module allowed gradual
+      adoption by making the older APIv1 module interoperate with the new
+      implementation.
+    - >
+      The generator is packaged across Homebrew and multiple Linux-oriented package
+      managers in source_facts.package-manager, while upstream recommends installation
+      with go install. It is routinely used by Go projects that exchange protobuf
+      messages or combine message generation with gRPC service generation.
+  package-nerd-significance:
+    - >
+      protoc-gen-go sits at the boundary between a language-neutral schema compiler and
+      Go's module ecosystem. Generator version, runtime-library version, import-path
+      mapping, and generated-code API selection can materially affect reproducibility
+      and compatibility.
+    - >
+      The 2020 APIv2 migration and the later Opaque API illustrate how a mature code
+      generator can evolve representation and reflection behavior while retaining
+      compatibility paths for existing generated code.
+  project-history:
+    - >
+      Go's first Protocol Buffer bindings were announced in March 2010 and included both
+      a protoc code-generation plugin and a Go runtime package.
+    - >
+      On 2 March 2020, the Go team released google.golang.org/protobuf as APIv2, a major
+      overhaul adding first-class protobuf reflection, dynamic messages, improved
+      testing support, and a cleaned-up API surface. protoc-gen-go is the compiler
+      plugin within that module.
+    - >
+      On 16 December 2024, the Go team announced the Opaque generated-code API. The
+      established Open Struct API remained supported, allowing users to migrate without
+      an abrupt removal of existing generated-code behavior.
+  related-projects:
+    - protoc is the Protocol Buffers compiler that discovers and invokes protoc-gen-go.
+    - >
+      google.golang.org/protobuf is the generator's accompanying Go runtime and
+      reflection module.
+    - >
+      protoc-gen-go-grpc separately generates gRPC client and server bindings from
+      service declarations.
+  sources:
+    - https://github.com/protocolbuffers/protobuf-go#readme
+    - https://go.dev/blog/protobuf
+    - https://go.dev/blog/protobuf-apiv2
+    - https://go.dev/blog/protobuf-opaque
+    - https://protobuf.dev/reference/go/go-generated/
+  summary:
+    - >
+      protoc-gen-go is the official Protocol Buffers compiler plugin for generating Go
+      message types and supporting code from .proto schemas. It belongs to the
+      google.golang.org/protobuf implementation and is distinct from the gRPC-specific
+      Go generator.
+  timeline:
+    - '2010: The first Go Protocol Buffer bindings and compiler plugin were announced.'
+    - >
+      2020: google.golang.org/protobuf APIv2 was released with a redesigned runtime and
+      generator ecosystem.
+    - >
+      2024: The Opaque generated-code API was announced while the Open Struct API
+      remained supported.
+  usage:
+    - >
+      Install the plugin with go install, ensure it is on PATH, and invoke protoc with
+      --go_out plus any --go_opt values. Each generated Go package needs an import path,
+      usually supplied through the .proto file's go_package option; output placement can
+      be import-path-based or source-relative. The tool uses command-line options and
+      schema declarations rather than a documented persistent config or credentials
+      file.
 category: developer-tools
 package-manager:
   apk: protoc-gen-go

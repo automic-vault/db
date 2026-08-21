@@ -7,24 +7,51 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    protoc-gen-doc grew out of the Protocol Buffers compiler plugin convention: protoc
-    discovers executables named protoc-gen-NAME and routes --NAME_out / --NAME_opt
-    requests to them. The project by pseudomuto applies that convention to documentation
-    rather than runtime code, reading comments and descriptors from .proto files and
-    emitting human-facing API reference material.
-  - >
-    Its adoption has been strongest in teams that treat protobuf schemas as public or
-    cross-team contracts. The README describes built-in output for HTML, JSON, DocBook,
-    and Markdown, with custom templates for organizations that want schema documentation
-    to match internal portals or published API references. That made it useful beside,
-    rather than instead of, language generators such as protoc-gen-go or
-    protoc-gen-grpc-java.
-  - >
-    Practitioners usually install it as a protoc plugin through a package manager or a
-    released binary, then invoke protoc with --doc_out and --doc_opt. A typical workflow
-    runs it in CI against the same .proto tree used for generated clients and servers,
-    so comments in schema files become versioned documentation artifacts.
+  adoption-history:
+    - >
+      The project is distributed through several developer-oriented channels, including
+      downloadable binaries, a container image, Maven Central, and package managers
+      represented in source_facts.package-manager. This makes it usable in local builds
+      and language-neutral documentation pipelines.
+  package-nerd-significance:
+    - >
+      It is a focused example of the protoc plugin model applied to documentation rather
+      than source-code generation. Its support for HTML, Markdown, DocBook, JSON, and
+      custom Go templates makes it useful when protobuf schemas double as an
+      interface-description source.
+  project-history:
+    - >
+      protoc-gen-doc was created as a standalone plugin for Google's Protocol Buffers
+      compiler. It converts comments and declarations in proto2 and proto3 schemas into
+      human-readable or machine-readable documentation.
+  related-projects:
+    - >
+      Protocol Buffers and its protoc compiler provide the schema and plugin protocol on
+      which protoc-gen-doc depends.
+    - >
+      Other protoc plugins generate language bindings or RPC stubs; protoc-gen-doc
+      instead generates descriptive documentation.
+  sources:
+    - https://github.com/pseudomuto/protoc-gen-doc#readme
+    - source_facts.description
+    - source_facts.package-manager
+  summary:
+    - >
+      protoc-gen-doc is a protoc plugin that generates API documentation from comments
+      in Protocol Buffer schemas. It supports built-in HTML, Markdown, DocBook, and JSON
+      output as well as custom templates.
+  timeline:
+    - >
+      The official project documentation describes support for both proto2 and proto3
+      schemas and distribution as native releases, a Docker image, and a Maven Central
+      artifact.
+  usage:
+    - >
+      Place the executable on PATH, then invoke protoc with --doc_out and --doc_opt to
+      select an output directory, format or template, and output filename. The plugin
+      can also exclude selected schema paths or comments and offers a containerized
+      workflow using mounted input and output directories. It has no documented
+      persistent configuration or credential file.
 category: developer-tools
 package-manager:
   apk: protoc-gen-doc

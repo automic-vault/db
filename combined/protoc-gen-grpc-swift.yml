@@ -9,23 +9,64 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    protoc-gen-grpc-swift is the Swift gRPC service-code generator packaged from
-    grpc/grpc-swift-protobuf. The repository provides the protobuf integration layer for
-    gRPC Swift and SwiftProtobuf, and its packaged executable name,
-    protoc-gen-grpc-swift-2, reflects the gRPC Swift 2 code-generation line.
-  - >
-    The plugin occupies the same generated-code niche as other gRPC language plugins,
-    but in Swift it is tied closely to Swift Package Manager. The package manifest
-    exposes a build-tool plugin and a command plugin that build protoc-gen-grpc-swift-2
-    alongside protoc-gen-swift and protoc, letting Swift packages generate service code
-    without hand-installing every binary.
-  - >
-    Practitioners use it either through SwiftPM commands or direct protoc invocation
-    with --grpc-swift_out and --grpc-swift_opt flags such as server/client generation,
-    visibility, and file naming. It is paired with SwiftProtobuf's protoc-gen-swift for
-    message types, while protoc-gen-grpc-swift-2 emits the Swift client and server
-    surfaces consumed by grpc-swift runtime packages.
+  adoption-history:
+    - >
+      Swift support became part of gRPC's language ecosystem for Apple-platform and
+      server-side Swift development. The generator is used with SwiftProtobuf, which
+      supplies protobuf message generation and runtime support.
+    - >
+      The current Homebrew record exposes an executable named protoc-gen-grpc-swift-2,
+      reflecting the second-generation toolchain. Package-manager installation gives
+      developers a host binary that can be integrated into protoc-based builds.
+  package-nerd-significance:
+    - >
+      The package highlights the generator/runtime split common to protobuf ecosystems:
+      SwiftProtobuf owns message serialization, while grpc-swift-protobuf generates
+      RPC-specific types layered on the gRPC Swift runtime.
+    - >
+      The executable's -2 suffix is operationally important for build scripts and
+      distinguishes the current generator line from the earlier gRPC Swift 1 tooling.
+  project-history:
+    - >
+      The first grpc-swift repository combined a Swift gRPC runtime with its code
+      generator. Its official README now identifies that line as gRPC Swift 1 in
+      maintenance mode and points users to gRPC Swift 2.
+    - >
+      The grpc-swift-protobuf project provides the Protocol Buffers integration and
+      protoc code generator used by the current gRPC Swift generation workflow.
+  related-projects:
+    - >
+      SwiftProtobuf provides protoc-gen-swift and the protobuf runtime used by generated
+      message types.
+    - gRPC Swift provides the RPC runtime consumed by generated clients and servers.
+    - protoc invokes the gRPC Swift plugin when compiling protobuf service definitions.
+  sources:
+    - https://github.com/apple/swift-protobuf#readme
+    - https://github.com/grpc/grpc-swift#readme
+    - https://github.com/grpc/grpc-swift-protobuf#readme
+    - https://grpc.io/docs/languages/swift/
+    - source_facts.executables
+  summary:
+    - >
+      protoc-gen-grpc-swift is the gRPC Swift protoc plugin for generating typed Swift
+      client and server stubs from protobuf service declarations. The packaged
+      executable is protoc-gen-grpc-swift-2 and is paired with SwiftProtobuf-generated
+      message types.
+  timeline:
+    - gRPC Swift 1 established a combined Swift runtime and code-generation project.
+    - >
+      The first-generation grpc-swift line entered maintenance mode as gRPC Swift 2
+      became current.
+    - >
+      The current protobuf integration is maintained in grpc-swift-protobuf and packaged
+      with the protoc-gen-grpc-swift-2 executable.
+  usage:
+    - >
+      Install the generator, ensure protoc can locate the protoc-gen-grpc-swift-2
+      executable or pass its path explicitly, and run it alongside SwiftProtobuf
+      generation for schemas containing services. Compile the generated sources with the
+      corresponding gRPC Swift and SwiftProtobuf libraries. No persistent configuration
+      or credentials file is documented for the generator.
 category: developer-tools
 package-manager:
   brew: protoc-gen-grpc-swift

@@ -8,24 +8,68 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    protoc-gen-grpc-java is the protoc plugin that generates Java gRPC service bindings
-    for schemas that define service blocks. It is part of grpc-java, the Java
-    implementation of gRPC, and complements protoc's built-in Java protobuf generator:
-    --java_out creates message classes, while --grpc-java_out creates service base
-    classes, stubs, descriptors, and client/server RPC plumbing.
-  - >
-    Its adoption tracks gRPC Java's use in JVM services and Android-adjacent builds. The
-    grpc-java README documents protobuf-based code generation through Maven and Gradle
-    integration, and the generated-code reference explains the naming model: each
-    service produces a Java class suffixed with Grpc, with packages controlled by the
-    .proto java_package option.
-  - >
-    Practitioners often receive the plugin indirectly through protobuf-gradle-plugin,
-    protobuf-maven-plugin, Bazel rules, or packaged binaries such as Homebrew and Nix.
-    Direct protoc use still follows the same pattern: install or point to
-    protoc-gen-grpc-java, run protoc with --java_out and --grpc-java_out, then compile
-    the generated code with grpc-stub, grpc-protobuf, and a transport such as Netty.
+  adoption-history:
+    - >
+      Java was one of the gRPC implementations declared production-ready with gRPC 1.0
+      in August 2016. The milestone announcement described existing use across
+      open-source infrastructure and commercial deployments.
+    - >
+      Precompiled protoc-gen-grpc-java executables are published for common platforms,
+      and Java builds often resolve the generator through Maven or Gradle integrations.
+      Homebrew and Nix availability in source_facts.package-manager also supports direct
+      command-line use.
+  package-nerd-significance:
+    - >
+      The plugin is a native protoc executable even though its output targets Java, so
+      build tooling must select a binary matching the build host rather than the Java
+      runtime target.
+    - >
+      Its separation from protobuf's Java message generator exposes the two-stage nature
+      of gRPC builds: protobuf generates messages, while protoc-gen-grpc-java generates
+      service base classes and stubs. Build-system plugins commonly coordinate both
+      artifacts.
+  project-history:
+    - >
+      gRPC was publicly announced in 2015 and reached its 1.0 production milestone for
+      Java, Go, and several other language implementations in August 2016.
+    - >
+      protoc-gen-grpc-java is developed within grpc-java as the code-generation plugin
+      that converts protobuf service definitions into Java gRPC interfaces. The official
+      compiler documentation describes both precompiled distribution and building the
+      native generator from source.
+  related-projects:
+    - >
+      protoc and the Java protobuf generator produce message classes alongside the
+      service code.
+    - >
+      grpc-java provides the API, stub, protobuf integration, and transports used by
+      generated sources.
+    - >
+      The protobuf Gradle plugin can resolve and invoke protoc-gen-grpc-java as a build
+      artifact.
+  sources:
+    - https://github.com/grpc/grpc-java#readme
+    - https://github.com/grpc/grpc-java/blob/master/compiler/README.md
+    - https://grpc.io/blog/ga-announcement/
+    - https://grpc.io/docs/languages/java/generated-code/
+  summary:
+    - >
+      protoc-gen-grpc-java is the official gRPC Java plugin for protoc. It generates
+      Java client stubs, server base types, method descriptors, and service descriptors
+      from protobuf service definitions.
+  timeline:
+    - '2015: gRPC was publicly announced.'
+    - '2016: gRPC 1.0 declared the Java implementation production-ready.'
+    - >
+      Subsequent grpc-java releases have continued publishing the generator alongside
+      the Java runtime libraries.
+  usage:
+    - >
+      Invoke protoc with the plugin available on PATH or specify it explicitly with
+      --plugin, then pass --grpc-java_out for the output directory. The lite option
+      generates bindings suited to protobuf-lite environments. Maven, Gradle, and Bazel
+      builds commonly automate generator resolution and invocation. The executable has
+      no documented persistent configuration or credentials file.
 tags:
   - cli
   - code-generation
@@ -58,11 +102,10 @@ provenance:
       protoc plugin invocation.
     - Official grpc-java repository README is the source documentation entry point.
   history-sources:
-    - https://github.com/grpc/grpc-java
-    - https://github.com/grpc/grpc-java/blob/master/README.md
+    - https://github.com/grpc/grpc-java#readme
+    - https://github.com/grpc/grpc-java/blob/master/compiler/README.md
+    - https://grpc.io/blog/ga-announcement/
     - https://grpc.io/docs/languages/java/generated-code/
-    - https://grpc.io/docs/languages/java/basics
-    - https://formulae.brew.sh/formula/protoc-gen-grpc-java
   repo-sources:
     - >
       source_facts.repo already has https://github.com/grpc/grpc-java, so repo was not
