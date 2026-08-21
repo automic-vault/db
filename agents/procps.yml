@@ -4,32 +4,75 @@ repo: null
 docs:
   - https://gitlab.com/procps-ng/procps/-/tree/master/Documentation
   - https://gitlab.com/procps-ng/procps
-config-file-location: null
+config-file-location:
+  linux:
+    - $XDG_CONFIG_HOME/procps/toprc
+    - ~/.config/procps/toprc
+    - ~/.toprc
+    - /etc/sysctl.conf
+    - /etc/sysctl.d/*.conf
 credentials-file-location: null
 history:
-  - >
-    procps is the Linux userland tool collection built around procfs, the
-    kernel-provided pseudo-filesystem that exposes process and system state. Its lineage
-    is tied to the long-running Linux `ps`, `top`, `free`, `vmstat`, `w`, `sysctl`, and
-    related utilities, with Albert Cahalan associated with the major `ps` rewrite and
-    procps maintenance in the early 2000s. The procps-ng project later became the
-    maintained continuation used by many distributions, with the upstream GitLab project
-    describing the suite as command-line and full-screen utilities for browsing procfs.
-  - >
-    Adoption followed the package's role as a base operating-system component rather
-    than as an optional developer tool. Linux distributions package it under names such
-    as `procps-ng`, `procps`, or library packages like `libproc2`, and it sits in the
-    same practical layer as util-linux and coreutils: installed because shell scripts,
-    service diagnostics, monitoring workflows, and administrators assume these commands
-    exist.
-  - >
-    Practitioners use procps both interactively and as plumbing. `ps`, `top`, `free`,
-    `vmstat`, `pmap`, `pidwait`, `slabtop`, `sysctl`, `tload`, and `w` cover process
-    listing, live process inspection, memory and VM reporting, kernel parameter
-    inspection, and login/session visibility. Packaging splits differ by distribution,
-    but Homebrew, Debian/Ubuntu, Fedora, Arch, Nix, and openSUSE all expose the suite or
-    its proc library under procps-related package names, making it one of the standard
-    CLI surfaces for Linux process observability.
+  adoption-history:
+    - >
+      The official NEWS file describes procps-ng as a fork maintained across the Debian,
+      Fedora, and openSUSE communities. The supplied facts additionally show packages in
+      Homebrew, Nix, Arch Linux, Ubuntu, and openSUSE-related ecosystems.
+    - >
+      The suite's ps, top, free, vmstat, pgrep, pkill, sysctl, and related commands have
+      become routine parts of Linux administration, scripts, diagnostics, and incident
+      response.
+  package-nerd-significance:
+    - >
+      procps-ng is foundational Linux userland: package maintainers must coordinate
+      command compatibility, procfs and kernel changes, localization, manual pages, and
+      the libproc API. It also illustrates how distributions can jointly sustain a fork
+      of an essential but historically fragmented utility collection.
+    - >
+      The package is unusually visible because users often think of its commands as
+      inherent parts of Linux rather than executables supplied by one independently
+      versioned package.
+  project-history:
+    - >
+      procps is the long-running family of Linux utilities built around procfs, the
+      kernel-generated pseudo-filesystem exposing process and system state. The modern
+      procps-ng line continued this work as a distribution-backed fork, modernizing
+      commands and the supporting process library.
+    - >
+      The procps-ng repository records extensive modernization of free, ps, and top,
+      including cgroup fields, improved process-library APIs, hot-plugged CPU support,
+      richer top navigation, and performance work.
+  related-projects:
+    - Linux procfs
+    - ps
+    - top
+    - util-linux
+    - psmisc
+    - systemd
+  sources:
+    - https://gitlab.com/procps-ng/procps
+    - https://gitlab.com/procps-ng/procps/-/blob/master/NEWS
+    - https://gitlab.com/procps-ng/procps/-/tree/master/doc
+    - source_facts.package-manager
+  summary:
+    - >
+      procps-ng is the principal Linux collection of command-line and full-screen tools
+      for inspecting processes and other state exposed through procfs.
+  timeline:
+    - >
+      Before procps-ng: The procps family established familiar Linux commands including
+      ps, top, free, and vmstat.
+    - >
+      2011–2012 era: Distribution maintainers developed procps-ng as the next-generation
+      fork of procps.
+    - '2015: The current official GitLab project was created.'
+    - '2022: Maintained project documentation was consolidated under the doc directory.'
+  usage:
+    - >
+      Administrators use ps and top to inspect processes, free and vmstat for memory and
+      system activity, pmap and pwdx for per-process details, pgrep and pkill for
+      selection and signaling, and sysctl for kernel parameters. Many tools work
+      directly from procfs and are therefore Linux-specific.
 tags:
   - cli
   - linux
@@ -61,10 +104,9 @@ provenance:
       Documentation directory.
   history-sources:
     - https://gitlab.com/procps-ng/procps
-    - https://man7.org/linux/man-pages/man1/procps.1.html
-    - https://directory.fsf.org/procps.html
-    - https://archlinux.org/packages/core/x86_64/procps-ng/
-    - https://formulae.brew.sh/formula/procps
+    - https://gitlab.com/procps-ng/procps/-/blob/master/NEWS
+    - https://gitlab.com/procps-ng/procps/-/tree/master/doc
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is already populated with https://gitlab.com/procps-ng/procps,
