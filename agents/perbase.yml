@@ -6,36 +6,41 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    perbase is Seth Stadick's Rust command-line toolkit for per-base sequencing metrics
-    from BAM and CRAM alignment files. The GitHub repository was created on 2020-09-18,
-    and public releases show a path from the 0.x series to v1.0.0 on 2025-07-29 and
-    v1.4.0 on 2026-02-04.
-  - >
-    The project's niche is accuracy at awkward alignment edges. Its 2026 Journal of Open
-    Source Software paper positions per-base metrics as fundamental to variant calling
-    and coverage assessment, then contrasts perbase with tools such as samtools depth,
-    sambamba depth, and bam-readcount on handling deletions, reference skips,
-    overlapping mate pairs, and base-quality behavior.
-  - >
-    The primary `base-depth` tool walks every position in a BAM/CRAM file and reports
-    depth, base composition, insertions, deletions, reference skips, failed-read counts,
-    and related flags. perbase also includes `only-depth`, inspired by mosdepth-style
-    compact depth output, plus `merge-adjacent` for merging adjacent intervals with
-    equal depth.
-  - >
-    perbase's implementation story is a Rust bioinformatics story: the JOSS paper
-    describes a multi-threaded architecture that processes genomic regions in parallel
-    with bounded memory via configurable chunk sizes and message-passing buffers.
-    Benchmarks in the paper compare `base-depth` with sambamba on a 30X whole-genome
-    dataset and report faster runtime in both standard and mate-fix modes.
-  - >
-    Adoption is specialized but well sourced. The JOSS paper reports more than 49,000
-    Bioconda downloads and notes downstream use as a dependency for tools including pbr;
-    the README also lists installation through Bioconda, Cargo, Homebrew, or precompiled
-    GitHub release binaries. Practitioners run commands such as `perbase base-depth -t
-    32 -o output.tsv input.bam`, adding an indexed reference FASTA when CRAM input
-    requires it.
+  adoption-history:
+    - >
+      The official project documents installation through Bioconda, Cargo, Homebrew, or
+      downloadable release binaries, giving it several routes into genomics workflows.
+  package-nerd-significance:
+    - >
+      It is a Rust-based genomics CLI distributed across both language-specific and
+      scientific package ecosystems. Its explicit treatment of deletions, reference
+      skips, mate overlap, compression, and indexing makes it interesting to users who
+      care about reproducible low-level sequencing metrics.
+  project-history:
+    - >
+      Seth Stadick created perbase as a highly parallel utility for per-position and
+      per-nucleotide analysis of BAM and CRAM alignment data. The project emphasizes
+      scalable concurrency and counting behavior intended to avoid accuracy problems
+      identified in some existing depth tools.
+  related-projects:
+    - >
+      The official README compares aspects of its counting behavior with bam-readcount
+      and sambamba.
+    - tabix is documented for indexing and querying compressed perbase output.
+  sources:
+    - 'Official repository and README: https://github.com/sstadick/perbase'
+  summary:
+    - >
+      perbase is a highly parallel Rust command-line toolkit for computing per-base
+      metrics from BAM and CRAM files.
+  timeline:
+    - '2023: perbase 0.9.0 was used by the Nano-DMS-MaP project.'
+    - 'Current project: Available through Bioconda, Cargo, Homebrew, and GitHub releases.'
+  usage:
+    - >
+      Commonly used to calculate nucleotide-resolved depth, restrict analysis to BED or
+      VCF/BCF positions, account for overlapping mates, and emit compressed tabular
+      output suitable for tabix indexing.
 tags:
   - bam
   - bioinformatics
@@ -63,11 +68,7 @@ provenance:
   docs-sources:
     - Official GitHub README contains usage, memory, and subcommand documentation.
   history-sources:
-    - https://github.com/sstadick/perbase
-    - https://api.github.com/repos/sstadick/perbase
-    - https://api.github.com/repos/sstadick/perbase/releases
-    - https://www.theoj.org/joss-papers/joss.09774/10.21105.joss.09774.pdf
-    - https://formulae.brew.sh/formula/perbase
+    - 'Official repository and README: https://github.com/sstadick/perbase'
   repo-sources:
     - source_facts.repo is already populated, so repo was intentionally not re-determined.
   tags-sources:
@@ -79,6 +80,6 @@ category-path:
   - bioinformatics
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
