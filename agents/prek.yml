@@ -14,27 +14,57 @@ config-file-location:
     - '%APPDATA%\prek\prek.toml'
 credentials-file-location: null
 history:
-  - >
-    prek is a Rust implementation of the pre-commit workflow by j178, with its
-    repository created in October 2024 and its first GitHub release, v0.0.1, published
-    later that month. It was created for a familiar developer-workflow pain point:
-    pre-commit-style hook management is valuable for running formatters, linters, and
-    repository checks, but Python environment creation and hook startup can be slow or
-    disk-heavy in local development and CI.
-  - >
-    The project markets itself as a fast, dependency-free, drop-in alternative to
-    pre-commit. Its ecosystem role depends on compatibility: existing
-    `.pre-commit-config.yaml` files can be reused, while `prek.toml` provides a native
-    configuration format for projects that adopt prek directly. Documentation highlights
-    migration by replacing `pre-commit` invocations with `prek` and reinstalling Git
-    hook shims with `prek install -f`.
-  - >
-    Adoption spread through performance-sensitive Python and polyglot projects that
-    already understood the pre-commit model, including projects named in the prek
-    documentation such as CPython, Apache Airflow, and FastAPI. Practitioners invoke
-    `prek run` to execute hooks on demand, wire `prek install` into Git hook setup, and
-    use package-manager distribution through Homebrew, MacPorts, Nix, Scoop, WinGet, and
-    zypper to install the standalone CLI across developer machines and CI images.
+  adoption-history:
+    - >
+      The official site lists adoption by projects including Apache Airflow, Apache
+      Lucene, Ruff, FastAPI, Sentry, and Godot. Package availability recorded in
+      source_facts.package-manager spans Homebrew, MacPorts, Nix, Scoop, WinGet, and
+      zypper.
+  package-nerd-significance:
+    - >
+      prek brings the increasingly familiar “fast rewrite in Rust” pattern to Git-hook
+      management while preserving pre-commit configuration compatibility. Its
+      multi-platform packaging and ability to reuse established hook ecosystems make it
+      especially interesting to developers who want faster tooling without migrating
+      every repository configuration.
+  project-history:
+    - >
+      prek began as a Rust reimplementation and drop-in alternative to the Python-based
+      pre-commit tool. Its changelog documents rapid compatibility work across hook
+      languages and workflows; release 0.4.5 declared full language coverage relative to
+      pre-commit and described the project as being on the path to 1.0.
+  related-projects:
+    - >
+      pre-commit: The established Git-hook framework and configuration ecosystem that
+      prek reimplements.
+    - 'pre-commit-hooks: A commonly used hook collection supported by prek.'
+    - >
+      uv: A related fast Python-tooling component that prek bundles or integrates with
+      for Python hook environments.
+  sources:
+    - https://prek.j178.dev/
+    - https://prek.j178.dev/changelog/
+    - https://prek.j178.dev/configuration/
+    - source_facts.package-manager
+  summary:
+    - >
+      prek is a fast Git-hook manager written in Rust and designed as a drop-in
+      alternative to pre-commit. It runs repository hooks, installs Git hook scripts,
+      updates hook revisions, and accepts pre-commit-style project configuration.
+  timeline:
+    - >
+      Early releases: Compatibility, platform support, and hook-language coverage
+      expanded rapidly through the 0.x series.
+    - '0.1.1: Added auto-update and refined configuration compatibility.'
+    - >
+      0.4.5: Official changelog announced complete pre-commit language coverage and full
+      feature parity.
+  usage:
+    - >
+      Users normally place hook definitions in prek.toml or .pre-commit-config.yaml, run
+      hooks explicitly during development or CI, and install prek into Git’s hook
+      lifecycle. An optional platform-level prek.toml controls user settings rather than
+      project hook definitions.
 tags:
   - cli
   - code-quality
@@ -66,11 +96,9 @@ provenance:
       language support, CLI reference, and changelog sections.
   history-sources:
     - https://prek.j178.dev/
-    - https://prek.j178.dev/quickstart/
-    - https://github.com/j178/prek
-    - https://api.github.com/repos/j178/prek
-    - source_facts.description
-    - source_facts.package-manager-url
+    - https://prek.j178.dev/changelog/
+    - https://prek.j178.dev/configuration/
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is already populated, so repo is intentionally returned as null

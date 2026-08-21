@@ -6,26 +6,66 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    primesieve is Kim Walisch's high-performance prime-number generator, distributed as
-    both a command-line program and a C/C++ library. Where primecount answers counting
-    questions about pi(x), primesieve is built for generating primes and prime k-tuplets
-    over intervals, using a segmented sieve of Eratosthenes tuned for modern CPU caches.
-  - >
-    The project documentation emphasizes cache-aware implementation: it detects L1 and
-    L2 cache sizes, sizes its main data structures around them, uses multiple CPU cores
-    when ordering constraints allow, and supports ranges up to 2^64. Manual pages
-    describe additional performance techniques including pre-sieving small primes, wheel
-    factorization, and bucket sieving for large ranges.
-  - >
-    Its ecosystem role is as a reference-quality native implementation for prime
-    generation. Practitioners use the CLI for experiments, validation data, k-tuplet
-    counting, and stress-testing; library consumers use the C/C++ API when they need
-    fast prime iteration inside number-theory software, bindings, or higher-level
-    mathematical packages. Its availability as primesieve or libprimesieve-dev across
-    Homebrew, Debian/Ubuntu, Fedora, Arch, Nix, MacPorts, Scoop, winget, Alpine, and
-    openSUSE-style repositories shows adoption as both a user tool and a development
-    dependency.
+  adoption-history:
+    - >
+      primesieve developed from a standalone prime generator into a packaged command and
+      native library. Its official README lists packages for Windows, macOS, Arch,
+      Debian/Ubuntu, Fedora, FreeBSD, and openSUSE; source_facts additionally records
+      APK, MacPorts, Nix, Scoop, and other package ecosystems.
+    - >
+      The changelog notes integration work for Sage and the addition of package-manager
+      documentation, reflecting use beyond the standalone executable.
+  package-nerd-significance:
+    - >
+      primesieve is a benchmark-friendly piece of numerical systems software: it
+      combines cache-aware segmented sieving, wheel factorization, bucket sieving,
+      multi-core execution, a command-line interface, and stable C/C++ APIs. Its wide
+      package coverage makes a specialized number-theory engine unusually easy to
+      install and link.
+  project-history:
+    - >
+      Kim Walisch developed primesieve as a fast prime generator based on a segmented
+      sieve of Eratosthenes. The project progressively became a reusable library, adding
+      prime k-tuplet counting, nth-prime operations, iterator APIs, parallel execution,
+      and portability across Unix-like systems and Windows.
+    - >
+      Version 5.0 in 2014 was a major architectural milestone: the project moved from
+      Google Code/SVN to GitHub/Git, adopted GNU Autotools and Libtool, introduced a
+      rewritten API, and added comprehensive C bindings. Later development expanded the
+      supported range to 2^64−1, improved cache and CPU utilization, and modernized its
+      build and API surfaces.
+  related-projects:
+    - 'primecount: Uses prime generation while implementing advanced prime-counting algorithms.'
+    - >
+      SageMath: A mathematical software system for which the changelog records
+      integration-related fixes.
+    - >
+      Sieve of Eratosthenes: The foundational algorithm, enhanced here through
+      segmentation, wheel factorization, and bucket sieving.
+  sources:
+    - https://github.com/kimwalisch/primesieve#readme
+    - https://github.com/kimwalisch/primesieve/blob/master/ChangeLog
+    - source_facts.package-manager
+  summary:
+    - >
+      primesieve is a cache-efficient, multi-threaded command-line program and C/C++
+      library for generating primes and prime k-tuplets over 64-bit ranges.
+  timeline:
+    - '2012: Version 4.0 substantially improved documentation and the library interface.'
+    - >
+      2014: Version 5.0 moved the project from Google Code/SVN to GitHub/Git and
+      introduced a rewritten API with C bindings.
+    - '2016: Version 5.7 extended prime generation through 2^64−1.'
+    - '2016: Version 5.7.1 added package-manager documentation.'
+    - >
+      Later releases: Continued API, SIMD, portability, build-system, and
+      cache-efficiency work.
+  usage:
+    - >
+      The CLI can count or print primes and prime k-tuplets over an interval, find nth
+      primes, and stress-test CPU and memory. Developers can use the C or C++ library
+      APIs and iterators; the implementation automatically detects cache sizes and uses
+      multiple CPU cores when ordering constraints allow.
 tags:
   - cli
   - cpp-library
@@ -53,10 +93,9 @@ provenance:
       Official GitHub README is the primary documentation surface for primesieve usage
       and project details.
   history-sources:
-    - https://github.com/kimwalisch/primesieve
-    - https://man.archlinux.org/man/primesieve.1.en
+    - https://github.com/kimwalisch/primesieve#readme
+    - https://github.com/kimwalisch/primesieve/blob/master/ChangeLog
     - source_facts.package-manager
-    - source_facts.description
   repo-sources:
     - >
       source_facts.repo already supplies https://github.com/kimwalisch/primesieve; per

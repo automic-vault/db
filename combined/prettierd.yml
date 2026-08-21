@@ -19,27 +19,49 @@ config-file-location:
     - prettier.config.mjs
 credentials-file-location: null
 history:
-  - >
-    prettierd was created by Francisco Souza as a daemonized wrapper around Prettier for
-    users who wanted Prettier's formatting behavior without paying Node.js startup and
-    project-resolution cost on every editor save. Its README presents the tool plainly:
-    Prettier, as a daemon, built on top of core_d.js and integrated with Prettier for
-    improved formatting speed.
-  - >
-    Its adoption followed Prettier's editor-first usage pattern. Once Prettier became a
-    common format-on-save tool, users of Vim, Neovim, Sublime Text, language-server
-    workflows, and formatter aggregators had a practical reason to keep a warm process
-    around. prettierd filled the same kind of niche that eslint_d filled for ESLint: not
-    a replacement for the formatter, but a process-management layer that makes repeated
-    formatting calls feel cheap.
-  - >
-    Practitioners install prettierd from npm, Homebrew, or Nix and point editor
-    integrations or formatter runners at the `prettierd` executable instead of
-    `prettier`. It discovers local Prettier installations and plugins for
-    project-specific behavior, while the daemon model introduces operational details
-    such as process lifetime, local instances, and restarts after configuration changes.
-    In the ecosystem it is best understood as infrastructure around Prettier adoption:
-    small, speed-focused, and most visible in interactive editing workflows.
+  adoption-history:
+    - >
+      prettierd is distributed through npm and Homebrew, with Nix availability also
+      recorded in source_facts.package-manager. Its README documents integrations with
+      Vim/Neovim, Sublime Text, Zed, and generic editor formatter workflows.
+  package-nerd-significance:
+    - >
+      prettierd applies the long-running daemon pattern to a ubiquitous formatter:
+      keeping the Node.js formatting service warm reduces repeated startup overhead. It
+      is a compact example of Unix-style composition, accepting source through standard
+      input while using a filename argument to resolve project-local formatting rules.
+  project-history:
+    - >
+      prettierd was created by Francisco Souza as a daemonized front end to Prettier,
+      built on core_d. As the project evolved, it added support for resolving a
+      project-local Prettier installation and plugins, allowing repositories to control
+      their own formatter version while retaining daemon speed.
+  related-projects:
+    - 'Prettier: The opinionated formatter that performs the underlying formatting.'
+    - 'core_d: The daemon framework on which prettierd is built.'
+    - 'efm-langserver: One documented route for using prettierd through Neovim’s LSP client.'
+  sources:
+    - https://github.com/fsouza/prettierd#readme
+    - https://github.com/fsouza/prettierd/releases
+    - https://prettier.io/docs/configuration
+    - source_facts.package-manager
+  summary:
+    - >
+      prettierd is a persistent daemon wrapper around Prettier intended to reduce
+      formatter startup latency, especially in editor integrations.
+  timeline:
+    - 'Initial era: Created as a Prettier service built on core_d.'
+    - >
+      0.12.0: Added support for invoking a project-local Prettier installation,
+      according to the official README.
+    - 'Later releases: Continued tracking newer Prettier, parser, plugin, and Node.js versions.'
+  usage:
+    - >
+      The command reads source text from standard input and takes the target filename as
+      an argument, for example `prettierd file.ts`. It prefers a locally installed
+      Prettier when present, can require local-only operation through
+      PRETTIERD_LOCAL_PRETTIER_ONLY, and accepts an exact default configuration path
+      through PRETTIERD_DEFAULT_CONFIG.
 category: developer-tools
 package-manager:
   brew: prettierd
