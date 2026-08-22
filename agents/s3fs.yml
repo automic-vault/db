@@ -11,29 +11,49 @@ credentials-file-location:
     - ${HOME}/.passwd-s3fs
     - /etc/passwd-s3fs
 history:
-  - >
-    s3fs is one of the older answers to a very specific cloud-storage wish: treating an
-    Amazon S3 bucket as a mounted filesystem. The project began as Randy Rizun's S3FS on
-    Google Code, with the project changelog recording a basic 1.0 release in 2008 and
-    the README carrying a 2010 copyright notice. Version 1.74, released on November 24,
-    2013, marked the project's initial GitHub-hosted version and matched the Google Code
-    release line.
-  - >
-    Its package-nerd importance is that it preserves files as ordinary S3 objects. That
-    makes it different from block- or database-backed S3 filesystems: other tools such
-    as AWS CLI can still see and manipulate the same objects. The README positions s3fs
-    as a FUSE filesystem for Linux, macOS, and FreeBSD, with a large subset of POSIX
-    behavior, multipart uploads for large files, optional server-side encryption,
-    metadata and disk caching, and support for S3-compatible object stores.
-  - >
-    In practice, administrators use s3fs when an application, shell script, web stack,
-    or backup job expects a path but the storage lives in an object bucket. Its
-    documentation is careful about the tradeoff: S3 is not a local filesystem, so random
-    writes and appends rewrite objects, directory listings cost network round trips,
-    renames are not atomic, multiple clients are not coordinated, hard links are absent,
-    and inotify only sees local changes. That mix explains both its broad packaging
-    across Linux distributions and macOS and its recurring role as a compatibility
-    bridge rather than a universal filesystem replacement.
+  adoption-history:
+    - >
+      s3fs is packaged across Homebrew, Debian, Ubuntu, Arch Linux, Nix, MacPorts, and
+      openSUSE according to source_facts.package-manager. The official README also
+      documents packages for Fedora, Gentoo, RHEL/CentOS, FreeBSD, and macOS, indicating
+      broad Unix-like distribution adoption.
+  package-nerd-significance:
+    - >
+      s3fs is a longstanding example of translating object storage into a familiar Unix
+      filesystem interface. Package enthusiasts care about its interaction with FUSE
+      implementations, platform-specific packaging, credential-file permissions,
+      boot-time mounts, and the semantic gap between S3 objects and POSIX files.
+  project-history:
+    - >
+      The project emerged by at least 2010, the copyright year stated by its official
+      repository, as a FUSE-based way to mount Amazon S3 buckets. It developed support
+      for the standard AWS credential file, its own passwd-s3fs format, S3-compatible
+      services, multipart transfers, and mounting through fstab.
+  related-projects:
+    - >
+      The official README identifies goofys, s3backer, s3ql, YAS3FS, and CSI for S3 as
+      related approaches. FUSE supplies the userspace filesystem layer, while Amazon S3
+      and compatible object stores supply storage.
+  sources:
+    - https://github.com/s3fs-fuse/s3fs-fuse
+    - https://github.com/s3fs-fuse/s3fs-fuse/wiki
+    - source_facts.package-manager
+  summary:
+    - >
+      s3fs is a FUSE filesystem client that exposes an Amazon S3 bucket through a mount
+      point. It favors filesystem convenience and compatibility while documenting that
+      S3 cannot provide all local-filesystem performance or POSIX semantics.
+  timeline:
+    - '2010: Copyright date recorded in the official repository.'
+    - '2025: Official release 1.97 published.'
+  usage:
+    - >
+      Users typically create or reuse an AWS credential file, secure it with owner-only
+      permissions, and run `s3fs bucket /path/to/mountpoint`. Mounts can also be
+      declared in `/etc/fstab`; non-AWS endpoints generally require an explicit URL and
+      path-style requests. The official documentation warns about costly random writes,
+      network-bound metadata operations, non-atomic renames, and the absence of hard
+      links or cross-client coordination.
 tags:
   - cli
   - filesystem
@@ -60,10 +80,9 @@ provenance:
     - official GitHub README
     - official GitHub wiki
   history-sources:
-    - https://raw.githubusercontent.com/s3fs-fuse/s3fs-fuse/master/README.md
-    - https://raw.githubusercontent.com/s3fs-fuse/s3fs-fuse/master/ChangeLog
     - https://github.com/s3fs-fuse/s3fs-fuse
-    - https://formulae.brew.sh/formula/s3fs
+    - https://github.com/s3fs-fuse/s3fs-fuse/wiki
+    - source_facts.package-manager
   repo-sources:
     - source_facts.repo already supplied; per instructions not rechecked
   tags-sources:

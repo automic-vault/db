@@ -9,28 +9,44 @@ config-file-location:
 credentials-file-location:
   unix: ~/.s3cfg
 history:
-  - >
-    s4cmd is BloomReach's Python command-line client for Amazon S3, created as an
-    s3cmd-inspired tool for scripted, data-intensive workloads. The GitHub repository
-    was created in November 2012, and the README credits Chou-han Yang as author. Its
-    motivation section says BloomReach used s3cmd heavily, then built s4cmd to add
-    performance, large-file handling, and fixes useful in their own S3 automation.
-  - >
-    The tool deliberately stayed close to familiar s3cmd-style commands: ls, put, get,
-    cp, mv, sync, del, and du. Its differentiators were multi-threaded and
-    multi-connection transfers, wildcard handling, retries, multipart upload support for
-    files larger than 5 GB, MD5 handling around multipart transfers, predictable exit
-    codes for scripts, and s3n:// compatibility for older Elastic MapReduce usage. The
-    2.x line moved from boto 2.x to boto3 and added S3 API pass-through options, batch
-    delete, large-object moves, timestamp filtering, and endpoint-url support for
-    S3-compatible storage.
-  - >
-    Practitioners tend to use s4cmd as a small, scriptable S3 operations tool that
-    understands the old s3cmd configuration world. It can read ~/.s3cfg, use
-    S3_ACCESS_KEY and S3_SECRET_KEY, or fall through to an EC2 IAM role. Distribution
-    through PyPI, Homebrew, Debian, and Ubuntu made it easy to drop into shell
-    automation, even as later tools such as s5cmd pushed the high-concurrency
-    S3-transfer niche further.
+  adoption-history:
+    - >
+      s4cmd has been distributed through PyPI and packaged by Homebrew, Debian, Ubuntu,
+      and Nix according to the official installation instructions and
+      source_facts.package-manager. Its reuse of s3cmd's configuration format lowered
+      migration friction for existing command-line users.
+  package-nerd-significance:
+    - >
+      s4cmd represents the performance-oriented branch of early S3 command-line tooling:
+      a compact Python implementation designed for scripting and large, data-intensive
+      transfers. Its compatibility with the established `.s3cfg` convention makes it
+      interesting as an example of ecosystem interoperability without exact drop-in
+      compatibility.
+  project-history:
+    - >
+      Chou-han Yang created s4cmd after heavy use of s3cmd in scripted, data-intensive
+      applications exposed a need for performance improvements, large-file support, and
+      behavioral fixes. The 2.x line migrated the backend from Boto 2 to Boto3 and added
+      batch deletion and broader API pass-through support.
+  related-projects:
+    - >
+      s3cmd directly inspired s4cmd and supplies the `.s3cfg` format that s4cmd can
+      reuse. Boto3 is the current AWS SDK backend.
+  sources:
+    - https://github.com/bloomreach/s4cmd
+    - source_facts.package-manager
+  summary:
+    - >
+      s4cmd is a Python command-line client for Amazon S3, created as a faster
+      alternative to s3cmd for large files and data-intensive scripts.
+  timeline:
+    - '2.x series: Backend migrated from Boto 2 to Boto3 and batch deletion was introduced.'
+  usage:
+    - >
+      Typical operations include `ls`, `put`, `get`, `cp`, `mv`, `sync`, `del`, and
+      `du`. By default it can read credentials from `${HOME}/.s3cfg`; users may select
+      another file with `--config`, use environment variables, or rely on an EC2 IAM
+      role. Parallelism is controlled with `--num-threads`.
 category: cloud-infrastructure
 package-manager:
   brew: s4cmd

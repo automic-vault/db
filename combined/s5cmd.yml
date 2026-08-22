@@ -9,32 +9,52 @@ config-file-location:
 credentials-file-location:
   unix: ~/.aws/credentials
 history:
-  - >
-    s5cmd is a Go-based S3 and local-filesystem execution tool built around concurrency.
-    The GitHub repository was created in November 2016, and the project presents itself
-    as a fast alternative to traditional S3 utilities for workflows involving large
-    numbers of objects. The README highlights benchmarks popularized by Joshua
-    Robinson's testing, including much higher upload and download throughput than s3cmd
-    and aws-cli under benchmark conditions.
-  - >
-    The design target is not just one fast copy; it is many operations without paying
-    process-launch and serialization costs. AWS's Open Source Blog describes s5cmd as a
-    way to run multiple operations with one executable invocation, using workers instead
-    of invoking a CLI millions of times. Its own README builds on that with wildcard
-    support, batch command files, dry runs, structured logs, S3 Transfer Acceleration,
-    Google Cloud Storage and S3-compatible service support, and object operations such
-    as list, copy, move, delete, bucket creation, summaries, ACLs, KMS encryption, and
-    S3 Select.
-  - >
-    In practical object-storage shops, s5cmd is the tool people reach for when the
-    bottleneck is object count or aggregate throughput: log backfills, dataset uploads,
-    data-lake maintenance, CI artifact moves, and bulk deletes. It uses the AWS SDK
-    credential chain, including profiles, credential files, environment variables,
-    EC2/EKS roles, and unsigned public-bucket access. Packaging spans official Linux,
-    macOS, and Windows binaries plus Homebrew, MacPorts, conda-forge, FreeBSD, Docker,
-    and downstream package managers, which helped it become a common
-    performance-oriented companion to aws-cli rather than a replacement for the full AWS
-    CLI surface.
+  adoption-history:
+    - >
+      The project supplies official binaries for Linux, macOS, and Windows and an
+      official Homebrew tap. Its README also records community packaging through
+      MacPorts, conda-forge, FreeBSD ports/packages, and Docker;
+      source_facts.package-manager additionally records Homebrew, MacPorts, Nix, APK,
+      and Scoop coverage.
+  package-nerd-significance:
+    - >
+      s5cmd is notable for treating concurrency and batched command execution as
+      first-class features rather than wrappers around one-object-at-a-time commands. It
+      appeals to package and operations enthusiasts who move large object collections,
+      benchmark storage tooling, use S3-compatible endpoints, or want one portable Go
+      binary.
+  project-history:
+    - >
+      s5cmd was developed as a Go-based, high-throughput alternative to established S3
+      clients. Its design combines parallel object operations, wildcard expansion, batch
+      deletion, and a `run` mode that avoids thousands of separate process launches.
+    - >
+      The 2.x series broadened the tool with synchronization, AWS SSO profile support,
+      shell completion, and revised packaging and runtime behavior. The official release
+      history documents continued feature and compatibility work through the 2.3 line.
+  related-projects:
+    - >
+      The official README compares s5cmd's performance with s3cmd and AWS CLI. It uses
+      the official AWS SDK and can also work with S3-compatible services such as Google
+      Cloud Storage's interoperability endpoint.
+  sources:
+    - https://github.com/peak/s5cmd
+    - https://github.com/peak/s5cmd/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      s5cmd is a high-performance command-line tool for executing S3 and
+      local-filesystem operations, particularly bulk or wildcard-driven workloads.
+  timeline:
+    - '2022: Version 2.0.0 added synchronization and AWS SSO profile support.'
+    - '2024: Version 2.3.0 added features including wildcard-aware `cat` and `head`.'
+  usage:
+    - >
+      Users run familiar commands such as `ls`, `cp`, `mv`, `rm`, `sync`, and `du`
+      against local paths or S3 URLs. Credentials can come from AWS profiles,
+      `${HOME}/.aws/credentials`, environment variables, EC2/EKS roles, or an explicitly
+      selected credentials file. Its characteristic workflow is `s5cmd run
+      commands.txt`, which executes many operations with parallel workers.
 category: cloud-infrastructure
 package-manager:
   apk: s5cmd

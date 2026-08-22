@@ -7,34 +7,57 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    s6-rc is the service-manager component of the skarnet.org s6 ecosystem. It is not an
-    init system by itself; the project documentation describes it as a suite of programs
-    for starting and stopping long-running daemons and one-time initialization scripts
-    in dependency order, while relying on the s6 supervision infrastructure for
-    supervised longruns.
-  - >
-    Its design comes from a gap between supervision suites and full service managers.
-    Pure supervision trees keep daemons alive but do not express all boot-time
-    dependencies or one-shot state changes; monolithic init systems solve more of the
-    lifecycle problem but carry integration and complexity costs. s6-rc's answer is a
-    modular manager on top of s6, with correct dependency handling, readiness-aware
-    service ordering, reproducible script execution, and small code paths.
-  - >
-    The package is especially interesting to system builders because it splits service
-    management into an offline compilation phase and a live phase. Administrators or
-    distribution tooling write source service definitions for longruns, oneshots, and
-    bundles; s6-rc-compile turns them into a compiled service database; s6-rc-init and
-    s6-rc change apply that database to the running system; s6-rc-update handles live
-    database replacement. That makes it fit systems that want s6 supervision plus
-    deterministic dependency management without adopting a single large init framework.
-  - >
-    Distribution is intentionally old-school Unix: ISC-licensed source tarballs from
-    skarnet.org, the canonical skarnet git repository, and mirrors on Codeberg, GitHub,
-    and SourceHut. Homebrew and Alpine packaging make it available outside source
-    builds, but its main audience remains admins, distribution maintainers, container
-    builders, and embedded-system users who already understand the s6/skarnet style of
-    small cooperating tools.
+  adoption-history:
+    - >
+      s6-rc serves systems built around the s6 supervision infrastructure and is
+      packaged by Homebrew and Alpine according to source_facts.package-manager. Its
+      documentation explicitly addresses distribution package upgrades: packages may
+      ship service definitions, after which administrators compile and live-update the
+      database.
+  package-nerd-significance:
+    - >
+      s6-rc is notable for separating declarative service definitions and offline
+      dependency-graph compilation from online state changes. This architecture makes
+      database formats, upgrade tooling, dependency closure, and package-supplied
+      service definitions central concerns—precisely the details that interest
+      init-system and distribution maintainers.
+  project-history:
+    - >
+      s6-rc was created as the dependency-aware service-management layer for s6 systems.
+      It manages both supervised long-running services and one-time state transitions,
+      plus bundles that name groups of atomic services.
+    - >
+      An initially planned 1.0.0.0 design proved too ambitious and was scaled back in
+      favor of incremental development. Starting with 0.6.0.0, the suite added
+      repository and set-management tools intended to help users and distributions
+      organize source definitions and compiled service databases.
+  related-projects:
+    - >
+      s6 supplies the underlying supervision tree. skalibs and execline are required
+      dependencies. The official site names anopa and nosh as comparable
+      service-management work and recommends s6-frontend as a higher-level entry point.
+  sources:
+    - https://www.skarnet.org/software/s6-rc/
+    - https://www.skarnet.org/software/s6-rc/overview.html
+    - https://www.skarnet.org/software/s6-rc/upgrade.html
+    - source_facts.package-manager
+  summary:
+    - >
+      s6-rc is a dependency-aware service and machine-state manager layered on the s6
+      supervision suite.
+  timeline:
+    - >
+      0.6.0.0: Repository and set-management commands were introduced for organizing
+      service-definition sources and compiled databases.
+    - '0.7.0.0: Added reload support and changed the compiled database format.'
+  usage:
+    - >
+      Administrators write directories describing longruns, oneshots, and bundles,
+      compile them with `s6-rc-compile`, initialize live state with `s6-rc-init`, and
+      request transitions with `s6-rc change`. `s6-rc-update` replaces a live compiled
+      database without rebooting. Locations for source definitions, compiled databases,
+      and live state are deployment choices or build-time defaults rather than one
+      universal configuration file.
 category: system
 package-manager:
   apk: s6-rc

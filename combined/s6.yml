@@ -7,39 +7,57 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    s6 is Laurent Bercot's small supervision suite from the skarnet.org software family,
-    built around the daemontools/runit model of keeping daemons as direct children of a
-    supervisor rather than leaving service state to PID files and ad-hoc shell scripts.
-    The upstream documentation describes the package itself as s6-supervision: the layer
-    that provides process supervision, logging, readiness notification, service
-    directories, scan directories, fd-holding, privilege helpers, and the command-line
-    tools used to control a supervision tree.
-  - >
-    The package's role is deliberately narrower than the word "init" suggests. Upstream
-    separates s6-supervision from the larger s6 ecosystem: s6-linux-init can make
-    s6-svscan run as process 1, s6-rc adds dependency-aware service management, and
-    s6-frontend aims to provide a higher-level administrative interface. That layering
-    is why practitioners may install s6 just to supervise services under another init
-    system, use s6 with s6-linux-init for minimal systems and containers, or add s6-rc
-    when they need ordered boot/shutdown and service dependency handling.
-  - >
-    s6-rc is the important companion for system-level use. It treats services as either
-    longruns, which are supervised daemons with run scripts and optional readiness
-    notification, or oneshots, which represent state transitions such as mounting a
-    filesystem. It starts and stops those services according to a dependency graph,
-    ensuring a dependent service is not started before its prerequisites are up and a
-    prerequisite is not stopped while dependents remain up. This gives s6-based systems
-    a service-manager layer without folding policy, logging, and process supervision
-    into one large binary.
-  - >
-    In packaging terms, s6 remains a systems-programming tool distributed through source
-    tarballs and operating-system package managers rather than language registries. The
-    upstream page lists skalibs as a required dependency and execline as an optional but
-    recommended dependency, while Homebrew ships s6 with execline and skalibs
-    dependencies. The ecosystem also reaches container users through s6-overlay, which
-    automates integration of s6 into Docker images, and through related service managers
-    such as anopa and 66.
+  adoption-history:
+    - >
+      s6 became a reusable foundation for supervision and init stacks rather than only a
+      single init program. source_facts.package-manager records packages in Homebrew,
+      Alpine, Debian, Ubuntu, and MacPorts; it is especially visible in minimalist Unix
+      and container environments where small, composable supervision tools are valued.
+  package-nerd-significance:
+    - >
+      s6 is important to package and init-system enthusiasts because it extends the
+      daemontools supervision model with readiness notification, event mechanisms,
+      logging, socket activation, privilege-management tools, and an ecosystem of
+      separately packaged components. Its small-tool composition and explicit
+      reliability model provide a distinctive alternative to monolithic service
+      managers.
+  project-history:
+    - >
+      Laurent Bercot developed s6 in the lineage of daemontools and runit as a small,
+      secure collection of Unix process-management programs. The suite grew beyond basic
+      supervision to cover reliable readiness notification, logging, socket activation,
+      privilege transitions, and supervision-tree construction.
+    - >
+      s6 deliberately remains a low-level toolbox. Higher-level boot and dependency
+      management are supplied by related projects such as s6-linux-init and s6-rc, while
+      skalibs and optionally execline provide foundational libraries and scripting
+      support.
+  related-projects:
+    - >
+      daemontools and runit are the principal design predecessors named by the official
+      documentation. skalibs and execline are core dependencies; s6-rc supplies
+      dependency-aware service management, s6-linux-init supplies Linux init
+      construction, and s6-frontend provides a higher-level interface.
+  sources:
+    - https://skarnet.org/software/
+    - https://www.skarnet.org/software/s6/
+    - source_facts.package-manager
+  summary:
+    - >
+      s6 is a compact Unix suite for process supervision and low-level service
+      administration, designed as composable tools in the daemontools tradition.
+  timeline:
+    - >
+      Current era: s6 forms the supervision layer beneath s6-rc, s6-linux-init, and
+      s6-frontend.
+  usage:
+    - >
+      Administrators use `s6-svscan` to manage a supervision tree and `s6-supervise` to
+      maintain individual services; commands such as `s6-svc`, `s6-svstat`, and `s6-log`
+      control, inspect, and log them. The suite can run below a conventional init system
+      or participate in replacing init. It has no credential file and no single
+      universal configuration-file path because service directories and runtime
+      locations are chosen by the integrator.
 category: system
 package-manager:
   apk: s6
