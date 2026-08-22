@@ -4,39 +4,67 @@ homepage: https://github.com/fabianlindfors/reshape
 repo: https://github.com/fabianlindfors/reshape
 docs:
   - https://github.com/fabianlindfors/reshape#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - ./migrations/*.toml
+    - ./migrations/*.json
+    - ./.env
 credentials-file-location: null
 history:
-  - >
-    Reshape is a PostgreSQL schema-migration CLI by Fabian Lindfors. The GitHub
-    repository was created on 2021-10-19, and the first tagged release, v0.1.0, was
-    published on 2022-01-04. Lindfors introduced the project publicly in a 2022-01-06
-    article that framed it as an experimental open-source implementation of an earlier
-    idea: using PostgreSQL views to encapsulate tables and provide versioned database
-    interfaces during application rollouts.
-  - >
-    The tool occupies a narrow but important part of the PostgreSQL ecosystem:
-    production schema changes that would otherwise require expand-and-contract
-    playbooks, multiple deploys, hand-written backfills, or brief downtime. Reshape
-    migrations are declarative files executed by the `reshape` CLI. Instead of
-    immediately applying destructive changes, Reshape creates schemas, views, triggers,
-    and translation expressions so old and new application versions can read and write
-    through compatible interfaces while a deployment is in progress.
-  - >
-    Practitioners use Reshape when a schema change has to be coordinated with an
-    application deployment. The documented workflow is to run `reshape migrate`, deploy
-    application code that targets the new schema version, then run `reshape complete`
-    after old application instances have stopped; `reshape abort` is available when the
-    rollout fails. In 2024, the project added support for multi-table migrations such as
-    splitting a one-to-many representation into a many-to-many join table, including
-    generated backfills and bidirectional trigger-based translation during the
-    deployment window.
-  - >
-    Distribution followed the usual CLI-tool route: source and releases on GitHub, with
-    package-manager entries in Homebrew and Nix. Its adoption profile is that of a
-    specialized PostgreSQL operations tool rather than a general migration framework; it
-    is most relevant to teams that already understand why ordinary migration tools and
-    direct DDL can be risky under live traffic.
+  adoption-history:
+    - >
+      Reshape is distributed through Homebrew and Nix according to
+      source_facts.package-manager. The official project also publishes release
+      binaries, a Cargo package, and a Docker image.
+    - >
+      Official GitHub project metadata reports substantial community interest, while
+      helper libraries are documented for Rust, Ruby/Rails, Python/Django, and Go
+      application integration.
+  package-nerd-significance:
+    - >
+      Reshape addresses a difficult deployment problem: changing a live PostgreSQL
+      schema while old and new application versions overlap. Its declarative TOML/JSON
+      migrations and staged start/complete/abort lifecycle make that technique available
+      as a standalone package.
+    - >
+      Its use of views and triggers is operationally distinctive compared with
+      traditional migration runners that apply schema changes in a single deployment
+      step.
+  project-history:
+    - >
+      Fabian Lindfors created Reshape as an open-source PostgreSQL migration tool
+      focused on avoiding application downtime and excessive database locking.
+    - >
+      The project developed a three-phase migration model: prepare compatible old and
+      new schema views, deploy the application gradually, then complete or abort the
+      migration.
+  related-projects:
+    - >
+      The project provides integration helpers for Rust, Ruby and Rails, Python and
+      Django, and Go applications.
+  sources:
+    - 'Input package coverage: source_facts.package-manager'
+    - 'Official repository and README: https://github.com/fabianlindfors/reshape'
+  summary:
+    - >
+      Reshape is a PostgreSQL schema migration tool designed to let old and new
+      application deployments operate concurrently during a rollout.
+  timeline:
+    - >
+      Initial project: Published by Fabian Lindfors as a Rust-based PostgreSQL migration
+      utility.
+    - >
+      Later development: Added helper libraries, Docker and binary distribution,
+      built-in agent-oriented documentation, and machine-readable status output.
+  usage:
+    - >
+      Migration files are stored by default under `migrations/` in TOML or JSON format.
+      Operators run `reshape migration start`, roll out the new application, and then
+      run `reshape migration complete`; failed deployments can be rolled back with
+      `reshape migration abort`.
+    - >
+      Database connection settings can be supplied through flags, `DB_*` environment
+      variables, or a `.env` file automatically loaded from the working directory.
 category: data
 package-manager:
   brew: reshape
