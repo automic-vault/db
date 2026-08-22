@@ -7,25 +7,48 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    saldl is a lightweight command-line downloader built around libcurl and libevent,
-    aimed at fast downloads and early preview of partially downloaded content. Its
-    upstream site and README describe the core design: split a download into fixed-size
-    chunks, download chunks with multiple concurrent connections, and merge them in
-    order so users can inspect usable data earlier than with a naive parallel
-    downloader.
-  - >
-    The package occupies a small but distinct corner of the downloader ecosystem: closer
-    to `curl` and `wget` than to browser download managers, but with explicit chunk
-    scheduling, resume metadata, mirror support, stdout and memory-buffer modes, and
-    many tunable command-line options. Practitioners use it for large direct downloads
-    where parallel range requests, resumability, and terminal-friendly behavior matter.
-  - >
-    Distribution is source-first with packaged conveniences. Upstream documents builds
-    on POSIX platforms, notes testing across Linux, BSDs, macOS, and Windows, links Arch
-    AUR packaging, provides Windows binaries through releases, and points macOS users to
-    Homebrew. The Homebrew formula packages release 41 as a bottled CLI with `libevent`
-    as a runtime dependency.
+  adoption-history:
+    - >
+      The official repository documents Homebrew installation on macOS, AUR packaging,
+      POSIX source builds, and experimental Windows binaries. The supplied input also
+      records Nix packaging.
+  package-nerd-significance:
+    - >
+      saldl is interesting to package enthusiasts as a compact, cross-platform download
+      accelerator built from established C networking libraries. Its resumable control
+      files, concurrent chunk scheduling, and early-preview ordering expose
+      implementation details that simpler download clients hide.
+  project-history:
+    - >
+      Mohammad AlSaleh created saldl as a libcurl-based downloader optimized for speed
+      and early preview. Copyright notices in the official manual date the project to
+      2014–2015, while the published manual was updated in 2018.
+    - >
+      The project was designed for POSIX systems but its official build notes also cover
+      macOS, MSYS2/Cygwin, and experimental native Windows builds.
+  related-projects:
+    - >
+      saldl builds on libcurl and libevent. Its official repository also includes
+      FlashGot integration, connecting it with browser-driven download workflows.
+  sources:
+    - 'Official manual: https://saldl.github.io/saldl.1.html'
+    - 'Official project site: https://saldl.github.io/'
+    - 'Official repository README: https://github.com/saldl/saldl#readme'
+    - 'Supplied input field: source_facts.package-manager'
+  summary:
+    - >
+      saldl is a multi-platform command-line downloader that divides files into chunks
+      and retrieves them concurrently through libcurl. It emphasizes speed,
+      resumability, and early access to selected portions of a download.
+  timeline:
+    - "2014–2015: Official copyright notice documents the project's early development."
+    - '2018-01-25: The published official manual receives its recorded update.'
+  usage:
+    - >
+      A user supplies a URL and optionally selects chunk size, connection count, output
+      path, resume behavior, or chunk ordering. saldl records partial data and progress
+      in `.part.sal`, `.ctrl.sal`, and `.tmp.sal` artifacts; it can also stream to
+      stdout or use memory buffers.
 tags:
   - cli
   - downloader
@@ -50,10 +73,10 @@ provenance:
   docs-sources:
     - Official saldl GitHub Pages site hosts the saldl(1) manual page and project homepage.
   history-sources:
-    - https://saldl.github.io/
-    - https://saldl.github.io/saldl.1.html
-    - https://github.com/saldl/saldl
-    - https://formulae.brew.sh/formula/saldl
+    - 'Official manual: https://saldl.github.io/saldl.1.html'
+    - 'Official project site: https://saldl.github.io/'
+    - 'Official repository README: https://github.com/saldl/saldl#readme'
+    - 'Supplied input field: source_facts.package-manager'
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/saldl/saldl; per
