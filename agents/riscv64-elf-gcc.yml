@@ -7,38 +7,58 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    riscv64-elf-gcc is Homebrew's bare-metal RISC-V build of the GNU Compiler
-    Collection. GCC itself is the GNU project's multi-language compiler suite,
-    originally written as the compiler for the GNU operating system and distributed as
-    source releases for many native and cross targets. The formula configures upstream
-    GCC with `--target=riscv64-elf`, disables native language support, builds C and C++
-    front ends, uses `riscv64-elf-binutils` for the assembler and linker, and installs
-    the compiler driver plus libgcc for freestanding RISC-V ELF output.
-  - >
-    RISC-V GCC work began alongside the ISA's early life. SiFive's 2017-03-03
-    announcement says the RISC-V GCC port began shortly after the ISA design project
-    started in 2010 and that GCC had accepted the backend for inclusion in its next
-    release. GCC's release timeline lists GCC 7.1 on 2017-05-02, matching the period
-    when upstream RISC-V support moved from a specialist port into the main GNU compiler
-    release stream.
-  - >
-    The package sits beside, but is not identical to, the riscv-gnu-toolchain
-    superproject. That superproject documents generic ELF/Newlib, Linux glibc, Linux
-    musl, multilib, architecture, and ABI builds under prefixes such as
-    `riscv64-unknown-elf-` and `riscv64-unknown-linux-gnu-`. Homebrew's
-    `riscv64-elf-gcc` is the smaller packaged compiler component aimed at freestanding
-    code: it is useful for kernels, boot code, teaching operating systems, embedded
-    firmware, simulators, and board bring-up where there is no hosted userspace C
-    library.
-  - >
-    Practitioners typically call `riscv64-elf-gcc` to compile and link C or C++ into ELF
-    objects or bare-metal executables, using flags such as `-march` and `-mabi` to
-    select the RISC-V ISA subset and ABI. The companion binutils package supplies
-    inspection and conversion tools, while GDB or an external debug transport such as
-    OpenOCD handles execution and debugging. Homebrew's formula test reflects the basic
-    workflow by compiling a C file to an object and using RISC-V objdump to verify that
-    the result is `elf64-littleriscv`.
+  adoption-history:
+    - >
+      GCC became a central compiler suite in GNU and Unix-like systems and a standard
+      base for cross-compilers. This target-prefixed package makes the upstream RISC-V
+      backend convenient for Homebrew and other package-manager users;
+      source_facts.package-manager lists Homebrew, Arch, and openSUSE-family packaging.
+  package-nerd-significance:
+    - >
+      A target-prefixed GCC package embodies the classic cross-toolchain layout:
+      compiler driver, preprocessor, C++ driver, coverage utilities, LTO tools, and
+      matching prefixed Binutils can coexist with the host compiler. It is a key
+      building block for firmware, kernels, bootloaders, and ISA experimentation.
+  project-history:
+    - >
+      Richard Stallman began GCC as the GNU C Compiler in 1987. It evolved into the GNU
+      Compiler Collection, adding language front ends, optimization infrastructure,
+      runtime libraries, and back ends for many processor families.
+    - >
+      Upstream GCC gained a RISC-V target backend as the open instruction set matured.
+      `riscv64-elf-gcc` is a bare-metal, target-configured build of upstream GCC rather
+      than a separate compiler project; its `riscv64-elf-` prefix distinguishes its
+      tools and target ABI from the host toolchain.
+  related-projects:
+    - >
+      GNU Binutils supplies the assembler, linker, and binary utilities normally used by
+      this compiler. `riscv64-elf-binutils` is its matching package; C libraries such as
+      Newlib may be added when a hosted or richer bare-metal runtime is required.
+  sources:
+    - https://gcc.gnu.org/
+    - https://gcc.gnu.org/git.html
+    - https://gcc.gnu.org/onlinedocs/
+    - https://gcc.gnu.org/onlinedocs/gcc/RISC-V-Options.html
+    - source_facts.description
+  summary:
+    - >
+      RISC-V 64-bit ELF GCC is a bare-metal cross build of the GNU Compiler Collection
+      whose prefixed drivers produce RISC-V ELF code.
+  timeline:
+    - '1987: The GNU C Compiler was first released.'
+    - '1990s: GCC expanded beyond C and became the GNU Compiler Collection.'
+    - '2010s: RISC-V support entered the upstream GNU compiler toolchain.'
+    - >
+      2020s: Packaged `riscv64-elf` toolchains became common for embedded RISC-V and
+      systems development.
+  usage:
+    - >
+      Invoke `riscv64-elf-gcc` or `riscv64-elf-g++` with target options such as `-march`
+      and `-mabi`, then link with an appropriate startup environment and linker script.
+    - >
+      The compiler normally drives matching RISC-V Binutils automatically. Bare-metal
+      applications may need separately supplied headers, runtime libraries, startup
+      objects, and board-specific link definitions.
 tags:
   - cli
   - compiler
@@ -56,14 +76,10 @@ provenance:
     - Official GCC homepage links GCC manuals and documentation.
   history-sources:
     - https://gcc.gnu.org/
-    - https://gcc.gnu.org/releases.html
-    - https://www.sifive.com/blog/risc-v-gcc-is-upstreamed
-    - https://riscv.org/about/
-    - https://github.com/riscv-collab/riscv-gnu-toolchain
-    - https://raw.githubusercontent.com/riscv-collab/riscv-gnu-toolchain/master/README.md
-    - https://formulae.brew.sh/formula/riscv64-elf-gcc
-    - >
-      https://raw.githubusercontent.com/Homebrew/homebrew-core/master/Formula/r/riscv64-elf-gcc.rb
+    - https://gcc.gnu.org/git.html
+    - https://gcc.gnu.org/onlinedocs/
+    - https://gcc.gnu.org/onlinedocs/gcc/RISC-V-Options.html
+    - source_facts.description
   repo-sources:
     - Official GCC homepage links the project's Git source under gcc.gnu.org/git.
   tags-sources:

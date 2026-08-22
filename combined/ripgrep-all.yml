@@ -10,41 +10,52 @@ config-file-location:
     - ~/.config/ripgrep-all/config.jsonc
 credentials-file-location: null
 history:
-  - >
-    ripgrep-all, usually invoked as rga, is Patrick Haller's Rust wrapper around ripgrep
-    for searching files whose useful text is hidden behind document, archive, media, or
-    database formats. The GitHub repository was created on 2019-06-04, and the project
-    announcement on 2019-06-16 presented it as "ripgrep, but also search in PDFs,
-    E-Books, Office documents, zip, tar.gz, etc." That framing made its ecosystem role
-    clear: rga does not replace ripgrep's fast line-oriented search engine; it feeds
-    ripgrep text extracted from formats that rg alone cannot read.
-  - >
-    The technical design follows ripgrep's preprocessor hook. rga invokes rg with
-    options including --pre=rga-preproc and pre-globs, while rga-preproc chooses an
-    adapter by filename extension or, with more accurate mode, by MIME-like magic-byte
-    detection. Adapters shell out to specialized tools and libraries for formats such as
-    PDF, Office documents, SQLite databases, images, archives, compressed files, and
-    video subtitles. This adapter architecture lets practitioners keep the rg search
-    model while broadening the corpus to notes, downloaded documents, ebooks, mail
-    archives, and project assets.
-  - >
-    Adoption has been strongest among command-line search users who already know ripgrep
-    and want the same workflow across non-plain-text files. The package ships helper
-    commands such as rga-fzf and rga-fzf-open for fuzzy interactive search and opening
-    matched files, and downstream packages exist in Homebrew, MacPorts, Nix, Arch, and
-    Scoop. crates.io and GitHub releases distribute the Rust package and prebuilt
-    archives, while distro packages describe it with the same practical tagline: rga
-    searches PDFs, ebooks, Office documents, archives, SQLite files, and similar rich
-    formats.
-  - >
-    The project also evolved toward configurability. A 1.0.0 alpha line appeared in
-    2023, but the release notes later stated that 0.10 contained the changes originally
-    planned for those alphas. Release notes for the 0.10 series introduced a config file
-    at ~/.config/ripgrep-all/config.jsonc and custom subprocess-spawning adapters,
-    giving users a way to extend rga for local formats without patching the built-in
-    adapter list. In practice, that made ripgrep-all a glue tool in the Unix tradition:
-    rg remains the matcher, external converters do the parsing, and rga coordinates the
-    pipeline.
+  adoption-history:
+    - >
+      The project distributes native binaries for Linux, macOS, and Windows and is
+      represented in multiple package ecosystems; source_facts.package-manager lists
+      Homebrew, MacPorts, Nix, Arch, and Scoop.
+  package-nerd-significance:
+    - >
+      ripgrep-all preserves ripgrep's command-line feel while demonstrating a composable
+      Unix-style approach: specialized converters turn otherwise opaque formats into
+      text, then a focused search engine performs the match.
+  project-history:
+    - >
+      ripgrep-all, commonly invoked as `rga`, was created as a wrapper around ripgrep
+      that preprocesses PDFs, office documents, ebooks, archives, and other
+      non-plain-text formats through adapters.
+    - >
+      The 0.10 series introduced generated JSONC configuration, custom subprocess
+      adapters, a SQLite-backed cache, an asynchronous adapter interface, and a
+      cross-platform `rga-fzf` helper.
+  related-projects:
+    - >
+      ripgrep provides the underlying search behavior. Format-specific adapters and
+      tools such as Pandoc, poppler utilities, ffmpeg, and archive extractors extend the
+      searchable file set; `rga-fzf` integrates interactive selection.
+  sources:
+    - https://github.com/phiresky/ripgrep-all#readme
+    - https://github.com/phiresky/ripgrep-all/releases
+    - https://github.com/phiresky/ripgrep-all/wiki
+    - source_facts.package-manager
+  summary:
+    - >
+      ripgrep-all (`rga`) extends ripgrep to search inside rich documents and archives
+      by converting their contents to searchable text through adapters.
+  timeline:
+    - '2018: The project began publishing its ripgrep-based rich-document search workflow.'
+    - >
+      2020s: The 0.10 line added generated JSONC configuration, custom adapters, SQLite
+      caching, and asynchronous internals.
+  usage:
+    - >
+      Use `rga PATTERN [PATH ...]` much like `rg`; ripgrep-all selects suitable adapters
+      for supported documents and forwards ordinary ripgrep options.
+    - >
+      Configuration can select and prioritize adapters, set archive recursion and cache
+      behavior, and define external adapters. Platform-specific standard-directory
+      conventions determine the default JSONC path.
 category: developer-tools
 package-manager:
   brew: ripgrep-all

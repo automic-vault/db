@@ -10,50 +10,61 @@ config-file-location:
   windows: '%RIPGREP_CONFIG_PATH%'
 credentials-file-location: null
 history:
-  - >
-    ripgrep is Andrew Gallant's Rust implementation of the code-search pattern that had
-    been popularized by ack, The Silver Searcher, and git grep. GitHub release records
-    show pre-1.0 artifacts beginning on 2016-09-06, and Gallant introduced the tool
-    publicly in a 2016-09-23 article that framed it as combining The Silver Searcher's
-    project-aware usability with GNU grep-like raw speed. The project grew out of
-    Gallant's work on Rust text search and Rust's regular-expression engine, so its
-    early identity was both a command-line utility and a demonstration that Rust could
-    produce fast, portable developer tooling.
-  - >
-    The design choice that made ripgrep feel different from classic grep was not only
-    speed, but default behavior tuned for source trees. Its README describes a
-    line-oriented recursive searcher that respects gitignore rules and skips hidden
-    directories and binary files unless the user asks otherwise. The guide expands that
-    model into layered ignore handling through .gitignore, .ignore, and .rgignore files,
-    the `-u` family for progressively disabling filters, glob selection, file-type
-    aliases such as `-tpy`, output replacement, text encoding support, binary-file
-    behavior, and configuration through `RIPGREP_CONFIG_PATH`.
-  - >
-    ripgrep's performance reputation came from a mix of implementation and packaging
-    choices. The README attributes its speed to Rust's regex engine using finite
-    automata, SIMD, and literal optimizations; UTF-8 handling integrated into the
-    automaton; automatic choice between memory maps and buffered search; parallel
-    directory traversal; and a RegexSet-based implementation for ignore matching.
-    Gallant's launch article argued that ripgrep stood out in both single-file and
-    large-directory benchmarks while retaining Unicode support, and it explicitly
-    presented the tool as cross-platform with binaries for Linux, macOS, and Windows.
-  - >
-    Adoption spread through both command-line package managers and editor tooling. The
-    upstream README links to GitHub release binaries for every release and advertises
-    packaging status, while Homebrew, Chocolatey, Debian, Fedora, Arch, Nix, Scoop,
-    winget, and other package managers distribute it under the short executable name
-    `rg`. Microsoft also maintains `vscode-ripgrep`, an npm wrapper whose README says it
-    is used by Visual Studio Code and explains that platform-specific ripgrep binaries
-    are placed inside the npm tarball for Node consumers.
-  - >
-    Practitioners use ripgrep as a fast source-tree searcher rather than as a strict
-    POSIX grep replacement. Common workflows include `rg pattern` from a repository
-    root, `rg -tTYPE pattern` to constrain a language or file family, `rg -g` to add ad
-    hoc globs, `rg -uuu` when generated, hidden, or binary files need inspection, and
-    `rg -P` or hybrid regex mode when look-around or backreferences are required. Its
-    role in the ecosystem is therefore half Unix filter and half project-aware search
-    indexer: small enough to compose in scripts, but opinionated enough to be the search
-    backend inside large editors and developer tools.
+  adoption-history:
+    - >
+      The official changelog records Homebrew and Arch Linux packaging by version 0.2.2.
+      source_facts.package-manager now lists broad availability across Homebrew,
+      Debian-family systems, Fedora, Alpine, Arch, Nix, Chocolatey, Scoop, Winget,
+      MacPorts, and other ecosystems.
+  package-nerd-significance:
+    - >
+      ripgrep became a showcase for Rust-based replacements for established Unix tools:
+      a single fast executable with familiar grep-like behavior, repository-aware
+      defaults, portable binary releases, and unusually detailed performance
+      documentation.
+  project-history:
+    - >
+      Andrew Gallant, using the BurntSushi handle, developed ripgrep as a recursive,
+      line-oriented search program written in Rust. Its defining defaults include
+      respecting gitignore rules and skipping hidden and binary files.
+    - >
+      The 0.8.0 release added configuration-file support, compressed-file searching,
+      true color, and expanded documentation. Version 0.10.0 generalized the core into
+      libripgrep and added PCRE2, multiline search, and JSON output; version 11 adopted
+      a new major-version scheme.
+  related-projects:
+    - >
+      GNU grep supplies the familiar command-line model; The Silver Searcher is an
+      explicit point of comparison. ripgrep-all wraps ripgrep with preprocessors for
+      rich document formats.
+  sources:
+    - https://github.com/BurntSushi/ripgrep#readme
+    - https://github.com/BurntSushi/ripgrep/blob/master/CHANGELOG.md
+    - https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md
+    - source_facts.package-manager
+  summary:
+    - >
+      ripgrep (`rg`) is a Rust command-line search tool that recursively searches files
+      with regular expressions while honoring ignore files by default. It combines
+      grep-like usage with repository-oriented defaults and high-performance search
+      internals.
+  timeline:
+    - '2016: Early ripgrep releases established the recursive search tool.'
+    - '2017: Version 0.2.2 documented entry into Homebrew core and Arch Linux repositories.'
+    - >
+      2018: Version 0.8.0 added configuration files and a substantially expanded
+      documentation set.
+    - '2018: Version 0.10.0 introduced libripgrep, PCRE2, multiline search, and JSON output.'
+    - '2019: Version 11 began the modern major-version numbering scheme.'
+  usage:
+    - >
+      Run `rg PATTERN [PATH ...]` for recursive text search. Common workflows add
+      file-type filters, globs, fixed-string mode, context lines, replacement output, or
+      PCRE2.
+    - >
+      ripgrep reads default arguments from the file named by `RIPGREP_CONFIG_PATH`; the
+      official guide makes clear that this environment variable points to a user-chosen
+      file rather than a fixed platform path.
 category: developer-tools
 package-manager:
   apk: ripgrep
