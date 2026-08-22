@@ -9,28 +9,53 @@ config-file-location:
     - ~/.rustypaste.toml
 credentials-file-location: null
 history:
-  - >
-    rustypaste is a self-hosted file upload and pastebin service written in Rust by
-    Orhun Parmaksiz. In a post published on May 17, 2023, the author traces it to
-    personal file-sharing habits, earlier use of 0x0-style hosting, and the decision to
-    write a minimal upload server in Rust using Actix Web. The same post describes
-    rustypaste as a stable personal tool after almost two years of use, with extensive
-    configuration and a public Shuttle deployment used to demonstrate the service.
-  - >
-    The project occupies the small, Unix-friendly end of the pastebin ecosystem. Its
-    README shows the core model as `curl -F file=@...` returning a shareable URL, with
-    no database because files are stored on the filesystem. Features include file
-    upload, URL shortening, remote URL upload, basic HTTP authentication, optional
-    random names, expiring and one-shot links, MIME detection controls, duplicate-upload
-    handling, listing and deleting files, a configurable landing page, Docker images,
-    binary releases, and a single-binary deployment style.
-  - >
-    Packaging reinforces the self-hosting audience. rustypaste can be installed with
-    Cargo, Arch Linux, Alpine, FreeBSD, binary releases, Docker images, and Homebrew's
-    `rustypaste` formula, which installs an example config. Practitioners deploy it
-    behind a reverse proxy or container, use `curl` for simple uploads, pair it with
-    `rpaste` or third-party clients such as Ferripaste and ShareX profiles, and treat it
-    as a private alternative to public pastebins or chat-app file uploads.
+  adoption-history:
+    - >
+      rustypaste is packaged for Cargo, Homebrew, Alpine, Arch Linux, Nix and
+      FreeBSD-oriented workflows, and it publishes binary and container deployment
+      options. The project also documents third-party clients and integrations for users
+      who want interfaces beyond curl.
+  package-nerd-significance:
+    - >
+      rustypaste is representative of the small, self-contained Rust service favored by
+      self-hosters: one binary, filesystem storage, no database, TOML configuration, and
+      straightforward container deployment. Its presence in several system and language
+      package managers makes it easy to deploy without adopting a large application
+      stack.
+  project-history:
+    - >
+      Orhun Parmaksız developed rustypaste as a minimal self-hosted file-upload and
+      pastebin server written in Rust. The service grew beyond basic uploads to include
+      expiring and one-shot links, URL shortening, protected files, authentication,
+      deletion and listing endpoints, MIME controls, and hot-reloadable configuration.
+  related-projects:
+    - >
+      rustypaste-cli is the project's standalone rpaste client. The server README also
+      lists community clients and integrations, including ShareX profiles and
+      alternative graphical or shell interfaces.
+  sources:
+    - https://github.com/orhun/rustypaste
+    - https://github.com/orhun/rustypaste/blob/master/README.md
+  summary:
+    - >
+      rustypaste is a minimal self-hosted HTTP service for uploading files, publishing
+      text, and shortening URLs. It stores data on the filesystem and does not require a
+      database.
+  timeline:
+    - 'Initial design: rustypaste established a single-binary, filesystem-backed paste service.'
+    - >
+      Feature expansion: The server added expiration, one-shot links, protected files,
+      URL shortening, authentication, listing and deletion facilities.
+    - >
+      Packaging expansion: Distribution grew to include Cargo, system packages, binaries
+      and containers.
+  usage:
+    - >
+      Administrators run rustypaste with config.toml and an upload directory, optionally
+      enabling authentication with environment variables, token files, or server
+      configuration. Clients upload multipart files with curl or compatible tools and
+      can request expiration, one-shot access, password protection, remote fetches, URL
+      shortening, listing, or deletion.
 tags:
   - cli
   - file-upload
@@ -63,11 +88,8 @@ provenance:
       Official GitHub repository README is the primary documentation surface and
       includes features, installation, usage, server, and client sections.
   history-sources:
-    - https://blog.orhun.dev/blazingly-fast-file-sharing/
     - https://github.com/orhun/rustypaste
-    - https://github.com/orhun/rustypaste-cli
-    - https://formulae.brew.sh/formula/rustypaste
-    - https://github.com/orhun/rustypaste/releases
+    - https://github.com/orhun/rustypaste/blob/master/README.md
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/orhun/rustypaste,
@@ -84,6 +106,6 @@ category-path:
   - pastebin
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
