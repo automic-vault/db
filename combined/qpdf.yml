@@ -8,38 +8,77 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    qpdf began as Jay Berkenbilt's low-level PDF transformation and inspection project:
-    a command-line program and C++ library for reading PDF structure, preserving
-    objects, and writing equivalent or transformed files. Its early identity was
-    deliberately technical rather than document-authoring oriented, aimed at developers
-    and maintainers who needed to understand, repair, linearize, encrypt, decrypt,
-    split, merge, or otherwise manipulate PDFs without rendering pages.
-  - >
-    The tool became especially associated with QDF mode, a normalized, more editable
-    representation of PDF internals. In that workflow, qpdf expands and rewrites a PDF
-    into a form suitable for inspection or hand editing, fix-qdf repairs stream lengths
-    and related bookkeeping after manual changes, and qpdf converts the result back into
-    ordinary PDF syntax. That made qpdf useful not only as an end-user utility, but also
-    as a debugging instrument for PDF generators, test suites, archival workflows, and
-    packaging systems that need deterministic transformations.
-  - >
-    qpdf's ecosystem role widened as PDF processing became a standard part of build,
-    publishing, scanning, and compliance toolchains. The standalone qpdf executable
-    covers common operations such as structural checking, password and encryption
-    handling, page selection, object-stream normalization, linearization for web
-    delivery, and JSON-oriented inspection, while libqpdf lets other programs embed the
-    same parser and writer. The companion zlib-flate utility reflects the same toolchain
-    philosophy by exposing a small PDF-adjacent compression primitive useful when
-    examining streams.
-  - >
-    Adoption moved well beyond the upstream SourceForge and GitHub project pages. qpdf
-    is packaged across Unix-like and Windows ecosystems, including Homebrew, Debian and
-    Ubuntu through libqpdf-dev, Fedora and other rpm-based distributions, Arch, Alpine,
-    MacPorts, Nix, Chocolatey, Scoop, winget, and openSUSE. That breadth made it a
-    common dependency for distribution maintainers, CI jobs, document-processing
-    applications, and practitioners who need scriptable PDF surgery rather than a GUI
-    editor.
+  adoption-history:
+    - >
+      qpdf has matured into both a command-line utility and a reusable C++ library with
+      C bindings. The supplied package metadata records packages across Homebrew, Debian
+      and Ubuntu, Fedora, Alpine, Arch, Nix, MacPorts, Chocolatey, Scoop, winget, and
+      openSUSE ecosystems, indicating unusually broad cross-platform packaging.
+    - >
+      Windows support and a partial C API arrived in 2009. Later releases added AppImage
+      distribution, continuous cross-platform release builds, shell-completion guidance
+      for packagers, and installed pkg-config and CMake package metadata for downstream
+      developers.
+  package-nerd-significance:
+    - >
+      qpdf occupies a distinctive niche between a PDF viewer and a content-creation
+      toolkit: it exposes PDF structure while preserving page content. Package
+      maintainers and automation authors value its small dependency footprint, stable
+      command-line interface, library API, repair behavior, encryption support, and
+      ability to split, merge, linearize, inspect, and transform PDFs without rendering
+      them.
+    - >
+      Its QDF and JSON representations are especially useful to Unix-tool enthusiasts
+      because they make otherwise opaque PDF internals accessible to text editors,
+      scripts, and tools such as jq. The companion fix-qdf and zlib-flate executables
+      extend that low-level toolbox.
+  project-history:
+    - >
+      qpdf's first public release was version 2.0 in April 2008. Early development
+      concentrated on portability and recovery from malformed PDFs; version 2.1 added
+      Windows support, a DLL, a partial C interface, AES encryption, and crypt filters
+      in October 2009.
+    - >
+      The project subsequently expanded its command-line and library interfaces while
+      retaining its focus on structural transformations. Version 7 changed the primary
+      license to Apache-2.0 and improved damaged-file recovery, while version 8
+      introduced an AppImage and higher-level helper APIs. Later development added
+      JSON-based inspection and modification, job-based interfaces, broader
+      cryptographic-provider support, and a CMake build system.
+  related-projects:
+    - fix-qdf is distributed with qpdf and repairs edited QDF files.
+    - zlib-flate is a small compression utility shipped with qpdf.
+    - jq can be used with qpdf's JSON representation for scripted low-level PDF modification.
+  sources:
+    - https://qpdf.readthedocs.io/en/latest/json.html
+    - https://qpdf.readthedocs.io/en/latest/overview.html
+    - https://qpdf.readthedocs.io/en/latest/qdf.html
+    - https://qpdf.readthedocs.io/en/latest/release-notes.html
+    - source_facts.package-manager
+  summary:
+    - >
+      qpdf is a cross-platform command-line program and C++ library for structural,
+      content-preserving PDF transformations. It is designed for inspecting PDF
+      internals and for operations such as splitting, merging, encryption,
+      linearization, repair, and low-level object manipulation rather than viewing or
+      rendering document content.
+  timeline:
+    - '2008-04: qpdf 2.0 became the first public release.'
+    - '2009-10: qpdf 2.1 added Windows support, a DLL, a partial C API, AES, and crypt filters.'
+    - '2017-09: qpdf 7.0 changed its primary license to Apache-2.0.'
+    - '2018-02: qpdf 8.0 added AppImage distribution.'
+    - '2022: qpdf 11 replaced the autoconf build with CMake.'
+  usage:
+    - >
+      Typical command-line uses include checking or repairing PDFs, merging and
+      splitting pages, decrypting or password-protecting documents, web-optimizing
+      through linearization, and inspecting or changing low-level PDF objects.
+      Developers can link against libqpdf through installed pkg-config or CMake
+      metadata.
+    - >
+      QDF mode produces a valid but editor-friendly PDF representation that can be
+      repaired after editing with fix-qdf. qpdf JSON provides a language-neutral
+      representation that can be manipulated with scripts or command-line JSON tools.
 category: media
 package-manager:
   apk: qpdf
