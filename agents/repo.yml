@@ -9,38 +9,49 @@ config-file-location:
     - .repo/
 credentials-file-location: null
 history:
-  - >
-    Repo grew out of the Android Open Source Project release. Google and the Open
-    Handset Alliance announced public Android platform source availability on October
-    21, 2008, and Shawn O. Pearce announced Repo and Gerrit to the Git community the
-    next day. The announcement described Repo as a Python application for binding
-    together multiple Git repositories, similar in spirit to submodules but oriented
-    around tracking project branches and managing an operating-system distribution in
-    Git.
-  - >
-    Android adopted Repo because the platform tree was split into many Git repositories
-    rather than a single monolithic repository. Google documentation explains that
-    Android uses Git for local version-control operations, while Repo unifies the many
-    Git projects through XML manifest files, performs uploads to Gerrit, and automates
-    cross-repository development workflow. A `repo init` creates the `.repo/` directory
-    and records the manifest repository; `repo sync` fetches or updates the projects
-    named by that manifest.
-  - >
-    Repo's ecosystem role is the Android answer to a superproject checkout. It does not
-    replace Git: practitioners still use Git inside individual projects for branches,
-    commits, diffs, and rebases, while using Repo for operations that span the tree,
-    such as initializing an AOSP checkout, syncing hundreds of projects, selecting
-    manifest branches or tags, and sending changes to Android's Gerrit review system.
-    The tool also influenced non-Android multi-repository workflows because the 2008
-    announcement stated that Repo and Gerrit were not Android-specific and could be
-    applied to projects that wanted a similar process.
-  - >
-    Distribution followed the tool's importance to Android platform work. Repo is
-    distributed as a standalone executable Python script and is packaged by Homebrew,
-    Debian, Ubuntu, Fedora, Arch, Alpine, MacPorts, and other package systems. Android
-    documentation also describes the Repo Launcher model: a small script is placed on
-    the user's path, then it initializes the checkout and dispatches to the full Repo
-    tool stored inside `.repo/repo/`.
+  adoption-history:
+    - >
+      Repo became foundational to the Android Open Source Project's development workflow
+      and is also packaged by multiple operating-system package managers. Its canonical
+      documentation notes that many distributions ship it directly.
+  package-nerd-significance:
+    - >
+      Repo is a notable package-management-adjacent tool because it coordinates a source
+      distribution assembled from many Git repositories. It popularized manifest-driven
+      checkout and synchronization for Android-scale source trees while deliberately
+      remaining a layer above Git.
+  project-history:
+    - >
+      Repo was created for the Android development workflow to coordinate many Git
+      repositories as one logical source tree. It is implemented as a Python launcher
+      and command suite, with its canonical source hosted by the Gerrit project at
+      googlesource.com.
+  related-projects:
+    - Git supplies the underlying repositories and object model.
+    - Gerrit is the review system targeted by Repo's upload workflow.
+    - >
+      Android manifests describe the collection of repositories, revisions, and paths
+      managed by Repo.
+  sources:
+    - 'Official Android command reference: https://source.android.com/docs/setup/reference/repo'
+    - >
+      Official internal filesystem documentation:
+      https://gerrit.googlesource.com/git-repo/+/HEAD/docs/internal-fs-layout.md
+    - 'Official source and README: https://gerrit.googlesource.com/git-repo/'
+  summary:
+    - >
+      Repo is Google's multiple-Git-repository management tool. It initializes
+      manifest-defined workspaces, synchronizes projects, starts coordinated topic
+      branches, reports status, and uploads changes for review.
+  timeline:
+    - '2008: Repo entered use as part of the Android open-source development infrastructure.'
+    - '2026: The maintained 2.x series continued to receive releases.'
+  usage:
+    - >
+      A user runs `repo init` to establish a manifest-driven client, `repo sync` to
+      populate or update its Git repositories, and commands such as `start`, `status`,
+      and `upload` to coordinate development across projects. Workspace metadata and
+      Repo's own checkout live under `.repo/`.
 tags:
   - android
   - cli
@@ -69,13 +80,11 @@ provenance:
     - Official Android Open Source Project documentation provides the Repo command reference.
     - Official Gerrit git-repo repository README is linked from the source repository.
   history-sources:
-    - https://www.openhandsetalliance.com/press_102108.html
-    - https://lwn.net/Articles/304488/
-    - https://opensource.googleblog.com/2008/11/gerrit-and-repo-android-source.html
-    - https://source.android.com/docs/setup/download/source-control-tools
-    - https://source.android.com/docs/setup/reference/repo
-    - https://gerrit.googlesource.com/git-repo
-    - https://formulae.brew.sh/formula/repo
+    - 'Official Android command reference: https://source.android.com/docs/setup/reference/repo'
+    - >
+      Official internal filesystem documentation:
+      https://gerrit.googlesource.com/git-repo/+/HEAD/docs/internal-fs-layout.md
+    - 'Official source and README: https://gerrit.googlesource.com/git-repo/'
   repo-sources:
     - source_facts.repo is empty.
     - >
