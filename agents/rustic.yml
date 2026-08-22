@@ -12,29 +12,69 @@ config-file-location:
     - rustic.toml
 credentials-file-location: null
 history:
-  - >
-    rustic is a Rust backup tool from the rustic-rs organization, with the main
-    repository created in March 2022. It entered an ecosystem already shaped by restic:
-    encrypted, deduplicated backups, content-addressed repository storage, and multiple
-    storage backends. rustic's defining historical choice was compatibility rather than
-    a new archive format: it reads and writes the restic repository format and can serve
-    as a restic replacement in many workflows.
-  - >
-    The project describes its origin in relation to restic's maturity and conservative
-    development pace: rustic was created by a heavy restic contributor who wanted faster
-    feature development. That explains its ecosystem role. It is not merely another
-    backup CLI written in Rust; it is an alternative client for a known repository
-    format, giving practitioners a way to use existing restic repositories while
-    exploring Rust-specific implementation choices around memory use, resource
-    efficiency, and cross-platform distribution.
-  - >
-    Practitioners use rustic for scheduled and manual backups, restores, checks,
-    pruning, and repository maintenance in the same operational category as restic. Its
-    docs emphasize that rustic and restic can operate on the same repository format,
-    with the practical caveat not to run prune from both tools at the same time.
-    Distribution through Homebrew, Alpine, MacPorts, Nix, Arch, and Scoop matches the
-    backup-tool use case: a single CLI installed by the host's package manager, pointed
-    at local, remote, or cloud-backed repositories.
+  adoption-history:
+    - >
+      rustic is distributed as cross-platform release binaries and through package
+      managers including Homebrew, Alpine, MacPorts, Nix, Arch, and Scoop. Its
+      compatibility goal lets users apply it to existing restic repository workflows.
+    - >
+      The project evolved from a standalone CLI toward a reusable ecosystem: version
+      0.6.0 moved most underlying logic into rustic_core and made the CLI a thin wrapper
+      around that library.
+  package-nerd-significance:
+    - >
+      rustic is notable as a Rust implementation in the restic repository ecosystem,
+      combining format compatibility with more aggressive feature development and
+      library reuse.
+    - >
+      Its configuration-driven operation, broad backend support, encrypted
+      content-addressed storage, deduplication, and packaged cross-platform binaries
+      make it relevant to users comparing modern backup clients and reproducible
+      unattended backup setups.
+  project-history:
+    - >
+      rustic was developed as a Rust backup client aiming to implement and extend restic
+      functionality while retaining repository compatibility. Early releases developed
+      backup, restore, prune, remote-backend, and configuration support.
+    - >
+      Version 0.3.1 adopted the `rustic` binary name and added configuration-file and
+      additional password-source support. Version 0.6.0 separated core logic into the
+      reusable rustic_core library.
+  related-projects:
+    - >
+      restic defines the repository ecosystem and principal compatibility target.
+      rustic_core exposes rustic's underlying functionality as a Rust library.
+  sources:
+    - https://github.com/rustic-rs/rustic/blob/main/CHANGELOG.md
+    - https://rustic.cli.rs/docs/
+    - https://rustic.cli.rs/docs/comparison-restic.html
+    - https://rustic.cli.rs/docs/getting_started.html
+  summary:
+    - >
+      rustic is a fast, encrypted, deduplicating backup application written in Rust and
+      designed to work with restic repositories.
+  timeline:
+    - >
+      2022-08-18: Version 0.3.0 expanded restore, prune, backend, environment-variable,
+      and self-update functionality.
+    - >
+      2022-09-15: Version 0.3.1 renamed the binary to rustic and added
+      configuration-file support.
+    - '2023-10-23: Version 0.6.0 refactored core logic into rustic_core.'
+    - >
+      2026-04-05: Version 0.11.2 added hardlink restoration and performance and memory
+      optimizations.
+  usage:
+    - >
+      Users define a repository, password source, and backup settings in a TOML profile,
+      initialize the repository, create snapshots, and restore or manage them with
+      rustic commands. Repositories may be local or remote, and backups are encrypted
+      and deduplicated.
+    - >
+      Passwords may be supplied interactively, through an environment variable, directly
+      in configuration, through a user-chosen password file, or by a password command.
+      Because the password-file path is user-selected rather than fixed, no
+      credentials-file location is asserted here.
 tags:
   - backup
   - cli
@@ -64,12 +104,10 @@ provenance:
     - Official dedicated user documentation is hosted at rustic.cli.rs/docs.
     - Official repository README is an additional official documentation surface.
   history-sources:
-    - https://github.com/rustic-rs/rustic
-    - https://api.github.com/repos/rustic-rs/rustic
-    - https://rustic.cli.rs/docs/FAQ.html
-    - https://rustic.cli.rs/ecosystem/rustic/
-    - https://forum.restic.net/t/a-restic-client-written-in-rust/4867
-    - https://formulae.brew.sh/formula/rustic
+    - https://github.com/rustic-rs/rustic/blob/main/CHANGELOG.md
+    - https://rustic.cli.rs/docs/
+    - https://rustic.cli.rs/docs/comparison-restic.html
+    - https://rustic.cli.rs/docs/getting_started.html
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/rustic-rs/rustic,
