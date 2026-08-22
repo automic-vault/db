@@ -6,33 +6,51 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    RopeBWT3 is Heng Li's command-line tool for Burrows-Wheeler Transform construction
-    and FM-index search over large, redundant DNA sequence collections. The project
-    belongs to the same bioinformatics indexing tradition as BWA and related
-    BWT/FM-index tools, but it is aimed at pangenomes, high-coverage read sets, and
-    terabase-scale sequence archives where redundancy makes run-length encoded BWTs
-    attractive.
-  - >
-    The method was described in Bioinformatics in Volume 40, Issue 12, with publication
-    on November 28, 2024. The paper frames BWT as a full-text-index component that began
-    in compression and became useful for redundant genomic sequence data, then reports
-    that ropebwt3 indexed 320 assembled human genomes in 65 hours and 7.3 terabases of
-    commonly studied bacterial assemblies in 26 days, using up to 170 GB of memory and
-    no working disk space.
-  - >
-    Practitioners use `ropebwt3 build` to construct run-length encoded BWT/FM-index
-    files, `ropebwt3 mem` to report supermaximal exact matches, `ropebwt3 sw` for local
-    alignments with mismatches and gaps, and auxiliary files such as sampled suffix
-    arrays and sequence-length tables when coordinates are needed. The README recommends
-    FMR for construction and FMD for search, documents prebuilt indices on Zenodo and
-    AWS, and notes that local alignment is far slower than exact-match querying.
-  - >
-    Adoption is specialized but visible in pangenome workflows. The Practical Haplotype
-    Graph documentation uses RopeBWT3 for imputation, with a workflow that exports hVCF
-    data, indexes the pangenome, maps short reads, and finds paths. Homebrew packaging
-    gives the single `ropebwt3` executable an accessible installation path for macOS and
-    Linux users outside bespoke bioinformatics stacks.
+  adoption-history:
+    - >
+      ropebwt3 is distributed through Homebrew. The project also supplies downloadable
+      prebuilt indexes for bacterial and human pangenomic data, supporting practical use
+      beyond source builds.
+  package-nerd-significance:
+    - >
+      The package brings terabase-scale pangenome indexing to a conventional
+      command-line installation workflow. Its distinction between dynamic FMR files for
+      construction and compact, memory-mappable FMD files for search is particularly
+      relevant to performance-conscious bioinformatics users.
+  project-history:
+    - >
+      Heng Li developed ropebwt3 as a successor in the ropeBWT line for construction and
+      searching of FM-indexes over large, highly redundant DNA collections.
+    - >
+      A 2024 Bioinformatics paper described BWT construction and search at terabase
+      scale. Subsequent 3.x releases expanded search and alignment behavior.
+  related-projects:
+    - ropebwt2 is the earlier incremental FM-index construction project.
+    - >
+      The software incorporates a revised BWA-SW approach for local alignment and
+      interoperates with tools such as seqtk when preparing index metadata.
+  sources:
+    - https://github.com/lh3/ropebwt3#readme
+    - https://github.com/lh3/ropebwt3/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      ropebwt3 constructs run-length-encoded Burrows-Wheeler Transform/FM-index data
+      structures for large DNA sequence sets and searches them for exact matches, local
+      alignments, and haplotype diversity.
+  timeline:
+    - '2024: The ropebwt3 terabase-scale methods paper appeared in Bioinformatics.'
+    - >
+      2025: Version 3.10 added multi-position output to the `sw` command and updated
+      suffix-array construction code.
+  usage:
+    - >
+      Typical workflows build an FMR or FMD index from FASTA/FASTQ data, generate a
+      sampled suffix array, and use `mem`, `sw`, or `hapdiv` for sequence search and
+      alignment.
+    - >
+      It is optimized for redundant collections such as pangenomes and high-coverage
+      reads rather than routine high-throughput read alignment.
 tags:
   - bioinformatics
   - bwt
@@ -62,10 +80,9 @@ provenance:
       includes getting started, examples, usage, algorithms, performance, and
       limitations.
   history-sources:
-    - https://github.com/lh3/ropebwt3
-    - https://academic.oup.com/bioinformatics/article/40/12/btae717/7912338
-    - https://phg.maizegenetics.net/imputation_ropebwt/
-    - https://formulae.brew.sh/formula/ropebwt3
+    - https://github.com/lh3/ropebwt3#readme
+    - https://github.com/lh3/ropebwt3/releases
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is already populated, so repo enrichment was intentionally not

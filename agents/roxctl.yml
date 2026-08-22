@@ -4,44 +4,76 @@ repo: null
 docs:
   - >
     https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_security_for_kubernetes/latest/html/roxctl_cli
-config-file-location: null
-credentials-file-location: null
+config-file-location:
+  unix:
+    - ~/.roxctl/roxctl-config
+    - $ROX_CONFIG_DIR/roxctl-config
+    - $XDG_RUNTIME_DIR/roxctl-config
+credentials-file-location:
+  unix:
+    - ~/.roxctl/roxctl-config
+    - $ROX_CONFIG_DIR/roxctl-config
+    - $XDG_RUNTIME_DIR/roxctl-config
 history:
-  - >
-    roxctl is the command-line client for StackRox and Red Hat Advanced Cluster Security
-    for Kubernetes. StackRox began as a Kubernetes-native security platform covering the
-    container lifecycle from build through deploy and runtime; Red Hat announced an
-    agreement to acquire StackRox on January 7, 2021, describing the product as a
-    full-lifecycle Kubernetes security platform for visibility, vulnerability
-    management, policy enforcement, compliance, network segmentation, and threat
-    detection.
-  - >
-    After the acquisition, Red Hat open sourced Red Hat Advanced Cluster Security for
-    Kubernetes as StackRox on May 16, 2022. The StackRox community site describes
-    StackRox as the upstream open source project for Red Hat Advanced Cluster Security,
-    and the GitHub README traces the codebase through earlier product names: Prevent,
-    Mitigate, and Apollo. roxctl is one of the practical interfaces into that platform,
-    alongside the web UI, Helm charts, the Operator, and Kubernetes manifests.
-  - >
-    The tool's ecosystem role is security automation for Kubernetes and OpenShift. Red
-    Hat documentation describes roxctl as a CLI for running commands against RHACS,
-    installable as a platform binary or runnable from a container image. Operators
-    authenticate it with API tokens or administrator credentials and use `ROX_API_TOKEN`
-    and `ROX_CENTRAL_ADDRESS` to point commands at Central, the RHACS management plane.
-  - >
-    Practitioners use roxctl in cluster bootstrap, CI policy gates, and incident/debug
-    workflows. Documented commands generate Sensor bundles for secured clusters, back up
-    and restore Central's database, check Kubernetes deployment YAML for policy
-    violations, check or scan container images, and adjust or inspect Central debug
-    settings. The separate roxctl-installer-action packages this usage for GitHub
-    Actions, including image scan and image check workflows, and recommends short-lived
-    access tokens for CI authentication.
-  - >
-    Homebrew packages roxctl as an Apache-2.0 formula built from Go with binary bottles
-    for macOS and Linux. In that packaging context it is a convenience install for
-    engineers who need the same CLI on laptops and build runners, while the Red Hat docs
-    keep the supported distribution path tied to RHACS release assets and container
-    images.
+  adoption-history:
+    - >
+      roxctl is distributed as part of the StackRox/RHACS ecosystem and is packaged
+      independently by Homebrew and Nix, making the security platform's automation
+      client available through general-purpose package managers.
+    - >
+      Red Hat documentation positions the CLI for both self-managed RHACS and RHACS
+      Cloud Service workflows.
+  package-nerd-significance:
+    - >
+      roxctl packages a large Kubernetes security platform's operational API into one
+      automation-friendly binary. It is useful in CI pipelines for policy checks and
+      image scans, while also supporting installation, backup, diagnostics, and
+      cluster-registration workflows.
+  project-history:
+    - >
+      roxctl originated as the command-line interface for StackRox, the open-source
+      Kubernetes security platform.
+    - >
+      Following Red Hat's acquisition and productization of StackRox as Red Hat Advanced
+      Cluster Security for Kubernetes, roxctl continued as the supported administrative
+      and automation CLI. Its commands have evolved alongside RHACS releases, including
+      image scanning, policy checks, SBOM generation, network-policy analysis, and
+      operator-oriented installation workflows.
+  related-projects:
+    - StackRox is the upstream platform repository containing roxctl.
+    - >
+      Red Hat Advanced Cluster Security for Kubernetes is the supported product in which
+      roxctl is documented.
+    - Kubernetes and OpenShift are its principal deployment environments.
+  sources:
+    - >
+      https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_security_for_kubernetes/4.11/html/roxctl_cli/
+    - https://github.com/stackrox/stackrox
+    - https://github.com/stackrox/stackrox/blob/master/CHANGELOG.md
+    - source_facts.package-manager
+  summary:
+    - >
+      roxctl is the command-line client for StackRox and Red Hat Advanced Cluster
+      Security for Kubernetes, covering security checks, scanning, deployment
+      management, diagnostics, and interaction with Central.
+  timeline:
+    - "StackRox era: roxctl developed as the platform's administrative CLI."
+    - >
+      Red Hat era: roxctl retained as the CLI for Red Hat Advanced Cluster Security for
+      Kubernetes.
+    - >
+      2023: Browser-based authentication and locally stored access and refresh tokens
+      were documented in the RHACS CLI workflow.
+    - >
+      2024–2026: RHACS releases continued adding and revising roxctl scanning, SBOM,
+      registration, and installation commands.
+  usage:
+    - >
+      Users configure a Central endpoint and authenticate using `ROX_API_TOKEN`, a token
+      file, or an authentication-provider login. Common automation commands scan images,
+      check images or deployments against policies, generate manifests, manage
+      secured-cluster registration, and collect diagnostic data.
+    - For RHACS Cloud Service, official guidance uses `ROX_API_TOKEN` and `ROX_ENDPOINT`.
 tags:
   - cli
   - kubernetes
@@ -67,14 +99,11 @@ provenance:
   docs-sources:
     - Official Red Hat documentation provides a dedicated roxctl CLI guide.
   history-sources:
-    - https://www.redhat.com/en/blog/faq-red-hat-acquire-stackrox
-    - https://www.redhat.com/en/blog/red-hat-releases-open-source-stackrox-to-the-community
-    - https://www.stackrox.io/docs/
-    - https://github.com/stackrox/stackrox
     - >
-      https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_security_for_kubernetes/4.0/html-single/roxctl_cli/index
-    - https://github.com/stackrox/roxctl-installer-action
-    - https://formulae.brew.sh/formula/roxctl
+      https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_security_for_kubernetes/4.11/html/roxctl_cli/
+    - https://github.com/stackrox/stackrox
+    - https://github.com/stackrox/stackrox/blob/master/CHANGELOG.md
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/stackrox/stackrox, so repo
