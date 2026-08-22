@@ -6,37 +6,60 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rdiff-backup was created by Ben Escoto and maintained by him from 2001 to 2005. The
-    project filled a niche between rsync-style mirroring and traditional incremental
-    backup sets: the destination is a readable mirror of the source tree, while older
-    states are represented as reverse diffs stored under the backup metadata directory.
-    That design made the common restore case simple because the latest files can be
-    copied directly, while older versions remain recoverable through the rdiff-backup
-    command.
-  - >
-    After the original maintainer period, Dean Gaudet, Andrew Ferguson, and Edward Ned
-    Harvey were key contributors from 2005 to 2016. Sol1 took stewardship in February
-    2016, but the project did not produce releases during that handoff period. In August
-    2019 Eric Lavarde, with support from Otto Kekalainen and Patrik Dufresne, took over
-    the project, completed the Python 3 rewrite, and released rdiff-backup 2.0 in March
-    2020 after an eleven-year gap from the previous major release.
-  - >
-    The 2.x revival was driven by the end of Python 2 and by accumulated distribution
-    and maintenance pressure. The renewed project moved collaboration to GitHub, added
-    CI/CD, incorporated long-standing patches such as sparse-file and hard-link fixes,
-    and refreshed packaging and binary distribution paths. That work mattered because
-    rdiff-backup had long been present in Unix-like package repositories and used by
-    administrators who wanted scriptable, resource-conscious local or remote backups
-    without periodic full backup images.
-  - >
-    Practitioners use rdiff-backup as a command-line backup primitive: run a
-    source-to-destination backup locally, point a destination through SSH with the
-    double-colon remote syntax, schedule it from system automation, and restore either
-    by copying the live mirror or by asking for an older version with restore options.
-    Its practical appeal comes from preserving filesystem metadata, transmitting only
-    differences over a pipe in an rsync-like fashion, and keeping the destination
-    understandable instead of turning every restore into a catalog lookup.
+  adoption-history:
+    - >
+      The official history describes nearly two decades of use before the 2.0 revival.
+      Packaging across major Linux distributions, BSD-oriented ecosystems, macOS,
+      Windows package managers, and Nix reflects broad cross-platform adoption.
+    - >
+      The Python 3 rewrite restored a maintained release line while preserving
+      rdiff-backup's established repository model.
+  package-nerd-significance:
+    - >
+      rdiff-backup combines a directly browsable current mirror with
+      reverse-differential history. Package enthusiasts value this unusual design
+      because it supplies incremental retention without periodic space-consuming full
+      backups.
+    - >
+      Its remote mode transfers differences through a pipe and is commonly paired with
+      SSH, placing it between rsync-style synchronization and traditional archival
+      backup software.
+  project-history:
+    - >
+      Ben Escoto originated and maintained rdiff-backup from 2001 to 2005. Dean Gaudet,
+      Andrew Ferguson, and Edward Ned Harvey were key contributors from 2005 through
+      2016.
+    - >
+      After a period of hibernation, Sol1 assumed stewardship in 2016 without producing
+      a release. Eric Lavarde, supported by Otto Kekäläinen and Patrik Dufresne, took
+      over in 2019, completed the Python 3 rewrite, and released version 2.0 in March
+      2020.
+  related-projects:
+    - >
+      rdiff-backup is conceptually related to rsync and uses bandwidth-efficient delta
+      transfer, but additionally retains reverse increments under rdiff-backup-data.
+  sources:
+    - https://rdiff-backup.net/
+    - https://rdiff-backup.net/examples.html
+    - https://rdiff-backup.net/rdiff-backup.1.html
+  summary:
+    - >
+      rdiff-backup is a local and network-capable backup tool that keeps the latest
+      backup as an ordinary mirror while storing earlier states as reverse differences.
+  timeline:
+    - '2001: Ben Escoto began the original project.'
+    - '2005: The original maintainer period ended and key contributors continued development.'
+    - '2016: Sol1 assumed stewardship after a period of hibernation.'
+    - '2019: Eric Lavarde, Otto Kekäläinen, and Patrik Dufresne began the modern revival.'
+    - '2020: Version 2.0, completing the Python 3 rewrite, was released in March.'
+  usage:
+    - >
+      Users back up one directory to another locally or through a remote rdiff-backup
+      process, commonly transported over SSH. Restore commands select a time or
+      increment, while retention commands remove history older than a specified age.
+    - >
+      The program accepts an arbitrary user-chosen options file through @filename, but
+      the official manual specifies no standard configuration-file location.
 tags:
   - backup
   - cli
@@ -65,10 +88,8 @@ provenance:
       developer docs
   history-sources:
     - https://rdiff-backup.net/
-    - https://opensource.com/article/20/9/rdiff-backup-linux
-    - https://manpages.debian.org/testing/rdiff-backup/rdiff-backup.1.en.html
-    - https://github.com/rdiff-backup/rdiff-backup/blob/master/CHANGELOG.adoc
-    - https://formulae.brew.sh/formula/rdiff-backup
+    - https://rdiff-backup.net/examples.html
+    - https://rdiff-backup.net/rdiff-backup.1.html
   repo-sources:
     - Official rdiff-backup homepage links to the GitHub repo as source code
   tags-sources:

@@ -6,27 +6,47 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rdfind, short for redundant data find, is Paul Dreik's command-line utility for
-    finding duplicate files by content rather than by file name. Its homepage positions
-    it for compressing backup directories and finding duplicate files, and notes that
-    the repository moved to GitHub on 2018-03-26 while signed releases remained served
-    from the project site.
-  - >
-    The tool's practical role is filesystem deduplication before filesystems or backup
-    workflows do it automatically. The manpage describes a recursive scan across files
-    and directories, checksum calculation only when needed, and ranking logic that
-    chooses an original file while treating the rest as duplicates. Debian's manpage
-    records the algorithmic claim as O(N log N) in the number of files. By default
-    rdfind reports possible saved space and writes a results file rather than deleting
-    anything, which fits its common use as a review-first cleanup tool.
-  - >
-    Practitioners use rdfind for tasks such as deduplicating backup trees, replacing
-    duplicates with hard links or symbolic links, or producing a duplicate report for
-    manual cleanup. Its packaging across Homebrew and Linux distributions reflects a
-    stable small-utility niche: it competes less with file indexers than with ad hoc
-    `find`, checksum, and shell pipelines, giving users one compiled command with
-    predictable ranking and explicit destructive-action switches.
+  adoption-history:
+    - >
+      rdfind is packaged across Debian, Ubuntu, Fedora, Homebrew, MacPorts, Alpine,
+      Arch, Nix, and other Unix-like ecosystems, as recorded in
+      source_facts.package-manager and the official README.
+  package-nerd-significance:
+    - >
+      rdfind offers a focused Unix-style alternative to larger storage-management
+      suites. Its staged comparison algorithm minimizes unnecessary reads, while
+      optional hard-link and symbolic-link replacement makes it useful for deduplicating
+      backup trees.
+  project-history:
+    - >
+      Paul Dreik created rdfind as a command-line utility for finding redundant files by
+      content rather than filename. The official manual carries a 2006–2026 authorship
+      range.
+    - >
+      The project remains actively maintained as a portable C++ utility for Unix-like
+      systems, with Cygwin support also documented.
+  related-projects:
+    - >
+      The official documentation mentions find, md5sum, sha1sum, symlinks, and Fslint as
+      related tools or alternatives.
+  sources:
+    - https://github.com/pauldreik/rdfind#readme
+    - https://rdfind.pauldreik.se/rdfind.1.html
+  summary:
+    - >
+      rdfind recursively identifies files with identical content and can report, delete,
+      hard-link, or symbolically link redundant copies.
+  timeline:
+    - '2006: The authorship period recorded by the official manual begins.'
+    - '2026: Version 1.8.0 was released on February 22.'
+  usage:
+    - >
+      Users pass one or more files or directories to rdfind. By default it writes
+      results.txt without changing files; explicit options enable duplicate deletion or
+      replacement with hard or symbolic links.
+    - >
+      The manual cautions against modifying scanned directories concurrently and
+      recommends using it on directories owned by the same user.
 tags:
   - cli
   - content-comparison
@@ -56,11 +76,8 @@ provenance:
       Official pauldreik/rdfind README documents usage, examples, algorithm, and build
       information
   history-sources:
-    - https://rdfind.pauldreik.se/
+    - https://github.com/pauldreik/rdfind#readme
     - https://rdfind.pauldreik.se/rdfind.1.html
-    - https://manpages.debian.org/testing/rdfind/rdfind.1.en.html
-    - https://github.com/pauldreik/rdfind
-    - https://formulae.brew.sh/formula/rdfind
   repo-sources:
     - >
       Official GitHub repository pauldreik/rdfind is linked from project discovery and
