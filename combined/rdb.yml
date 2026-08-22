@@ -7,23 +7,61 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    `rdb` is a Redis-dump parser in the long-running niche of tools that inspect Redis
-    RDB snapshot files outside a live Redis server. Redis documentation describes RDB
-    persistence as point-in-time snapshots of a dataset, one of Redis's persistence
-    choices alongside append-only files and disabled persistence. That file-format role
-    created a practical need for parsers that can audit, export, or transform `dump.rdb`
-    files without loading them into production Redis.
-  - >
-    HDT3213's `rdb` implements that niche in Go for secondary development and memory
-    analysis. Its README says it can generate memory reports, convert RDB files to JSON
-    or Redis Serialization Protocol/AOF-style output, find the largest keys, find
-    LFU-hot keys, draw flame graphs for memory analysis, customize data usage, and
-    generate RDB files. The README also credits the older `redis-rdb-tools` project,
-    which places it in an ecosystem of offline Redis forensics and migration utilities.
-    Adoption appears narrow but practical: Homebrew packages it as `rdb`, and the
-    upstream recommends `go install`, Homebrew, or release binaries for operators and
-    developers who need command-line analysis of Redis snapshots.
+  adoption-history:
+    - >
+      The project is distributed through Go's module tooling, downloadable release
+      binaries, and Homebrew. The supplied package metadata currently records Homebrew
+      as its package-manager channel.
+  package-nerd-significance:
+    - >
+      rdb packages several common Redis snapshot-inspection jobs into one Go binary:
+      format conversion, memory reporting, large-key discovery, LFU hot-key analysis,
+      prefix aggregation, and flame graphs.
+    - >
+      It is useful when operators need offline visibility into a Redis snapshot without
+      loading the dataset into a running Redis server. The repository also exposes
+      parser functionality for secondary development rather than limiting the project to
+      its CLI.
+  project-history:
+    - >
+      rdb was developed in Go as a Redis RDB parser for secondary development and memory
+      analysis. Its README credits the earlier `redis-rdb-tools` project as an
+      influence.
+    - >
+      The project expanded from parsing and conversion into operational analysis
+      features, including memory reports, biggest-key and hottest-key searches, prefix
+      analysis, flame graphs, and RDB generation.
+  related-projects:
+    - Redis produces the RDB snapshot format consumed by the tool.
+    - >
+      redis-rdb-tools is explicitly credited by the project and provides a related
+      snapshot-parsing workflow.
+  sources:
+    - https://github.com/HDT3213/rdb
+    - https://github.com/HDT3213/rdb/releases
+  summary:
+    - >
+      rdb is a Go implementation of a Redis RDB snapshot parser. It provides both a
+      command-line analysis tool and reusable functionality for applications that need
+      to inspect or generate Redis snapshot data.
+  timeline:
+    - >
+      Initial project: A Go parser was created for Redis RDB secondary development and
+      memory analysis.
+    - >
+      Subsequent development: Conversion, reporting, big-key, hot-key, prefix,
+      flame-graph, and snapshot-generation features were added.
+    - >
+      Current releases: The official release series continues to track newer Redis RDB
+      format versions and parser fixes.
+  usage:
+    - >
+      Typical commands convert a snapshot to JSON or AOF, generate a memory report, find
+      the largest or hottest keys, summarize key prefixes, or launch a flame-graph view.
+    - >
+      The input is normally a Redis `dump.rdb` file, with output paths and analysis
+      modes supplied as command-line flags. No official persistent configuration or
+      credentials file is documented.
 category: data
 package-manager:
   brew: rdb

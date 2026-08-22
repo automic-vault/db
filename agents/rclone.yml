@@ -19,48 +19,68 @@ credentials-file-location:
   windows:
     - '%APPDATA%\rclone\rclone.conf'
 history:
-  - >
-    rclone is an open-source command-line program for managing files on cloud storage,
-    written in Go by Nick Craig-Wood. Craig-Wood described it in a 2018 Go London User
-    Group talk as a hobby project started in 2012 to transfer files to and from cloud
-    storage. The changelog records the project start on November 18, 2012, the name
-    `rclone` on June 27, 2013, and the 1.00 release on July 3, 2014.
-  - >
-    The original analogy was rsync for cloud storage: a familiar command-line tool for
-    copying, synchronizing, checking, moving, and listing data where the other side is
-    an object store or hosted file service rather than another POSIX filesystem. Early
-    changelog entries show the project hardening around Google Drive, S3, Swift,
-    config-file handling, checksums, and cross-compilation before 1.00, which set the
-    pattern for a single portable binary with many backends.
-  - >
-    rclone's adoption broadened as cloud storage fragmented. Its homepage describes
-    support for more than 70 cloud storage products, including S3-compatible stores,
-    consumer and business file services, and standard protocols such as SFTP, HTTP, FTP,
-    WebDAV, and SMB. That breadth made rclone a common interoperability layer for
-    backups, migrations between vendors, cloud-to-cloud copies, research-data movement,
-    and personal media or archive workflows.
-  - >
-    The tool's practical model is a small configuration database of named remotes. A
-    user runs `rclone config`, defines a remote such as an S3 bucket, Google Drive,
-    Backblaze B2 account, or SFTP server, and then addresses paths as `remote:path`.
-    Commands such as `copy`, `sync`, `move`, `check`, `size`, `ncdu`, and `lsf` mirror
-    local Unix expectations while adding cloud-aware features such as restartable
-    transfers, checksum verification, metadata handling, filters, dry-run safety, and
-    server-side copy when a backend supports it.
-  - >
-    rclone also grew beyond simple transfer. The `mount` command, added in v1.33, uses
-    FUSE to expose cloud storage as a filesystem on Linux, FreeBSD, macOS, and Windows.
-    Other commands can serve local or remote storage over HTTP, WebDAV, FTP, SFTP, or
-    DLNA, and virtual backends add encryption, compression, chunking, hashing, and union
-    views. This made rclone useful both as an operator tool and as a building block for
-    higher-level backup, GUI, and workflow systems.
-  - >
-    Distribution reinforced that role. The upstream install page emphasizes a single Go
-    binary and documents precompiled downloads, an install script, Homebrew and MacPorts
-    on macOS, Windows package managers such as Winget, Chocolatey, and Scoop, Docker,
-    Snap, source builds, and portable use. The project page also notes packages in
-    Ubuntu, Debian, Fedora, Homebrew, and Chocolatey repositories while recommending
-    upstream downloads for the project release stream.
+  adoption-history:
+    - >
+      rclone grew from a cloud-file synchronization utility into a widely packaged
+      cross-platform storage tool. The supplied package-manager data records packages
+      for Homebrew, Chocolatey, Scoop, WinGet, MacPorts, Nix, Alpine, Debian/Ubuntu,
+      Fedora, Arch, and openSUSE ecosystems.
+    - >
+      Its official downloads cover Windows, macOS, Linux, BSD variants, Plan 9, and
+      Solaris, while native packages and a single-binary design make it common in
+      servers, containers, NAS systems, and automation.
+  package-nerd-significance:
+    - >
+      rclone is notable for presenting many incompatible object-storage and cloud-drive
+      APIs through one rsync-like command vocabulary. This makes it a practical
+      portability layer for shell scripts and backup jobs.
+    - >
+      The combination of copy/sync operations, mounting, client-side encryption, an
+      ncdu-style browser, remote-control APIs, and extensive backend support lets one
+      package replace several provider-specific transfer clients.
+  project-history:
+    - >
+      Nick Craig-Wood began rclone as a Go program for synchronizing files with cloud
+      storage. The official changelog records v0.00 on 18 November 2012.
+    - >
+      Later releases expanded beyond copying and synchronization. Notable milestones
+      include mount and crypt functionality in v1.33, ncdu in v1.37, the web GUI in
+      v1.49, fuller VFS caching in v1.53, and self-update support in v1.55.
+  related-projects:
+    - >
+      rsync supplies the conceptual command-line model, while FUSE-compatible mount
+      support lets rclone expose remote storage as a filesystem.
+    - >
+      Provider-specific tools and protocols—including S3 clients, WebDAV, SFTP, and
+      cloud-drive applications—overlap with individual rclone backends.
+  sources:
+    - https://github.com/rclone/rclone
+    - https://rclone.org/changelog/
+    - https://rclone.org/commands/rclone_config/
+    - https://rclone.org/docs/
+    - https://rclone.org/install/
+  summary:
+    - >
+      rclone is a cross-platform command-line program for copying, synchronizing,
+      mounting, and managing files across cloud-storage services and other remote
+      systems. Its project shorthand, "rsync for cloud storage," reflects both its
+      interface and its place in package-manager culture.
+  timeline:
+    - '2012: The official changelog records v0.00 on 18 November.'
+    - '2016: v1.33 introduced mount and crypt functionality.'
+    - '2017: v1.37 added the ncdu-style interface.'
+    - '2019: v1.49 introduced the official web GUI.'
+    - '2020: v1.53 added full VFS cache mode.'
+    - '2021: v1.55 introduced self-update support.'
+  usage:
+    - >
+      Users define named remotes with `rclone config`, then use commands such as `copy`,
+      `sync`, `move`, `mount`, and `lsd` against local paths or `remote:path` targets.
+    - >
+      The configuration file commonly contains provider login information or refresh
+      tokens. Official documentation recommends restricted permissions and supports
+      configuration encryption; environment variables can also define remotes for
+      ephemeral and containerized use.
 tags:
   - backup
   - cli
@@ -88,14 +108,11 @@ provenance:
       The official rclone documentation is hosted at rclone.org/docs and includes the
       rclone config file command reference.
   history-sources:
-    - https://www.craig-wood.com/nick/articles/rclone-and-go-2018/
-    - https://rclone.org/changelog/
-    - https://rclone.org/
-    - https://rclone.org/docs/
-    - https://rclone.org/commands/rclone_mount/
-    - https://rclone.org/install/
     - https://github.com/rclone/rclone
-    - https://formulae.brew.sh/formula/rclone
+    - https://rclone.org/changelog/
+    - https://rclone.org/commands/rclone_config/
+    - https://rclone.org/docs/
+    - https://rclone.org/install/
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/rclone/rclone, so

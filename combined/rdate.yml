@@ -7,22 +7,47 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rdate is the Unix-style client for the Internet Time Protocol described by RFC 868.
-    RFC 868 defines a simple service that returns a machine-readable count of seconds
-    since January 1, 1900, and its motivation included systems without reliable
-    date/time clocks. The rdate workflow grew from that simplicity: contact a remote
-    time server, print the returned time, and optionally set the local system clock.
-  - >
-    The Homebrew package points at Nicholas J. Humfrey's GPL implementation, whose
-    README says it connects to an RFC 868 time server over TCP/IP and uses
-    protocol-independent socket code for IPv4 and IPv6. Distribution packaging also
-    overlaps with OpenRdate, which extended the classic command with SNTP/NTP support;
-    Debian's rdate manpage describes use with RFC 868 servers or RFC 5905 SNTP/NTP
-    servers, the `-p` print-only mode, `-s` silent setting mode, UDP/TCP selection for
-    RFC 868, and `adjtime`-based gradual adjustment. Practitioners mainly encounter
-    rdate as a small bootstrapping or legacy-administration tool, not as a full
-    time-synchronization daemon.
+  adoption-history:
+    - >
+      The supplied package metadata records rdate packages for Homebrew, Debian, Ubuntu,
+      and Fedora's `openrdate` package, preserving the utility for compatibility and
+      lightweight system-administration workflows.
+  package-nerd-significance:
+    - >
+      rdate represents the small-tool era of Unix network administration: it performs
+      one task through the simple RFC 868 Time Protocol. It remains useful for legacy
+      environments and protocol testing, even though NTP-based tools are preferred for
+      continuous clock discipline.
+  project-history:
+    - >
+      This maintained implementation uses protocol-independent socket code and supports
+      both IPv4 and IPv6. Its official source tree retains a traditional Autotools
+      layout, manual page, NEWS file, and ChangeLog.
+  related-projects:
+    - >
+      NTP clients such as ntpd, chrony, and systemd-timesyncd provide continuous
+      synchronization and modern clock-correction behavior.
+    - RFC 868 time servers are the remote counterparts used by rdate.
+  sources:
+    - https://github.com/njh/rdate
+    - https://github.com/njh/rdate/blob/main/rdate.1
+    - https://www.aelius.com/njh/rdate
+  summary:
+    - >
+      rdate is a small command-line client for RFC 868 time servers. It can print a
+      remote host's time or set the local system clock.
+  timeline:
+    - 'Legacy Unix utility: rdate became associated with the RFC 868 Time Protocol workflow.'
+    - >
+      Modern maintained version: Protocol-independent networking added IPv4 and IPv6
+      operation.
+  usage:
+    - >
+      Users supply a time-server hostname and choose whether to print the returned time
+      or set the system clock. Setting the clock generally requires elevated privileges.
+    - >
+      No official configuration or credentials file is documented; behavior is selected
+      through command-line options.
 category: system
 package-manager:
   brew: rdate
