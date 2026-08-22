@@ -3,31 +3,60 @@ display-name: resty
 repo: null
 docs:
   - https://github.com/micha/resty#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - ${XDG_CONFIG_HOME}/resty/host
+    - ${XDG_CONFIG_HOME}/resty/<host>
+    - ~/.resty/host
+    - ~/.resty/<host>
 credentials-file-location: null
 history:
-  - >
-    resty is a small shell-based REST client from Micha Niskin's micha/resty repository.
-    Its design is intentionally close to curl: the README describes it as a tiny wrapper
-    that defines shell functions for HTTP verbs rather than running inside a separate
-    command environment. That choice made resty attractive to shell users who wanted
-    REST calls to compose with awk, sed, jq, jsawk, Perl, Python, and ordinary
-    pipelines.
-  - >
-    The project had active tagged releases in 2011, including 1.8 on April 29, 2011, 1.9
-    on June 16, 2011, 2.0 on July 10, 2011, and 2.2 on July 26, 2011. A later
-    maintenance burst in 2017 produced 2.3 on October 2, 2017 and the 3.0 release on
-    November 11, 2017, whose notes describe a complete refactor of the scripts and new
-    flags for JSON, XML, and per-host defaults.
-  - >
-    Practitioners use resty as a curl-friendly interactive shell layer: first source the
-    script, set a request URI base, then run GET, POST, PUT, PATCH, DELETE, HEAD,
-    OPTIONS, or TRACE against relative paths. It stores request context, supports
-    cookies, passes extra options through to curl, and can fetch a JSON document,
-    transform it in a pipeline, and send it back with PUT or POST. Distribution reflects
-    that shell-plugin niche: the README lists bpkg, Antigen, zplug, and Oh My Zsh
-    installation paths, while Homebrew packages it for macOS and Linux users who prefer
-    a formula.
+  adoption-history:
+    - >
+      The official README documents installation through shell-oriented ecosystems
+      including bpkg, Antigen, Zplug, and Oh My Zsh; the project is also packaged by
+      Homebrew.
+  package-nerd-significance:
+    - >
+      Resty represents a characteristically Unix approach to API tooling: it exposes
+      HTTP verbs as shell functions around curl, allowing existing tools such as jq,
+      awk, sed, and Perl to remain in the pipeline.
+    - >
+      Because it is sourced into Bash or Zsh rather than run as an isolated interactive
+      client, it preserves shell composition and supports concise repeatable API
+      sessions.
+  project-history:
+    - >
+      Resty was developed as a small shell wrapper around curl for interacting with REST
+      services.
+    - >
+      Later configuration behavior adopted XDG config and data directories while
+      retaining `~/.resty` compatibility for installations predating version 2.1.
+  related-projects:
+    - curl performs the underlying HTTP transfers.
+    - jq and the bundled `pp` or `pypp` helpers can process JSON responses.
+    - Oh My Zsh and other shell plugin managers can load Resty.
+  sources:
+    - https://github.com/micha/resty#readme
+    - https://github.com/micha/resty/blob/master/CHANGELOG.md
+    - source_facts.package-manager
+  summary:
+    - >
+      Resty is a Bash and Zsh function library that wraps curl with concise
+      REST-oriented commands.
+  timeline:
+    - >
+      2.1 era: Configuration and data storage gained XDG-directory support while
+      preserving the legacy `~/.resty` layout.
+  usage:
+    - >
+      After sourcing the script, users set a base URI with `resty` and invoke functions
+      such as `GET`, `POST`, `PUT`, `PATCH`, and `DELETE`, optionally piping request or
+      response data through ordinary shell tools.
+    - >
+      Resty saves its current base URI in `host` and supports per-host configuration
+      files containing curl arguments by HTTP method. Those files may contain
+      authentication arguments, but the project documents no separate credentials file.
 tags:
   - api-client
   - cli
@@ -57,10 +86,9 @@ provenance:
       Official GitHub README is the project documentation surface for installation,
       configuration, request base, verbs, and pipeline examples.
   history-sources:
-    - https://github.com/micha/resty
-    - https://github.com/micha/resty/releases
-    - https://github.com/micha/resty/tags
-    - https://formulae.brew.sh/formula/resty
+    - https://github.com/micha/resty#readme
+    - https://github.com/micha/resty/blob/master/CHANGELOG.md
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already has https://github.com/micha/resty, so repo is returned

@@ -36,44 +36,59 @@ config-file-location:
     - '%USERPROFILE%\resticprofile\profiles'
 credentials-file-location: null
 history:
-  - >
-    Resticprofile is a configuration-profile manager and scheduler for restic,
-    maintained under the `creativeprojects` GitHub account. The repository was created
-    on 2019-06-11, and the first beta release, v0.1.0, was published on 2019-06-24. From
-    the start, its role was deliberately adjacent to restic rather than a replacement
-    for it: it wraps restic invocations in named profiles and repeatable configuration
-    files.
-  - >
-    The project exists because restic intentionally emphasizes a compact CLI and
-    repository format, while many real deployments need durable configuration, multiple
-    backup jobs, hooks, retention, checks, and scheduler integration. The resticprofile
-    documentation describes it as the bridge between a configuration file and the restic
-    command line, noting that a native restic configuration file had been discussed but
-    remained a low-priority feature for restic itself.
-  - >
-    Practitioners use resticprofile to turn shell-script backup conventions into
-    structured profiles. A single configuration can define repositories, password
-    handling, backup paths, retention commands, repository checks, shell hooks for
-    mounting or unmounting disks, HTTP hooks for notifications, status files for
-    monitoring, Prometheus output, and grouped profiles that run sequentially. Supported
-    configuration syntaxes include TOML, JSON, YAML, and HCL, which makes it convenient
-    for both hand-written host configs and generated infrastructure files.
-  - >
-    Scheduling is the feature that gave resticprofile a clear place in the restic
-    ecosystem. A 2020 restic forum announcement introduced automatic schedule generation
-    for systemd timers, launchd agents, and Windows Task Scheduler. The documentation
-    later describes scheduler support for launchd on macOS, Task Scheduler on Windows,
-    systemd on Linux and other BSDs, and crond or crontab files as fallbacks. This lets
-    users keep restic’s core binary unchanged while delegating host-specific job
-    registration to resticprofile.
-  - >
-    Distribution mirrors its role as a cross-platform operations helper: GitHub releases
-    provide binaries, and package-manager metadata lists Homebrew, MacPorts, Nix, Scoop,
-    and Winget packages. It is also listed among wrapper tools in the broader restic
-    ecosystem, alongside autorestic, crestic, runrestic, resticker, and similar
-    projects. The practical adoption pattern is strongest among self-hosters and
-    administrators who like restic’s repository model but do not want backup policy to
-    live only in cron snippets or one-off shell scripts.
+  adoption-history:
+    - >
+      resticprofile is available through Homebrew, MacPorts, Nix, Scoop, and WinGet,
+      reflecting adoption by restic users across Unix-like systems and Windows.
+  package-nerd-significance:
+    - >
+      restic intentionally remains command-line focused and does not provide its own
+      persistent profile format. resticprofile fills that ecosystem niche without
+      replacing restic itself.
+    - >
+      Its support for TOML, YAML, JSON, and HCL, plus schemas and native schedulers,
+      makes restic configurations reproducible and suitable for dotfile or
+      infrastructure repositories.
+  project-history:
+    - >
+      resticprofile was created as a configuration-profile manager and automation
+      wrapper for restic, bridging the gap between restic’s command-line interface and
+      recurring backup jobs.
+    - >
+      The project grew to support profile inheritance, retention workflows, hooks,
+      groups, resource priorities, monitoring, multiple configuration syntaxes, and
+      operating-system schedulers.
+  related-projects:
+    - restic is the backup engine executed by resticprofile.
+  sources:
+    - https://creativeprojects.github.io/resticprofile/
+    - https://creativeprojects.github.io/resticprofile/configuration/getting_started/
+    - https://creativeprojects.github.io/resticprofile/configuration/path/
+    - https://creativeprojects.github.io/resticprofile/usage/
+    - source_facts.package-manager
+  summary:
+    - >
+      resticprofile is a cross-platform profile manager, command runner, and scheduler
+      for restic backups.
+  timeline:
+    - >
+      2022: Official configuration examples documented the established version-1 profile
+      format.
+    - >
+      2026: The generated configuration reference covered current restic commands and
+      both version-1 and preview version-2 schemas.
+  usage:
+    - >
+      Users define repository, password-file, backup sources, retention, hooks, and
+      scheduling options in a profiles file, then invoke restic commands through a
+      selected profile.
+    - >
+      The default basename is `profiles`; supported suffixes include `.conf`, `.yaml`,
+      `.toml`, `.json`, and `.hcl`. Search directories differ across Linux, macOS, and
+      Windows.
+    - >
+      A profile may point to an arbitrary restic password file, but resticprofile does
+      not prescribe a separate credentials-file location.
 tags:
   - automation
   - backup
@@ -104,14 +119,11 @@ provenance:
       source_facts.repo is the official GitHub repository, whose README is an additional
       documentation surface.
   history-sources:
-    - https://api.github.com/repos/creativeprojects/resticprofile
-    - https://api.github.com/repos/creativeprojects/resticprofile/releases?per_page=100
     - https://creativeprojects.github.io/resticprofile/
-    - https://creativeprojects.github.io/resticprofile/schedules/index.html
-    - >
-      https://forum.restic.net/t/auto-generate-systemd-timer-launchd-agent-windows-task-scheduler/2949
-    - https://formulae.brew.sh/formula/resticprofile
-    - https://github.com/rubiojr/awesome-restic/blob/main/README.md
+    - https://creativeprojects.github.io/resticprofile/configuration/getting_started/
+    - https://creativeprojects.github.io/resticprofile/configuration/path/
+    - https://creativeprojects.github.io/resticprofile/usage/
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already contains

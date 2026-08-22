@@ -8,64 +8,58 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    Restic is a Go backup program centered on encrypted, deduplicated, content-addressed
-    repositories. The GitHub repository was created on 2014-04-27, and v0.1.0 was
-    published on 2015-09-14. A 2016 release note for v0.2.0 described roughly 550
-    commits since v0.1.0 and tied the early public release line to August 2015, which
-    matches the project’s transition from initial development into a widely packaged
-    command-line backup tool.
-  - >
-    The project’s design principles are explicit: backups should be easy to run, fast
-    enough for regular use, verifiable, and secure even when the storage backend is not
-    trusted. Restic initializes a repository with a password, stores snapshots of
-    selected file trees, and restores either by materializing files with `restic
-    restore` or by mounting a repository through FUSE so old snapshots can be browsed.
-    The warning attached to repository creation is central to the security model:
-    without the repository password, the data is unrecoverable.
-  - >
-    Restic’s repository format made it attractive for off-site and cloud backups. It
-    supports local directories, SFTP, a REST server protocol, Amazon S3 and
-    S3-compatible object stores, OpenStack Swift, Backblaze B2, Microsoft Azure Blob
-    Storage, Google Cloud Storage, and many additional services through rclone. This
-    backend range let the same CLI fit laptops, home servers, NAS setups, cloud
-    instances, and infrastructure jobs where operators want encrypted data before it
-    leaves the client machine.
-  - >
-    The security model is one of restic’s defining adoption drivers. Repository data is
-    encrypted with AES-256 in counter mode and authenticated with Poly1305-AES;
-    repository key files derive encryption and authentication keys from the user’s
-    password using scrypt. Because encryption and authentication are built into the
-    repository format, practitioners can place repositories on shared filesystems or
-    third-party object storage while preserving confidentiality and integrity, assuming
-    password handling and endpoint credentials are managed correctly.
-  - >
-    Deduplication is another major part of restic’s identity. During backup, files are
-    split into variable-length blobs using content-defined chunking based on Rabin
-    fingerprints, then stored in packs referenced by indexes and snapshots. In practice,
-    this means repeated backups of similar data send and store only new chunks, and
-    retention policies can remove old snapshots without discarding chunks still
-    referenced by retained snapshots. Operators commonly pair `backup`, `forget`,
-    `prune`, `check`, and `copy` to implement backup rotation and repository
-    maintenance.
-  - >
-    Adoption broadened through packaging and ecosystem tooling. The Homebrew package is
-    joined by entries in Linux distributions and cross-platform package managers such as
-    Debian, Ubuntu, Fedora/DNF, Arch, Alpine, Nix, MacPorts, Chocolatey, Scoop, Winget,
-    and openSUSE/Zypper. The project also developed a visible wrapper ecosystem:
-    `rest-server` for the REST backend, scheduling/configuration wrappers such as
-    resticprofile and autorestic, Docker images, monitoring integrations, and
-    user-interface layers such as Relica. This ecosystem exists largely because restic
-    keeps the core tool focused on repository operations while leaving scheduling,
-    policy composition, and host-specific automation to surrounding tools.
-  - >
-    Practitioners usually deploy restic as a small, auditable backup primitive rather
-    than a full backup suite. A typical setup defines `RESTIC_REPOSITORY`, supplies a
-    password through a file, command, environment variable, or secret manager, backs up
-    one or more paths on a schedule, then runs retention and integrity checks.
-    Administrators value it for client-side encryption, portable repositories,
-    predictable CLI behavior, documented internals, and the ability to restore with only
-    the `restic` binary and the repository password.
+  adoption-history:
+    - >
+      restic is distributed across numerous operating-system package ecosystems,
+      including Homebrew, Debian, Ubuntu, Fedora, Arch, Alpine, Nix, MacPorts,
+      Chocolatey, Scoop, WinGet, and Zypper.
+  package-nerd-significance:
+    - >
+      restic is notable for combining content-defined chunking, deduplication,
+      authenticated encryption, integrity checking, and multiple local or remote storage
+      backends in a portable Go binary.
+    - >
+      Its repository format and explicit maintenance commands make it attractive to
+      users who want inspectable, scriptable backups without adopting a larger backup
+      service.
+  project-history:
+    - >
+      The project was public by 2015, when its official site published a technical
+      series explaining the foundations of its content-defined chunking design.
+    - >
+      The project has continued through frequent signed releases, adding platform
+      support, repository features, integrity safeguards, compression, and operational
+      improvements.
+  related-projects:
+    - resticprofile wraps restic with reusable profiles and scheduling.
+    - >
+      The official documentation describes integrations with storage services and helper
+      tools such as rclone.
+  sources:
+    - https://github.com/restic/restic/releases
+    - https://restic.net/
+    - https://restic.net/blog/2015-09-12/restic-foundation1-cdc
+    - https://restic.readthedocs.io/en/stable/
+    - source_facts.package-manager
+  summary:
+    - >
+      restic is an open-source, cross-platform backup program designed around secure,
+      deduplicated snapshots stored in local or remote repositories.
+  timeline:
+    - >
+      2015: The official project blog documented restic’s content-defined chunking
+      foundations.
+    - '2024: restic 0.17.0 expanded platform metadata and repository functionality.'
+    - '2026: The 0.19 release series continued active development.'
+  usage:
+    - >
+      Users initialize an encrypted repository, create snapshots with `restic backup`,
+      inspect or restore snapshots, and apply retention and pruning policies.
+    - >
+      Repository locations and passwords can be supplied through command-line options,
+      environment variables, caller-selected files, or password commands. Because those
+      file paths are user-selected, restic has no single documented configuration or
+      credentials-file location.
 category: system
 package-manager:
   apk: restic
