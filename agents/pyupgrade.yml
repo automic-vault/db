@@ -6,31 +6,64 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pyupgrade was created by Anthony Sottile as a small, purpose-built Python
-    modernization tool: it rewrites source code to use syntax and idioms available in
-    newer Python versions. Its README presents it both as a command-line tool and as a
-    pre-commit hook, which explains much of its adoption pattern: it is usually run
-    automatically on changed files rather than treated as a one-off porting script.
-  - >
-    The project became part of the Python maintenance ecosystem around version
-    migrations, especially after Python 2 compatibility and older Python 3 syntax became
-    maintenance drag. Instead of offering broad semantic refactoring, pyupgrade focuses
-    on mechanical rewrites gated by target-version flags such as Python 3.x-plus modes.
-    That makes it attractive in codebases that want low-drama diffs during gradual
-    interpreter upgrades.
-  - >
-    Practitioners typically add pyupgrade to a pre-commit configuration, pin a released
-    hook revision, choose the minimum Python version they support, and let it normalize
-    code during ordinary development. It complements formatters and linters: Black or
-    Ruff formatting may decide layout, while pyupgrade removes obsolete compatibility
-    forms, updates literal and class syntax, and nudges code toward the supported
-    runtime baseline.
-  - >
-    Packaging mirrors that workflow. The tool is available through Python packaging,
-    Homebrew, Debian, MacPorts, Nix, Arch, and Ubuntu package names, which gives teams
-    several ways to install the same executable in developer laptops, CI images, and
-    distro-managed environments.
+  adoption-history:
+    - >
+      pyupgrade became available across several packaging ecosystems, including PyPI,
+      Homebrew, Debian and Ubuntu, MacPorts, Arch Linux, and Nix. Its official
+      pre-commit hook also made it straightforward to apply automatically during
+      commits.
+  package-nerd-significance:
+    - >
+      pyupgrade captures Python-version migration knowledge as repeatable source
+      transformations. Package maintainers value it because raising a project's minimum
+      Python version can be followed by a mechanical cleanup of obsolete compatibility
+      syntax, imports, and idioms.
+  project-history:
+    - >
+      Anthony Sottile developed pyupgrade as a command-line program and pre-commit hook
+      for automatically modernizing Python syntax. The project accumulated
+      transformations for language changes ranging from set literals and f-strings to
+      removal of Python 2 compatibility constructs and outdated standard-library
+      aliases.
+    - >
+      The tool follows an explicit-target model: maintainers select flags such as
+      `--py36-plus` or later equivalents so rewrites are constrained by the minimum
+      Python version their project supports.
+  related-projects:
+    - pre-commit provides the hook framework documented by pyupgrade.
+    - >
+      python-modernize and six address older Python compatibility concerns that
+      pyupgrade can remove when a project no longer needs those compatibility layers.
+    - >
+      reorder-python-imports is another source-maintenance tool referenced by the
+      official README.
+  sources:
+    - https://github.com/asottile/pyupgrade#readme
+    - https://github.com/asottile/pyupgrade/releases
+  summary:
+    - >
+      pyupgrade is a Python source modernizer, usable directly or as a pre-commit hook,
+      that rewrites syntax and compatibility patterns when newer Python versions are
+      permitted.
+  timeline:
+    - >
+      Early project: pyupgrade was established as both a standalone command and a
+      pre-commit hook.
+    - >
+      Subsequent development: Version-target flags and an extensive catalog of syntax,
+      import, and compatibility rewrites were added.
+    - >
+      Ongoing adoption: The tool is packaged by multiple Unix-like operating-system and
+      language-package ecosystems.
+  usage:
+    - >
+      Users run `pyupgrade` against Python files or configure its official pre-commit
+      hook. Minimum-version flags enable transformations that would be unsafe for older
+      interpreters.
+    - >
+      Typical use accompanies a minimum-supported-Python bump, removes redundant
+      compatibility code, and modernizes constructs such as formatting expressions,
+      imports, type declarations, and standard-library aliases.
 tags:
   - cli
   - code-modernization
@@ -58,9 +91,8 @@ provenance:
       source_facts.homepage is the official GitHub repository; the README is the
       official documentation surface.
   history-sources:
-    - https://github.com/asottile/pyupgrade
-    - https://pre-commit.com/
-    - https://formulae.brew.sh/formula/pyupgrade
+    - https://github.com/asottile/pyupgrade#readme
+    - https://github.com/asottile/pyupgrade/releases
   repo-sources:
     - >
       source_facts.repo is empty, and source_facts.homepage is the official

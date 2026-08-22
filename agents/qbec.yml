@@ -10,31 +10,63 @@ config-file-location:
     - <application root>/params.libsonnet
 credentials-file-location: null
 history:
-  - >
-    qbec is Splunk's Jsonnet-centered Kubernetes deployment CLI. It emerged in the wave
-    of Kubernetes configuration tools that tried to make environment-specific manifests
-    safer than hand-edited YAML while staying close to kubectl apply. The project
-    describes itself as a tool for creating Kubernetes objects across multiple clusters
-    or namespaces configured for a target environment.
-  - >
-    Its ecosystem role is between raw kubectl, Jsonnet libraries, Helm, ksonnet, and
-    kubecfg. qbec uses an application manifest named qbec.yaml to declare environments,
-    loads components from Jsonnet, JSON, YAML, and Helm charts, and evaluates Jsonnet
-    with qbec-specific external variables such as the environment name. Its own
-    comparison page emphasizes that declaring environments in the application manifest
-    helps avoid dangerous command-line context mistakes.
-  - >
-    Adoption has been narrower than Kubernetes' dominant packaging tools, but it has a
-    clear niche among teams that already like Jsonnet and need repeatable multi-cluster
-    deployment. The Homebrew and Nix packaging in the input record match that
-    operator-focused audience: qbec is commonly installed on developer workstations and
-    CI runners, then used for diff, validate, and apply workflows against named
-    environments.
-  - >
-    Practitioners use qbec to keep Kubernetes object definitions in source control,
-    parameterize them with Jsonnet, and apply them consistently to dev, staging,
-    production, or namespace-scoped environments. Its history is best understood as a
-    pragmatic Jsonnet deployment layer rather than a general Kubernetes platform.
+  adoption-history:
+    - >
+      qbec is distributed as cross-platform release binaries and through Homebrew and
+      Nix. Its placement in the Splunk GitHub organization and dedicated documentation
+      site provide it with a vendor-maintained home while retaining an Apache-licensed
+      open-source workflow.
+  package-nerd-significance:
+    - >
+      qbec represents the Jsonnet branch of Kubernetes configuration tooling:
+      configuration remains programmable and composable while a CLI provides environment
+      selection, diffing, application, and deletion. Package users value it as a focused
+      alternative to template-heavy or abandoned Jsonnet-era tools.
+  project-history:
+    - >
+      qbec was developed to generate and manage Kubernetes objects across multiple
+      clusters or namespaces, with configuration specialized for a selected target
+      environment. It uses Jsonnet as its data-templating and composition language.
+    - >
+      The project explicitly positions itself near kubecfg and ksonnet while providing
+      an application-oriented workflow for initializing configuration, rendering
+      manifests, comparing them with a cluster, and applying or deleting resources. It
+      is maintained in Splunk's GitHub organization.
+  related-projects:
+    - Jsonnet is qbec's configuration language.
+    - Kubernetes is the deployment target.
+    - >
+      kubecfg and ksonnet are related Jsonnet-based Kubernetes configuration tools named
+      by qbec's official repository.
+  sources:
+    - https://github.com/splunk/qbec
+    - https://qbec.io/
+    - https://qbec.io/getting-started
+    - https://qbec.io/userguide
+  summary:
+    - >
+      qbec is a Jsonnet-based command-line tool for generating and applying
+      environment-specific Kubernetes objects across clusters and namespaces.
+  timeline:
+    - >
+      Origins: qbec was created around Jsonnet-based, multi-environment Kubernetes
+      configuration.
+    - >
+      Project adoption: The project moved under or is maintained by Splunk and gained a
+      dedicated documentation site.
+    - >
+      Distribution: Cross-platform release binaries and package-manager installations
+      became available.
+  usage:
+    - >
+      A project is initialized around `qbec.yaml`, environment definitions, and Jsonnet
+      components and parameters. Operators select an environment, render or validate
+      objects, compare desired state with a cluster, and then apply or delete resources.
+    - >
+      qbec is useful when several clusters or namespaces share a common configuration
+      model but need target-specific parameters. Kubernetes access follows the
+      operator's normal cluster context and credentials rather than a qbec-specific
+      credentials file.
 tags:
   - cli
   - configuration-management
@@ -64,10 +96,8 @@ provenance:
   history-sources:
     - https://github.com/splunk/qbec
     - https://qbec.io/
-    - https://qbec.io/userguide/model/
-    - https://qbec.io/reference/component-evaluation/
-    - https://qbec.io/comparison-with-other-tools/
-    - https://formulae.brew.sh/formula/qbec
+    - https://qbec.io/getting-started
+    - https://qbec.io/userguide
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/splunk/qbec, so repo is

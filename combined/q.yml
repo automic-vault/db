@@ -7,25 +7,56 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    q is Nate Sales's small Go-based DNS lookup client, positioned as a modern
-    alternative to the traditional dig/drill style workflow. Its project identity was
-    built around covering the transport variants that became important after classic UDP
-    and TCP DNS: DNS over TLS, DNS over HTTPS, DNS over QUIC, and Oblivious DoH. A
-    public Show HN post on April 17, 2022 helped introduce it to command-line users
-    looking for a compact resolver test tool rather than a full DNS server suite.
-  - >
-    Adoption has mostly followed the packaging path of a focused networking utility. The
-    input record lists Homebrew, MacPorts, Nix, Scoop, and Winget packages, and OpenBSD
-    ports describe it under net/dnsq as a feature-rich command-line DNS client. That
-    spread gives it a role in the DNS operations toolbox: easy to install on laptops, CI
-    images, and admin machines where users want protocol-specific DNS probes without
-    composing curl, openssl, or resolver-library snippets.
-  - >
-    Practitioners use q to test resolver behavior, compare encrypted DNS endpoints,
-    exercise DNSSEC and JSON output paths, and reproduce transport-specific failures.
-    Its ecosystem role is not to replace system resolvers; it is a diagnostic CLI for
-    people working on DNS services, privacy transports, and network policy.
+  adoption-history:
+    - >
+      q is distributed through Homebrew, MacPorts, Nix, Scoop, WinGet, the Arch User
+      Repository, GitHub releases, Go installation, containers, and maintainer-operated
+      apt/yum repositories. This gives the single-binary client unusually broad
+      availability across desktop and Unix-like package ecosystems.
+  package-nerd-significance:
+    - >
+      q belongs to a newer generation of DNS inspection tools that preserve familiar
+      `dig`-style concepts while treating encrypted transports and machine-readable
+      output as first-class features. Its compact Go distribution and wide package
+      availability make it convenient for shell diagnostics and protocol testing.
+  project-history:
+    - >
+      Nate Sales developed q as a small but feature-rich alternative to traditional DNS
+      query clients. The program grew beyond UDP and TCP DNS to support DNS over TLS,
+      HTTPS, QUIC, Oblivious HTTPS, and DNSCrypt.
+    - >
+      The interface retains familiar DNS-client conventions, including `@server`
+      selection and `+[no]flag` toggles, while adding JSON and YAML output, DNS Stamps,
+      recursive AXFR, and IP registry enrichment.
+  related-projects:
+    - >
+      dig, kdig, drill, dog, and doggo are DNS clients compared directly in q's official
+      README.
+    - The miekg/dns Go module supplies core DNS functionality used by q.
+  sources:
+    - https://github.com/natesales/q#readme
+    - https://github.com/natesales/q/releases
+  summary:
+    - >
+      q is a compact Go command-line DNS client supporting conventional DNS and multiple
+      encrypted DNS transports.
+  timeline:
+    - 'Initial development: q was introduced as a small command-line DNS query utility.'
+    - >
+      Protocol expansion: Support grew to include DoT, DoH, DoQ, ODoH, DNSCrypt, and DNS
+      Stamps.
+    - >
+      Distribution expansion: q became available through multiple operating-system
+      package managers, Go installation, GitHub binaries, and a container image.
+  usage:
+    - >
+      Users query default or explicit DNS record types, select a resolver with an
+      `@server` argument, perform reverse lookups, request DNSSEC data, and choose
+      pretty, raw, JSON, or YAML output.
+    - >
+      q selects a server from an explicit argument, then `Q_DEFAULT_SERVER`, then
+      `/etc/resolv.conf`. Its `+[no]flag` convention and raw output ease transitions
+      from `dig`, while encrypted transports support modern resolver testing.
 category: networking
 package-manager:
   brew: q
