@@ -11,48 +11,67 @@ config-file-location:
     - /etc/rsyslog.d/*.conf
 credentials-file-location: null
 history:
-  - >
-    rsyslog grew out of the older Unix syslog tradition. BSD syslogd established
-    facility-and-priority routing, a central system logging service, and a compact
-    configuration language in 1983; Linux later adopted sysklogd, which preserved that
-    model but remained limited in filtering, transformation, reliable transport, and
-    extensibility. By the early 2000s, production logging needed TCP transport, better
-    timestamp handling, database output, formatting control, and performance
-    characteristics that the older daemons did not provide.
-  - >
-    The rsyslog project began in 2004 as a fork of sysklogd. Its early goal was
-    conservative in one sense and ambitious in another: keep compatibility with existing
-    syslog behavior and configuration expectations, while adding the transport,
-    formatting, and output features required by larger Linux deployments. Work in 2005
-    and 2006 added templates, early TCP support, stronger timestamp handling, and the
-    first modularity concepts.
-  - >
-    Adoption accelerated in 2007 when Fedora 8 selected rsyslog as its default syslog
-    daemon, Red Hat contributed packaging and IPv6 work, BSD ports appeared, and the
-    project built out community infrastructure. In 2008 rsyslog introduced two features
-    that shaped its later identity: a multi-threaded queue engine released on 31 January
-    2008, and RainerScript introduced on 28 February 2008. Queues let inputs, rulesets,
-    and actions be decoupled with memory, disk, and disk-assisted buffering;
-    RainerScript gave administrators a more expressive configuration language for
-    conditional routing and pipeline logic.
-  - >
-    By 2010 rsyslog had matured into a modular log-processing framework rather than only
-    a syslog daemon. Its module families separated inputs, parsers, message modifiers,
-    and outputs; configurations could route from local files, kernel logs, sockets, TCP,
-    UDP, RELP, or journald-style sources into files, databases, message brokers, search
-    systems, and forwarding targets. That modular architecture also explains the
-    packaging model: distributions ship a core daemon plus optional modules, while
-    Homebrew exposes the daemon and diagnostic/helper executables in a single formula.
-  - >
-    The project became a common default or near-default component in Linux logging
-    stacks because it sat between two worlds. It could accept traditional
-    `/etc/rsyslog.conf` and `/etc/rsyslog.d/*.conf` syslog rules, making migration from
-    sysklogd straightforward, but it could also act as a high-throughput
-    event-processing pipeline with per-action queues, disk spooling, TLS, RELP
-    acknowledgements, JSON templates, and outputs for systems such as Elasticsearch and
-    Kafka. Operators use it to collect host logs, normalize or enrich messages, fan out
-    streams to local retention and central collectors, and keep forwarding resilient
-    when remote destinations fail.
+  adoption-history:
+    - >
+      Fedora 8 selected rsyslog as its default syslog daemon in 2007, while Red Hat
+      involvement strengthened packaging and IPv6 support. It later became commonly
+      distributed across major Linux package ecosystems; the supplied mappings include
+      Alpine, Debian, Ubuntu, Fedora-family, Nix, openSUSE, and Homebrew.
+    - >
+      By the 2010s, deployments increasingly used rsyslog not only as a local syslog
+      daemon but as a high-volume event pipeline, aided by queues, structured data, and
+      integrations with systems such as Elasticsearch and Kafka.
+  package-nerd-significance:
+    - >
+      rsyslog matters to package and systems enthusiasts because it sits at the boundary
+      between classic Unix compatibility and modern observability infrastructure. A
+      single package can accept traditional syslog configuration while also providing
+      modules, disk-assisted queues, structured logging, filtering, and delivery to
+      databases or event platforms.
+  project-history:
+    - >
+      Rainer Gerhards launched rsyslog in 2004 as a fork of sysklogd. Its initial goals
+      included reliable network transport, better formatting and timestamp precision,
+      database output, and a more extensible design while retaining syslog
+      compatibility.
+    - >
+      The project introduced a multithreaded queue engine and RainerScript in 2008. By
+      2010 its modular input/output architecture had matured, laying the groundwork for
+      its later role as a general-purpose log-processing engine.
+  related-projects:
+    - >
+      rsyslog descends from the BSD syslog and sysklogd tradition. Its ecosystem
+      overlaps with systemd-journald, syslog-ng, Elasticsearch, and Kafka, although
+      those systems serve different or broader roles.
+  sources:
+    - https://docs.rsyslog.com/doc/about/history.html
+    - https://docs.rsyslog.com/doc/getting_started/beginner_tutorials/03-default-config.html
+    - https://docs.rsyslog.com/doc/installation/install_from_source.html
+    - source_facts.package-manager
+  summary:
+    - >
+      rsyslog is a modular, multithreaded syslog daemon and log-processing engine. It
+      preserves compatibility with traditional syslog workflows while supporting
+      structured configuration, queues, filtering, reliable transport, and diverse
+      inputs and outputs.
+  timeline:
+    - '2004: rsyslog launched as a fork of sysklogd.'
+    - '2007: Fedora 8 adopted rsyslog as its default syslog daemon.'
+    - '2008: The multithreaded queue engine and RainerScript were introduced.'
+    - '2010: The modern modular architecture had stabilized.'
+    - '2014: High-throughput processing and enterprise-oriented integrations had matured.'
+    - >
+      2018: rsyslog was increasingly positioned within broader observability and
+      event-processing ecosystems.
+  usage:
+    - >
+      On Linux, the distribution-owned main configuration normally resides at
+      `/etc/rsyslog.conf`. Administrators are encouraged to leave that file intact and
+      place new RainerScript rules in `/etc/rsyslog.d/*.conf`.
+    - >
+      Common deployments collect local sockets or the systemd journal, receive remote
+      syslog over TCP or UDP, filter and transform messages, buffer them through queues,
+      and write them to files, databases, search systems, or streaming platforms.
 category: system
 package-manager:
   apk: rsyslog

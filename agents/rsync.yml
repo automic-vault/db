@@ -16,41 +16,58 @@ credentials-file-location:
     - ~/.rsyncd.conf
     - ~/.config/rsync/rsyncd.conf
 history:
-  - >
-    rsync was announced by Andrew Tridgell on 19 June 1996 as an "rcp replacement"
-    written with Paul Mackerras. Its distinguishing idea was the remote-update algorithm
-    described in the accompanying technical report: two machines connected over a slow
-    or high-latency link could make a destination file match a source file by exchanging
-    block signatures and transferring only unmatched data, without either side needing
-    both complete files. That made rsync useful for the dial-up and early Internet era,
-    but the same design also suited server backups, mirrors, and replicated trees where
-    most files change only a little between runs.
-  - >
-    The tool joined a lineage of Unix file-copy and distribution tools such as rcp and
-    rdist, but it became more scriptable and general-purpose than either. It combined
-    recursive directory traversal, preservation of metadata, deletion handling,
-    excludes, compression, and remote execution over shells such as SSH with a native
-    rsync daemon protocol for public modules and mirror sites. The result was a small
-    command-line program that could act as a copier, synchronizer, backup primitive, or
-    repository mirror transport depending on options rather than on a separate service
-    stack.
-  - >
-    Packaging followed that utility role. rsync is distributed as a standalone C program
-    under the GPL and appears across Unix-like package sets, including Debian, Ubuntu,
-    Fedora, Alpine, Arch, Nix, macOS package managers, and Windows environments such as
-    Cygwin or Chocolatey. Homebrew packages it as `rsync` and exposes companion
-    executables such as `rrsync` and `rsync-ssl`, reflecting common administrative uses:
-    restricted remote rsync access and encrypted transport wrappers.
-  - >
-    Practitioners use rsync as infrastructure glue. System administrators mirror package
-    repositories, seed and refresh backups, synchronize web roots, copy VM images or
-    datasets, and stage deployments with dry-run and itemized-change output before
-    committing a transfer. The command rewards careful option literacy: trailing slashes
-    change path semantics, `--delete` turns synchronization into removal as well as
-    copying, and archive mode is often paired with excludes, partial-transfer handling,
-    checksums, bandwidth limits, or SSH options. That combination of a clever delta
-    algorithm and very Unix-like composability explains why rsync outlived the network
-    constraints that motivated it.
+  adoption-history:
+    - >
+      rsync became a standard Unix-like systems tool for local copying, remote
+      synchronization, deployment, mirroring, and backup. The supplied package mappings
+      show distribution through Homebrew, Debian, Ubuntu, Fedora-family, Alpine, Arch,
+      Nix, MacPorts, Chocolatey, and openSUSE ecosystems.
+  package-nerd-significance:
+    - >
+      rsync is package-nerd infrastructure: a compact command whose delta-transfer
+      behavior, metadata preservation, filter rules, SSH transport, daemon mode, and
+      scriptability underpin countless backup and deployment workflows. Its famously
+      dense option set also rewards careful version and platform awareness.
+  project-history:
+    - >
+      Andrew Tridgell developed the rsync algorithm from research into parallel
+      filesystems and external sorting, with source copyrights dating to 1996. The
+      project subsequently evolved beyond its original remote-update mechanism with
+      incremental recursion, ACL and extended-attribute support, character-set
+      conversion, and continuing protocol and security work.
+  related-projects:
+    - >
+      Samba hosts the official rsync project site. rsync-time-backup builds
+      snapshot-style backup behavior around rsync, while rsyncy wraps rsync output with
+      a consolidated progress display.
+  sources:
+    - https://rsync.samba.org/
+    - https://rsync.samba.org/ftp/rsync/rsync.1.html
+    - https://rsync.samba.org/~tridge/phd_thesis.pdf
+    - source_facts.package-manager
+  summary:
+    - >
+      rsync is a GPL-licensed utility for fast incremental file transfer. It minimizes
+      transferred data when updating files and directory trees and can operate locally,
+      through remote shells such as SSH, or using its own daemon protocol.
+  timeline:
+    - '1996: Early rsync source and algorithm work by Andrew Tridgell and Paul Mackerras.'
+    - >
+      2008: rsync 3.0 introduced incremental recursion and officially added features
+      including ACLs, extended attributes, and filename character-set conversion.
+    - '2026: The official project continued publishing rsync 3.4 maintenance releases.'
+  usage:
+    - >
+      Users commonly invoke rsync for one-way directory synchronization, remote copying
+      over SSH, incremental backups, software deployment, and content mirroring. Daemon
+      deployments normally use `/etc/rsyncd.conf`; a non-root daemon started through a
+      remote shell instead defaults to `rsyncd.conf` in its current directory, typically
+      `$HOME`.
+    - >
+      Credentials have no single universal file location. A client password file is
+      explicitly selected with `--password-file`, while daemon-side username/password
+      records are stored in the administrator-selected `secrets file`; the official
+      daemon documentation states that this setting has no default.
 tags:
   - backup
   - cli
@@ -79,11 +96,10 @@ provenance:
     - Official rsync documentation page lists official manpages, FAQ, and resources.
     - Official rsync site links the latest rsync(1) manpage.
   history-sources:
-    - https://groups.google.com/g/comp.os.linux.announce/c/tZE1qtTcQaU/m/IF8GhGQ_uTsJ
-    - https://rsync.samba.org/tech_report/
-    - https://github.com/RsyncProject/rsync
-    - https://rsync.samba.org/documentation.html
-    - https://formulae.brew.sh/formula/rsync
+    - https://rsync.samba.org/
+    - https://rsync.samba.org/ftp/rsync/rsync.1.html
+    - https://rsync.samba.org/~tridge/phd_thesis.pdf
+    - source_facts.package-manager
   repo-sources:
     - Official GitHub README states the git repo is hosted on GitHub and Samba's site.
     - >

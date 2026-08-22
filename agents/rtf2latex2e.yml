@@ -5,39 +5,73 @@ docs:
   - https://rtf2latex2e.sourceforge.net/docs.html
   - https://rtf2latex2e.sourceforge.net/manpage.html
   - https://rtf2latex2e.sourceforge.net/usage.html
-config-file-location: null
+config-file-location:
+  unix:
+    - /usr/local/share/rtf2latex2e/r2l-pref
+    - /usr/local/share/rtf2latex2e/r2l-head
+    - /usr/local/share/rtf2latex2e/r2l-map
 credentials-file-location: null
 history:
-  - >
-    rtf2latex2e is a document-conversion utility from the long-running TeX ecosystem,
-    aimed at the awkward boundary between word processors and LaTeX. The SourceForge
-    project was registered on 8 March 2001 and describes the tool as a translator from
-    Rich Text Format files to LaTeX files, including support for text formatting,
-    tables, figures, and equations. Its purpose is not pixel-perfect reproduction of a
-    word-processor page; the project documentation emphasizes readable LaTeX output that
-    authors can edit.
-  - >
-    The implementation builds on Paul DuBois's generic RTF reader framework, a
-    configurable base for RTF-to-other-format translators. The rtf2latex2e manual
-    credits Ujwal S. Sathyam with adapting that reader in 1999 for newer RTF and lists
-    Ujwal S. Sathyam and Scott Prahl as documentation authors for version 2.2.1 dated 28
-    June 2012. CTAN lists Scott Prahl and Ujwal Sathyam as maintainers, records version
-    2.0.1, and notes a 2011 CTAN update, placing the package in the TeX archive's
-    support-tools tradition rather than in a single application suite.
-  - >
-    Practitioners use rtf2latex2e when the source material arrives from Microsoft Word
-    or another word processor but the editing or publication target is LaTeX. A common
-    workflow is to save `.doc` or `.docx` material as RTF, run `rtf2latex2e`, then clean
-    up the generated `.tex`. The tool intentionally ignores much visual formatting such
-    as ruler positions, tab layout, and paragraph indentation, because RTF and TeX have
-    different models; its value is extracting structure, characters, images, tables, and
-    MathType equations into a LaTeX starting point.
-  - >
-    Packaging reflects that niche. Homebrew and MacPorts provide the command-line
-    executable for macOS users, CTAN archives it for TeX users, and SourceForge hosts
-    source and Windows binaries. It sits alongside converters such as latex2rtf, pandoc,
-    and word-processor export paths, but its specific role is the reverse trip from RTF
-    into editable LaTeX2e.
+  adoption-history:
+    - >
+      The project registered on SourceForge in March 2001 and published its first 1.0
+      final candidate there shortly afterward. It subsequently provided Unix, classic
+      Mac, and Windows-oriented distributions; the supplied package metadata records
+      later availability through Homebrew and MacPorts.
+    - >
+      Development expanded the converter to handle tables, images, footnotes, Unicode
+      output, multiple code pages, and embedded MathType equations. Version 2.2.3
+      documentation was published in 2016.
+  package-nerd-significance:
+    - >
+      rtf2latex2e is a niche but characteristic package-manager utility: it bridges
+      proprietary word-processing interchange files and an editable TeX workflow. It is
+      valuable when document structure, equations, tables, and extracted images matter
+      more than pixel-perfect reproduction.
+  project-history:
+    - >
+      rtf2latex2e grew from Paul DuBois's generic RTF reader framework. Ujwal S. Sathyam
+      adapted that framework in 1999 for newer RTF, and subsequent work by Sathyam,
+      Scott Prahl, and later Wilfried Hennings developed the 2.x converter.
+    - >
+      The project explicitly treats conversion as a starting point rather than WYSIWYG
+      reproduction: it preserves essential document features in readable LaTeX while
+      expecting users to edit the generated result.
+  related-projects:
+    - >
+      The documentation discusses the underlying RTF Tools framework and related
+      translators such as rtf2troff. Its output is intended for LaTeX and pdfLaTeX
+      workflows, with LibreOffice/unoconv historically used for converting some embedded
+      image formats.
+  sources:
+    - https://rtf2latex2e.sourceforge.net/rtf2latexDoc.pdf
+    - https://rtf2latex2e.sourceforge.net/usage.html
+    - https://sourceforge.net/p/rtf2latex2e/news/
+    - https://sourceforge.net/projects/rtf2latex2e/
+    - source_facts.package-manager
+  summary:
+    - >
+      rtf2latex2e is a command-line RTF-to-LaTeX translator designed to preserve
+      editable structure, including text styles, tables, figures, footnotes, and
+      equations. Its generated LaTeX normally requires manual finishing rather than
+      serving as a WYSIWYG reproduction.
+  timeline:
+    - '1999: Ujwal S. Sathyam adapted the underlying RTF reader framework for newer RTF.'
+    - '2001: The project registered on SourceForge and published its first 1.0 final candidate.'
+    - '2001: The Unix distribution was updated for Mac OS X and Darwin.'
+    - '2012: Version 2.2.1 user documentation described the evolved 2.x converter.'
+    - '2016: Version 2.2.3 and updated documentation were published.'
+  usage:
+    - >
+      Users run `rtf2latex2e` on RTF files to produce `.tex` output and extract embedded
+      images. The `-D` option creates a separate output directory, while `-P` selects a
+      preference directory.
+    - >
+      The standard source installation uses `/usr/local/share/rtf2latex2e` for support
+      and customization files. `r2l-pref` controls preferences, `r2l-head` inserts
+      preamble material, and `r2l-map` maps RTF styles to LaTeX commands. `$RTFPATH` or
+      `-P` can move this directory, so the listed locations are documented defaults
+      rather than immutable paths.
 tags:
   - cli
   - document-conversion
@@ -68,11 +102,11 @@ provenance:
       reference material.
     - Official user's manual documents installation and conversion usage.
   history-sources:
-    - https://rtf2latex2e.sourceforge.net/
+    - https://rtf2latex2e.sourceforge.net/rtf2latexDoc.pdf
     - https://rtf2latex2e.sourceforge.net/usage.html
+    - https://sourceforge.net/p/rtf2latex2e/news/
     - https://sourceforge.net/projects/rtf2latex2e/
-    - https://ctan.org/pkg/rtf2latex2e
-    - https://formulae.brew.sh/formula/rtf2latex2e
+    - source_facts.package-manager
   repo-sources:
     - Official SourceForge project page includes a Code tab for the rtf2latex2e project.
     - Official user's manual says source code and binaries are available at SourceForge.
@@ -87,6 +121,6 @@ category-path:
   - document-conversion
 display-name-confidence: high
 docs-confidence: high
-history-confidence: medium
+history-confidence: high
 repo-confidence: medium
 tags-confidence: high
