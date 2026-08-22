@@ -7,27 +7,46 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rshijack is a Rust TCP connection hijacking tool whose GitHub repository was created
-    on February 23, 2018. Its README identifies it as a Rust rewrite of the 2001
-    `shijack` tool and ties its origin to TAMUctf 2018's Brick House challenge, where
-    the author used packet injection after authentication on a Telnet connection to
-    execute a command that recovered the flag.
-  - >
-    The tool's role is specialized: it demonstrates and operationalizes classic TCP
-    sequence/acknowledgment injection against an observed connection. The README
-    explains that it sniffs for a packet on a specified connection, reads the SEQ and
-    ACK fields, and sends a raw-socket packet that the remote server accepts as part of
-    the stream. That places rshijack in the penetration-testing and network-security
-    toolkit category, near tools such as sniffglue and arpspoof, rather than in general
-    network administration.
-  - >
-    Packaging spread modestly through security-oriented and Rust-friendly channels. The
-    project publishes a crates.io package, Docker usage, and distribution packages,
-    while Homebrew packages it as `rshijack` and Arch Linux describes it as a TCP
-    connection hijacker and Rust rewrite of shijack. Practitioners use it for controlled
-    labs, CTF writeups, packet-injection demonstrations, and security research where
-    they can observe traffic and have the privileges needed for raw packets.
+  adoption-history:
+    - >
+      The project is packaged by Homebrew, Alpine, Nix, and Arch Linux according to
+      source_facts.package-manager. Its official README also provides a container image
+      workflow.
+  package-nerd-significance:
+    - >
+      rshijack is a compact Rust security utility with a focused raw-packet use case. It
+      is of interest as both a practical network-testing tool and a packaged rewrite of
+      an older Unix security program.
+  project-history:
+    - >
+      rshijack is a Rust rewrite of the 2001-era shijack tool. It was written for the
+      TAMUctf 2018 challenge "brick house 100," where it was used to inject a command
+      after a Telnet session completed two-factor authentication.
+  related-projects:
+    - 'shijack: The earlier TCP connection hijacker that inspired the Rust rewrite.'
+    - 'sniffglue and arpspoof: Companion tools mentioned in the official demonstration context.'
+  sources:
+    - https://github.com/kpcyrd/rshijack#readme
+    - https://github.com/kpcyrd/rshijack/blob/main/Cargo.toml
+    - source_facts.package-manager
+  summary:
+    - >
+      rshijack is a command-line TCP connection hijacker that sniffs sequence and
+      acknowledgement values and injects a packet acceptable to the remote endpoint.
+  timeline:
+    - >
+      2001: The original shijack tool dates from this period, according to the official
+      project description.
+    - '2018: rshijack was created for TAMUctf''s "brick house 100" challenge.'
+    - >
+      2020: The project records use in research concerning a Google Compute Engine
+      container-to-host escape, followed by an upstream patch.
+  usage:
+    - >
+      A user supplies a network interface and the two endpoints of an existing TCP
+      connection, then pipes the payload to inject into rshijack. Raw packet access
+      normally requires elevated privileges. The official example targets Telnet in an
+      isolated challenge environment.
 category: security
 package-manager:
   apk: rshijack
