@@ -7,26 +7,57 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rathole is a Rust reverse proxy for exposing services behind NAT through a server
-    with a public address. Its early v0.2.0 tag was committed on December 25, 2021, and
-    the project documentation positions it beside tools such as frp and ngrok while
-    emphasizing a small binary, low memory use, service-level tokens, and optional
-    encrypted transports.
-  - >
-    The operating model is simple enough for homelab, router, and small-server
-    deployments. An operator runs a rathole server on a public host, runs a client
-    beside the private service, and defines matching service names and tokens in TOML.
-    Traffic received on the server's exposed address is forwarded through the client to
-    a local TCP or UDP service such as SSH, a game server, or a NAS application. The
-    README also documents TLS, Noise protocol support, WebSocket transport, hot reload,
-    logging through `RUST_LOG`, and systemd examples.
-  - >
-    Adoption follows the pattern of single-binary network tools: upstream releases and
-    Docker images serve direct installs, while package managers provide OS-native entry
-    points. The package record includes Homebrew, Nix, Arch Linux, Alpine, and Scoop,
-    which fits its cross-platform Rust implementation and its use in lightweight
-    self-hosting and NAT traversal workflows.
+  adoption-history:
+    - >
+      Rathole is packaged for Homebrew, Alpine Linux, Nix, and Scoop, giving the Rust
+      binary coverage across common server and workstation environments.
+  package-nerd-significance:
+    - >
+      Rathole appeals to self-hosters and infrastructure-oriented package users as a
+      compact, cross-platform reverse-tunneling binary. Its declarative TOML setup and
+      optional transports make it a notable Rust alternative in the NAT-traversal tool
+      family.
+  project-history:
+    - >
+      Rathole was created as a secure, high-performance reverse proxy for exposing
+      services located behind NAT. The project later moved under the rathole-org GitHub
+      organization while preserving its Rust implementation and configuration-oriented
+      client/server model.
+    - >
+      Development added multiple transport and security choices, service-level mappings,
+      hot reload support, and platform packaging. The project describes itself in
+      relation to reverse-tunneling tools such as frp and ngrok.
+  related-projects:
+    - frp is a related open-source reverse-proxy and tunneling system.
+    - ngrok provides a managed tunneling service for exposing local endpoints.
+  sources:
+    - 'Official README: https://github.com/rathole-org/rathole#readme'
+    - 'Official documentation: https://github.com/rathole-org/rathole/tree/main/docs'
+    - source_facts.package-manager
+  summary:
+    - >
+      Rathole is a Rust reverse proxy that creates tunnels between a public server and
+      clients behind NAT, allowing otherwise unreachable services to be exposed through
+      configured endpoints.
+  timeline:
+    - >
+      Initial project: Rathole was published as a Rust client/server reverse-tunneling
+      utility.
+    - >
+      Later development: The project moved to the rathole-org organization and expanded
+      its transport, encryption, and reload capabilities.
+  usage:
+    - >
+      Operators prepare TOML configuration files for the public server and private
+      client, define matching services and tokens, then start each side with `rathole`
+      and the relevant file. A configuration containing only a server or client section
+      lets the program infer its mode; explicit `--server` and `--client` modes are also
+      available.
+    - >
+      The documentation uses user-selected files such as `config.toml`; it does not
+      prescribe a persistent platform-specific configuration or credentials-file
+      location. Authentication tokens are normally values inside the chosen
+      configuration.
 tags:
   - cli
   - nat-traversal
@@ -54,12 +85,9 @@ provenance:
       Official GitHub repository contains a docs directory and README
       usage/configuration documentation.
   history-sources:
-    - https://github.com/rathole-org/rathole
-    - >
-      https://api.github.com/repos/rathole-org/rathole/git/commits/21e63fe10e8529dc0daa4e727fa0bd39f6f0a41f
-    - https://formulae.brew.sh/formula/rathole
-    - https://archlinux.org/packages/extra/x86_64/rathole/
-    - https://pkgs.alpinelinux.org/packages?name=rathole
+    - 'Official README: https://github.com/rathole-org/rathole#readme'
+    - 'Official documentation: https://github.com/rathole-org/rathole/tree/main/docs'
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already has https://github.com/rathole-org/rathole, so repo was
