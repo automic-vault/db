@@ -6,32 +6,45 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pigz is Mark Adler's parallel implementation of gzip, written for multi-processor
-    and multi-core machines. Its name expands to Parallel Implementation of GZip; the
-    official zlib-hosted page describes it as a fully functional gzip replacement that
-    uses zlib and pthreads, and the upstream README identifies Adler as the author.
-  - >
-    The tool's lineage is intentionally conservative: it preserves gzip-compatible
-    output while parallelizing the expensive compression work. The manual describes pigz
-    splitting input into 128 KB chunks, compressing those chunks in parallel, and
-    writing compressed data back in order as gzip, zlib, or single-entry zip data using
-    deflate. That design made pigz useful as a drop-in accelerator for existing gzip
-    workflows instead of a new archive format.
-  - >
-    In day-to-day use, pigz is most often found in shell pipelines and batch jobs where
-    gzip is a bottleneck: compressing tar streams, database dumps, container or VM
-    images, genomics and log files, backups, and CI artifacts. `pigz` handles
-    compression, while `unpigz` provides the decompression-side command name; arbitrary
-    gzip streams cannot be decompressed across many processors in the same simple way,
-    so pigz's major win is compression throughput.
-  - >
-    pigz's ecosystem role comes from being small, portable C rather than from a large
-    framework. It builds on Unix-style systems with zlib and pthreads, is packaged
-    broadly across Linux distributions and macOS package managers, and remains
-    attractive because it changes very little about scripts: many users can replace
-    `gzip` with `pigz -p N` or set tar's compressor to pigz and keep the same `.gz`
-    interoperability.
+  adoption-history:
+    - >
+      The supplied package facts list pigz across Homebrew, Debian, Ubuntu, Fedora/DNF,
+      Alpine, Arch, openSUSE, MacPorts, and Nix, reflecting broad adoption on Unix-like
+      systems.
+  package-nerd-significance:
+    - >
+      pigz is a familiar drop-in performance upgrade in packaging, backup,
+      container-image, and build pipelines because it retains gzip-compatible output
+      while using multiple cores for compression.
+  project-history:
+    - >
+      Mark Adler wrote pigz as a parallel implementation of gzip using zlib and
+      pthreads. The official fossil archive contains early single-file releases from
+      2007 and the 2.0 source release from October 2008.
+  related-projects:
+    - gzip
+    - zlib
+    - zopfli
+    - unpigz
+  sources:
+    - https://zlib.net/pigz/
+    - https://zlib.net/pigz/fossils/
+    - https://zlib.net/pigz/pigz.pdf
+    - source_facts.package-manager
+  summary:
+    - >
+      pigz is a parallel gzip-compatible compressor written by Mark Adler for
+      multiprocessor and multicore systems.
+  timeline:
+    - '2007: Early pigz source versions appeared in the official fossil archive.'
+    - '2008-10-19: pigz 2.0 was published.'
+    - '2023-08-19: pigz 2.8 was released.'
+  usage:
+    - >
+      pigz divides input into chunks and compresses them concurrently, defaulting to the
+      number of online processors; `-p` controls the thread count. `unpigz` or `pigz -d`
+      decompresses files, although decompression itself cannot generally be parallelized
+      in the same way.
 tags:
   - cli
   - compression
@@ -60,8 +73,8 @@ provenance:
       documentation/download surface
   history-sources:
     - https://zlib.net/pigz/
-    - https://github.com/madler/pigz
-    - https://man.archlinux.org/man/pigz.1
+    - https://zlib.net/pigz/fossils/
+    - https://zlib.net/pigz/pigz.pdf
     - source_facts.package-manager
   repo-sources:
     - >
