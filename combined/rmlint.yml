@@ -8,44 +8,65 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rmlint is a filesystem lint and deduplication tool whose public development dates to
-    2010, when Christopher Pahl started the project. The README credits Pahl for
-    2010-2017, Daniel Thomas for 2014-2021, and Cebtenzzre for 2021-2023, showing the
-    transition from a personal C utility into a maintained Unix cleanup tool with
-    extensive documentation and tests.
-  - >
-    The project broadened the usual duplicate-file-finder niche. Its README says it
-    finds duplicate files and directories, nonstripped binaries, broken symlinks, empty
-    files and directories, and files with invalid user or group IDs. The manual
-    emphasizes a conservative design point: rmlint itself does not delete files, but
-    emits executable output such as `rmlint.sh` plus JSON and summaries so users can
-    inspect and choose how to act.
-  - >
-    Adoption grew among users managing large home directories, backup drives, media
-    collections, source trees, and copy-on-write filesystems. Compared with older tools
-    such as fdupes, rmlint's appeal is speed, multiple output formats, noninteractive
-    operation, selectable original-file ranking, replayable JSON results, xattr checksum
-    caching, and filesystem-aware handlers such as reflink, clone, hardlink, symlink,
-    and remove. The documentation also treats safety as part of the workflow: users can
-    tag preferred original paths with `//`, keep all tagged files, or require duplicates
-    to exist across backup and original trees before removal.
-  - >
-    Practitioners typically run rmlint as a scanner first and a deleter second. A common
-    workflow is `rmlint path`, inspect the pretty output and generated `rmlint.json`,
-    review `rmlint.sh`, and then execute the script if the selected originals look
-    right. Advanced use cases include `--merge-directories` for duplicate directory
-    trees, `--replay` for filtering previous large scans without rereading the
-    filesystem, piping paths from `find`, JSON post-processing with `jq`, and Btrfs or
-    reflink-based deduplication where replacing duplicate content with shared extents is
-    safer than removing files.
-  - >
-    Packaging reflects a mature cross-platform Unix CLI. The README notes readily made
-    packages in distributions, while the package metadata in this batch lists Alpine,
-    Homebrew, Debian, Fedora, MacPorts, Nix, Ubuntu, and openSUSE. Homebrew packages
-    version 2.10.3 from the GitHub release tarball and builds with SCons and Sphinx; the
-    GitHub repository exposes thousands of commits, dozens of releases, and
-    documentation published through Read the Docs.
+  adoption-history:
+    - >
+      rmlint has been packaged by numerous Unix-like distributions and package systems.
+      Its official installation guide documents availability through Fedora, Arch Linux,
+      Debian, Homebrew, and FreeBSD, while the supplied package facts also identify
+      Alpine, MacPorts, Nix, and Ubuntu packages.
+    - >
+      Since rmlint 2.4.0, the distribution has included the optional Shredder GTK
+      interface, broadening the project beyond its original command-line audience while
+      preserving the review-before-removal workflow.
+  package-nerd-significance:
+    - >
+      rmlint separates discovery from destructive action: it scans the filesystem and
+      emits reviewable reports and, by default, an executable cleanup script. That
+      design is attractive to administrators who want automation without silently
+      deleting files during the scan.
+    - >
+      It is more than a duplicate finder. It can identify duplicate directories, empty
+      files and directories, broken symbolic links, bad user or group identifiers, and
+      unstripped binaries, with output formats suited to scripts and data processing.
+  project-history:
+    - >
+      Christopher Pahl began rmlint in 2010 as a faster alternative to fdupes. The
+      project subsequently underwent a substantial rewrite for its 2.x generation and
+      developed into a C and GLib-based filesystem scanner with configurable hashing,
+      traversal, ranking, and output behavior.
+    - >
+      Daniel Thomas contributed from 2014, and later maintainers continued the 2.x line.
+      The project built extensive Sphinx documentation, a replayable JSON workflow, and
+      filesystem-aware cleanup strategies including hardlinks, reflinks, and native
+      deduplication.
+  related-projects:
+    - >
+      The project's history places rmlint in the same duplicate-file ecosystem as
+      fdupes. Shredder is the graphical interface shipped with rmlint.
+  sources:
+    - https://rmlint.readthedocs.io/en/master/
+    - https://rmlint.readthedocs.io/en/master/history.html
+    - https://rmlint.readthedocs.io/en/master/install.html
+    - https://rmlint.readthedocs.io/en/master/rmlint.1.html
+  summary:
+    - >
+      rmlint is a high-performance filesystem linter that finds duplicate files and
+      other cleanup candidates and produces reviewable reports or cleanup scripts.
+  timeline:
+    - '2010: Christopher Pahl began rmlint as a faster alternative to fdupes.'
+    - '2014: Daniel Thomas joined the documented author group.'
+    - '2015: The rewritten rmlint 2.x generation became established.'
+    - '2016: Version 2.4.0 introduced the optional Shredder graphical interface.'
+    - '2025: Version 2.10.3 was released.'
+  usage:
+    - >
+      Users normally run rmlint against one or more directories. The default workflow
+      writes human-readable results, JSON data, and an executable rmlint.sh cleanup
+      script; the scan itself does not immediately remove the discovered files.
+    - >
+      Advanced users select individual lint types, rank which duplicate should be
+      retained, replay prior JSON results, choose checksum algorithms, and configure
+      hardlink, reflink, or native-deduplication output.
 category: system
 package-manager:
   apk: rmlint
