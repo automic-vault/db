@@ -6,24 +6,52 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rzip is Andrew Tridgell's large-file compression tool, built around the
-    long-distance redundancy ideas described in his PhD work. Rather than competing with
-    gzip and bzip2 only as another short-window compressor, rzip first searches for
-    repeated data over a much larger window and then feeds the reduced stream to
-    bzip2-style compression.
-  - >
-    Its package-nerd significance is the deliberately narrow tradeoff: rzip can produce
-    strong results on very large files, backup sets, source trees, mail archives, and
-    other inputs with duplicated material far apart in the stream, but it is memory
-    hungry and not pipeline-friendly. The upstream page frames it as useful when
-    compression ratio matters more than RAM use or Unix filter composability.
-  - >
-    rzip also became a reference point for later long-range compressors, especially
-    lrzip, which extended the idea with multiple compression backends. In packaging
-    systems it occupies the small, old-school Unix utility niche: a GPL command-line
-    compressor shipped by distributions for users who know when long-range matching
-    beats the more general gzip or bzip2 defaults.
+  adoption-history:
+    - >
+      rzip was packaged across several Unix-like systems as a specialized compression
+      utility, but remained less universal than gzip or bzip2. Paul Russell's
+      contribution to Debian packaging, acknowledged by the author, helped place it in
+      the conventional distribution-package ecosystem.
+  package-nerd-significance:
+    - >
+      rzip is notable for applying an rsync-inspired long-range matching stage before
+      bzip2 compression. Its very large history window can find repetition beyond the
+      reach of conventional compressors, making it an instructive specialist tool
+      despite operational limitations such as the lack of standard-input and
+      standard-output streaming.
+  project-history:
+    - >
+      Andrew Tridgell first implemented the ideas behind rzip in 1998 while working on
+      rsync. That implementation was too slow for practical use and was replaced by the
+      current design in 2003.
+  related-projects:
+    - >
+      rsync supplied the context in which rzip's long-range redundancy ideas were first
+      explored.
+    - >
+      bzip2 supplies the strong second-stage compression used after rzip's long-distance
+      matching pass.
+    - >
+      gzip and bzip2 are the conventional Unix compression tools against which the
+      official manual compares rzip.
+  sources:
+    - 'Official project site: https://rzip.samba.org/'
+    - >
+      Official rzip manual, including HISTORY, BUGS, CREDITS, and AUTHOR sections:
+      https://rzip.samba.org/rzip/rzip-man.html
+  summary:
+    - >
+      rzip is a file-compression utility by Andrew Tridgell designed to exploit
+      long-distance redundancy in very large files before applying bzip2 compression.
+  timeline:
+    - '1998: The ideas behind rzip were first implemented during work on rsync.'
+    - '2003: The impractically slow original implementation was replaced by the current design.'
+  usage:
+    - >
+      Users compress files with rzip and restore them with rzip or runzip. It is most
+      useful for large files containing repeated data separated by long distances;
+      unlike typical Unix filters, it cannot compress or decompress through standard
+      input or standard output.
 tags:
   - archiving
   - cli
@@ -48,14 +76,14 @@ provenance:
   docs-sources:
     - official rzip homepage links to manual page
   history-sources:
-    - https://rzip.samba.org/
-    - https://rzip.samba.org/rzip/rzip-man.html
-    - https://directory.fsf.org/wiki/Rzip
-    - https://github.com/ckolivas/lrzip
+    - 'Official project site: https://rzip.samba.org/'
+    - >
+      Official rzip manual, including HISTORY, BUGS, CREDITS, and AUTHOR sections:
+      https://rzip.samba.org/rzip/rzip-man.html
   repo-sources:
     - >
-      source_facts.repo is empty; official rzip/Samba pages provide releases and docs,
-      not an official HTTPS source-control repository for rzip.
+      The official project site provides releases and documentation but no verified
+      official HTTP(S) source-control project page: https://rzip.samba.org/
   tags-sources:
     - official rzip homepage
     - source_facts.description
