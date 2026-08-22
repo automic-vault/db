@@ -3,30 +3,57 @@ display-name: rogcat
 repo: null
 docs:
   - https://github.com/flxo/rogcat#readme
-config-file-location: null
+config-file-location:
+  linux:
+    - ~/.config/rogcat/config.toml
+    - ~/.config/rogcat/profiles.toml
+  macos:
+    - ~/Library/Preferences/rogcat/config.toml
+    - ~/Library/Preferences/rogcat/profiles.toml
+  windows:
+    - '%HOME%/AppData/Roaming/rogcat/config.toml'
+    - '%HOME%/AppData/Roaming/rogcat/profiles.toml'
 credentials-file-location: null
 history:
-  - >
-    rogcat is a Rust command-line wrapper around Android's `adb logcat`. Its upstream
-    README frames the project around Android Debug Bridge as the standard development
-    interface for Android devices and `logcat` as the subcommand that reads Android's
-    internal log buffers. Google documents logcat as the command-line tool that dumps
-    system and application log messages, which places rogcat in the familiar Android
-    debugging workflow rather than as a replacement for ADB itself.
-  - >
-    The project was distributed through the Rust ecosystem early in its life: crates.io
-    records versions beginning with 0.2.6 on June 15, 2017 and a 0.5 line after years of
-    incremental releases. Homebrew packages it as `rogcat`, builds it from Rust, and
-    notes that `adb` must be available on the user's PATH at runtime. That packaging
-    shape is typical for developer utilities written in Rust: crates.io for source
-    installation and language visibility, Homebrew and Nix for workstation installation.
-  - >
-    Practitioners use rogcat when raw `adb logcat` is too noisy for terminal work. It
-    can run `adb logcat`, read files, read standard input, connect to TCP, and process
-    logs with parsing, filtering, painted output, and alternate output formats. Its
-    README also documents Fuchsia logging through `ffx`, making it a log stream
-    formatter and post-processor for developers who want terminal-native filtering and
-    saved traces without opening an IDE log panel.
+  adoption-history:
+    - >
+      rogcat is distributed as a Homebrew formula and a Nix package according to the
+      supplied package facts. The official project also publishes binary releases and
+      supports local Cargo installation.
+  package-nerd-significance:
+    - >
+      rogcat packages Android logcat workflows into a composable Unix-style processor.
+      Its ability to ingest files, standard streams, TCP, SocketCAN, or adb output and
+      emit parseable CSV, JSON, raw, or human-readable forms makes it useful beyond
+      simple terminal colorization.
+  project-history:
+    - >
+      Felix Obenhuber developed rogcat as an adb logcat wrapper and general log
+      processor in Rust. The tool expanded to support multiple input sources, filtering,
+      output formats, rotating files, persistent configuration, and reusable profiles.
+  related-projects:
+    - 'adb logcat: default Android log source wrapped by rogcat.'
+    - 'Android Debug Bridge: supplies connected-device logs.'
+    - 'Cargo: supported source-installation mechanism for the Rust implementation.'
+  sources:
+    - 'Official README: https://github.com/flxo/rogcat#readme'
+    - 'Official configuration reference: https://github.com/flxo/rogcat#configuration'
+    - 'Official usage reference: https://github.com/flxo/rogcat#usage'
+  summary:
+    - >
+      rogcat is a Rust-based adb logcat wrapper and log processor for capturing,
+      filtering, formatting, and storing Android and other structured log streams.
+  timeline:
+    - 'Initial project: Created as an adb logcat wrapper.'
+    - >
+      Later development: Added files, stdin, TCP, Linux SocketCAN, multiple serializable
+      formats, rotating output, configuration, and named filtering profiles.
+    - '0.4.8-pre: Version shown in the official embedded CLI usage reference.'
+  usage:
+    - >
+      Running rogcat without a command captures adb logcat output. Users can filter by
+      tags or message patterns, process saved files or stdin, write rotating logs, emit
+      formats including JSON and CSV, and define reusable TOML profiles.
 tags:
   - adb
   - android
@@ -53,10 +80,9 @@ provenance:
   docs-sources:
     - official GitHub README is the best documentation surface for the project.
   history-sources:
-    - https://github.com/flxo/rogcat
-    - https://crates.io/crates/rogcat/versions
-    - https://formulae.brew.sh/formula/rogcat
-    - https://developer.android.com/tools/logcat
+    - 'Official README: https://github.com/flxo/rogcat#readme'
+    - 'Official configuration reference: https://github.com/flxo/rogcat#configuration'
+    - 'Official usage reference: https://github.com/flxo/rogcat#usage'
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/flxo/rogcat, so repo is
@@ -72,6 +98,6 @@ category-path:
   - debugging
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
