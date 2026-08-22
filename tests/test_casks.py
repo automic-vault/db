@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from scripts.bootstrap.lib.authority import stable_cask_metadata
 from scripts.bootstrap.lib.casks import (
     app_catalog_from_casks,
     cask_metadata,
@@ -31,6 +32,18 @@ def load_public_db_export():
 
 
 class CaskAuthorityTests(unittest.TestCase):
+    def test_sqlite_authority_keeps_cask_version_outside_published_yaml(self):
+        metadata = stable_cask_metadata({
+            "codex": {
+                "version": "0.142.0",
+                "sourceArchive": "https://example.com/codex.zip",
+                "url": "https://example.com/codex.zip",
+                "sha256": "abc123",
+            }
+        })
+
+        self.assertEqual(metadata["codex"]["version"], "0.142.0")
+
     def test_public_export_preserves_the_combined_database_contract(self):
         exporter = load_public_db_export()
         authority = {
@@ -227,7 +240,6 @@ class CaskAuthorityTests(unittest.TestCase):
                 "repo": "https://github.com/openai/codex",
                 "package-manager": {"brew-cask": "codex"},
                 "package-manager-url": "https://formulae.brew.sh/cask/codex",
-                "version": "0.142.0",
                 "description": "OpenAI's coding agent that runs in your terminal",
                 "source-archive": "https://github.com/openai/codex/releases/download/rust-v0.142.0/codex-aarch64-apple-darwin.tar.gz",
                 "executables": ["codex"],
@@ -256,6 +268,7 @@ class CaskAuthorityTests(unittest.TestCase):
         self.assertEqual(record["display-name"], "VLC media player")
         self.assertEqual(record["applications"], ["VLC.app"])
         self.assertNotIn("executables", record)
+        self.assertNotIn("version", record)
 
 
 if __name__ == "__main__":
