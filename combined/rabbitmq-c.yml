@@ -8,37 +8,45 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rabbitmq-c is a C-language client library for AMQP applications that talk to
-    RabbitMQ. The upstream README describes it as a C AMQP client library for RabbitMQ
-    broker versions 2.0 and later, with `librabbitmq` as the library surface and
-    optional command-line tools for simple AMQP operations. Copyright notices in the
-    tree record VMware work from 2007-2012, Tony Garnock-Jones contributions from
-    2009-2010, and Alan Antonuk's stewardship from 2012-2021.
-  - >
-    The project fills the low-level C niche in the RabbitMQ client ecosystem. Many
-    RabbitMQ users work through higher-level language clients, but native services,
-    embedded components, language bindings, and performance-sensitive infrastructure
-    need a C API, TLS support, and a build that can produce shared or static libraries.
-    RabbitMQ's client-library listings include C and C++ options, while rabbitmq-c's own
-    documentation gives the C API and examples for sending, receiving, declaring queues,
-    and using channels.
-  - >
-    Its packaging and build story is conventional C infrastructure: CMake, a C compiler,
-    optional OpenSSL for TLS, optional POpt and XmlTo for command-line tools and man
-    pages, optional Doxygen for API docs, and package-manager distribution as
-    `rabbitmq-c` or `librabbitmq` development packages. Homebrew, Alpine, MacPorts, Nix,
-    and SUSE-family packages expose both the library and utilities such as
-    `amqp-publish`, `amqp-consume`, `amqp-get`, `amqp-declare-queue`, and
-    `amqp-delete-queue`.
-  - >
-    Practitioners use rabbitmq-c either directly from C programs or indirectly through
-    bindings and packages that link against `librabbitmq`. The README's examples show
-    the common shape: run a RabbitMQ server on port 5672, send a message with an example
-    publisher, and receive it with a listener. The threading notes are important
-    operational guidance: applications should not share a socket, connection state, or
-    channel between threads, and should instead open separate AMQP connections per
-    thread or provide their own locking.
+  adoption-history:
+    - >
+      The library is packaged across multiple Unix-like ecosystems, including Homebrew,
+      Alpine, MacPorts, Nix, and openSUSE, reflecting its role as a reusable native AMQP
+      dependency.
+  package-nerd-significance:
+    - >
+      rabbitmq-c is notable as a compact native-language alternative to higher-level
+      RabbitMQ clients. Its optional command-line utilities also make the package useful
+      for shell-driven AMQP testing and automation.
+  project-history:
+    - >
+      The current upstream repository is maintained under alanxz and records its lineage
+      as a fork of the earlier rabbitmq/rabbitmq-c repository. It provides a C
+      implementation of an AMQP client library intended for RabbitMQ.
+  related-projects:
+    - RabbitMQ is the broker targeted by the library.
+    - AMQP 0-9-1 is the messaging protocol implemented by the client.
+    - The package can build utilities including amqp-publish, amqp-consume, and amqp-get.
+  sources:
+    - 'Official API documentation: https://alanxz.github.io/rabbitmq-c/docs/0.8.0/'
+    - 'Official repository: https://github.com/alanxz/rabbitmq-c'
+    - source_facts.executables
+    - source_facts.package-manager
+  summary:
+    - >
+      rabbitmq-c is a C client library for communicating with RabbitMQ over AMQP,
+      accompanied by optional command-line utilities.
+  timeline:
+    - 'Upstream lineage: The current alanxz repository was forked from rabbitmq/rabbitmq-c.'
+    - >
+      0.5.0 onward: Upstream began publishing generated API documentation, according to
+      its official documentation page.
+  usage:
+    - >
+      Applications embed the library to publish and consume AMQP messages from C or
+      C-compatible environments. Packaged command-line tools support declaring or
+      deleting queues, publishing messages, consuming deliveries, and fetching
+      individual messages.
 category: developer-tools
 package-manager:
   apk: rabbitmq-c

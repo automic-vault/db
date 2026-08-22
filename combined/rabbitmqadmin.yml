@@ -9,28 +9,50 @@ config-file-location:
 credentials-file-location:
   unix: ~/.rabbitmqadmin.conf
 history:
-  - >
-    rabbitmqadmin is the command-line companion to RabbitMQ's management HTTP API. The
-    management plugin exposes a browser UI, an HTTP API for management and monitoring,
-    and rabbitmqadmin for scriptable administrative work; this made it the lightweight
-    tool for declaring, listing, deleting, exporting, and importing broker objects
-    without logging into a node and using rabbitmqctl.
-  - >
-    The v2 generation separated rabbitmqadmin from its older identity as a Python script
-    served by the management plugin. Team RabbitMQ rewrote it as a standalone native
-    binary in the rabbitmqadmin-ng project, with a release cycle independent from
-    RabbitMQ server releases. The CLI retained the broad shape of the original tool but
-    added stronger validation and command groups for operational tasks such as
-    definition export and import, health checks, metrics, feature flags, deprecated
-    feature discovery, shovels, federation, and connection management.
-  - >
-    Practitioners use rabbitmqadmin when the HTTP API is reachable and the task is about
-    broker metadata rather than low-level node control. It is common in shell scripts,
-    CI jobs, deployment playbooks, and operational runbooks that create vhosts, users,
-    permissions, exchanges, queues, bindings, policies, and definitions. RabbitMQ
-    documentation explicitly distinguishes it from rabbitmqctl and rabbitmq-plugins:
-    rabbitmqadmin targets HTTP API operations, while the other CLI tools retain
-    node-local and plugin-management responsibilities.
+  adoption-history:
+    - >
+      rabbitmqadmin became a standard companion to RabbitMQ's management plugin because
+      it exposes management and monitoring operations to scripts and terminals through
+      the broker's HTTP API. It is distributed by Homebrew and other package ecosystems
+      as a standalone operator tool.
+  package-nerd-significance:
+    - >
+      The tool gives administrators a scriptable management interface without requiring
+      direct Erlang-node access. Version 2 is also notable for replacing the original
+      dependency-light Python implementation with a redesigned client and for moving
+      saved connection profiles from INI syntax to TOML.
+  project-history:
+    - >
+      The original rabbitmqadmin was distributed as part of RabbitMQ's management
+      tooling. RabbitMQ later introduced rabbitmqadmin v2 as a substantially redesigned
+      command-line client for the HTTP API while retaining the familiar executable name
+      and default configuration path.
+  related-projects:
+    - RabbitMQ management plugin provides the HTTP API used by rabbitmqadmin.
+    - rabbitmqadmin-ng is the upstream source project for rabbitmqadmin v2.
+    - RabbitMQ server is the managed broker.
+  sources:
+    - 'Official management plugin documentation: https://www.rabbitmq.com/docs/management'
+    - 'Official rabbitmqadmin documentation: https://www.rabbitmq.com/docs/management-cli'
+    - source_facts.package-manager
+  summary:
+    - >
+      rabbitmqadmin is RabbitMQ's command-line management client for administrative
+      operations over the management plugin's HTTP API.
+  timeline:
+    - >
+      Original version: rabbitmqadmin was supplied with RabbitMQ's management tooling as
+      a Python client.
+    - >
+      Version 2: RabbitMQ introduced a redesigned implementation with TOML configuration
+      while retaining the default ~/.rabbitmqadmin.conf path.
+  usage:
+    - >
+      Operators use rabbitmqadmin to inspect and manage exchanges, queues, bindings,
+      users, permissions, policies, and other broker resources. Named connection
+      profiles can store host, port, virtual host, TLS settings, username, and password
+      in ~/.rabbitmqadmin.conf; the same file is therefore both configuration and a
+      potential credentials store.
 category: networking
 package-manager:
   brew: rabbitmqadmin
