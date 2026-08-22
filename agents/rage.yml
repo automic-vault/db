@@ -7,36 +7,54 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rage is the Rust implementation of age, a small file-encryption format and tool
-    family designed by Benjojo and Filippo Valsorda. The str4d/rage repository was
-    created on 2019-10-08, after the age format had established a clear design target:
-    explicit public keys, no key servers, no web-of-trust machinery, and composable
-    command-line behavior. The rage README positions the project as an interoperable
-    implementation of that age format rather than a competing format.
-  - >
-    The package's ecosystem role is split between CLI tool and Rust library. It provides
-    the rage and rage-keygen executables for encrypting to age recipients, decrypting
-    with identity files, and using passphrase-based encryption, while also exposing Rust
-    crates for applications that need age-compatible encryption. Its upstream
-    documentation points users to the age v1 specification and to the Go implementation
-    as the reference interoperable implementation, which is why adoption depends heavily
-    on spec compatibility and plugin support rather than a standalone trust model.
-  - >
-    Distribution followed Rust packaging and cross-platform CLI channels. rage is
-    published as a Rust crate, packaged by Homebrew and several Unix package managers,
-    and distributed for Windows through package catalogs such as Scoop and winget in
-    this dataset. The GitHub release stream shows v0.8.1 on 2022-06-18, v0.9.0 on
-    2022-10-27, v0.10.0 on 2024-02-04, v0.11.0 on 2024-11-03, and v0.11.2 on 2026-04-22,
-    indicating a long-running pre-1.0 compatibility-focused tool rather than a one-off
-    encryption wrapper.
-  - >
-    Practitioners use rage for jobs that are awkward in GPG but natural for a Unix
-    pipeline: encrypting files to one or more recipients, generating small recipient and
-    identity strings, protecting backups and secrets, using passphrase encryption when
-    public-key setup is unnecessary, and integrating age files into scripts. Plugin
-    compatibility, including YubiKey support through age-plugin-yubikey, makes rage part
-    of the broader age ecosystem rather than merely a Rust rewrite.
+  adoption-history:
+    - >
+      The official project documents packages for Homebrew, MacPorts, Alpine Linux, Arch
+      Linux, Debian and Ubuntu, NixOS, openSUSE, FreeBSD, Scoop, and prebuilt binaries
+      for Windows, Linux, and macOS.
+  package-nerd-significance:
+    - >
+      rage combines the age format's small explicit keys and composability with a Rust
+      implementation. Its deliberate lack of configuration files and its
+      stdin/stdout-oriented interface make it attractive for auditable shell workflows.
+    - >
+      It also illustrates the age ecosystem's interoperability model: rage consumes the
+      shared age format, supports native age identities and selected SSH keys, and can
+      use external age plugins such as age-plugin-yubikey.
+  project-history:
+    - >
+      rage is a Rust implementation of the age file-encryption format. The project
+      credits Ben Cartwright-Cox and Filippo Valsorda with designing age and points to
+      the Go age implementation as the reference interoperable implementation.
+    - >
+      The rage source includes copyright notices dating to 2020 and has developed into
+      both a command-line application and a Rust library.
+  related-projects:
+    - age
+    - age-plugin-yubikey
+    - sops
+  sources:
+    - https://age-encryption.org/v1
+    - https://github.com/FiloSottile/age
+    - https://github.com/str4d/rage#readme
+  summary:
+    - >
+      rage is a Rust command-line implementation of the age file-encryption format,
+      designed around secure defaults, explicit keys, and Unix-style composition.
+  timeline:
+    - '2020: Early rage source files carry project copyright notices.'
+    - >
+      Later development: rage added packaging across Unix-like and Windows package
+      ecosystems, plugin integration, SSH-key support, and optional archive mounting.
+  usage:
+    - >
+      Users encrypt to one or more age recipients, recipient files, or supported SSH
+      public keys and decrypt with corresponding identity files. Passphrase encryption
+      and ASCII armoring are also supported.
+    - >
+      rage has no configuration file. Identity and recipient files are supplied
+      explicitly with command-line options; their locations are user-selected, so there
+      is no fixed credentials-file path.
 tags:
   - age
   - cli
@@ -65,13 +83,9 @@ provenance:
     - Official rage GitHub README is the project documentation surface.
     - Official rage README links the age format specification at age-encryption.org/v1.
   history-sources:
-    - https://github.com/str4d/rage
-    - https://api.github.com/repos/str4d/rage
-    - https://api.github.com/repos/str4d/rage/releases?per_page=10
     - https://age-encryption.org/v1
-    - https://crates.io/crates/rage
-    - https://formulae.brew.sh/formula/rage
-    - source_facts.package-manager
+    - https://github.com/FiloSottile/age
+    - https://github.com/str4d/rage#readme
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/str4d/rage; per instruction,

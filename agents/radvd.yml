@@ -8,32 +8,45 @@ config-file-location:
     - /etc/radvd.conf
 credentials-file-location: null
 history:
-  - >
-    radvd, the Router Advertisement Daemon, belongs to the first generation of IPv6
-    plumbing for Unix-like systems. Its changelog records version 0.1 on 1996-11-13,
-    followed by version 0.2 on 1996-11-17 and version 0.3 on 1996-12-21, with early work
-    centered on Linux kernel IPv6 APIs, RFC 1970 behavior, manual pages, a configuration
-    file format, and the companion radvdump utility for displaying received Router
-    Advertisements.
-  - >
-    The project settled into a narrow but important network-infrastructure role: a
-    daemon for Linux and BSD routers that emits IPv6 Router Advertisement messages on a
-    local link, periodically and in response to Router Solicitation packets. Those
-    advertisements let hosts discover prefixes, default routers, and related
-    autoconfiguration parameters without using radvd as a general router configuration
-    tool. The README's FAQ makes that boundary explicit: radvd advertises routes, while
-    address assignment, routes, forwarding, and topology choices remain the
-    administrator's responsibility.
-  - >
-    Adoption followed IPv6 deployment rather than application-framework fashion. radvd
-    appears as a normal operating-system package and service in Linux distributions, BSD
-    packaging, firewall/router documentation, and Homebrew. Practitioners use it by
-    writing radvd.conf, enabling IPv6 forwarding on the router, and advertising one or
-    more /64 prefixes, RDNSS/DNSSL options, lifetimes, and related Neighbor Discovery
-    options to client networks. Later releases added support for newer Neighbor
-    Discovery extensions such as 6LoWPAN-related behavior, RDNSS/DNSSL handling,
-    NAT64/pref64 options, captive-portal options, and release-process hardening; the
-    project published v2.20 on 2024-12-31 and v2.21 on 2026-05-25.
+  adoption-history:
+    - >
+      radvd is packaged across major Linux and Unix-like ecosystems, including Debian,
+      Ubuntu, Fedora-family systems, Arch Linux, Alpine Linux, Nix, MacPorts, and
+      Homebrew.
+  package-nerd-significance:
+    - >
+      radvd is a foundational, narrowly scoped networking daemon: it exposes IPv6 Router
+      Advertisement and stateless address-autoconfiguration behavior through a
+      traditional Unix daemon and configuration file.
+  project-history:
+    - >
+      The project implements an IPv6 Router Advertisement daemon and includes radvdump
+      for inspecting advertisements. Its long-running release history tracks changes in
+      Linux networking interfaces, daemonization, and IPv6 behavior.
+  related-projects:
+    - Linux IPv6 networking
+    - Neighbor Discovery Protocol
+    - DHCPv6
+  sources:
+    - https://github.com/radvd-project/radvd
+    - https://radvd.litech.org/
+    - source_facts.package-manager
+  summary:
+    - >
+      radvd is an open-source daemon for advertising IPv6 router and network-prefix
+      information to hosts on a local link.
+  timeline:
+    - >
+      Established Linux IPv6 era: radvd became a standard user-space implementation of
+      IPv6 Router Advertisements.
+    - >
+      Present: The radvd project continues to publish releases and maintain its daemon,
+      configuration documentation, and radvdump utility.
+  usage:
+    - >
+      Administrators define advertised interfaces, prefixes, and Router Advertisement
+      parameters in /etc/radvd.conf, then run radvd as a system daemon. radvdump can
+      inspect received advertisements for troubleshooting.
 tags:
   - cli
   - daemon
@@ -64,12 +77,8 @@ provenance:
       source_facts.homepage is the official radvd site and includes development,
       download, and project information.
   history-sources:
-    - https://raw.githubusercontent.com/radvd-project/radvd/master/CHANGES
-    - https://radvd.litech.org/
     - https://github.com/radvd-project/radvd
-    - https://manpages.debian.org/testing/radvd/radvd.8.en.html
-    - https://formulae.brew.sh/formula/radvd
-    - https://api.github.com/repos/radvd-project/radvd/releases?per_page=10
+    - https://radvd.litech.org/
     - source_facts.package-manager
   repo-sources:
     - >
@@ -86,6 +95,6 @@ category-path:
   - ipv6
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
