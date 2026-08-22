@@ -7,32 +7,68 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    qrencode is the command-line front end to Kentaro Fukuchi's libqrencode, a C library
-    for encoding data into QR Code symbols. The project grew out of the need for a
-    compact embeddable encoder for QR Code Model 2, the format standardized in JIS
-    X0510:2004 and ISO/IEC 18004, at a time when QR output was becoming a routine
-    feature for desktop, server, and embedded software.
-  - >
-    Its role in the Unix packaging ecosystem is broader than the `qrencode` executable
-    alone. Distributions package both the command and the development library, with
-    names such as `libqrencode-dev` on Debian and Ubuntu, `libqrencode4` on openSUSE,
-    and `qrencode` in Homebrew, Fedora, Arch, MacPorts, Nix, and Scoop. That split
-    reflects its dual audience: users who want to generate QR images from shell scripts,
-    and developers who link against libqrencode from other applications.
-  - >
-    Practitioners use `qrencode` as a boring, scriptable QR generator: piping text into
-    it, encoding Wi-Fi strings or URLs, generating PNG/SVG/EPS/ANSI output for
-    documentation and terminals, and embedding QR creation into installers, provisioning
-    scripts, labels, and offline handoff flows. The library's small C surface and LGPL
-    licensing helped it become a dependency candidate where a full imaging framework or
-    web service would be unnecessary.
-  - >
-    The project occupies a foundational position among QR tools. Newer utilities often
-    add decoding, richer image-format handling, or workflow-specific UX, while qrencode
-    remains the common low-level encoder that many package collections expose because it
-    does one job predictably and is easy to invoke from build systems, shell scripts,
-    and native applications.
+  adoption-history:
+    - >
+      libqrencode has become a widely packaged native QR encoder:
+      source_facts.package-manager records packages in Homebrew, Debian, Ubuntu,
+      Fedora-family systems, Arch, Nix, MacPorts, Scoop, and openSUSE. Distributions
+      expose both the C library and, depending on packaging, the qrencode executable or
+      development headers.
+  package-nerd-significance:
+    - >
+      libqrencode is a compact, embeddable C implementation that also supplies a
+      scriptable CLI, so it serves both application developers and shell users. Its
+      longevity, stable native API, multiple build systems, and availability across
+      major package ecosystems make it a foundational QR-generation dependency.
+  project-history:
+    - >
+      Kentaro Fukuchi began libqrencode as a C library for converting strings or
+      structured data into QR Code bitmap arrays. The official manual carries copyright
+      dates beginning in 2006. Over time the project added Micro QR Code, structured
+      append, multiple command output formats, thread-safety and memory improvements,
+      and CMake support alongside its Autotools build.
+    - >
+      Version 4.0.0, released in 2017, retained the public API while substantially
+      revising the implementation for better performance and memory use. Version 4.1.1
+      followed in 2020 with fixes for Micro QR Code capacity and data-length
+      calculations.
+  related-projects:
+    - >
+      The qrencode executable is the command-line frontend shipped from the libqrencode
+      source tree.
+    - >
+      qrtool explicitly names qrencode as one of its inspirations, illustrating
+      libqrencode’s influence on later QR command-line tools.
+  sources:
+    - 'Official API manual: https://fukuchi.org/works/qrencode/manual/'
+    - 'Official ChangeLog: https://github.com/fukuchi/libqrencode/blob/master/ChangeLog'
+    - 'Official releases: https://github.com/fukuchi/libqrencode/releases'
+    - 'Official repository README: https://github.com/fukuchi/libqrencode#readme'
+    - 'Package coverage: source_facts.package-manager'
+  summary:
+    - >
+      QRencode, distributed as libqrencode plus the qrencode command, is Kentaro
+      Fukuchi’s fast and compact C implementation for generating QR Code symbols. The
+      library exposes encoding APIs, while the CLI writes formats such as PNG, EPS, SVG,
+      XPM, and terminal-oriented output.
+  timeline:
+    - '2006: The libqrencode copyright history begins.'
+    - '2011: The 3.2 series documented experimental Micro QR Code support.'
+    - '2014: Version 3.3.0 was released.'
+    - >
+      2017-09-21: Version 4.0.0 was released with a largely revised implementation and
+      CMake support.
+    - '2020-09-28: Version 4.1.1 was released with Micro QR Code bug fixes.'
+  usage:
+    - >
+      Developers can link libqrencode and call its string, binary-data, or
+      structured-input APIs to obtain QR bitmap data.
+    - >
+      Shell users can run qrencode with input text and an output filename to produce a
+      QR image; standard output is supported for pipeline use.
+    - >
+      The library does not require user credentials or a runtime configuration file.
+      Build-time options and command flags control features and output.
 tags:
   - c
   - cli
@@ -61,12 +97,11 @@ provenance:
     - official GitHub README is repository documentation
     - official GitHub README links to the fukuchi.org manual as library usage documentation
   history-sources:
-    - https://github.com/fukuchi/libqrencode
-    - https://fukuchi.org/works/qrencode/index.html.en
-    - https://fukuchi.org/works/qrencode/manual/index.html
-    - https://formulae.brew.sh/formula/qrencode
-    - https://www.linuxfromscratch.org/blfs/view/svn/general/libqrencode.html
-    - https://www.freshports.org/graphics/libqrencode
+    - 'Official API manual: https://fukuchi.org/works/qrencode/manual/'
+    - 'Official ChangeLog: https://github.com/fukuchi/libqrencode/blob/master/ChangeLog'
+    - 'Official releases: https://github.com/fukuchi/libqrencode/releases'
+    - 'Official repository README: https://github.com/fukuchi/libqrencode#readme'
+    - 'Package coverage: source_facts.package-manager'
   repo-sources:
     - source_facts.repo already has value; per instruction, repo not re-evaluated
   tags-sources:
