@@ -3,33 +3,63 @@ display-name: qstat
 repo: null
 docs:
   - https://github.com/Unity-Technologies/qstat#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - ./qstat.cfg
 credentials-file-location: null
 history:
-  - >
-    qstat belongs to the first wave of Internet game-server tooling around Quake and its
-    successors. Steve Jankowski's program was written in C to query game servers and
-    report whether they were down, non-responsive, or running a game; for live servers
-    it reported details such as server name, map, player count, response time, rules,
-    and player information. Old Quake-era pages also show qstat being used behind CGI
-    server lists and pseudo-trackers, which made it part of the infrastructure around
-    public FPS server discovery.
-  - >
-    Its ecosystem role is deliberately narrow: a portable command-line probe for many
-    game-server protocols rather than a game panel or hosting system. The qstat pages
-    list support for Quake, QuakeWorld, Hexen II, Quake II, Quake III, Unreal
-    Tournament, Half-Life, Tribes, Battlefield, and other servers, plus output templates
-    for automatic HTML generation. Practitioners use it in shell scripts, monitoring
-    checks, status pages, and legacy server-browser workflows where a small CLI program
-    is easier to automate than a graphical client.
-  - >
-    The package has survived through handoffs of source hosting and downstream
-    packaging. The Homebrew formula points at the Unity-Technologies GitHub repository,
-    while an additional repository describes itself as the official qstat repository.
-    Its presence in Homebrew, Debian, Fedora, MacPorts, and Ubuntu reflects the classic
-    Unix shape of the tool: small C source, a stable executable name, and enough
-    historical protocol knowledge to remain useful for old and community-run game
-    servers.
+  adoption-history:
+    - >
+      QStat has been distributed by several Unix-like package ecosystems, including
+      Homebrew, Debian, Ubuntu, Fedora-family repositories, and MacPorts. Its longevity
+      and script-friendly output made it useful to game-server browsers, status pages,
+      and monitoring scripts.
+  package-nerd-significance:
+    - >
+      QStat is a classic small Unix networking utility whose value lies in encoding many
+      incompatible game-query protocols behind one command. Its raw, template, and XML
+      output modes also illustrate an early command-line tool evolving from
+      human-readable status checks toward machine-consumable automation.
+  project-history:
+    - >
+      QStat was originally created by Steve Jankowski to query Quake-family and other
+      Internet game servers. After the original SourceForge project became difficult to
+      administer and its creator could no longer be reached, an active maintainer moved
+      development to GitHub; the rocketsciencegg repository identifies the Multiplay
+      lineage as the new official home.
+  related-projects:
+    - The project previously lived on SourceForge.
+    - >
+      The current repository records the Multiplay GitHub project as the successor
+      official home.
+    - >
+      QStat supports protocols associated with Quake, Unreal, Half-Life, Tribes, and
+      many later games.
+  sources:
+    - https://github.com/rocketsciencegg/qstat
+    - https://github.com/rocketsciencegg/qstat/blob/master/qstatdoc.html
+    - source_facts.package-manager
+  summary:
+    - >
+      QStat is a long-running command-line client for querying Internet game servers and
+      reporting server identity, map, player counts, latency, rules, and player
+      information.
+  timeline:
+    - 'Original era: Steve Jankowski created QStat and hosted it on SourceForge.'
+    - 'GitHub migration: Active maintenance moved away from the old SourceForge repository.'
+    - >
+      Later development: Support expanded across many Quake-, Unreal-, GameSpy-, and
+      other game-server protocols.
+  usage:
+    - >
+      Users supply game-server hostnames or IP addresses directly or load them from a
+      file. Multiple server types can be queried together, with human-readable, raw,
+      template, or XML output available for interactive use and automation.
+    - >
+      QStat loads `qstat.cfg` when that file is present in the current working
+      directory. An alternative configuration can be selected with `QSTAT_CONFIG` or the
+      `-cfg` option; therefore no single fixed path exists beyond the documented
+      current-directory default.
 tags:
   - cli
   - game-servers
@@ -57,10 +87,9 @@ provenance:
       source_facts.homepage points to the official GitHub repository; README is the best
       available official documentation surface
   history-sources:
-    - https://nyov.github.io/qstat-svn/
-    - https://github.com/Unity-Technologies/qstat
     - https://github.com/rocketsciencegg/qstat
-    - https://formulae.brew.sh/formula/qstat
+    - https://github.com/rocketsciencegg/qstat/blob/master/qstatdoc.html
+    - source_facts.package-manager
   repo-sources:
     - source_facts.repo already has value; per instruction, repo not re-evaluated
   tags-sources:
@@ -72,6 +101,6 @@ category-path:
   - server-tools
 display-name-confidence: high
 docs-confidence: medium
-history-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
