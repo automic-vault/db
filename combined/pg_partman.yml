@@ -8,50 +8,61 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    Origin and lineage: pg_partman, short for PostgreSQL Partition Manager, is Keith
-    Fiske's extension for creating and maintaining partition sets. Its GitHub repository
-    was created on 2012-09-05, during the era when PostgreSQL partitioning was commonly
-    built from inheritance tables, CHECK constraints, and trigger routing rather than
-    the declarative partitioning syntax added later to core PostgreSQL.
-  - >
-    Early development: The pre-5.0 changelog shows pg_partman growing from automatic
-    time/id partition creation into a full maintenance extension: retention management
-    appeared in 0.2.0, privilege propagation in 0.3.x, undo/repartitioning functions in
-    1.0.0, batched data movement scripts in 1.1.0, archival workflows with
-    `dump_partition.py` in 1.3.0, and name-truncation/index-maintenance improvements in
-    1.4.0. This history explains why the package ships both SQL extension code and
-    helper scripts.
-  - >
-    Shift to declarative partitioning: PostgreSQL 10 introduced native declarative
-    partitioning, and pg_partman gradually followed. The 4.x line supported native
-    partitioning while preserving older trigger-based methods, but the 5.0.0/5.0.1
-    release removed trigger-based partitioning support, required PostgreSQL 14 or newer,
-    and made built-in declarative partitioning the only supported method. The project
-    documentation includes migration guidance for moving old trigger/inheritance
-    partition sets to declarative partitioning.
-  - >
-    Adoption history: pg_partman became one of the standard operational tools for large
-    time-series, event, audit, and ID-range tables in PostgreSQL installations. Its
-    README says PGDG maintainers provide community OS packages, and the input package
-    data records Homebrew, Debian/Ubuntu, and Fedora-family packaging. Amazon RDS made
-    the extension available beginning with PostgreSQL 12.5, which broadened its use in
-    managed PostgreSQL environments.
-  - >
-    How it is used: DBAs create a partitioned parent table, install `CREATE EXTENSION
-    pg_partman`, call `partman.create_parent()` with the control column and interval,
-    then run maintenance to premake future partitions and enforce retention. Many
-    installations load `pg_partman_bgw` through `shared_preload_libraries` so
-    maintenance runs from a background worker instead of cron. The extension also
-    handles default partitions, template-table properties, retention schemas, gap
-    filling, data migration, and monitoring values such as `maintenance_last_run`.
-  - >
-    Package-nerd significance: pg_partman is a good example of a database extension
-    whose package is not just an executable: it installs extension SQL, upgrade scripts,
-    optional background-worker code, and helper scripts that must match the target
-    PostgreSQL major version. Its 5.x transition also shows how ecosystem packages track
-    core PostgreSQL feature maturity: once declarative partitioning became capable
-    enough, the extension shed its older trigger-routing implementation.
+  adoption-history:
+    - >
+      pg_partman is distributed not only from source but through community-maintained
+      PostgreSQL operating-system packages. Its usefulness grew as PostgreSQL
+      installations needed repeatable automation for creating future partitions,
+      applying retention, and maintaining large time-series or sequence-based tables.
+  package-nerd-significance:
+    - >
+      The extension packages a substantial amount of PostgreSQL partitioning operational
+      knowledge into database objects and an optional background worker. Package
+      maintainers must track both PostgreSQL-version compatibility and major pg_partman
+      migrations, particularly the transition away from trigger-based partitioning.
+  project-history:
+    - >
+      pg_partman began as a PostgreSQL extension for managing time- and number-based
+      partition sets, including the trigger-based techniques required by older
+      PostgreSQL releases. As PostgreSQL's declarative partitioning matured, pg_partman
+      added support for the core implementation and migration tooling.
+    - >
+      The 5.x series completed a major architectural transition: version 5.0.1 dropped
+      trigger-based partitioning, required PostgreSQL 14 or newer, and standardized on
+      built-in declarative partitioning. Later 5.x releases expanded supported
+      partitioning forms and maintenance capabilities.
+  related-projects:
+    - PostgreSQL
+    - pg_jobmon
+    - pgTAP
+  sources:
+    - https://github.com/pgpartman/pg_partman
+    - https://github.com/pgpartman/pg_partman/blob/development/CHANGELOG-pre-5.0.0.txt
+    - https://github.com/pgpartman/pg_partman/blob/development/CHANGELOG.md
+    - https://github.com/pgpartman/pg_partman/blob/development/doc/pg_partman.md
+  summary:
+    - >
+      pg_partman is a PostgreSQL extension that creates and maintains time- or
+      number-based partition sets, including future partition creation, retention,
+      migration, and background maintenance.
+  timeline:
+    - >
+      Pre-5.0: pg_partman supported older trigger-based partitioning alongside
+      PostgreSQL declarative partitioning.
+    - '2023: The 4.7 series added compatibility with PostgreSQL 16.'
+    - >
+      2024: Version 5.0.1 removed trigger-based partitioning and required PostgreSQL 14
+      or newer.
+    - >
+      2025: The 5.x documentation described list partitioning and experimental numeric
+      partitioning support.
+  usage:
+    - >
+      Administrators create the extension in a chosen database schema, register existing
+      declaratively partitioned parent tables, and configure policies in pg_partman's
+      database configuration tables. Maintenance can be invoked by a scheduler or
+      automated with the bundled background worker; retention, premaking, migration, and
+      monitoring features support production partition lifecycles.
 category: developer-tools
 package-manager:
   brew: pg_partman
