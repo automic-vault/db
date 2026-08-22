@@ -12,32 +12,70 @@ config-file-location:
     - /etc/runit/3
 credentials-file-location: null
 history:
-  - >
-    runit is Gerrit Pape's Unix init and service-supervision suite, developed in the
-    early 2000s and stabilized with the 1.0.0 release in February 2004. It belongs to
-    the supervision-first lineage of Unix service management: instead of only starting
-    services at boot, it keeps a supervising process tree responsible for restarting
-    daemons, sending signals without pid files, and managing logs.
-  - >
-    Its design is intentionally small and staged. When used as PID 1, runit performs
-    boot, normal operation, and shutdown through /etc/runit/1, /etc/runit/2, and
-    /etc/runit/3. Stage 2 usually runs runsvdir, which watches a service directory and
-    starts a runsv supervisor per service. This makes service definitions simple
-    directories with executable scripts rather than a large central policy engine.
-  - >
-    Adoption has been strongest among users and distributions that prefer small,
-    inspectable init systems. The upstream site lists Debian and Ubuntu as
-    alternative-init packaging targets and Void Linux as a distribution using runit as
-    its default init scheme; Debian also packages runit-init as a way to boot with
-    /sbin/init linked to runit-init. In practice, administrators use it either as the
-    full init system, as a service supervisor under another init, or as a compact
-    supervisor for container and server processes.
-  - >
-    Package-manager behavior varies by platform. Homebrew packages runit for macOS and
-    Linux but deliberately does not install it as an init replacement; it uses a
-    Homebrew-prefix service directory and offers runsvdir for supervised services. That
-    packaging choice captures the common workstation use case: keep the supervision
-    tools available without trying to replace the host's boot system.
+  adoption-history:
+    - >
+      The official site lists runit packages or integrations for Debian, Ubuntu,
+      FreeBSD, OpenBSD, NetBSD, Gentoo, Arch Linux, Linux From Scratch, Artix, antiX,
+      and other systems. It is especially notable as the default init scheme of Void
+      Linux and an alternative init on several other distributions.
+    - >
+      The project also documents use on GNU/Linux, BSD systems, macOS, Solaris, and
+      operation either as PID 1 or alongside a traditional init system.
+  package-nerd-significance:
+    - >
+      runit is a touchstone in Unix service-supervision culture because it combines a
+      small three-stage init design with persistent per-service supervision and
+      straightforward run scripts. It offers a contrasting model to SysV init scripts
+      and larger dependency-oriented service managers.
+    - >
+      Its tiny tools—such as `runsv`, `runsvdir`, `sv`, `svlogd`, and `chpst`—are
+      independently useful and embody the Unix preference for narrowly scoped
+      components.
+  project-history:
+    - >
+      Gerrit Pape developed runit as a cross-platform Unix init scheme and
+      service-supervision suite. Early public documentation and source identifiers date
+      from 2002, when it was already being used as PID 1 on Debian systems.
+    - >
+      The design divides boot, normal operation, and shutdown into three scripts. During
+      normal operation, `runsvdir` supervises service directories, restarts failed
+      services, and integrates with runit's logging tools.
+    - >
+      Successive releases refined supervision, service-control compatibility, logging,
+      portability, process reaping, runlevels, and filesystem-layout guidance while
+      preserving the core architecture.
+  related-projects:
+    - >
+      runit belongs to the daemontools-derived supervision family and can replace
+      SysV-style init or operate alongside an existing init system. Its supervision
+      model also influenced later lightweight init and service-management ecosystems.
+  sources:
+    - 'Official installation documentation: https://smarden.org/runit/install'
+    - 'Official project site: https://smarden.org/runit/'
+    - 'Official source repository linked by the project site: https://github.com/g-pape/runit'
+    - 'Official upgrade history: https://smarden.org/runit/upgrade'
+  summary:
+    - >
+      runit is Gerrit Pape's compact Unix init and service-supervision suite. It can run
+      as PID 1 or supervise services beneath another init system.
+  timeline:
+    - >
+      2002: Contemporary source identifiers and the official usage example document
+      runit operating as PID 1.
+    - '2004: Official documentation covered runlevels and service-dependency practices.'
+    - >
+      Later 1.x releases expanded logging, service control, portability, and
+      process-reaping behavior.
+    - >
+      The 2.x series refined defaults, shutdown behavior, service checks, and
+      configuration guidance.
+  usage:
+    - >
+      As PID 1, runit executes `/etc/runit/1` for one-time initialization, keeps
+      `/etc/runit/2` running during normal operation, and executes `/etc/runit/3` for
+      shutdown or reboot. Administrators normally place per-service run scripts in
+      service directories managed by `runsvdir`, inspect or change state with `sv`, and
+      handle logs with `svlogd`.
 category: system
 package-manager:
   apk: runit

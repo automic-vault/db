@@ -6,19 +6,53 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    runitor is a Go command runner created in 2020 around a narrow operational need: run
-    a command, capture its output, and report success or failure to Healthchecks.io or a
-    compatible private instance. It packages the common cron-monitoring shell-wrapper
-    pattern into a single binary with exit-code handling, retries, output truncation,
-    start/fail/success pings, and support for UUID or slug-based checks.
-  - >
-    Its adoption context is the Healthchecks.io ecosystem, where it is listed among
-    third-party command runners and shell wrappers. Practitioners use it around backups,
-    certificate renewals, maintenance scripts, and one-process container jobs,
-    especially where adding curl calls to every script would mix monitoring plumbing
-    with the actual task. Distribution is lightweight: signed upstream binaries, Go
-    install, container images, Nix, and Homebrew.
+  adoption-history:
+    - >
+      Runitor is distributed through signed release binaries, Go installation, container
+      images, Homebrew, and Nix. This makes it usable both on conventional hosts and in
+      one-process-per-container deployments.
+  package-nerd-significance:
+    - >
+      Runitor packages the common cron-plus-curl health-check pattern into a dedicated
+      executable with exit-code handling, output capture, retries, scheduling, and
+      secret indirection. It is attractive in minimal containers where adding a full
+      cron daemon or shell monitoring wrapper would be excessive.
+  project-history:
+    - >
+      Runitor was created as a small Go command runner integrating periodic jobs with
+      healthchecks.io or a compatible private instance.
+    - >
+      It grew beyond a simple wrapper to support interval and cron-expression
+      scheduling, automatic check creation, output attachment, API retry controls,
+      configurable outcome handling, signed binaries, and multi-platform container
+      images.
+  related-projects:
+    - >
+      healthchecks.io supplies the dead-man's-switch monitoring service to which runitor
+      reports. Cron and systemd timers are alternative schedulers; runitor can also
+      provide basic scheduling when those services are unavailable.
+  sources:
+    - 'Input package availability: source_facts.package-manager'
+    - 'Official releases: https://github.com/bdd/runitor/releases'
+    - 'Official repository and README: https://github.com/bdd/runitor'
+  summary:
+    - >
+      runitor executes a command, captures its result, and reports success or failure to
+      healthchecks.io. It can also serve as a lightweight interval or cron-expression
+      scheduler.
+  timeline:
+    - The project began as a Go wrapper for reporting command results to healthchecks.io.
+    - >
+      Later development added scheduling, richer ping behavior, retries, signed
+      releases, and container distribution.
+  usage:
+    - >
+      Invoke `runitor -- command` with a check UUID, or use a project ping key and check
+      slug. Checks may be identified through flags or environment variables such as
+      `CHECK_UUID`, `PING_KEY`, and `CHECK_SLUG`; values can be read from an arbitrary
+      file by adding the `file:` prefix. The `-every` and `-at` options run commands
+      periodically, while output-capture controls help prevent sensitive backup details
+      from being attached to pings.
 tags:
   - cli
   - command-runner
@@ -44,10 +78,9 @@ provenance:
       source_facts.homepage points to the official GitHub repository; README is the
       primary official documentation surface.
   history-sources:
-    - https://api.github.com/repos/bdd/runitor
-    - https://github.com/bdd/runitor
-    - https://healthchecks.io/docs/resources/
-    - https://formulae.brew.sh/formula/runitor
+    - 'Input package availability: source_facts.package-manager'
+    - 'Official releases: https://github.com/bdd/runitor/releases'
+    - 'Official repository and README: https://github.com/bdd/runitor'
   repo-sources:
     - source_facts.repo is already populated; per instruction, repo returned as null.
   tags-sources:
