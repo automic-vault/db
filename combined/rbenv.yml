@@ -8,40 +8,67 @@ config-file-location:
   unix: .ruby-version
 credentials-file-location: null
 history:
-  - >
-    rbenv is a Ruby version manager for Unix-like systems, created by Sam Stephenson.
-    The v0.1.0 tag was made on August 11, 2011, and the early README described the
-    project as "Simple Ruby Version Management": a way to switch Ruby versions per user
-    or per project, override a version with an environment variable, and avoid the
-    heavier shell integration associated with RVM.
-  - >
-    The original design was intentionally small. rbenv did not install Ruby, manage
-    gemsets, override `cd`, or require Ruby libraries to know about it. Instead, it
-    placed shim executables ahead of the rest of `PATH`; each shim resolved the selected
-    Ruby version from per-project and global configuration and then dispatched to the
-    matching executable under `~/.rbenv/versions`. ruby-build filled the installation
-    role as a companion plugin, letting rbenv remain focused on version selection.
-  - >
-    That split shaped rbenv's adoption in the Ruby ecosystem. Rubyists could commit a
-    `.ruby-version` file to an application repository, install Rubies under
-    `RBENV_ROOT`, and let `ruby`, `gem`, `bundle`, and other commands transparently use
-    the selected interpreter. The workflow fit Rails applications, CI jobs, and
-    developer laptops that needed several MRI, JRuby, or other Ruby builds without
-    changing the system Ruby.
-  - >
-    rbenv's packaging history reflects its move from source checkout to mainstream
-    developer tooling. The project documentation describes Homebrew installation on
-    macOS and Linux, packages for Arch Linux, Fedora, and OpenSUSE, and Debian/Ubuntu
-    packages with a warning that distro versions can lag behind the upstream release.
-    Homebrew's formula also depends on ruby-build, encoding the common pairing of rbenv
-    for switching and ruby-build for compiling or downloading Ruby versions.
-  - >
-    The project's own comparison guide summarizes the tradeoff that made rbenv popular:
-    transparency, portability, and a plugin ecosystem in exchange for a small shim
-    overhead and strict version isolation. Later tools such as chruby, asdf, and
-    mise/rtx addressed adjacent needs, especially multi-language version management, but
-    rbenv remained a reference implementation for the shim-based, per-project Ruby
-    workflow.
+  adoption-history:
+    - >
+      rbenv became a prominent lightweight alternative in the Ruby version-manager
+      ecosystem. Its official installation guide recommends package-manager installation
+      where available, while the supplied metadata records packages for Homebrew,
+      Debian, Ubuntu, Fedora/DNF, Arch, MacPorts, Nix, and openSUSE.
+    - >
+      Its Bash plugin interface fostered an ecosystem including ruby-build,
+      rbenv-aliases, rbenv-binstubs, and rbenv-bundler. The rbenv maintainers describe
+      it as having inspired forks for other programming languages and software
+      environments.
+  package-nerd-significance:
+    - >
+      rbenv exemplifies the Unix-style version-manager design: a small shim dispatcher,
+      plain-text version files, environment variables, and separately packaged plugins.
+      This contrasts with managers that combine runtime compilation, gemsets, and shell
+      management in one tool.
+    - >
+      The `.ruby-version` convention became useful beyond rbenv because multiple Ruby
+      version managers can consume it. That portability makes the file part of the
+      practical interface between projects, developers, CI systems, and package tooling.
+  project-history:
+    - >
+      rbenv was created as a simple mechanism for selecting Ruby versions per project.
+      It prepends shims to PATH, resolves the requested version from environment or
+      version files, and delegates actual Ruby installation to tools such as the
+      separately maintained ruby-build plugin.
+    - >
+      Version 0.4.0 changed the preferred project file from `.rbenv-version` to the
+      cross-tool `.ruby-version` name. Version 1.0.0 characterized the project as a
+      robust Unix-methodology tool and expanded plugin hooks and shell support.
+  related-projects:
+    - ruby-build
+    - rbenv-installer
+    - RVM
+    - chruby
+    - asdf
+  sources:
+    - 'Distribution evidence: source_facts.package-manager'
+    - 'Official releases: https://github.com/rbenv/rbenv/releases'
+    - 'Official repository and README: https://github.com/rbenv/rbenv'
+    - 'Official wiki: https://github.com/rbenv/rbenv/wiki'
+  summary:
+    - >
+      rbenv is a Unix-like Ruby version manager that selects a Ruby through PATH shims
+      and project or user version files while leaving Ruby installation to plugins such
+      as ruby-build.
+  timeline:
+    - '2013: rbenv 0.4.0 adopted `.ruby-version` as the preferred project-local version file.'
+    - >
+      2018: rbenv 1.0.0 formalized expanded hooks, improved shell support, and the
+      project's mature Unix-style workflow.
+  usage:
+    - >
+      Users normally install Ruby versions with ruby-build, choose a machine-wide
+      default with `rbenv global`, and write a project-specific `.ruby-version` with
+      `rbenv local`. `RBENV_VERSION` or `rbenv shell` can override file-based selection.
+    - >
+      The user-wide default is stored in `~/.rbenv/version`; project selection is stored
+      in `.ruby-version`. Installed Rubies and shims normally live beneath `~/.rbenv`,
+      configurable through `RBENV_ROOT`.
 category: developer-tools
 package-manager:
   brew: rbenv

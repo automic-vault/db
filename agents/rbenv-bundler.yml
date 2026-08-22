@@ -3,37 +3,70 @@ display-name: rbenv-bundler
 repo: null
 docs:
   - https://github.com/carsomyr/rbenv-bundler#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - .bundle/config
+    - ~/.bundle/config
 credentials-file-location: null
 history:
-  - >
-    rbenv-bundler is one of the older Bundler integration plugins for rbenv. Its GitHub
-    repository was created on 2011-09-18, less than two months after the rbenv
-    repository was created on 2011-08-01, and its own release history starts tagging
-    releases at version 0.90 on 2011-09-28.
-  - >
-    The plugin's goal is to make rbenv shims and `rbenv which` aware of Bundler
-    installation paths. In practice, it lets a command such as `rake` resolve to the
-    executable selected by the project's bundle, reducing the need to type `bundle exec`
-    in everyday project work. The README documents it as opt-in through `rbenv bundler
-    on`, with Homebrew installation offered alongside cloning into the rbenv plugins
-    directory.
-  - >
-    The release history shows the complexity of bridging rbenv and Bundler. In 2012,
-    releases added scanning of `~/.bundle/config`, safer rehash handling, Ruby profile
-    generation, Bundler search behavior fixes, and support for `BUNDLE_GEMFILE`; version
-    0.96 on 2013-05-29 added automatic rehashing after `bundle install` and `bundle
-    update`; version 0.98 on 2014-08-28 switched the plugin to opt-in behavior and
-    handled Homebrew symlink layouts; version 1.00 on 2017-11-08 fixed Bundler 1.16
-    compatibility; version 1.0.1 on 2021-07-01 fixed platform gem lookup in
-    `Gemfile.lock`.
-  - >
-    rbenv-bundler occupies a well-known but contested place in the rbenv ecosystem. The
-    rbenv wiki names it in the Bundler integration section as a plugin that adjusts
-    shims and `rbenv which` for the active bundle, while also steering users toward
-    Bundler binstubs because of performance and reliability concerns. Homebrew
-    nevertheless packages it as `rbenv-bundler`, reflecting continued distribution for
-    users who prefer shim-level Bundler integration.
+  adoption-history:
+    - >
+      The plugin was distributed through Homebrew in addition to its standard rbenv
+      plugin installation. Its version history records portability work for macOS,
+      Linux, and BSD systems and compatibility fixes across changing Bundler releases.
+    - >
+      Its specialized role reflects the rbenv ecosystem's preference for optional shell
+      plugins instead of folding Bundler-aware gem execution into the core version
+      manager.
+  package-nerd-significance:
+    - >
+      rbenv-bundler is an instructive example of deep integration between three layers
+      of Ruby tooling: rbenv's PATH shims, RubyGems executable layouts, and Bundler's
+      dependency resolution.
+    - >
+      Its long version history documents packaging edge cases involving platform gems,
+      Git dependencies, Rubinius, Homebrew symlinks, cross-platform hashing, and Bundler
+      configuration discovery.
+  project-history:
+    - >
+      rbenv-bundler began tagging releases in 2011. It evolved from a shim enhancement
+      into a profile-and-manifest system capable of locating executables that satisfy
+      each project's Gemfile constraints.
+    - >
+      The project became opt-in in version 0.98, added later Bundler compatibility
+      fixes, and reached version 1.0.1 in 2021 with a correction for platform-gem
+      discovery in Gemfile.lock.
+  related-projects:
+    - rbenv
+    - Bundler
+    - RubyGems
+    - rbenv-binstubs
+  sources:
+    - 'Distribution evidence: source_facts.package-manager'
+    - >
+      Official repository, README, and version history:
+      https://github.com/carsomyr/rbenv-bundler
+  summary:
+    - >
+      rbenv-bundler is an rbenv plugin that makes shims resolve executables installed
+      within Bundler-managed project environments, reducing the need to type `bundle
+      exec`.
+  timeline:
+    - '2011: Release tagging began with version 0.90.'
+    - >
+      2012: The plugin added user-level Bundler config fallback and was relicensed under
+      Apache-2.0.
+    - '2014: Version 0.98 made integration opt-in and improved Homebrew compatibility.'
+    - '2017: Version 1.00 restored compatibility with newer Bundler releases.'
+    - '2021: Version 1.0.1 fixed platform-gem discovery from Gemfile.lock.'
+  usage:
+    - >
+      Users enable the plugin with `rbenv bundler on`, select a project Ruby, install
+      Bundler, and run `bundle install`. Rehash hooks then expose compatible project gem
+      executables through ordinary rbenv shims.
+    - >
+      The implementation reads project-local `.bundle/config` and falls back to
+      `~/.bundle/config`. These files configure Bundler and are not credential stores.
 tags:
   - bundler
   - cli
@@ -48,11 +81,10 @@ provenance:
   docs-sources:
     - source_facts.homepage and source_facts.repo point to the official GitHub README
   history-sources:
-    - https://api.github.com/repos/carsomyr/rbenv-bundler
-    - https://github.com/carsomyr/rbenv-bundler#readme
-    - https://github.com/rbenv/rbenv/wiki/Plugins
-    - https://formulae.brew.sh/api/formula/rbenv-bundler.json
-    - https://api.github.com/repos/rbenv/rbenv
+    - 'Distribution evidence: source_facts.package-manager'
+    - >
+      Official repository, README, and version history:
+      https://github.com/carsomyr/rbenv-bundler
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/carsomyr/rbenv-bundler;

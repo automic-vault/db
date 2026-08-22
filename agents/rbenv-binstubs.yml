@@ -6,24 +6,57 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rbenv-binstubs is an rbenv plugin for Bundler binstubs. The repository was created
-    on 2013-02-15 and later lived under the Purple-Devs organization, while the README
-    and package metadata preserve its origin as Ian Heggie's plugin for making rbenv
-    aware of project-local executable stubs.
-  - >
-    The tool addresses a common Ruby workflow problem: Bundler can generate
-    project-specific binstubs, but rbenv shims normally need to know where executable
-    commands live. rbenv-binstubs searches upward from the working directory for a
-    Gemfile, checks the configured binstub directory, and lets commands such as `rake`
-    resolve without typing `bundle exec`. It also provides `rbenv bundles` to inspect
-    registered project directories and binstub locations.
-  - >
-    The rbenv wiki presents Bundler binstubs as the preferred path for users who want to
-    avoid repeated `bundle exec`, naming rbenv-binstubs as one of the ways to make plain
-    command names work after `rbenv rehash`. Homebrew packages it as `rbenv-binstubs`
-    with an `rbenv` dependency, which places it in the small set of Bundler/rbenv
-    integration plugins distributed through Homebrew.
+  adoption-history:
+    - >
+      The supplied metadata records distribution through Homebrew. The official README
+      reports that the project is no longer actively developed by its original
+      maintainer and invites new maintainers, so current use belongs largely to
+      established rbenv/Bundler workflows.
+  package-nerd-significance:
+    - >
+      rbenv-binstubs captures a distinctive period in Ruby tooling when `bundle exec`
+      avoidance, Bundler-generated wrappers, and rbenv shims were frequently composed
+      through small shell plugins.
+    - >
+      It is also historically useful beside rbenv-bundler: the two projects pursue
+      similar command-dispatch goals with different mechanisms and performance
+      implications.
+  project-history:
+    - >
+      Ian Heggie released rbenv-binstubs in 2013 as a plugin that teaches rbenv about
+      project-specific Bundler binstubs. The current official repository is maintained
+      under Purple-Devs and explicitly carries a maintainer-wanted notice.
+    - >
+      Contributors expanded it to create shims for arbitrary executable files in a
+      configured binstub directory, supporting workflows such as gems installed beneath
+      `vendor/bundle`.
+  related-projects:
+    - rbenv
+    - Bundler
+    - rbenv-bundler
+    - rbenv-gem-rehash
+  sources:
+    - 'Distribution evidence: source_facts.package-manager'
+    - 'Official repository and README: https://github.com/Purple-Devs/rbenv-binstubs'
+  summary:
+    - >
+      rbenv-binstubs is a shell-based rbenv plugin that discovers project Bundler
+      binstubs and exposes them through rbenv shims.
+  timeline:
+    - '2013: Ian Heggie released rbenv-binstubs under the MIT terms used by rbenv.'
+    - >
+      Later maintenance: The project moved to Purple-Devs and now requests a new active
+      maintainer.
+  usage:
+    - >
+      For each application, users generate binstubs, commonly beneath `.bundle/bin`, and
+      run `rbenv rehash`. Commands such as `rake` can then resolve directly to the
+      project binstub without an explicit `bundle exec`.
+    - >
+      The plugin searches upward from the working directory for a Gemfile and allows
+      temporary bypass through the `DISABLE_BINSTUBS` environment variable.
+      `.bundle/bin` is a generated executable directory, not a documented configuration
+      file.
 tags:
   - binstubs
   - bundler
@@ -47,10 +80,8 @@ provenance:
   docs-sources:
     - Official repository README is the available documentation for rbenv-binstubs.
   history-sources:
-    - https://api.github.com/repos/Purple-Devs/rbenv-binstubs
-    - https://github.com/ianheggie/rbenv-binstubs#readme
-    - https://github.com/rbenv/rbenv/wiki/Plugins
-    - https://formulae.brew.sh/api/formula/rbenv-binstubs.json
+    - 'Distribution evidence: source_facts.package-manager'
+    - 'Official repository and README: https://github.com/Purple-Devs/rbenv-binstubs'
   repo-sources:
     - >
       source_facts.repo already has an official repository value; per instruction repo

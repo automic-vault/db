@@ -6,24 +6,50 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rbenv-aliases is a small rbenv plugin by Tim Pope for naming installed Ruby patch
-    releases through filesystem aliases. Its GitHub repository was created on
-    2013-02-24, during the period when rbenv's plugin model was being used to fill gaps
-    around Ruby installation, gem handling, editor support, and compatibility with
-    workflows inherited from other Ruby version managers.
-  - >
-    The plugin's README describes `rbenv alias <name> <version>` as a command that
-    creates a symbolic link in rbenv's versions directory. Its distinctive feature is
-    `--auto`: a user can alias a point release such as `1.8.7` to the installed
-    patchlevel, and installations through ruby-build can invoke that aliasing
-    automatically after installing `A.B.C-pXXX` releases.
-  - >
-    In the rbenv ecosystem, aliases served projects that wanted stable `.ruby-version`
-    identifiers while Ruby patchlevels changed underneath. The rbenv wiki lists aliases
-    among maintainer-endorsed plugins, and Homebrew distributes it as `rbenv-aliases`
-    with an `rbenv` dependency, making the plugin available through both the normal
-    rbenv plugin checkout pattern and macOS/Linux package-manager workflows.
+  adoption-history:
+    - >
+      The supplied package metadata records a Homebrew formula. The plugin also
+      integrates with ruby-build so installing a fully specified Ruby can automatically
+      refresh a shorter point-release alias.
+  package-nerd-significance:
+    - >
+      The plugin demonstrates how rbenv's filesystem-oriented design allows a small
+      shell extension to add version semantics using symbolic links rather than
+      modifying rbenv core.
+    - >
+      Its README also highlights a reproducibility tradeoff: convenient moving aliases
+      in `.ruby-version` files can make the selected patch release change as local
+      installations change.
+  project-history:
+    - >
+      Tim Pope created rbenv-aliases to experiment with convenient names for installed
+      Ruby versions. The plugin implements aliases as symbolic links inside rbenv's
+      versions directory and can point a short release name at the latest installed
+      patch release.
+  related-projects:
+    - rbenv
+    - ruby-build
+    - rbenv-communal-gems
+  sources:
+    - 'Distribution evidence: source_facts.package-manager'
+    - 'Official repository and README: https://github.com/tpope/rbenv-aliases'
+  summary:
+    - >
+      rbenv-aliases is an rbenv plugin that creates symbolic-link aliases for installed
+      Ruby versions and can automatically update short version names to the latest
+      installed patch release.
+  timeline:
+    - >
+      Early rbenv plugin era: Tim Pope created the plugin to explore whether moving
+      Ruby-version aliases were useful in practice.
+  usage:
+    - >
+      Users invoke `rbenv alias <name> <version>` to create an alias and may add
+      `--auto` to select the latest installed patch release. `rbenv unalias` removes
+      aliases.
+    - >
+      The plugin installs beneath `$(rbenv root)/plugins/rbenv-aliases`. It documents no
+      independent persistent configuration or credentials file.
 tags:
   - cli
   - rbenv
@@ -49,10 +75,8 @@ provenance:
   docs-sources:
     - Official GitHub README documents installation and rbenv alias usage.
   history-sources:
-    - https://api.github.com/repos/tpope/rbenv-aliases
-    - https://github.com/tpope/rbenv-aliases#readme
-    - https://github.com/rbenv/rbenv/wiki/Plugins
-    - https://formulae.brew.sh/api/formula/rbenv-aliases.json
+    - 'Distribution evidence: source_facts.package-manager'
+    - 'Official repository and README: https://github.com/tpope/rbenv-aliases'
   repo-sources:
     - >
       source_facts.repo already has https://github.com/tpope/rbenv-aliases, so repo was
@@ -67,6 +91,6 @@ category-path:
   - ruby
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

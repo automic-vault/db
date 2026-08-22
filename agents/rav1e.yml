@@ -7,43 +7,57 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rav1e is the Rust AV1 Encoder from the Xiph.Org and Mozilla video-codec ecosystem.
-    Its history is tied to AV1 itself: the Alliance for Open Media released the AV1 1.0
-    specification on March 28, 2018 as an open, royalty-free video format for internet
-    video, and rav1e emerged as an encoder implementation aimed at production-oriented
-    speed and safety rather than as the reference-code path used to standardize the
-    bitstream.
-  - >
-    Public coverage in July 2018 described rav1e as an experimental AV1 encoder written
-    in Rust, backed by Mozilla and hosted under the Xiph project, with the goal of
-    covering broad AV1 use cases while focusing first on cases where the libaom
-    reference encoder was too slow. A 2019 SPIE paper characterized the Rust AV1 Encoder
-    project at Mozilla as a clean-room AV1 implementation targeting multiple operating
-    points.
-  - >
-    Mozilla's 2019 AV1 work framed rav1e as part of the open-video stack around dav1d
-    and AV1 deployment on the web. The post described Mozilla and Xiph.Org as jointly
-    developing rav1e to improve encoding gains over the reference encoder and to make
-    software encoding fast enough for applications such as WebRTC, while carrying
-    forward perceptual-analysis work from Daala and Theora.
-  - >
-    For practitioners, rav1e is both a CLI encoder and a library. The GitHub README and
-    docs.rs crate documentation describe support for intra and inter frames, 8-, 10-,
-    and 12-bit color, 4:2:0 plus limited higher chroma formats, speed settings from
-    exhaustive to near real-time, constant-quantizer and bitrate modes, and
-    still-picture mode. FFmpeg integrates rav1e through the `librav1e` wrapper when
-    FFmpeg is built with `--enable-librav1e`, letting users encode with commands such as
-    `ffmpeg -i input -c:v librav1e ...` and pass rav1e parameters for speed, tiling, and
-    low-latency behavior.
-  - >
-    Distribution followed both Rust and system-package channels. The project exposes a
-    Rust crate for embedding, release binaries for command-line use, and packages across
-    Homebrew, Debian, Ubuntu, Fedora, Arch, Alpine, Nix, MacPorts, and other package
-    systems. In AV1 practice, rav1e became one of the named software encoders alongside
-    libaom and SVT-AV1: useful for codec developers, video engineers comparing encoder
-    tradeoffs, and users who prefer a Rust implementation with explicit speed-quality
-    controls.
+  adoption-history:
+    - >
+      The supplied package metadata records rav1e packages across Homebrew, Debian,
+      Ubuntu, Fedora/DNF, Arch, Alpine, MacPorts, Nix, and openSUSE ecosystems,
+      indicating unusually broad distribution for a specialist encoder.
+  package-nerd-significance:
+    - >
+      rav1e is notable as a substantial Rust implementation of a modern royalty-free
+      video codec. It offers both a command-line encoder and a C-compatible library,
+      making it relevant to media pipelines as well as language and ABI packaging
+      discussions.
+    - >
+      Its regular prerelease practice and performance-sensitive native-code dependencies
+      make it a useful case study in packaging Rust applications that also use
+      architecture-specific assembly.
+  project-history:
+    - >
+      rav1e was developed under the Xiph.Org organization as an AV1 encoder emphasizing
+      memory safety and encoding speed. Its official documentation describes a pre-1.0
+      Cargo-style versioning policy in which API-breaking changes require a
+      minor-version increment.
+  related-projects:
+    - AV1
+    - libaom
+    - dav1d
+    - Xiph.Org
+  sources:
+    - 'Distribution evidence: source_facts.package-manager'
+    - 'Official documentation index: https://github.com/xiph/rav1e/tree/master/doc'
+    - 'Official repository and README: https://github.com/xiph/rav1e'
+  summary:
+    - >
+      rav1e is Xiph.Org's Rust-based AV1 video encoder, distributed as both a
+      command-line program and a C-compatible library.
+  timeline:
+    - >
+      Pre-1.0 era: The project documents Cargo-style versioning and minor-version bumps
+      for API-breaking changes.
+    - >
+      Current release practice: The official README states that weekly prereleases are
+      published on Tuesdays.
+  usage:
+    - >
+      Command-line users encode Y4M input to AV1 output, commonly in an IVF container.
+      The README positions rav1e for workloads where the libaom reference encoder is too
+      slow.
+    - >
+      Packagers must account for a Rust toolchain and optional architecture-specific
+      assembly built with NASM or a platform assembler. Runtime behavior can be adjusted
+      through command-line options; no persistent configuration file is officially
+      documented.
 tags:
   - av1
   - cli
@@ -71,16 +85,9 @@ provenance:
       Official GitHub README contains Documentation, Building, Usage, and Configuring
       sections.
   history-sources:
-    - >
-      https://aomedia.org/press%20releases/the-alliance-for-open-media-kickstarts-video-innovation-era-with-av1-release/
-    - https://www.phoronix.com/news/RAV1E-Rust-Safe-Fast-AV1
-    - >
-      https://www.spiedigitallibrary.org/conference-proceedings-of-spie/11137/111370L/Rust-AV1-encoder-rav1e-project/10.1117/12.2529592.short
-    - >
-      https://hacks.mozilla.org/2019/05/firefox-brings-you-smooth-video-playback-with-the-worlds-fastest-av1-decoder/
-    - https://github.com/xiph/rav1e
-    - https://docs.rs/rav1e/latest/rav1e/
-    - https://ffmpeg.org/ffmpeg-codecs.html
+    - 'Distribution evidence: source_facts.package-manager'
+    - 'Official documentation index: https://github.com/xiph/rav1e/tree/master/doc'
+    - 'Official repository and README: https://github.com/xiph/rav1e'
   repo-sources:
     - >
       source_facts.repo already has https://github.com/xiph/rav1e, so repo was not
