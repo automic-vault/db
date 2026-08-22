@@ -9,28 +9,74 @@ config-file-location:
   unix: ~/.red-tldr/config.toml
 credentials-file-location: null
 history:
-  - >
-    red-tldr, or Red Team TL;DR, is a Go command lookup tool for offensive-security
-    operators. Its original project page described the motivation plainly: red team work
-    requires memorizing many commands, search engines are noisy, and the author wanted a
-    Linux man-like command for quickly finding commands and key points. The examples
-    centered on searches such as mimikatz, fuzzy matching, local index updates, database
-    updates, and a configuration file under ~/.red-tldr/config.toml.
-  - >
-    GitHub release data shows public releases in 2021, including v0.4 on 7 August 2021
-    and v0.4.3 on 22 September 2021; repository tags later include v0.5.0. The project
-    separated the searchable knowledge base into red-tldr-db, a companion repository of
-    text/YAML data used by the CLI. That split mirrors the tool's role: the binary
-    handles search, indexing, formatting, and updates, while the database repository
-    carries the red-team command content.
-  - >
-    The v0.5.0 README positions red-tldr as an offline-first, deterministic lookup tool
-    for experienced operators rather than a beginner tutorial. It added fuller
-    structured data, JSON and Markdown output, MITRE ATT&CK mapping, Bleve-powered
-    full-text search, and a built-in MCP server so local assistants can query the same
-    red-team knowledge base. Homebrew packaging gives it a one-command install path for
-    macOS and Linux users, while source and binary builds serve Go users outside
-    Homebrew.
+  adoption-history:
+    - >
+      red-tldr is available through Homebrew on macOS, the Arch User Repository,
+      downloadable release archives, and source builds. Its offline-first design avoids
+      cloud or API-key dependencies.
+    - >
+      From version 0.5.0, the project broadened its audience beyond direct terminal use
+      by embedding an MCP server for AI assistants such as Claude Desktop and Cursor.
+  package-nerd-significance:
+    - >
+      red-tldr packages an operator-maintained offensive-security knowledge base behind
+      a fast local CLI. Its separation of the search program from a YAML database,
+      deterministic offline behavior, structured output, and built-in MCP endpoint make
+      it an unusual bridge between traditional command cheat sheets and agent-accessible
+      security references.
+  project-history:
+    - >
+      red-tldr began as a lightweight lookup tool for experienced red-team operators who
+      remember fragments of commands but need fast access to exact syntax and
+      operational notes. It uses a curated, locally searchable database rather than
+      general web search.
+    - >
+      The project later added Bleve-powered full-text and fuzzy search, structured text,
+      JSON, and Markdown output, richer entries with MITRE ATT&CK mappings, and an
+      independently maintained red-tldr-db repository.
+    - >
+      Version 0.5.0 introduced a built-in Model Context Protocol server supporting both
+      standard input/output and Streamable HTTP transports.
+  related-projects:
+    - >
+      red-tldr-db is the companion repository containing the YAML knowledge-base entries
+      searched by the client.
+    - >
+      The project's concise command-reference model is conceptually related to tldr
+      pages, but it is specialized for offensive-security commands and experienced
+      red-team workflows.
+  sources:
+    - 'Companion database linked by the official README: https://github.com/Rvn0xsy/red-tldr-db'
+    - 'Official project site: https://payloads.online/red-tldr'
+    - 'Official repository and README: https://github.com/Rvn0xsy/red-tldr'
+    - 'Package availability: source_facts.package-manager'
+  summary:
+    - >
+      Red Team TL;DR is an offline-first command and technique lookup tool for
+      experienced red-team operators. It combines fuzzy full-text search over a curated
+      YAML database with structured output, MITRE ATT&CK metadata, and an optional MCP
+      server.
+  timeline:
+    - >
+      Initial project: Introduced a lightweight local lookup tool for red-team commands
+      and key operational notes.
+    - 'Version 0.5.0: Added an MCP server and an enhanced, backward-compatible data model.'
+    - >
+      Current packaging: Distributed through Homebrew, AUR, release binaries, and source
+      builds.
+  usage:
+    - >
+      Operators search using a complete keyword or a remembered fragment and choose
+      among ranked matches. Results can be printed for terminal reading or emitted as
+      JSON or Markdown.
+    - >
+      The update command rebuilds the local search index, while upgrade downloads the
+      latest database from GitHub. The serve command exposes the knowledge base to MCP
+      clients over stdio or Streamable HTTP.
+    - >
+      The default configuration at ~/.red-tldr/config.toml controls automatic index
+      rebuilding, database downloads, the database storage path, and colored output. No
+      API credentials are required.
 category: security
 package-manager:
   brew: red-tldr

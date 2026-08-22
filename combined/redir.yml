@@ -8,24 +8,75 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    redir is a small TCP port redirector for Unix systems. The program predates its
-    GitHub repository: old release and changelog material show a 0.7-era utility by Sam
-    Creasey, a 2.0 release dated 1999-02-11, and later maintenance under the troglobit
-    GitHub repository created on 2016-04-28.
-  - >
-    The tool's role is deliberately narrow. Its manual page describes redirecting TCP
-    connections arriving on a local address and port to another address and port. It can
-    run from inetd, where a supervisor hands it an already accepted connection, or as a
-    standalone daemon that listens and handles multiple connections itself.
-  - >
-    redir survived because the use case is boring and useful: quick TCP forwarding
-    without configuring a full proxy, firewall NAT rule set, SSH tunnel, or
-    application-specific gateway. Practitioners use it for local service relocation,
-    test fixtures, compatibility shims, embedded or minimal Unix environments, and
-    inetd/xinetd setups where access control can be delegated to the supervisor.
-    Packaging in Debian, Ubuntu, Fedora-family distributions, Nix, and Homebrew reflects
-    that utility status.
+  adoption-history:
+    - >
+      redir has been packaged across Homebrew, Debian, Ubuntu, Fedora-family
+      repositories, and Nix according to the supplied metadata. That breadth reflects
+      its role as a small, conventional Unix networking utility.
+    - >
+      The current project retains inetd integration while also supporting standalone
+      daemon and foreground operation, allowing it to fit both traditional Unix service
+      management and modern process supervisors.
+  package-nerd-significance:
+    - >
+      redir is representative of the compact Unix networking tools that package
+      collections preserve for decades: one executable, a manual page, conventional
+      Autotools support, and compatibility with inetd-era service composition. It
+      remains useful when a complete proxy suite would be unnecessary.
+    - >
+      Its version 3 command-line transition is especially relevant to maintainers
+      because compatibility with part of the version 2 syntax must be enabled at build
+      time.
+  project-history:
+    - >
+      redir was originally created by Nigel Metheringham and Sam Creasey as a
+      lightweight, 8-bit-clean TCP port redirector for Unix. It could operate under
+      inetd or as a standalone daemon handling multiple connections.
+    - >
+      Maintenance later moved to Joachim Wiberg under the troglobit organization on
+      GitHub. The maintained code uses GNU Autotools and preserves optional support for
+      traffic shaping, FTP redirection, Linux transparent proxy mode, TCP wrappers, and
+      a subset of the older interface.
+    - >
+      Version 3.0 changed the command-line syntax. The build-time --enable-compat option
+      retains a limited subset of version 2 options for older deployments.
+  related-projects:
+    - uredir, linked by the official README, provides UDP port redirection.
+    - >
+      inetd and xinetd can supervise redir and add access control through TCP wrappers;
+      modern deployments can instead run it in the foreground under systemd or another
+      process monitor.
+  sources:
+    - 'Official manual page: https://github.com/troglobit/redir/blob/master/redir.1'
+    - 'Official repository and README: https://github.com/troglobit/redir'
+    - 'Package availability: source_facts.package-manager'
+  summary:
+    - >
+      redir is a small Unix TCP port redirector that accepts connections on a source
+      address and port and relays their byte streams to a destination. It can run from
+      inetd, as a standalone daemon, or in the foreground under a service manager.
+  timeline:
+    - >
+      Original era: Nigel Metheringham and Sam Creasey created redir as a lightweight
+      Unix TCP redirector.
+    - >
+      Later maintenance: Joachim Wiberg assumed maintenance in the troglobit GitHub
+      repository.
+    - >
+      Version 3.0: The command-line interface changed, with limited version 2
+      compatibility available as a build option.
+    - >
+      Current packaging: Available in Homebrew, Debian, Ubuntu, Fedora-family, and Nix
+      ecosystems according to the supplied input.
+  usage:
+    - >
+      The modern syntax specifies source and destination endpoints, for example redir
+      :80 127.0.0.1:8080. Options control binding, foreground or inetd mode, logging,
+      timeouts, FTP handling, transparent proxying, and traffic shaping.
+    - >
+      No application-specific configuration or credential file is required; persistent
+      service definitions belong to the chosen supervisor, such as inetd.conf or a
+      systemd unit.
 category: networking
 package-manager:
   brew: redir

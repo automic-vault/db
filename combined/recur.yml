@@ -7,27 +7,60 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    recur is a small Go command-line program for retrying one command until it succeeds
-    or attempts are exhausted. Its README frames the tool around optional exponential
-    backoff, configurable jitter, timeouts, buffered output, repeated standard input,
-    and Starlark expressions for success conditions, putting it in the same practical
-    niche as shell wrappers around flaky network commands, rate-limited APIs, cron jobs,
-    and deployment scripts.
-  - >
-    The author described the origin in a 20 November 2024 Hacker News discussion: the
-    first version was written in Python in 2023 and used simpleeval for condition
-    expressions. After a simpleeval vulnerability report in early 2024, the author
-    evaluated safer expression options, chose Starlark over CEL, and ported recur to Go
-    so it could use starlark-go directly and ship static binaries. Public GitHub release
-    data shows a v0.6.0 release on 23 October 2024, followed by rapid 2024 releases.
-  - >
-    recur's adoption path is that of a compact systems utility rather than a large
-    framework. The project publishes prebuilt binaries for BSDs, Linux, macOS, and
-    Windows, supports installation through Homebrew and Go install, and attracted
-    discussion on Hacker News because retry behavior with exponential backoff and jitter
-    is a common operator pattern. Version 3.x expanded the CLI, and the 14 May 2026
-    v3.3.0 release added condition-file loading and RFC 3339 timestamps in verbose mode.
+  adoption-history:
+    - >
+      The project publishes binaries for major BSD systems, Linux, macOS, and Windows.
+      It is also installable through Homebrew on macOS and Linux and through the Go
+      toolchain.
+  package-nerd-significance:
+    - >
+      recur packages retry policy as a composable command-line primitive rather than
+      requiring shell-loop boilerplate. Its portable binaries, structured reports,
+      configurable backoff, and programmable success conditions make it useful in
+      scripts, CI jobs, network automation, and operational tooling.
+  project-history:
+    - >
+      recur was developed as a portable command runner that repeats one command until a
+      success condition is met or its attempt budget is exhausted. The implementation is
+      written in Go and extends conventional retry wrappers with exponential and
+      Fibonacci backoff, jitter, per-attempt timeouts, stream buffering, and Starlark
+      expressions.
+    - >
+      The project has evolved to support condition files, regular-expression checks
+      against buffered input or output, retry statistics in text or JSON, and binaries
+      across Unix-like systems and Windows.
+  related-projects:
+    - >
+      The README presents retry, backoff, and shell-loop utilities as the broader tool
+      family to which recur belongs.
+    - Starlark supplies the expression language used for custom success conditions.
+  sources:
+    - 'Official repository and README: https://github.com/dbohdan/recur'
+    - 'Package availability: source_facts.package-manager'
+  summary:
+    - >
+      recur is a cross-platform command-line retry wrapper with configurable attempt
+      limits, delay, exponential or Fibonacci backoff, jitter, timeouts, programmable
+      Starlark success conditions, and optional reports.
+  timeline:
+    - >
+      Early project: recur established a command retry wrapper with exponential backoff
+      and jitter.
+    - 'Version 3 generation: Installation uses the Go module path dbohdan.com/recur/v3.'
+    - >
+      Current release line: Supports Starlark condition files, JSON or text reports,
+      stream replay and buffering, and prebuilt binaries for Unix-like systems and
+      Windows.
+  usage:
+    - >
+      A typical invocation places recur options before the target command. By default,
+      recur treats exit status zero as success and tries at most ten times; users can
+      add constant delay, exponential or Fibonacci backoff, jitter, a delay ceiling,
+      timeouts, or unlimited attempts.
+    - >
+      For more specialized workflows, Starlark expressions or files can inspect exit
+      status, timing, and buffered streams. The report option emits attempt counts, exit
+      codes, wait times, and success statistics as text or JSON.
 category: developer-tools
 package-manager:
   brew: recur
