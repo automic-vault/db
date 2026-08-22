@@ -7,32 +7,56 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    ruby-install is a small Ruby runtime installer from Hal Brodigan, published under
-    the postmodern GitHub account as a deliberately direct alternative to heavier Ruby
-    environment managers. Its README frames the tool around installing CRuby, JRuby,
-    TruffleRuby, and mruby, with an emphasis on downloading version metadata and
-    checksums from ruby-versions rather than requiring a packaged recipe for every
-    supported Ruby version.
-  - >
-    The project fits the chruby/ruby-install school of Ruby environment management:
-    ruby-install builds interpreters into conventional directories, while another tool
-    such as chruby, rbenv, RVM, or a manually configured PATH decides which interpreter
-    a shell uses. That split made it attractive to users who wanted version installation
-    without shell-function magic, gemset policy, or a large manager embedded in the
-    login shell.
-  - >
-    Practitioners use ruby-install to put Rubies under /opt/rubies for shared machines,
-    ~/.rubies for a single user, arbitrary directories for build images, or
-    ~/.rbenv/versions when pairing it with rbenv. It supports mirrors, patches, custom
-    configure flags, compiler selection, jemalloc and YJIT build options, checksum
-    verification, and package-manager-assisted dependency installation across apt, dnf,
-    yum, pacman, zypper, xbps, Homebrew, MacPorts, and FreeBSD pkg.
-  - >
-    In package-manager terms, ruby-install is distributed as a Homebrew formula and
-    through other channels such as MacPorts and Chocolatey in the input record. Homebrew
-    packages it as a bottled command-line utility, preserving its role as a Unix-style
-    installer rather than a complete Ruby version manager.
+  adoption-history:
+    - >
+      ruby-install is available through Homebrew, MacPorts, Chocolatey, Arch's user
+      repository, Fedora COPR, and FreeBSD ports, in addition to source installation. It
+      integrates with rbenv, RVM, Chef, and the closely related chruby workflow without
+      being tied to one version manager.
+  package-nerd-significance:
+    - >
+      The package offers a deliberately recipe-light alternative to ruby-build: it
+      retrieves current version information separately and does not require a package
+      update for every upstream Ruby release. Package enthusiasts value its
+      straightforward shell implementation, broad system-package-manager dependency
+      support, checksum verification, and signed release archives.
+  project-history:
+    - >
+      ruby-install was developed by Postmodern as a dedicated Ruby installer and became
+      closely associated with chruby. It grew to support CRuby, JRuby, TruffleRuby, and
+      mruby, along with mirrors, patches, arbitrary configure flags, dependency
+      installation, and user or system installation prefixes.
+  related-projects:
+    - >
+      chruby provides lightweight switching among installed Rubies and historically
+      bundled ruby-install in its setup workflow. rbenv and RVM can also consume Rubies
+      installed by ruby-install. ruby-build is the principal recipe-driven alternative
+      identified by the project.
+  sources:
+    - https://github.com/postmodern/chruby/blob/master/ChangeLog.md
+    - https://github.com/postmodern/ruby-install
+    - https://github.com/postmodern/ruby-install/blob/master/ChangeLog.md
+    - source_facts.package-manager
+  summary:
+    - >
+      ruby-install is a shell-based installer for multiple Ruby implementations,
+      designed to work independently of any particular Ruby version manager.
+  timeline:
+    - >
+      2012: ruby-install was part of the early chruby installation workflow and Ruby
+      toolchain ecosystem.
+    - >
+      2014: chruby stopped installing ruby-install automatically, reinforcing their
+      separation into independent tools.
+    - >
+      Present: ruby-install supports current stable Ruby implementations and multiple
+      Unix package managers.
+  usage:
+    - >
+      Users can list supported implementations, refresh release metadata, install a
+      stable or exact version, choose a destination, apply patches, use mirrors, and
+      pass compiler or configure options. User installs default under `~/.rubies/`,
+      while root installs default under `/opt/rubies/`.
 tags:
   - cli
   - installer
@@ -60,9 +84,10 @@ provenance:
       Official GitHub README provides synopsis, requirements, install instructions, and
       links its wiki for known issues.
   history-sources:
+    - https://github.com/postmodern/chruby/blob/master/ChangeLog.md
     - https://github.com/postmodern/ruby-install
-    - https://github.com/postmodern/chruby
-    - https://formulae.brew.sh/formula/ruby-install
+    - https://github.com/postmodern/ruby-install/blob/master/ChangeLog.md
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/postmodern/ruby-install; per
@@ -79,6 +104,6 @@ category-path:
   - version-management
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
