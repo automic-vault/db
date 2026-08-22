@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from scripts.bootstrap.lib.authority import stable_cask_metadata
+from scripts.bootstrap.lib.authority import formula_metadata_from_project_yaml, stable_cask_metadata
 from scripts.bootstrap.lib.casks import (
     app_catalog_from_casks,
     cask_metadata,
@@ -32,6 +32,21 @@ def load_public_db_export():
 
 
 class CaskAuthorityTests(unittest.TestCase):
+    def test_formula_authority_gets_version_from_brew_cache_not_yaml(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "ripgrep.yml").write_text(
+                "id: brew:ripgrep\ndescription: Fast search tool\n",
+                encoding="utf-8",
+            )
+
+            metadata = formula_metadata_from_project_yaml(
+                root,
+                [{"name": "ripgrep", "versions": {"stable": "15.1.0"}}],
+            )
+
+        self.assertEqual(metadata["ripgrep"]["version"], "15.1.0")
+
     def test_sqlite_authority_keeps_cask_version_outside_published_yaml(self):
         metadata = stable_cask_metadata({
             "codex": {
