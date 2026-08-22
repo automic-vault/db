@@ -7,33 +7,53 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rm-improved is the Homebrew formula name for `rip`, Kevin Liu's Rust command-line
-    deletion tool. The upstream README expands the name as Rm ImProved and positions it
-    as a safe, ergonomic alternative to `rm`: files are moved to a graveyard instead of
-    immediately unlinked, and the stored path structure makes recovery possible.
-  - >
-    The project emerged in the Rust CLI wave of the mid-2010s; the author posted it to
-    the Rust community as a safer `rm` alternative in a discussion that immediately
-    focused on Unix semantics, recursive-delete expectations, XDG trash behavior,
-    filename edge cases, and whether users should alias `rm` to a recovery-oriented
-    tool. Those debates shaped the package's ecosystem role: it is not a freedesktop
-    trash implementation, and the README explicitly says it does not implement the XDG
-    Trash specification or pursue the same goals.
-  - >
-    In practical use, `rip target` moves files under a graveyard directory, keeps
-    numbered backups when the same absolute path is deleted more than once, and provides
-    subcommands or flags for inspection, listing sent files, restoring them, and
-    permanently emptying the graveyard. The tool is useful for shell users who want
-    undoable deletion without the desktop trash stack, but its own design makes it a
-    separate command rather than a perfectly compatible `rm` clone.
-  - >
-    Distribution reflects that small Rust-tool identity. The README documents
-    installation through `cargo install rm-improved`, binary release tarballs, the Arch
-    AUR, and Homebrew; Homebrew packages version 0.13.1 from the upstream GitHub tag,
-    builds it with Rust, and installs the `rip` executable. The formula also records a
-    conflict with `rip2` because both install a `rip` binary, illustrating that the
-    command name has become shared territory among newer safe-delete tools.
+  adoption-history:
+    - >
+      The official project documents installation through Cargo, the Arch User
+      Repository, and Homebrew; the supplied package metadata also records Nix and Scoop
+      packaging. Its adoption fits a broader package-manager interest in safer,
+      recoverable alternatives to traditional rm.
+  package-nerd-significance:
+    - >
+      rip is notable for changing deletion semantics while keeping a compact
+      command-line interface. Unlike freedesktop.org trash implementations, it preserves
+      absolute paths inside a graveyard and explicitly declines to implement the XDG
+      Trash specification.
+  project-history:
+    - >
+      The Rust project was created as a safety- and ergonomics-focused alternative to
+      rm. It uses a graveyard rather than immediately unlinking ordinary targets and
+      records deletions so they can be restored.
+  related-projects:
+    - >
+      rm is the traditional Unix removal command that rip seeks to complement rather
+      than transparently replace.
+    - >
+      XDG Trash implementations pursue related recoverable-deletion goals but use a
+      different specification and storage model.
+  sources:
+    - https://github.com/nivekuil/rip#readme
+    - source_facts.description
+    - source_facts.package-manager
+  summary:
+    - >
+      rip, expanded as Rm ImProved, is a Rust command-line deletion tool that moves
+      targets into a recoverable graveyard. It emphasizes a simple interface, recovery,
+      conflict-safe backup names, and predictable behavior.
+  timeline:
+    - >
+      The official project history is maintained in its Git repository; its README does
+      not provide a dated origin timeline.
+  usage:
+    - >
+      Use rip with one or more files or directories, rip -u to restore the last removal,
+      rip -s to inspect graveyard entries beneath the current directory, and rip -i to
+      inspect and confirm a target. The graveyard defaults to $XDG_DATA_HOME/graveyard
+      when XDG_DATA_HOME is set, otherwise /tmp/graveyard-$USER; GRAVEYARD or
+      --graveyard can override it.
+    - >
+      The author cautions against aliasing rm to rip because aliases may not apply
+      consistently across users, machines, and application environments.
 category: system
 package-manager:
   brew: rm-improved

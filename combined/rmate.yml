@@ -8,31 +8,46 @@ config-file-location:
   unix: ~/.ssh/config
 credentials-file-location: null
 history:
-  - >
-    rmate is a TextMate remote-editing helper from the TextMate 2 era. The Macromates
-    blog introduced the workflow in 2011: copy a small Ruby script to a remote machine,
-    connect it back to TextMate running on the user's Mac, edit the file locally, and
-    write the result back to the server.
-  - >
-    The upstream TextMate repository documents the canonical SSH-tunnel setup. A user
-    runs an SSH session with `RemoteForward 52698 localhost:52698`, invokes `rmate file`
-    on the remote host, and the script connects back to TextMate through that tunnel.
-    The README also covers OpenSSH Unix socket forwarding, standalone installation by
-    downloading the script into `~/bin`, configuration through `/etc/rmate.rc` or
-    `~/.rmate.rc`, and environment variables such as `RMATE_HOST` and `RMATE_PORT`.
-  - >
-    rmate's adoption history is tied to developers who wanted TextMate as their editor
-    while working inside SSH sessions, before editor-native remote workspaces became
-    common. Blog posts and Stack Overflow answers spread the pattern as an alternative
-    to SSHFS, terminal editors, or manual copy-edit-copy loops; ports in Bash, Python,
-    and Perl appeared for systems where Ruby was inconvenient.
-  - >
-    Packaging stayed lightweight because the tool is a single-purpose script. The
-    upstream README documents RubyGems installation with `gem install rmate`, while
-    Homebrew packages version 1.5.8 from the TextMate GitHub tag and installs the
-    `rmate` executable using the system Ruby. In practice, it remains an
-    editor-integration command: useful when TextMate is accepting rmate connections and
-    an SSH reverse tunnel can be established.
+  adoption-history:
+    - >
+      rmate is distributed as a Ruby gem and as a standalone script, and is also
+      packaged by Homebrew and Nix. Its small, portable client-side design suits remote
+      hosts where installing a full graphical editor is neither possible nor desirable.
+  package-nerd-significance:
+    - >
+      rmate embodies a common Unix workflow trick: a tiny remote command and SSH reverse
+      forwarding bridge a terminal session to a local graphical editor. It gives
+      TextMate users an editor-server workflow analogous to remote-editor commands in
+      other ecosystems.
+  project-history:
+    - >
+      rmate is maintained under the TextMate organization as a Ruby client for opening
+      remotely hosted files in TextMate on a Mac. The project also lists Bash, Python,
+      and Perl ports.
+  related-projects:
+    - TextMate is the receiving graphical editor.
+    - OpenSSH provides the reverse TCP or Unix-socket forwarding used to reach TextMate.
+    - The project lists independent Bash, Python, and Perl ports.
+  sources:
+    - https://github.com/textmate/rmate#readme
+    - source_facts.description
+    - source_facts.package-manager
+  summary:
+    - >
+      rmate lets a command running on a remote SSH host ask TextMate on the user's Mac
+      to edit a file. The client connects back through an SSH reverse tunnel or
+      supported Unix socket.
+  timeline:
+    - >
+      2011: TextMate's official project blog documented the mate and rmate
+      remote-editing workflow.
+  usage:
+    - >
+      Create a reverse SSH forward for TextMate's default port 52698, optionally make it
+      persistent in ~/.ssh/config, install rmate on the remote host, and run rmate
+      followed by a filename. Default client options can be stored in /etc/rmate.rc or
+      ~/.rmate.rc; RMATE_HOST, RMATE_PORT, and RMATE_UNIXSOCKET provide
+      environment-based overrides.
 category: developer-tools
 package-manager:
   brew: rmate
