@@ -8,59 +8,52 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rpki-client is OpenBSD's relying-party implementation for the Resource Public Key
-    Infrastructure, the PKI used by network operators to validate whether BGP
-    route-origin announcements match signed routing authorizations. Its job is to fetch
-    the global RPKI repository system, validate certificates and signed objects, and
-    emit Validated ROA Payloads, BGPsec Router Keys, and related data for routing
-    software. The project belongs to the same OpenBSD family of small, security-oriented
-    network programs as OpenBGPD and OpenSSH, and it is distributed under the ISC
-    license.
-  - >
-    The public proposal for rpki-client was published by Job Snijders on November 29,
-    2018. The motivation was ecosystem diversity: the RPKI validator space was then
-    dominated by RIPE NCC's Java validator and NLnet Labs' Routinator, and operators
-    benefited from another independent implementation written in C, with minimal
-    dependencies and OpenBSD-style privilege separation. The proposal described a
-    portable command-line validator run from cron, using rsync or RRDP to retrieve RPKI
-    repositories, performing the required cryptographic validation, and producing data
-    suitable for BIRD, OpenBGPD, Cisco, Juniper, or other routing stacks through
-    companion tooling.
-  - >
-    Source-code delivery for the project was announced in the same proposal's June 17,
-    2019 update, with OpenBSD and portable versions made available. The official project
-    site credits Kristaps Dzonsons, Claudio Jeker, Job Snijders, Theo de Raadt,
-    Sebastian Benoit, and Theo Buehler as primary developers within the OpenBSD Project,
-    and notes that rpki-client is released as a base component of OpenBSD every six
-    months. Sebastian Benoit and Job Snijders maintain the portable version, which is
-    shipped as tarball releases and through downstream packages for non-OpenBSD systems.
-  - >
-    The portable tree adapts OpenBSD rpki-client for other operating systems using
-    portability techniques shared with OpenBGPD, OpenNTPD, OpenSSH, and LibreSSL
-    portable projects. Its README lists regularly tested platforms including Alpine,
-    CentOS/RHEL/Rocky, Debian, Fedora, FreeBSD, macOS, OpenBSD, and Ubuntu. Distribution
-    packaging reflects rpki-client's role as infrastructure software rather than an
-    application: it is available through package systems such as Debian, Fedora, Alpine,
-    Homebrew, MacPorts, and Ubuntu, often with trust-anchor packages and service
-    integration around scheduled validation runs.
-  - >
-    RRDP support became a major practical milestone because RPKI repositories
-    historically relied on rsync, while RRDP uses HTTPS-hosted XML notification,
-    snapshot, and delta files. An APNIC technical article published on May 18, 2021
-    described the implementation work for OpenBSD rpki-client 7.0 and the operational
-    tradeoffs of supporting both protocols. In rpki-client deployments, the validator
-    may fetch over RRDP or rsync, cache repository state, apply timeouts and validation
-    rules, and write outputs for routers or route servers without requiring the router
-    itself to parse the RPKI repository system.
-  - >
-    Network operators commonly deploy rpki-client as the validation half of an RPKI-RTR
-    stack. IXP Manager's documentation, for example, splits the deployment into
-    rpki-client, which pulls and validates signed RPKI objects, and StayRTR, which
-    serves the resulting Validated ROA Payloads to routers over the RPKI-RTR protocol.
-    The OpenBSD manual also documents output modes for OpenBGPD, BIRD, CSV, JSON, and
-    OpenMetrics, making the tool useful both for production route filtering and for
-    monitoring or auditing RPKI repository health.
+  adoption-history:
+    - >
+      rpki-client ships as an OpenBSD base component on the project's six-month release
+      cadence. Its portable build framework brought it to FreeBSD, Linux, and macOS, and
+      official installation material notes packages for Alpine, Debian, Ubuntu, Fedora,
+      FreeBSD, MacPorts, and Homebrew.
+  package-nerd-significance:
+    - >
+      rpki-client packages Internet routing-security machinery as a focused Unix utility
+      with conservative parsing and privilege separation inherited from OpenBSD. Network
+      operators value its direct production of OpenBGPD and BIRD configuration data,
+      while package maintainers care about its portable compatibility layer and
+      security-sensitive dependency stack.
+  project-history:
+    - >
+      rpki-client was developed within the OpenBSD Project by Kristaps Dzonsons, Claudio
+      Jeker, Job Snijders, Theo de Raadt, Sebastian Benoit, and Theo Buehler. A
+      separately maintained portable framework, modeled in part on OpenSSH and LibreSSL
+      portability work, adapts the OpenBSD code for other Unix-like systems.
+  related-projects:
+    - >
+      OpenBGPD and BIRD consume its validated routing payloads. The portable framework
+      borrows approaches from OpenSSH and LibreSSL and supports OpenSSL or
+      LibreSSL-derived cryptographic libraries, libtls, Expat, and zlib.
+  sources:
+    - 'Official manual: https://man.openbsd.org/rpki-client'
+    - 'Official portable repository: https://github.com/rpki-client/rpki-client-portable'
+    - 'Official portable-release page: https://www.rpki-client.org/portable.html'
+    - 'Official project site: https://www.rpki-client.org/'
+  summary:
+    - >
+      rpki-client is OpenBSD's relying-party validator for the Resource Public Key
+      Infrastructure, used to validate RPKI repositories and produce routing-security
+      payloads for BGP software.
+  timeline:
+    - '2019–2020 era: rpki-client emerges as an OpenBSD RPKI validator and portable project.'
+    - 'Subsequent OpenBSD releases: It ships as a base-system component on a six-month cadence.'
+    - '2020s: Portable releases broaden support to FreeBSD, Linux, and macOS.'
+    - '2026: Portable release 9.8 continues validation, compatibility, and security hardening.'
+  usage:
+    - >
+      Operators run rpki-client to synchronize RPKI repositories over RRDP, HTTPS, and
+      rsync, validate certificates and signed objects, and emit VRPs, BGPsec router
+      keys, and ASPA payloads. Outputs are available for OpenBGPD, BIRD, CSV, JSON, and
+      metrics consumers; offline and individual-object inspection modes support
+      operations and debugging.
 category: networking
 package-manager:
   apk: rpki-client

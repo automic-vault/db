@@ -7,34 +7,44 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rpcsvc-proto is a small but historically important split-out package for Sun RPC/XDR
-    development on Unix-like systems. Its upstream README says it contains rpcsvc `.x`
-    protocol files from glibc that are missing in libtirpc, plus `rpcgen`, the generator
-    used to create C headers and sources from RPC protocol definitions.
-  - >
-    The package exists because glibc's bundled Sun RPC implementation was deprecated and
-    then removed from many distribution build environments. The glibc NEWS entry for
-    version 2.14 states that the RPC implementation in libc was obsoleted, that programs
-    needing RPC functionality should link against TI-RPC, and that visible effects
-    included removal of RPC headers from glibc headers. Fedora's Fedora 28 system-wide
-    change later removed Sun RPC interfaces from glibc, citing the old implementation's
-    lack of IPv6 compatibility and directing packages to libtirpc and separate `rpcgen`
-    build requirements.
-  - >
-    In that transition, rpcsvc-proto became plumbing for codebases that still had `.x`
-    files or build systems expecting `rpcgen`. Fedora's change notes told packages that
-    needed `rpcgen` to add a build requirement on a package providing it, and Linux From
-    Scratch describes rpcsvc-proto as installing the `rpcgen` program and
-    `/usr/include/rpcsvc` headers while providing no libraries of its own.
-  - >
-    Practitioners usually do not invoke rpcsvc-proto as an application; they install it
-    to satisfy build dependencies or to regenerate C bindings for legacy RPC services.
-    It is common in package-manager metadata across Linux and macOS because the
-    build-time need is broad even when direct user interaction is rare: Homebrew marks
-    it keg-only, Debian and Ubuntu package it under the same name, Fedora and openSUSE
-    expose the functionality through `rpcgen`, and the output of `rpcgen` remains part
-    of the C build pipeline for software that has not moved away from Sun RPC/XDR.
+  adoption-history:
+    - >
+      The package is distributed across several Linux and Unix-like package collections,
+      including Debian, Alpine, Arch, Nix, and Homebrew, reflecting its role as
+      compatibility infrastructure rather than an end-user application.
+  package-nerd-significance:
+    - >
+      Package maintainers care about rpcsvc-proto because it preserves formerly bundled
+      glibc interfaces while allowing systems to move SunRPC support to libtirpc. It
+      also supplies rpcgen during builds that consume ONC RPC protocol definitions.
+  project-history:
+    - >
+      Thorsten Kukuk assembled rpcsvc-proto from rpcsvc protocol-definition files
+      formerly shipped by glibc, adding rpcgen so those definitions can be compiled when
+      glibc is built without its deprecated SunRPC functionality.
+  related-projects:
+    - >
+      glibc formerly supplied the protocol definitions and SunRPC implementation;
+      libtirpc provides the replacement RPC library but does not include these files;
+      rpcgen generates C headers and sources from RPC Language definitions.
+  sources:
+    - 'Official README: https://github.com/thkukuk/rpcsvc-proto/blob/master/README'
+    - 'Official repository: https://github.com/thkukuk/rpcsvc-proto'
+    - Package coverage supplied in source_facts.package-manager
+  summary:
+    - >
+      rpcsvc-proto is a compatibility and development package containing glibc-derived
+      ONC RPC protocol definitions and the rpcgen protocol compiler.
+  timeline:
+    - '2016: Copyright history for the standalone package begins under Thorsten Kukuk.'
+    - >
+      2020s: The package becomes broadly available through Linux and Unix-like package
+      managers as distributions separate legacy SunRPC material from glibc.
+  usage:
+    - >
+      Developers run rpcgen against .x RPC Language files to generate C headers, XDR
+      routines, and client/server stubs. The packaged protocol definitions support
+      software that still builds against traditional rpcsvc interfaces.
 category: developer-tools
 package-manager:
   apk: rpcsvc-proto
