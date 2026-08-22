@@ -7,28 +7,56 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    recc, the Remote Execution Caching Compiler, began as a BuildGrid project for using
-    the Remote Execution API from conventional C and C++ compiler invocations. The
-    standalone GitLab project was created on August 2, 2018 and is marked obsolete
-    because it was merged into BuildBox, the BuildGrid collection of remote-execution
-    client, worker, and content-addressed-storage tools.
-  - >
-    The tool occupies a bridge role between traditional compiler wrappers and REAPI
-    infrastructure. Its documentation describes it as a compiler command launcher for
-    caching and remote execution of compilation and link actions: when invoked around a
-    C or C++ compile, it checks a remote execution service such as BuildGrid for a
-    cached result, downloads it if present, or executes locally or remotely through
-    workers such as buildbox-worker.
-  - >
-    Practitioners use recc where a codebase already builds with Make, CMake, or compiler
-    variables such as CC and CXX but the organization wants remote cache hits or remote
-    execution without rewriting the build in Bazel. The BuildGrid documentation presents
-    RECC as a client alongside Bazel and BuildStream, configured through RECC_*
-    environment variables such as the remote execution server, CAS server, and instance
-    name. Its adoption appears specialized: the BuildBox docs cite Bloomberg usage and
-    point users to packaged BuildBox/recc documentation rather than a large
-    language-level package ecosystem.
+  adoption-history:
+    - >
+      The official documentation says recc is in active development and is used at
+      Bloomberg. It is designed to work with Remote Execution services such as BuildGrid
+      and workers such as buildbox-worker.
+    - >
+      The original standalone BuildGrid/recc repository is marked obsolete after recc
+      was merged into the unified BuildBox repository.
+  package-nerd-significance:
+    - >
+      recc gives conventional C and C++ compiler invocations access to Remote Execution
+      API caching and execution without requiring the build to originate in a system
+      such as Bazel. Its evolution from a standalone repository into the BuildBox
+      monorepo also reflects consolidation in the Remote Execution API tooling
+      ecosystem.
+  project-history:
+    - >
+      recc began as a compiler-wrapper client for the Remote Execution API. The original
+      public GitLab project was created in 2018.
+    - >
+      Development was subsequently consolidated into the BuildBox suite, where recc is
+      maintained alongside content-addressable storage, runner, worker, and related
+      remote-build components.
+  related-projects:
+    - BuildBox is the suite that now contains recc.
+    - BuildGrid is an example Remote Execution service used with recc.
+    - buildbox-worker is an example worker that executes remotely submitted actions.
+    - The Remote Execution API defines the caching and execution protocol recc uses.
+  sources:
+    - 'Official BuildBox repository: https://gitlab.com/BuildGrid/buildbox/buildbox'
+    - 'Official obsolete standalone project notice: https://gitlab.com/BuildGrid/recc'
+    - 'Official recc documentation: https://buildgrid.gitlab.io/buildbox/buildbox/recc.html'
+  summary:
+    - >
+      recc is a C and C++ compiler-command launcher that uses the Remote Execution APIs
+      for build caching and optional remote execution.
+  timeline:
+    - '2018: The original public BuildGrid/recc project was created.'
+    - 'Later: The standalone recc project was retired and merged into BuildBox.'
+    - >
+      Current BuildBox era: recc is developed as one component of the consolidated
+      BuildBox suite.
+  usage:
+    - >
+      recc wraps compilation and link commands. It queries a Remote Execution service
+      for a cached result, downloads a hit, or otherwise runs the action locally or
+      submits it for remote execution.
+    - >
+      It is useful where existing compiler-oriented builds need shared caching or remote
+      capacity while retaining familiar C/C++ command lines.
 category: developer-tools
 package-manager:
   brew: recc

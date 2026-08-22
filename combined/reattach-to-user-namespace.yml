@@ -8,29 +8,44 @@ config-file-location:
   macos: ~/.tmux.conf
 credentials-file-location: null
 history:
-  - >
-    reattach-to-user-namespace came out of Chris Johnsen's tmux-MacOSX-pasteboard work,
-    a repository created on GitHub on March 26, 2011 to document and work around Mac OS
-    X pasteboard failures under tmux and unpatched screen. The project explains the root
-    problem in Darwin bootstrap namespaces: command-line pasteboard tools such as pbcopy
-    and pbpaste need access to the per-user namespace, while tmux server processes
-    created through daemon(3) on Mac OS X 10.5 could be moved into the root bootstrap
-    namespace and lose that access.
-  - >
-    The package's main artifact is a small C wrapper. Rather than patch tmux to call
-    private Apple APIs directly, the wrapper reattaches a child process to the user
-    namespace and then execs a shell or command. That design let users add a single tmux
-    configuration line, commonly setting default-command to run
-    `reattach-to-user-namespace -l zsh`, so shells inside new tmux panes could use
-    pbcopy, pbpaste, and clipboard-enabled terminal Vim.
-  - >
-    Adoption was strongest among Mac users who combined tmux with terminal editors and
-    system clipboard workflows. The README documents Homebrew and MacPorts installation
-    paths, and practitioner writeups from the 2010s treated it as the standard fix for
-    tmux pasteboard trouble on OS X. The same README notes an important lifecycle
-    change: tmux 2.6, released in September 2017, incorporated the wrapper's
-    functionality, reducing the need for the separate utility for users on newer tmux
-    builds.
+  adoption-history:
+    - >
+      The utility became associated particularly with tmux configurations on macOS,
+      where users wrapped shells or selected commands to regain access to user-session
+      services such as the pasteboard.
+  package-nerd-significance:
+    - >
+      It preserves a recognizable piece of macOS command-line history: a small
+      compatibility shim that package managers made easy to install while tmux and macOS
+      session behavior evolved.
+  project-history:
+    - >
+      Chris Johnsen created the tmux-MacOSX-pasteboard project to address access to the
+      macOS pasteboard from programs running inside tmux. The repository provides
+      reattach-to-user-namespace as the process wrapper used for that integration.
+  related-projects:
+    - >
+      tmux is the principal companion project; the wrapper is commonly invoked from tmux
+      configuration.
+  sources:
+    - 'Official project README: https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard#readme'
+    - source_facts.package-manager records availability through Homebrew and Nix.
+  summary:
+    - >
+      reattach-to-user-namespace is a macOS command-line compatibility utility that
+      launches a process after attaching it to the per-user bootstrap namespace.
+  timeline:
+    - >
+      2011: The upstream repository's public history began during the Mac OS X tmux
+      pasteboard-integration era.
+    - >
+      Later macOS releases: Upstream documentation increasingly treated some historical
+      workarounds as version-dependent.
+  usage:
+    - >
+      It is typically referenced from ~/.tmux.conf to start a shell or pasteboard
+      command through reattach-to-user-namespace. Its relevance depends on the macOS and
+      tmux versions in use.
 category: system
 package-manager:
   brew: reattach-to-user-namespace

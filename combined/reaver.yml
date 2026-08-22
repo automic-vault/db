@@ -7,28 +7,63 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    Reaver is a wireless security assessment tool created by Craig Heffner in 2011 to
-    exploit weaknesses in Wi-Fi Protected Setup registrar PIN handling. Its README ties
-    the tool directly to Stefan Viehbock's 2011 WPS research, which showed that design
-    and implementation flaws reduced the practical search space for WPS PIN recovery and
-    could expose WPA/WPA2 passphrases on vulnerable access points.
-  - >
-    The original reaver-wps code was hosted on Google Code, with versions 1.0 through
-    1.4 preserved in the Google Code archive. The t6x repository, created on GitHub on
-    April 11, 2015, became a community-maintained fork. That fork identifies the 1.6.x
-    line as a new cycle with bug fixes, additional features, and integration with the
-    Pixie Dust offline WPS attack path through pixiewps, while preserving the classic
-    online WPS PIN workflow.
-  - >
-    Practitioners use Reaver in authorized wireless audits and lab validation, not as a
-    general networking utility. Its companion executable `wash` surveys nearby access
-    points and WPS metadata; `reaver` then attempts WPS PIN recovery against a selected
-    access point when the operator has permission to test it. Linux security
-    distributions and package collections carried it because it operationalized a
-    well-known WPS failure mode, but the responsible usage context is penetration
-    testing, device hardening, and verifying that WPS is disabled or resistant on owned
-    networks.
+  adoption-history:
+    - >
+      Reaver became a widely packaged wireless-security auditing utility. The supplied
+      package metadata records packages for Homebrew, Debian, Ubuntu, Fedora-family
+      systems, Arch Linux, and MacPorts.
+    - >
+      The community fork continued development after the original releases,
+      incorporating fixes, hardware-compatibility work, and the Pixie Dust attack
+      workflow.
+  package-nerd-significance:
+    - >
+      Reaver is notable in security-oriented package collections because it turned a
+      protocol-design weakness into a practical command-line auditing workflow. Its
+      pairing with Wash and later Pixiewps also illustrates how focused Unix security
+      tools compose around discovery, capture, and attack stages.
+  project-history:
+    - >
+      Craig Heffner created Reaver 1.0 in 2011 as a practical attack against Wi-Fi
+      Protected Setup registrar PINs. The official community-fork README identifies
+      versions 1.0 through 1.4 as the original line.
+    - >
+      The t6x community fork carried the project forward as Reaver 1.5.3 and then began
+      the 1.6.x cycle, adding fixes, features, and support for the offline Pixie Dust
+      technique.
+  related-projects:
+    - Wash is the bundled WPS access-point scanner.
+    - >
+      Pixiewps performs the offline Pixie Dust calculations used by Reaver's related
+      attack mode.
+  sources:
+    - >
+      Official Wash history/options page:
+      https://github.com/t6x/reaver-wps-fork-t6x/wiki/Everything-about-the-new-options-from-wash
+    - 'Official project README: https://github.com/t6x/reaver-wps-fork-t6x#readme'
+    - source_facts.package-manager
+  summary:
+    - >
+      Reaver is a command-line wireless-security auditing tool that attacks WPS
+      registrar PINs to test whether a target access point can expose its WPA/WPA2
+      passphrase.
+  timeline:
+    - '2011: Craig Heffner created Reaver 1.0.'
+    - 'Reaver 1.3: The project introduced a WPS scanner, initially named walsh.'
+    - 'Reaver 1.4: The scanner was renamed Wash.'
+    - 'Reaver 1.5.3: The community-fork line incorporated Pixie Dust support.'
+    - >
+      Reaver 1.6.x: The maintained community fork opened a new development cycle with
+      further fixes and features.
+  usage:
+    - >
+      Authorized auditors first use Wash to identify WPS-enabled access points, then run
+      Reaver against a selected BSSID through a monitor-mode wireless interface. Reaver
+      can attempt online PIN enumeration or invoke Pixiewps-related offline techniques
+      where the access point is vulnerable.
+    - >
+      The tool is intended only for networks the operator owns or is explicitly
+      authorized to test.
 category: security
 package-manager:
   brew: reaver
