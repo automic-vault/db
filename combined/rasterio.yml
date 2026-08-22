@@ -8,46 +8,53 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    Rasterio began as Sean Gillies's attempt to build a Fiona-like Python interface for
-    raster data. In a November 24, 2013 introduction, Gillies described returning to
-    satellite image processing and wanting a package that let Python programmers read
-    and write NumPy arrays from raster files while doing the work they had been doing
-    with osgeo.gdal using fewer non-idiomatic calls. A Mapbox announcement on January
-    29, 2014 presented Rasterio as a GDAL- and NumPy-based open source project from the
-    Mapbox satellite team.
-  - >
-    The project was shaped by the Python geospatial community's long relationship with
-    GDAL. Rasterio did not try to replace GDAL's format support; it wrapped GDAL in a
-    Pythonic API, using Cython extension modules above the GDAL shared library and
-    exposing datasets, coordinate reference systems, affine transforms, windows, masks,
-    and bands through familiar Python objects and NumPy arrays. The project
-    documentation states the design goal directly: preserve GDAL performance while
-    lowering the cognitive load imposed by GDAL's C-shaped Python bindings.
-  - >
-    Rasterio's adoption followed both PyPI packaging and the broader scientific Python
-    distribution stack. Gillies uploaded rasterio 0.2 to PyPI in November 2013, PyPI
-    release history shows the 1.0.0 release on July 12, 2018, and installation
-    documentation and package pages describe the continuing importance of GDAL
-    availability, binary wheels, conda-forge, Homebrew, and source builds. That
-    packaging story matters because Rasterio sits on native geospatial dependencies such
-    as GDAL, PROJ, GEOS-linked GDAL builds, and format-driver choices.
-  - >
-    Practitioners use Rasterio as the Python raster I/O layer in scripts, notebooks,
-    services, and data pipelines. The canonical pattern is opening a dataset with
-    rasterio.open, reading one or more bands into arrays, inspecting CRS and transforms,
-    then writing derived rasters with explicit profiles and creation options. The API is
-    used for windowed reads, reprojection and warping, masks, feature extraction from
-    raster bands, rasterization of vector features, and transformations between pixel
-    and geospatial coordinates.
-  - >
-    Rasterio also created the rio command-line interface, which made GDAL-style raster
-    operations scriptable in a Python-oriented namespace. The CLI includes commands for
-    info, bounds, clip, convert, create, edit-info, mask, merge, overview, rasterize,
-    sample, shapes, stack, transform, and warp. Its Click-based plugin system lets
-    external packages add rio subcommands, such as rio-mbtiles for MBTiles export,
-    giving Rasterio a role both as a library and as a shell-friendly toolkit inside the
-    GDAL ecosystem.
+  adoption-history:
+    - >
+      Rasterio is distributed through PyPI wheels and is also commonly installed through
+      conda-forge. source_facts.package-manager records packages across Homebrew,
+      Alpine, Debian/Ubuntu, MacPorts, Nix, Arch, Scoop, and WinGet, reflecting broad
+      adoption across scientific Python and GIS environments.
+  package-nerd-significance:
+    - >
+      Rasterio offers a Pythonic, NumPy-oriented alternative to using GDAL's native
+      Python bindings directly while retaining GDAL's extensive raster-format support.
+      Packaging it is technically interesting because its Python and Cython layers link
+      to GDAL and related native libraries, making binary compatibility and wheel
+      construction important concerns.
+  project-history:
+    - >
+      Rasterio was developed to provide idiomatic Python access to geospatial raster
+      data. Its design wraps GDAL-backed input and output in dataset objects resembling
+      Python files and exposes raster bands as NumPy arrays. The project adopted a
+      stable x.y.z release process for the Rasterio 1.x line.
+  related-projects:
+    - GDAL provides Rasterio's underlying raster data access and format-driver capabilities.
+    - NumPy supplies the N-dimensional array model exposed through Rasterio's Python API.
+    - GeoJSON conventions are used for vector-shaped geographic features and footprints.
+  sources:
+    - https://github.com/rasterio/rasterio
+    - https://rasterio.readthedocs.io/en/stable/
+    - https://rasterio.readthedocs.io/en/stable/contributing.html
+    - https://rasterio.readthedocs.io/en/stable/installation.html
+    - source_facts.package-manager
+  summary:
+    - >
+      Rasterio is a Python library and rio command suite for reading, writing,
+      transforming, and analyzing geospatial raster datasets through GDAL-backed drivers
+      and NumPy arrays.
+  timeline:
+    - 'Pre-1.0: Rasterio developed as a Pythonic abstraction over GDAL raster access.'
+    - '1.0 era: The project standardized x.y.z releases from maintenance branches.'
+    - >
+      Current releases: Official binary packages support Linux, macOS, and Windows,
+      alongside source builds linked to system GDAL.
+  usage:
+    - >
+      Python programs use rasterio.open() to read or create datasets, inspect
+      georeferencing, access bands as arrays, and perform operations such as
+      reprojection, masking, resampling, and rasterization. The rio CLI exposes
+      composable commands for dataset inspection, conversion, clipping, merging,
+      warping, and related GIS workflows.
 category: science
 package-manager:
   apk: rio
