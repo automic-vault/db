@@ -7,36 +7,50 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    redo is a family of build systems based on Daniel J. Bernstein's published notes
-    titled 'Rebuilding target files when source files have changed.' Bernstein described
-    the core ideas: rebuilding target files atomically and treating honest
-    prerequisites, including build scripts and nonexistent files, as part of dependency
-    tracking. He did not publish a full implementation, which led several developers to
-    implement compatible or inspired versions.
-  - >
-    Avery Pennarun's implementation, often called apenwarr/redo, was announced in
-    December 2010 after he found Bernstein's design and wrote a Python implementation
-    with man pages, an installer, parallelism, locking, tests, checksum-based dependency
-    handling, and GNU make jobserver compatibility. The project describes itself as
-    smaller and more reliable than make, while preserving make's general-purpose nature
-    and replacing Makefile syntax with ordinary shell dofiles.
-  - >
-    Practitioners use redo by writing .do scripts for targets. A build rule can call
-    redo-ifchange to declare dependencies, redo-ifcreate to track files that did not
-    exist during the build, redo-stamp to rebuild when command output changes, and
-    redo-always for intentionally volatile targets. Dofiles receive the target name, a
-    basename, and a temporary output path, so successful builds can replace targets
-    atomically. The default.*.do search algorithm lets a small number of shell scripts
-    cover many generated files.
-  - >
-    redo's adoption has remained specialized, mostly among developers interested in
-    simple, auditable build logic, recursive project layouts, generated dependencies,
-    and make interoperability. The official documentation lists open source examples, an
-    experimental Buildroot variant, cookbook material for C++, containers, LaTeX, and
-    text processing, and multiple other redo implementations in shell, C, C++, Go,
-    Haskell, and other languages. Homebrew packages apenwarr/redo with the core redo
-    commands and helper utilities.
+  adoption-history:
+    - >
+      The supplied metadata records packages in Homebrew, MacPorts, Nix, and the Arch
+      ecosystem, demonstrating adoption across several Unix-like package-manager
+      communities. The official documentation also catalogs projects that use redo.
+  package-nerd-significance:
+    - >
+      redo attracts build-system enthusiasts because dependencies are discovered by
+      executable build scripts rather than maintained in a separate declarative graph.
+      Its small conceptual core has inspired multiple independent implementations.
+  project-history:
+    - >
+      Daniel J. Bernstein originally described redo in undated notes about rebuilding
+      targets when sources change but did not publish an implementation. Avery Pennarun
+      later implemented this redo from scratch from Bernstein's design. The official
+      history also identifies Alan Grosskurth's approximately 250-line shell
+      implementation and master's research on top-down software rebuilding as an early
+      related effort.
+  related-projects:
+    - >
+      redo is positioned as a competitor to Make. Other redo implementations and
+      redoconf belong to the surrounding ecosystem documented by the project.
+  sources:
+    - https://github.com/apenwarr/redo
+    - https://redo.readthedocs.io/en/latest/
+    - source_facts.package-manager
+  summary:
+    - >
+      redo is Avery Pennarun's implementation of Daniel J. Bernstein's recursive,
+      general-purpose build-system design.
+  timeline:
+    - 'Undated: Daniel J. Bernstein published design notes for redo without accompanying code.'
+    - >
+      Early implementation period: Alan Grosskurth implemented the design in shell while
+      researching top-down rebuilding.
+    - 'Later: Avery Pennarun wrote this implementation from scratch.'
+    - >
+      2026: Homebrew, MacPorts, Nix, and Arch-family packages are recorded in the
+      supplied metadata.
+  usage:
+    - >
+      Projects define builds with executable `.do` scripts. `redo` builds targets, while
+      commands such as `redo-ifchange`, `redo-ifcreate`, `redo-always`, and `redo-stamp`
+      express dynamic dependencies and rebuild behavior.
 category: developer-tools
 package-manager:
   brew: redo
