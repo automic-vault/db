@@ -9,27 +9,46 @@ config-file-location: null
 credentials-file-location:
   unix: ~/.2fa
 history:
-  - >
-    rsc_2fa is the Homebrew packaging name for Russ Cox's `rsc.io/2fa`, a small Go
-    command whose GitHub repository was created on November 22, 2017. The program
-    belongs to the Unix-style security-tool tradition: it does one job, generating
-    two-factor authentication codes from locally stored secrets, and exposes that job
-    through a terse command-line interface.
-  - >
-    The package documentation describes `2fa -add` for adding named secrets, `2fa -list`
-    for listing key names, and `2fa name` for printing a code. It supports the
-    time-based TOTP mode by default, counter-based HOTP with `-hotp`, six-, seven-, and
-    eight-digit codes, and clipboard copying with `-clip`. The keychain is intentionally
-    simple and stored unencrypted in `$HOME/.2fa`, making the tool convenient for
-    trusted local developer machines but unsuitable as a hardened secret vault without
-    external filesystem protections.
-  - >
-    Distribution follows the Go command pattern. pkg.go.dev records version v1.2.0 as a
-    tagged, stable module published on January 15, 2021, and Homebrew packages it as
-    `rsc_2fa` with the executable name `2fa`. Practitioners use it when they want 2FA
-    codes in scripts, terminal workflows, SSH sessions, or password-manager-adjacent
-    setups, especially for services that expose a text secret during enrollment instead
-    of requiring a QR-only mobile authenticator.
+  adoption-history:
+    - >
+      The repository's focused scope and small codebase made 2fa a recognizable
+      Unix-style authenticator among command-line users. Its official GitHub repository
+      has accumulated substantial community interest, while the input records Homebrew
+      distribution.
+  package-nerd-significance:
+    - >
+      2fa exemplifies the small, composable command-line security tool: enrollment and
+      code generation fit into scripts and terminal workflows. Package users should note
+      its deliberate simplicity also means secrets are stored unencrypted in a plain
+      text file.
+  project-history:
+    - >
+      Russ Cox created 2fa as a compact command-line two-factor authentication agent
+      written in Go. The project supports both time-based and counter-based one-time
+      passwords and keeps its interface centered on adding, listing, and querying named
+      keys.
+  related-projects:
+    - >
+      The utility implements the TOTP and HOTP styles of one-time passwords and can
+      optionally integrate with the system clipboard.
+  sources:
+    - https://github.com/rsc/2fa#readme
+    - https://pkg.go.dev/rsc.io/2fa
+    - source_facts.package-manager
+  summary:
+    - 2fa is a command-line authentication-code generator for named TOTP and HOTP secrets.
+  timeline:
+    - >
+      2014: The earliest public repository history dates to the project's initial Go
+      implementation.
+    - >
+      2018: The repository's compact modern form added module metadata and vendored
+      clipboard support.
+  usage:
+    - >
+      Use `2fa -add name` to enroll a secret, `2fa -list` to list stored names, and `2fa
+      name` to print a current code. With no arguments it prints codes for all
+      time-based keys; `-clip` also copies a code to the clipboard.
 category: security
 package-manager:
   brew: rsc_2fa

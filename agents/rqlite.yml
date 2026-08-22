@@ -6,46 +6,49 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    rqlite is a Go distributed relational database whose GitHub repository was created
-    on August 23, 2014. Its central idea is deliberately small: keep SQLite as the
-    storage engine, put the write path behind the Raft consensus algorithm, and expose
-    the result through a server process, CLI, and HTTP API. The project describes itself
-    as lightweight, fault-tolerant, and easy to operate, placing it in the same
-    operational niche as small consensus-backed stores while retaining SQL and SQLite
-    features.
-  - >
-    The early design made rqlite part of the broader post-Raft wave of infrastructure
-    tools: it treats the Raft log as the ordered source of database changes and applies
-    SQL to SQLite replicas through the elected leader. The project documentation
-    describes automatic replication to multiple nodes, majority-based availability, log
-    compaction through snapshots, and tunable read consistency. This made rqlite
-    attractive for workloads that need highly available relational state but do not need
-    write-scaling behavior from a large distributed SQL system.
-  - >
-    Adoption grew through the Go and SQLite ecosystems rather than through an
-    application framework. The repository metadata identifies Go, Raft, SQLite, SQL,
-    distributed systems, and relational database topics, and the project maintains a
-    documentation site, Slack, Google Group, release binaries, Docker examples, and
-    client-library references. Homebrew packages the `rqlited` server, `rqlite` shell,
-    and `rqbench`, while other package indexes carry it under the same project name for
-    Linux distributions and Nix-style environments.
-  - >
-    Practitioners usually evaluate rqlite when they want networked SQLite, replicated
-    configuration state, edge or remote-office data, or a small operational metadata
-    store. Its docs emphasize a single self-contained binary, one-node startup for
-    simple use, multi-node clustering for fault tolerance, automatic clustering through
-    DNS, Consul, etcd, Kubernetes, or Docker Compose, and read-only nodes for read-heavy
-    deployments. The HTTP/JSON API lets applications avoid a database-specific wire
-    driver, while the shell keeps ad-hoc SQL workflows familiar.
-  - >
-    The project has also accumulated features that show how users pushed it from a
-    demonstration of Raft plus SQLite into an operations tool: hot backups, restore from
-    SQLite dumps or backup files, TLS, authentication and authorization controls, queued
-    writes, change data capture, SQLite extension loading, and deployment guides for
-    Kubernetes and Docker Compose. rqlite therefore occupies a pragmatic middle ground:
-    more available than a single SQLite file, simpler than most distributed databases,
-    and best suited to critical but moderate write-volume relational data.
+  adoption-history:
+    - >
+      rqlite is distributed as a dependency-free executable and an official container
+      image. The input records packages for Homebrew, Alpine, Nix, and openSUSE, while
+      the official documentation covers Kubernetes and Docker Compose deployments.
+  package-nerd-significance:
+    - >
+      rqlite occupies a distinctive niche between embedded SQLite and distributed
+      coordination databases: it preserves SQLite's relational model while adding Raft
+      replication and an HTTP interface in a compact operational package.
+  project-history:
+    - >
+      rqlite was created to provide a lightweight, fault-tolerant relational database
+      using SQLite as its storage engine and Raft for replicated consensus. It evolved
+      into a feature-rich system with dynamic clustering, backups, security controls,
+      change-data capture, and extension loading.
+  related-projects:
+    - >
+      SQLite supplies the relational storage engine, while Raft provides consensus. The
+      project presents itself as serving some of the same highly available configuration
+      and metadata workloads as etcd, but with relational modeling.
+  sources:
+    - https://github.com/rqlite/rqlite#readme
+    - https://rqlite.io/docs/
+    - https://rqlite.io/docs/features/
+    - https://rqlite.io/docs/guides/config/
+    - https://rqlite.io/docs/guides/security/
+    - source_facts.package-manager
+  summary:
+    - >
+      rqlite is a lightweight distributed relational database that combines SQLite with
+      Raft consensus to keep data highly available.
+  timeline:
+    - '2014: The rqlite project began public development.'
+    - >
+      2025: Official documentation described a mature platform spanning dynamic
+      clustering, change-data capture, SQLite extensions, security, backup, and edge
+      deployments.
+  usage:
+    - >
+      Run `rqlited` to start a node, then execute and query SQL through its HTTP API,
+      the `rqlite` shell, or a client library. Multiple nodes form a replicated cluster
+      for fault tolerance; `rqbench` supports workload benchmarking.
 tags:
   - cli
   - clustering
@@ -74,15 +77,12 @@ provenance:
       Official rqlite.io Docs page says it provides documentation to get up and running
       with rqlite.
   history-sources:
-    - https://api.github.com/repos/rqlite/rqlite
-    - https://github.com/rqlite/rqlite
-    - https://raw.githubusercontent.com/rqlite/rqlite/master/README.md
+    - https://github.com/rqlite/rqlite#readme
+    - https://rqlite.io/docs/
     - https://rqlite.io/docs/features/
-    - https://rqlite.io/docs/design/
-    - https://rqlite.io/docs/quick-start/
-    - https://rqlite.io/docs/clustering/
-    - https://formulae.brew.sh/formula/rqlite
-    - https://pkg.go.dev/github.com/rqlite/rqlite
+    - https://rqlite.io/docs/guides/config/
+    - https://rqlite.io/docs/guides/security/
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/rqlite/rqlite, so repo is
