@@ -7,42 +7,45 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    GNU Remake is an enhanced GNU Make distribution with tracing, improved error
-    reporting, profiling, and a built-in debugger. The project is maintained by Rocky
-    Bernstein, whose debugger manual lists copyright years 2004, 2005, 2006, 2011, 2012,
-    and 2020; the GitHub repository records creation on October 21, 2008. Its lineage is
-    explicit: it patches GNU Make rather than replacing Make's dependency language with
-    a new build system.
-  - >
-    The historical role of remake is to make opaque Makefile behavior inspectable. GNU
-    Make itself was written by Richard Stallman and Roland McGrath and maintained by
-    Paul Smith, while Ubuntu's manpage attributes remake's extended error reporting,
-    debugger, and profiling extensions to Rocky Bernstein. That division explains the
-    package's ecosystem position: it behaves like make for existing Makefiles, then adds
-    diagnostics that are hard to obtain from plain make.
-  - >
-    The codebase tracks multiple GNU Make bases. The project page describes patched GNU
-    Make 4.3 sources and branches for patched GNU Make 4.2, 4.1, 3.82, and 3.81, while
-    the SourceForge page describes remake as an enhanced GNU Make with versions based on
-    GNU Make 4.3, 4.2.1, 4.1, and 3.82. This matters for adoption because users can
-    debug existing build logic without translating a project to Ninja, CMake, Rake, or
-    another build runner.
-  - >
-    Practitioners use remake when a Makefile is too dynamic or too old to reason about
-    by inspection. The --trace mode shows commands that are about to run, including
-    commands hidden behind @ prefixes; --profile emits Callgrind-format timing and
-    dependency data for tools such as KCachegrind; --tasks and --targets list documented
-    or discovered Makefile targets; and --search-parent can locate a Makefile above the
-    working directory.
-  - >
-    The debugger brings gdb-like habits to Makefiles: users can enter the debugger at
-    startup, on an error, or from inside a Makefile; inspect target properties and
-    target stack; set breakpoints; expand or set GNU Make variables; load Makefiles; and
-    emit expanded shell scripts for target commands. Its packaging across Homebrew,
-    Debian, Ubuntu, Fedora, Arch, Nix, MacPorts, Alpine, and other distributions
-    reflects the practical need for a drop-in make diagnostic tool in Unix-like
-    development environments.
+  adoption-history:
+    - >
+      remake is packaged by Debian and derivatives, Homebrew, MacPorts, and other
+      Unix-like package ecosystems. The official installation guide warns that
+      distribution packages may lag the latest debugger release.
+  package-nerd-significance:
+    - >
+      remake preserves GNU Make behavior while exposing the build graph and evaluator
+      through tracing, call stacks, breakpoints, stepping, profiling, and improved
+      errors. It is valuable when an opaque Makefile failure cannot be understood from
+      ordinary `make` output.
+  project-history:
+    - >
+      Rocky Bernstein originated remake as a fork and extension of GNU Make. Its
+      debugger borrows interaction ideas from GDB and the trepanning family of
+      debuggers, while retaining GNU Make's build semantics.
+  related-projects:
+    - GNU Make, GDB, realgud, KCachegrind, trepan debuggers
+  sources:
+    - https://remake.readthedocs.io/en/latest/
+    - https://remake.readthedocs.io/en/latest/install.html
+    - https://remake.readthedocs.io/en/latest/manpage.html
+  summary:
+    - >
+      remake is a fork of GNU Make that adds comprehensible tracing, profiling, extended
+      error reporting, target discovery, and an interactive Makefile debugger.
+  timeline:
+    - 'Project origin: Rocky Bernstein forked GNU Make to add debugging and tracing facilities'
+    - >
+      2020: The current Sphinx documentation lineage identifies Rocky Bernstein as
+      copyright holder
+    - >
+      Current releases: Distributed by multiple Unix-like package managers while active
+      development is hosted on GitHub
+  usage:
+    - >
+      Use `remake` as a substitute for `make` when investigating a build. `--trace`
+      exposes execution, `--debugger` enters the interactive debugger, `--post-mortem`
+      stops after errors, and `--profile` emits Callgrind-compatible profiling data.
 tags:
   - build-tool
   - cli
@@ -74,13 +77,9 @@ provenance:
       Official homepage links Read the Docs documentation, and
       https://remake.readthedocs.io/ provides feature and debugger documentation.
   history-sources:
-    - https://bashdb.sourceforge.net/remake/
-    - https://bashdb.sourceforge.net/remake/remake.html/index.html
-    - https://remake.readthedocs.io/en/stable/features.html
-    - https://github.com/Trepan-Debuggers/remake
-    - https://api.github.com/repos/Trepan-Debuggers/remake
-    - https://manpages.ubuntu.com/manpages/bionic/man1/remake.1.html
-    - https://formulae.brew.sh/formula/remake
+    - https://remake.readthedocs.io/en/latest/
+    - https://remake.readthedocs.io/en/latest/install.html
+    - https://remake.readthedocs.io/en/latest/manpage.html
   repo-sources:
     - >
       Official homepage https://bashdb.sourceforge.net/remake/ links a GitHub page;

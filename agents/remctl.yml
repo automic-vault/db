@@ -1,6 +1,6 @@
 id: brew:remctl
 display-name: remctl
-repo: null
+repo: https://github.com/rra/remctl
 docs:
   - https://www.eyrie.org/~eagle/software/remctl
   - https://www.eyrie.org/~eagle/software/remctl/remctl.html
@@ -9,35 +9,48 @@ config-file-location:
     - '@sysconfdir@/remctl.conf'
 credentials-file-location: null
 history:
-  - >
-    remctl was originally written by Anton Ushakov as a Kerberos v5 replacement for
-    IBM's sysctl, a Kerberos v4 client/server system used at Stanford for ACL-protected
-    remote execution. Russ Allbery's project page describes the Stanford usage pattern:
-    sysctl could run Tcl code on the server, but Stanford mainly needed controlled
-    execution of external programs, so remctl kept the narrower command-dispatch idea
-    and paired it with GSS-API authentication.
-  - >
-    The package evolved into a small authenticated remote-command protocol rather than a
-    general remote shell. The official manual describes a client that sends a host,
-    command, subcommand, and parameters to a `remctld` server; the server accepts only
-    commands defined in its configuration and only for users authorized by ACL files.
-    That design made remctl a lightweight institutional operations tool: closer to
-    Kerberos-authenticated CGI, ssh, and sudo than to a language-specific RPC framework.
-  - >
-    The 2.0 release on 2006-08-09 introduced a version 2 protocol with binary-safe
-    command arguments, streaming output, separate stdout and stderr, larger output
-    handling, and persistent connections. Later releases added IPv6 support in 2.4, a
-    registered default port of 4373 by 2.11, systemd support in 3.7, `remctl-shell` in
-    3.12 for ssh-based deployments, Python 3 binding support in 3.16, and PCRE2 ACL
-    support in 3.18 on 2022-05-08.
-  - >
-    remctl's adoption is strongest in Kerberos-heavy Unix and site-reliability
-    environments where administrators want a curated command surface rather than full
-    shell access. Debian splits the software into client, server, library, and
-    language-binding packages, including `libnet-remctl-perl`; Homebrew packages the
-    core tools for macOS and Linux. Practitioners configure backend programs and ACLs on
-    the server, then expose operations such as volume releases, account maintenance, or
-    service actions through the `remctl` command or bindings.
+  adoption-history:
+    - >
+      Debian has shipped remctl since Debian 3.1, initially as one package and later as
+      separate client and server packages. Language bindings subsequently entered Debian
+      for Perl and, later, PHP, Python, and Ruby.
+  package-nerd-significance:
+    - >
+      remctl occupies a narrow but useful space between rsh, SSH command restrictions,
+      sudo, and RPC frameworks. It offers a deliberately small protocol, Kerberos
+      authentication, encrypted transport, and per-command ACLs without requiring
+      services to share an implementation language.
+  project-history:
+    - >
+      Anton Ushakov originally wrote remctl as a Kerberos v5 replacement for IBM's
+      Kerberos v4 sysctl service used at Stanford. It retained the external-command use
+      case Stanford needed while omitting sysctl's ability to execute arbitrary Tcl
+      code. Russ Allbery subsequently maintained and expanded it.
+  related-projects:
+    - IBM sysctl, Kerberos, GSS-API, SSH, sudo, rsh, MIT Moira
+  sources:
+    - https://www.eyrie.org/~eagle/software/remctl/
+    - https://www.eyrie.org/~eagle/software/remctl/news.html
+    - https://www.eyrie.org/~eagle/software/remctl/protocol.html
+    - https://www.eyrie.org/~eagle/software/remctl/remctld.html
+  summary:
+    - >
+      remctl is a client/server remote-command system that authenticates with Kerberos
+      GSS-API, encrypts network traffic, and restricts callers to explicitly configured
+      commands and ACLs.
+  timeline:
+    - '2002: remctl 1.0 released'
+    - '2005: Configuration-file inclusion and sysconfdir-relative defaults added'
+    - '2006: Protocol version 2 added streaming output and persistent connections'
+    - '2007: Rewritten Java client and Java server added'
+    - '2018: Security advisory issued for versions 3.12 and 3.13'
+    - '2022: remctl 3.18 released'
+  usage:
+    - >
+      Administrators map command and subcommand names to server-side executables in
+      `remctl.conf` and attach ACLs. Clients request only those named operations;
+      `remctld` authenticates and authorizes the caller before executing the configured
+      backend.
 tags:
   - cli
   - client-server
@@ -67,15 +80,13 @@ provenance:
     - source_facts.homepage is the official project homepage
   history-sources:
     - https://www.eyrie.org/~eagle/software/remctl/
-    - https://www.eyrie.org/~eagle/software/remctl/remctl.html
-    - https://www.eyrie.org/~eagle/software/remctl/remctld.html
     - https://www.eyrie.org/~eagle/software/remctl/news.html
-    - https://packages.debian.org/sid/libnet-remctl-perl
-    - https://formulae.brew.sh/formula/remctl
+    - https://www.eyrie.org/~eagle/software/remctl/protocol.html
+    - https://www.eyrie.org/~eagle/software/remctl/remctld.html
   repo-sources:
     - >
-      Official Eyrie remctl pages document source releases but no official HTTP(S)
-      source-control project URL was found.
+      source_facts.repo is empty; the official project page links its GitHub development
+      source and accepts pull requests there.
   tags-sources:
     - >
       Official remctl manual describes Kerberos GSS-API authentication and client/server
@@ -88,5 +99,5 @@ category-path:
 display-name-confidence: high
 docs-confidence: high
 history-confidence: high
-repo-confidence: medium
+repo-confidence: high
 tags-confidence: high
