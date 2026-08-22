@@ -8,29 +8,55 @@ config-file-location:
   unix: /etc/rinetd.conf
 credentials-file-location: null
 history:
-  - >
-    rinetd is a small C TCP redirection daemon from Thomas Boutell's 1990s Internet
-    utility work. A comp.os.linux.announce posting for version 0.1 lists an entered date
-    of 05/12/1997, describes it as redirecting TCP connections between address and port
-    pairs, and gives the keywords "internet firewall virtual server port redirect." That
-    origin explains the tool's lasting shape: a single-purpose daemon for forwarding
-    traffic without becoming a general proxy.
-  - >
-    The operational model stayed simple. The daemon reads rules from /etc/rinetd.conf,
-    with forwarding lines in the form bindaddress bindport connectaddress connectport,
-    and runs as a single process using nonblocking I/O. Man pages and the upstream
-    README emphasize firewall, virtual-server, and IP masquerading use cases: expose a
-    service behind a gateway, bind a public address or port, and relay the TCP stream to
-    an internal host.
-  - >
-    Sam Hocevar's GitHub-maintained rinetd line preserved the old utility while adding
-    packaging-friendly releases. Version 0.70, published on 2017-09-09, added UDP
-    support, source address binding, and a real configuration grammar; version 0.71
-    added IPv6 but was marked broken; version 0.73, published on 2021-02-19, continued
-    parser and error-reporting fixes. Distributions package it as the rinetd executable
-    in systems such as Debian, Ubuntu, Alpine, Nix, and Homebrew, which keeps it
-    available as a compact alternative to heavier proxy stacks when protocol awareness
-    is unnecessary.
+  adoption-history:
+    - >
+      rinetd has remained available in Debian-family repositories, Homebrew, Nix,
+      Alpine, and other Unix package collections. Its small footprint and plain-text
+      configuration made it a durable choice for straightforward forwarding jobs.
+  package-nerd-significance:
+    - >
+      rinetd is a classic single-purpose Unix daemon: a small C program, one
+      configuration file, a manual page, and no control-plane service. It is often
+      packaged where a full proxy, firewall framework, or SSH tunnel would be
+      unnecessarily complex.
+  project-history:
+    - >
+      Thomas Boutell originally created rinetd as a user-mode TCP port-redirection
+      server, with copyright history beginning in 1997. Its single-process,
+      nonblocking-I/O design allowed many forwarded connections without one process per
+      connection.
+    - >
+      Sam Hocevar subsequently became a maintainer of the active implementation. The
+      maintained fork added IPv6, UDP forwarding, source-address binding, and
+      build-system modernization; the original Boutell repository is archived and
+      explicitly directs users to Hocevar's version.
+  related-projects:
+    - >
+      The maintained repository supersedes Thomas Boutell's archived `boutell/rinetd`
+      repository. Its use cases overlap with firewall NAT rules, `socat`, SSH
+      forwarding, and general-purpose TCP proxies.
+  sources:
+    - https://github.com/boutell/rinetd
+    - https://github.com/samhocevar/rinetd
+    - https://github.com/samhocevar/rinetd/blob/master/CHANGES.md
+  summary:
+    - >
+      rinetd is a lightweight daemon that redirects TCP or UDP connections from
+      configured listening addresses and ports to destination addresses and ports.
+  timeline:
+    - "1997: Thomas Boutell's original rinetd copyright history began."
+    - '2011: Sam Hocevar began the maintained successor release line.'
+    - '2017: The maintained release added IPv6 and UDP support.'
+    - '2021: rinetd 0.73 was released.'
+    - >
+      2020s: The original repository was archived in favor of Sam Hocevar's maintained
+      version.
+  usage:
+    - >
+      Define forwarding rules in `/etc/rinetd.conf`, then run rinetd as a daemon. Rules
+      map a bind address and port to a destination address and port; the configuration
+      also supports allow/deny rules and logging. Use `-c` to select another
+      configuration file and SIGHUP to reload it.
 category: networking
 package-manager:
   apk: rinetd
