@@ -5,45 +5,64 @@ docs:
   - https://docs.sigstore.dev/logging/cli
   - https://docs.sigstore.dev/logging/installation
   - https://docs.sigstore.dev/logging/overview
-config-file-location: null
+config-file-location:
+  unix:
+    - ~/.rekor/rekor.yaml
 credentials-file-location: null
 history:
-  - >
-    Rekor is Sigstore's software supply-chain transparency log, and rekor-cli is the
-    command-line client used to interact with it. The GitHub repository was created on
-    June 17, 2020. In 2021, the Linux Foundation announced Sigstore as a free signing
-    service for software artifacts, with founding participation from Red Hat, Google,
-    and Purdue University; Rekor became the transparency-log component alongside
-    Sigstore tools such as Fulcio and Cosign.
-  - >
-    The project implements a REST API server for validation and transparency-log
-    storage, plus a CLI that can make and verify entries, query inclusion proofs, check
-    log integrity, and retrieve entries by public key, artifact, log index, or UUID.
-    This design places Rekor in the same family of append-only, auditable systems as
-    certificate-transparency logs, but aimed at signatures and metadata for source
-    releases, container images, binaries, packages, and provenance records.
-  - >
-    On October 25, 2022, the Sigstore community announced general availability for the
-    Rekor transparency log and Fulcio certificate authority public benefit services. The
-    same milestone included v1.0 releases for Rekor and Fulcio, which the announcement
-    framed as a commitment to API stability and production-grade service reliability for
-    signing and verification workflows.
-  - >
-    Practitioners use rekor-cli in two overlapping ways. Producers upload signature
-    metadata with an artifact, signature, and public key so the event becomes
-    discoverable in the log; consumers and auditors verify inclusion proofs, fetch
-    entries, query log information, and monitor identities or key fingerprints for
-    unexpected signing events. The Sigstore documentation also describes installation
-    through Go, release binaries, or manual builds, and Homebrew packages the standalone
-    rekor-cli executable for users who do not want to build from source.
-  - >
-    Rekor's adoption is tied less to direct human use of the CLI than to the broader
-    Sigstore ecosystem: Cosign and other Sigstore clients record or verify
-    transparency-log material as part of artifact signing, while rekor-cli remains the
-    sharp tool for inspecting, uploading, verifying, and debugging entries by hand. The
-    OpenSSF and Sigstore documentation present the log as an auditable public-good
-    service whose entries can be monitored for consistency and for identity-specific
-    events.
+  adoption-history:
+    - >
+      Rekor became Sigstore's signature-transparency component and provides a public
+      production instance with operational availability commitments. The CLI is
+      distributed as release binaries, container packages, and a Homebrew formula.
+    - >
+      Its role in Sigstore placed transparency-log verification in mainstream
+      software-supply-chain workflows, alongside Fulcio certificates and Cosign signing
+      and verification.
+  package-nerd-significance:
+    - >
+      rekor-cli gives maintainers and verifiers direct access to an append-only
+      software-supply-chain ledger. It exposes upload, verification, retrieval, search,
+      and log-integrity operations that help make artifact-signing events independently
+      auditable.
+  project-history:
+    - >
+      Rekor was developed within Sigstore to provide an immutable, tamper-resistant
+      ledger for signed software-supply-chain metadata. It combines a REST API server
+      and transparency log with rekor-cli for submitting and verifying entries.
+    - >
+      Rekor reached the stable 1.0 line after several years of pre-1.0 development.
+      Rekor v1 later entered maintenance mode while Sigstore developed a tile-backed
+      Rekor v2 architecture intended to reduce operational complexity and cost.
+  related-projects:
+    - Sigstore
+    - Cosign
+    - Fulcio
+    - Certificate Transparency
+    - Trillian
+    - Rekor v2 / rekor-tiles
+  sources:
+    - https://docs.sigstore.dev/logging/cli/
+    - https://docs.sigstore.dev/logging/overview/
+    - https://github.com/sigstore/rekor/blob/main/CHANGELOG.md
+    - https://github.com/sigstore/rekor/blob/main/README.md
+  summary:
+    - >
+      Rekor CLI is the command-line client for Rekor, Sigstore's transparency log for
+      signed software-supply-chain metadata.
+  timeline:
+    - '2022: Rekor 1.0 established a stable API line and production-ready public service'
+    - "v1 era: Rekor served as Sigstore's signature-transparency component"
+    - '2026: Rekor v1 was in maintenance mode while tile-backed Rekor v2 development progressed'
+  usage:
+    - >
+      Maintainers use rekor-cli upload to submit signed artifact metadata. Verifiers use
+      verify to check inclusion, get to retrieve entries, loginfo to validate signed
+      tree information, and search to locate records by artifact, public key, or digest.
+    - >
+      The CLI can cache the log's public key in ~/.rekor/rekor.yaml. Artifact signing
+      keys are supplied explicitly to relevant commands and are not stored by Rekor as
+      client credentials.
 tags:
   - cli
   - rekor
@@ -74,17 +93,10 @@ provenance:
       Official Sigstore documentation has Rekor overview, CLI, and installation pages
       under https://docs.sigstore.dev/logging/.
   history-sources:
-    - https://github.com/sigstore/rekor
-    - https://api.github.com/repos/sigstore/rekor
-    - https://docs.sigstore.dev/logging/overview/
     - https://docs.sigstore.dev/logging/cli/
-    - https://docs.sigstore.dev/logging/installation/
-    - >
-      https://www.prnewswire.com/news-releases/linux-foundation-announces-free-sigstore-signing-service-to-confirm-origin-and-authenticity-of-software-301243667.html
-    - https://blog.sigstore.dev/sigstore-ga-ddd6ba67894d/
-    - >
-      https://opensource.googleblog.com/2022/10/sigstore-project-announces-general-availability-and-v1-releases.html
-    - https://formulae.brew.sh/formula/rekor-cli
+    - https://docs.sigstore.dev/logging/overview/
+    - https://github.com/sigstore/rekor/blob/main/CHANGELOG.md
+    - https://github.com/sigstore/rekor/blob/main/README.md
   repo-sources:
     - >
       source_facts.repo already contains https://github.com/sigstore/rekor; per
