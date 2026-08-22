@@ -286,6 +286,9 @@ def write_internal_binary_fixture_dump(path: Path) -> None:
 
 
 class CratesIndexTests(unittest.TestCase):
+    def test_default_recent_download_gate_includes_established_cli_crates(self):
+        self.assertEqual(crates_index.CRATES_IO_MIN_RECENT_DOWNLOADS, 10_000)
+
     def test_build_index_memory_does_not_scale_with_irrelevant_crates(self):
         with tempfile.TemporaryDirectory() as tmp:
             dump_path = Path(tmp) / "db-dump.tar.gz"
