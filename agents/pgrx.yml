@@ -8,38 +8,55 @@ config-file-location:
     - ~/.pgrx/config.toml
 credentials-file-location: null
 history:
-  - >
-    pgrx is the Rust framework and Cargo tooling for writing native PostgreSQL
-    extensions. Its lineage goes back to the earlier pgx project: a PGConf.eu 2024 talk
-    traces the line through Rust/PostgreSQL experiments such as Jeff Davis's
-    postgres-extension.rs proof of concept in 2018, Benjamin Fry's pg-extend-rs in 2019,
-    and Eric Ridge unveiling pgx in 2020. The project grew from Ridge's PostgreSQL
-    extension work, including ZomboDB, into a framework that exposes PostgreSQL's C
-    extension API through Rust macros, type conversions, generated SQL, and safer
-    memory/context handling.
-  - >
-    The project was renamed from pgx to pgrx on April 17, 2023. The maintainers
-    announced that pgrx v0.7.4 would be the same code as pgx v0.7.4 with names changed,
-    that the old pgx crates would remain on crates.io but stop receiving updates, and
-    that the Cargo subcommand would change from cargo-pgx to cargo-pgrx with a default
-    home directory of ~/.pgrx.
-  - >
-    pgrx's ecosystem role is to make compiled PostgreSQL extensions feel closer to
-    normal Rust crates while still producing PostgreSQL control files, SQL definitions,
-    and shared libraries. The README describes a managed development workflow around
-    cargo pgrx new, init, run, test, schema, and package; support for multiple
-    PostgreSQL major versions from one codebase; automatic schema generation;
-    #[pg_extern] UDFs; custom types and enums; SPI access; hooks; memory-context
-    wrappers; and pg_sys access when unsafe internals are required.
-  - >
-    Adoption has centered on teams that want C-extension reach with Rust ergonomics and
-    crash-safety. Public examples include ParadeDB's search/analytics extension, Neon's
-    pgrag, Supabase's pg_graphql and pg_jsonschema, and Rust-based extension work
-    discussed in the PGConf.eu 2024 PGRX talk, including Timescale toolkit-era projects
-    and a PostgreSQL Anonymizer rewrite. For practitioners, pgrx is used by installing
-    cargo-pgrx, initializing local or existing PostgreSQL builds, generating an
-    extension crate, writing Rust functions/types with pgrx macros, then testing and
-    packaging the resulting extension against real PostgreSQL instances.
+  adoption-history:
+    - >
+      pgrx is distributed as Rust crates, while cargo-pgrx is installed as a Cargo
+      subcommand; system packages including Homebrew and Arch's cargo-pgrx package
+      provide additional installation paths. The framework supports extension
+      development and testing across multiple PostgreSQL major versions.
+  package-nerd-significance:
+    - >
+      pgrx gives Rust developers a package-native route into PostgreSQL's C-oriented
+      extension ABI. Its combination of procedural macros, generated SQL schemas,
+      PostgreSQL version management, packaging, and integrated testing makes it both a
+      framework and a specialized build toolchain.
+  project-history:
+    - >
+      The project was originally known as pgx and later adopted the pgrx name, with its
+      Cargo command becoming cargo-pgrx and its default home moving from ~/.pgx to
+      ~/.pgrx. It is now maintained under the PostgreSQL Central Foundation
+      organization.
+    - >
+      The project grew into a workspace of Rust crates covering PostgreSQL bindings,
+      extension APIs, SQL generation, testing, packaging, and the cargo-pgrx development
+      command.
+  related-projects:
+    - >
+      pgrx builds on Rust and Cargo while targeting PostgreSQL's extension APIs.
+      cargo-pgrx integrates with PostgreSQL tools such as pg_config, initdb, psql, and
+      pg_regress.
+  sources:
+    - >
+      Official cargo-pgrx documentation:
+      https://github.com/pgcentralfoundation/pgrx/blob/develop/cargo-pgrx/README.md
+    - 'Official rename record: https://github.com/pgcentralfoundation/pgrx/issues/1106'
+    - 'Official repository: https://github.com/pgcentralfoundation/pgrx'
+  summary:
+    - >
+      pgrx is a Rust framework and Cargo-based toolchain for building, running, testing,
+      and packaging PostgreSQL extensions.
+  timeline:
+    - >
+      2022: The project announced its rename from pgx to pgrx and renamed its Cargo
+      command and home directory.
+    - >
+      Present: pgrx supports a multi-crate Rust extension framework and managed
+      development environments for multiple PostgreSQL releases.
+  usage:
+    - >
+      Developers install cargo-pgrx, run cargo pgrx init to configure or build supported
+      PostgreSQL installations, create an extension with cargo pgrx new, and use run,
+      test, schema, install, and package commands throughout development.
 tags:
   - cargo
   - cli
@@ -67,13 +84,11 @@ provenance:
   docs-sources:
     - official GitHub README is the apparent primary documentation surface
   history-sources:
-    - https://github.com/pgcentralfoundation/pgrx
-    - https://github.com/pgcentralfoundation/pgrx/issues/1106
-    - https://www.paradedb.com/learn/postgresql/what-is-pgrx
     - >
-      https://www.postgresql.eu/events/pgconfeu2024/sessions/session/5540/slides/584/PGRX%20PGConf.eu%20Athens%202024%20.pdf
-    - https://api.github.com/repos/pgcentralfoundation/pgrx
-    - https://crates.io/crates/cargo-pgrx
+      Official cargo-pgrx documentation:
+      https://github.com/pgcentralfoundation/pgrx/blob/develop/cargo-pgrx/README.md
+    - 'Official rename record: https://github.com/pgcentralfoundation/pgrx/issues/1106'
+    - 'Official repository: https://github.com/pgcentralfoundation/pgrx'
   repo-sources:
     - source_facts.repo already present; per instruction repo not re-evaluated
   tags-sources:
@@ -86,6 +101,6 @@ category-path:
   - extension-development
 display-name-confidence: high
 docs-confidence: medium
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

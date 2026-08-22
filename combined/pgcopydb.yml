@@ -8,36 +8,56 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    pgcopydb is Dimitri Fontaine's PostgreSQL database-copying tool, started as a
-    purpose-built way to automate what operators often want from `pg_dump | pg_restore`
-    between two running servers. GitHub records the repository creation date as December
-    20, 2021, and the README describes the goal as streaming a database copy quickly
-    while retaining parallelism.
-  - >
-    The tool's core lineage is PostgreSQL's native dump, restore, COPY, snapshot, and
-    logical-decoding machinery. pgcopydb uses `pg_dump` and `pg_restore` for schema
-    work, implements its own multi-process streaming for table data to avoid
-    directory-format intermediate files, and drives index creation internally so indexes
-    can be built in parallel. Later documentation frames the feature set as both base
-    copy and change data capture, with CDC implemented through PostgreSQL logical
-    decoding using `pgoutput` by default and optional `test_decoding` or `wal2json`
-    plugins.
-  - >
-    In practice, pgcopydb is a migration and cloning CLI. Users provide source and
-    target PostgreSQL URIs, then run commands such as `pgcopydb clone --table-jobs 8
-    --index-jobs 2`; the tool exports a consistent snapshot, dumps and restores schema
-    sections, copies table data, rebuilds indexes and constraints, resets sequences, and
-    can compare source and target data. Its command tree also exposes lower-level steps
-    such as `copy`, `dump`, `restore`, `list`, `stream`, `follow`, and `compare` for
-    scripted migrations.
-  - >
-    Its ecosystem role is a specialist tool between simple logical dumps and full
-    replication systems. It is attractive when a team needs an offline copy, a
-    major-version migration, a hardware or architecture move, or an online migration
-    path with `clone --follow`, but still wants PostgreSQL-native formats and semantics.
-    Homebrew packages versioned releases, and the upstream repository carries Debian
-    packaging, documentation, tests, and a PostgreSQL license.
+  adoption-history:
+    - >
+      pgcopydb is distributed through Homebrew, Debian, Ubuntu, and Nix packaging
+      channels. Its documentation also describes tagged container images, supporting use
+      in repeatable migration environments.
+  package-nerd-significance:
+    - >
+      pgcopydb occupies the practical space between a simple pg_dump/pg_restore pipeline
+      and a full migration platform. It is notable for combining parallel COPY,
+      concurrent index creation, resumable internal catalogs, and optional
+      logical-decoding-based change capture in one command-line package.
+  project-history:
+    - >
+      Dimitri Fontaine created pgcopydb to automate fast PostgreSQL-to-PostgreSQL
+      database copies while bypassing intermediate table-data files. The project later
+      expanded beyond its base-copy workflow into change data capture, comparison,
+      filtering, and extension-aware migration.
+    - >
+      Version 0.8 introduced the --follow change-data-capture workflow in 2022.
+      Subsequent releases refined logical decoding, same-table concurrency, internal job
+      coordination, resumability, and migration reliability.
+  related-projects:
+    - >
+      pgcopydb orchestrates PostgreSQL facilities including pg_dump, pg_restore, COPY,
+      exported snapshots, logical decoding, test_decoding, and wal2json. It includes
+      special migration handling for extensions such as TimescaleDB and Citus.
+  sources:
+    - 'Official documentation: https://pgcopydb.readthedocs.io/en/latest/'
+    - 'Official releases: https://github.com/dimitri/pgcopydb/releases'
+    - 'Official repository: https://github.com/dimitri/pgcopydb'
+  summary:
+    - >
+      pgcopydb is a PostgreSQL migration utility that copies a database between servers
+      using parallel and streaming techniques, with optional change data capture to
+      reduce cutover downtime.
+  timeline:
+    - >
+      2022: Version 0.8 introduced Change Data Capture and the pgcopydb clone --follow
+      workflow.
+    - >
+      2023: Releases expanded comparison, filtering, logical-decoding, and same-table
+      concurrency features.
+    - >
+      2024: Versions 0.15–0.17 focused on reliability, SQLite-backed internal catalogs,
+      and migration controls.
+  usage:
+    - >
+      Operators set source and target PostgreSQL connection URIs and run pgcopydb clone,
+      optionally tuning table and index worker counts. Advanced workflows use exported
+      snapshots and --follow to replay changes made during the base copy.
 category: developer-tools
 package-manager:
   brew: pgcopydb

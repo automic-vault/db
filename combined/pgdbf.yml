@@ -7,33 +7,47 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    PgDBF is a small C converter for moving XBase and FoxPro DBF tables into PostgreSQL.
-    The README says it was originally written by Kirk Strauser, released under GPLv3
-    with company approval from Brandon Day, and later co-maintained by Philipp
-    Wollermann around the 0.6.2 release. GitHub records the public repository creation
-    date as February 1, 2011, while upstream release notes show earlier 0.5.x releases
-    in 2009 and 2010.
-  - >
-    Its role is intentionally narrow: read DBF files, optionally read FoxPro memo files,
-    and emit SQL plus `\COPY` data that PostgreSQL's `psql` client can import. The tool
-    generates `CREATE TABLE`, optional `DROP TABLE`, `TRUNCATE`, transaction wrappers,
-    indexes from command-line arguments, and encoding conversion through iconv. That
-    makes it useful in legacy-data migrations where the source is a filesystem full of
-    DBF/FPT files rather than a live database server.
-  - >
-    PgDBF's development history is mostly about correctness and throughput for awkward
-    legacy formats. Release notes mention changes such as safer memo-file handling,
-    64-bit file offsets, a progress bar, NUMERIC-vs-TEXT behavior for numeric fields,
-    UTF-8 conversion, and FoxPro autoindex field identifiers. The README and Ubuntu
-    manpage both emphasize no nonstandard dependencies, portability across endian and
-    word-size differences, and performance bounded by disk throughput for large DBF plus
-    memo-file inputs.
-  - >
-    Adoption evidence is thinner than for mainstream PostgreSQL tools, but the project
-    is packaged in Debian/Ubuntu, Homebrew, and FreeBSD ports, and SourceForge remains
-    the numbered-release download channel. It occupies a durable niche for one-time or
-    repeatable migrations from dBase/FoxPro-era applications into PostgreSQL.
+  adoption-history:
+    - >
+      PgDBF has been packaged by Homebrew, Debian, and Ubuntu, keeping a specialized
+      legacy-data conversion utility accessible on current Unix-like systems.
+  package-nerd-significance:
+    - >
+      PgDBF is a compact, dependency-light C utility for a narrow but enduring
+      interoperability problem: moving XBase and FoxPro data, including memo fields,
+      into PostgreSQL. Its emphasis on streaming output and disk-limited performance
+      makes it characteristic of small Unix data-conversion tools.
+  project-history:
+    - >
+      PgDBF was developed as a simple, robust, portable, and highly optimized
+      XBase-to-PostgreSQL converter. Its public release notes document steady
+      compatibility and correctness work from at least 2009 through version 0.6.3 in
+      2018.
+    - >
+      The 0.6 series added larger-file support, progress reporting, improved numeric
+      handling, built-in character-set conversion to UTF-8, and support for additional
+      FoxPro field forms.
+  related-projects:
+    - >
+      PgDBF targets PostgreSQL's psql client and COPY input format while reading DBF
+      tables and associated FoxPro memo files.
+  sources:
+    - 'Official repository and release notes: https://github.com/kstrauser/pgdbf#readme'
+  summary:
+    - >
+      PgDBF converts XBase and FoxPro tables into SQL and COPY input that PostgreSQL can
+      import.
+  timeline:
+    - '2009: Version 0.5.0 changed memo-file handling and NULL output behavior.'
+    - >
+      2012: Version 0.6.0 added large-file and numeric-handling improvements; version
+      0.6.2 added iconv-based UTF-8 conversion.
+    - '2018: Version 0.6.3 added more FoxPro field support and conversion controls.'
+  usage:
+    - >
+      Users run pgdbf against a DBF table, optionally supplying its memo file and
+      conversion flags, then pipe the generated transaction, table definition, COPY
+      data, and indexes into psql.
 category: developer-tools
 package-manager:
   brew: pgdbf
