@@ -7,25 +7,59 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    sentry-native is Sentry's official SDK for C, C++, and native applications. The
-    upstream repository describes it as an error and crash reporting client optimized
-    for C and C++, with support for tags, breadcrumbs, and custom context so native
-    crashes can carry the same diagnostic metadata expected from higher-level Sentry
-    SDKs.
-  - >
-    The package sits at the boundary between native crash handlers and the Sentry event
-    pipeline. Its README notes that a major role is powering other Sentry SDKs,
-    including Java and Unreal integrations, while standalone use is treated more
-    cautiously than the higher-level platform SDKs.
-  - >
-    Practitioners integrate it as a C/C++ dependency through build systems and package
-    managers such as Homebrew, vcpkg, Conan, Nix, and Pacman. A common deployment choice
-    is the Crashpad backend: builds configured with SENTRY_BACKEND=crashpad produce a
-    crashpad_handler executable, which must be shipped beside the application so
-    minidumps can be captured and uploaded to Sentry. That makes the Homebrew package
-    useful both as a development dependency and as a source of the crashpad_handler
-    executable listed by the package.
+  adoption-history:
+    - >
+      Sentry Native is distributed through Homebrew, Nix, and Arch Linux packaging and
+      is also consumed beneath other Sentry integrations, including Sentry's
+      Java/Android NDK and Unreal support. The maintainers describe those higher-level
+      SDK integrations as its primary role, while standalone use receives best-effort
+      support.
+  package-nerd-significance:
+    - >
+      The SDK packages a difficult native observability stack—crash capture, local
+      persistence, transport, symbolication metadata, and optional Crashpad or Breakpad
+      integration—behind a C API usable from C and C++. Its executable payload may
+      include `crashpad_handler`, which explains why a library-oriented formula installs
+      a binary.
+  project-history:
+    - >
+      Sentry developed sentry-native as its official error- and crash-reporting client
+      for native applications, optimized for C and C++. The initial 0.0.1 release
+      established the project, and later releases expanded platform support, crash
+      backends, Android NDK integration, release health, tracing, and app-hang
+      detection.
+  related-projects:
+    - >
+      Crashpad and Breakpad provide crash-reporting backends. Higher-level Sentry SDKs
+      such as Sentry Java/Android NDK and Sentry Unreal consume native functionality
+      from this project.
+  sources:
+    - https://docs.sentry.io/platforms/native
+    - https://github.com/getsentry/sentry-native#readme
+    - https://github.com/getsentry/sentry-native/blob/master/CHANGELOG.md
+    - source_facts.package-manager
+  summary:
+    - >
+      Sentry Native is the official Sentry SDK for reporting errors and crashes from C,
+      C++, and other native applications.
+  timeline:
+    - '0.0.1: Initial public release.'
+    - >
+      0.1.0: Added message capture, arbitrary contexts, and experimental on-device
+      unwinding and symbolication.
+    - >
+      0.4.x era: Added experimental performance monitoring and stabilized release-health
+      support.
+    - >
+      Later development: Expanded Android NDK integration, crash backends, platform
+      coverage, and native diagnostics.
+  usage:
+    - >
+      Applications build or link the SDK, create an options object, set the Sentry DSN
+      and runtime options through the C API, initialize the client, and capture
+      messages, events, crashes, breadcrumbs, tags, and contextual data. Projects
+      commonly integrate it through CMake and choose an appropriate crash backend for
+      the target platform.
 tags:
   - c
   - c-plus-plus
@@ -44,11 +78,10 @@ provenance:
       source_facts.homepage is the official Sentry Native SDK docs; source_facts.repo
       identifies the official GitHub README.
   history-sources:
-    - https://github.com/getsentry/sentry-native
-    - https://docs.sentry.io/platforms/native/
-    - https://docs.sentry.io/platforms/native/configuration/backends/crashpad/
-    - https://vcpkg.link/ports/sentry-native
-    - https://formulae.brew.sh/formula/sentry-native
+    - https://docs.sentry.io/platforms/native
+    - https://github.com/getsentry/sentry-native#readme
+    - https://github.com/getsentry/sentry-native/blob/master/CHANGELOG.md
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already supplies https://github.com/getsentry/sentry-native;
