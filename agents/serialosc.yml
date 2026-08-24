@@ -4,27 +4,67 @@ repo: null
 docs:
   - https://monome.org/docs/serialosc
   - https://monome.org/docs/serialosc/osc
-config-file-location: null
+config-file-location:
+  linux:
+    - $XDG_CONFIG_HOME/serialosc/*.conf
+    - ~/.config/serialosc/*.conf
+  macos:
+    - ~/Library/Preferences/org.monome.serialosc/*.conf
+  windows:
+    - $APPDATA\Monome\serialosc\*.conf
 credentials-file-location: null
 history:
-  - >
-    serialosc is the service layer that lets monome hardware speak Open Sound Control.
-    It runs in the background, watches for monome grid and arc devices over USB serial,
-    and exposes each connected device through OSC so music, visual, and live-coding
-    applications can treat the hardware as a networked controller instead of a raw
-    serial device.
-  - >
-    The daemon model is deliberately device-oriented: `serialoscd` monitors connections,
-    launches a `serialosc-device` process with its own port for each device, and
-    advertises `_monome-osc._udp` over Zeroconf/Bonjour. Practitioners often reach it
-    through environment-specific wrappers such as Max objects or SuperCollider
-    libraries, while the OSC reference documents the lower-level messages for custom
-    integrations.
-  - >
-    Distribution follows the niche-hardware workflow. The upstream README points to Mac
-    and Windows installers, and Homebrew packages the Unix build with libmonome, liblo,
-    and libuv so users can install the daemon and its helper programs without building
-    the monome support stack by hand.
+  adoption-history:
+    - >
+      serialosc became the standard background service used by monome software libraries
+      and creative-coding environments. Official documentation points users toward
+      intermediary integrations in Max and SuperCollider, and the project is distributed
+      through Homebrew for current macOS installations.
+  package-nerd-significance:
+    - >
+      serialosc is a specialized but influential hardware daemon that cleanly separates
+      USB device transport from music and creative-coding applications through Open
+      Sound Control. Its per-device processes, Bonjour discovery, stable OSC vocabulary,
+      and persistent device preferences let many independent tools share a common monome
+      interface.
+  project-history:
+    - >
+      serialosc was developed by monome as the multi-device, Bonjour-capable successor
+      in its serial-to-OSC software stack. It replaced workflows built around the older
+      monomeserial service and provided a common OSC interface for grid and arc
+      controllers.
+    - >
+      The architecture uses serialoscd to detect USB connection changes and launches a
+      serialosc-device process on its own port for each attached controller. This model
+      supports multiple devices while allowing applications to discover them
+      dynamically.
+  related-projects:
+    - >
+      Official ecosystem integrations include the serialosc object for Max and monomeSC
+      for SuperCollider. libmonome provides lower-level monome application support,
+      while the older monomeserial service predates serialosc.
+  sources:
+    - 'Official OSC reference: https://monome.org/docs/serialosc/osc/'
+    - 'Official repository: https://github.com/monome/serialosc'
+    - 'Official serialosc documentation: https://monome.org/docs/serialosc/'
+  summary:
+    - >
+      serialosc is monome's background service for translating USB serial communication
+      with grid and arc controllers into discoverable Open Sound Control endpoints.
+  timeline:
+    - >
+      Early monome software era: monomeserial provided the earlier serial communication
+      service.
+    - >
+      Later multi-device era: serialosc superseded monomeserial with per-device OSC
+      processes and Bonjour discovery.
+    - 'Current era: monome documents Homebrew installation and service management for macOS.'
+  usage:
+    - >
+      Applications query serialoscd on UDP port 12002 to discover connected controllers,
+      then communicate with each device's dynamically assigned OSC port. Persistent
+      per-device files retain OSC prefixes, destination hosts and ports, and grid
+      rotation settings.
 tags:
   - cli
   - hardware-control
@@ -56,10 +96,9 @@ provenance:
       Official monome serialosc docs explain setup, operation, troubleshooting, OSC
       reference, and serial protocol.
   history-sources:
-    - https://monome.org/docs/serialosc/
-    - https://monome.org/docs/serialosc/osc/
-    - https://github.com/monome/serialosc
-    - https://formulae.brew.sh/formula/serialosc
+    - 'Official OSC reference: https://monome.org/docs/serialosc/osc/'
+    - 'Official repository: https://github.com/monome/serialosc'
+    - 'Official serialosc documentation: https://monome.org/docs/serialosc/'
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/monome/serialosc; per
@@ -74,6 +113,6 @@ category-path:
   - hardware-control
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

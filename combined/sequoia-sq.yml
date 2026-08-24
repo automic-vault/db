@@ -5,39 +5,61 @@ repo: https://gitlab.com/sequoia-pgp/sequoia-sq
 docs:
   - https://gitlab.com/sequoia-pgp/sequoia-sq/-/blob/main/README.md
   - https://sequoia-pgp.org
-config-file-location: null
+config-file-location:
+  unix:
+    - ~/.config/sequoia/sq/config.toml
+    - /etc/crypto-policies/back-ends/sequoia.config
 credentials-file-location: null
 history:
-  - >
-    `sq` is the primary command-line interface for Sequoia-PGP, a Rust implementation of
-    OpenPGP that emphasizes memory safety, correctness, and use as a library as well as
-    a tool suite. Sequoia's first public release was announced in November 2018 after an
-    October 2017 first commit; the `sq` CLI followed in January 2021 with version 0.23,
-    shortly after the 1.0 release of the lower-level `sequoia-openpgp` library.
-  - >
-    The CLI was designed as a human-oriented OpenPGP tool rather than a direct clone of
-    GnuPG. Its subcommand interface is explicitly git-like, with separate option
-    namespaces for operations such as key generation, encryption, decryption, signing,
-    verification, certification, key-server work, and Web Key Directory interaction. The
-    upstream user guide frames `sq` as the user-facing counterpart to the Rust library:
-    a command-line tool for people who need privacy, authentication, software-signature
-    verification, and message handling without writing Sequoia-based software.
-  - >
-    Within the OpenPGP ecosystem, `sq` is both a practitioner tool and a reference front
-    end for Sequoia's model of certificate stores, policies, and safer defaults.
-    Sequoia's project page lists downstream users such as keys.openpgp.org's Hagrid key
-    server, RPM Package Manager, SecureDrop, and other security tools, showing the
-    library's role beyond the CLI. For package nerds, `sq` matters because package
-    signing and release verification are one of OpenPGP's most persistent infrastructure
-    uses, and Sequoia targets those workflows while moving the implementation base into
-    Rust.
-  - >
-    Distribution is broad for a Rust security CLI: Homebrew packages it as `sequoia-sq`,
-    Debian and Ubuntu package the executable as `sq`, and Alpine, Fedora, MacPorts, Nix,
-    Arch, Scoop, and openSUSE-style packaging list Sequoia-specific names. Practitioners
-    install it directly with a package manager, Cargo, or an OCI image, then use it for
-    key and certificate management, signing, verification, encryption, decryption, and
-    network certificate discovery.
+  adoption-history:
+    - >
+      Sequoia's official documentation states that sq is packaged for most Linux
+      distributions. The input also records packages for Homebrew, Alpine, Debian,
+      Fedora, MacPorts, Nix, Arch, Scoop, Ubuntu, and openSUSE, reflecting unusually
+      broad cross-platform packaging for a newer OpenPGP client.
+  package-nerd-significance:
+    - >
+      sq offers a modern, subcommand-oriented OpenPGP interface with safe defaults,
+      extensive help, certificate and secret-key stores, and interoperability with
+      existing GnuPG installations. Package enthusiasts care about it both as a
+      practical cryptographic CLI and as the principal user-facing application in the
+      Rust-based Sequoia ecosystem.
+  project-history:
+    - >
+      Sequoia PGP began as a modular implementation of OpenPGP, separating a low-level
+      OpenPGP library from higher-level interfaces. sq became its primary
+      general-purpose command-line frontend.
+    - >
+      The standalone sequoia-sq GitLab project was created in February 2023 and packages
+      both the sq command-line tool and a high-level sequoia library.
+  related-projects:
+    - >
+      Related official Sequoia tools include sqv for detached-signature verification and
+      Sequoia Chameleon, which supplies gpg-sq and gpgv-sq compatibility frontends. sq
+      can also discover certificates in GnuPG keyrings and use secret keys managed by
+      gpg-agent.
+  sources:
+    - 'Official Sequoia repository: https://gitlab.com/sequoia-pgp/sequoia/'
+    - 'Official configuration guide: https://book.sequoia-pgp.org/configuration.html'
+    - >
+      Official projects catalog:
+      https://gitlab.com/sequoia-pgp/sequoia-web/-/blob/main/content/projects.md
+    - 'Official sq repository: https://gitlab.com/sequoia-pgp/sequoia-sq'
+  summary:
+    - >
+      sq is Sequoia PGP's primary command-line interface for encryption, decryption,
+      signatures, OpenPGP key and certificate management, and network-based certificate
+      discovery.
+  timeline:
+    - '2017: The broader Sequoia PGP repository was established.'
+    - "2020: Sequoia's core OpenPGP library reached its 1.0 release."
+    - '2023: The standalone sequoia-sq GitLab project was created.'
+  usage:
+    - >
+      sq uses a git-style subcommand interface for encrypting and decrypting data,
+      creating and verifying signatures, managing keys and certificates, and interacting
+      with key servers and Web Key Directory services. Its config subcommand can inspect
+      active paths and settings or generate a configuration template.
 category: security
 package-manager:
   apk: sequoia-sq

@@ -6,38 +6,65 @@ docs:
 config-file-location:
   unix:
     - /etc/ser2net/ser2net.yaml
-credentials-file-location: null
+credentials-file-location:
+  unix:
+    - /etc/ser2net/ser2net.crt
+    - /etc/ser2net/ser2net.key
 history:
-  - >
-    ser2net is Corey Minyard's serial-to-network proxy: a daemon for exposing serial
-    devices, and later other gensio connectors, over network-facing acceptors. The
-    original SourceForge page is blunt about the origin story: the author tried
-    available serial-networking options, found them lacking, and wrote a tool with
-    serial setup, a configuration file, control login, port monitoring, and port
-    control.
-  - >
-    Its ecosystem role is practical operations plumbing. Embedded developers, hardware
-    labs, network administrators, ham-radio and marine users, and test rigs use ser2net
-    to put `/dev/tty*` devices, USB serial adapters, console ports, UPS serial links,
-    GPS/AIS data streams, or IPMI Serial-over-LAN paths behind TCP, telnet, or RFC
-    2217-style access. That turns a physically local serial connection into something
-    scripts, terminal clients, automation systems, or remote operators can reach over
-    IP.
-  - >
-    The project evolved from a classic serial-port proxy into a gensio-based service.
-    The upstream README describes ser2net as connecting gensio acceptors to gensio
-    connectors, usually network connections to serial ports or IPMI SOL, and documents
-    libyaml plus gensio as build dependencies. Debian's `ser2net.yaml(5)` manual records
-    the configuration shift to YAML and the broader model of connecting acceptors to
-    connectors, while still preserving the historical serial-port use case.
-  - >
-    Packaging reflects its daemon nature. Homebrew installs `ser2net` and points users
-    to an example configuration under `$HOMEBREW_PREFIX/etc/ser2net/ser2net.yaml`;
-    FreeBSD added the port in September 2006, with an rc service script and RFC 2217
-    note; Linux distributions package the daemon and man pages under the same name.
-    Practitioners usually care less about its library API than about a durable service
-    unit and a readable config that survives across embedded boards, routers, servers,
-    and lab machines.
+  adoption-history:
+    - >
+      ser2net has long been packaged by major Linux and Unix-like distributions. The
+      input records availability through Homebrew, Alpine, Debian, Fedora, Nix, Arch,
+      Ubuntu, and openSUSE, consistent with its role as infrastructure for embedded
+      systems, laboratory equipment, and remote administration.
+  package-nerd-significance:
+    - >
+      ser2net is a classic Unix adapter: it exposes serial hardware to socket-oriented
+      clients without forcing applications to understand local device APIs. Support for
+      RFC 2217, encryption, authentication, mDNS, IPMI SOL, and the flexible gensio
+      transport stack has allowed a small daemon to remain useful across generations of
+      serial and network deployments.
+  project-history:
+    - >
+      ser2net originated as a daemon for making local serial ports accessible over
+      networks and has accumulated a long maintenance history under Corey Minyard. Its
+      repository contains more than a thousand commits and records releases dating back
+      at least to the 2.x series in the 2000s.
+    - >
+      Modern ser2net is built on the gensio library. This expanded the original
+      serial-to-TCP model into a general accepter-to-connector bridge with optional
+      encryption, authentication, mDNS, IPMI Serial over LAN, and multiple transport
+      protocols. Configuration evolved from the historical ser2net.conf format to the
+      documented YAML configuration used by current releases.
+  related-projects:
+    - >
+      gensio supplies ser2net's transport, encryption, authentication, and client
+      tooling. OpenIPMI supports IPMI Serial over LAN connections, while gensiot and
+      gtlssh are official companion clients for plain, RFC 2217, and protected
+      connections.
+  sources:
+    - 'Official changelog: https://github.com/cminyard/ser2net/blob/master/ChangeLog'
+    - >
+      Official example configuration:
+      https://github.com/cminyard/ser2net/blob/master/ser2net.yaml
+    - 'Official repository and README: https://github.com/cminyard/ser2net'
+  summary:
+    - >
+      ser2net is a long-running daemon that bridges network connections to serial ports
+      and other gensio connectors, including IPMI Serial over LAN.
+  timeline:
+    - '2000s: ser2net was established as a packaged serial-to-network daemon.'
+    - '2009: The changelog records the 2.7 release series and expanded tracing support.'
+    - >
+      Modern era: ser2net adopted gensio and YAML configuration, gaining broader
+      transports, encryption, authentication, and service discovery.
+  usage:
+    - >
+      Administrators define connections from TCP, telnet, RFC 2217, or protected gensio
+      listeners to serial devices such as /dev/ttyUSB0. Clients can then access remote
+      serial consoles through ordinary sockets or gensio-aware tools, with optional
+      remote serial-parameter control, encryption, authentication, and mDNS
+      advertisement.
 tags:
   - cli
   - networking
@@ -69,11 +96,11 @@ provenance:
       Official GitHub README documents building, usage, configuration, and connection
       examples.
   history-sources:
-    - https://ser2net.sourceforge.net/
-    - https://github.com/cminyard/ser2net
-    - https://manpages.debian.org/trixie/ser2net/ser2net.yaml.5.en.html
-    - https://www.freshports.org/comms/ser2net/
-    - https://formulae.brew.sh/formula/ser2net
+    - 'Official changelog: https://github.com/cminyard/ser2net/blob/master/ChangeLog'
+    - >
+      Official example configuration:
+      https://github.com/cminyard/ser2net/blob/master/ser2net.yaml
+    - 'Official repository and README: https://github.com/cminyard/ser2net'
   repo-sources:
     - >
       Official GitHub repository cminyard/ser2net is linked from the upstream README and
@@ -87,6 +114,6 @@ category-path:
   - serial
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
