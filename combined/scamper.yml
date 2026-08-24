@@ -8,32 +8,61 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    scamper is CAIDA's open-source active Internet measurement prober, developed by
-    Matthew Luckie as a successor in spirit to CAIDA's skitter infrastructure. Its
-    design, described in the 2010 IMC paper "Scamper: a Scalable and Extensible Packet
-    Prober for Active Measurement of the Internet", separates the packet-probing engine
-    from the coordination layer so researchers can drive large measurement campaigns
-    without reimplementing probe scheduling, rate control, and packet-matching
-    machinery.
-  - >
-    The package sits in the network-measurement ecosystem rather than the ordinary
-    diagnostic-tool niche. CAIDA documents scamper as the prober used in the Macroscopic
-    Topology Project, with support for IPv4 and IPv6 probing, classic and Paris-style
-    traceroute, MDA traceroute, ping, alias-resolution methods such as Ally and
-    MIDAR-related primitives, DNS, UDP, HTTP, parts of TBIT, and OWAMP. Its native warts
-    format preserves detailed per-measurement metadata and responses, which made it
-    useful for archival datasets and later conversion to CSV, JSON, pcap, or text
-    through the companion sc_warts tools.
-  - >
-    Practitioners use scamper both interactively and as a controlled measurement daemon.
-    The manual describes command-line address lists, input files, complete command
-    streams, local control sockets, and remote controllers, all feeding parallel probes
-    toward a configured packets-per-second rate. Because many modules need raw network
-    access, deployments often use root ownership or setuid with scamper's
-    privilege-separated process model. Package-manager availability through Homebrew and
-    distribution development packages makes the same toolchain usable on laptops, lab
-    collectors, and measurement hosts.
+  adoption-history:
+    - >
+      The first documented use was a 2004 comparison of IPv4 and IPv6 paths. By 2008,
+      volunteers in 53 cities used scamper to collect data for CAIDA's IPv6 AS-core
+      visualization.
+    - >
+      scamper became the prober deployed in CAIDA's Macroscopic Topology Project and has
+      been distributed through BSD ports, Debian and Ubuntu, Homebrew, MacPorts, NetBSD
+      pkgsrc, openSUSE, and an Ubuntu PPA.
+  package-nerd-significance:
+    - >
+      scamper is more than an enhanced traceroute: it is a reusable active-measurement
+      engine with a stable native warts format, numerous companion analysis tools,
+      control APIs, and bindings. This makes it valuable both as a Unix diagnostic
+      package and as research infrastructure.
+  project-history:
+    - >
+      Matthew Luckie developed scamper as a scalable and extensible active
+      Internet-measurement system. Initial development received WIDE Project funding in
+      association with CAIDA for the twelve months ending April 2005.
+    - >
+      Its architecture was designed to interleave parallel measurements while limiting
+      intrusive probing. Over time it accumulated IPv4 and IPv6 ping and traceroute
+      methods, alias-resolution techniques, MDA traceroute, DNS, HTTP, UDP, OWAMP, and
+      TCP-behavior tests.
+    - >
+      The architecture and early operational experience were documented in a paper
+      presented at the 2010 Internet Measurement Conference. Development and snapshot
+      releases have continued under CAIDA.
+  related-projects:
+    - skitter, identified by CAIDA as scamper's predecessor.
+    - CAIDA's Macroscopic Topology Project and Archipelago measurement infrastructure.
+    - MIDAR, for which scamper supplies measurement primitives.
+  sources:
+    - https://www.caida.org/catalog/software/scamper/
+    - https://www.caida.org/catalog/software/scamper/architect/
+    - https://www.caida.org/catalog/software/scamper/scamper.pdf
+  summary:
+    - >
+      scamper is a portable active network-measurement utility and framework developed
+      by Matthew Luckie. It performs parallel IPv4 and IPv6 probing and supports
+      experiments ranging from ordinary ping and traceroute to topology,
+      alias-resolution, DNS, HTTP, and transport-protocol measurements.
+  timeline:
+    - '2004: First documented use compared forward paths for IPv4 and IPv6 destinations.'
+    - '2005: Initial WIDE Project and CAIDA funding period concluded.'
+    - '2008: Volunteers in 53 cities collected IPv6 topology data with scamper.'
+    - '2010: The scamper architecture paper appeared at the Internet Measurement Conference.'
+    - '2026: CAIDA continued publishing current source snapshots.'
+  usage:
+    - >
+      Operators can supply measurement tasks from command lines, files, or a control
+      socket and collect results in scamper's metadata-rich warts format. Researchers
+      commonly automate a running process through driver programs, the Python module, or
+      the libscamperctrl and libscamperfile C APIs.
 category: networking
 package-manager:
   brew: scamper
