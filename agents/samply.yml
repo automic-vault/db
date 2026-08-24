@@ -7,27 +7,51 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    samply was created by Markus Stange in 2020 as a Rust command-line sampling profiler
-    built around the Firefox Profiler web UI. Instead of building a new performance
-    interface, it records native execution data and opens profiler.firefox.com, giving
-    command-line users flame graphs, timelines, call trees, source views, symbolication,
-    and shareable profiles through an interface already used by Firefox performance
-    tooling.
-  - >
-    The normal workflow is intentionally short: prefix a command with `samply record`,
-    let the process run, then inspect the captured profile in the browser. Under the
-    hood, the tool uses platform facilities such as Linux perf events and
-    platform-specific sampling on macOS and Windows; it can also start a local server
-    for symbol information and source code so the Firefox Profiler can resolve stack
-    frames and show source-linked profiles.
-  - >
-    samply's packaging reflects Rust and developer-tool distribution habits: prebuilt
-    installer scripts and GitHub releases, `cargo install --locked samply`, source
-    builds, and downstream packages in Homebrew, Nix, Arch, and openSUSE. Its ecosystem
-    role is a bridge between low-level native profiling and the browser-based Firefox
-    Profiler, especially for Rust, C, C++, and other compiled programs where debug
-    information and symbol servers make the captured stacks readable.
+  adoption-history:
+    - >
+      samply is distributed through Homebrew, crates.io, Nix, Arch Linux, and openSUSE
+      packaging, alongside project-provided binaries. Its platform reach expanded from
+      macOS and Linux to Windows in version 0.13.1.
+  package-nerd-significance:
+    - >
+      samply gives native-code developers a low-friction route from a terminal command
+      to Firefox Profiler's flame graphs, call trees, timelines, source views, and
+      symbolication. It is notable for reusing a sophisticated browser-based profiler UI
+      while keeping captured data local unless the user explicitly uploads it.
+  project-history:
+    - >
+      Markus Stange developed samply as a command-line sampling profiler whose output is
+      consumed by the Firefox Profiler interface. It records a target process, serves
+      local source and symbol information, and opens the resulting profile in a browser.
+    - >
+      The codebase grew to include dedicated crates for profile conversion, object and
+      symbol handling, stack unwinding, and platform-specific collection. Version 0.13.1
+      added Windows recording through ETW/xperf.
+  related-projects:
+    - Firefox Profiler
+    - Linux perf events
+    - Windows ETW and xperf
+    - framehop
+    - samply-symbols and wholesym
+  sources:
+    - 'Official API documentation: https://github.com/mstange/samply/blob/main/API.md'
+    - 'Official README: https://github.com/mstange/samply#readme'
+    - 'Official releases: https://github.com/mstange/samply/releases'
+  summary:
+    - >
+      samply is a cross-platform command-line CPU sampling profiler that records native
+      workloads and displays their profiles in Firefox Profiler.
+  timeline:
+    - '2024: Version 0.12.0 was released'
+    - '2025: Version 0.13.1 added Windows support through ETW'
+  usage:
+    - >
+      The normal workflow is to prepend `samply record` to an application command. After
+      the process finishes, samply opens Firefox Profiler and runs a local server for
+      symbols and source files.
+    - >
+      On Linux it records through perf events; on Windows it uses ETW/xperf. Profiles
+      remain local until the user chooses to upload them.
 tags:
   - cli
   - cpu-profiling
@@ -56,12 +80,9 @@ provenance:
       Official GitHub README documents installation, recording, platform notes,
       examples, and profiling behavior; repository includes official API.md.
   history-sources:
-    - https://github.com/mstange/samply
-    - https://raw.githubusercontent.com/mstange/samply/main/README.md
-    - https://raw.githubusercontent.com/mstange/samply/main/API.md
-    - https://mostlynerdless.de/blog/2023/02/02/using-firefox-profiler-beyond-the-web/
-    - https://formulae.brew.sh/formula/samply
-    - https://api.github.com/repos/mstange/samply
+    - 'Official API documentation: https://github.com/mstange/samply/blob/main/API.md'
+    - 'Official README: https://github.com/mstange/samply#readme'
+    - 'Official releases: https://github.com/mstange/samply/releases'
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/mstange/samply; per

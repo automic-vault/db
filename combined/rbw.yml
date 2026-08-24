@@ -4,30 +4,57 @@ homepage: https://git.tozt.net/rbw
 repo: https://github.com/doy/rbw
 docs:
   - https://github.com/doy/rbw#readme
-config-file-location: null
+config-file-location:
+  unix: $XDG_CONFIG_HOME/rbw/config.json
 credentials-file-location: null
 history:
-  - >
-    rbw is an unofficial Bitwarden command-line client written in Rust. Its changelog
-    records an initial release on April 20, 2020, and the project README frames its
-    reason for existing as a usability response to the official Bitwarden CLI's
-    stateless model, where users have to lock, unlock, and pass temporary keys through
-    environment variables.
-  - >
-    The core design borrows from `ssh-agent` and `gpg-agent`: `rbw-agent` keeps
-    decrypted keys in memory so commands can operate without repeatedly passing session
-    keys around the shell. Early releases in May 2020 added multi-server support,
-    organization secret decryption, protocol versioning for the agent, and
-    authenticator-based two-step login, turning the initial client into a practical
-    daily-use password-manager interface.
-  - >
-    rbw's ecosystem role is strongest among terminal-centric Bitwarden users, Linux
-    desktop users, and dotfile automation users who want Bitwarden entries available
-    from scripts without adopting the official Node-based CLI workflow. It is packaged
-    for Homebrew, Arch Linux, Debian/Ubuntu as `rust-rbw`, Fedora/EPEL, Nix, Alpine, and
-    Cargo; common uses include `rbw get` for passwords and fields, `rbw code` for TOTP
-    values, profile switching through `RBW_PROFILE`, and SSH challenge signing through
-    the built-in SSH agent socket.
+  adoption-history:
+    - >
+      The project is distributed through Homebrew, Arch Linux, Debian, Fedora/EPEL,
+      NixOS, Alpine, and Cargo, giving it unusually broad package-manager coverage for
+      an unofficial password-manager client.
+  package-nerd-significance:
+    - >
+      rbw applies the ssh-agent/gpg-agent model to a Bitwarden vault: a background
+      process retains unlocked key material in memory while small CLI commands retrieve
+      or modify records. Its cross-distribution packaging and composability with
+      launchers and shell scripts make it especially interesting to command-line
+      workflow enthusiasts.
+  project-history:
+    - >
+      rbw emerged as an unofficial alternative to Bitwarden's stateless CLI. Its design
+      centers on rbw-agent, which maintains login and unlock state so users do not need
+      to pass temporary keys through environment variables.
+    - >
+      The maintainer now describes the project as essentially feature-complete while
+      continuing to use it daily and fix regressions.
+  related-projects:
+    - Bitwarden and its official CLI
+    - rofi-rbw
+    - rbw-menu
+    - bw-ssh
+    - ulauncher-rbw
+    - fuzzel-rbw
+  sources:
+    - 'Official README and maintenance statement: https://github.com/doy/rbw#readme'
+    - 'Official releases: https://github.com/doy/rbw/releases'
+  summary:
+    - >
+      rbw is an unofficial Rust command-line client for Bitwarden. It couples ordinary
+      vault commands with a resident agent that keeps cryptographic state in memory.
+  timeline:
+    - '2020: rbw 0.3.5 was in public use, as recorded in the official issue tracker'
+    - '2025: The 1.14 series expanded the maintained release line'
+    - '2025: Version 1.15.0 was released'
+  usage:
+    - >
+      Users configure an account with `rbw config`, then use commands such as `rbw
+      login`, `rbw unlock`, `rbw sync`, `rbw ls`, and `rbw get`. Commands automatically
+      perform prerequisite login or unlock operations when needed.
+    - >
+      Named profiles selected through `RBW_PROFILE` separate work, personal, or other
+      vaults. rbw-agent can also expose Bitwarden-held SSH keys through an SSH-agent
+      socket.
 category: security
 package-manager:
   apk: rbw

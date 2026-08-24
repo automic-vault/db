@@ -11,33 +11,52 @@ config-file-location:
     - ~/.config/safe-rm
 credentials-file-location: null
 history:
-  - >
-    safe-rm began as François Marier's answer to an accidental deletion of important
-    system files: a wrapper around `rm` that refuses to delete configured critical
-    paths. In a June 2008 project write-up, Marier explained that patching `rm` itself
-    would be controversial, so the smaller route was a wrapper that checks each target
-    against a blacklist before delegating to the real remover.
-  - >
-    The Launchpad project was registered on February 16, 2011 and describes the same
-    model: replace or shadow `/bin/rm` with a wrapper that checks arguments against site
-    and user exclusion lists, warning instead of deleting protected paths such as
-    `/usr`. The Ubuntu man page documents `safe-rm` as accepting the same arguments as
-    `rm`, with protected paths configured in `/etc/safe-rm.conf` and
-    `~/.config/safe-rm`, and a default list used when those files are empty.
-  - >
-    safe-rm's adoption is pragmatic rather than glamorous. It appears in Debian and
-    Ubuntu packaging, Homebrew, Nix, and related Unix package collections because it
-    solves a sharp-edged operator mistake with one executable and a text configuration
-    file. Practitioners usually place a symlink or shell alias named `rm` earlier in
-    PATH for interactive protection, while understanding that it is accident prevention,
-    not access control: explicit calls to the real `rm`, permissions, and administrative
-    discipline remain outside its threat model.
-  - >
-    The implementation also evolved with its packaging context. Launchpad records a
-    1.0.0 release on November 27, 2020 as a complete Rust rewrite and a 1.1.0 release on
-    January 6, 2021, while Homebrew builds version 1.1.0 with Cargo from the Launchpad
-    tarball. That makes the Homebrew package a modern Rust build of an older Unix safety
-    wrapper idea.
+  adoption-history:
+    - >
+      safe-rm entered Debian and Ubuntu archives early enough for Ubuntu Precise to
+      carry version 0.8 in 2010. It later became available through Homebrew and Nix as
+      well as current Debian-family distributions.
+  package-nerd-significance:
+    - >
+      safe-rm represents a classic Unix package pattern: preserve the familiar `rm`
+      interface while adding a locally maintained denylist for irreplaceable paths. Its
+      long distribution history, XDG migration, macOS-specific system configuration
+      support, and eventual language rewrite make it a compact case study in maintaining
+      a safety wrapper across Unix variants.
+  project-history:
+    - >
+      safe-rm was created and maintained by François Marier as a wrapper that refuses to
+      remove configured protected files and directories.
+    - >
+      Version 0.11 moved the per-user configuration toward the XDG Base Directory
+      convention. Version 0.13 added `/usr/local/etc/safe-rm.conf` for macOS Catalina,
+      and version 1.0.0 was a complete rewrite in Rust.
+  related-projects:
+    - GNU coreutils rm
+    - trash-cli and desktop trash implementations
+  sources:
+    - 'Official Launchpad overview: https://launchpad.net/safe-rm'
+    - 'Official announcements: https://launchpad.net/safe-rm/+announcements'
+    - 'Official code page: https://code.launchpad.net/safe-rm'
+  summary:
+    - >
+      safe-rm wraps the standard removal command and blocks deletion of paths listed in
+      system or user configuration files.
+  timeline:
+    - '2010: Version 0.8 was published in Ubuntu Precise'
+    - '2014: Version 0.11 adopted an XDG user-configuration location'
+    - '2020: Version 0.13 added `/usr/local/etc/safe-rm.conf` support for macOS'
+    - '2020: Version 1.0.0 completed the Rust rewrite'
+    - '2021: Version 1.1.0 added explicit protection for individual symbolic links'
+  usage:
+    - >
+      Administrators place protected paths in a system configuration file, while
+      individual users can add personal protections under the XDG configuration
+      directory. `safe-rm` then intercepts removal requests and refuses targets matching
+      those rules.
+    - >
+      It is intended as a guard against accidental destructive commands, not as a trash
+      or recovery system.
 category: system
 package-manager:
   brew: safe-rm

@@ -13,27 +13,59 @@ credentials-file-location:
     - ~/.aws/config
     - ~/.aws/saml2aws/*
 history:
-  - >
-    saml2aws was created by Versent in 2016 as a Go command-line bridge between
-    enterprise SAML identity providers and AWS command-line credentials. Its README
-    traces the design to AWS's federated API/CLI access pattern: authenticate against an
-    IdP, collect a SAML assertion containing AWS roles, exchange it with AWS STS, and
-    write the resulting temporary credentials into an AWS profile.
-  - >
-    The tool filled a specific operations gap for teams using ADFS, PingFederate, Okta,
-    Azure AD, Google Apps, Shibboleth, Keycloak, OneLogin, Auth0, JumpCloud,
-    browser-based IdP flows, and similar systems before every cloud workflow had a
-    first-party SSO-friendly CLI path. Practitioners use `saml2aws configure` to define
-    one or more IdP accounts, `saml2aws login` to refresh short-lived credentials, and
-    `saml2aws exec` or AWS CLI profiles to run commands under the selected role.
-  - >
-    Its packaging history reflects a cross-platform enterprise-CLI audience: the project
-    ships GitHub release archives and documents Homebrew, Chocolatey, Linux tarball,
-    AUR, and Void Linux installation paths, while package indexes add MacPorts, Nix,
-    Scoop, and WinGet. Its ecosystem role is mostly glue: it does not replace AWS STS or
-    the AWS CLI, but wraps `AssumeRoleWithSAML`, MFA prompting, role selection,
-    credential caching, and the AWS CLI `credential_process` integration in a single
-    executable.
+  adoption-history:
+    - >
+      saml2aws is packaged across Homebrew, MacPorts, Nix, Chocolatey, Scoop, and
+      winget, reflecting use on both Unix-like developer machines and Windows corporate
+      workstations.
+    - >
+      Its continued 2.x release series and wide provider support established it as a
+      common bridge for organizations whose AWS console access predates or sits outside
+      newer AWS-native SSO tooling.
+  package-nerd-significance:
+    - >
+      saml2aws turns an interactive enterprise SAML login into short-lived,
+      profile-compatible AWS credentials. Package enthusiasts value it as glue between
+      identity-provider workflows, the conventional AWS shared-credentials format,
+      shells, SDKs, and automation tools.
+  project-history:
+    - >
+      The project was developed by Versent to authenticate against a SAML identity
+      provider, select an AWS role, request temporary STS credentials, and store or emit
+      those credentials in forms understood by AWS tooling.
+    - >
+      A 2017 version-2 refactor introduced the current `~/.saml2aws` account-oriented
+      configuration model and reorganized provider implementations to support richer MFA
+      and provider-specific settings.
+  related-projects:
+    - AWS CLI
+    - AWS Security Token Service
+    - AWS shared credentials and config files
+    - AWS credential_process
+  sources:
+    - 'Official 2.0 design issue: https://github.com/Versent/saml2aws/issues/69'
+    - 'Official README: https://github.com/Versent/saml2aws#readme'
+    - >
+      Official provider documentation:
+      https://github.com/Versent/saml2aws/tree/master/doc/provider
+    - 'Official releases: https://github.com/Versent/saml2aws/releases'
+  summary:
+    - >
+      saml2aws is a cross-platform CLI that signs in through a SAML identity provider
+      and obtains temporary AWS credentials for a selected role.
+  timeline:
+    - '2017: The version-2 configuration and provider refactor was planned around `~/.saml2aws`'
+    - '2022: Version 2.35.0 was distributed through Homebrew during the mature 2.x line'
+    - '2025: Version 2.36.19 shipped cross-platform binaries'
+  usage:
+    - >
+      Users define one or more IdP accounts with `saml2aws configure`, then run
+      `saml2aws login` to authenticate, choose a role, and write temporary credentials
+      to an AWS profile.
+    - >
+      The CLI can instead emit shell variables, run a child command with credentials, or
+      act as an AWS `credential_process`. It supports multiple SAML providers, MFA
+      methods, configurable credential files, and optional SAML assertion caching.
 category: security
 package-manager:
   brew: saml2aws
