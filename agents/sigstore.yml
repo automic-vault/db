@@ -6,26 +6,52 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    The Homebrew `sigstore` package is sigstore-python, the Python client and CLI for
-    the broader Sigstore supply-chain security ecosystem. Sigstore itself is an OpenSSF
-    project built around identity-bound signing and transparency: Cosign signs
-    artifacts, Fulcio issues signing certificates, Rekor records entries in a
-    transparency log, and related tools such as Gitsign bring the model to commits.
-  - >
-    sigstore-python made that model natural for Python packaging. Its README describes a
-    standalone `sigstore` program and Python API for generating and verifying Sigstore
-    signatures, especially for Python package distributions but also for arbitrary
-    files. In package-maintainer workflows, the tool sits at the point where a built
-    distribution can be bound to an OIDC identity and verified without a maintainer
-    managing a long-lived signing key.
-  - >
-    The Python packaging ecosystem adopted the same ideas through PEP 740 attestations
-    on PyPI. PyPI's November 2024 announcement describes signed digital attestations,
-    Trusted Publishing, source repository and workflow linkage, transparency-log
-    publication, and an Integrity API for consumers and installers. In practice,
-    `sigstore` is used by maintainers, CI systems, release automation, and verifiers
-    that want provenance and tamper evidence alongside ordinary package files.
+  adoption-history:
+    - >
+      The project provides an official GitHub Action and supports ambient identities
+      from CI and cloud environments, making it suitable for automated release pipelines
+      as well as local signing. It is particularly relevant to Python packaging because
+      the documentation explicitly covers signing Python distributions.
+  package-nerd-significance:
+    - >
+      sigstore-python gives Python users and package maintainers a native implementation
+      of Sigstore's keyless signing model. It replaces long-lived signing keys with
+      short-lived identity-bound certificates and records signing events in a public
+      transparency service.
+  project-history:
+    - >
+      sigstore-python was created as the Python client for the broader Sigstore
+      software-signing ecosystem. It combines a command-line program with an importable
+      API for keyless signing and verification using OpenID Connect identities, Fulcio
+      certificates, and Rekor transparency records.
+  related-projects:
+    - >
+      Related official Sigstore projects include Fulcio, Rekor, Cosign, sigstore-go, and
+      the Sigstore client specifications.
+  sources:
+    - https://github.com/sigstore/sigstore-python/blob/main/CHANGELOG.md
+    - https://sigstore.github.io/sigstore-python/
+    - https://sigstore.github.io/sigstore-python/installation/
+    - https://sigstore.github.io/sigstore-python/signing/
+  summary:
+    - >
+      sigstore-python is a Python command-line tool and library for generating and
+      verifying Sigstore signatures, including signatures for Python package
+      distributions.
+  timeline:
+    - >
+      2022: Early public sigstore-python releases established Python-native keyless
+      signing and verification.
+    - >
+      2023: The project expanded its documented CI integration and official GitHub
+      Action workflow.
+    - '2025: The 4.x series introduced substantial client and trust-configuration API changes.'
+  usage:
+    - >
+      Users run sigstore sign to create a signature bundle for an artifact and sigstore
+      verify commands to validate bundles against expected identities. Signing can use
+      ambient CI credentials, an interactive OAuth flow, or an explicitly supplied
+      identity token.
 tags:
   - cli
   - codesigning
@@ -51,11 +77,10 @@ provenance:
   docs-sources:
     - source_facts.homepage is the official GitHub repository and README documentation surface
   history-sources:
-    - https://openssf.org/community/sigstore/
-    - https://github.com/sigstore/sigstore-python
-    - https://blog.pypi.org/posts/2024-11-14-pypi-now-supports-digital-attestations/
-    - https://blog.sigstore.dev/pypi-attestations-ga/
-    - https://formulae.brew.sh/formula/sigstore
+    - https://github.com/sigstore/sigstore-python/blob/main/CHANGELOG.md
+    - https://sigstore.github.io/sigstore-python/
+    - https://sigstore.github.io/sigstore-python/installation/
+    - https://sigstore.github.io/sigstore-python/signing/
   repo-sources:
     - source_facts.homepage is the official source-control project URL
   tags-sources:
@@ -69,6 +94,6 @@ category-path:
   - software-supply-chain
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
