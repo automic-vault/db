@@ -7,28 +7,53 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    sha1dc packages Marc Stevens and Dan Shumow's SHA-1 collision-detection work as a
-    library and command-line tool. The upstream project was published in 2017 under the
-    MIT license and is designed as a near drop-in replacement for ordinary SHA-1
-    libraries and `sha1sum`: it computes the SHA-1 digest while also detecting
-    cryptanalytic SHA-1 collision attacks in the input file.
-  - >
-    The security context is the 2017 SHAttered result, where CWI Amsterdam and Google
-    demonstrated the first public full SHA-1 collision. The SHAttered site emphasized
-    that Git and Subversion-style content-addressed systems were part of the risk
-    surface, and pointed users to Stevens and Shumow's public detector, based on
-    counter-cryptanalysis, for identifying known and unknown cryptanalytic collision
-    attacks from a single member of a colliding pair.
-  - >
-    The package's practical role is defensive compatibility. Rather than pretending
-    SHA-1 is safe, sha1dc gives legacy SHA-1 workflows a collision alarm and a "safe
-    hash" behavior for detected attacks. The upstream README says `sha1dcsum` detects
-    attacks such as SHAttered and later derived attacks, while USENIX Security 2017
-    reports that the improved detection approach was deployed by Git, GitHub, Google
-    Drive, Gmail, Microsoft OneDrive, and others. Homebrew exposes the CLI programs as
-    `sha1dcsum` and `sha1dcsum_partialcoll` for scanning files and regression-testing
-    systems that still need SHA-1 interoperability.
+  adoption-history:
+    - >
+      The project was designed as a near drop-in replacement for common SHA-1
+      implementations and sha1sum, lowering the cost of adding collision detection to
+      existing software. The input confirms packaging as the Homebrew formula sha1dc.
+  package-nerd-significance:
+    - >
+      sha1dc lets package and release engineers continue verifying legacy SHA-1 material
+      while detecting known cryptanalytic collision constructions. It is particularly
+      relevant to archives and software-distribution systems that cannot immediately
+      remove every SHA-1 dependency.
+  project-history:
+    - >
+      Marc Stevens and Dan Shumow published the implementation in 2017 in the context of
+      practical SHA-1 collision attacks. Its detection method builds on Stevens's
+      counter-cryptanalysis research and explicitly recognizes files produced by attacks
+      such as SHAttered; later support also references SHA-mbles.
+  related-projects:
+    - >
+      The official README relates the tool to ordinary SHA-1 libraries and sha1sum, the
+      SHAttered collision demonstration, SHA-mbles, and Marc Stevens's
+      counter-cryptanalysis research.
+  sources:
+    - >
+      Official library header:
+      https://github.com/cr-marcstevens/sha1collisiondetection/blob/master/lib/sha1.h
+    - 'Official repository and README: https://github.com/cr-marcstevens/sha1collisiondetection'
+    - input.source_facts.package-manager
+  summary:
+    - >
+      SHA-1 Collision Detection is an MIT-licensed C library and command-line tool by
+      Marc Stevens and Dan Shumow. It computes SHA-1 digests while detecting files
+      produced with known cryptanalytic SHA-1 collision techniques.
+  timeline:
+    - '2013: Marc Stevens published the counter-cryptanalysis research cited by the project.'
+    - >
+      2017: Project copyright begins and the SHAttered collision became a principal
+      real-world test case.
+    - >
+      Later: The official documentation added reference to detection of attacks derived
+      from SHA-mbles.
+  usage:
+    - >
+      sha1dcsum hashes files and warns when a full SHA-1 collision attack is detected;
+      sha1dcsum_partialcoll also checks reduced-round collision examples. Developers can
+      integrate the library through its SHA1DC API and use safe-hash mode so colliding
+      inputs receive different defensive hashes.
 category: security
 package-manager:
   brew: sha1dc

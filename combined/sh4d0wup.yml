@@ -7,26 +7,53 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    sh4d0wup is kpcyrd's Rust framework for demonstrating "shadow update" attacks:
-    targeted updates that carry valid signatures but are served only to selected
-    clients. The README describes it as a malicious HTTP/HTTPS update server that
-    reverse-proxies a legitimate upstream, patches or generates artifacts, signs them
-    with configured keys, and routes attacks through YAML `plots` with selectors such as
-    user-agent or source IP.
-  - >
-    The package sits in the supply-chain-security and package-manager-testing niche
-    rather than in routine administration. Its examples cover artifact formats and
-    ecosystems such as Arch Linux packages, Debian packages, rustup, curl-pipe-shell
-    flows, ELF files, pacman packages, debs, and OCI images. That makes it useful for
-    lab work around compromised signing keys, release-engineer threat models,
-    mirror/proxy trust, and whether clients can distinguish universal updates from
-    targeted ones.
-  - >
-    Packaging mirrors that specialist audience. The README points to an Arch Linux
-    binary package and source builds through Cargo; Homebrew packages it as `sh4d0wup`
-    with OpenSSL, compression, smart-card, LLVM, and Rust build dependencies, and the
-    av.db source metadata also tracks Nix and pacman availability.
+  adoption-history:
+    - >
+      The input records packages for Homebrew, Nix, and pacman, while the official
+      README notes an Arch Linux binary and an official container image. This reflects
+      adoption mainly among security researchers and distribution or update-system
+      testers rather than general application users.
+  package-nerd-significance:
+    - >
+      sh4d0wup is notable to package specialists because it turns package metadata,
+      artifact formats, signing infrastructure, dependency resolution, and targeted
+      update routing into an explicit security-testing surface. It demonstrates how
+      valid signatures alone do not guarantee that every client received the same
+      update.
+  project-history:
+    - >
+      kpcyrd developed sh4d0wup as a Rust framework for researching 'shadow updates':
+      targeted, malicious updates that remain acceptable to clients because they carry
+      valid signatures. The official repository documents continued development across
+      multiple releases and support for several package and artifact formats.
+  related-projects:
+    - >
+      The framework operates on ecosystems and formats including pacman packages, Debian
+      packages, OCI images, Rust distribution updates, ELF binaries, and Git commits.
+      The maintainer's related supply-chain work includes rebuilderd and
+      reproducible-build experiments.
+  sources:
+    - 'Official repository and README: https://github.com/kpcyrd/sh4d0wup'
+    - 'Official repository release list: https://github.com/kpcyrd/sh4d0wup/releases'
+    - input.source_facts.package-manager
+  summary:
+    - >
+      sh4d0wup is kpcyrd's Rust-based signing-key abuse and update-exploitation
+      framework. It can proxy a legitimate update service, selectively alter artifacts,
+      and sign or route malicious updates for controlled supply-chain security research.
+  timeline:
+    - >
+      2022: Examples in the official README demonstrate infection of pacman, Debian,
+      ELF, and OCI artifacts.
+    - '2025: Official repository lists version 0.11.0 released on April 2.'
+  usage:
+    - >
+      Security practitioners define attacks in YAML 'plot' files describing routing,
+      selectors, artifact transformations, signatures, and keys. They can build plots in
+      advance, launch a bait update server, proxy legitimate traffic, mutate packages or
+      images, generate or use signing keys, and test whether an attack still executes.
+      Plot files are user-supplied attack definitions, not a documented fixed-location
+      application configuration file.
 category: security
 package-manager:
   brew: sh4d0wup
