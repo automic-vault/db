@@ -8,27 +8,60 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    slirp4netns grew out of a Linux container plumbing problem exposed by user
-    namespaces. Since Linux 3.8, unprivileged users have been able to create user and
-    network namespaces, but a useful network namespace still needed a way to connect to
-    the outside world without creating host-side veth pairs as root. slirp4netns solved
-    that by connecting a TAP device inside the network namespace to a user-mode TCP/IP
-    stack derived from slirp.
-  - >
-    The project became part of the rootless-container ecosystem because it let container
-    engines give non-root containers outbound networking and port forwarding without
-    modifying the host network namespace. The upstream README lists Podman, Buildah,
-    RootlessKit, Docker/Moby through RootlessKit, containerd/nerdctl through
-    RootlessKit, k3s, and Usernetes among consumers or adjacent integrations.
-  - >
-    Practitioners encounter slirp4netns most often through rootless Podman and related
-    tools, where it acts as the user-space network backend behind options such as TAP
-    setup, MTU, CIDR, IPv6, host-loopback filtering, and API sockets. Distribution
-    packaging reflects that low-level infrastructure role: the package appears across
-    Homebrew, Debian, Ubuntu, Fedora, Alpine, Arch, Nix, and openSUSE-style package
-    sets, with Homebrew marking it Linux-only and depending on libslirp, libcap,
-    libseccomp, and glib.
+  adoption-history:
+    - >
+      The official project lists adoption by Podman, Buildah, RootlessKit, optional
+      Docker/Moby and nerdctl configurations, Usernetes, and rootless k3s. It also
+      documents packages across RHEL, Fedora, Arch Linux, openSUSE, SUSE Linux
+      Enterprise, Debian, Ubuntu, NixOS, Gentoo, Slackware, Void Linux, and Alpine
+      Linux.
+  package-nerd-significance:
+    - >
+      slirp4netns became an important building block of the rootless-container ecosystem
+      because it provides network connectivity without privileged veth setup. Its broad
+      Linux packaging and integration with major container engines make it
+      infrastructure that users often acquire indirectly as a runtime dependency.
+  project-history:
+    - >
+      slirp4netns was created to make otherwise isolated unprivileged network namespaces
+      useful by connecting a TAP device inside the namespace to a user-mode TCP/IP
+      stack. The project emphasizes fully unprivileged operation and packet-processing
+      performance.
+  related-projects:
+    - libslirp
+    - Podman
+    - Buildah
+    - RootlessKit
+    - Docker/Moby
+    - containerd/nerdctl
+    - Usernetes
+    - k3s
+  sources:
+    - https://github.com/rootless-containers/slirp4netns#readme
+    - https://github.com/rootless-containers/slirp4netns/blob/master/slirp4netns.1.md
+    - https://github.com/rootless-containers/slirp4netns/releases
+  summary:
+    - >
+      slirp4netns supplies user-mode Internet connectivity to unprivileged Linux network
+      namespaces and is widely used as a rootless-container networking component.
+  timeline:
+    - >
+      2018: Official benchmark data showed slirp4netns optimized for reduced packet
+      copying across namespaces.
+    - '2019: Early and v0.2 release lines reached end of life as the interface matured.'
+    - >
+      2020: v1.0 became the stable generation, allowing linkage with arbitrary libslirp
+      versions.
+    - '2022: v1.2 added a BESS target, RISC-V 64 binaries, and an updated libslirp build.'
+    - '2023: v1.2.2 enabled reproducible builds.'
+    - '2024: v1.3 releases continued TAP and namespace integration work.'
+  usage:
+    - >
+      Users typically create unprivileged user and network namespaces, launch
+      slirp4netns against the namespace process and a TAP interface, and configure
+      addresses and DNS inside the namespace. Container engines commonly invoke it
+      indirectly. It has command-line and API-socket interfaces rather than a documented
+      persistent configuration or credentials file.
 category: networking
 package-manager:
   apk: slirp4netns
