@@ -6,25 +6,57 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    Scriptisto was created by Igor Petruk as a language-agnostic shebang interpreter for
-    making compiled languages behave more like script languages at the command line.
-    Instead of treating Rust, C, Haskell, or similar languages as separate special
-    cases, it reads a YAML build specification embedded in comments, writes source files
-    into a cache directory, builds the program, and execs the resulting binary.
-  - >
-    The key adoption idea is cached compilation. The first run pays the compiler cost;
-    later runs reuse the native optimized binary if the script hash has not changed.
-    That makes Scriptisto attractive for one-file utilities, prototypes, and operational
-    scripts where a developer wants compiled-language performance or type checking while
-    keeping the deployment shape of an executable script.
-  - >
-    Packaging followed the developer-tool route: releases include prebuilt standalone
-    binaries, crates.io installation is supported through Cargo, Debian testing accepted
-    a package, and the wiki documents Homebrew/Linuxbrew, RPM-style packages, NetBSD,
-    and source installation. The Homebrew formula builds it as a Rust package and
-    describes its role directly as a language-agnostic shebang interpreter for
-    compiled-language scripts.
+  adoption-history:
+    - >
+      Scriptisto is officially available as standalone release binaries and through
+      crates.io. The input additionally records Homebrew, Debian, and Nix packages,
+      showing adoption among Unix-oriented developer package ecosystems.
+  package-nerd-significance:
+    - >
+      Scriptisto applies Unix shebang ergonomics to languages that normally require
+      compilation, dependency fetching, or preprocessing. Its build cache makes compiled
+      programs behave more like ordinary scripts while retaining their native
+      toolchains.
+  project-history:
+    - >
+      Scriptisto was developed as a language-agnostic shebang interpreter for
+      single-file programs. It extracts build instructions from source comments,
+      rebuilds when the script changes, caches the result, and delegates subsequent runs
+      to the compiled binary.
+    - >
+      The project later reached stable 1.x and 2.x releases, added packaged manual
+      pages, refreshed its dependency stack, and expanded its supplied templates,
+      including C#, COBOL, Fortran, Go, and Rust-oriented options.
+  related-projects:
+    - Unix shebang processing supplies the execution convention that Scriptisto extends.
+    - Cargo and crates.io provide its Rust build and one official distribution channel.
+    - Docker can provide isolated compiler environments for Scriptisto builds.
+  sources:
+    - 'Official README: https://github.com/igor-petruk/scriptisto#readme'
+    - 'Official releases: https://github.com/igor-petruk/scriptisto/releases'
+    - 'Official wiki: https://github.com/igor-petruk/scriptisto/wiki'
+    - source_facts.package-manager
+  summary:
+    - >
+      Scriptisto is a language-agnostic shebang interpreter that builds and caches
+      single-file programs written in compiled or preprocessed languages.
+  timeline:
+    - >
+      Early releases: Scriptisto established comment-embedded build instructions and
+      cached execution for compiled-language scripts.
+    - 'Stable 1.0: The project published a stable release with downloadable artifacts.'
+    - '2.0: Release packages added manual pages and updated the dependency stack.'
+    - >
+      2.2: Supplied templates expanded to include COBOL and C#, with updates to Fortran,
+      Go, and Rust Docker templates.
+  usage:
+    - >
+      A source file uses Scriptisto in its shebang and contains build metadata in
+      comments. On first execution or after a change, Scriptisto builds the program and
+      caches it; unchanged scripts delegate directly to the cached binary.
+    - >
+      Users may build inside Docker when they do not want the required compiler
+      installed on the host.
 tags:
   - cli
   - compiled-languages
@@ -50,10 +82,10 @@ provenance:
   docs-sources:
     - Official GitHub repository README is the primary documentation surface.
   history-sources:
-    - https://github.com/igor-petruk/scriptisto
-    - https://github.com/igor-petruk/scriptisto/wiki/Writing-scripts
-    - https://github.com/igor-petruk/scriptisto/wiki/Installation
-    - https://formulae.brew.sh/formula/scriptisto
+    - 'Official README: https://github.com/igor-petruk/scriptisto#readme'
+    - 'Official releases: https://github.com/igor-petruk/scriptisto/releases'
+    - 'Official wiki: https://github.com/igor-petruk/scriptisto/wiki'
+    - source_facts.package-manager
   repo-sources:
     - source_facts.repo is already populated, so repo was not re-evaluated per instructions.
   tags-sources:
