@@ -6,21 +6,48 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    sdl2-compat repeats the SDL compatibility-layer pattern for the SDL 2 to SDL 3
-    transition: it presents a binary and source-compatible SDL2 API while loading SDL3
-    behind the scenes. The SDL project announced the official release alongside SDL3's
-    stable 3.2.0 release on January 21, 2025, explicitly positioning it for programs
-    that are stuck on SDL2 while directing new development to SDL3.
-  - >
-    The package matters because SDL2 became the default multimedia substrate for many
-    cross-platform games, emulators, launchers, and engines. Fedora's SDL2onSDL3 change
-    framed the distribution goal as replacing SDL2 with sdl2-compat so SDL2 applications
-    run through the SDL3 codebase, with SDL 1.2 applications able to chain through
-    sdl12-compat and then sdl2-compat. Homebrew, Alpine, Fedora, Arch-family packaging,
-    and other package sets use it as an ABI-preserving system component; practitioners
-    mostly use it implicitly through distro upgrades, runtime replacement, and build
-    systems that still ask for sdl2-config or SDL2 pkg-config metadata.
+  adoption-history:
+    - >
+      The compatibility library has been adopted by multiple distribution ecosystems,
+      including Homebrew, Debian, Fedora, Arch, Alpine, Nix, and openSUSE, as a
+      migration path from SDL 2 to SDL 3-backed systems.
+  package-nerd-significance:
+    - >
+      sdl2-compat allows distributions to move their runtime foundation to SDL 3 while
+      retaining ABI compatibility for the large body of software built for SDL 2. Its
+      game-specific fixes illustrate why compatibility libraries remain important even
+      when source-level ports are possible.
+  project-history:
+    - >
+      sdl2-compat was established by the SDL project as an SDL 2 API and ABI
+      compatibility layer implemented on SDL 3. The project distinguishes this
+      maintained compatibility path from SDL 2 Classic, which remains available on the
+      SDL repository's SDL2 branch.
+  related-projects:
+    - >
+      SDL 2 defines the compatibility surface, while SDL 3 provides the underlying
+      implementation. The older sdl12-compat project uses the same approach to run SDL
+      1.2 software over a newer SDL generation.
+  sources:
+    - https://github.com/libsdl-org/sdl2-compat#readme
+    - https://github.com/libsdl-org/sdl2-compat/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      sdl2-compat provides SDL 2-compatible interfaces backed by SDL 3, helping existing
+      games and multimedia applications migrate without immediate source changes.
+  timeline:
+    - >
+      2025: The SDL 2.32 compatibility release line became the distribution-facing
+      continuation of SDL 2 behavior over SDL 3.
+    - >
+      2026: Stable 2.32 releases continued with platform, application, and game
+      compatibility fixes.
+  usage:
+    - >
+      It is normally installed as a shared-library replacement for SDL 2. Existing
+      binaries can use it without being rewritten, while projects building against the
+      compatibility headers retain the familiar sdl2-config-oriented workflow.
 tags:
   - cli
   - compatibility-layer
@@ -39,11 +66,9 @@ provenance:
       source_facts.homepage is the official GitHub repository; README is the best
       official docs surface.
   history-sources:
-    - https://github.com/libsdl-org/sdl2-compat
-    - https://discourse.libsdl.org/t/announcing-the-sdl2-compat-official-release/57170
-    - https://fedoraproject.org/wiki/Changes/SDL2onSDL3
-    - https://pkgs.alpinelinux.org/package/v3.22/community/x86/sdl2-compat
-    - https://formulae.brew.sh/formula/sdl2-compat
+    - https://github.com/libsdl-org/sdl2-compat#readme
+    - https://github.com/libsdl-org/sdl2-compat/releases
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already supplies https://github.com/libsdl-org/sdl2-compat; repo

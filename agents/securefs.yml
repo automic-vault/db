@@ -4,24 +4,65 @@ repo: null
 docs:
   - https://github.com/netheril96/securefs/blob/master/docs/usage.md
   - https://github.com/netheril96/securefs#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - ${data_dir}/.config.pb
+  windows:
+    - ${data_dir}/.config.pb
 credentials-file-location: null
 history:
-  - >
-    securefs is a FUSE filesystem built around transparent authenticated encryption:
-    users mount an ordinary backing directory at a mount point, interact with plaintext
-    files through the mounted view, and leave encrypted authenticated contents in the
-    underlying directory. Its README positions the project around the practical tension
-    between cloud-synchronized storage and manual encrypt/decrypt workflows, aiming to
-    keep synchronized data private without changing ordinary filesystem habits.
-  - >
-    In the encrypted-filesystem ecosystem, securefs sits near tools such as EncFS,
-    CryFS, gocryptfs, rclone, and platform disk-encryption systems, but its package
-    identity is a small cross-platform CLI rather than a desktop vault application.
-    Practitioners use it for per-directory encrypted storage, especially when the
-    backing directory is synchronized or backed up by another tool, and install it from
-    package managers such as Homebrew or platform packages instead of building the FUSE
-    stack by hand.
+  adoption-history:
+    - >
+      securefs is available through Homebrew, Debian/Ubuntu, and WinGet. Its
+      cross-platform support extends the FUSE design through macFUSE on macOS and WinFsp
+      on Windows.
+  package-nerd-significance:
+    - >
+      The project occupies the encrypted-overlay-filesystem niche alongside tools such
+      as EncFS. Package maintainers care about its authenticated encryption, portable
+      backing-directory format, cloud-storage use case, and explicit trade-off between
+      faster lite repositories and more private full repositories.
+  project-history:
+    - >
+      securefs was developed as a userspace filesystem providing transparent
+      authenticated encryption for files stored locally or in synchronized cloud
+      directories. Its design evolved to offer lite and full repository formats, with
+      lite becoming the default because it is faster and easier to reconcile across
+      synchronization services.
+    - >
+      Later releases strengthened password handling with Argon2id, protected key files
+      through password hashing, and added optional file-size padding. Version 2.0.0 was
+      released in 2025.
+  related-projects:
+    - >
+      The official documentation compares lite mode with EncFS. It relies on FUSE-family
+      interfaces, including libfuse on Linux, macFUSE on macOS, and WinFsp on Windows;
+      SiriKali can act as an independent GUI frontend.
+  sources:
+    - https://github.com/netheril96/securefs#readme
+    - https://github.com/netheril96/securefs/blob/master/docs/usage.md
+    - https://github.com/netheril96/securefs/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      securefs is a cross-platform FUSE-style encrypted filesystem that mounts an
+      encrypted backing directory as a normal plaintext filesystem while authenticating
+      stored content.
+  timeline:
+    - '2010s: securefs emerged as a FUSE-based authenticated-encryption filesystem.'
+    - >
+      2022: Releases adopted Argon2id by default and expanded key-file and file-size
+      protection.
+    - '2025: securefs 2.0.0 was released.'
+  usage:
+    - >
+      Users create an encrypted repository with securefs create and expose it through
+      securefs mount. The default lite format favors performance and synchronization
+      conflict handling; full format hides more directory structure at additional cost.
+    - >
+      Passwords are preferably entered interactively or piped. An optional user-selected
+      key file can supplement or replace a password; because its path is chosen by the
+      user, there is no fixed credentials-file location.
 tags:
   - authenticated-encryption
   - cli
@@ -51,10 +92,10 @@ provenance:
       Official repository contains docs/usage.md for command line options and README for
       overview and basic usage.
   history-sources:
-    - https://github.com/netheril96/securefs
+    - https://github.com/netheril96/securefs#readme
     - https://github.com/netheril96/securefs/blob/master/docs/usage.md
-    - https://github.com/netheril96/securefs/blob/master/docs/design.md
-    - https://formulae.brew.sh/formula/securefs
+    - https://github.com/netheril96/securefs/releases
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already has a value; per instruction, repo returned as null and
@@ -69,6 +110,6 @@ category-path:
   - encrypted-filesystem
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
