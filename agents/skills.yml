@@ -4,30 +4,91 @@ repo: https://github.com/vercel-labs/skills
 docs:
   - https://www.skills.sh/docs
   - https://github.com/vercel-labs/skills#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - $XDG_STATE_HOME/skills/.skill-lock.json
+    - ~/.agents/.skill-lock.json
 credentials-file-location: null
 history:
-  - >
-    skills is Vercel Labs' CLI for the open agent-skills ecosystem, announced by Vercel
-    on 20 January 2026 alongside skills.sh, a directory and leaderboard for skill
-    packages. The project treats reusable agent behavior as packages: a skill is a
-    directory with a SKILL.md file and optional supporting material, while a skill
-    package is a repository or directory containing one or more skills.
-  - >
-    The tool fills the package-manager role for AI-agent context. The GitHub README
-    documents installation and use through npx skills, with sources ranging from GitHub
-    shorthand and full URLs to GitLab, arbitrary git URLs, direct subdirectories, and
-    local paths. It can install skills into project or global scope, target specific
-    agents, list packages before installing, update installed skills, or generate a
-    prompt for one skill without installing it.
-  - >
-    Its ecosystem role is portability across agent clients. Vercel's announcement listed
-    installs for agents including Codex, Claude Code, Cursor, Gemini CLI, GitHub
-    Copilot, Goose, OpenCode, Roo, and Windsurf, while the repository describes support
-    for many more. skills.sh adds discovery, anonymous install telemetry, security-audit
-    surfacing, and an API for querying the directory. Practitioners use it to share
-    domain workflows, coding conventions, and automation recipes without pasting the
-    same instructions into each agent session.
+  adoption-history:
+    - >
+      The official README reports support for OpenCode, Claude Code, Codex, Cursor, and
+      more than 70 additional agents. Its cross-agent installation design uses a
+      canonical skill copy with optional symlinks or independent copies in
+      agent-specific directories.
+    - >
+      skills.sh adds discovery, install counts, rankings based on anonymous CLI
+      telemetry, and shareable packs, turning the CLI into both a package installer and
+      the client for a broader agent-capability catalog.
+  package-nerd-significance:
+    - >
+      For package enthusiasts, Skills applies familiar ecosystem mechanics—source
+      resolution, project and global scopes, lock metadata, updates, removal, search,
+      archives, Git URLs, and registries—to portable AI-agent instructions. Its
+      interesting twist is that the installed artifact is usually a directory centered
+      on `SKILL.md`, rather than a conventional executable library.
+    - >
+      The package also exposes the interoperability problem directly: one source skill
+      can be linked or copied into the layouts expected by many different agents, making
+      it a compatibility layer as much as a downloader.
+  project-history:
+    - >
+      Vercel Labs created Skills as an open CLI and ecosystem for discovering,
+      installing, using, updating, and removing reusable AI-agent skills. It accepts
+      GitHub shorthand, GitHub and GitLab repositories, general Git URLs, local paths,
+      direct `SKILL.md` files, archives, well-known providers, and skills.sh packs.
+    - >
+      The ecosystem grew beyond installation into catalog search, anonymous install
+      telemetry, popularity rankings, public and private packs, temporary one-shot skill
+      use, and APIs for programmatic discovery.
+  related-projects:
+    - >
+      skills.sh: the official catalog, documentation, leaderboard, pack service, and API
+      used with the CLI.
+    - >
+      Agent Skills repositories: source repositories containing one or more directories
+      built around a `SKILL.md` manifest and instructions.
+    - >
+      Supported coding agents, including Codex, Claude Code, Cursor, and OpenCode,
+      consume installed skills through their respective filesystem layouts.
+  sources:
+    - 'Official CLI reference: https://www.skills.sh/docs/cli'
+    - 'Official Skills documentation: https://www.skills.sh/docs'
+    - >
+      Official lock-file implementation:
+      https://github.com/vercel-labs/skills/blob/main/src/skill-lock.ts
+    - 'Official repository README: https://github.com/vercel-labs/skills#readme'
+  summary:
+    - >
+      Skills is an open-source command-line package manager and discovery client for
+      reusable AI-agent skills. It installs skill directories from repositories, URLs,
+      archives, local paths, well-known providers, and skills.sh packs into layouts
+      understood by many coding agents.
+  timeline:
+    - >
+      2025: skills.sh recorded early public agent-skill listings and began surfacing
+      install activity.
+    - >
+      2026: Official documentation described a mature catalog, packs, API, anonymous
+      rankings, and support for a large range of agents.
+    - >
+      2026: Lock-file schema version 3 tracked source metadata and full skill-folder
+      hashes for update detection.
+  usage:
+    - >
+      Users commonly run `skills add` to inspect and install selected skills, `skills
+      use` for temporary prompt generation or an interactive agent session, `skills
+      find` for discovery, and `skills list`, `update`, or `remove` for lifecycle
+      management.
+    - >
+      Installation defaults to project scope; `--global` targets the user scope. Users
+      may select particular agents and skills, install everything non-interactively, and
+      choose symlinks or copied files.
+    - >
+      The CLI stores global installation/update metadata in `.skill-lock.json`. If
+      `XDG_STATE_HOME` is set, the documented implementation uses
+      `$XDG_STATE_HOME/skills/.skill-lock.json`; otherwise it uses
+      `~/.agents/.skill-lock.json`.
 tags:
   - agent-skills
   - ai
@@ -58,13 +119,12 @@ provenance:
       Official skills.sh docs are a dedicated documentation path; official GitHub README
       documents CLI commands and source formats.
   history-sources:
-    - https://vercel.com/changelog/introducing-skills-the-open-agent-skills-ecosystem
-    - https://github.com/vercel-labs/skills
-    - https://www.skills.sh/docs
+    - 'Official CLI reference: https://www.skills.sh/docs/cli'
+    - 'Official Skills documentation: https://www.skills.sh/docs'
     - >
-      https://vercel.com/kb/guide/agent-skills-creating-installing-and-sharing-reusable-agent-context
-    - https://www.skills.sh/docs/api
-    - https://formulae.brew.sh/formula/skills
+      Official lock-file implementation:
+      https://github.com/vercel-labs/skills/blob/main/src/skill-lock.ts
+    - 'Official repository README: https://github.com/vercel-labs/skills#readme'
   repo-sources:
     - >
       Official skills.sh docs state the skills CLI is open source at
@@ -80,6 +140,6 @@ category-path:
   - coding-agents
 display-name-confidence: high
 docs-confidence: high
-history-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high

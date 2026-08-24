@@ -7,28 +7,63 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    skani was introduced by Jim Shaw and Yun William Yu for average nucleotide identity
-    work on metagenome-assembled genomes, with the Nature Methods paper published on 21
-    September 2023. The project targets a practical bioinformatics problem: pure
-    sketching tools can underestimate ANI for incomplete or fragmented MAGs, while
-    base-level alignment approaches are expensive at metagenomic scale. skani uses
-    sparse approximate alignments and k-mer chaining to estimate ANI and aligned
-    fraction without full alignment.
-  - >
-    The tool's adoption path is tied to genome clustering, dereplication, and database
-    search. The upstream README presents skani as a Rust CLI for contigs, MAGs, genomes,
-    and preprocessed databases, with commands for pairwise distance, all-to-all triangle
-    matrices, sketching, and search. The paper reports database-style searches against
-    more than 65,000 prokaryotic genomes in seconds with about 6 GB of memory, giving it
-    a niche between Mash-style sketching and FastANI-style alignment heuristics.
-  - >
-    Packaging reflects scientific-command-line use: the upstream project documents
-    source builds, Bioconda, release binaries, and a statically compiled Linux
-    executable, while Homebrew packages it for macOS and Linux users. Downstream
-    ecosystem signs include Metagenome-Atlas adding skani-based species clustering in
-    2023, and pyskani exposing bindings and wheels for Python pipelines that need ANI
-    computation without shelling out to a standalone binary.
+  adoption-history:
+    - >
+      The project is distributed through source builds, release binaries,
+      Conda/Bioconda, and Homebrew. Its official README also points users to independent
+      Rust and Python interfaces, indicating use both as a command-line program and as a
+      component in bioinformatics workflows.
+  package-nerd-significance:
+    - >
+      skani is notable to scientific-package users because it combines a Rust
+      implementation with a specialized genomics algorithm, preprocessed searchable
+      databases, multithreaded CLI operations, and reproducible package-manager
+      distribution. It occupies the performance-oriented space between sketching tools
+      such as Mash and alignment-based ANI programs such as FastANI.
+  project-history:
+    - >
+      skani was developed by Jim Shaw with Yun William Yu to calculate average
+      nucleotide identity and aligned fraction through sparse chaining without
+      base-level alignment. The method was described in Nature Methods in 2023.
+    - >
+      Subsequent releases expanded and refined database searching, memory use,
+      command-line behavior, and output controls. The project maintains detailed usage
+      guides and tutorials in its official GitHub wiki.
+  related-projects:
+    - >
+      Mash: a genome-distance sketching tool discussed by skani's documentation as a
+      faster but potentially less accurate comparator for incomplete MAGs.
+    - >
+      FastANI: an ANI implementation used as a performance and accuracy comparator in
+      the skani project.
+    - 'pyskani: independent Python bindings referenced by the official skani README.'
+    - 'skani-lib-example: an official minimal example for embedding skani as a Rust library.'
+  sources:
+    - 'Official skani releases: https://github.com/bluenote-1577/skani/releases'
+    - 'Official skani repository README: https://github.com/bluenote-1577/skani#readme'
+    - 'Official skani wiki: https://github.com/bluenote-1577/skani/wiki'
+  summary:
+    - >
+      skani is an open-source bioinformatics program for rapid comparison of microbial
+      genomes, contigs, and metagenome-assembled genomes. It reports average nucleotide
+      identity and aligned fraction using approximate mapping and sparse chaining.
+  timeline:
+    - '2023: The skani method was described by Jim Shaw and Yun William Yu in Nature Methods.'
+    - >
+      2025: Version 0.3.0 introduced a consolidated searchable database format and
+      reduced memory consumption, with command-line changes documented as breaking.
+    - >
+      2025: The official wiki was updated with expanded usage guides, tutorials, and
+      database workflows.
+  usage:
+    - >
+      Common operations include pairwise genome comparison with `skani dist`, database
+      construction with `skani sketch`, database querying with `skani search`, and
+      all-versus-all matrix or edge-list generation with `skani triangle`.
+    - >
+      The tool is aimed primarily at comparisons above roughly 80% ANI. Its
+      documentation warns that default filtering may produce no output when aligned
+      fraction is too low.
 category: science
 package-manager:
   brew: skani
