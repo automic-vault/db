@@ -4,31 +4,62 @@ repo: null
 docs:
   - https://github.com/shadowsocks/shadowsocks-rust#readme
   - https://shadowsocks.org/
-config-file-location: null
+config-file-location:
+  unix:
+    - config.json
+  windows:
+    - config.json
 credentials-file-location: null
 history:
-  - >
-    shadowsocks-rust is the Rust implementation in the Shadowsocks family, a set of
-    encrypted SOCKS-style proxy tools that grew out of the original Shadowsocks project
-    by clowwindy. In that ecosystem, the Rust port fills the same practical role as the
-    older reference and libev implementations: a client-side local proxy, a server
-    daemon, and supporting management/url utilities for deploying an encrypted tunnel.
-  - >
-    The package is oriented toward operators who want a small, portable command-line
-    stack rather than a desktop VPN client. Its upstream build produces familiar
-    Shadowsocks binaries such as sslocal, ssserver, ssmanager, ssservice, and ssurl;
-    upstream also documents installation through Cargo, Homebrew, Snap, static release
-    artifacts, Docker images, and Helm-style Kubernetes deployment material. That
-    breadth made the Rust port a packaging-friendly member of the Shadowsocks ecosystem,
-    especially for users who want reproducible binaries across Linux, macOS, Windows,
-    containers, and low-resource servers.
-  - >
-    Practitioners typically use shadowsocks-rust in two shapes: sslocal listens on a
-    local SOCKS5-compatible address for applications or system proxy settings, while
-    ssserver runs on a remote host with a JSON or URL-style configuration. The Rust
-    implementation matters less as a new protocol than as a maintained, multi-platform
-    transport implementation with modern ciphers, service integration, and distribution
-    channels that fit shell scripts, systemd units, containers, and package managers.
+  adoption-history:
+    - >
+      The official repository supplies release binaries for Linux, macOS, and Windows,
+      container images for multiple CPU architectures, and Kubernetes and Helm
+      deployment material. The input package metadata also records packaging across
+      Homebrew, Alpine, MacPorts, Nix, Pacman, Scoop, and Zypper.
+  package-nerd-significance:
+    - >
+      shadowsocks-rust matters to package users as the actively developed successor to
+      the C/libev implementation. It combines portable Rust binaries with a family of
+      focused commands and supports contemporary deployment formats ranging from native
+      packages to containers and Kubernetes.
+  project-history:
+    - >
+      shadowsocks-rust reimplements the Shadowsocks client and server ecosystem in Rust.
+      The official shadowsocks-libev project now directs future development to this
+      implementation while retaining libev in bug-fix-only maintenance.
+  related-projects:
+    - >
+      It follows the original Shadowsocks protocol and shadowsocks-libev, and shares
+      compatible concepts such as local and server modes, JSON configuration, ACL files,
+      SIP003 plugins, and `ss://` URLs.
+  sources:
+    - https://github.com/shadowsocks/shadowsocks-libev
+    - https://github.com/shadowsocks/shadowsocks-rust
+    - https://github.com/shadowsocks/shadowsocks-rust/releases
+    - https://shadowsocks.org/
+    - source_facts.package-manager
+  summary:
+    - >
+      shadowsocks-rust is the Rust implementation of the Shadowsocks secured proxy
+      system and the official development successor to shadowsocks-libev. It provides
+      local-client, server, manager, service, and URL utilities.
+  timeline:
+    - >
+      Early development: The project established Rust implementations of the Shadowsocks
+      local client and server.
+    - >
+      Successor era: shadowsocks-libev designated shadowsocks-rust as the destination
+      for future development.
+    - >
+      2025: The 1.24.0 release added file and syslog logging and continued dependency
+      and platform maintenance.
+  usage:
+    - >
+      Users create a JSON or JSON5 configuration containing server address, port,
+      password, cipher, and optional local listener settings, then run `sslocal -c
+      config.json` or `ssserver -c config.json`. The project also supports ACLs,
+      containers, Kubernetes, Helm, and standalone release binaries.
 tags:
   - cli
   - encrypted-proxy
@@ -59,10 +90,11 @@ provenance:
       Official GitHub README documents usage and configuration; source_facts.homepage is
       the official Shadowsocks site.
   history-sources:
-    - https://github.com/shadowsocks/shadowsocks-rust
-    - https://crates.io/crates/shadowsocks-rust
     - https://github.com/shadowsocks/shadowsocks-libev
-    - https://formulae.brew.sh/formula/shadowsocks-rust
+    - https://github.com/shadowsocks/shadowsocks-rust
+    - https://github.com/shadowsocks/shadowsocks-rust/releases
+    - https://shadowsocks.org/
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is already set to
@@ -78,6 +110,6 @@ category-path:
   - proxy
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

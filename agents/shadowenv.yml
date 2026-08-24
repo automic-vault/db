@@ -6,27 +6,57 @@ docs:
 config-file-location:
   unix:
     - .shadowenv.d/*.lisp
-credentials-file-location: null
+credentials-file-location:
+  unix:
+    - ~/.config/shadowenv/trust-key
 history:
-  - >
-    shadowenv is Shopify's Rust-based tool for reversible, directory-local environment
-    manipulation. It grew out of the same problem space as direnv, but its docs
-    emphasize that environment changes are applied when a shell enters a directory and
-    reversed when it leaves, using `.shadowenv.d/*.lisp` programs written in Shadowlisp.
-  - >
-    The project is intentionally packaging-oriented around generated local state. The
-    README recommends keeping `.shadowenv.d` at a repository root while ignoring its
-    contents, because tool authors are expected to generate Shadowlisp files on a
-    developer's machine rather than commit them. That makes shadowenv useful for
-    language/runtime switchers, monorepos, and editor integrations that need to alter
-    PATH, Ruby variables, or other shell state without leaving residue after directory
-    changes.
-  - >
-    shadowenv also has a trust model: untrusted `.shadowenv.d/*.lisp` files are not
-    executed until `shadowenv trust` records a signed trust file. Homebrew and Nix
-    packaging make it available as a developer-workflow CLI, while the upstream project
-    supplies shell initialization snippets for bash, zsh, fish, and nushell plus
-    integrations for several editors.
+  adoption-history:
+    - >
+      The official documentation describes use at Shopify and installation through
+      Homebrew on macOS. Its documented integrations and non-interactive `shadowenv
+      exec` mode extend the same directory-local environment model beyond interactive
+      shells.
+  package-nerd-significance:
+    - >
+      Shadowenv occupies the same package-nerd niche as directory-aware environment
+      tools while emphasizing reversibility and explicit trust. Its small Shadowlisp
+      programs make environment changes composable, and its signature-based trust
+      mechanism addresses the risk of executing project-local code merely by changing
+      directories.
+  project-history:
+    - >
+      Shopify developed Shadowenv as a project-local environment-variable shadowing
+      tool. It scans a directory and its ancestors for `.shadowenv.d` directories,
+      evaluates trusted Shadowlisp programs, applies their environment changes on entry,
+      and restores the prior environment on exit.
+  related-projects:
+    - >
+      Shadowenv belongs to the broader family of directory-local development-environment
+      tools and shell hooks. Its official documentation also describes editor
+      integrations and Shopify's internal `dev` tooling.
+  sources:
+    - https://github.com/Shopify/shadowenv
+    - https://shopify.github.io/shadowenv/
+    - https://shopify.github.io/shadowenv/best-practices/
+    - https://shopify.github.io/shadowenv/getting-started/
+    - https://shopify.github.io/shadowenv/trust/
+  summary:
+    - >
+      Shadowenv is Shopify's reversible directory-local environment manager. Trusted
+      Shadowlisp files modify environment variables when a user enters a project and the
+      previous values are restored when the user leaves.
+  timeline:
+    - >
+      2019: The documented build process used the Rust nightly toolchain dated
+      2018-12-26, reflecting the project's early Rust implementation.
+    - >
+      Public project era: Shopify published Shadowenv's source and documentation for
+      external use.
+  usage:
+    - >
+      Users install a shell hook for Bash, Zsh, or Fish, place numbered `.lisp` programs
+      under `.shadowenv.d`, and run `shadowenv trust` before loading them. `shadowenv
+      exec -- <command>` applies the environment to non-interactive commands.
 tags:
   - cli
   - developer-workflow
@@ -54,9 +84,11 @@ provenance:
   docs-sources:
     - source_facts.homepage is the official Shopify-hosted documentation site for shadowenv.
   history-sources:
-    - https://shopify.github.io/shadowenv/
     - https://github.com/Shopify/shadowenv
-    - https://formulae.brew.sh/formula/shadowenv
+    - https://shopify.github.io/shadowenv/
+    - https://shopify.github.io/shadowenv/best-practices/
+    - https://shopify.github.io/shadowenv/getting-started/
+    - https://shopify.github.io/shadowenv/trust/
   repo-sources:
     - >
       source_facts.repo is already set to https://github.com/Shopify/shadowenv, so repo
@@ -71,6 +103,6 @@ category-path:
   - environment-management
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
