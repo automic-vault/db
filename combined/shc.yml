@@ -8,28 +8,52 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    shc, the Shell Script Compiler, comes from the older Unix tradition of turning small
-    administrative scripts into redistributable command-line programs. The original
-    project is attributed to Francisco Javier Rosales Garcia, with the historical
-    release lineage commonly traced to 1991; the maintained GitHub-era fork under
-    neurobin was created in 2015 and preserves the same basic model: accept a shell
-    script, emit C source containing an encoded/encrypted payload, and compile that
-    source into a stripped executable.
-  - >
-    Despite its name, shc is not a shell-to-native-code compiler in the way cc is a C
-    compiler. The produced binary still depends on the shell named by the script's
-    shebang, decrypts the embedded script at runtime, and executes it through the shell.
-    That design made shc useful for packaging scripts as single executables, adding
-    expiration behavior, reducing accidental source edits, and applying light
-    obfuscation, while leaving practitioners aware that it is not a strong secrecy
-    boundary.
-  - >
-    In package ecosystems, shc occupies a small but durable niche around script
-    distribution and operational tooling. It is packaged by Homebrew and other Unix-like
-    package managers, and its README documents source builds with autotools, Ubuntu PPA
-    installation, release binaries, and flags such as -f for input, -o for output, and
-    -U/-H for anti-tracing or argument-hiding hardening modes.
+  adoption-history:
+    - >
+      shc is packaged for multiple Unix-like systems, including Alpine, Fedora-family
+      distributions, Ubuntu, Nix, MacPorts, and Homebrew.
+  package-nerd-significance:
+    - >
+      shc occupies an unusual niche between packaging, obfuscation, and compilation. It
+      can turn a script into a conventional executable artifact, but the result still
+      depends on the script's original interpreter.
+    - >
+      Its limitations matter to packagers: shc does not produce a truly self-contained
+      native program, and generated executables remain constrained by shell availability
+      and system argument-size limits.
+  project-history:
+    - >
+      shc was created as a generic shell-script-to-executable tool. It encodes and
+      encrypts a script, emits C source, and invokes the system compiler to produce a
+      stripped executable.
+    - >
+      The current official project is maintained in the neurobin GitHub repository and
+      documents experimental anti-tracing hardening alongside its traditional expiration
+      and obfuscation capabilities.
+  related-projects:
+    - >
+      The generated program relies on a system C compiler during creation and the
+      script's shebang interpreter at runtime.
+  sources:
+    - https://github.com/neurobin/shc#readme
+    - https://neurobin.github.io/shc
+    - source_facts.package-manager
+  summary:
+    - >
+      shc packages shell scripts as executable binaries by generating C source that
+      decrypts and runs the original script through its designated shell.
+  timeline:
+    - >
+      Current project era: Development and releases are maintained in the neurobin/shc
+      repository.
+  usage:
+    - >
+      A typical invocation is shc -f script.sh -o binary. The resulting executable
+      behaves like the source script but remains dependent on the shell named by its
+      shebang.
+    - >
+      Users should test generated binaries carefully. The official documentation notes
+      argument-size limits and describes the -H hardening mode as experimental.
 category: developer-tools
 package-manager:
   apk: shc

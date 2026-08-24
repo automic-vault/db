@@ -8,34 +8,57 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    shared-mime-info is the freedesktop.org shared MIME database and update tool used by
-    desktop stacks to agree on file types. The specification, authored by Thomas Leonard
-    and published as version 0.21 on 2 October 2018, explains the motivation: many
-    programs determine type by filename or content, and interoperability improves when
-    applications use one database instead of duplicating MIME rules.
-  - >
-    Historically, the project unified separate MIME database systems from GNOME, KDE,
-    and ROX. The spec says those earlier systems differed because they were separate
-    rather than because desktop developers disagreed, and it defines standard
-    installation locations, conflict handling, lookup behavior, and extension
-    mechanisms. Older README material describes the package as containing the
-    freedesktop.org shared MIME database spec, merged GNOME and KDE databases in the new
-    format, and the update-mime-database command.
-  - >
-    In practice, the package is desktop plumbing. Applications that add MIME knowledge
-    install one XML file under a packages directory below a MIME data directory, then
-    run update-mime-database on that tree. The tool scans the XML package files and
-    emits cache/index files such as globs2, magic, subclasses, aliases, icons, and
-    generic-icons, which file managers, launchers, libraries, and desktop integration
-    tools consume.
-  - >
-    Packagers treat shared-mime-info as a central data dependency rather than an
-    end-user app. Distribution pages describe it as the core database of common MIME
-    types and the update-mime-database command; MacPorts even runs a watcher daemon to
-    refresh caches when ports add or remove MIME definitions. That is why the package
-    appears broadly across Linux and Unix-like package managers: without it, desktop
-    file type recognition and application association metadata become fragmented.
+  adoption-history:
+    - >
+      The specification was designed to unify MIME databases used by GNOME, KDE, and ROX
+      so applications and desktops could agree on file types without duplicating
+      metadata.
+    - >
+      The package is available across numerous Unix-like package ecosystems, including
+      Alpine, Debian, Fedora, Homebrew, MacPorts, Nix, Arch, Ubuntu, and openSUSE,
+      reflecting its role as common desktop infrastructure.
+  package-nerd-significance:
+    - >
+      shared-mime-info is a classic low-visibility dependency: users rarely invoke it
+      directly, yet desktop software depends on its database for consistent file
+      classification and application integration.
+    - >
+      Its broad cross-distribution packaging and standards-oriented role make it an
+      important example of freedesktop.org infrastructure shared across otherwise
+      competing desktop stacks.
+  project-history:
+    - >
+      The project emerged from freedesktop.org standardization work to replace separate
+      MIME databases with a common, extensible representation.
+    - >
+      The shared database stores static type information derived from filenames or file
+      contents, along with metadata such as descriptions and associated application
+      capabilities. It deliberately does not store users' preferred applications.
+  related-projects:
+    - >
+      The specification explicitly coordinates MIME handling across GNOME, KDE, and ROX
+      and forms part of the wider freedesktop.org/XDG interoperability ecosystem.
+  sources:
+    - https://gitlab.freedesktop.org/xdg/shared-mime-info
+    - https://specifications.freedesktop.org/shared-mime-info/latest/
+    - https://wiki.freedesktop.org/www/Software/shared-mime-info
+    - source_facts.package-manager
+  summary:
+    - >
+      shared-mime-info provides the freedesktop.org database and specification used to
+      identify file types consistently across Unix desktop environments.
+  timeline:
+    - >
+      2000s: freedesktop.org developed a unified shared MIME database for desktop
+      interoperability.
+    - '2018: Version 0.21 of the specification was published on 2 October.'
+  usage:
+    - >
+      Applications install or query MIME metadata, while update-mime-database rebuilds
+      the cached database used for filename- and content-based type detection.
+    - >
+      The database supplies shared type facts; selection of a user's preferred
+      application is handled elsewhere.
 category: system
 package-manager:
   apk: shared-mime-info

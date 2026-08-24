@@ -3,32 +3,56 @@ display-name: shallow-backup
 repo: https://github.com/alichtman/shallow-backup
 docs:
   - https://github.com/alichtman/shallow-backup#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - $SHALLOW_BACKUP_CONFIG_DIR/shallow-backup.json
+    - $XDG_CONFIG_HOME/shallow-backup.json
+    - ~/.config/shallow-backup.json
 credentials-file-location: null
 history:
-  - >
-    shallow-backup is a Python command-line tool built around a narrow
-    developer-workstation problem: backing up dotfiles, application configuration,
-    package lists, fonts, and similar environment state into a Git-friendly directory.
-    Its README frames the origin plainly: the author wanted a tool that could copy files
-    from their real system locations, handle paths outside the home directory, reinstall
-    idempotently, avoid symlink-centered workflows, compress package inventories, and
-    avoid destructive surprises.
-  - >
-    The package sits in the same practical space as dotfile repositories, bare Git
-    repos, GNU Stow workflows, and setup scripts, but it chooses copying plus a JSON
-    configuration file over making the backup directory the live source of truth. It
-    supports interactive use and scriptable flags, can push backups to a remote Git
-    repository, and documents default coverage for shell files, SSH and editor
-    directories, app configs, Homebrew and other package managers, editor extensions,
-    applications, and user fonts.
-  - >
-    Its distribution history is modest but package-manager shaped: upstream documents
-    pipx and source installs, PyPI carries the package, and Homebrew packages the CLI
-    for macOS and Linux users who already manage developer tools through brew.
-    Practitioners use it as a lightweight snapshot and restore helper rather than a full
-    machine backup system; the value is repeatable developer-environment capture, not
-    block-level or cloud backup.
+  adoption-history:
+    - >
+      The project is distributed through Homebrew and is also installable through pipx
+      or directly from source.
+  package-nerd-significance:
+    - >
+      shallow-backup treats package inventories and dotfiles as reproducible machine
+      state. This makes it useful to package enthusiasts who routinely rebuild
+      workstations or synchronize development environments.
+  project-history:
+    - >
+      Aaron Lichtman created shallow-backup to copy dotfiles from their original
+      locations, record installed packages and applications, and support idempotent
+      restoration without requiring a symlink-based dotfile layout.
+    - >
+      Later releases added configuration-driven ignore rules and secret-scanning
+      safeguards for Git-backed backups.
+  related-projects:
+    - >
+      Its workflow overlaps with dotfile managers and package inventory tools, while
+      emphasizing a single Git-integrated backup and restoration process.
+  sources:
+    - https://github.com/alichtman/shallow-backup#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      shallow-backup is a Git-integrated command-line backup and restoration tool for
+      macOS and Linux development environments.
+  timeline:
+    - 'v4.0: Git ignore rules moved into the main configuration format.'
+    - >
+      v5.2: The project introduced default configuration permissions and warnings about
+      writable configuration files.
+    - 'v6.2: TruffleHog became a required pre-commit secret scan.'
+  usage:
+    - >
+      Users can interactively or selectively back up and restore dotfiles, application
+      settings, fonts, and package inventories. Backups can be committed and pushed to a
+      remote Git repository.
+    - >
+      Because backed-up configuration may contain API keys or SSH material, users should
+      inspect the generated repository before publishing it. The project excludes
+      sensitive paths by default and runs secret scanning.
 tags:
   - backup
   - cli
@@ -57,9 +81,8 @@ provenance:
       Official GitHub README includes installation, usage, recipes, backup scope,
       configuration, and Git integration sections.
   history-sources:
-    - https://github.com/alichtman/shallow-backup
-    - https://pypi.org/project/shallow-backup/
-    - https://formulae.brew.sh/formula/shallow-backup
+    - https://github.com/alichtman/shallow-backup#readme
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is empty; source_facts.homepage is an official GitHub
@@ -74,6 +97,6 @@ category-path:
   - backup
 display-name-confidence: high
 docs-confidence: high
-history-confidence: medium
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
