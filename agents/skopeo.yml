@@ -4,37 +4,73 @@ repo: null
 docs:
   - https://github.com/containers/skopeo/tree/main/docs
   - https://github.com/containers/skopeo#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - /etc/containers/policy.json
+    - /etc/containers/registries.d/
+    - /etc/containers/storage.conf
 credentials-file-location:
   unix:
     - ~/.config/containers/auth.json
 history:
-  - >
-    Skopeo is one of the core command-line tools in the Red Hat and containers/image
-    lineage, alongside the broader Podman and Buildah ecosystem. Its public repository
-    was created on March 7, 2016, and the man page carries an August 2016 date, matching
-    the period when Docker-format and OCI image tooling was separating image operations
-    from a local daemon.
-  - >
-    Red Hat's Skopeo 1.0 history describes the origin as Antonio Murdaca's side project
-    for viewing the JSON metadata of a container image stored in a registry. The
-    immediate pain point was that inspecting a remote image through Docker required
-    pulling the full image first; after a proposed `docker inspect --remote` direction
-    was rejected upstream, Skopeo became a separate utility for remote image inspection.
-  - >
-    The tool then grew from inspection into daemonless image plumbing. Its manual
-    describes copying images between registries and local image stores, converting
-    Docker schema images to OCI images, fetching manifest-style inspect output without
-    `docker pull`, signing and verifying images, and deleting remote images. Most
-    operations do not require a running container runtime and do not require root unless
-    writing into a runtime storage backend.
-  - >
-    Practitioners use Skopeo in CI/CD systems, registry migration jobs, air-gapped
-    mirror population, supply-chain verification, and release automation where pulling
-    images into Docker or Podman would waste time and disk. Its packaging footprint is
-    correspondingly infrastructure-heavy: it is distributed through Homebrew and many
-    Linux package managers, and Homebrew's formula presents it simply as a tool to work
-    with remote image registries.
+  adoption-history:
+    - >
+      Skopeo became part of the broader containers project toolchain alongside Podman,
+      Buildah, containers/image, and containers/storage. Packaging across major Linux
+      distributions, Homebrew, MacPorts, Nix, and other systems, as recorded in
+      source_facts.package-manager, made it a standard scripting tool for registry and
+      image workflows.
+    - >
+      The maintainers have historically favored distribution packages and an official
+      container image over publishing a single generic static binary, reflecting
+      Skopeo’s integration with platform libraries and container configuration.
+  package-nerd-significance:
+    - >
+      Skopeo separates image manipulation from running containers. Package and release
+      engineers value its daemonless, usually rootless access to manifests, tags,
+      layers, signatures, and registry-to-registry copies, especially in CI, air-gapped
+      synchronization, and image-promotion pipelines.
+  project-history:
+    - >
+      Skopeo was developed as a command-line interface over the containers/image
+      ecosystem for inspecting and moving container images without requiring a running
+      Docker daemon. Its main manual was authored in 2016 and describes registry
+      inspection, format conversion, copying, deletion, signing, and verification.
+    - >
+      The project subsequently gained a broad family of subcommands, OCI support,
+      registry synchronization, authentication management, manifest operations, and
+      Sigstore-related key generation. It is maintained in the podman-container-tools
+      organization while retaining official redirects from the containers namespace.
+  related-projects:
+    - containers/image supplies transports, authentication, and image-copying primitives.
+    - Podman and Buildah share authentication and containers configuration with Skopeo.
+    - OCI image and distribution specifications define important formats handled by Skopeo.
+    - Docker Registry HTTP API V2 registries are common remote endpoints.
+  sources:
+    - https://github.com/containers/image/blob/main/docs/containers-auth.json.5.md
+    - https://github.com/podman-container-tools/skopeo
+    - https://github.com/podman-container-tools/skopeo/blob/main/docs/skopeo.1.md
+    - https://github.com/podman-container-tools/skopeo/releases
+  summary:
+    - >
+      Skopeo is a daemonless command-line utility for inspecting, copying,
+      synchronizing, deleting, signing, and verifying container images across registries
+      and local image formats.
+  timeline:
+    - >
+      2016: The official Skopeo manual identifies the command and its principal
+      container-image operations.
+    - >
+      2020: The containers-auth.json manual was originally compiled, documenting
+      authentication shared by Skopeo, Podman, and Buildah.
+    - '2026: The official release stream reached the v1.23 series.'
+  usage:
+    - >
+      Typical uses include inspecting a remote image without pulling it, copying an
+      image directly between registries, converting between Docker and OCI layouts,
+      synchronizing repositories for disconnected environments, and logging into private
+      registries. Image references include an explicit transport such as `docker://`,
+      `oci:`, or `dir:`.
 tags:
   - cli
   - containers
@@ -67,13 +103,10 @@ provenance:
       Official repository has a docs directory for command man pages:
       https://github.com/containers/skopeo/tree/main/docs.
   history-sources:
-    - https://api.github.com/repos/containers/skopeo
-    - https://github.com/containers/skopeo
-    - https://www.redhat.com/en/blog/skopeo-10-released
-    - https://github.com/containers/skopeo/blob/main/docs/skopeo.1.md
-    - >
-      https://developers.redhat.com/articles/2025/09/24/skopeo-unsung-hero-linux-container-tools
-    - https://formulae.brew.sh/formula/skopeo
+    - https://github.com/containers/image/blob/main/docs/containers-auth.json.5.md
+    - https://github.com/podman-container-tools/skopeo
+    - https://github.com/podman-container-tools/skopeo/blob/main/docs/skopeo.1.md
+    - https://github.com/podman-container-tools/skopeo/releases
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/containers/skopeo;

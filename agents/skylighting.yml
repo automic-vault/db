@@ -7,30 +7,62 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    Skylighting is John MacFarlane's Haskell syntax-highlighting library built around
-    KDE's XML syntax definitions. It was introduced as the successor to the earlier
-    highlighting-kate package: instead of compiling each XML definition into a separate
-    Parsec parser, Skylighting parses the KDE descriptions into Haskell data structures
-    and interprets them with a tokenizer. That architecture was chosen to handle
-    IncludeRules more cleanly, allow dynamic loading of syntax descriptions, and convert
-    KDE .theme files into styles.
-  - >
-    In the Haskell ecosystem, Skylighting sits at the intersection of Hackage packaging,
-    Pandoc-style document conversion, and KDE's KSyntaxHighlighting corpus. The Hackage
-    package describes support for more than one hundred languages, generated syntax
-    modules based on skylighting-core, optional command-line tooling, and a GPL license
-    driven by bundled KDE XML definitions. The upstream repository splits the project
-    into core parsing/tokenization and separate formatter packages for ANSI, HTML,
-    ConTeXt, LaTeX, and Typst output.
-  - >
-    Practitioners use Skylighting either as a Haskell library for tokenizing and
-    rendering code blocks or as the optional `skylighting` executable. Distribution
-    follows Haskell conventions through Hackage, Cabal, and Stack, while Homebrew,
-    Debian, and Ubuntu package it for users who want the command-line highlighter
-    without maintaining a Haskell build environment. Adding syntax support usually means
-    supplying a KDE XML syntax definition, ideally upstreamed to KDE so the wider
-    syntax-highlighting ecosystem can share it.
+  adoption-history:
+    - >
+      Skylighting is distributed as a family of Haskell packages and is closely
+      associated with Pandoc’s document-rendering ecosystem. Its modular formatters
+      support ANSI, HTML, LaTeX, ConTeXt, and Typst output, while the command-line
+      executable makes the same engine usable in shell pipelines.
+  package-nerd-significance:
+    - >
+      The package is notable for replacing generated, compiled parsers with interpreted
+      KDE syntax descriptions. That architecture supports dynamically loaded
+      definitions, reduces problems with included rules, and lets Haskell applications
+      reuse the large KDE grammar ecosystem.
+  project-history:
+    - >
+      John MacFarlane created Skylighting as the successor to highlighting-kate. The
+      earlier design compiled KDE XML descriptions into individual Parsec parsers,
+      making circular IncludeRules and dynamic syntax loading difficult. Skylighting
+      instead parses descriptions into Haskell data structures interpreted by a
+      tokenizer.
+    - >
+      The project later split its core and rendering formats into separate packages,
+      continuously synchronized syntax definitions from KDE, and added formats and
+      languages as the upstream definition set evolved.
+  related-projects:
+    - highlighting-kate is Skylighting’s predecessor.
+    - KDE Syntax Highlighting supplies the XML definition format and upstream grammars.
+    - >
+      Pandoc shares maintainership and benefits from Skylighting’s Haskell-oriented
+      architecture.
+    - Hackage distributes the library and generated API documentation.
+  sources:
+    - https://github.com/jgm/skylighting
+    - https://github.com/jgm/skylighting/blob/master/changelog.md
+    - https://hackage.haskell.org/package/skylighting/docs/Skylighting.html
+    - https://invent.kde.org/frameworks/syntax-highlighting
+  summary:
+    - >
+      Skylighting is a Haskell library and optional command-line program for syntax
+      highlighting with tokenizers derived from KDE XML syntax descriptions.
+  timeline:
+    - >
+      Initial design: Skylighting succeeded highlighting-kate with interpreted syntax
+      descriptions and dynamic loading.
+    - >
+      0.10: Syntax definitions were synchronized from KDE and contributors were directed
+      to submit grammar changes upstream.
+    - '0.13: Output formatters were split into separate packages.'
+    - >
+      0.14 series: The project added further languages, Typst support, and continuing
+      KDE definition updates.
+  usage:
+    - >
+      Haskell programs use the library to select a syntax by name, extension, or
+      filename, tokenize input, and render tokens through a formatter. The optional
+      `skylighting` executable provides command-line highlighting, and users can
+      dynamically load additional KDE XML definitions.
 tags:
   - cli
   - haskell
@@ -64,8 +96,9 @@ provenance:
     - Official repository README is available at https://github.com/jgm/skylighting#readme.
   history-sources:
     - https://github.com/jgm/skylighting
-    - https://hackage.haskell.org/package/skylighting
-    - https://formulae.brew.sh/formula/skylighting
+    - https://github.com/jgm/skylighting/blob/master/changelog.md
+    - https://hackage.haskell.org/package/skylighting/docs/Skylighting.html
+    - https://invent.kde.org/frameworks/syntax-highlighting
   repo-sources:
     - >
       Hackage package metadata lists the source repo as
