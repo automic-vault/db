@@ -13,29 +13,56 @@ credentials-file-location:
     - $XDG_DATA_HOME/signal-cli
     - ~/.local/share/signal-cli
 history:
-  - >
-    signal-cli grew out of the gap between Signal's official mobile/desktop clients and
-    the operational need for a scriptable, headless Signal endpoint. Its README
-    describes it as an unofficial command-line interface for the Signal messenger, built
-    on a patched libsignal-service-java extracted from Signal-Android, with support for
-    registering, verifying, sending, and receiving messages. That ancestry makes it less
-    like a generic chat bot SDK and more like a practical wrapper around the same moving
-    service protocol that the official clients use.
-  - >
-    The project found its niche in server-side notifications and automation. The manual
-    says it was primarily developed for servers that notify administrators of important
-    events, and its daemon forms make that use case less fragile: D-Bus for
-    desktop/system integration and JSON-RPC for embedding in other programs.
-    Practitioners use it for cron jobs, alerting pipelines, simple bots, and bridges
-    where a shell command or long-running local service is easier to deploy than a full
-    GUI client.
-  - >
-    Its packaging story reflects both popularity and maintenance friction. Homebrew
-    ships it as `signal-cli`, while the upstream README also points to binary archives,
-    Docker images, and community Linux packages. The README warns that old releases may
-    stop working when Signal Server changes, because official clients expire after three
-    months; packagers and operators therefore treat signal-cli as a tool that needs
-    timely upgrades rather than a stable wire-protocol utility.
+  adoption-history:
+    - >
+      The project is packaged by Homebrew and several community distribution channels
+      and offers JVM and native release artifacts. Its daemon, JSON-RPC, and D-Bus modes
+      have made it useful for server-side notification and automation workflows.
+    - >
+      Because Signal's server protocol evolves, the maintainer warns that signal-cli
+      must remain current; releases more than roughly three months old may stop working
+      correctly.
+  package-nerd-significance:
+    - >
+      signal-cli provides a scriptable Signal endpoint despite not being an official
+      Signal client. Its combination of local encrypted account state, daemon
+      interfaces, and frequent protocol-compatibility releases makes version freshness
+      operationally important.
+  project-history:
+    - >
+      signal-cli grew as an independent command-line interface around Signal protocol
+      libraries derived from Signal's Android implementation. It supports account
+      registration or linking, message exchange, and automation-oriented interfaces.
+    - >
+      The project has repeatedly adapted to Signal server and libsignal changes. Its
+      changelog records continuing additions to messaging features and compatibility
+      fixes.
+  related-projects:
+    - >
+      Signal Android and libsignal are upstream sources of protocol behavior and native
+      cryptographic components.
+    - >
+      signal-cli-rest-api and other community wrappers commonly expose signal-cli to
+      containerized or HTTP-based automation, but are separate projects.
+  sources:
+    - 'Official changelog: https://github.com/AsamK/signal-cli/blob/master/CHANGELOG.md'
+    - 'Official repository and README: https://github.com/AsamK/signal-cli'
+    - 'Official wiki: https://github.com/AsamK/signal-cli/wiki'
+  summary:
+    - >
+      signal-cli is an unofficial, independently maintained command-line, JSON-RPC, and
+      D-Bus interface for the Signal messenger.
+  timeline:
+    - '2015: Early public signal-cli releases established command-line Signal messaging.'
+    - >
+      2026: The 0.14 series continued adapting registration, messaging, and storage
+      behavior to current Signal services.
+  usage:
+    - >
+      Users register a phone number or link signal-cli as a device, then send and
+      receive messages from scripts or run its daemon interfaces. The official README
+      highlights server notifications as a primary use case and recommends receiving
+      messages regularly for efficient encryption and state updates.
 category: networking
 package-manager:
   apk: signal-cli

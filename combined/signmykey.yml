@@ -15,25 +15,47 @@ credentials-file-location:
     - /etc/signmykey/server.yml
     - /etc/signmykey/server.key
 history:
-  - >
-    signmykey is a Go-based attempt to make OpenSSH certificate authorities
-    operationally convenient. Instead of distributing long-lived public keys to every
-    host, an organization runs a signing service that authenticates users, maps them to
-    SSH principals, and issues short-lived SSH certificates for infrastructure access.
-  - >
-    The project is intentionally backend-oriented. Its README lists separate
-    authenticator, principals, and signer backends: users can be checked against LDAP or
-    local maps, principals can come from LDAP groups or static configuration, and
-    certificate signing can happen directly in signmykey or through HashiCorp Vault. The
-    documentation shows it deployed as a systemd service with
-    `/etc/signmykey/server.yml`, TLS material, and Vault AppRole credentials, which puts
-    it closer to an internal identity service than a one-off SSH helper.
-  - >
-    Distribution is small but conventional: Homebrew ships a `signmykey` formula for
-    developer machines, while the upstream documentation and README describe APT
-    repository installation and manual release binaries. Practitioners would use it
-    where SSH certificate issuance, group-derived principals, and Vault-backed signing
-    are preferable to hand-managed `authorized_keys` files.
+  adoption-history:
+    - >
+      The official documentation targets centrally managed SSH environments and
+      integrates with Vault, LDAP, and OpenID Connect. The supplied package facts list
+      Homebrew distribution, while the documentation also describes an Ubuntu package
+      repository.
+  package-nerd-significance:
+    - >
+      Signmykey packages an SSH-certificate workflow into a single client/server tool
+      with pluggable identity, principal, and signer backends. It is notable for joining
+      SSH access, enterprise identity, and short-lived certificate issuance without
+      distributing long-lived authorized keys to every host.
+  project-history:
+    - >
+      Signmykey was created as an automated SSH certificate-authority service. Its
+      documented architecture separates user authentication, principal lookup, and
+      certificate signing, allowing local or HashiCorp Vault-backed signing.
+  related-projects:
+    - OpenSSH consumes the user certificates issued by Signmykey.
+    - HashiCorp Vault can serve as the SSH signing backend.
+    - LDAP and OpenID Connect can provide authentication and principal data.
+  sources:
+    - 'Official SSH-server integration guide: https://signmykey.io/getting-started/sshserver/'
+    - >
+      Official Signmykey getting-started documentation:
+      https://signmykey.io/getting-started/signmykey/
+    - 'Official signer-backend documentation: https://signmykey.io/backends/signer/'
+  summary:
+    - >
+      Signmykey is a client/server SSH certificate-authority tool that authenticates
+      users and issues short-lived OpenSSH certificates.
+  timeline:
+    - '2018: Official examples show Signmykey issuing short-lived SSH user certificates.'
+    - >
+      Current: Official documentation covers local and Vault signers plus LDAP and
+      OIDC-oriented deployments.
+  usage:
+    - >
+      Administrators configure a Signmykey server with authentication, principal, and
+      signer backends. Users point the client at that server and request a certificate,
+      while SSH servers trust the configured CA and authorize certificate principals.
 category: security
 package-manager:
   brew: signmykey
