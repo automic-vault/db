@@ -9,31 +9,54 @@ config-file-location:
     - <project-root>/.editorconfig
 credentials-file-location: null
 history:
-  - >
-    shfmt began as Daniel Marti's Go-based shell formatter, publicly introduced in
-    September 2016 as a tool to format shell programs in the spirit of gofmt. Early
-    discussion already shows the design tension that shaped the project: support
-    real-world shell dialects and legacy constructs, make style decisions configurable
-    only where necessary, and avoid rewriting program meaning while normalizing layout.
-  - >
-    The tool later became the best-known command shipped from the mvdan.cc/sh project, a
-    pure-Go shell parser, formatter, and interpreter supporting POSIX shell, Bash, Zsh,
-    and mksh. That wider library context matters: shfmt is not only a pretty-printer,
-    but a frontend over a maintained parser that also powers syntax packages,
-    interpreters, and integrations.
-  - >
-    Practitioners use shfmt as the shell counterpart to gofmt, usually through shfmt -l
-    -w in local scripts, CI checks, pre-commit hooks, editor integrations, and
-    code-review automation. The upstream README explicitly calls out editor wrappers for
-    JetBrains IDEs, Vim, Emacs, VS Code, Sublime Text, and Trunk, plus ecosystem
-    integrations such as prettier-plugin-sh, sh-checker, mdformat-shfmt, and
-    pre-commit-shfmt.
-  - >
-    Its packaging footprint is unusually broad for a formatter: upstream documents Go
-    installation, Docker images, and packages for Alpine, Arch, Debian, Fedora, FreeBSD,
-    Homebrew, MacPorts, NixOS, OpenSUSE, Scoop, Snapcraft, Void, and webi. Homebrew also
-    ships bottled builds for macOS and Linux, which has helped make shfmt a default
-    dependency in shell-heavy developer tooling and repository lint pipelines.
+  adoption-history:
+    - >
+      The official README lists packaging across Alpine, Arch, Debian, Fedora, FreeBSD,
+      Homebrew, MacPorts, NixOS, OpenSUSE, Scoop, Snapcraft, Void, and webi, plus
+      release images on Docker. This unusually broad distribution makes shfmt readily
+      available in developer workstations and CI systems.
+  package-nerd-significance:
+    - >
+      shfmt is the shell ecosystem's prominent opinionated formatter. Package
+      enthusiasts value its broad package-manager coverage, single Go binary,
+      EditorConfig support, and applicability to POSIX shell, Bash, mksh, and related
+      dialects.
+  project-history:
+    - >
+      shfmt is developed within Daniel Martí's mvdan/sh project, a Go implementation of
+      shell parsing, formatting, and interpretation. Version 3 documentation is
+      published under the mvdan.cc/sh/v3 module path.
+    - >
+      The project has also supported JavaScript-facing integrations. Its README records
+      that the older mvdan-sh package was archived in favor of the third-party sh-syntax
+      WASM package.
+  related-projects:
+    - >
+      The mvdan/sh repository also contains the shell syntax, expansion, and interpreter
+      libraries and the gosh proof-of-concept interpreter.
+    - >
+      The official README lists editor and automation integrations including
+      vscode-shfmt, shfmt.el, neoformat, pre-commit-shfmt, and prettier-plugin-sh.
+  sources:
+    - https://github.com/mvdan/sh
+    - https://github.com/mvdan/sh/releases
+    - https://pkg.go.dev/mvdan.cc/sh/v3/cmd/shfmt
+  summary:
+    - >
+      shfmt is the command-line formatter supplied by the mvdan/sh Go project. It parses
+      and rewrites shell source using a consistent style and supports POSIX shell, Bash,
+      mksh, and zsh-oriented syntax.
+  timeline:
+    - 'Version 3 era: The project adopted the mvdan.cc/sh/v3 Go module path.'
+    - '2025: v3.12.0 added EditorConfig control for simplify and minify behavior.'
+  usage:
+    - >
+      Typical use is `shfmt -l -w script.sh` to list and rewrite shell files. Formatting
+      behavior can be supplied through a project `.editorconfig`, making the tool
+      suitable for editor hooks, pre-commit checks, and CI formatting gates.
+    - >
+      The official project also publishes container images, allowing formatting without
+      installing a host binary.
 tags:
   - bash
   - cli
@@ -63,10 +86,9 @@ provenance:
       Official GitHub README is the main documentation surface; Go package documentation
       is generated from the official module source for the shfmt command.
   history-sources:
-    - https://community.unix.com/t/format-your-scripts-with-shfmt/362404
     - https://github.com/mvdan/sh
+    - https://github.com/mvdan/sh/releases
     - https://pkg.go.dev/mvdan.cc/sh/v3/cmd/shfmt
-    - https://formulae.brew.sh/formula/shfmt
   repo-sources:
     - >
       source_facts.repo already supplies https://github.com/mvdan/sh, so repo is
