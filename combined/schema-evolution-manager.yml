@@ -5,23 +5,64 @@ repo: https://github.com/mbryzek/schema-evolution-manager
 docs:
   - https://github.com/mbryzek/schema-evolution-manager#readme
 config-file-location: null
-credentials-file-location: null
+credentials-file-location:
+  unix: ~/.pgpass
 history:
-  - >
-    Schema Evolution Manager, usually invoked as sem, is a small Ruby-oriented
-    PostgreSQL migration toolkit from the Gilt Groupe engineering style of treating
-    database schema changes as release artifacts. Its README says Gilt began using it in
-    early 2012 across dozens of independent PostgreSQL databases, then packaged the
-    workflow as source-controlled SQL scripts distributed as gzipped tarballs named from
-    git tags.
-  - >
-    The tool deliberately keeps the workflow narrow: initialize a schema repository, add
-    SQL files with sem-add, build a release tarball with sem-dist, and apply unapplied
-    scripts with sem-apply. It records applied filenames in its own
-    schema_evolution_manager tables and supports baselining existing databases. Its
-    notable design choice is the absence of rollback support; the project argues for
-    peer-reviewed, small, separately deployed schema evolutions instead of pretending
-    every production DDL change can be reversed safely.
+  adoption-history:
+    - >
+      Gilt Groupe began using SEM in early 2012. The official README reports that it
+      improved the reliability of production schema deployments across dozens of
+      independent PostgreSQL databases.
+    - >
+      The project was subsequently made available through RubyGems, direct installation,
+      and Homebrew. Its explicitly framework-independent design allowed database changes
+      to be managed separately from any particular application stack.
+  package-nerd-significance:
+    - >
+      SEM is an opinionated example of Unix-style migration tooling: several narrow
+      commands, minimal dependencies, Git-managed SQL, immutable release tarballs, and
+      deliberately no rollback facility. It captures an operational school that favors
+      forward-only, peer-reviewed, incremental database changes over framework-bound
+      migration abstractions.
+  project-history:
+    - >
+      Schema Evolution Manager was created at Gilt Groupe to standardize PostgreSQL
+      schema changes as ordinary source code. It records applied scripts in its own
+      PostgreSQL schema and packages migrations as reproducible tarballs named from Git
+      tags.
+    - >
+      Its design was shaped by production experience: small timestamped changes,
+      independent schema deployments, reproducible artifacts, and no automatic rollback.
+      The project was publicly presented at PGDay NYC in 2013.
+  related-projects:
+    - 'PostgreSQL and psql: SEM applies migration scripts through PostgreSQL tooling.'
+    - 'Git: SEM uses repositories and tags as the history and release model for schema changes.'
+    - 'RubyGems and Homebrew: Officially documented installation channels.'
+  sources:
+    - https://github.com/mbryzek/schema-evolution-manager#readme
+    - source_facts.package-manager
+  summary:
+    - >
+      Schema Evolution Manager, or sem, is a suite of small command-line tools for
+      creating, packaging, baselining, inspecting, and applying source-controlled
+      PostgreSQL schema migrations.
+  timeline:
+    - 'Early 2012: Gilt Groupe began using SEM internally.'
+    - '2013: SEM was presented at PGDay NYC.'
+    - >
+      2013–2016: The official repository's copyright notice records Gilt Groupe
+      stewardship during this period.
+  usage:
+    - >
+      A typical workflow initializes a Git repository with sem-init, adds timestamped
+      SQL with sem-add, commits the scripts, builds a tagged tarball with sem-dist, and
+      applies pending scripts with sem-apply. sem-baseline can register pre-existing
+      migrations without executing them.
+    - >
+      Database connection parameters can be supplied as a PostgreSQL URL or separate
+      host, port, database, and user options. The official guide recommends ~/.pgpass
+      for persistent credentials or --password for a temporary prompt-managed credential
+      file.
 category: data
 package-manager:
   brew: schema-evolution-manager

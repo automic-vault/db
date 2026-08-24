@@ -10,24 +10,58 @@ config-file-location:
 credentials-file-location:
   unix: ~/.config/scdl/scdl.cfg
 history:
-  - >
-    scdl is a command-line SoundCloud downloader from the scdl-org project. The upstream
-    README describes a Python-based script for downloading music from SoundCloud,
-    applying ID3 tags, and running on Windows, OS X, and Linux with Python 3 and ffmpeg
-    as system requirements.
-  - >
-    The package's role is mainly as a convenience wrapper for users who want repeatable
-    SoundCloud downloads from the shell, including tracks, playlists, user uploads,
-    reposts, and liked tracks. In version 3 the project became a wrapper around yt-dlp
-    with defaults and compatibility patches, which shifted scdl from a standalone
-    downloader implementation toward a SoundCloud-oriented front end over a broader
-    media-downloader engine.
-  - >
-    Packaging through Homebrew, MacPorts, Nix, and openSUSE-style package names makes
-    scdl easier to install than a raw Python checkout. The README documents a per-user
-    configuration file at `~/.config/scdl/scdl.cfg`, so practitioners tend to treat it
-    like other small media CLIs: install the binary, keep ffmpeg available, store
-    defaults in the config file, and pass SoundCloud URLs on the command line.
+  adoption-history:
+    - >
+      scdl is packaged by Homebrew, MacPorts, Nix, and openSUSE according to the
+      supplied package metadata. The official repository also shows a long-lived user
+      community around a specialized SoundCloud command-line workflow.
+    - >
+      The maintainers now characterize development as inactive, accepting bug reports
+      and fixes while discouraging features that can instead be expressed through yt-dlp
+      arguments.
+  package-nerd-significance:
+    - >
+      scdl represents the specialized-downloader layer that grew around individual media
+      services: it provides service-aware selection, synchronization, archive tracking,
+      naming, and metadata behavior while delegating modern extraction work to the
+      broader yt-dlp ecosystem.
+  project-history:
+    - >
+      scdl began as a Python command-line program dedicated to downloading SoundCloud
+      tracks, playlists, likes, reposts, and user catalogs while writing audio metadata
+      and artwork.
+    - >
+      As of version 3, the official README says scdl became a wrapper around yt-dlp,
+      retaining defaults and patches for backward compatibility rather than maintaining
+      an entirely independent extraction stack.
+  related-projects:
+    - 'yt-dlp: The general-purpose media downloader wrapped by scdl beginning with version 3.'
+    - 'FFmpeg: Required for media processing.'
+    - 'mutagen: Used by scdl to write audio metadata.'
+  sources:
+    - https://github.com/scdl-org/scdl#readme
+    - https://github.com/scdl-org/scdl/wiki/Installation-Instruction
+    - source_facts.package-manager
+  summary:
+    - >
+      scdl, short for Soundcloud Music Downloader, is a Python command-line utility for
+      downloading SoundCloud media and organizing it with tags, artwork, playlists, and
+      archive or synchronization features.
+  timeline:
+    - 'Before version 3: scdl operated as a dedicated SoundCloud downloading script.'
+    - 'Version 3: scdl became a compatibility-oriented wrapper around yt-dlp.'
+    - >
+      Current status: Feature development is inactive, while bug reports and fixes
+      remain welcome.
+  usage:
+    - >
+      Users give scdl a SoundCloud track, playlist, or profile URL, or use its search
+      mode. Options cover favorites, reposts, playlists, synchronization, download
+      archives, output naming, artwork, metadata, and audio-format preferences.
+    - >
+      Authenticated operations can use an auth token. The program leaves configuration
+      in ~/.config/scdl/scdl.cfg; because client IDs and auth tokens are supported
+      settings, that same file may contain credentials.
 category: media
 package-manager:
   brew: scdl

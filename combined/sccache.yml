@@ -11,29 +11,62 @@ config-file-location:
   windows: '%APPDATA%\Mozilla\sccache\config\config'
 credentials-file-location: null
 history:
-  - >
-    sccache is Mozilla's shared compilation cache, a ccache-like compiler wrapper
-    written in Rust by Mozilla and contributors. Its origin is closely tied to the needs
-    of large Mozilla and Rust-adjacent builds: avoid recompilation when compiler inputs
-    match, but support cache storage beyond a single local disk.
-  - >
-    The project occupies the build-infrastructure layer between a compiler and a build
-    system. The upstream README describes local and cloud storage backends, multi-level
-    cache hierarchies with backfill, support for assembler, C/C++, Rust, CUDA, clang,
-    and ROCm HIP compilations, and an icecream-style distributed compilation mode with
-    authentication, transport encryption, and sandboxed execution. Firefox's build
-    documentation treats sccache-dist as a way to distribute and cache Rust compilation
-    across multiple machines.
-  - >
-    Practitioners usually wire sccache in through environment variables or
-    compiler-wrapper settings rather than calling it as a standalone compiler. Cargo
-    users set `RUSTC_WRAPPER=sccache`, while C and C++ builds point compiler variables
-    at the wrapper. Teams then choose storage based on topology: disk for local
-    development, Redis or memcached for shared LAN caches, S3/GCS/Azure/WebDAV-style
-    stores for CI, and the distributed scheduler/server/client setup for build farms.
-    Package-manager coverage, including Homebrew, Linux distributions, Windows package
-    managers, and crates.io, reflects that it is both a developer workstation tool and
-    CI infrastructure.
+  adoption-history:
+    - >
+      sccache is distributed through numerous system and language-oriented package
+      channels. The supplied package metadata lists Homebrew, Debian, Ubuntu,
+      Fedora/DNF, Arch, Alpine, Nix, Chocolatey, Scoop, Winget, MacPorts, and openSUSE
+      packages.
+    - >
+      Its support for Rust through Cargo's rustc-wrapper setting, alongside major C/C++
+      compiler families and CI-oriented remote caches, has made it useful across both
+      local development and automated build environments.
+  package-nerd-significance:
+    - >
+      sccache combines the familiar compiler-wrapper workflow associated with ccache
+      with Rust support, a client-server design, distributed compilation, and cloud or
+      network cache backends. That breadth makes it a notable package for reproducible
+      developer-machine and CI build acceleration.
+  project-history:
+    - >
+      The project was developed under Mozilla as a compiler-cache implementation written
+      in Rust. It grew beyond local compilation caching to support multiple compiler
+      families, distributed compilation, and storage backends such as S3-compatible
+      services, Redis, Azure, Google Cloud Storage, GitHub Actions, and local disk.
+    - >
+      Later releases continued expanding platform and compiler coverage. The official
+      0.15.0 release highlighted multi-tier caching and partial C++20 module support,
+      while 0.17.0 introduced a new client-side architecture.
+  related-projects:
+    - 'ccache: The established compiler cache whose invocation style sccache follows.'
+    - 'Cargo: Can invoke sccache through build.rustc-wrapper or RUSTC_WRAPPER.'
+    - 'Mozilla sccache-action: Official GitHub Action integration for CI caching.'
+  sources:
+    - https://github.com/mozilla/sccache#readme
+    - https://github.com/mozilla/sccache/blob/main/docs/Configuration.md
+    - https://github.com/mozilla/sccache/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      sccache is a Mozilla-hosted compiler cache used as a compiler wrapper. It stores
+      compilation results locally or in remote storage and can also participate in
+      distributed compilation.
+  timeline:
+    - >
+      2016: Early public development and releases established sccache as a Rust-based
+      compiler cache.
+    - '2026: Version 0.15.0 added multi-tier caching and initial C++20 modules support.'
+    - '2026: Version 0.17.0 introduced a new client-side architecture.'
+  usage:
+    - >
+      Prefix a supported compiler command with sccache, or configure Cargo with
+      build.rustc-wrapper or RUSTC_WRAPPER. A local disk cache is used by default;
+      configuration and environment variables select cache sizing, remote storage,
+      distributed compilation, and other behavior.
+    - >
+      The client normally starts a local server automatically. Users can inspect cache
+      effectiveness with sccache --show-stats and explicitly start or stop the server
+      when integrating it into build or CI workflows.
 category: developer-tools
 package-manager:
   apk: sccache
