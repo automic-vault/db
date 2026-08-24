@@ -7,23 +7,49 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    `sbtenv` is a small shell-based version manager for sbt, modeled in spirit on
-    language and tool shims such as rbenv. Its initial public release was 0.0.1 on
-    January 30, 2014, followed by early work on shell completions, rehash behavior, and
-    the bundled `sbt-install` recipes that know how to fetch specific sbt distributions.
-  - >
-    The practical problem it solves is build reproducibility on developer machines.
-    Users add `~/.sbtenv/bin` to PATH, initialize shell shims, install named sbt
-    versions such as `sbt-0.13.1`, and let sbtenv select the version requested by a
-    project. A 2014 release explicitly improved version management by applying a version
-    when a `build.properties` file is present, which aligns the shim layer with sbt's
-    own project-level version pinning.
-  - >
-    Its adoption footprint is narrower than sbt itself, with Homebrew as the main
-    package-manager entry in this dataset. That narrowness matches its role: teams use
-    it when they want a lightweight way to keep several historical sbt launchers
-    available without installing a heavier Scala toolchain manager.
+  adoption-history:
+    - >
+      The project added recipes for successive sbt releases and gained Bash, Zsh, and
+      later fish-shell support. Its official repository also identifies Homebrew
+      packaging as part of the project's ecosystem.
+  package-nerd-significance:
+    - >
+      sbtenv applies the familiar *env shim model to sbt. It matters to package and
+      toolchain enthusiasts because it separates the system package used to install
+      sbtenv from the multiple sbt distributions managed beneath ~/.sbtenv/versions.
+  project-history:
+    - >
+      sbtenv began as a small shell-based environment manager for sbt. Its changelog
+      records an initial public release in January 2014, followed by installation
+      improvements, version-selection fixes, shell support, and recipes tracking sbt
+      releases.
+  related-projects:
+    - sbt is the build tool managed by sbtenv.
+    - >
+      scalaenv is recommended by the sbtenv project when Scala-language version
+      management, rather than sbt management, is required.
+    - >
+      The project's shim-oriented workflow is structurally similar to other *env version
+      managers.
+  sources:
+    - https://github.com/sbtenv/sbtenv#readme
+  summary:
+    - >
+      sbtenv is a shell-oriented sbt version manager. It installs sbt distributions
+      beneath ~/.sbtenv/versions, exposes commands through ~/.sbtenv/bin, and uses shell
+      initialization and shims to select the active toolchain.
+  timeline:
+    - '2014-01-30: Initial public release 0.0.1.'
+    - >
+      2014-05-24: Version 0.0.7 improved version management using an existing
+      build.properties file.
+    - '2018-07-11: Version 0.0.15 added fish-shell support.'
+    - '2021-05-13: Version 0.0.24 added an sbt 1.5.2 installation recipe.'
+  usage:
+    - >
+      Users clone or install sbtenv, add its bin directory to PATH, evaluate sbtenv init
+      from their shell startup file, and install individual sbt versions with sbtenv
+      install. Manual installations can be extracted into ~/.sbtenv/versions.
 category: developer-tools
 package-manager:
   brew: sbtenv
