@@ -6,18 +6,53 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    sf-pwgen is Anders Bergh's macOS-focused password generator, packaged as a single
-    command-line utility rather than a cross-platform password suite. The upstream
-    README describes it as generating passwords through Apple's SecurityFoundation
-    framework and supporting OS X Mountain Lion and later, with version 1.5 identifying
-    it as a macOS password generator.
-  - >
-    Its ecosystem role is deliberately small: a scriptable local password generator for
-    macOS users who want passwords produced through platform security APIs and exposed
-    as a terminal command. Homebrew and MacPorts both package it under the `sf-pwgen`
-    name, which is where most package-manager users encounter it; the package is not a
-    general password manager, synchronization tool, or credential vault.
+  adoption-history:
+    - >
+      The supplied source_facts.package-manager field records distribution through
+      Homebrew and MacPorts, keeping the macOS-specific utility accessible through both
+      major Mac package collections.
+  package-nerd-significance:
+    - >
+      sf-pwgen exposes a private-feeling piece of classic macOS functionality—the
+      SecurityFoundation password assistant—as a composable terminal command. It is also
+      a compact historical artifact of package-manager culture around otherwise
+      GUI-oriented platform frameworks and undocumented APIs.
+  project-history:
+    - >
+      Anders Bergh created sf-pwgen as a command-line frontend to macOS
+      SecurityFoundation password generation. The repository also includes a
+      reverse-engineered `SFPasswordAssistant.h` header for the password-assistant API
+      used by applications such as Keychain Access.
+    - >
+      The documented command identifies version 1.5 and supports memorable, random,
+      letters-only, alphanumeric, and numeric generation algorithms. The README says the
+      command runs on OS X Mountain Lion and later, while the included header targets
+      Snow Leopard and later.
+  related-projects:
+    - macOS SecurityFoundation
+    - Keychain Access Password Assistant
+  sources:
+    - 'Official repository README: https://github.com/anders/pwgen#readme'
+    - source_facts.package-manager
+  summary:
+    - >
+      sf-pwgen is a macOS command-line password generator that calls the
+      SecurityFoundation framework used by Apple's password-assistant functionality.
+  timeline:
+    - >
+      Snow Leopard era: The included reverse-engineered SecurityFoundation header is
+      documented as compatible with Snow Leopard and later.
+    - >
+      Mountain Lion era: The sf-pwgen command is documented as running on Mountain Lion
+      and later.
+    - >
+      Version 1.5: Official usage text documents algorithm, count, length, and language
+      options.
+  usage:
+    - >
+      Invoke `sf-pwgen` with an algorithm, count, and desired length; by default it
+      generates five 12-character memorable passwords. The documented language option is
+      explicitly noted as broken.
 tags:
   - cli
   - macos
@@ -48,9 +83,8 @@ provenance:
       No dedicated docs site found; official GitHub README includes usage and options
       for sf-pwgen: https://github.com/anders/pwgen#readme
   history-sources:
-    - https://github.com/anders/pwgen
-    - https://formulae.brew.sh/formula/sf-pwgen
-    - https://ports.macports.org/port/sf-pwgen/details/
+    - 'Official repository README: https://github.com/anders/pwgen#readme'
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/anders/pwgen; per
