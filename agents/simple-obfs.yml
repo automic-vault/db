@@ -9,26 +9,53 @@ config-file-location:
     - config.json
 credentials-file-location: null
 history:
-  - >
-    simple-obfs was created inside the Shadowsocks ecosystem at the end of 2016 as a
-    lightweight obfuscation companion for shadowsocks-libev. The upstream README
-    describes it as a simple obfuscating tool designed for Shadowsocks plugin server
-    use, with Max Lv's 2016 GPL notice and C/libev implementation matching the project
-    goal of low overhead proxy obfuscation.
-  - >
-    Its adoption followed the Shadowsocks plugin model: operators ran obfs-local on
-    clients and obfs-server on servers, either through ss-local and ss-server plugin
-    options or as standalone local forwarders. The documented modes wrap traffic with
-    HTTP-like or TLS-like obfuscation, optionally using a host value and server-side
-    failover to an ordinary web server so the same port can look like a normal HTTP or
-    HTTPS endpoint.
-  - >
-    The package became a distribution artifact for legacy Shadowsocks deployments.
-    Debian packages it as a simple obfuscating plugin for shadowsocks-libev and notes
-    the pure-C/libev design; Homebrew packages version 0.0.5 with libev and build-time
-    autotools/asciidoc dependencies. Upstream marks the project deprecated and points
-    users to v2ray-plugin, so its practical role is compatibility with older configs,
-    routers, scripts, and deployments that still expect obfs-local and obfs-server.
+  adoption-history:
+    - >
+      The input records Homebrew, Ubuntu, and openSUSE packages. The repository was
+      later archived, and its README directs users to the newer simple-obfs-rust
+      implementation.
+  package-nerd-significance:
+    - >
+      simple-obfs represents the lightweight SIP003 plugin era of the Shadowsocks
+      ecosystem: a small C utility that could be composed with a proxy rather than
+      embedding obfuscation into the proxy core. Its archived status also makes it
+      useful for understanding the migration of packaged networking tools to maintained
+      replacements.
+  project-history:
+    - >
+      simple-obfs was developed under the Shadowsocks organization as a C implementation
+      of a simple obfuscating tunnel and as a plugin for shadowsocks-libev. Its
+      obfs-local and obfs-server programs disguise traffic using HTTP- or TLS-like
+      framing.
+    - >
+      The official release history reached version 0.0.5 after several small
+      compatibility and bug-fix releases. Development subsequently stopped, the
+      repository was archived, and the project recommended simple-obfs-rust as its
+      successor.
+  related-projects:
+    - shadowsocks-libev
+    - SIP003 plugins
+    - simple-obfs-rust
+    - v2ray-plugin
+  sources:
+    - https://github.com/shadowsocks/simple-obfs#readme
+    - https://github.com/shadowsocks/simple-obfs/blob/master/doc/obfs-server.asciidoc
+    - https://github.com/shadowsocks/simple-obfs/releases
+    - source_facts.package-manager
+  summary:
+    - >
+      simple-obfs is an archived Shadowsocks plugin that provides client and server
+      programs for lightweight HTTP- or TLS-style traffic obfuscation.
+  timeline:
+    - '2016: Early 0.0.x releases refined the SIP003 interface and added failover support.'
+    - '2017: Version 0.0.5 addressed a MinGW build problem.'
+    - 'Later: The repository was archived and began directing users to simple-obfs-rust.'
+  usage:
+    - >
+      Users run obfs-local on the client side or obfs-server on the remote side, either
+      directly as tunnels or through a SIP003-compatible Shadowsocks implementation. The
+      programs accept JSON configuration files and support HTTP and TLS obfuscation
+      modes.
 tags:
   - cli
   - deprecated
@@ -56,10 +83,10 @@ provenance:
       No dedicated docs site found; official GitHub README provides build and usage
       documentation, including plugin and standalone modes.
   history-sources:
-    - https://github.com/shadowsocks/simple-obfs
-    - https://api.github.com/repos/shadowsocks/simple-obfs
-    - https://packages.debian.org/sid/simple-obfs
-    - https://formulae.brew.sh/formula/simple-obfs
+    - https://github.com/shadowsocks/simple-obfs#readme
+    - https://github.com/shadowsocks/simple-obfs/blob/master/doc/obfs-server.asciidoc
+    - https://github.com/shadowsocks/simple-obfs/releases
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo is already populated with
@@ -75,6 +102,6 @@ category-path:
   - proxy
 display-name-confidence: high
 docs-confidence: medium
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
