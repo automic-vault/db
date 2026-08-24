@@ -6,24 +6,50 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    sdb, the string database from the radare ecosystem, is a small C key-value store
-    based on Daniel J. Bernstein's cdb disk-storage idea. The public repository dates
-    from 2012 and describes the project as a simple string key/value database with JSON
-    and array introspection.
-  - >
-    Its role is closely tied to radare2. The official radare2 book describes SDB as a
-    small, fast disk and in-memory database used in many parts of r2, effectively a
-    hashtable with persistence and command-line access. That makes it infrastructure
-    rather than an application: a storage primitive for metadata, configuration-like
-    records, generated databases, and compact lookup tables.
-  - >
-    The standalone package exposes the `sdb` command and the library. It supports
-    namespaces, atomic database sync, bindings, a memcache-compatible server backed by
-    sdb, arrays, JSON accessors, and a command-line interface that can work against
-    either an on-disk database or transient stdin-driven operations. Practitioners use
-    it when they want a tiny scriptable key-value store with predictable files,
-    especially inside tooling that already lives near radare2.
+  adoption-history:
+    - >
+      SDB is distributed as a standalone command and library and is packaged by Homebrew
+      and Alpine Linux. Its close association with the radare organization also makes it
+      familiar to users and packagers of the radare2 reverse-engineering ecosystem.
+  package-nerd-significance:
+    - >
+      SDB is notable as a deliberately small embedded string database: it adapts cdb's
+      disk format, adds atomic synchronization, arrays, JSON introspection, namespaces,
+      and command-line access, and can be incorporated as a library.
+  project-history:
+    - >
+      SDB was created by radare developer Sergi Alvarez, known as pancake, as a simple
+      string key/value database derived from Daniel J. Bernstein's cdb storage design.
+      The project modifies the record encoding to reduce database size and layers
+      additional data conveniences over the compact store.
+    - >
+      The repository also describes mcsdbd, a memcache-compatible server backed by SDB,
+      and language bindings or related libraries for several environments.
+  related-projects:
+    - >
+      SDB derives its disk-storage approach from cdb and is developed within the radare
+      organization. The README also identifies mcsdbd and sdbtypes as related
+      components.
+  sources:
+    - 'Official documentation directory: https://github.com/radareorg/sdb/tree/master/doc'
+    - 'Official project README: https://github.com/radareorg/sdb#readme'
+    - 'Package coverage: source_facts.package-manager'
+  summary:
+    - >
+      SDB is a compact string-oriented key/value database and C library with on-disk and
+      in-memory operation, a CLI, arrays, and JSON introspection.
+  timeline:
+    - >
+      SDB originated within the radare development community as a cdb-derived embedded
+      database.
+    - >
+      The project subsequently added namespaces, atomic synchronization, structured-data
+      helpers, language bindings, and memcache-oriented components.
+  usage:
+    - >
+      The `sdb` command can create or query a named database, operate transiently
+      without a disk database, manipulate arrays, and address fields inside JSON values.
+      Applications can instead embed the library.
 tags:
   - c
   - cdb
@@ -50,11 +76,9 @@ provenance:
   docs-sources:
     - Official GitHub repository README documents compilation and usage examples.
   history-sources:
-    - https://github.com/radareorg/sdb
-    - https://book.rada.re/commandline/sdb.html
-    - https://dbdb.io/db/sdb
-    - https://formulae.brew.sh/formula/sdb
-    - source_facts.package-manager
+    - 'Official documentation directory: https://github.com/radareorg/sdb/tree/master/doc'
+    - 'Official project README: https://github.com/radareorg/sdb#readme'
+    - 'Package coverage: source_facts.package-manager'
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/radareorg/sdb, so repo was
@@ -69,6 +93,6 @@ category-path:
   - database
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high

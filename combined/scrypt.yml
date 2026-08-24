@@ -7,30 +7,50 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    scrypt is both a password-based key derivation function and the reference-style file
-    encryption utility distributed by Tarsnap. Colin Percival designed the function for
-    the Tarsnap online backup system and presented the original paper, `Stronger Key
-    Derivation via Sequential Memory-Hard Functions`, at BSDCan in May 2009. Its core
-    historical contribution was making password cracking expensive in memory as well as
-    CPU time, raising the cost of custom hardware attacks compared with PBKDF2 and
-    bcrypt.
-  - >
-    The cryptographic design became standardized in RFC 7914, published in August 2016
-    by Colin Percival and Simon Josefsson. The RFC specifies scrypt as a password-based
-    KDF that derives keys from a secret string using memory-hard functions and includes
-    an ASN.1 schema. In practice, security libraries expose scrypt for password hashing
-    and key derivation where tunable memory cost is desired, while the standalone
-    utility demonstrates file encryption using `scrypt enc`, `scrypt dec`, and parameter
-    controls for time and memory.
-  - >
-    The command-line package is useful to practitioners who want password-based
-    encryption without relying on a low-memory KDF. The Tarsnap documentation describes
-    the utility as a demonstration of the KDF, with options that cap derivation time and
-    memory use; the repository also provides `libscrypt-kdf` usage for callers embedding
-    the KDF. Package managers distribute it as a small security tool: Homebrew ships
-    `scrypt` with OpenSSL, Debian and Ubuntu expose the development library as
-    `libscrypt-kdf-dev`, and other Unix package sets carry the CLI.
+  adoption-history:
+    - >
+      The algorithm moved beyond its original Tarsnap use into the IETF standards
+      process and language ecosystems. The official project page records support in
+      Python's hashlib, Node.js crypto, Go's x/crypto packages, and numerous bindings;
+      it also notes use of a simplified variant by Litecoin.
+  package-nerd-significance:
+    - >
+      scrypt helped make memory hardness a mainstream package-selection concern. Package
+      maintainers encounter the name both as a cryptographic primitive exposed by
+      libraries and as the small reference file-encryption command distributed here.
+  project-history:
+    - >
+      Colin Percival originally developed scrypt for the Tarsnap online backup system.
+      The design was presented at BSDCan 2009 as a sequential memory-hard key-derivation
+      function intended to raise the hardware cost of brute-force attacks.
+    - >
+      The project also supplies a demonstration command-line encryption utility and
+      reference C implementation. The algorithm was later standardized by the IETF as
+      RFC 7914.
+  related-projects:
+    - >
+      The official documentation compares scrypt with PBKDF2 and bcrypt and lists
+      implementations for Python, Node.js, Go, Ruby, Haskell, and other environments.
+  sources:
+    - 'IETF RFC 7914: https://www.rfc-editor.org/rfc/rfc7914'
+    - 'Official project page: https://www.tarsnap.com/scrypt.html'
+    - 'Official repository: https://github.com/Tarsnap/scrypt'
+    - 'Original paper: https://www.tarsnap.com/scrypt/scrypt.pdf'
+  summary:
+    - >
+      scrypt is both a memory-hard password-based key-derivation function and the name
+      of its reference command-line file-encryption utility.
+  timeline:
+    - '2009: Colin Percival presented scrypt at BSDCan and published the original design paper.'
+    - '2016: The IETF published scrypt as RFC 7914.'
+    - '2019: The official utility reached version 1.3.0.'
+    - '2025: The official project published version 1.3.3.'
+  usage:
+    - >
+      The command uses `scrypt enc` and `scrypt dec` to encrypt or decrypt files, with
+      optional limits for computation time and memory. Developers can also use the
+      included C implementation as a KDF. The documentation cautions consumers to verify
+      successful authenticated decryption before using produced output.
 category: security
 package-manager:
   brew: scrypt
