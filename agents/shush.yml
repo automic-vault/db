@@ -6,27 +6,43 @@ docs:
 config-file-location: null
 credentials-file-location: null
 history:
-  - >
-    shush is a small Go command-line tool from realestate.com.au for encrypting and
-    decrypting short secrets with AWS Key Management Service. The repository was created
-    on GitHub in 2015 and the README presents the core workflow as piping plaintext into
-    shush encrypt with a KMS key id, ARN, or alias, then piping the stored ciphertext
-    back through shush decrypt without restating the key because that information is
-    embedded in the ciphertext.
-  - >
-    Its practical role is glue between AWS KMS and Unix-style deployment habits. The
-    tool supports AWS credential discovery, explicit region selection outside EC2, KMS
-    encryption contexts, and a 4 KB plaintext limit inherited from the small-secret use
-    case. The notable operational feature is shush exec: it scans environment variables
-    with a KMS_ENCRYPTED_ prefix, decrypts them, strips the prefix, and execs the target
-    command, which made it suitable as a Docker entrypoint shim for applications that
-    keep encrypted environment material in deploy configuration.
-  - >
-    Packaging reflects that narrow operations niche. Homebrew distributes shush,
-    upstream publishes release binaries, and the README also documents source
-    installation with go install. Practitioners use it when they want encrypted values
-    to live beside application or infrastructure configuration while still relying on
-    IAM and KMS policy for access control.
+  adoption-history:
+    - >
+      The official project publishes release binaries, documents installation with go
+      install, and provides a direct Unix/Linux installation example. Its exec mode also
+      supports container-entrypoint use, broadening it from an interactive encryption
+      utility into a deployment-time secret injector.
+  package-nerd-significance:
+    - >
+      shush is representative of small cloud-native security utilities that wrap a
+      managed key service in Unix pipes and environment-variable conventions. Its
+      command-shim mode is particularly relevant to container and twelve-factor
+      deployment workflows.
+  project-history:
+    - >
+      REA Group developed shush as a small AWS KMS encryption and decryption tool. The
+      official repository's copyright notice dates from 2019, and the project was
+      implemented in Go with downloadable release binaries.
+  related-projects:
+    - >
+      AWS KMS provides the cryptographic service and AWS SDK credential chain. The
+      official README also points to ssssh as a Ruby-compatible alternative and shows
+      how AWS CLI plus base64 can reproduce the basic decrypt workflow.
+  sources:
+    - 'Official repository and README: https://github.com/realestate-com-au/shush'
+  summary:
+    - >
+      shush is a Go command-line utility from REA Group for encrypting and decrypting
+      small secrets with AWS Key Management Service.
+  timeline:
+    - '2019: Year in the official repository copyright notice.'
+    - '1.5.5: Version used in the official binary-installation and container examples.'
+  usage:
+    - >
+      Pipe plaintext to shush encrypt with a KMS key ID, ARN, or alias, then pipe the
+      Base64 ciphertext to shush decrypt. The exec subcommand decrypts KMS_ENCRYPTED_
+      environment variables and exposes the plaintext under names without that prefix
+      before starting another command.
 tags:
   - aws-kms
   - cli
@@ -56,9 +72,7 @@ provenance:
       source_facts.homepage is the official GitHub repository; README is the best
       official documentation surface found.
   history-sources:
-    - https://github.com/realestate-com-au/shush
-    - https://api.github.com/repos/realestate-com-au/shush
-    - https://formulae.brew.sh/formula/shush
+    - 'Official repository and README: https://github.com/realestate-com-au/shush'
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/realestate-com-au/shush, so
@@ -74,6 +88,6 @@ category-path:
   - encryption
 display-name-confidence: high
 docs-confidence: high
-history-confidence: high
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
