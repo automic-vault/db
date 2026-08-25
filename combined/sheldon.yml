@@ -8,31 +8,56 @@ config-file-location:
   unix: ~/.config/sheldon/plugins.toml
 credentials-file-location: null
 history:
-  - >
-    sheldon is Ross MacArthur's Rust shell plugin manager, with a public GitHub
-    repository created on March 3, 2019. It appeared in an ecosystem already full of Zsh
-    frameworks, ad hoc Git submodules, and shell-specific plugin managers, and took a
-    narrower systems-tooling approach: describe plugins in TOML, install or update them
-    in parallel, then render shell source code from templates.
-  - >
-    The tool's central contract is deliberately small. A Bash or Zsh startup file can
-    contain a single eval "$(sheldon source)" line, while ~/.config/sheldon/plugins.toml
-    records plugins from GitHub repositories, arbitrary Git repositories, Gists, remote
-    scripts or binaries, local directories, and inline snippets. The lock and source
-    commands separate fetching plugin sources from generating the shell code that is
-    actually sourced at login.
-  - >
-    That model makes sheldon useful for practitioners who want reproducible dotfiles
-    without adopting a full shell framework. It can pin branches, tags, or commits,
-    handle submodules, use configurable install methods, and apply per-plugin templates,
-    so it bridges package-manager habits with the looser world of shell snippets and
-    prompt themes.
-  - >
-    Distribution follows the Rust CLI pattern: sheldon is published on crates.io, offers
-    prebuilt GitHub release binaries, supports cargo install and cargo-binstall, ships a
-    Nix flake, and is packaged by Homebrew and other Unix-like package managers. Its
-    package metadata and docs emphasize Bash/Zsh compatibility while describing the
-    implementation as shell-agnostic with sensible defaults.
+  adoption-history:
+    - >
+      Sheldon is packaged by Homebrew, Alpine Linux, Arch Linux, Nix, and openSUSE
+      according to the supplied package metadata. The project also publishes prebuilt
+      Linux and macOS binaries and supports installation through Cargo.
+    - >
+      Version 0.7.0 standardized the XDG directory layout, replacing the older default
+      under `~/.sheldon`.
+  package-nerd-significance:
+    - >
+      Sheldon applies a compiled Rust implementation and parallel installation to the
+      shell-plugin-manager niche while keeping shell startup integration to a generated
+      script. Its declarative TOML model makes plugin sources, revisions, templates, and
+      loading behavior reproducible and inspectable.
+  project-history:
+    - >
+      Sheldon was developed as a fast, configurable manager for shell plugins. It
+      supports GitHub repositories, Gists, arbitrary Git repositories, remote files,
+      local directories, and inline plugin definitions.
+    - >
+      The project evolved toward XDG-compatible state management and supports
+      configurable templates for generating Bash or Zsh startup code.
+  related-projects:
+    - Oh My Zsh is a commonly managed plugin collection and framework.
+    - >
+      Antigen, Zinit, zplug, and other shell plugin managers occupy the same ecosystem,
+      while Sheldon emphasizes a compiled binary, TOML configuration, and parallel
+      installation.
+  sources:
+    - https://sheldon.cli.rs/
+    - https://sheldon.cli.rs/Configuration.html
+    - https://sheldon.cli.rs/Getting-started.html
+    - https://sheldon.cli.rs/RELEASES.html
+    - source_facts.package-manager
+  summary:
+    - >
+      Sheldon is a Rust-based command-line manager that downloads shell plugins and
+      renders a startup script from declarative TOML configuration.
+  timeline:
+    - '2020-10-16: Version 0.6.0 added XDG directory support.'
+    - '2022-10-13: Version 0.7.0 made XDG directories the default.'
+    - '2022-11-01: Version 0.7.1 fixed custom-config-file handling.'
+  usage:
+    - >
+      Users run `sheldon init` to create `plugins.toml`, declare Git, GitHub, Gist,
+      remote, local, or inline plugins, and add `eval "$(sheldon source)"` to their Bash
+      or Zsh startup file.
+    - >
+      `sheldon lock` installs or updates sources and writes a lock file; `sheldon
+      source` verifies the lock state and emits the configured shell script.
 category: developer-tools
 package-manager:
   apk: sheldon

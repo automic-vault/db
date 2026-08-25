@@ -9,25 +9,49 @@ config-file-location:
     - .rbenv-vars
 credentials-file-location: null
 history:
-  - >
-    rbenv-vars is one of the small shell plugins that grew around rbenv's deliberately
-    narrow core. Its 1.0.0 public release was published on September 27, 2011, shortly
-    after rbenv itself appeared, and it followed the same Unix-style model: a single
-    Bash-oriented extension point rather than a larger application framework.
-  - >
-    The plugin fills the environment-configuration gap for Ruby projects managed by
-    rbenv. It reads variables first from `$(rbenv root)/vars`, then from `.rbenv-vars`
-    files in parent directories, and finally from the `.rbenv-vars` file in the working
-    directory, so teams can keep per-project environment settings alongside the Ruby
-    version selected by rbenv. Version 1.1.0 on June 25, 2012 added conditional
-    assignments with `?=`, and version 1.2.0 on January 9, 2013 improved diagnostics by
-    showing the source file path when printing variables.
-  - >
-    Practitioners use rbenv-vars mostly in Rails and Ruby service deployments where the
-    Ruby interpreter is selected by rbenv and secrets or service endpoints need to be
-    injected before Ruby processes start. Its distribution through Homebrew and its
-    dependency on rbenv position it as a small convenience layer in the rbenv plugin
-    ecosystem rather than a general dotenv replacement.
+  adoption-history:
+    - >
+      rbenv-vars is distributed through Homebrew and appears in rbenv's official plugin
+      catalog, making it a conventional extension for projects that already use rbenv.
+  package-nerd-significance:
+    - >
+      The plugin demonstrates rbenv's hook-oriented extensibility beyond Ruby-version
+      selection. Its deliberately restricted variable syntax avoids evaluating shell
+      commands, which distinguishes it from sourcing arbitrary environment files.
+  project-history:
+    - >
+      rbenv-vars was created within the early rbenv ecosystem to set environment
+      variables before Ruby processes are spawned. Version 1.0.0 was publicly released
+      on September 27, 2011.
+    - >
+      Version 1.1.0 added conditional `?=` assignments, and version 1.2.0 improved
+      source-file handling and diagnostic output.
+  related-projects:
+    - rbenv provides the runtime-selection and hook framework used by rbenv-vars.
+    - >
+      Environment-file tools such as dotenv address a related need, although rbenv-vars
+      applies variables through rbenv before Ruby processes start.
+  sources:
+    - https://github.com/rbenv/rbenv-vars#readme
+    - https://github.com/rbenv/rbenv/wiki/Plugins
+    - source_facts.package-manager
+  summary:
+    - >
+      rbenv-vars is an rbenv plugin that loads global and directory-specific
+      environment-variable assignments before launching Ruby processes.
+  timeline:
+    - '2011-09-27: Version 1.0.0 was publicly released.'
+    - '2012-06-25: Version 1.1.0 added conditional assignments.'
+    - '2013-01-09: Version 1.2.0 improved parsing and diagnostics.'
+  usage:
+    - >
+      Users place global assignments in `$(rbenv root)/vars` and project assignments in
+      `.rbenv-vars`. Files in ancestor directories are applied in order, with the
+      current directory taking precedence.
+    - >
+      Assignments use `VAR=value` or conditional `VAR?=value` syntax. Variable
+      substitution is supported, while command substitution and shell expansion are
+      intentionally disallowed.
 tags:
   - cli
   - environment-variables
@@ -51,9 +75,9 @@ provenance:
   docs-sources:
     - Official repository README is the available documentation for rbenv-vars.
   history-sources:
-    - https://github.com/rbenv/rbenv-vars
-    - https://formulae.brew.sh/formula/rbenv-vars
-    - https://github.com/rbenv/rbenv
+    - https://github.com/rbenv/rbenv-vars#readme
+    - https://github.com/rbenv/rbenv/wiki/Plugins
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already has an official repository value; per instruction repo
