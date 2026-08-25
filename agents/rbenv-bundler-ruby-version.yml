@@ -3,27 +3,52 @@ display-name: rbenv-bundler-ruby-version
 repo: null
 docs:
   - https://github.com/aripollak/rbenv-bundler-ruby-version#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - <project>/Gemfile
+    - <project>/.ruby-version
 credentials-file-location: null
 history:
-  - >
-    rbenv-bundler-ruby-version is a narrow rbenv plugin for deriving the selected Ruby
-    version from a Bundler Gemfile. Its repository was created on 2013-09-22, after
-    Bundler's Gemfile `ruby` directive had become a common place to record an
-    application's Ruby requirement.
-  - >
-    The README explains the plugin's contract: when a directory does not already have a
-    local rbenv version such as `.ruby-version`, it scans the Gemfile in the working
-    tree and uses the Ruby version declared there. Its parser intentionally avoids
-    evaluating Ruby code; it supports simple `ruby '2.0.0'` declarations, engine
-    metadata, and end-of-line comments, while leaving conditionals and computed
-    expressions outside the supported surface.
-  - >
-    Within the rbenv plugin ecosystem, this package sits between Bundler metadata and
-    rbenv's shim selection. The rbenv wiki lists `bundler-ruby-version` among community
-    plugins, and Homebrew distributes it as `rbenv-bundler-ruby-version` with an `rbenv`
-    dependency for users who want Gemfile-driven version selection without adding custom
-    shell logic.
+  adoption-history:
+    - >
+      The plugin joined rbenv's community-plugin ecosystem and is listed by rbenv as
+      bundler-ruby-version. It is also distributed through Homebrew under its full
+      repository name.
+  package-nerd-significance:
+    - >
+      The plugin bridges Bundler's Gemfile Ruby declaration with rbenv's
+      version-selection hooks, allowing a project to avoid maintaining duplicate version
+      declarations when no local .ruby-version override exists.
+  project-history:
+    - >
+      Ari Pollak developed rbenv-bundler-ruby-version as a shell-based rbenv plugin. It
+      searches the current directory tree for a Gemfile Ruby declaration when a local
+      per-directory Ruby version has not already been selected.
+    - >
+      The repository's 1.0.0 release was published in 2017. Its README documents support
+      for straightforward Ruby declarations and engine declarations while warning that
+      parsing uses regular expressions rather than Ruby evaluation.
+  related-projects:
+    - rbenv
+    - Bundler
+    - rbenv-aliases
+  sources:
+    - https://github.com/aripollak/rbenv-bundler-ruby-version#readme
+    - https://github.com/rbenv/rbenv/wiki/Plugins
+    - source_facts.package-manager
+  summary:
+    - >
+      rbenv-bundler-ruby-version is an rbenv plugin that derives a project's Ruby
+      version from Bundler's Gemfile.
+  timeline:
+    - '2017: Version 1.0.0 was published.'
+    - The plugin was listed in rbenv's community plugin catalog.
+    - The project became available as a Homebrew formula.
+  usage:
+    - >
+      Install the repository beneath $(rbenv root)/plugins/rbenv-bundler-ruby-version.
+      When no local .ruby-version takes precedence, rbenv shims use the Ruby version
+      parsed from the current tree's Gemfile.
 tags:
   - bundler
   - cli
@@ -51,10 +76,9 @@ provenance:
       Official repository README is the available documentation for
       rbenv-bundler-ruby-version.
   history-sources:
-    - https://api.github.com/repos/aripollak/rbenv-bundler-ruby-version
     - https://github.com/aripollak/rbenv-bundler-ruby-version#readme
     - https://github.com/rbenv/rbenv/wiki/Plugins
-    - https://formulae.brew.sh/api/formula/rbenv-bundler-ruby-version.json
+    - source_facts.package-manager
   repo-sources:
     - >
       source_facts.repo already has an official repository value; per instruction repo
