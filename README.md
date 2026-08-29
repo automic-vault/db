@@ -118,3 +118,10 @@ $ scripts/generate-pkg-sqlite.py --check
 Raw Codex outputs remain under ignored `cache/enrichment/` paths for resumable
 or manual controller runs. See `scripts/codex-enrichment-controller.md` when
 using that flow instead of Atlas’s direct CLI backend.
+
+Maintenance runs preserve reusable downloads, indexes, build state, staged
+outputs, and every unresolved enrichment run. They remove abandoned hidden
+atomic-write files after 24 hours and retain the three newest applied
+enrichment runs for diagnostics. Set `AVDB_ENRICHMENT_COMPLETED_RUNS_TO_KEEP`
+to change that retention count. Automation logs are capped at 5 MiB; override
+that limit with `AVDB_AUTOMATION_MAX_LOG_BYTES`.

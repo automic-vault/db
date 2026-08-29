@@ -17,9 +17,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from scripts.bootstrap.lib.common import git_commit_if_changed, git_dirty_paths
+from scripts.cache_cleanup import cleanup_cache
 
 
 STATUS_DIR = ROOT / "cache" / "automation" / "nightly-maintenance"
+MAX_LOG_BYTES = int(os.environ.get("AVDB_AUTOMATION_MAX_LOG_BYTES", str(5 * 1024 * 1024)))
 DEFAULT_ENRICH_LIMIT = int(os.environ.get("AVDB_ENRICH_LIMIT", "250"))
 DEFAULT_BATCH_SIZE = int(os.environ.get("AVDB_ENRICH_BATCH_SIZE", "5"))
 
@@ -110,6 +112,8 @@ def run_command(task: Task, env: dict[str, str]) -> int:
     started = now_iso()
 
     print(f"RUN {task.name}: {command_text}", flush=True)
+    if path.is_file() and path.stat().st_size > MAX_LOG_BYTES:
+        path.write_bytes(path.read_bytes()[-MAX_LOG_BYTES:])
     with path.open("a", encoding="utf-8") as log:
         log.write(f"\n[{started}] {command_text}\n")
         process = subprocess.Popen(
@@ -206,6 +210,12 @@ def main() -> int:
         return 0
     if not args.task:
         raise SystemExit("task is required unless --list is used")
+    removed_cache_paths = cleanup_cache(
+        ROOT / "cache",
+        completed_runs_to_keep=int(os.environ.get("AVDB_ENRICHMENT_COMPLETED_RUNS_TO_KEEP", "3")),
+    )
+    if removed_cache_paths:
+        print(f"Cleaned {len(removed_cache_paths)} stale cache artifact(s).", flush=True)
     return run_task(tasks[args.task], dry_run=args.dry_run)
 
 

@@ -15,6 +15,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.bootstrap.lib.common import git_commit_if_changed, git_dirty_paths
+from scripts.cache_cleanup import cleanup_cache
 
 COMMIT_PATHS = [
     "deterministic",
@@ -188,6 +189,12 @@ def main() -> int:
     args = parse_args()
     py = sys.executable
     os.chdir(ROOT)
+    removed_cache_paths = cleanup_cache(
+        ROOT / "cache",
+        completed_runs_to_keep=int(os.environ.get("AVDB_ENRICHMENT_COMPLETED_RUNS_TO_KEEP", "3")),
+    )
+    if removed_cache_paths:
+        print(f"Cleaned {len(removed_cache_paths)} stale cache artifact(s).", flush=True)
     preserved_tracked_dirty: list[str] = []
     preserved_untracked_dirty: list[str] = []
     if not args.no_commit:
