@@ -21,7 +21,6 @@ KEY_ORDER = [
     "license",
     "tags",
     "description",
-    "source-archive",
     "executables",
     "applications",
     "geiger",

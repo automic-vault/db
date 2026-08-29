@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from .brew import stable_version
+from .brew import source_archive, stable_version
 from .common import CACHE_DIR, COMBINED_DIR, ROOT, read_json, write_json
 from .casks import read_cask_cache, read_cask_catalog
 from .crates import CRATES_IO_INDEX_PATH
@@ -63,6 +63,7 @@ def formula_metadata_from_record(record: dict[str, Any], formula: dict[str, Any]
         "upstreamDocs": docs[0] if docs else "",
         "category": str(record.get("category") or ""),
         "version": stable_version(formula or {}),
+        "sourceArchive": source_archive(formula or {}),
         "aliases": string_list((formula or {}).get("aliases")),
         "oldnames": string_list((formula or {}).get("oldnames")),
     }

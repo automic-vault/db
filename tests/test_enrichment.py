@@ -148,6 +148,14 @@ class EnrichmentTests(unittest.TestCase):
         second["homepage"] = "https://github.com/sharkdp/bat"
         self.assertEqual(hash_source_facts(first), hash_source_facts(second))
 
+    def test_source_hash_excludes_volatile_package_metadata(self):
+        before = sample_record()
+        after = sample_record()
+        after["version"] = "0.27.0"
+        after["source-archive"] = "https://example.com/bat-0.27.0.tar.gz"
+
+        self.assertEqual(hash_source_facts(before), hash_source_facts(after))
+
     def test_new_mode_treats_slug_display_name_as_missing(self):
         record = sample_record()
         self.assertTrue(needs_new_curation(record))

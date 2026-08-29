@@ -194,6 +194,25 @@ class PackagePageRenderingTests(unittest.TestCase):
         self.assertEqual(pages["npm:0x"].popularity["rank"], 2)
         self.assertIn("rank 1", pkg_pages.label_for(pages["npm:acorn"]))
 
+    def test_source_archive_comes_from_runtime_database(self):
+        pages = pkg_pages.package_pages_from_sources(
+            {
+                "db": {
+                    "entries": {"rg": "brew:ripgrep"},
+                    "formulas": {
+                        "ripgrep": {
+                            "sourceArchive": "https://example.com/ripgrep-15.2.0.tar.gz",
+                        }
+                    },
+                }
+            }
+        )
+
+        self.assertEqual(
+            pages["brew:ripgrep"].source_archive,
+            "https://example.com/ripgrep-15.2.0.tar.gz",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

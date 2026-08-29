@@ -816,6 +816,7 @@ def package_pages_from_sources(
             page.last_updated_at = info.get("last_updated_at") or page.last_updated_at
             page.pulse_kind = info.get("pulse_kind") or page.pulse_kind
             page.url = info.get("url") or page.url
+            page.source_archive = info.get("sourceArchive") or page.source_archive
             page.sha256 = info.get("sha256") or page.sha256
             page.binaries = info.get("binaries") or page.binaries
             if info.get("dependencies"):

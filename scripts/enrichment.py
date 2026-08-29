@@ -72,9 +72,7 @@ SOURCE_FACT_KEYS = (
     "applications",
     "package-manager",
     "package-manager-url",
-    "version",
     "license",
-    "source-archive",
     "provenance",
 )
 
@@ -424,9 +422,7 @@ def source_facts(record: dict[str, Any]) -> dict[str, Any]:
         "applications": sorted(str(item) for item in record.get("applications") or []),
         "package-manager": normalize_string_map(record.get("package-manager")),
         "package-manager-url": normalize_url(record.get("package-manager-url")),
-        "version": str(record.get("version") or ""),
         "license": str(record.get("license") or ""),
-        "source-archive": normalize_url(record.get("source-archive")),
         "provenance": normalize_string_map(record.get("provenance")),
     }
     return {key: facts[key] for key in SOURCE_FACT_KEYS}

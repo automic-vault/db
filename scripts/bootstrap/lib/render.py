@@ -80,7 +80,6 @@ def cask_project_record(token: str, metadata: dict[str, Any], executables: list[
         "package-manager": {"brew-cask": token},
         "package-manager-url": f"https://formulae.brew.sh/cask/{urllib.parse.quote(token, safe='@+/')}",
         "description": clean_summary(metadata.get("summary")),
-        "source-archive": url,
         "provenance": {
             "provider": "brew-cask",
             "source": "https://formulae.brew.sh/api/cask.json",
@@ -312,6 +311,8 @@ def validate_tree(root: Path) -> list[str]:
             failures.append(f"{path}: contains deprecated install-lines")
         if "\nversion:" in f"\n{text}":
             failures.append(f"{path}: published output must not include volatile version metadata")
+        if "\nsource-archive:" in f"\n{text}":
+            failures.append(f"{path}: published output must not include volatile source archive metadata")
         for deprecated in (
             "dependencies:",
             "build-dependencies:",

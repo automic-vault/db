@@ -42,10 +42,18 @@ class CaskAuthorityTests(unittest.TestCase):
 
             metadata = formula_metadata_from_project_yaml(
                 root,
-                [{"name": "ripgrep", "versions": {"stable": "15.1.0"}}],
+                [{
+                    "name": "ripgrep",
+                    "versions": {"stable": "15.1.0"},
+                    "urls": {"stable": {"url": "https://example.com/ripgrep-15.1.0.tar.gz"}},
+                }],
             )
 
         self.assertEqual(metadata["ripgrep"]["version"], "15.1.0")
+        self.assertEqual(
+            metadata["ripgrep"]["sourceArchive"],
+            "https://example.com/ripgrep-15.1.0.tar.gz",
+        )
 
     def test_sqlite_authority_keeps_cask_version_outside_published_yaml(self):
         metadata = stable_cask_metadata({
@@ -256,7 +264,6 @@ class CaskAuthorityTests(unittest.TestCase):
                 "package-manager": {"brew-cask": "codex"},
                 "package-manager-url": "https://formulae.brew.sh/cask/codex",
                 "description": "OpenAI's coding agent that runs in your terminal",
-                "source-archive": "https://github.com/openai/codex/releases/download/rust-v0.142.0/codex-aarch64-apple-darwin.tar.gz",
                 "executables": ["codex"],
                 "provenance": {
                     "provider": "brew-cask",
