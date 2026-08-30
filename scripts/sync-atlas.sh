@@ -4,7 +4,7 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 atlas="${ATLAS_SSH_TARGET:-atlas}"
-remote_root="${PKGDB_ATLAS_ROOT:-/apps/pkgdb}"
+remote_root="${PKGDB_ATLAS_ROOT:-/apps/pkg.so}"
 
 cd "${repo_root}"
 [[ "$(git branch --show-current)" == "main" ]] || { echo "main must be checked out" >&2; exit 1; }
@@ -23,4 +23,3 @@ git merge-base --is-ancestor origin/main refs/remotes/atlas/main || {
 git merge --ff-only refs/remotes/atlas/main
 git push origin main
 ssh "${atlas}" "git -C '${remote_root}' pull --ff-only origin main"
-

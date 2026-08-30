@@ -44,7 +44,7 @@ Deploy code and systemd units directly from the Atlas checkout. The script
 builds the current working tree; it does not SSH, fetch, or require a commit:
 
 ```sh
-$ cd /apps/pkgdb
+$ cd /apps/pkg.so
 $ scripts/deploy-atlas.sh
 ```
 
