@@ -2,491 +2,6 @@
   "content": [
     {
       "artwork": {
-        "alt": "A glowing catlike packet follows a cyan network path between two distant workstations, passing relays and firewalls in a dark landscape.",
-        "attribution": "Generated with OpenAI image generation",
-        "boxColors": {
-          "backgroundEnd": "#073044",
-          "backgroundStart": "#031421",
-          "foreground": "#FFFFFF"
-        },
-        "license": "OpenAI terms of use",
-        "path": "feed/assets/tailcat-ephemeral-network-path-2026-09-03.png"
-      },
-      "batchID": "20260903T095638Z-70a338a9",
-      "body": "## A network compressed into an address\n\nMost private-network tools begin by establishing an organization: create an account, enroll devices, name them, and define who may reach what. **Tailcat** starts somewhere smaller. One machine listens, produces a `tc...` address, and another uses that address to connect. The result resembles netcat's bidirectional byte pipe, but the traffic rides Tailscale's userspace WireGuard implementation, NAT traversal, and DERP relay system. It needs neither a Tailscale account nor root access because it does not add routes, configure DNS, or create a kernel tunnel interface.\n\nThat compact model is the interesting part. A Tailcat address contains public-key and relay-bootstrap information encoded in CBOR. The peers rendezvous through DERP, then Tailscale's transport attempts a direct UDP path; the relay remains a fallback when NAT or firewall conditions prevent direct contact. Instead of asking a control plane to introduce two named devices, users exchange one capability-like string through an existing trusted channel.\n\n## Old ingredients, newly separated\n\nTailcat is new as a public tool, but not as an idea or code sketch. Its upstream history says Brad Fitzpatrick first wrote `derpcat` inside a Tailscale fork during a flight in September 2023. It repeatedly fell behind internal changes. The revived version became a regular Go module and was open-sourced at TailscaleUp in August 2026. Its first tagged release, `v0.1.0`, arrived on August 30, followed by Tailscale's public launch on August 31.\n\nThis lineage explains both its confidence and its caution. Tailcat extracts field-tested networking components, yet the new composition has not accumulated the operating history of Tailscale itself. The repository explicitly offers **no stability promise** for command flags, Go APIs, output, or the wire format. Public Tailcat DERP relays are best-effort, rate-limited, and have no uptime or throughput target. Those are not footnotes for production adoption; they define the current product boundary.\n\n## What people can actually do with it\n\nThe CLI now reaches beyond a raw pipe. Documented workflows include:\n\n- forwarding a local port to a remote service;\n- running SSH, SCP, and SFTP through the connection;\n- copying and listing files with Tailcat-native commands;\n- creating a SOCKS proxy for an otherwise unaware program such as `curl`;\n- waiting until NAT traversal produces a direct path.\n\nThere is also a Go library and an experimental WebAssembly demo. The browser currently travels through DERP rather than forming direct connections, an important distinction from the native CLI.\n\nIndependent hands-on evidence is encouraging but appropriately messy. Compendia Labs built the tool, inspected its connection flow, and exercised a server. In that test environment, DERP connectivity succeeded while blocked UDP egress caused rendezvous to time out. That is useful actual-use evidence precisely because it is not a victory lap: software designed to cross network boundaries still depends on the network allowing the transports its rendezvous and path discovery expect. Community projects have already begun integrating Tailcat into proxy and graphical file-sharing experiments, but the ecosystem is days old, not mature.\n\n## Capability strings are a security decision\n\nRemoving accounts does not remove trust; it relocates trust into keys and connection material. A short address identifies the server. Optional client allowlists can narrow access, while reusable saved keys create stable endpoints. The choice between an ephemeral address and a persistent one should therefore be deliberate. Share addresses as secrets when they confer access, verify SSH host keys, and keep application authentication in place rather than treating transport encryption as authorization.\n\nRunning a private DERP server reduces dependence on Tailscale's free relays, but it also makes relay availability, patching, capacity, and logging your responsibility. Tailcat deliberately omits the policy, device inventory, identity lifecycle, audit controls, and administrative guardrails a managed tailnet supplies. For a temporary developer connection, that absence can be refreshing. For a team network, it can become missing infrastructure.\n\n## Tailcat or a whole virtual network?\n\nThe related **EdgeVPN** illustrates the next step up in scope. It uses libp2p and shared tokens to form a decentralized virtual network, assign virtual addresses, provide DNS, proxy services, and coordinate nodes through a distributed ledger. Kairos uses it for peer-to-peer Kubernetes coordination, concrete evidence that the design supports more than demos. Kairos also documents additional CPU cost from layered encryption, while EdgeVPN warns that exposing a token can hand over broad network control.\n\nChoose Tailcat when the desired object is one temporary path: a port, shell, file copy, or embedded Go connection. Choose EdgeVPN when several nodes need an ongoing network and discovery layer. Choose managed Tailscale when identity, ACLs, device administration, and dependable service matter more than eliminating the control plane.\n\nTailcat's achievement is conceptual economy. It shows that the difficult data-plane pieces can be packaged as a small, portable connection without pretending that coordination and governance were unnecessary all along. For experiments, incident access, and short-lived developer bridges, that may be exactly the amount of network required.",
-      "deck": "Tailscale's new experiment turns its data plane into a temporary encrypted pipe, trading accounts and policy machinery for portable connection material.",
-      "id": "editorial:2026-09-03:tailcat-networking-without-the-control-plane",
-      "package": {
-        "agentSummary": "Tailcat creates encrypted, netcat-like peer connections through Tailscale's userspace WireGuard, NAT traversal, and DERP components, without accounts, routes, or a control plane.",
-        "assessment": {
-          "alternatives": [
-            "Tailscale for managed identity, policy, and a persistent tailnet",
-            "WireGuard for explicitly configured durable tunnels",
-            "EdgeVPN for a broader decentralized virtual network"
-          ],
-          "audiences": [
-            "Developers needing temporary connectivity between machines",
-            "Network engineers exploring userspace peer-to-peer tunnels",
-            "Self-hosters prepared to manage connection tokens and relays"
-          ],
-          "caveats": [
-            "The project explicitly promises no CLI, Go API, or wire-format stability",
-            "Public relays are rate-limited and carry no uptime or throughput guarantee",
-            "Possession of connection material replaces centralized identity and authorization"
-          ],
-          "complements": [
-            "A self-hosted DERP relay for operational independence",
-            "SSH host-key verification and application-level authentication",
-            "Firewall and traffic-observation tools for troubleshooting"
-          ],
-          "prerequisites": [
-            "A secure out-of-band channel for exchanging tailcat addresses",
-            "Outbound network access to a DERP relay unless self-hosting one",
-            "Tolerance for a young command line and wire protocol"
-          ],
-          "useCases": [
-            "Copying files or forwarding a port across NAT boundaries",
-            "Opening temporary SSH, SFTP, or SOCKS connections",
-            "Embedding Tailscale data-plane connectivity in Go programs"
-          ]
-        },
-        "category": "networking",
-        "displayName": "tailcat",
-        "docs": "https://github.com/tailscale/tailcat#readme",
-        "homepage": "https://github.com/tailscale/tailcat",
-        "id": "brew:tailcat",
-        "installURL": "pkgmgrmgr://install?package=brew%3Atailcat",
-        "lastUpdatedAt": "2026-09-03T00:16:39Z",
-        "manager": "homebrew",
-        "repository": "https://github.com/tailscale/tailcat",
-        "researchedAt": "2026-09-03T09:56:38Z",
-        "sources": [
-          {
-            "kind": "primary",
-            "title": "Tailcat project repository and technical documentation",
-            "url": "https://github.com/tailscale/tailcat"
-          },
-          {
-            "kind": "primary",
-            "title": "Tailscale launch announcement for Tailcat",
-            "url": "https://tailscale.com/blog/tailcat"
-          },
-          {
-            "kind": "independent",
-            "title": "Compendia Labs hands-on Tailcat test",
-            "url": "https://blog.compendialabs.org/posts/2026-09-01-dk-tailcat"
-          }
-        ],
-        "upstreamSummary": "Netcat-like tool over Tailscale's data plane, without its control plane",
-        "version": "0.5.0"
-      },
-      "primaryPackageID": "brew:tailcat",
-      "publishedAt": "2026-09-03T09:56:38Z",
-      "relatedPackages": [
-        {
-          "agentSummary": "Tailcat creates encrypted, netcat-like peer connections through Tailscale's userspace WireGuard, NAT traversal, and DERP components, without accounts, routes, or a control plane.",
-          "assessment": {
-            "alternatives": [
-              "Tailscale for managed identity, policy, and a persistent tailnet",
-              "WireGuard for explicitly configured durable tunnels",
-              "EdgeVPN for a broader decentralized virtual network"
-            ],
-            "audiences": [
-              "Developers needing temporary connectivity between machines",
-              "Network engineers exploring userspace peer-to-peer tunnels",
-              "Self-hosters prepared to manage connection tokens and relays"
-            ],
-            "caveats": [
-              "The project explicitly promises no CLI, Go API, or wire-format stability",
-              "Public relays are rate-limited and carry no uptime or throughput guarantee",
-              "Possession of connection material replaces centralized identity and authorization"
-            ],
-            "complements": [
-              "A self-hosted DERP relay for operational independence",
-              "SSH host-key verification and application-level authentication",
-              "Firewall and traffic-observation tools for troubleshooting"
-            ],
-            "prerequisites": [
-              "A secure out-of-band channel for exchanging tailcat addresses",
-              "Outbound network access to a DERP relay unless self-hosting one",
-              "Tolerance for a young command line and wire protocol"
-            ],
-            "useCases": [
-              "Copying files or forwarding a port across NAT boundaries",
-              "Opening temporary SSH, SFTP, or SOCKS connections",
-              "Embedding Tailscale data-plane connectivity in Go programs"
-            ]
-          },
-          "category": "networking",
-          "displayName": "tailcat",
-          "docs": "https://github.com/tailscale/tailcat#readme",
-          "homepage": "https://github.com/tailscale/tailcat",
-          "id": "brew:tailcat",
-          "installURL": "pkgmgrmgr://install?package=brew%3Atailcat",
-          "lastUpdatedAt": "2026-09-03T00:16:39Z",
-          "manager": "homebrew",
-          "repository": "https://github.com/tailscale/tailcat",
-          "researchedAt": "2026-09-03T09:56:38Z",
-          "sources": [
-            {
-              "kind": "primary",
-              "title": "Tailcat project repository and technical documentation",
-              "url": "https://github.com/tailscale/tailcat"
-            },
-            {
-              "kind": "primary",
-              "title": "Tailscale launch announcement for Tailcat",
-              "url": "https://tailscale.com/blog/tailcat"
-            },
-            {
-              "kind": "independent",
-              "title": "Compendia Labs hands-on Tailcat test",
-              "url": "https://blog.compendialabs.org/posts/2026-09-01-dk-tailcat"
-            }
-          ],
-          "upstreamSummary": "Netcat-like tool over Tailscale's data plane, without its control plane",
-          "version": "0.5.0"
-        },
-        {
-          "agentSummary": "EdgeVPN builds decentralized private networks, reverse proxies, and file transfers on libp2p, using shared configuration tokens and an embedded distributed coordination layer.",
-          "assessment": {
-            "alternatives": [
-              "Tailcat for narrow, temporary application connections",
-              "Tailscale or NetBird for managed identity and policy",
-              "WireGuard for manually configured point-to-point tunnels"
-            ],
-            "audiences": [
-              "Edge-computing and distributed-systems operators",
-              "Self-hosters wanting decentralized node discovery",
-              "Go developers building peer-to-peer networking features"
-            ],
-            "caveats": [
-              "A leaked token can grant broad network control unless trusted zones are configured",
-              "Peer establishment may take minutes according to upstream guidance",
-              "Kairos documents extra CPU cost from additional encryption layers"
-            ],
-            "complements": [
-              "Kairos for decentralized edge Kubernetes",
-              "Centralized secret management for network tokens",
-              "Monitoring for peer health, latency, and resource use"
-            ],
-            "prerequisites": [
-              "Administrative access when creating a system network interface",
-              "Secure distribution of the shared network token",
-              "Time for peer discovery and convergence"
-            ],
-            "useCases": [
-              "Joining remote nodes into a virtual private network",
-              "Exposing TCP services through a peer-to-peer reverse proxy",
-              "Coordinating decentralized Kubernetes nodes"
-            ]
-          },
-          "category": "networking",
-          "displayName": "edgevpn",
-          "docs": "https://mudler.github.io/edgevpn",
-          "homepage": "https://mudler.github.io/edgevpn",
-          "id": "brew:edgevpn",
-          "installURL": "pkgmgrmgr://install?package=brew%3Aedgevpn",
-          "lastUpdatedAt": "2026-09-03T08:53:42Z",
-          "manager": "homebrew",
-          "repository": "https://github.com/mudler/edgevpn",
-          "researchedAt": "2026-09-03T09:56:38Z",
-          "sources": [
-            {
-              "kind": "primary",
-              "title": "EdgeVPN project repository",
-              "url": "https://github.com/mudler/edgevpn"
-            },
-            {
-              "kind": "primary",
-              "title": "EdgeVPN documentation",
-              "url": "https://mudler.github.io/edgevpn/docs/"
-            },
-            {
-              "kind": "independent",
-              "title": "Kairos peer-to-peer network architecture",
-              "url": "https://kairos.io/docs/architecture/network/"
-            }
-          ],
-          "upstreamSummary": "Immutable, decentralized, statically built p2p VPN",
-          "version": "0.35.4"
-        }
-      ],
-      "selection": {
-        "firstStableReleaseAt": "2026-08-30T03:10:00Z",
-        "firstStableReleaseSourceURL": "https://github.com/tailscale/tailcat/releases/tag/v0.1.0",
-        "rationale": "newer"
-      },
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "Tailcat project repository and technical documentation",
-          "url": "https://github.com/tailscale/tailcat"
-        },
-        {
-          "kind": "primary",
-          "title": "Tailcat v0.1.0 release",
-          "url": "https://github.com/tailscale/tailcat/releases/tag/v0.1.0"
-        },
-        {
-          "kind": "primary",
-          "title": "Tailscale launch announcement for Tailcat",
-          "url": "https://tailscale.com/blog/tailcat"
-        },
-        {
-          "kind": "independent",
-          "title": "Compendia Labs hands-on Tailcat test",
-          "url": "https://blog.compendialabs.org/posts/2026-09-01-dk-tailcat"
-        }
-      ],
-      "title": "Tailcat and the Smallest Useful Private Network",
-      "type": "editorial"
-    },
-    {
-      "batchID": "20260903T095638Z-a67d98ee",
-      "id": "for-you:system:20260903T095638Z-f220bb45",
-      "packages": [
-        {
-          "agentSummary": "Recursively mkdir, like `mkdir -p`",
-          "category": "system",
-          "displayName": "mkdirp",
-          "homepage": "https://github.com/isaacs/node-mkdirp#readme",
-          "id": "npm:mkdirp",
-          "installURL": "pkgmgrmgr://install?package=npm%3Amkdirp",
-          "manager": "npm"
-        },
-        {
-          "agentSummary": "Check if the process is running inside a Docker container",
-          "category": "system",
-          "displayName": "is-docker",
-          "homepage": "https://github.com/sindresorhus/is-docker#readme",
-          "id": "npm:is-docker",
-          "installURL": "pkgmgrmgr://install?package=npm%3Ais-docker",
-          "manager": "npm"
-        },
-        {
-          "agentSummary": "Check if the process is running inside a container (Docker/Podman)",
-          "category": "system",
-          "displayName": "is-inside-container",
-          "homepage": "https://github.com/sindresorhus/is-inside-container#readme",
-          "id": "npm:is-inside-container",
-          "installURL": "pkgmgrmgr://install?package=npm%3Ais-inside-container",
-          "manager": "npm"
-        },
-        {
-          "agentSummary": "unzip a zip file into a directory using 100% javascript",
-          "category": "system",
-          "displayName": "extract-zip",
-          "homepage": "https://github.com/maxogden/extract-zip#readme",
-          "id": "npm:extract-zip",
-          "installURL": "pkgmgrmgr://install?package=npm%3Aextract-zip",
-          "manager": "npm"
-        },
-        {
-          "agentSummary": "Run scripts that set and use environment variables across platforms",
-          "category": "system",
-          "displayName": "cross-env",
-          "homepage": "https://github.com/kentcdodds/cross-env#readme",
-          "id": "npm:cross-env",
-          "installURL": "pkgmgrmgr://install?package=npm%3Across-env",
-          "manager": "npm"
-        }
-      ],
-      "publishedAt": "2026-09-03T09:56:38Z",
-      "title": "For You in System",
-      "type": "personalizedRecommendations"
-    },
-    {
-      "batchID": "20260903T095638Z-a67d98ee",
-      "id": "recently-updated:security:20260903T095638Z-f220bb45",
-      "packages": [
-        {
-          "agentSummary": "Desktop client for Proton Pass",
-          "category": "security",
-          "displayName": "Proton Pass",
-          "homepage": "https://proton.me/pass",
-          "id": "brew:cask:proton-pass",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Aproton-pass",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Database of public exploits and corresponding vulnerable software",
-          "category": "security",
-          "displayName": "exploitdb",
-          "homepage": "https://www.exploit-db.com/",
-          "id": "brew:exploitdb",
-          "installURL": "pkgmgrmgr://install?package=brew%3Aexploitdb",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Command-line tools for OpenPGP-related operations",
-          "category": "security",
-          "displayName": "hopenpgp-tools",
-          "homepage": "https://hackage.haskell.org/package/hopenpgp-tools",
-          "id": "brew:hopenpgp-tools",
-          "installURL": "pkgmgrmgr://install?package=brew%3Ahopenpgp-tools",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Tool to obtain certs from Let's Encrypt and autoenable HTTPS",
-          "category": "security",
-          "displayName": "certbot",
-          "homepage": "https://certbot.eff.org/",
-          "id": "brew:certbot",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acertbot",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Find and verify credentials",
-          "category": "security",
-          "displayName": "trufflehog",
-          "homepage": "https://trufflesecurity.com/",
-          "id": "brew:trufflehog",
-          "installURL": "pkgmgrmgr://install?package=brew%3Atrufflehog",
-          "manager": "homebrew"
-        }
-      ],
-      "publishedAt": "2026-09-03T09:56:38Z",
-      "title": "Recently Updated in Security",
-      "type": "recentlyUpdated"
-    },
-    {
-      "batchID": "20260903T095638Z-a67d98ee",
-      "id": "for-you:language-runtime:20260903T095638Z-f220bb45",
-      "packages": [
-        {
-          "agentSummary": "Runtime typescript and ESM support for Node.js",
-          "category": "language-runtime",
-          "displayName": "jiti",
-          "homepage": "https://github.com/unjs/jiti#readme",
-          "id": "npm:jiti",
-          "installURL": "pkgmgrmgr://install?package=npm%3Ajiti",
-          "manager": "npm"
-        },
-        {
-          "agentSummary": "Run any Edge Function from CLI or Node.js module.",
-          "category": "language-runtime",
-          "displayName": "edge-runtime",
-          "homepage": "https://edge-runtime.vercel.app/packages/runtime",
-          "id": "npm:edge-runtime",
-          "installURL": "pkgmgrmgr://install?package=npm%3Aedge-runtime",
-          "manager": "npm"
-        },
-        {
-          "agentSummary": "Interactively Manage All Your Node Versions",
-          "category": "language-runtime",
-          "displayName": "n",
-          "homepage": "https://github.com/tj/n",
-          "id": "npm:n",
-          "installURL": "pkgmgrmgr://install?package=npm%3An",
-          "manager": "npm"
-        },
-        {
-          "agentSummary": "install 'full-icu' data for your current node",
-          "category": "language-runtime",
-          "displayName": "full-icu",
-          "homepage": "https://github.com/nodejs/full-icu-npm#readme",
-          "id": "npm:full-icu",
-          "installURL": "pkgmgrmgr://install?package=npm%3Afull-icu",
-          "manager": "npm"
-        },
-        {
-          "agentSummary": "A modern runtime for JavaScript and TypeScript.",
-          "category": "language-runtime",
-          "displayName": "deno",
-          "homepage": "https://deno.com",
-          "id": "npm:deno",
-          "installURL": "pkgmgrmgr://install?package=npm%3Adeno",
-          "manager": "npm"
-        }
-      ],
-      "publishedAt": "2026-09-03T09:56:38Z",
-      "title": "For You in Language Runtime",
-      "type": "personalizedRecommendations"
-    },
-    {
-      "batchID": "20260903T095638Z-a67d98ee",
-      "id": "recently-updated:developer-tools:20260903T095638Z-f220bb45",
-      "packages": [
-        {
-          "agentSummary": "Testing Toolkit creates test-cases and data mocks from API calls, DB queries",
-          "category": "developer-tools",
-          "displayName": "keploy",
-          "homepage": "https://keploy.io",
-          "id": "brew:keploy",
-          "installURL": "pkgmgrmgr://install?package=brew%3Akeploy",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Toolchain of the web",
-          "category": "developer-tools",
-          "displayName": "biome",
-          "homepage": "https://biomejs.dev/",
-          "id": "brew:biome",
-          "installURL": "pkgmgrmgr://install?package=brew%3Abiome",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Automated dependency updates. Flexible so you don't need to be",
-          "category": "developer-tools",
-          "displayName": "renovate",
-          "homepage": "https://github.com/renovatebot/renovate",
-          "id": "brew:renovate",
-          "installURL": "pkgmgrmgr://install?package=brew%3Arenovate",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Markdown Linter and Formatter written in Rust",
-          "category": "developer-tools",
-          "displayName": "rumdl",
-          "homepage": "https://github.com/rvben/rumdl",
-          "id": "brew:rumdl",
-          "installURL": "pkgmgrmgr://install?package=brew%3Arumdl",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Your all-in-one OpenAPI utility",
-          "category": "developer-tools",
-          "displayName": "redocly-cli",
-          "homepage": "https://redocly.com/docs/cli",
-          "id": "brew:redocly-cli",
-          "installURL": "pkgmgrmgr://install?package=brew%3Aredocly-cli",
-          "manager": "homebrew"
-        }
-      ],
-      "publishedAt": "2026-09-03T09:56:38Z",
-      "title": "Recently Updated in Developer Tools",
-      "type": "recentlyUpdated"
-    },
-    {
-      "batchID": "20260903T095638Z-a67d98ee",
-      "id": "new-packages:data:20260903T095638Z-f220bb45",
-      "packages": [
-        {
-          "agentSummary": "Query, explore, and manage your databases with built-in AI",
-          "category": "data",
-          "displayName": "DB Pro",
-          "homepage": "https://www.dbpro.app/",
-          "id": "brew:cask:db-pro",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Adb-pro",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Fast, safe-by-design, driverless, Vim-first DB TUI with ER diagrams",
-          "category": "data",
-          "displayName": "sabiql",
-          "homepage": "https://github.com/riii111/sabiql",
-          "id": "brew:sabiql",
-          "installURL": "pkgmgrmgr://install?package=brew%3Asabiql",
-          "manager": "homebrew"
-        }
-      ],
-      "publishedAt": "2026-09-03T09:56:38Z",
-      "title": "New Packages in Data",
-      "type": "newPackages"
-    },
-    {
-      "artwork": {
         "alt": "A luminous terminal observatory unfolds into waves, terrain, clouds, moonlight, sunrise, and a globe.",
         "attribution": "Original illustration generated with OpenAI image generation for Package Manager Manager",
         "boxColors": {
@@ -734,57 +249,21 @@
     },
     {
       "batchID": "20260831T055156Z-36eb312d",
-      "id": "recently-updated:other:20260903T095638Z-f220bb45",
+      "id": "new-packages:science:20260831T055156Z-f220bb45",
       "packages": [
         {
-          "agentSummary": "TIFF library and utilities",
-          "category": "other",
-          "displayName": "libtiff",
-          "homepage": "https://libtiff.gitlab.io/libtiff/",
-          "id": "brew:libtiff",
-          "installURL": "pkgmgrmgr://install?package=brew%3Alibtiff",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Dash - Reinventing Cryptocurrency",
-          "category": "other",
-          "displayName": "Dash Core",
-          "homepage": "https://www.dash.org/",
-          "id": "brew:cask:dash-dash",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Adash-dash",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Command-line editing facilities similar to the tcsh shell",
-          "category": "other",
-          "displayName": "libtecla",
-          "homepage": "https://sites.astro.caltech.edu/~mcs/tecla/",
-          "id": "brew:libtecla",
-          "installURL": "pkgmgrmgr://install?package=brew%3Alibtecla",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "C++ implementation of STL for extra large data sets",
-          "category": "other",
-          "displayName": "libstxxl",
-          "homepage": "https://stxxl.sourceforge.net/",
-          "id": "brew:libstxxl",
-          "installURL": "pkgmgrmgr://install?package=brew%3Alibstxxl",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Provides cross-platform access to statistics about the system",
-          "category": "other",
-          "displayName": "libstatgrab",
-          "homepage": "https://libstatgrab.org/",
-          "id": "brew:libstatgrab",
-          "installURL": "pkgmgrmgr://install?package=brew%3Alibstatgrab",
+          "agentSummary": "Weather, tides, the sun, the moon, and maps, drawn for the terminal",
+          "category": "science",
+          "displayName": "linecast",
+          "homepage": "https://github.com/ashuttl/linecast",
+          "id": "brew:linecast",
+          "installURL": "pkgmgrmgr://install?package=brew%3Alinecast",
           "manager": "homebrew"
         }
       ],
       "publishedAt": "2026-08-31T05:51:56Z",
-      "title": "Recently Updated in Other",
-      "type": "recentlyUpdated"
+      "title": "New Packages in Science",
+      "type": "newPackages"
     },
     {
       "artwork": {
@@ -1035,7 +514,151 @@
     },
     {
       "batchID": "20260827T094859Z-d8857921",
-      "id": "for-you:cloud-infrastructure:20260903T095638Z-f220bb45",
+      "id": "recently-updated:other:20260831T055156Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Dash - Reinventing Cryptocurrency",
+          "category": "other",
+          "displayName": "Dash Core",
+          "homepage": "https://www.dash.org/",
+          "id": "brew:cask:dash-dash",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Adash-dash",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Command-line editing facilities similar to the tcsh shell",
+          "category": "other",
+          "displayName": "libtecla",
+          "homepage": "https://sites.astro.caltech.edu/~mcs/tecla/",
+          "id": "brew:libtecla",
+          "installURL": "pkgmgrmgr://install?package=brew%3Alibtecla",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "C++ implementation of STL for extra large data sets",
+          "category": "other",
+          "displayName": "libstxxl",
+          "homepage": "https://stxxl.sourceforge.net/",
+          "id": "brew:libstxxl",
+          "installURL": "pkgmgrmgr://install?package=brew%3Alibstxxl",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Provides cross-platform access to statistics about the system",
+          "category": "other",
+          "displayName": "libstatgrab",
+          "homepage": "https://libstatgrab.org/",
+          "id": "brew:libstatgrab",
+          "installURL": "pkgmgrmgr://install?package=brew%3Alibstatgrab",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "F1 Live Timing TUI for all F1 sessions with variable delay to sync to your TV",
+          "category": "other",
+          "displayName": "undercutf1",
+          "homepage": "https://amandhoot.com",
+          "id": "brew:undercutf1",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aundercutf1",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-27T09:48:59Z",
+      "title": "Recently Updated in Other",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260827T094859Z-d8857921",
+      "id": "new-packages:developer-tools:20260831T055156Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Lightweight database management tool",
+          "category": "developer-tools",
+          "displayName": "Tabularis",
+          "homepage": "https://tabularis.dev/",
+          "id": "brew:cask:tabularis",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Atabularis",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Run GitLab CI/CD pipelines locally",
+          "category": "developer-tools",
+          "displayName": "glci",
+          "homepage": "https://gitlab.com/gitlab-org/ci-cd/runner-tools/glci",
+          "id": "brew:glci",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aglci",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Monitor token usage, costs, and limits across AI coding tools",
+          "category": "developer-tools",
+          "displayName": "Token Monitor",
+          "homepage": "https://javis-ai.com/token-monitor/",
+          "id": "brew:cask:token-monitor",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Atoken-monitor",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-27T09:48:59Z",
+      "title": "New Packages in Developer Tools",
+      "type": "newPackages"
+    },
+    {
+      "batchID": "20260827T094859Z-d8857921",
+      "id": "recently-updated:productivity:20260831T055156Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Cloud video conferencing",
+          "category": "productivity",
+          "displayName": "Tencent Meeting",
+          "homepage": "https://meeting.tencent.com/",
+          "id": "brew:cask:tencent-meeting",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Atencent-meeting",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Grammar checker",
+          "category": "productivity",
+          "displayName": "Refine",
+          "homepage": "https://refine.sh/",
+          "id": "brew:cask:refine",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Arefine",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Save articles to read, highlight key content, and organise notes for review",
+          "category": "productivity",
+          "displayName": "Readwise Reader",
+          "homepage": "https://readwise.io/read/",
+          "id": "brew:cask:reader",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Areader",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Knowledge base from AI chats",
+          "category": "productivity",
+          "displayName": "Nessie",
+          "homepage": "https://nessielabs.com/",
+          "id": "brew:cask:nessie-app",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Anessie-app",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Manage your apps on your Tronbyt (flashed Tidbyt) completely locally",
+          "category": "productivity",
+          "displayName": "tronbyt-server",
+          "homepage": "https://github.com/tronbyt/server",
+          "id": "brew:tronbyt-server",
+          "installURL": "pkgmgrmgr://install?package=brew%3Atronbyt-server",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-27T09:48:59Z",
+      "title": "Recently Updated in Productivity",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260827T094859Z-d8857921",
+      "id": "for-you:cloud-infrastructure:20260831T055156Z-f220bb45",
       "packages": [
         {
           "agentSummary": "AWS CDK Toolkit CLI, the command line tool for CDK apps",
@@ -1086,6 +709,60 @@
       "publishedAt": "2026-08-27T09:48:59Z",
       "title": "For You in Cloud Infrastructure",
       "type": "personalizedRecommendations"
+    },
+    {
+      "batchID": "20260827T094859Z-d8857921",
+      "id": "recently-updated:language-runtime:20260831T055156Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Open source programming language to build simple/reliable/efficient software",
+          "category": "language-runtime",
+          "displayName": "go",
+          "homepage": "https://go.dev/",
+          "id": "brew:go",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ago",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Open source programming language to build simple/reliable/efficient software",
+          "category": "language-runtime",
+          "displayName": "go@1.26",
+          "homepage": "https://go.dev/",
+          "id": "brew:go@1.26",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ago%401.26",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Programming language designed for robustness, optimality, and clarity",
+          "category": "language-runtime",
+          "displayName": "zig",
+          "homepage": "https://ziglang.org/",
+          "id": "brew:zig",
+          "installURL": "pkgmgrmgr://install?package=brew%3Azig",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Programming language with focus on simplicity, performance and modern systems",
+          "category": "language-runtime",
+          "displayName": "odin",
+          "homepage": "https://odin-lang.org/",
+          "id": "brew:odin",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aodin",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Python version management",
+          "category": "language-runtime",
+          "displayName": "pyenv",
+          "homepage": "https://github.com/pyenv/pyenv",
+          "id": "brew:pyenv",
+          "installURL": "pkgmgrmgr://install?package=brew%3Apyenv",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-27T09:48:59Z",
+      "title": "Recently Updated in Language Runtime",
+      "type": "recentlyUpdated"
     },
     {
       "artwork": {
@@ -1387,35 +1064,134 @@
     },
     {
       "batchID": "20260824T071230Z-fc42cbc0",
-      "id": "recently-updated:science:20260903T095638Z-f220bb45",
+      "id": "new-packages:security:20260831T055156Z-f220bb45",
       "packages": [
         {
-          "agentSummary": "Platform for LTL and ω-automata manipulation",
-          "category": "science",
-          "displayName": "spot",
-          "homepage": "https://spot.lre.epita.fr",
-          "id": "brew:spot",
-          "installURL": "pkgmgrmgr://install?package=brew%3Aspot",
+          "agentSummary": "Security scanner for AI agent skills",
+          "category": "security",
+          "displayName": "skillspector",
+          "homepage": "https://github.com/NVIDIA/SkillSpector",
+          "id": "brew:skillspector",
+          "installURL": "pkgmgrmgr://install?package=brew%3Askillspector",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-24T07:12:30Z",
+      "title": "New Packages in Security",
+      "type": "newPackages"
+    },
+    {
+      "batchID": "20260824T071230Z-fc42cbc0",
+      "id": "recently-updated:developer-tools:20260831T055156Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "Web-based viewer for Python profiler output",
+          "category": "developer-tools",
+          "displayName": "snakeviz",
+          "homepage": "https://jiffyclub.github.io/snakeviz/",
+          "id": "brew:snakeviz",
+          "installURL": "pkgmgrmgr://install?package=brew%3Asnakeviz",
           "manager": "homebrew"
         },
         {
-          "agentSummary": "GIS platform",
-          "category": "science",
-          "displayName": "GeoLibre Desktop",
-          "homepage": "https://geolibre.app/",
-          "id": "brew:cask:geolibre",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Ageolibre",
+          "agentSummary": "Automated dependency updates. Flexible so you don't need to be",
+          "category": "developer-tools",
+          "displayName": "renovate",
+          "homepage": "https://github.com/renovatebot/renovate",
+          "id": "brew:renovate",
+          "installURL": "pkgmgrmgr://install?package=brew%3Arenovate",
           "manager": "homebrew"
         },
         {
-          "agentSummary": "Accelerated BLAST compatible local sequence aligner",
-          "category": "science",
-          "displayName": "diamond",
-          "homepage": "https://github.com/bbuchfink/diamond",
-          "id": "brew:diamond",
-          "installURL": "pkgmgrmgr://install?package=brew%3Adiamond",
+          "agentSummary": "Markdown Linter and Formatter written in Rust",
+          "category": "developer-tools",
+          "displayName": "rumdl",
+          "homepage": "https://github.com/rvben/rumdl",
+          "id": "brew:rumdl",
+          "installURL": "pkgmgrmgr://install?package=brew%3Arumdl",
           "manager": "homebrew"
         },
+        {
+          "agentSummary": "Auto-complete program for the D programming language",
+          "category": "developer-tools",
+          "displayName": "dcd",
+          "homepage": "https://github.com/dlang-community/DCD",
+          "id": "brew:dcd",
+          "installURL": "pkgmgrmgr://install?package=brew%3Adcd",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Local web server in Python",
+          "category": "developer-tools",
+          "displayName": "livereload",
+          "homepage": "https://livereload.readthedocs.io/en/latest/",
+          "id": "brew:livereload",
+          "installURL": "pkgmgrmgr://install?package=brew%3Alivereload",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-24T07:12:30Z",
+      "title": "Recently Updated in Developer Tools",
+      "type": "recentlyUpdated"
+    },
+    {
+      "batchID": "20260824T071230Z-fc42cbc0",
+      "id": "for-you:networking:20260831T055156Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "ECMAScript parser",
+          "category": "networking",
+          "displayName": "acorn",
+          "homepage": "https://github.com/acornjs/acorn",
+          "id": "npm:acorn",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aacorn",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Share target browsers between different front-end tools, like Autoprefixer, Stylelint and babel-env-preset",
+          "category": "networking",
+          "displayName": "browserslist",
+          "homepage": "https://github.com/browserslist/browserslist#readme",
+          "id": "npm:browserslist",
+          "installURL": "pkgmgrmgr://install?package=npm%3Abrowserslist",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "A library for obtaining browser versions with their maximum supported Baseline feature set and Widely Available status.",
+          "category": "networking",
+          "displayName": "baseline-browser-mapping",
+          "homepage": "https://github.com/web-platform-dx/baseline-browser-mapping#readme",
+          "id": "npm:baseline-browser-mapping",
+          "installURL": "pkgmgrmgr://install?package=npm%3Abaseline-browser-mapping",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website",
+          "category": "networking",
+          "displayName": "autoprefixer",
+          "homepage": "https://github.com/postcss/autoprefixer#readme",
+          "id": "npm:autoprefixer",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aautoprefixer",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "An elegant lib that converts the chalked (ANSI) text to HTML. (Community)",
+          "category": "networking",
+          "displayName": "ansi-html-community",
+          "homepage": "https://github.com/mahdyar/ansi-html-community",
+          "id": "npm:ansi-html-community",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aansi-html-community",
+          "manager": "npm"
+        }
+      ],
+      "publishedAt": "2026-08-24T07:12:30Z",
+      "title": "For You in Networking",
+      "type": "personalizedRecommendations"
+    },
+    {
+      "batchID": "20260824T071230Z-fc42cbc0",
+      "id": "recently-updated:science:20260831T055156Z-f220bb45",
+      "packages": [
         {
           "agentSummary": "DNAnexus toolkit utilities and platform API bindings for Python",
           "category": "science",
@@ -1432,6 +1208,33 @@
           "homepage": "https://www.openscad.org/downloads.html#snapshots",
           "id": "brew:cask:openscad@snapshot",
           "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Aopenscad%40snapshot",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Geometry Engine",
+          "category": "science",
+          "displayName": "geos",
+          "homepage": "https://libgeos.org/",
+          "id": "brew:geos",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ageos",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Programming library of geometric algorithms",
+          "category": "science",
+          "displayName": "geogram",
+          "homepage": "https://github.com/BrunoLevy/geogram/wiki",
+          "id": "brew:geogram",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ageogram",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Scanner app for math and science",
+          "category": "science",
+          "displayName": "Mathpix Snipping Tool",
+          "homepage": "https://mathpix.com/",
+          "id": "brew:cask:mathpix-snipping-tool",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Amathpix-snipping-tool",
           "manager": "homebrew"
         }
       ],
@@ -1727,164 +1530,254 @@
     },
     {
       "batchID": "20260820T100322Z-299838df",
-      "id": "for-you:toys:20260903T095638Z-f220bb45",
+      "id": "for-you:language-runtime:20260831T055156Z-f220bb45",
       "packages": [
         {
-          "agentSummary": "Returns from a pool of 15m human-readable IDs",
-          "category": "toys",
-          "displayName": "human-id",
-          "homepage": "https://github.com/RienNeVaPlus/human-id#readme",
-          "id": "npm:human-id",
-          "installURL": "pkgmgrmgr://install?package=npm%3Ahuman-id",
+          "agentSummary": "Run any Edge Function from CLI or Node.js module.",
+          "category": "language-runtime",
+          "displayName": "edge-runtime",
+          "homepage": "https://edge-runtime.vercel.app/packages/runtime",
+          "id": "npm:edge-runtime",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aedge-runtime",
           "manager": "npm"
         },
         {
-          "agentSummary": "Creates ASCII Art from text. A full implementation of the FIGfont spec.",
-          "category": "toys",
-          "displayName": "figlet",
-          "homepage": "https://github.com/patorjk/figlet.js#readme",
-          "id": "npm:figlet",
-          "installURL": "pkgmgrmgr://install?package=npm%3Afiglet",
+          "agentSummary": "install 'full-icu' data for your current node",
+          "category": "language-runtime",
+          "displayName": "full-icu",
+          "homepage": "https://github.com/nodejs/full-icu-npm#readme",
+          "id": "npm:full-icu",
+          "installURL": "pkgmgrmgr://install?package=npm%3Afull-icu",
           "manager": "npm"
         },
         {
-          "agentSummary": "Generates lorem ipsum placeholder text for Node.js, Deno, browsers, and React Native. Developed with Bun.",
-          "category": "toys",
-          "displayName": "lorem-ipsum",
-          "homepage": null,
-          "id": "npm:lorem-ipsum",
-          "installURL": "pkgmgrmgr://install?package=npm%3Alorem-ipsum",
+          "agentSummary": "A modern runtime for JavaScript and TypeScript.",
+          "category": "language-runtime",
+          "displayName": "deno",
+          "homepage": "https://deno.com",
+          "id": "npm:deno",
+          "installURL": "pkgmgrmgr://install?package=npm%3Adeno",
           "manager": "npm"
         },
         {
-          "agentSummary": "cowsay is a configurable talking cow",
-          "category": "toys",
-          "displayName": "cowsay",
-          "homepage": "https://github.com/piuccio/cowsay",
-          "id": "npm:cowsay",
-          "installURL": "pkgmgrmgr://install?package=npm%3Acowsay",
+          "agentSummary": "Installer for Elm: just downloads the binary into node_modules",
+          "category": "language-runtime",
+          "displayName": "elm",
+          "homepage": "https://github.com/elm/compiler/tree/main/installers/npm",
+          "id": "npm:elm",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aelm",
           "manager": "npm"
         },
         {
-          "agentSummary": "A dice rolling library that uses standard dice notation",
-          "category": "toys",
-          "displayName": "droll",
-          "homepage": "https://github.com/thebinarypenguin/droll#readme",
-          "id": "npm:droll",
-          "installURL": "pkgmgrmgr://install?package=npm%3Adroll",
+          "agentSummary": "CLI wrapper for Deno, a secure runtime for JavaScript and TypeScript",
+          "category": "language-runtime",
+          "displayName": "deno-bin",
+          "homepage": "https://github.com/kt3k/deno-bin#readme",
+          "id": "npm:deno-bin",
+          "installURL": "pkgmgrmgr://install?package=npm%3Adeno-bin",
           "manager": "npm"
         }
       ],
       "publishedAt": "2026-08-20T10:03:22Z",
-      "title": "For You in Toys",
+      "title": "For You in Language Runtime",
       "type": "personalizedRecommendations"
     },
     {
       "batchID": "20260820T100322Z-299838df",
-      "id": "recently-updated:games:20260903T095638Z-f220bb45",
+      "id": "new-packages:networking:20260831T055156Z-f220bb45",
       "packages": [
         {
-          "agentSummary": "Open-source Android/Desktop remake of Civ V",
-          "category": "games",
-          "displayName": "unciv",
-          "homepage": "https://github.com/yairm210/Unciv",
-          "id": "brew:unciv",
-          "installURL": "pkgmgrmgr://install?package=brew%3Aunciv",
+          "agentSummary": "CLI and Go API to Test Internet Speed using speedtest.net",
+          "category": "networking",
+          "displayName": "speedtest-go",
+          "homepage": "https://github.com/showwin/speedtest-go",
+          "id": "brew:speedtest-go",
+          "installURL": "pkgmgrmgr://install?package=brew%3Aspeedtest-go",
           "manager": "homebrew"
         },
         {
-          "agentSummary": "Playstation 2 Emulator",
-          "category": "games",
-          "displayName": "PCSX2",
-          "homepage": "https://pcsx2.net/",
-          "id": "brew:cask:pcsx2",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Apcsx2",
+          "agentSummary": "Netcat-like tool over Tailscale's data plane, without its control plane",
+          "category": "networking",
+          "displayName": "tailcat",
+          "homepage": "https://github.com/tailscale/tailcat",
+          "id": "brew:tailcat",
+          "installURL": "pkgmgrmgr://install?package=brew%3Atailcat",
           "manager": "homebrew"
         },
         {
-          "agentSummary": "Multi-User Dungeon client",
-          "category": "games",
-          "displayName": "Mudlet",
-          "homepage": "https://www.mudlet.org/",
-          "id": "brew:cask:mudlet",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Amudlet",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "One-click tool for the daily tasks of Arknights",
-          "category": "games",
-          "displayName": "MAA",
-          "homepage": "https://github.com/MaaAssistantArknights/MaaAssistantArknights",
-          "id": "brew:cask:maa",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Amaa",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Electronic Arts game launcher",
-          "category": "games",
-          "displayName": "EA app",
-          "homepage": "https://www.ea.com/ea-app",
-          "id": "brew:cask:ea",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Aea",
+          "agentSummary": "Keyboard-first Telegram client for the terminal, written in Go",
+          "category": "networking",
+          "displayName": "tele",
+          "homepage": "https://github.com/sorokin-vladimir/tele",
+          "id": "brew:tele",
+          "installURL": "pkgmgrmgr://install?package=brew%3Atele",
           "manager": "homebrew"
         }
       ],
       "publishedAt": "2026-08-20T10:03:22Z",
-      "title": "Recently Updated in Games",
+      "title": "New Packages in Networking",
+      "type": "newPackages"
+    },
+    {
+      "batchID": "20260820T100322Z-299838df",
+      "id": "for-you:system:20260831T055156Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "unzip a zip file into a directory using 100% javascript",
+          "category": "system",
+          "displayName": "extract-zip",
+          "homepage": "https://github.com/maxogden/extract-zip#readme",
+          "id": "npm:extract-zip",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aextract-zip",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Run scripts that set and use environment variables across platforms",
+          "category": "system",
+          "displayName": "cross-env",
+          "homepage": "https://github.com/kentcdodds/cross-env#readme",
+          "id": "npm:cross-env",
+          "installURL": "pkgmgrmgr://install?package=npm%3Across-env",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Run commands concurrently",
+          "category": "system",
+          "displayName": "concurrently",
+          "homepage": "https://github.com/open-cli-tools/concurrently#readme",
+          "id": "npm:concurrently",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aconcurrently",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Info about your dev environment for debugging purposes",
+          "category": "system",
+          "displayName": "envinfo",
+          "homepage": "https://github.com/tabrindle/envinfo#readme",
+          "id": "npm:envinfo",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aenvinfo",
+          "manager": "npm"
+        },
+        {
+          "agentSummary": "Generic environment runner for JavaScript runtimes.",
+          "category": "system",
+          "displayName": "env-runner",
+          "homepage": "https://github.com/unjs/env-runner#readme",
+          "id": "npm:env-runner",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aenv-runner",
+          "manager": "npm"
+        }
+      ],
+      "publishedAt": "2026-08-20T10:03:22Z",
+      "title": "For You in System",
+      "type": "personalizedRecommendations"
+    },
+    {
+      "batchID": "20260820T100322Z-299838df",
+      "id": "recently-updated:networking:20260831T055156Z-f220bb45",
+      "packages": [
+        {
+          "agentSummary": "X11 implementation of the Remote Desktop Protocol (RDP)",
+          "category": "networking",
+          "displayName": "freerdp",
+          "homepage": "https://www.freerdp.com/",
+          "id": "brew:freerdp",
+          "installURL": "pkgmgrmgr://install?package=brew%3Afreerdp",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "API Support for your favorite torrent trackers",
+          "category": "networking",
+          "displayName": "jackett",
+          "homepage": "https://github.com/Jackett/Jackett",
+          "id": "brew:jackett",
+          "installURL": "pkgmgrmgr://install?package=brew%3Ajackett",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Proxy utility",
+          "category": "networking",
+          "displayName": "Karing",
+          "homepage": "https://karing.app/",
+          "id": "brew:cask:karing",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Akaring",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Another Mihomo GUI based on Flutter",
+          "category": "networking",
+          "displayName": "Clash Mi",
+          "homepage": "https://github.com/KaringX/clashmi",
+          "id": "brew:cask:clash-mi",
+          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Aclash-mi",
+          "manager": "homebrew"
+        },
+        {
+          "agentSummary": "Reverse proxy for realtime web services",
+          "category": "networking",
+          "displayName": "pushpin",
+          "homepage": "https://pushpin.org/",
+          "id": "brew:pushpin",
+          "installURL": "pkgmgrmgr://install?package=brew%3Apushpin",
+          "manager": "homebrew"
+        }
+      ],
+      "publishedAt": "2026-08-20T10:03:22Z",
+      "title": "Recently Updated in Networking",
       "type": "recentlyUpdated"
     },
     {
       "batchID": "20260820T100322Z-299838df",
-      "id": "for-you:media:20260903T095638Z-f220bb45",
+      "id": "for-you:data:20260831T055156Z-f220bb45",
       "packages": [
         {
-          "agentSummary": "get dimensions of any image file",
-          "category": "media",
-          "displayName": "image-size",
-          "homepage": "https://github.com/image-size/image-size#readme",
-          "id": "npm:image-size",
-          "installURL": "pkgmgrmgr://install?package=npm%3Aimage-size",
+          "agentSummary": "Validate XML, Parse XML, Build XML without C/C++ based libraries",
+          "category": "data",
+          "displayName": "fast-xml-parser",
+          "homepage": "https://github.com/NaturalIntelligence/fast-xml-parser#readme",
+          "id": "npm:fast-xml-parser",
+          "installURL": "pkgmgrmgr://install?package=npm%3Afast-xml-parser",
           "manager": "npm"
         },
         {
-          "agentSummary": "Fast math typesetting for the web.",
-          "category": "media",
-          "displayName": "katex",
-          "homepage": "https://katex.org",
-          "id": "npm:katex",
-          "installURL": "pkgmgrmgr://install?package=npm%3Akatex",
+          "agentSummary": "Pure-JS CRC-32",
+          "category": "data",
+          "displayName": "crc-32",
+          "homepage": "https://sheetjs.com/",
+          "id": "npm:crc-32",
+          "installURL": "pkgmgrmgr://install?package=npm%3Acrc-32",
           "manager": "npm"
         },
         {
-          "agentSummary": "Small, efficient encoding of SVG data URIs for CSS, HTML, etc.",
-          "category": "media",
-          "displayName": "mini-svg-data-uri",
-          "homepage": "https://github.com/tigt/mini-svg-data-uri#readme",
-          "id": "npm:mini-svg-data-uri",
-          "installURL": "pkgmgrmgr://install?package=npm%3Amini-svg-data-uri",
+          "agentSummary": "Take a nested Javascript object and flatten it, or unflatten an object with delimited keys",
+          "category": "data",
+          "displayName": "flat",
+          "homepage": "https://github.com/hughsk/flat",
+          "id": "npm:flat",
+          "installURL": "pkgmgrmgr://install?package=npm%3Aflat",
           "manager": "npm"
         },
         {
-          "agentSummary": "Zero-dependency PDFium WASM bindings for PDF text extraction and page rendering.",
-          "category": "media",
-          "displayName": "clawpdf",
-          "homepage": "https://github.com/openclaw/clawpdf#readme",
-          "id": "npm:clawpdf",
-          "installURL": "pkgmgrmgr://install?package=npm%3Aclawpdf",
+          "agentSummary": "Drizzle Kit is a CLI migrator tool for Drizzle ORM. It is probably the one and only tool that lets you completely automatically generate SQL migrations and covers ~95% of the common cases like deletions and renames by prompting user input. <https://github",
+          "category": "data",
+          "displayName": "drizzle-kit",
+          "homepage": "https://orm.drizzle.team",
+          "id": "npm:drizzle-kit",
+          "installURL": "pkgmgrmgr://install?package=npm%3Adrizzle-kit",
           "manager": "npm"
         },
         {
-          "agentSummary": "A collection of lightweight utilities for inspecting and manipulating video container formats.",
-          "category": "media",
-          "displayName": "mux.js",
-          "homepage": "https://github.com/videojs/mux.js#readme",
-          "id": "npm:mux.js",
-          "installURL": "pkgmgrmgr://install?package=npm%3Amux.js",
+          "agentSummary": "rawStream.pipe(JSONStream.parse()).pipe(streamOfObjects)",
+          "category": "data",
+          "displayName": "JSONStream",
+          "homepage": null,
+          "id": "npm:JSONStream",
+          "installURL": "pkgmgrmgr://install?package=npm%3AJSONStream",
           "manager": "npm"
         }
       ],
       "publishedAt": "2026-08-20T10:03:22Z",
-      "title": "For You in Media",
+      "title": "For You in Data",
       "type": "personalizedRecommendations"
     },
     {
@@ -2172,172 +2065,10 @@
       ],
       "title": "PostgreSQL 18 Makes the Boring Parts Better",
       "type": "editorial"
-    },
-    {
-      "batchID": "20260817T062537Z-572540b5",
-      "id": "recently-updated:toys:20260903T095638Z-f220bb45",
-      "packages": [
-        {
-          "agentSummary": "Control your Nanoleaf lights",
-          "category": "toys",
-          "displayName": "Nanoleaf Desktop App",
-          "homepage": "https://nanoleaf.me/",
-          "id": "brew:cask:nanoleaf",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Ananoleaf",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Desktop pet that reflects coding agent activity",
-          "category": "toys",
-          "displayName": "Petdex",
-          "homepage": "https://petdex.dev/",
-          "id": "brew:cask:petdex",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Apetdex",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Prints a steam locomotive if you type sl instead of ls",
-          "category": "toys",
-          "displayName": "sl",
-          "homepage": "https://github.com/mtoyoda/sl",
-          "id": "brew:sl",
-          "installURL": "pkgmgrmgr://install?package=brew%3Asl",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Recreates the SETEC ASTRONOMY effect from 'Sneakers'",
-          "category": "toys",
-          "displayName": "no-more-secrets",
-          "homepage": "https://github.com/bartobri/no-more-secrets",
-          "id": "brew:no-more-secrets",
-          "installURL": "pkgmgrmgr://install?package=brew%3Ano-more-secrets",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Infamous electronic fortune-cookie generator",
-          "category": "toys",
-          "displayName": "fortune",
-          "homepage": "https://www.ibiblio.org/pub/linux/games/amusements/fortune/!INDEX.html",
-          "id": "brew:fortune",
-          "installURL": "pkgmgrmgr://install?package=brew%3Afortune",
-          "manager": "homebrew"
-        }
-      ],
-      "publishedAt": "2026-08-17T06:25:37Z",
-      "title": "Recently Updated in Toys",
-      "type": "recentlyUpdated"
-    },
-    {
-      "batchID": "20260817T062537Z-572540b5",
-      "id": "for-you:security:20260903T095638Z-f220bb45",
-      "packages": [
-        {
-          "agentSummary": "Optimized bcrypt in plain JavaScript with zero dependencies, with TypeScript support. Compatible to 'bcrypt'.",
-          "category": "security",
-          "displayName": "bcryptjs",
-          "homepage": "https://github.com/dcodeIO/bcrypt.js#readme",
-          "id": "npm:bcryptjs",
-          "installURL": "pkgmgrmgr://install?package=npm%3Abcryptjs",
-          "manager": "npm"
-        },
-        {
-          "agentSummary": "Get the MD5-sum of a given file, with low memory usage, even on huge files.",
-          "category": "security",
-          "displayName": "md5-file",
-          "homepage": "https://github.com/roryrjb/md5-file#readme",
-          "id": "npm:md5-file",
-          "installURL": "pkgmgrmgr://install?package=npm%3Amd5-file",
-          "manager": "npm"
-        },
-        {
-          "agentSummary": "Check license info for a package",
-          "category": "security",
-          "displayName": "license-checker",
-          "homepage": "https://github.com/davglass/license-checker#readme",
-          "id": "npm:license-checker",
-          "installURL": "pkgmgrmgr://install?package=npm%3Alicense-checker",
-          "manager": "npm"
-        },
-        {
-          "agentSummary": "JavaScript obfuscator",
-          "category": "security",
-          "displayName": "javascript-obfuscator",
-          "homepage": "https://obfuscator.io/",
-          "id": "npm:javascript-obfuscator",
-          "installURL": "pkgmgrmgr://install?package=npm%3Ajavascript-obfuscator",
-          "manager": "npm"
-        },
-        {
-          "agentSummary": "WebDriver Proxy for testing rich clients. It block certain calls until Angular is done updating the page under test.",
-          "category": "security",
-          "displayName": "blocking-proxy",
-          "homepage": "https://github.com/angular/blocking-proxy",
-          "id": "npm:blocking-proxy",
-          "installURL": "pkgmgrmgr://install?package=npm%3Ablocking-proxy",
-          "manager": "npm"
-        }
-      ],
-      "publishedAt": "2026-08-17T06:25:37Z",
-      "title": "For You in Security",
-      "type": "personalizedRecommendations"
-    },
-    {
-      "batchID": "20260817T062537Z-572540b5",
-      "id": "recently-updated:system:20260903T095638Z-f220bb45",
-      "packages": [
-        {
-          "agentSummary": "Tool for linking with Bambu Lab 3D printers",
-          "category": "system",
-          "displayName": "Bambu Connect",
-          "homepage": "https://wiki.bambulab.com/en/software/bambu-connect",
-          "id": "brew:cask:bambu-connect",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Abambu-connect",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Desktop app for managing mods on reMarkable tablets",
-          "category": "system",
-          "displayName": "reManager",
-          "homepage": "https://github.com/rmitchellscott/reManager",
-          "id": "brew:cask:remanager",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Aremanager",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Backup tool",
-          "category": "system",
-          "displayName": "bup",
-          "homepage": "https://bup.github.io/",
-          "id": "brew:bup",
-          "installURL": "pkgmgrmgr://install?package=brew%3Abup",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Graphics Library",
-          "category": "system",
-          "displayName": "mesa",
-          "homepage": "https://www.mesa3d.org/",
-          "id": "brew:mesa",
-          "installURL": "pkgmgrmgr://install?package=brew%3Amesa",
-          "manager": "homebrew"
-        },
-        {
-          "agentSummary": "Utility to extend trackpad functionality",
-          "category": "system",
-          "displayName": "MiddleClick",
-          "homepage": "https://github.com/artginzburg/MiddleClick",
-          "id": "brew:cask:middleclick",
-          "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Amiddleclick",
-          "manager": "homebrew"
-        }
-      ],
-      "publishedAt": "2026-08-17T06:25:37Z",
-      "title": "Recently Updated in System",
-      "type": "recentlyUpdated"
     }
   ],
-  "generatedAt": "2026-09-03T09:56:38Z",
-  "nextPageURL": "https://pkg.so/discover/feed/v2/pages/20260903T095638Z-b83157f5.json",
-  "pageID": "20260903T095638Z-e10c04a8",
+  "generatedAt": "2026-09-02T10:26:06Z",
+  "nextPageURL": "https://pkg.so/discover/feed/v2/pages/20260902T102606Z-7364898f.json",
+  "pageID": "20260902T102606Z-42c4a2b7",
   "schemaVersion": 2
 }

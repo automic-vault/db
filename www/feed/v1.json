@@ -2,58 +2,53 @@
   "content": [
     {
       "artwork": {
-        "alt": "A luminous terminal observatory unfolds into waves, terrain, clouds, moonlight, sunrise, and a globe.",
-        "attribution": "Original illustration generated with OpenAI image generation for Package Manager Manager",
+        "alt": "A glowing catlike packet follows a cyan network path between two distant workstations, passing relays and firewalls in a dark landscape.",
+        "attribution": "Generated with OpenAI image generation",
         "boxColors": {
-          "backgroundEnd": "#0B5660",
-          "backgroundStart": "#061A27",
-          "foreground": "#FFF5DF"
+          "backgroundEnd": "#073044",
+          "backgroundStart": "#031421",
+          "foreground": "#FFFFFF"
         },
-        "license": "Copyright Package Manager Manager; generated editorial artwork",
-        "path": "feed/assets/terminal-environmental-instrument.png"
+        "license": "OpenAI terms of use",
+        "path": "feed/assets/tailcat-ephemeral-network-path-2026-09-03.png"
       },
-      "body": "## Beyond the one-line forecast\n\nMost terminal weather tools answer a narrow question: what is the temperature now? **linecast** starts there, then treats the terminal as a small environmental instrument. Its six views cover weather, sunshine, the moon, tides, radar, and maps. The result is not merely a compact substitute for a website. It is an argument that a character grid can support continuous, exploratory information without becoming a pseudo-desktop.\n\nThat distinction matters. A static forecast is easy to print, but linecast also draws an hourly temperature curve, the Sun's daily arc, a shaded lunar disc, scrolling tide predictions, animated radar, vector streets, terrain, and an orthographic globe. Mouse and keyboard interaction coexist with Unix-shaped outputs: weather, sunshine, moon, and tides can emit JSON, while `--oneline` fits status bars and `--print` produces one stable frame. Piped output automatically becomes static.\n\n## A young project moving unusually fast\n\nThe project's public history is short and unusually legible. PyPI records version 1.0.0 on March 5, 2026, the same day GitHub records the repository's creation. By late August, upstream releases had reached 2.x. That pace explains both the breadth and the principal risk: this is a new tool whose interface and data integrations have been evolving quickly.\n\nThe implementation is pure Python and targets Python 3.10 or later. On macOS and Linux it advertises no runtime dependencies; Windows adds timezone and operating-system trust-store packages. More interesting than the packaging is the source strategy. linecast assembles free public services rather than requiring a user account or API key. Forecasts, alerts, tiles, routing, elevation, clouds, and tides therefore arrive from different providers, each with its own geography and failure modes. Convenience here is real, but it is built on a network of dependencies.\n\nTides make that tradeoff concrete. The project names dedicated sources for the United States, Canada, Queensland, and Hong Kong, then falls back to a global model elsewhere. That yields broad coverage, not uniform authority. Anyone making safety-critical decisions should still consult the relevant hydrographic or meteorological agency. linecast is excellent for orientation; it is not a promise that every coast has equivalent observations.\n\n## The terminal is part of the rendering stack\n\nDense terminal graphics depend on the emulator as much as the application. linecast uses Braille-pattern cells, color gradients, mouse events, and theme detection to squeeze more visual resolution from text. A modern GPU-backed emulator such as **Rio** is a natural companion: Rio uses a WebGPU rendering architecture and supports tabs, splits, themes, and configurable navigation. It gives linecast's animated and color-heavy views a capable canvas.\n\nThat pairing is optional, not a requirement. Existing terminals may work perfectly well, and switching emulators introduces another configuration surface plus platform-specific graphics behavior. Nerd Fonts are optional too; upstream documents an icon mode for them, while ordinary emoji remain available. The healthiest approach is incremental:\n\n- begin with `linecast weather` in the terminal already in use;\n- try `--print`, `--oneline`, or JSON before building automation;\n- evaluate radar and maps on the actual network and display where they will run;\n- only tune fonts or adopt another emulator when a visible limitation justifies it.\n\n## Where it earns a place\n\nThe project is most persuasive when a terminal is already the working context. A developer can check an alert without shifting into a browser, place a terse condition in a status bar, or inspect daylight while coordinating across time zones. The map view goes further: upstream documents place search, route directions, street and terrain modes, live daylight shading, clouds, and a globe. These are substantial interactions, not ornamental ANSI art.\n\nThere is early evidence of attention beyond the package-manager catalog: the public GitHub project has accumulated stars and forks, while PyPI provides an independent distribution record. Those signals show interest, not durable adoption, and the project's age argues against stronger claims. The fair conclusion is narrower: linecast has already demonstrated that terminal-native environmental software can be cohesive rather than gimmicky.\n\nIts best feature may be the boundary it preserves. It can be a live dashboard when a person is exploring, a single frame when output is redirected, or structured data when a script is listening. That respect for multiple modes makes the visual ambition useful. The terminal does not have to imitate a browser; it can become a compact observatory on its own terms.",
-      "deck": "linecast compresses weather, tides, daylight, the moon, radar, and maps into one surprisingly tactile command-line observatory.",
-      "id": "editorial:2026-08-31:terminal-as-environmental-instrument",
-      "primaryPackageID": "brew:linecast",
-      "publishedAt": "2026-08-31T05:51:56Z",
+      "body": "## A network compressed into an address\n\nMost private-network tools begin by establishing an organization: create an account, enroll devices, name them, and define who may reach what. **Tailcat** starts somewhere smaller. One machine listens, produces a `tc...` address, and another uses that address to connect. The result resembles netcat's bidirectional byte pipe, but the traffic rides Tailscale's userspace WireGuard implementation, NAT traversal, and DERP relay system. It needs neither a Tailscale account nor root access because it does not add routes, configure DNS, or create a kernel tunnel interface.\n\nThat compact model is the interesting part. A Tailcat address contains public-key and relay-bootstrap information encoded in CBOR. The peers rendezvous through DERP, then Tailscale's transport attempts a direct UDP path; the relay remains a fallback when NAT or firewall conditions prevent direct contact. Instead of asking a control plane to introduce two named devices, users exchange one capability-like string through an existing trusted channel.\n\n## Old ingredients, newly separated\n\nTailcat is new as a public tool, but not as an idea or code sketch. Its upstream history says Brad Fitzpatrick first wrote `derpcat` inside a Tailscale fork during a flight in September 2023. It repeatedly fell behind internal changes. The revived version became a regular Go module and was open-sourced at TailscaleUp in August 2026. Its first tagged release, `v0.1.0`, arrived on August 30, followed by Tailscale's public launch on August 31.\n\nThis lineage explains both its confidence and its caution. Tailcat extracts field-tested networking components, yet the new composition has not accumulated the operating history of Tailscale itself. The repository explicitly offers **no stability promise** for command flags, Go APIs, output, or the wire format. Public Tailcat DERP relays are best-effort, rate-limited, and have no uptime or throughput target. Those are not footnotes for production adoption; they define the current product boundary.\n\n## What people can actually do with it\n\nThe CLI now reaches beyond a raw pipe. Documented workflows include:\n\n- forwarding a local port to a remote service;\n- running SSH, SCP, and SFTP through the connection;\n- copying and listing files with Tailcat-native commands;\n- creating a SOCKS proxy for an otherwise unaware program such as `curl`;\n- waiting until NAT traversal produces a direct path.\n\nThere is also a Go library and an experimental WebAssembly demo. The browser currently travels through DERP rather than forming direct connections, an important distinction from the native CLI.\n\nIndependent hands-on evidence is encouraging but appropriately messy. Compendia Labs built the tool, inspected its connection flow, and exercised a server. In that test environment, DERP connectivity succeeded while blocked UDP egress caused rendezvous to time out. That is useful actual-use evidence precisely because it is not a victory lap: software designed to cross network boundaries still depends on the network allowing the transports its rendezvous and path discovery expect. Community projects have already begun integrating Tailcat into proxy and graphical file-sharing experiments, but the ecosystem is days old, not mature.\n\n## Capability strings are a security decision\n\nRemoving accounts does not remove trust; it relocates trust into keys and connection material. A short address identifies the server. Optional client allowlists can narrow access, while reusable saved keys create stable endpoints. The choice between an ephemeral address and a persistent one should therefore be deliberate. Share addresses as secrets when they confer access, verify SSH host keys, and keep application authentication in place rather than treating transport encryption as authorization.\n\nRunning a private DERP server reduces dependence on Tailscale's free relays, but it also makes relay availability, patching, capacity, and logging your responsibility. Tailcat deliberately omits the policy, device inventory, identity lifecycle, audit controls, and administrative guardrails a managed tailnet supplies. For a temporary developer connection, that absence can be refreshing. For a team network, it can become missing infrastructure.\n\n## Tailcat or a whole virtual network?\n\nThe related **EdgeVPN** illustrates the next step up in scope. It uses libp2p and shared tokens to form a decentralized virtual network, assign virtual addresses, provide DNS, proxy services, and coordinate nodes through a distributed ledger. Kairos uses it for peer-to-peer Kubernetes coordination, concrete evidence that the design supports more than demos. Kairos also documents additional CPU cost from layered encryption, while EdgeVPN warns that exposing a token can hand over broad network control.\n\nChoose Tailcat when the desired object is one temporary path: a port, shell, file copy, or embedded Go connection. Choose EdgeVPN when several nodes need an ongoing network and discovery layer. Choose managed Tailscale when identity, ACLs, device administration, and dependable service matter more than eliminating the control plane.\n\nTailcat's achievement is conceptual economy. It shows that the difficult data-plane pieces can be packaged as a small, portable connection without pretending that coordination and governance were unnecessary all along. For experiments, incident access, and short-lived developer bridges, that may be exactly the amount of network required.",
+      "deck": "Tailscale's new experiment turns its data plane into a temporary encrypted pipe, trading accounts and policy machinery for portable connection material.",
+      "id": "editorial:2026-09-03:tailcat-networking-without-the-control-plane",
+      "primaryPackageID": "brew:tailcat",
+      "publishedAt": "2026-09-03T09:56:38Z",
       "relatedPackageIDs": [
-        "brew:linecast",
-        "brew:rio-terminal"
+        "brew:tailcat",
+        "brew:edgevpn"
       ],
       "selection": {
-        "firstStableReleaseAt": "2026-03-05T19:25:45Z",
-        "firstStableReleaseSourceURL": "https://pypi.org/project/linecast/1.0.0/",
+        "firstStableReleaseAt": "2026-08-30T03:10:00Z",
+        "firstStableReleaseSourceURL": "https://github.com/tailscale/tailcat/releases/tag/v0.1.0",
         "rationale": "newer"
       },
       "sources": [
         {
           "kind": "primary",
-          "title": "linecast repository and usage guide",
-          "url": "https://github.com/ashuttl/linecast"
+          "title": "Tailcat project repository and technical documentation",
+          "url": "https://github.com/tailscale/tailcat"
         },
         {
           "kind": "primary",
-          "title": "linecast release history",
-          "url": "https://github.com/ashuttl/linecast/releases"
+          "title": "Tailcat v0.1.0 release",
+          "url": "https://github.com/tailscale/tailcat/releases/tag/v0.1.0"
+        },
+        {
+          "kind": "primary",
+          "title": "Tailscale launch announcement for Tailcat",
+          "url": "https://tailscale.com/blog/tailcat"
         },
         {
           "kind": "independent",
-          "title": "linecast 1.0.0 on PyPI",
-          "url": "https://pypi.org/project/linecast/1.0.0/"
-        },
-        {
-          "kind": "primary",
-          "title": "Rio terminal documentation",
-          "url": "https://rioterm.com/docs"
-        },
-        {
-          "kind": "primary",
-          "title": "Rio upstream repository",
-          "url": "https://github.com/raphamorim/rio"
+          "title": "Compendia Labs hands-on Tailcat test",
+          "url": "https://blog.compendialabs.org/posts/2026-09-01-dk-tailcat"
         }
       ],
-      "title": "When the terminal became an environmental instrument",
+      "title": "Tailcat and the Smallest Useful Private Network",
       "type": "editorial"
     },
     {
@@ -116,6 +111,7 @@
     {
       "id": "new-packages",
       "packageIDs": [
+        "brew:tailcat",
         "brew:cask:tabularis",
         "brew:sabiql",
         "brew:glci",
@@ -126,8 +122,7 @@
         "brew:jcode",
         "brew:linecast",
         "brew:cask:tcp-viewer",
-        "brew:cask:triggerflo",
-        "brew:cask:davit"
+        "brew:cask:triggerflo"
       ],
       "title": "New Packages",
       "type": "newPackages"
@@ -135,6 +130,8 @@
     {
       "id": "recently-updated",
       "packageIDs": [
+        "brew:edgevpn",
+        "brew:tailcat",
         "brew:cask:tabularis",
         "brew:sabiql",
         "brew:glci",
@@ -144,12 +141,66 @@
         "brew:cask:token-monitor",
         "brew:jcode",
         "brew:linecast",
-        "brew:rio-terminal",
-        "brew:cask:tcp-viewer",
-        "brew:cask:triggerflo"
+        "brew:rio-terminal"
       ],
       "title": "Recently Updated",
       "type": "recentlyUpdated"
+    },
+    {
+      "artwork": {
+        "alt": "A luminous terminal observatory unfolds into waves, terrain, clouds, moonlight, sunrise, and a globe.",
+        "attribution": "Original illustration generated with OpenAI image generation for Package Manager Manager",
+        "boxColors": {
+          "backgroundEnd": "#0B5660",
+          "backgroundStart": "#061A27",
+          "foreground": "#FFF5DF"
+        },
+        "license": "Copyright Package Manager Manager; generated editorial artwork",
+        "path": "feed/assets/terminal-environmental-instrument.png"
+      },
+      "body": "## Beyond the one-line forecast\n\nMost terminal weather tools answer a narrow question: what is the temperature now? **linecast** starts there, then treats the terminal as a small environmental instrument. Its six views cover weather, sunshine, the moon, tides, radar, and maps. The result is not merely a compact substitute for a website. It is an argument that a character grid can support continuous, exploratory information without becoming a pseudo-desktop.\n\nThat distinction matters. A static forecast is easy to print, but linecast also draws an hourly temperature curve, the Sun's daily arc, a shaded lunar disc, scrolling tide predictions, animated radar, vector streets, terrain, and an orthographic globe. Mouse and keyboard interaction coexist with Unix-shaped outputs: weather, sunshine, moon, and tides can emit JSON, while `--oneline` fits status bars and `--print` produces one stable frame. Piped output automatically becomes static.\n\n## A young project moving unusually fast\n\nThe project's public history is short and unusually legible. PyPI records version 1.0.0 on March 5, 2026, the same day GitHub records the repository's creation. By late August, upstream releases had reached 2.x. That pace explains both the breadth and the principal risk: this is a new tool whose interface and data integrations have been evolving quickly.\n\nThe implementation is pure Python and targets Python 3.10 or later. On macOS and Linux it advertises no runtime dependencies; Windows adds timezone and operating-system trust-store packages. More interesting than the packaging is the source strategy. linecast assembles free public services rather than requiring a user account or API key. Forecasts, alerts, tiles, routing, elevation, clouds, and tides therefore arrive from different providers, each with its own geography and failure modes. Convenience here is real, but it is built on a network of dependencies.\n\nTides make that tradeoff concrete. The project names dedicated sources for the United States, Canada, Queensland, and Hong Kong, then falls back to a global model elsewhere. That yields broad coverage, not uniform authority. Anyone making safety-critical decisions should still consult the relevant hydrographic or meteorological agency. linecast is excellent for orientation; it is not a promise that every coast has equivalent observations.\n\n## The terminal is part of the rendering stack\n\nDense terminal graphics depend on the emulator as much as the application. linecast uses Braille-pattern cells, color gradients, mouse events, and theme detection to squeeze more visual resolution from text. A modern GPU-backed emulator such as **Rio** is a natural companion: Rio uses a WebGPU rendering architecture and supports tabs, splits, themes, and configurable navigation. It gives linecast's animated and color-heavy views a capable canvas.\n\nThat pairing is optional, not a requirement. Existing terminals may work perfectly well, and switching emulators introduces another configuration surface plus platform-specific graphics behavior. Nerd Fonts are optional too; upstream documents an icon mode for them, while ordinary emoji remain available. The healthiest approach is incremental:\n\n- begin with `linecast weather` in the terminal already in use;\n- try `--print`, `--oneline`, or JSON before building automation;\n- evaluate radar and maps on the actual network and display where they will run;\n- only tune fonts or adopt another emulator when a visible limitation justifies it.\n\n## Where it earns a place\n\nThe project is most persuasive when a terminal is already the working context. A developer can check an alert without shifting into a browser, place a terse condition in a status bar, or inspect daylight while coordinating across time zones. The map view goes further: upstream documents place search, route directions, street and terrain modes, live daylight shading, clouds, and a globe. These are substantial interactions, not ornamental ANSI art.\n\nThere is early evidence of attention beyond the package-manager catalog: the public GitHub project has accumulated stars and forks, while PyPI provides an independent distribution record. Those signals show interest, not durable adoption, and the project's age argues against stronger claims. The fair conclusion is narrower: linecast has already demonstrated that terminal-native environmental software can be cohesive rather than gimmicky.\n\nIts best feature may be the boundary it preserves. It can be a live dashboard when a person is exploring, a single frame when output is redirected, or structured data when a script is listening. That respect for multiple modes makes the visual ambition useful. The terminal does not have to imitate a browser; it can become a compact observatory on its own terms.",
+      "deck": "linecast compresses weather, tides, daylight, the moon, radar, and maps into one surprisingly tactile command-line observatory.",
+      "id": "editorial:2026-08-31:terminal-as-environmental-instrument",
+      "primaryPackageID": "brew:linecast",
+      "publishedAt": "2026-08-31T05:51:56Z",
+      "relatedPackageIDs": [
+        "brew:linecast",
+        "brew:rio-terminal"
+      ],
+      "selection": {
+        "firstStableReleaseAt": "2026-03-05T19:25:45Z",
+        "firstStableReleaseSourceURL": "https://pypi.org/project/linecast/1.0.0/",
+        "rationale": "newer"
+      },
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "linecast repository and usage guide",
+          "url": "https://github.com/ashuttl/linecast"
+        },
+        {
+          "kind": "primary",
+          "title": "linecast release history",
+          "url": "https://github.com/ashuttl/linecast/releases"
+        },
+        {
+          "kind": "independent",
+          "title": "linecast 1.0.0 on PyPI",
+          "url": "https://pypi.org/project/linecast/1.0.0/"
+        },
+        {
+          "kind": "primary",
+          "title": "Rio terminal documentation",
+          "url": "https://rioterm.com/docs"
+        },
+        {
+          "kind": "primary",
+          "title": "Rio upstream repository",
+          "url": "https://github.com/raphamorim/rio"
+        }
+      ],
+      "title": "When the terminal became an environmental instrument",
+      "type": "editorial"
     },
     {
       "artwork": {
@@ -686,56 +737,9 @@
       ],
       "title": "Faster Feedback Loops Need Clear Boundaries",
       "type": "editorial"
-    },
-    {
-      "artwork": {
-        "alt": "Layered blue translucent architectural planes on a dark background with a warm amber edge glow.",
-        "attribution": "Generated with OpenAI image generation for Package Manager Manager.",
-        "boxColors": {
-          "backgroundEnd": "#273D88",
-          "backgroundStart": "#08142D",
-          "foreground": "#FFFFFF"
-        },
-        "license": "CC-BY-4.0",
-        "path": "feed/assets/typescript-static-checking-2026-07-20.png"
-      },
-      "body": "## A deliberately incremental history\n\nJavaScript's reach is part of its appeal. The same language can sit in a browser, power a build step, serve an API, and automate a small task. That reach also makes the edges of a codebase easy to blur: an object arrives from a request, a configuration file grows fields, or a library changes an API, and the first sign of trouble can be a production exception. TypeScript was created to move a useful share of those mistakes earlier, into an editor or build.\n\nMicrosoft introduced TypeScript publicly in 2012 and released version 1.0 in 2014. Its central choice was conservative: add a type system to JavaScript, then emit JavaScript. Existing code can be adopted incrementally, and the compiler is not a separate application runtime. That history explains both the project's durability and its limit. Teams can add checking around a mature codebase without translating every file, but annotations do not turn unknown runtime data into validated data.\n\nThe official Handbook describes TypeScript as a static type checker: it examines a program before it runs. That is a more useful claim than a blanket promise of safe JavaScript. A renamed property can reveal callers that still expect the old shape; a function signature makes inputs and outputs visible; editor integrations use the same program model for completion, navigation, and refactoring.\n\n## Type checking has a boundary\n\nIn normal work, `tsc` is most valuable as feedback close to a change. It fits naturally as a development dependency, with `tsconfig.json` recording decisions about module output, strictness, library targets, and file inclusion. Modern projects often let a framework or bundler transpile files while `tsc --noEmit` handles checking. Others ask the compiler to emit JavaScript directly. Either arrangement can work when one tool clearly owns each task.\n\nTypeScript's types disappear at runtime. That means a JSON payload, environment variable, database row, or third-party service response can still be malformed even when its declared type looks perfect. Validate external inputs, test observable behavior, and review dependency changes. Types are strongest at expressing contracts inside code the team controls; they are weaker at enforcing facts beyond that boundary.\n\nA useful rollout is intentionally small:\n\n- check a new or well-contained area first;\n- enable stricter compiler options deliberately;\n- add runtime validation where data enters the system; and\n- make type checking part of CI only after the errors are understood.\n\nThis approach avoids the common trap of treating a large annotation campaign as an end in itself. A loose configuration can create a false sense of safety, while turning every strict option on at once may surface years of assumptions with little guidance about priority.\n\n## A practical toolchain role\n\nActual use extends beyond one framework. Libraries publish declaration files so consumers can inspect APIs before calling them. Application teams use typed boundaries between UI components, services, and persistence. Tooling authors use the compiler and language service to understand source code. The public repository and npm distribution make the source and release trail inspectable; the Stack Overflow survey is an independent, imperfect signal that the language is familiar to many working developers. Familiarity alone is not a reason to add a dependency, but it can reduce collaboration friction.\n\nThe surrounding tools matter. esbuild can transform or bundle TypeScript-adjacent source quickly, but it does not replace a deliberate type-checking step. Vitest can exercise behavior in the same project, but passing tests do not prove that every interface change is sound. Together they illustrate a healthy division of labor: a compiler checks declared relationships, a build tool prepares code for its target, and tests observe behavior.\n\n## Adoption should stay measurable\n\nTypeScript asks teams to learn a second way of describing JavaScript. Inference removes much of the ceremony, yet generics, narrowing, declaration files, and module resolution become real design concerns. The payoff should be measured in clearer changes, earlier interface mistakes, and easier maintenance rather than in annotation counts.\n\nFor a JavaScript project that has grown beyond a few files, the adoption path is reversible and testable. Start with the official documentation, choose an explicit configuration, and decide which compiler errors should block a merge. If that produces better reviews and fewer surprises, continue. If the configuration becomes ceremony without catching meaningful defects, scale it back. The aim is not a more elaborate type system; it is a codebase whose assumptions are easier to see, test, and change.",
-      "deck": "Why TypeScript remains a useful boundary around JavaScript, and where its guarantees end.",
-      "id": "editorial:2026-07-20:typescript-static-checking-without-a-runtime-rewrite",
-      "primaryPackageID": "npm:typescript",
-      "publishedAt": "2026-07-20T13:02:53Z",
-      "relatedPackageIDs": [
-        "npm:typescript",
-        "npm:esbuild",
-        "npm:vitest"
-      ],
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "TypeScript Handbook",
-          "url": "https://www.typescriptlang.org/docs/handbook/intro.html"
-        },
-        {
-          "kind": "primary",
-          "title": "TypeScript source repository",
-          "url": "https://github.com/microsoft/TypeScript"
-        },
-        {
-          "kind": "primary",
-          "title": "TypeScript package on npm",
-          "url": "https://www.npmjs.com/package/typescript"
-        },
-        {
-          "kind": "independent",
-          "title": "2025 Stack Overflow Developer Survey: Technology",
-          "url": "https://survey.stackoverflow.co/2025/technology/"
-        }
-      ],
-      "title": "TypeScript: Static Checking Without a Runtime Rewrite",
-      "type": "editorial"
     }
   ],
-  "generatedAt": "2026-09-02T10:26:06Z",
+  "generatedAt": "2026-09-03T09:56:38Z",
   "packages": {
     "brew:agent-browser": {
       "agentSummary": "Agent Browser is a command-line browser automation tool for AI agents, exposing structured navigation, inspection, interaction, and session controls through a compact terminal-first interface.",
@@ -1107,61 +1111,6 @@
       ],
       "upstreamSummary": "Cargo subcommand to easily use LLVM source-based code coverage",
       "version": null
-    },
-    "brew:cask:davit": {
-      "agentSummary": "Davit provides a native SwiftUI control plane for Apple’s container platform, covering lifecycle, images, logs, files, Compose imports, and live resource statistics.",
-      "assessment": {
-        "alternatives": [
-          "Apple’s container CLI for a first-party command-line interface",
-          "Docker Desktop or OrbStack for broader established container ecosystems"
-        ],
-        "audiences": [
-          "Apple-silicon developers evaluating Apple’s native container stack",
-          "Mac users who prefer a graphical container workflow"
-        ],
-        "caveats": [
-          "It supports Apple silicon only and depends on Apple’s comparatively young container platform",
-          "Davit pins platform client and daemon versions because their XPC protocol is not a stable public API",
-          "Some Compose behavior is emulated, with documented DNS and interpolation differences"
-        ],
-        "complements": [
-          "Apple container CLI for shell-based workflows",
-          "Container registries such as Docker Hub or GitHub Container Registry"
-        ],
-        "prerequisites": [
-          "An Apple-silicon Mac running macOS 15 or later",
-          "Apple’s container platform, installed separately or through Davit’s managed onboarding"
-        ],
-        "useCases": [
-          "Inspect, start, stop, and recreate local containers",
-          "Pull and build images, stream logs, browse files, and monitor resources",
-          "Import Compose projects into Apple’s container platform"
-        ]
-      },
-      "category": "developer-tools",
-      "displayName": "Davit",
-      "docs": "https://github.com/wouterdebie/davit#readme",
-      "homepage": "https://davit.app/",
-      "id": "brew:cask:davit",
-      "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Adavit",
-      "lastUpdatedAt": "2026-08-29T01:06:57Z",
-      "manager": "homebrew",
-      "repository": "https://github.com/wouterdebie/davit",
-      "researchedAt": "2026-08-29T10:30:59Z",
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "Davit repository and feature documentation",
-          "url": "https://github.com/wouterdebie/davit"
-        },
-        {
-          "kind": "primary",
-          "title": "Davit v0.1.1 initial release",
-          "url": "https://github.com/wouterdebie/davit/releases/tag/v0.1.1"
-        }
-      ],
-      "upstreamSummary": "GUI for Apple's container CLI",
-      "version": "0.1.26"
     },
     "brew:cask:dbx": {
       "agentSummary": "DBX is a cross-platform graphical database client covering SQL, document, search, and key-value systems, with schema tools, data transfer, AI assistance, and MCP access.",
@@ -2136,6 +2085,70 @@
       ],
       "upstreamSummary": "Terminal dashboard for Docker monitoring across multiple hosts",
       "version": null
+    },
+    "brew:edgevpn": {
+      "agentSummary": "EdgeVPN builds decentralized private networks, reverse proxies, and file transfers on libp2p, using shared configuration tokens and an embedded distributed coordination layer.",
+      "assessment": {
+        "alternatives": [
+          "Tailcat for narrow, temporary application connections",
+          "Tailscale or NetBird for managed identity and policy",
+          "WireGuard for manually configured point-to-point tunnels"
+        ],
+        "audiences": [
+          "Edge-computing and distributed-systems operators",
+          "Self-hosters wanting decentralized node discovery",
+          "Go developers building peer-to-peer networking features"
+        ],
+        "caveats": [
+          "A leaked token can grant broad network control unless trusted zones are configured",
+          "Peer establishment may take minutes according to upstream guidance",
+          "Kairos documents extra CPU cost from additional encryption layers"
+        ],
+        "complements": [
+          "Kairos for decentralized edge Kubernetes",
+          "Centralized secret management for network tokens",
+          "Monitoring for peer health, latency, and resource use"
+        ],
+        "prerequisites": [
+          "Administrative access when creating a system network interface",
+          "Secure distribution of the shared network token",
+          "Time for peer discovery and convergence"
+        ],
+        "useCases": [
+          "Joining remote nodes into a virtual private network",
+          "Exposing TCP services through a peer-to-peer reverse proxy",
+          "Coordinating decentralized Kubernetes nodes"
+        ]
+      },
+      "category": "networking",
+      "displayName": "edgevpn",
+      "docs": "https://mudler.github.io/edgevpn",
+      "homepage": "https://mudler.github.io/edgevpn",
+      "id": "brew:edgevpn",
+      "installURL": "pkgmgrmgr://install?package=brew%3Aedgevpn",
+      "lastUpdatedAt": "2026-09-03T08:53:42Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/mudler/edgevpn",
+      "researchedAt": "2026-09-03T09:56:38Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "EdgeVPN project repository",
+          "url": "https://github.com/mudler/edgevpn"
+        },
+        {
+          "kind": "primary",
+          "title": "EdgeVPN documentation",
+          "url": "https://mudler.github.io/edgevpn/docs/"
+        },
+        {
+          "kind": "independent",
+          "title": "Kairos peer-to-peer network architecture",
+          "url": "https://kairos.io/docs/architecture/network/"
+        }
+      ],
+      "upstreamSummary": "Immutable, decentralized, statically built p2p VPN",
+      "version": "0.35.4"
     },
     "brew:fluent-bit": {
       "agentSummary": "Fluent Bit collects, transforms, and routes logs, metrics, and traces with a small footprint, fitting edge agents and central cloud-native telemetry pipelines.",
@@ -4093,6 +4106,70 @@
       "upstreamSummary": "Generate Markdown files from inline source code documentation",
       "version": null
     },
+    "brew:tailcat": {
+      "agentSummary": "Tailcat creates encrypted, netcat-like peer connections through Tailscale's userspace WireGuard, NAT traversal, and DERP components, without accounts, routes, or a control plane.",
+      "assessment": {
+        "alternatives": [
+          "Tailscale for managed identity, policy, and a persistent tailnet",
+          "WireGuard for explicitly configured durable tunnels",
+          "EdgeVPN for a broader decentralized virtual network"
+        ],
+        "audiences": [
+          "Developers needing temporary connectivity between machines",
+          "Network engineers exploring userspace peer-to-peer tunnels",
+          "Self-hosters prepared to manage connection tokens and relays"
+        ],
+        "caveats": [
+          "The project explicitly promises no CLI, Go API, or wire-format stability",
+          "Public relays are rate-limited and carry no uptime or throughput guarantee",
+          "Possession of connection material replaces centralized identity and authorization"
+        ],
+        "complements": [
+          "A self-hosted DERP relay for operational independence",
+          "SSH host-key verification and application-level authentication",
+          "Firewall and traffic-observation tools for troubleshooting"
+        ],
+        "prerequisites": [
+          "A secure out-of-band channel for exchanging tailcat addresses",
+          "Outbound network access to a DERP relay unless self-hosting one",
+          "Tolerance for a young command line and wire protocol"
+        ],
+        "useCases": [
+          "Copying files or forwarding a port across NAT boundaries",
+          "Opening temporary SSH, SFTP, or SOCKS connections",
+          "Embedding Tailscale data-plane connectivity in Go programs"
+        ]
+      },
+      "category": "networking",
+      "displayName": "tailcat",
+      "docs": "https://github.com/tailscale/tailcat#readme",
+      "homepage": "https://github.com/tailscale/tailcat",
+      "id": "brew:tailcat",
+      "installURL": "pkgmgrmgr://install?package=brew%3Atailcat",
+      "lastUpdatedAt": "2026-09-03T00:16:39Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/tailscale/tailcat",
+      "researchedAt": "2026-09-03T09:56:38Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "Tailcat project repository and technical documentation",
+          "url": "https://github.com/tailscale/tailcat"
+        },
+        {
+          "kind": "primary",
+          "title": "Tailscale launch announcement for Tailcat",
+          "url": "https://tailscale.com/blog/tailcat"
+        },
+        {
+          "kind": "independent",
+          "title": "Compendia Labs hands-on Tailcat test",
+          "url": "https://blog.compendialabs.org/posts/2026-09-01-dk-tailcat"
+        }
+      ],
+      "upstreamSummary": "Netcat-like tool over Tailscale's data plane, without its control plane",
+      "version": "0.5.0"
+    },
     "brew:threatcl": {
       "agentSummary": "threatcl stores threat models as reviewable HCL or JSON, then validates, queries, diagrams, and exports them for version-controlled security workflows.",
       "assessment": {
@@ -4427,152 +4504,11 @@
       ],
       "upstreamSummary": "MCP server and CLI for YouTube",
       "version": null
-    },
-    "npm:esbuild": {
-      "agentSummary": "esbuild bundles and transforms JavaScript and TypeScript quickly, making it a pragmatic build component when its compatibility targets and plugin boundaries suit a project.",
-      "assessment": {
-        "alternatives": [
-          "Rollup, webpack, or framework-provided build tooling"
-        ],
-        "audiences": [
-          "Web developers maintaining JavaScript or TypeScript builds"
-        ],
-        "caveats": [
-          "Review target support and plugin behavior before replacing an established build"
-        ],
-        "complements": [
-          "A framework, test runner, and deployment pipeline"
-        ],
-        "prerequisites": [
-          "A Node.js-based build workflow"
-        ],
-        "useCases": [
-          "Bundling and transforming web application assets"
-        ]
-      },
-      "category": "developer-tools",
-      "displayName": "esbuild",
-      "docs": null,
-      "homepage": "https://github.com/evanw/esbuild#readme",
-      "id": "npm:esbuild",
-      "installURL": "pkgmgrmgr://install?package=npm%3Aesbuild",
-      "lastUpdatedAt": "2026-06-11T22:47:05Z",
-      "manager": "npm",
-      "repository": null,
-      "researchedAt": "2026-07-20T13:02:53Z",
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "esbuild documentation",
-          "url": "https://esbuild.github.io/"
-        },
-        {
-          "kind": "primary",
-          "title": "esbuild source repository",
-          "url": "https://github.com/evanw/esbuild"
-        }
-      ],
-      "upstreamSummary": "An extremely fast JavaScript and CSS bundler and minifier.",
-      "version": "0.28.1"
-    },
-    "npm:typescript": {
-      "agentSummary": "TypeScript adds static analysis to JavaScript projects, helping teams surface interface mismatches before execution while retaining JavaScript output and gradual adoption paths.",
-      "assessment": {
-        "alternatives": [
-          "JavaScript with JSDoc checking or another typed language"
-        ],
-        "audiences": [
-          "JavaScript application and library teams"
-        ],
-        "caveats": [
-          "Types are erased at runtime and cannot validate untrusted data"
-        ],
-        "complements": [
-          "Runtime input validation and automated tests"
-        ],
-        "prerequisites": [
-          "A JavaScript project and an agreed compiler configuration"
-        ],
-        "useCases": [
-          "Checking application and library interfaces before runtime"
-        ]
-      },
-      "category": null,
-      "displayName": "typescript",
-      "docs": null,
-      "homepage": "https://www.typescriptlang.org/",
-      "id": "npm:typescript",
-      "installURL": "pkgmgrmgr://install?package=npm%3Atypescript",
-      "lastUpdatedAt": "2026-07-08T15:55:18Z",
-      "manager": "npm",
-      "repository": null,
-      "researchedAt": "2026-07-20T13:02:53Z",
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "TypeScript Handbook",
-          "url": "https://www.typescriptlang.org/docs/handbook/intro.html"
-        },
-        {
-          "kind": "primary",
-          "title": "TypeScript source repository",
-          "url": "https://github.com/microsoft/TypeScript"
-        }
-      ],
-      "upstreamSummary": "TypeScript is a language for application scale JavaScript development",
-      "version": "7.0.2"
-    },
-    "npm:vitest": {
-      "agentSummary": "Vitest provides a Vite-powered test runner for modern JavaScript and TypeScript projects, with familiar assertions and fast feedback where its environment model fits the application.",
-      "assessment": {
-        "alternatives": [
-          "Jest, Node's built-in test runner, or Playwright"
-        ],
-        "audiences": [
-          "Teams building Vite-oriented JavaScript and TypeScript applications"
-        ],
-        "caveats": [
-          "Confirm environment emulation and mocking behavior against production requirements"
-        ],
-        "complements": [
-          "Type checking, browser testing, and continuous integration"
-        ],
-        "prerequisites": [
-          "A compatible Node.js project and test configuration"
-        ],
-        "useCases": [
-          "Running unit and integration tests with development feedback"
-        ]
-      },
-      "category": "developer-tools",
-      "displayName": "vitest",
-      "docs": null,
-      "homepage": "https://vitest.dev",
-      "id": "npm:vitest",
-      "installURL": "pkgmgrmgr://install?package=npm%3Avitest",
-      "lastUpdatedAt": "2026-07-06T06:44:42Z",
-      "manager": "npm",
-      "repository": null,
-      "researchedAt": "2026-07-20T13:02:53Z",
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "Vitest guide",
-          "url": "https://vitest.dev/guide/"
-        },
-        {
-          "kind": "primary",
-          "title": "Vitest source repository",
-          "url": "https://github.com/vitest-dev/vitest"
-        }
-      ],
-      "upstreamSummary": "Next generation testing framework powered by Vite",
-      "version": "4.1.10"
     }
   },
   "schemaVersion": 1,
   "source": {
-    "generatedAt": "2026-09-02T10:25:30Z",
+    "generatedAt": "2026-09-03T09:55:29Z",
     "url": "https://www.automicvault.com/db.json"
   }
 }
