@@ -3,9 +3,61 @@ display-name: kubesess
 repo: null
 docs:
   - https://github.com/Ramilito/kubesess#readme
-config-file-location: null
+config-file-location:
+  unix:
+    - ~/.kube/config
+    - ~/.bashrc
+    - ~/.zshrc
+    - ~/.config/fish/config.fish
+  windows:
+    - PowerShell profile
 credentials-file-location: null
-history: null
+history:
+  adoption-history:
+    - >
+      The project targets operators who work in several Kubernetes clusters or
+      namespaces concurrently. Homebrew distribution and built-in Bash, Zsh, Fish, and
+      PowerShell integration make its session model convenient for interactive
+      workstation use.
+  package-nerd-significance:
+    - >
+      kubesess addresses a subtle command-line safety problem: changing the current
+      context in the shared kubeconfig affects every terminal. Its solution uses
+      kubectl's native configuration-merge behavior and shell environment variables
+      rather than replacing kubectl.
+  project-history:
+    - >
+      kubesess was written in Rust as a kubectl-oriented session manager. It creates a
+      small context-specific configuration and prepends it to `KUBECONFIG`, allowing
+      each shell to select an independent current context or namespace.
+    - >
+      Version 3 redesigned shell integration around `kubesess init`, changed CLI
+      argument ordering, and added PowerShell integration, requiring migration from the
+      earlier 2.x interface.
+  related-projects:
+    - kubectl and kubeconfig
+    - kubectx and kubens
+    - fzf
+    - kube-ps1
+  sources:
+    - https://github.com/Ramilito/kubesess
+    - https://github.com/Ramilito/kubesess/blob/main/CHANGELOG.md
+  summary:
+    - >
+      kubesess is a Rust-based Kubernetes session manager that keeps context and
+      namespace choices isolated per shell.
+  timeline:
+    - '2021: kubesess entered public development'
+    - '2026: Version 3 introduced built-in shell initialization and breaking CLI changes'
+  usage:
+    - >
+      After adding `kubesess init` to the relevant shell startup file, users select
+      per-shell contexts and namespaces with the supplied wrapper functions or CLI
+      commands. Persistent variants can change defaults across shells.
+    - >
+      kubesess works by creating context files under `~/.kube/kubesess/cache` and
+      prepending the chosen file to `KUBECONFIG`; the official troubleshooting guide
+      identifies that directory as disposable generated state.
 tags:
   - cli
   - context-switching
@@ -33,9 +85,8 @@ provenance:
       Official GitHub README is the primary documentation surface linked by
       source_facts.homepage.
   history-sources:
-    - >
-      Reliable official source-backed project and adoption history is too thin for a
-      neutral package history.
+    - https://github.com/Ramilito/kubesess
+    - https://github.com/Ramilito/kubesess/blob/main/CHANGELOG.md
   repo-sources:
     - >
       source_facts.repo is already populated with https://github.com/Ramilito/kubesess,
@@ -51,6 +102,6 @@ category-path:
   - context-management
 display-name-confidence: high
 docs-confidence: high
-history-confidence: low
+history-confidence: high
 repo-confidence: high
 tags-confidence: high
