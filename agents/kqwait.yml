@@ -5,7 +5,50 @@ docs:
   - https://github.com/sschober/kqwait#readme
 config-file-location: null
 credentials-file-location: null
-history: null
+history:
+  adoption-history:
+    - >
+      kqwait has a deliberately narrow adoption profile. Homebrew distribution makes it
+      convenient for macOS shell users who need a small event-waiting primitive, while
+      the upstream project also documents limited Linux support through libkqueue.
+  package-nerd-significance:
+    - >
+      kqwait is package-nerd interesting as a small macOS counterpart to Linux-oriented
+      filesystem watchers. It exposes kqueue-style event waiting as a composable
+      executable suitable for shell loops without requiring a larger automation
+      framework.
+  project-history:
+    - >
+      Sven Schober created kqwait to address the lack of an inotifywait-like command on
+      macOS. The official README says it was inspired by inotifywait and the original
+      kqueue paper.
+    - >
+      The source supports file write, rename, and deletion events plus directory entry
+      creation and deletion. Its documented Linux mode requires libkqueue and cannot
+      watch directory changes fully.
+  related-projects:
+    - >
+      inotifywait is the explicitly cited inspiration and Linux analogue. kqueue and
+      libkqueue provide the underlying event model and portability layer.
+  sources:
+    - https://github.com/sschober/kqwait#readme
+  summary:
+    - >
+      kqwait is a compact command-line utility that waits for events on one or more
+      files or directories, prints the path that caused it to wake, and returns a status
+      suitable for shell automation.
+  timeline:
+    - "2020: Copyright notice in the official source identifies the project's initial era."
+    - '2020s: Homebrew packaging made kqwait directly installable for macOS command-line users.'
+  usage:
+    - >
+      Users pass one or more files or directories to `kqwait`, often inside a shell
+      loop. File writes, renames, and deletions wake the process; watched directories
+      report entry creation or deletion with `+` or `-` prefixes.
+    - >
+      Upstream warns of a directory-watching race when several events happen rapidly and
+      notes that writes to existing files inside a watched directory require also
+      watching the contained paths.
 tags:
   - cli
   - file-watching
@@ -30,10 +73,7 @@ provenance:
   docs-sources:
     - Official GitHub repository README is the primary documentation surface.
   history-sources:
-    - >
-      The official repository documents purpose and operation, but reliable
-      source-backed project and adoption history is too thin:
-      https://github.com/sschober/kqwait
+    - https://github.com/sschober/kqwait#readme
   repo-sources:
     - >
       source_facts.repo already provides https://github.com/sschober/kqwait; per
@@ -48,6 +88,6 @@ category-path:
   - file-monitoring
 display-name-confidence: high
 docs-confidence: high
-history-confidence: low
+history-confidence: medium
 repo-confidence: high
 tags-confidence: high
