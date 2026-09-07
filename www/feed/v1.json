@@ -2,53 +2,64 @@
   "content": [
     {
       "artwork": {
-        "alt": "A glowing catlike packet follows a cyan network path between two distant workstations, passing relays and firewalls in a dark landscape.",
+        "alt": "Three luminous paths through a dark abstract desktop converge on tiled windows, a widget-rich dock, and a row of window tabs.",
         "attribution": "Generated with OpenAI image generation",
         "boxColors": {
-          "backgroundEnd": "#073044",
-          "backgroundStart": "#031421",
+          "backgroundEnd": "#171746",
+          "backgroundStart": "#050B25",
           "foreground": "#FFFFFF"
         },
         "license": "OpenAI terms of use",
-        "path": "feed/assets/tailcat-ephemeral-network-path-2026-09-03.png"
+        "path": "feed/assets/rethinking-mac-desktop-2026-09-07.png"
       },
-      "body": "## A network compressed into an address\n\nMost private-network tools begin by establishing an organization: create an account, enroll devices, name them, and define who may reach what. **Tailcat** starts somewhere smaller. One machine listens, produces a `tc...` address, and another uses that address to connect. The result resembles netcat's bidirectional byte pipe, but the traffic rides Tailscale's userspace WireGuard implementation, NAT traversal, and DERP relay system. It needs neither a Tailscale account nor root access because it does not add routes, configure DNS, or create a kernel tunnel interface.\n\nThat compact model is the interesting part. A Tailcat address contains public-key and relay-bootstrap information encoded in CBOR. The peers rendezvous through DERP, then Tailscale's transport attempts a direct UDP path; the relay remains a fallback when NAT or firewall conditions prevent direct contact. Instead of asking a control plane to introduce two named devices, users exchange one capability-like string through an existing trusted channel.\n\n## Old ingredients, newly separated\n\nTailcat is new as a public tool, but not as an idea or code sketch. Its upstream history says Brad Fitzpatrick first wrote `derpcat` inside a Tailscale fork during a flight in September 2023. It repeatedly fell behind internal changes. The revived version became a regular Go module and was open-sourced at TailscaleUp in August 2026. Its first tagged release, `v0.1.0`, arrived on August 30, followed by Tailscale's public launch on August 31.\n\nThis lineage explains both its confidence and its caution. Tailcat extracts field-tested networking components, yet the new composition has not accumulated the operating history of Tailscale itself. The repository explicitly offers **no stability promise** for command flags, Go APIs, output, or the wire format. Public Tailcat DERP relays are best-effort, rate-limited, and have no uptime or throughput target. Those are not footnotes for production adoption; they define the current product boundary.\n\n## What people can actually do with it\n\nThe CLI now reaches beyond a raw pipe. Documented workflows include:\n\n- forwarding a local port to a remote service;\n- running SSH, SCP, and SFTP through the connection;\n- copying and listing files with Tailcat-native commands;\n- creating a SOCKS proxy for an otherwise unaware program such as `curl`;\n- waiting until NAT traversal produces a direct path.\n\nThere is also a Go library and an experimental WebAssembly demo. The browser currently travels through DERP rather than forming direct connections, an important distinction from the native CLI.\n\nIndependent hands-on evidence is encouraging but appropriately messy. Compendia Labs built the tool, inspected its connection flow, and exercised a server. In that test environment, DERP connectivity succeeded while blocked UDP egress caused rendezvous to time out. That is useful actual-use evidence precisely because it is not a victory lap: software designed to cross network boundaries still depends on the network allowing the transports its rendezvous and path discovery expect. Community projects have already begun integrating Tailcat into proxy and graphical file-sharing experiments, but the ecosystem is days old, not mature.\n\n## Capability strings are a security decision\n\nRemoving accounts does not remove trust; it relocates trust into keys and connection material. A short address identifies the server. Optional client allowlists can narrow access, while reusable saved keys create stable endpoints. The choice between an ephemeral address and a persistent one should therefore be deliberate. Share addresses as secrets when they confer access, verify SSH host keys, and keep application authentication in place rather than treating transport encryption as authorization.\n\nRunning a private DERP server reduces dependence on Tailscale's free relays, but it also makes relay availability, patching, capacity, and logging your responsibility. Tailcat deliberately omits the policy, device inventory, identity lifecycle, audit controls, and administrative guardrails a managed tailnet supplies. For a temporary developer connection, that absence can be refreshing. For a team network, it can become missing infrastructure.\n\n## Tailcat or a whole virtual network?\n\nThe related **EdgeVPN** illustrates the next step up in scope. It uses libp2p and shared tokens to form a decentralized virtual network, assign virtual addresses, provide DNS, proxy services, and coordinate nodes through a distributed ledger. Kairos uses it for peer-to-peer Kubernetes coordination, concrete evidence that the design supports more than demos. Kairos also documents additional CPU cost from layered encryption, while EdgeVPN warns that exposing a token can hand over broad network control.\n\nChoose Tailcat when the desired object is one temporary path: a port, shell, file copy, or embedded Go connection. Choose EdgeVPN when several nodes need an ongoing network and discovery layer. Choose managed Tailscale when identity, ACLs, device administration, and dependable service matter more than eliminating the control plane.\n\nTailcat's achievement is conceptual economy. It shows that the difficult data-plane pieces can be packaged as a small, portable connection without pretending that coordination and governance were unnecessary all along. For experiments, incident access, and short-lived developer bridges, that may be exactly the amount of network required.",
-      "deck": "Tailscale's new experiment turns its data plane into a temporary encrypted pipe, trading accounts and policy machinery for portable connection material.",
-      "id": "editorial:2026-09-03:tailcat-networking-without-the-control-plane",
-      "primaryPackageID": "brew:tailcat",
-      "publishedAt": "2026-09-03T09:56:38Z",
+      "body": "## The desktop is a navigation system\n\nWindow utilities are often sold as cures for dragging and resizing, but the deeper problem is **retrieval**: after opening a browser, editor, terminal, chat, and documentation, how do you return to the exact window you need? macOS offers overlapping windows, Mission Control, app-centric Command-Tab, and a Dock whose icons usually represent applications rather than individual windows. Three current tools challenge that model at different depths.\n\nOmniWM reorganizes the whole workspace. DockDoor Pro turns the Dock into a control surface. Taskbar makes each window a persistent target. They are not interchangeable skins. Each chooses what should remain visible, what should move automatically, and how much configuration the user should own.\n\n## OmniWM makes space flow\n\nOmniWM is the genuinely new entrant. Its first public tagged release appeared on December 25, 2025, and the project has evolved quickly since. The headline layout borrows from Niri: windows sit in columns on a horizontally scrolling strip, so opening another window extends the workspace instead of repeatedly subdividing one fixed screen. A Hyprland-inspired dwindle mode offers more conventional automatic splitting. Workspaces, trackpad gestures, application rules, a command palette, native tab handling, and `omniwmctl` IPC make the system unusually broad for a young Mac utility.\n\nActual use has moved beyond a quiet repository. A community demonstration of version 0.4.0 drew substantial discussion among Niri users, including reports from people trying its multi-monitor support. The feedback is mixed in the useful sense: some users welcome a Linux-like flow on macOS, while others report awkward behavior with multiple displays or unexpected window placement. The upstream discussion history shows the maintainer actively responding to these cases.\n\nThat friction is structural, not simply unfinished polish. macOS window managers generally steer other applications through Accessibility interfaces rather than replacing the operating system's compositor. Apps can expose unusual auxiliary windows, insist on minimum sizes, or react differently when moved. OmniWM also changes quickly: a recent release renamed configuration fields and advanced its IPC protocol, requiring scripts and clients to update together. The current build targets Apple Silicon and macOS 26 or later, even though earlier releases supported macOS 15. This is an ambitious environment for users willing to tune rules and follow releases, not an invisible utility.\n\n## DockDoor Pro concentrates control at the edge\n\nDockDoor Pro leaves windows overlapping but rebuilds the place used to find them. Hover previews expose individual windows; per-display profiles can show different app sets; app focus can switch profiles automatically. The same strip can hold folders, files, app groups, a file tray, media controls, audio-device switching, and widget stacks. A control drawer reaches sleep, restart, shortcuts, and other actions.\n\nThe attraction is consolidation. Instead of memorizing a tiler's directional grammar, a user can keep spatially familiar icons and add richer previews and controls. Independent walkthroughs document the replacement in use, and reviews praise the scope. Yet breadth is also its tax: the official feature inventory advertises more than 300 settings across 16 preference pages. The app can hide the native Dock, but macOS may still surface Apple's Dock in system-controlled places such as Mission Control. Users should expect to spend time deciding which profiles, widgets, gestures, and visual effects actually reduce work.\n\nDockDoor Pro is also a separate commercial product from DockDoor Free. The free app augments Apple's Dock with previews; Pro substitutes its own Dock environment. Running both is generally unnecessary. That distinction matters when evaluating permissions, purchasing, and how difficult it will be to return to stock behavior.\n\n## Taskbar favors one-click certainty\n\nTaskbar begins with a narrower observation: app icons are poor targets when one app owns several windows. Its developer describes trying Command-Tab, Mission Control, Dock menus, and another Windows-style replacement before building a persistent strip of individual window buttons. The benefit is mundane and powerful—targets remain visible and tend to stay in predictable positions, so reaching a particular document can become one click rather than an app switch followed by another selection.\n\nThe project is not new; its developer says it followed roughly eighteen months of development, and the product has continued through multi-monitor work and repeated manual regression testing. That history makes it the conservative comparison here. It does less than DockDoor Pro and imposes less of a worldview than OmniWM. It also remains commercial and closed source, and a permanent task strip consumes screen space.\n\n## Choose the object you want to navigate\n\nThe cleanest decision is to identify the object your attention follows:\n\n- Choose **OmniWM** when you think in workspaces, columns, and keyboard-directed layouts, and accept active configuration.\n- Choose **DockDoor Pro** when applications remain the anchor but the Dock should expose previews, profiles, files, and controls.\n- Choose **Taskbar** when individual windows should remain visible as stable, clickable destinations.\n\nAll three need privileged visibility into windows to deliver their central features, so review requested Accessibility and screen-recording permissions and test with the applications and monitors that define your real workload. A demo with tidy browser windows proves little about IDE dialogs, floating palettes, remote desktops, or apps with rigid dimensions.\n\nThe most interesting lesson is that desktop productivity is not synonymous with maximum automation. OmniWM reduces manual placement by imposing flow; DockDoor Pro reduces trips elsewhere by concentrating controls; Taskbar reduces ambiguity by exposing every destination. The right replacement is the one whose organizing unit matches how you remember your work.",
+      "deck": "OmniWM, DockDoor Pro, and Taskbar challenge different parts of macOS window navigation—and reveal why no single desktop model fits every multitasker.",
+      "id": "editorial:2026-09-07:three-ways-to-rebuild-the-mac-desktop",
+      "primaryPackageID": "brew:cask:omniwm",
+      "publishedAt": "2026-09-07T06:31:55Z",
       "relatedPackageIDs": [
-        "brew:tailcat",
-        "brew:edgevpn"
+        "brew:cask:omniwm",
+        "brew:cask:dockdoor-pro",
+        "brew:cask:taskbar"
       ],
       "selection": {
-        "firstStableReleaseAt": "2026-08-30T03:10:00Z",
-        "firstStableReleaseSourceURL": "https://github.com/tailscale/tailcat/releases/tag/v0.1.0",
+        "firstStableReleaseAt": "2025-12-25T21:17:10Z",
+        "firstStableReleaseSourceURL": "https://github.com/BarutSRB/OmniWM/releases/tag/v0.1.0",
         "rationale": "newer"
       },
       "sources": [
         {
           "kind": "primary",
-          "title": "Tailcat project repository and technical documentation",
-          "url": "https://github.com/tailscale/tailcat"
+          "title": "OmniWM official site and documentation",
+          "url": "https://omniwm.app/"
         },
         {
           "kind": "primary",
-          "title": "Tailcat v0.1.0 release",
-          "url": "https://github.com/tailscale/tailcat/releases/tag/v0.1.0"
+          "title": "OmniWM v0.1.0 first public release",
+          "url": "https://github.com/BarutSRB/OmniWM/releases/tag/v0.1.0"
         },
         {
           "kind": "primary",
-          "title": "Tailscale launch announcement for Tailcat",
-          "url": "https://tailscale.com/blog/tailcat"
+          "title": "DockDoor Pro complete feature list",
+          "url": "https://pro.dockdoor.net/features/"
+        },
+        {
+          "kind": "primary",
+          "title": "Taskbar developer introduction and history",
+          "url": "https://lawand.io/taskbar/intro/"
         },
         {
           "kind": "independent",
-          "title": "Compendia Labs hands-on Tailcat test",
-          "url": "https://blog.compendialabs.org/posts/2026-09-01-dk-tailcat"
+          "title": "Niri community discussion of OmniWM v0.4.0",
+          "url": "https://www.reddit.com/r/niri/comments/1ruh6um/omni_macos_niri_v040/"
+        },
+        {
+          "kind": "independent",
+          "title": "ScreencastsOnline DockDoor walkthrough",
+          "url": "https://www.screencastsonline.com/tutorials/macos/dock-tips-dockdoor"
         }
       ],
-      "title": "Tailcat and the Smallest Useful Private Network",
+      "title": "Three Ways to Rebuild the Mac Desktop",
       "type": "editorial"
     },
     {
@@ -111,18 +122,18 @@
     {
       "id": "new-packages",
       "packageIDs": [
+        "brew:cask:omniwm",
+        "brew:cask:agentide",
         "brew:cask:markviewer",
         "brew:sabiql",
         "brew:jcode",
-        "brew:cask:agentide",
         "brew:cask:mangodisk",
         "brew:tgrep",
         "brew:cask:token-monitor",
         "brew:linecast",
         "brew:cask:clawd-on-desk",
         "brew:cask:terminal-browser",
-        "brew:tailcat",
-        "brew:cask:tabularis"
+        "brew:tailcat"
       ],
       "title": "New Packages",
       "type": "newPackages"
@@ -130,21 +141,72 @@
     {
       "id": "recently-updated",
       "packageIDs": [
+        "brew:cask:omniwm",
+        "brew:cask:dockdoor-pro",
+        "brew:cask:agentide",
+        "brew:cask:taskbar",
         "brew:cask:markviewer",
         "brew:sabiql",
         "brew:jcode",
-        "brew:cask:agentide",
         "brew:cask:mangodisk",
         "brew:tgrep",
         "brew:cask:token-monitor",
         "brew:linecast",
-        "brew:cask:clawd-on-desk",
-        "brew:cask:terminal-browser",
-        "brew:edgevpn",
-        "brew:tailcat"
+        "brew:cask:clawd-on-desk"
       ],
       "title": "Recently Updated",
       "type": "recentlyUpdated"
+    },
+    {
+      "artwork": {
+        "alt": "A glowing catlike packet follows a cyan network path between two distant workstations, passing relays and firewalls in a dark landscape.",
+        "attribution": "Generated with OpenAI image generation",
+        "boxColors": {
+          "backgroundEnd": "#073044",
+          "backgroundStart": "#031421",
+          "foreground": "#FFFFFF"
+        },
+        "license": "OpenAI terms of use",
+        "path": "feed/assets/tailcat-ephemeral-network-path-2026-09-03.png"
+      },
+      "body": "## A network compressed into an address\n\nMost private-network tools begin by establishing an organization: create an account, enroll devices, name them, and define who may reach what. **Tailcat** starts somewhere smaller. One machine listens, produces a `tc...` address, and another uses that address to connect. The result resembles netcat's bidirectional byte pipe, but the traffic rides Tailscale's userspace WireGuard implementation, NAT traversal, and DERP relay system. It needs neither a Tailscale account nor root access because it does not add routes, configure DNS, or create a kernel tunnel interface.\n\nThat compact model is the interesting part. A Tailcat address contains public-key and relay-bootstrap information encoded in CBOR. The peers rendezvous through DERP, then Tailscale's transport attempts a direct UDP path; the relay remains a fallback when NAT or firewall conditions prevent direct contact. Instead of asking a control plane to introduce two named devices, users exchange one capability-like string through an existing trusted channel.\n\n## Old ingredients, newly separated\n\nTailcat is new as a public tool, but not as an idea or code sketch. Its upstream history says Brad Fitzpatrick first wrote `derpcat` inside a Tailscale fork during a flight in September 2023. It repeatedly fell behind internal changes. The revived version became a regular Go module and was open-sourced at TailscaleUp in August 2026. Its first tagged release, `v0.1.0`, arrived on August 30, followed by Tailscale's public launch on August 31.\n\nThis lineage explains both its confidence and its caution. Tailcat extracts field-tested networking components, yet the new composition has not accumulated the operating history of Tailscale itself. The repository explicitly offers **no stability promise** for command flags, Go APIs, output, or the wire format. Public Tailcat DERP relays are best-effort, rate-limited, and have no uptime or throughput target. Those are not footnotes for production adoption; they define the current product boundary.\n\n## What people can actually do with it\n\nThe CLI now reaches beyond a raw pipe. Documented workflows include:\n\n- forwarding a local port to a remote service;\n- running SSH, SCP, and SFTP through the connection;\n- copying and listing files with Tailcat-native commands;\n- creating a SOCKS proxy for an otherwise unaware program such as `curl`;\n- waiting until NAT traversal produces a direct path.\n\nThere is also a Go library and an experimental WebAssembly demo. The browser currently travels through DERP rather than forming direct connections, an important distinction from the native CLI.\n\nIndependent hands-on evidence is encouraging but appropriately messy. Compendia Labs built the tool, inspected its connection flow, and exercised a server. In that test environment, DERP connectivity succeeded while blocked UDP egress caused rendezvous to time out. That is useful actual-use evidence precisely because it is not a victory lap: software designed to cross network boundaries still depends on the network allowing the transports its rendezvous and path discovery expect. Community projects have already begun integrating Tailcat into proxy and graphical file-sharing experiments, but the ecosystem is days old, not mature.\n\n## Capability strings are a security decision\n\nRemoving accounts does not remove trust; it relocates trust into keys and connection material. A short address identifies the server. Optional client allowlists can narrow access, while reusable saved keys create stable endpoints. The choice between an ephemeral address and a persistent one should therefore be deliberate. Share addresses as secrets when they confer access, verify SSH host keys, and keep application authentication in place rather than treating transport encryption as authorization.\n\nRunning a private DERP server reduces dependence on Tailscale's free relays, but it also makes relay availability, patching, capacity, and logging your responsibility. Tailcat deliberately omits the policy, device inventory, identity lifecycle, audit controls, and administrative guardrails a managed tailnet supplies. For a temporary developer connection, that absence can be refreshing. For a team network, it can become missing infrastructure.\n\n## Tailcat or a whole virtual network?\n\nThe related **EdgeVPN** illustrates the next step up in scope. It uses libp2p and shared tokens to form a decentralized virtual network, assign virtual addresses, provide DNS, proxy services, and coordinate nodes through a distributed ledger. Kairos uses it for peer-to-peer Kubernetes coordination, concrete evidence that the design supports more than demos. Kairos also documents additional CPU cost from layered encryption, while EdgeVPN warns that exposing a token can hand over broad network control.\n\nChoose Tailcat when the desired object is one temporary path: a port, shell, file copy, or embedded Go connection. Choose EdgeVPN when several nodes need an ongoing network and discovery layer. Choose managed Tailscale when identity, ACLs, device administration, and dependable service matter more than eliminating the control plane.\n\nTailcat's achievement is conceptual economy. It shows that the difficult data-plane pieces can be packaged as a small, portable connection without pretending that coordination and governance were unnecessary all along. For experiments, incident access, and short-lived developer bridges, that may be exactly the amount of network required.",
+      "deck": "Tailscale's new experiment turns its data plane into a temporary encrypted pipe, trading accounts and policy machinery for portable connection material.",
+      "id": "editorial:2026-09-03:tailcat-networking-without-the-control-plane",
+      "primaryPackageID": "brew:tailcat",
+      "publishedAt": "2026-09-03T09:56:38Z",
+      "relatedPackageIDs": [
+        "brew:tailcat",
+        "brew:edgevpn"
+      ],
+      "selection": {
+        "firstStableReleaseAt": "2026-08-30T03:10:00Z",
+        "firstStableReleaseSourceURL": "https://github.com/tailscale/tailcat/releases/tag/v0.1.0",
+        "rationale": "newer"
+      },
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "Tailcat project repository and technical documentation",
+          "url": "https://github.com/tailscale/tailcat"
+        },
+        {
+          "kind": "primary",
+          "title": "Tailcat v0.1.0 release",
+          "url": "https://github.com/tailscale/tailcat/releases/tag/v0.1.0"
+        },
+        {
+          "kind": "primary",
+          "title": "Tailscale launch announcement for Tailcat",
+          "url": "https://tailscale.com/blog/tailcat"
+        },
+        {
+          "kind": "independent",
+          "title": "Compendia Labs hands-on Tailcat test",
+          "url": "https://blog.compendialabs.org/posts/2026-09-01-dk-tailcat"
+        }
+      ],
+      "title": "Tailcat and the Smallest Useful Private Network",
+      "type": "editorial"
     },
     {
       "artwork": {
@@ -683,120 +745,10 @@
       ],
       "title": "Rulesync: One Set of Instructions, Many Agents",
       "type": "editorial"
-    },
-    {
-      "artwork": {
-        "alt": "An abstract compass joins three looping paths on a luminous mountain grid at sunrise.",
-        "attribution": "Generated with OpenAI image generation",
-        "boxColors": {
-          "backgroundEnd": "#B8DCCB",
-          "backgroundStart": "#09253A",
-          "foreground": "#FFFFFF"
-        },
-        "license": "OpenAI-generated asset for PMM Discover",
-        "path": "feed/assets/feedback-loops-2026-07-23.png"
-      },
-      "body": "## A faster tool is not automatically a faster team\n\nDeveloper tooling earns its keep by shortening the interval between a change and a trustworthy decision. A formatter that finishes quickly is useful when it lets a pull request move from \"did we agree on this file?\" to the next substantive question. A type checker is useful when its diagnostics arrive while the code is still in the editor, not after a long CI queue. Browser automation is useful when it makes a real workflow observable without turning every verification into a manual ritual.\n\nThat framing matters because tool speed is easy to measure and team feedback is not. The three projects here—Oxfmt, ty, and agent-browser—sit at different points in the loop. Their appeal is not that every repository should replace its existing stack. It is that they make the boundaries of the loop visible: formatting, static analysis, and behavior in an actual browser.\n\n## Oxfmt: a new formatter direction\n\nOxfmt entered alpha in December 2025 and reached beta in February 2026. The Oxc team describes it as a Rust-powered, Prettier-compatible formatter for JavaScript and TypeScript. Its stated early performance figures are impressive, but compatibility is the more practical reason to look: formatters only save time when they produce stable, reviewable output across the code a team actually owns.\n\nFor a repository already using Prettier, the safe question is not \"is Oxfmt faster?\" It is **which files, options, embedded languages, and plugins behave the same enough for us?** Start with `--check` on a representative branch, then inspect differences by category. A one-off formatting migration can create a noisy diff; a gradual trial on new or contained packages gives the team a clean rollback path.\n\nBeta status is a real tradeoff. Oxfmt's roadmap still includes compatibility and plugin work, and a formatter's edge cases can be exactly where a mature codebase has accumulated conventions. That does not rule it out. It argues for treating it as a measured experiment, with a baseline and an exit.\n\n## Ty: keep type feedback near the edit\n\nAstral's ty is a Rust-based Python type checker with official binaries, package installation paths, and editor-oriented documentation. It belongs in the same conversation because formatting is only one kind of cheap feedback. Type diagnostics can turn an integration mistake into a local correction before it becomes a failed test, a review comment, or a production bug.\n\nPython teams should expect differences from their current checker. Annotation interpretation, supported features, configuration, and diagnostic wording all affect adoption. That makes a shadow run more useful than a wholesale switch: run ty beside Pyright or mypy in CI, classify the new findings, and decide which are signal. The goal is not to maximize the number of warnings. The goal is to make **useful** warnings arrive early enough to change behavior.\n\n## Agent Browser: the boundary where state becomes real\n\nAgent-browser addresses the last, messier segment of the loop: observing and interacting with a browser. Its release history documents a fast-moving command-line surface for snapshots, navigation, sessions, network inspection, and browser providers. That can be a strong fit for agent workflows and repeatable browser checks, especially when raw browser state is easier to inspect than a screenshot alone.\n\nBut browser automation has a different failure mode from formatting and type checking: it can cause side effects. A script that clicks a destructive control, submits a form, or operates with a logged-in session needs explicit limits. Keep production credentials out of exploratory runs, use test accounts where possible, and constrain destinations with allowlists or environment-level safeguards. Speed without containment is merely a quicker route to a bad action.\n\n## Build the loop in layers\n\nA pragmatic trial can be small:\n\n- Use Oxfmt in check-only mode on one JavaScript or TypeScript package.\n- Run ty alongside the existing Python checker and review only the disagreements.\n- Point agent-browser at a staging workflow with a deliberately narrow action policy.\n\nThe shared lesson is that fast tools work best as **small, reversible feedback loops**. Measure wall-clock time, but also measure review noise, false positives, and whether a developer can act on the result without opening another ticket. Retain the tools that make a decision faster; leave the rest at the boundary until their maturity catches up.",
-      "deck": "Three newer developer tools show why speed matters most when it shortens a decision, not simply a benchmark.",
-      "id": "editorial:2026-07-23:feedback-loops-where-fast-tools-help-and-where-they-dont",
-      "primaryPackageID": "brew:oxfmt",
-      "publishedAt": "2026-07-23T14:05:45Z",
-      "relatedPackageIDs": [
-        "brew:oxfmt",
-        "brew:ty",
-        "brew:agent-browser"
-      ],
-      "selection": {
-        "newerOverride": {
-          "reason": "Oxfmt is a newly introduced formatter direction: it entered alpha in December 2025 and beta in February 2026, with a distinct Prettier-compatible Rust implementation.",
-          "sourceURL": "https://oxc.rs/blog/2026-02-24-oxfmt-beta"
-        },
-        "rationale": "newer"
-      },
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "Oxfmt alpha announcement",
-          "url": "https://oxc.rs/blog/2025-12-01-oxfmt-alpha.html"
-        },
-        {
-          "kind": "primary",
-          "title": "Oxfmt beta announcement",
-          "url": "https://oxc.rs/blog/2026-02-24-oxfmt-beta"
-        },
-        {
-          "kind": "primary",
-          "title": "Ty documentation",
-          "url": "https://docs.astral.sh/ty/"
-        },
-        {
-          "kind": "primary",
-          "title": "Agent Browser release history",
-          "url": "https://github.com/vercel-labs/agent-browser/releases"
-        }
-      ],
-      "title": "Faster Feedback Loops Need Clear Boundaries",
-      "type": "editorial"
     }
   ],
-  "generatedAt": "2026-09-06T06:20:50Z",
+  "generatedAt": "2026-09-07T06:31:55Z",
   "packages": {
-    "brew:agent-browser": {
-      "agentSummary": "Agent Browser is a command-line browser automation tool for AI agents, exposing structured navigation, inspection, interaction, and session controls through a compact terminal-first interface.",
-      "assessment": {
-        "alternatives": [
-          "Playwright",
-          "Selenium",
-          "Puppeteer"
-        ],
-        "audiences": [
-          "Developers building browser-using agents",
-          "Teams testing browser workflows"
-        ],
-        "caveats": [
-          "Browser automation can trigger real side effects",
-          "Version changes may alter commands and integrations"
-        ],
-        "complements": [
-          "End-to-end tests",
-          "Domain allowlists",
-          "CI isolation"
-        ],
-        "prerequisites": [
-          "A supported browser or remote browser provider",
-          "Clear safeguards for real-world actions"
-        ],
-        "useCases": [
-          "Structured browser automation",
-          "Inspecting page state",
-          "Repeatable agent-driven checks"
-        ]
-      },
-      "category": "ai",
-      "displayName": "agent-browser",
-      "docs": "https://agent-browser.dev/",
-      "homepage": "https://agent-browser.dev/",
-      "id": "brew:agent-browser",
-      "installURL": "pkgmgrmgr://install?package=brew%3Aagent-browser",
-      "lastUpdatedAt": "2026-07-23T03:37:51Z",
-      "manager": "homebrew",
-      "repository": "https://github.com/vercel-labs/agent-browser",
-      "researchedAt": "2026-07-23T14:05:45Z",
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "Agent Browser documentation",
-          "url": "https://agent-browser.dev/"
-        },
-        {
-          "kind": "primary",
-          "title": "Agent Browser release history",
-          "url": "https://github.com/vercel-labs/agent-browser/releases"
-        }
-      ],
-      "upstreamSummary": "Browser automation CLI for AI agents",
-      "version": null
-    },
     "brew:alive2": {
       "agentSummary": "Alive2 checks whether LLVM IR transformations preserve behavior, offering standalone and compiler-integrated translation validation while explicitly bounding unsupported interprocedural cases and solver limits.",
       "assessment": {
@@ -1113,36 +1065,38 @@
       "version": null
     },
     "brew:cask:agentide": {
-      "agentSummary": "AgentIDE is a native macOS workspace for launching sandboxed coding agents in parallel worktrees, reviewing diffs, and carrying changes through pull-request delivery.",
+      "agentSummary": "Early macOS workspace runs multiple coding agents in parallel Git worktrees, presenting sessions, diffs, terminals, and pull-request handoffs inside a native interface.",
       "assessment": {
         "alternatives": [
-          "A terminal multiplexer plus manually managed Git worktrees",
-          "Existing agent orchestration interfaces with broader operating-system support",
-          "A conventional IDE with separate coding-agent extensions"
+          "Terminal multiplexers with manual worktrees",
+          "Agent-native code editors",
+          "IDE task workspaces"
         ],
         "audiences": [
-          "Solo macOS developers coordinating several coding-agent tasks",
-          "Developers already using GitHub pull requests and command-line agents"
+          "Developers coordinating several coding agents",
+          "GitHub-centric engineering teams",
+          "Mac users preferring a native agent workspace"
         ],
         "caveats": [
-          "The project targets one developer on one Mac, not teams or hosted workflows",
-          "Its README says behavior may break without notice and offers no support",
-          "It requires a newly released macOS version and several cooperating tools"
+          "Pre-1.0 software with a very short public release history",
+          "Value depends on external agent CLIs and their authentication",
+          "Small project with limited independent usage evidence"
         ],
         "complements": [
-          "GitHub CLI for pull-request operations",
-          "sandvault for a separate non-admin execution account",
-          "herdr for persistent agent sessions"
+          "Codex CLI",
+          "Claude Code",
+          "GitHub CLI"
         ],
         "prerequisites": [
-          "macOS 27 or later",
-          "Homebrew, an authenticated GitHub CLI, and the project's sandvault and herdr dependencies",
-          "A supported external coding-agent CLI such as Codex CLI or Claude Code"
+          "macOS",
+          "Git repository",
+          "Supported coding-agent command-line tools",
+          "GitHub CLI for pull-request workflows"
         ],
         "useCases": [
-          "Creating isolated worktrees and agent sessions from prompts or GitHub issues",
-          "Reviewing diffs, checks, conflicts, and pull-request conversations in one application",
-          "Resuming sandboxed agent sessions from the Mac or over SSH"
+          "Running isolated agent tasks in Git worktrees",
+          "Reviewing diffs across parallel sessions",
+          "Turning completed work into pull requests"
         ]
       },
       "category": "developer-tools",
@@ -1151,24 +1105,24 @@
       "homepage": "https://github.com/MikeMcQuaid/AgentIDE",
       "id": "brew:cask:agentide",
       "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Aagentide",
-      "lastUpdatedAt": "2026-09-05T12:46:20Z",
+      "lastUpdatedAt": "2026-09-06T21:29:31Z",
       "manager": "homebrew",
       "repository": "https://github.com/MikeMcQuaid/AgentIDE",
-      "researchedAt": "2026-09-06T06:20:50Z",
+      "researchedAt": "2026-09-07T06:31:55Z",
       "sources": [
         {
           "kind": "primary",
-          "title": "AgentIDE project repository and documentation",
+          "title": "AgentIDE project repository",
           "url": "https://github.com/MikeMcQuaid/AgentIDE"
         },
         {
           "kind": "primary",
-          "title": "AgentIDE 0.9.0 release",
+          "title": "AgentIDE 0.9.0 first release",
           "url": "https://github.com/MikeMcQuaid/AgentIDE/releases/tag/0.9.0"
         }
       ],
       "upstreamSummary": "IDE for agent-based development",
-      "version": "0.9.0"
+      "version": "0.9.1"
     },
     "brew:cask:clawd-on-desk": {
       "agentSummary": "A cross-platform animated desktop pet that reflects coding-agent activity, surfaces selected permission prompts, tracks concurrent sessions, and can send optional remote notifications.",
@@ -1283,6 +1237,70 @@
       ],
       "upstreamSummary": "Database management tool",
       "version": "0.5.82"
+    },
+    "brew:cask:dockdoor-pro": {
+      "agentSummary": "Commercial Dock replacement layers window previews, per-display profiles, app groups, widgets, file staging, media controls, gestures, and extensive customization onto macOS.",
+      "assessment": {
+        "alternatives": [
+          "DockDoor Free",
+          "Taskbar",
+          "Sidebar",
+          "The built-in macOS Dock"
+        ],
+        "audiences": [
+          "Heavy Mac multitaskers",
+          "Users wanting a customizable Dock",
+          "Multi-display users with context-specific app sets"
+        ],
+        "caveats": [
+          "Replaces rather than merely augments normal Dock behavior",
+          "More than 300 settings increase tuning overhead",
+          "The native Dock can still appear in OS-controlled interfaces"
+        ],
+        "complements": [
+          "Apple Music or Spotify for media widgets",
+          "macOS Shortcuts for quick actions"
+        ],
+        "prerequisites": [
+          "Compatible macOS version",
+          "Accessibility and screen-recording permissions",
+          "Paid license after trial"
+        ],
+        "useCases": [
+          "Switching directly among application windows",
+          "Maintaining separate Dock profiles",
+          "Keeping controls and widgets at the screen edge"
+        ]
+      },
+      "category": "system",
+      "displayName": "DockDoor Pro",
+      "docs": "https://pro.dockdoor.net/",
+      "homepage": "https://pro.dockdoor.net/",
+      "id": "brew:cask:dockdoor-pro",
+      "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Adockdoor-pro",
+      "lastUpdatedAt": "2026-09-07T03:48:57Z",
+      "manager": "homebrew",
+      "repository": null,
+      "researchedAt": "2026-09-07T06:31:55Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "DockDoor Pro official feature list",
+          "url": "https://pro.dockdoor.net/features/"
+        },
+        {
+          "kind": "independent",
+          "title": "ScreencastsOnline DockDoor walkthrough",
+          "url": "https://www.screencastsonline.com/tutorials/macos/dock-tips-dockdoor"
+        },
+        {
+          "kind": "independent",
+          "title": "AppAddict DockDoor Pro review",
+          "url": "https://appaddict.app/post/dockdoor-pro-the-dock-apple-wouldn-t-build"
+        }
+      ],
+      "upstreamSummary": "Dock replacement with widgets, profiles and window previews",
+      "version": "1.3.3"
     },
     "brew:cask:mangodisk": {
       "agentSummary": "Cross-platform disk analyzer and cleaner combining treemaps, duplicate detection, application removal, startup management, and reviewable cleanup rules with operation history.",
@@ -1454,6 +1472,70 @@
       "upstreamSummary": "Multi-engine mission control for coding agents",
       "version": "2.1.16"
     },
+    "brew:cask:omniwm": {
+      "agentSummary": "Young open-source macOS manager combines scrolling Niri-style columns, dwindle tiling, workspaces, gestures, a command palette, and scriptable IPC in one opinionated environment.",
+      "assessment": {
+        "alternatives": [
+          "AeroSpace",
+          "yabai",
+          "Amethyst",
+          "Rectangle"
+        ],
+        "audiences": [
+          "Keyboard-driven Mac users",
+          "Niri or Hyprland users moving to macOS",
+          "Developers who automate desktop workflows"
+        ],
+        "caveats": [
+          "Young project with rapid configuration and IPC changes",
+          "Automatic tiling can conflict with application minimum sizes or unusual windows",
+          "Current release no longer supports macOS 15"
+        ],
+        "complements": [
+          "Ghostty for terminal-heavy workflows",
+          "Raycast or shell scripts using omniwmctl"
+        ],
+        "prerequisites": [
+          "Apple Silicon Mac",
+          "macOS 26 or later for the current release",
+          "Accessibility and screen-recording permissions"
+        ],
+        "useCases": [
+          "Automatically arranging application windows",
+          "Navigating scrolling columns and workspaces",
+          "Controlling layouts through CLI and IPC"
+        ]
+      },
+      "category": "productivity",
+      "displayName": "OmniWM",
+      "docs": "https://omniwm.app/",
+      "homepage": "https://omniwm.app/",
+      "id": "brew:cask:omniwm",
+      "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Aomniwm",
+      "lastUpdatedAt": "2026-09-07T04:15:08Z",
+      "manager": "homebrew",
+      "repository": "https://github.com/BarutSRB/OmniWM",
+      "researchedAt": "2026-09-07T06:31:55Z",
+      "sources": [
+        {
+          "kind": "primary",
+          "title": "OmniWM official site and feature guide",
+          "url": "https://omniwm.app/"
+        },
+        {
+          "kind": "primary",
+          "title": "OmniWM v0.1.0 first release",
+          "url": "https://github.com/BarutSRB/OmniWM/releases/tag/v0.1.0"
+        },
+        {
+          "kind": "independent",
+          "title": "Community report on OmniWM v0.4.0",
+          "url": "https://www.reddit.com/r/niri/comments/1ruh6um/omni_macos_niri_v040/"
+        }
+      ],
+      "upstreamSummary": "Tiling window manager",
+      "version": "0.6.7"
+    },
     "brew:cask:opencode-desktop": {
       "agentSummary": "OpenCode is a model-flexible coding agent spanning terminal, desktop, and editor surfaces, with parallel sessions, configurable agents, permissions, and shareable work.",
       "assessment": {
@@ -1513,60 +1595,64 @@
       "upstreamSummary": "AI coding agent desktop client",
       "version": "1.18.18"
     },
-    "brew:cask:tabularis": {
-      "agentSummary": "Tabularis is a cross-platform desktop SQL workspace combining database browsing, notebooks, visual plans, editable results, plugins, and optional AI-agent access.",
+    "brew:cask:taskbar": {
+      "agentSummary": "Taskbar replaces app-centric Dock switching with persistent buttons for individual windows, emphasizing predictable one-click access, multi-monitor behavior, and a deliberately narrower feature set.",
       "assessment": {
         "alternatives": [
-          "DBeaver Community for much broader built-in database coverage",
-          "TablePlus or Beekeeper Studio for established desktop database workflows"
+          "DockDoor Pro",
+          "uBar",
+          "Sidebar",
+          "The built-in macOS Dock"
         ],
         "audiences": [
-          "Developers and data practitioners who prefer a graphical SQL workspace",
-          "Teams working mainly with PostgreSQL, MySQL, MariaDB, or SQLite"
+          "Mac users accustomed to Windows taskbars",
+          "People juggling many windows per application",
+          "Users prioritizing stable pointer targets"
         ],
         "caveats": [
-          "The project is young and its own comparison notes substantially fewer built-in databases than DBeaver",
-          "MCP query execution and editable grids warrant careful permissions around production databases",
-          "Some listed database integrations are plugins or remain claimed, scoped, or under development"
+          "Commercial closed-source application",
+          "Intentionally less expansive than widget-heavy Dock replacements",
+          "Changes a foundational navigation habit and needs an adjustment period"
         ],
         "complements": [
-          "Ollama or a supported hosted model provider for optional AI features",
-          "SSH access when database connections require tunneling"
+          "A keyboard launcher",
+          "macOS Mission Control"
         ],
         "prerequisites": [
-          "A supported desktop operating system and access credentials for the target database",
-          "Separate plugins for databases beyond the three built-in driver families"
+          "macOS",
+          "Accessibility and screen-recording permissions",
+          "Paid license after trial"
         ],
         "useCases": [
-          "Browse schemas, write SQL, edit result rows, and inspect execution plans",
-          "Combine SQL and Markdown in notebooks with charts and cross-cell variables",
-          "Expose saved database connections to supported AI clients through MCP"
+          "Switching to a specific window in one click",
+          "Showing window buttons on multiple monitors",
+          "Keeping frequently used windows spatially predictable"
         ]
       },
-      "category": "developer-tools",
-      "displayName": "Tabularis",
-      "docs": "https://github.com/TabularisDB/tabularis#readme",
-      "homepage": "https://tabularis.dev/",
-      "id": "brew:cask:tabularis",
-      "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Atabularis",
-      "lastUpdatedAt": "2026-09-01T22:42:13Z",
+      "category": null,
+      "displayName": "Taskbar",
+      "docs": null,
+      "homepage": "https://lawand.io/taskbar/",
+      "id": "brew:cask:taskbar",
+      "installURL": "pkgmgrmgr://install?package=brew%3Acask%3Ataskbar",
+      "lastUpdatedAt": "2026-09-06T16:27:51Z",
       "manager": "homebrew",
-      "repository": "https://github.com/TabularisDB/tabularis",
-      "researchedAt": "2026-09-02T10:26:06Z",
+      "repository": null,
+      "researchedAt": "2026-09-07T06:31:55Z",
       "sources": [
         {
           "kind": "primary",
-          "title": "Tabularis repository and documentation",
-          "url": "https://github.com/TabularisDB/tabularis"
+          "title": "Taskbar developer introduction",
+          "url": "https://lawand.io/taskbar/intro/"
         },
         {
           "kind": "primary",
-          "title": "Tabularis v0.5.0 release",
-          "url": "https://github.com/TabularisDB/tabularis/releases/tag/v0.5.0"
+          "title": "Taskbar official product page",
+          "url": "https://lawand.io/taskbar/"
         }
       ],
-      "upstreamSummary": "Lightweight database management tool",
-      "version": "0.22.0"
+      "upstreamSummary": "Windows-style taskbar as a Dock replacement",
+      "version": "1.6.3,2026,09"
     },
     "brew:cask:terminal-browser": {
       "agentSummary": "A Chromium-based browser rendered inside compatible terminals, keeping web previews beside command-line work and supporting remote development through SSH-aware rendering modes.",
@@ -3265,59 +3351,6 @@
       "upstreamSummary": "Vulnerability scanner which uses the OSV database",
       "version": null
     },
-    "brew:oxfmt": {
-      "agentSummary": "Oxfmt is a Rust-powered formatter for JavaScript and TypeScript projects, aiming for Prettier compatibility while reducing formatting time in large repositories and continuous-integration workflows.",
-      "assessment": {
-        "alternatives": [
-          "Prettier",
-          "Biome formatter"
-        ],
-        "audiences": [
-          "JavaScript and TypeScript teams with slow formatting checks"
-        ],
-        "caveats": [
-          "Oxfmt is beta and compatibility gaps may remain",
-          "Plugin and embedded-language support should be verified per repository"
-        ],
-        "complements": [
-          "Type checking",
-          "Linting",
-          "Pre-commit hooks"
-        ],
-        "prerequisites": [
-          "A JavaScript or TypeScript project",
-          "Tolerance for a beta-stage formatter"
-        ],
-        "useCases": [
-          "Replacing or evaluating Prettier-compatible repository formatting",
-          "Running formatting checks in CI"
-        ]
-      },
-      "category": "developer-tools",
-      "displayName": "oxfmt",
-      "docs": "https://github.com/oxc-project/oxc#readme",
-      "homepage": "https://oxc.rs/",
-      "id": "brew:oxfmt",
-      "installURL": "pkgmgrmgr://install?package=brew%3Aoxfmt",
-      "lastUpdatedAt": "2026-07-23T01:09:21Z",
-      "manager": "homebrew",
-      "repository": "https://github.com/oxc-project/oxc",
-      "researchedAt": "2026-07-23T14:05:45Z",
-      "sources": [
-        {
-          "kind": "primary",
-          "title": "Oxfmt beta announcement",
-          "url": "https://oxc.rs/blog/2026-02-24-oxfmt-beta"
-        },
-        {
-          "kind": "primary",
-          "title": "Oxfmt alpha announcement",
-          "url": "https://oxc.rs/blog/2025-12-01-oxfmt-alpha.html"
-        }
-      ],
-      "upstreamSummary": "High-performance formatting tool for JavaScript and TypeScript",
-      "version": null
-    },
     "brew:pgstream": {
       "agentSummary": "A PostgreSQL change-data-capture tool and Go library that streams snapshots, row changes, and DDL to Postgres, Kafka, search indexes, or webhooks.",
       "assessment": {
@@ -4502,7 +4535,7 @@
   },
   "schemaVersion": 1,
   "source": {
-    "generatedAt": "2026-09-06T06:19:23Z",
+    "generatedAt": "2026-09-07T06:31:21Z",
     "url": "https://www.automicvault.com/db.json"
   }
 }
